@@ -1,0 +1,16 @@
+# Godot
+.godot/
+/android/
+
+# .NET / IDEs
+bin/
+obj/
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+mono_crash.*
+
+# Python das ferramentas de arte
+__pycache__/

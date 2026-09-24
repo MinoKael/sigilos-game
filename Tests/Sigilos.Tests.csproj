@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Testes e simulador da lógica do jogo (Core/), fora do Godot.
+    - Compila Core/ por link: o Core não usa nada do Godot, então não precisa de shim.
+    - Sigilos.csproj tem <Compile Remove="Tests\**" /> e a pasta tem .gdignore, então nem o build
+      do jogo nem o editor enxergam estes arquivos.
+    - Sem pacotes NuGet de propósito: o runner e o Assert são os deste diretório.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>Sigilos.Tests</AssemblyName>
+    <RootNamespace>Sigilos.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="*.cs" />
+    <Compile Include="..\Core\**\*.cs" LinkBase="Core" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,31 @@
+{
+  "id": "diabrete_luz",
+  "name": "Diabrete de Selo de Luz",
+  "family": "diabrete",
+  "element": "Light",
+  "glyph": "Eye",
+  "role": "Support",
+  "basic": {
+    "name": "Clarão",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 0.9},
+      {"kind": "Impeto", "target": "Target", "power": -15}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 0.9},
+      {"kind": "Impeto", "target": "Target", "power": -30}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Olhar Adiante",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Impeto", "target": "AllAllies", "power": 20}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Impeto", "target": "AllAllies", "power": 35}
+    ]
+  }
+}

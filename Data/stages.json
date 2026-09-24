@@ -1,0 +1,258 @@
+// Região 1: Planície dos Menires (GDD, seção 4). Sem regra de batalha: ensina o básico.
+// Inimigos com o nível da fase. Pergaminhos só na primeira vitória; Essência em toda vitória.
+[
+  {
+    "number": 1,
+    "name": "Estrada dos Menires",
+    "level": 1,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 80,
+    "essence": 25,
+    "lines": ["Os Menires ainda guardam a estrada. O Silêncio passou por eles mesmo assim.", "Grave o primeiro sigilo, Conjurador. Eles não esperam."],
+    "waves": [
+      [{"enemy": "limo", "element": "Water"}, {"enemy": "limo", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 2,
+    "name": "Pedras Caídas",
+    "level": 3,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 160,
+    "essence": 30,
+    "waves": [
+      [{"enemy": "goblin", "element": "Wind"}, {"enemy": "limo", "element": "Water"}],
+      [{"enemy": "goblin", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 3,
+    "name": "Trilha dos Pastores",
+    "level": 4,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 240,
+    "essence": 35,
+    "waves": [
+      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
+      [{"enemy": "limo", "element": "Wind"}, {"enemy": "limo", "element": "Water"}]
+    ]
+  },
+  {
+    "number": 4,
+    "name": "Uivos no Vale",
+    "level": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 320,
+    "essence": 40,
+    "lines": ["Lobos não uivam para o Silêncio. Estes uivam."],
+    "waves": [
+      [{"enemy": "lobo", "element": "Wind"}, {"enemy": "goblin", "element": "Water"}],
+      [{"enemy": "lobo", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}]
+    ]
+  },
+  {
+    "number": 5,
+    "name": "Ponte Velha",
+    "level": 7,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 400,
+    "essence": 45,
+    "waves": [
+      [{"enemy": "bandido", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}],
+      [{"enemy": "lobo", "element": "Water"}, {"enemy": "bandido", "element": "Wind"}, {"enemy": "goblin", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 6,
+    "name": "Charco Parado",
+    "level": 9,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 480,
+    "essence": 50,
+    "waves": [
+      [{"enemy": "limo", "element": "Fire"}, {"enemy": "limo", "element": "Water"}, {"enemy": "limo", "element": "Wind"}],
+      [{"enemy": "lobo", "element": "Wind"}, {"enemy": "lobo", "element": "Water"}],
+      [{"enemy": "bandido", "element": "Water"}, {"enemy": "goblin", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 7,
+    "name": "Acampamento Queimado",
+    "level": 10,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 560,
+    "essence": 55,
+    "waves": [
+      [{"enemy": "bandido", "element": "Fire"}, {"enemy": "bandido", "element": "Wind"}],
+      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}]
+    ]
+  },
+  {
+    "number": 8,
+    "name": "Menir Rachado",
+    "level": 12,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 640,
+    "essence": 60,
+    "lines": ["Um Menir partido ao meio. O Glifo gravado nele sumiu."],
+    "waves": [
+      [{"enemy": "limo", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "limo", "element": "Water"}],
+      [{"enemy": "lobo", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}]
+    ]
+  },
+  {
+    "number": 9,
+    "name": "Toca dos Lobos",
+    "level": 13,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 720,
+    "essence": 65,
+    "waves": [
+      [{"enemy": "lobo", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],
+      [{"enemy": "lobo", "element": "Dark"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "goblin", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 10,
+    "name": "Colina do Troll",
+    "level": 15,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 800,
+    "essence": 70,
+    "lines": ["A colina tremeu antes de o troll aparecer.", "Ele não está com raiva. Está vazio."],
+    "waves": [
+      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],
+      [{"enemy": "bandido", "element": "Wind"}, {"enemy": "lobo", "element": "Fire"}],
+      [{"enemy": "troll", "element": "Wind"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 11,
+    "name": "Estrada Sem Placas",
+    "level": 16,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 880,
+    "essence": 75,
+    "waves": [
+      [{"enemy": "bandido", "element": "Water"}, {"enemy": "bandido", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}],
+      [{"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}, {"enemy": "limo", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 12,
+    "name": "Moinho Abandonado",
+    "level": 18,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 960,
+    "essence": 80,
+    "waves": [
+      [{"enemy": "limo", "element": "Dark"}, {"enemy": "limo", "element": "Light"}, {"enemy": "goblin", "element": "Wind"}],
+      [{"enemy": "bandido", "element": "Dark"}, {"enemy": "bandido", "element": "Light"}],
+      [{"enemy": "lobo", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}]
+    ]
+  },
+  {
+    "number": 13,
+    "name": "Vau do Rio",
+    "level": 19,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1040,
+    "essence": 85,
+    "waves": [
+      [{"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "limo", "element": "Water"}],
+      [{"enemy": "bandido", "element": "Water"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 14,
+    "name": "Cemitério de Menires",
+    "level": 21,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1120,
+    "essence": 90,
+    "lines": ["Aqui os Menires foram derrubados de propósito."],
+    "waves": [
+      [{"enemy": "goblin", "element": "Dark"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "limo", "element": "Dark"}],
+      [{"enemy": "lobo", "element": "Dark"}, {"enemy": "bandido", "element": "Dark"}],
+      [{"enemy": "troll", "element": "Water"}, {"enemy": "bandido", "element": "Light"}]
+    ]
+  },
+  {
+    "number": 15,
+    "name": "Ninho de Cinzas",
+    "level": 22,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 1200,
+    "essence": 95,
+    "lines": ["Cheiro de enxofre. Algo grande dorme sobre ossos queimados."],
+    "waves": [
+      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "lobo", "element": "Fire"}, {"enemy": "bandido", "element": "Fire"}],
+      [{"enemy": "limo", "element": "Fire"}, {"enemy": "limo", "element": "Fire"}, {"enemy": "lobo", "element": "Wind"}],
+      [{"enemy": "dragao", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}]
+    ]
+  },
+  {
+    "number": 16,
+    "name": "Portão de Pedra",
+    "level": 24,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1280,
+    "essence": 100,
+    "waves": [
+      [{"enemy": "bandido", "element": "Wind"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "bandido", "element": "Fire"}],
+      [{"enemy": "troll", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}]
+    ]
+  },
+  {
+    "number": 17,
+    "name": "Floresta de Correntes",
+    "level": 25,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1360,
+    "essence": 105,
+    "lines": ["Correntes pendem das árvores. Algumas ainda balançam."],
+    "waves": [
+      [{"enemy": "lobo", "element": "Dark"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}],
+      [{"enemy": "bandido", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "limo", "element": "Wind"}]
+    ]
+  },
+  {
+    "number": 18,
+    "name": "Guarda do Mestre",
+    "level": 27,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1440,
+    "essence": 110,
+    "waves": [
+      [{"enemy": "bandido", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}],
+      [{"enemy": "troll", "element": "Wind"}, {"enemy": "bandido", "element": "Water"}],
+      [{"enemy": "dragao", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}]
+    ]
+  },
+  {
+    "number": 19,
+    "name": "Salão dos Elos",
+    "level": 28,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1520,
+    "essence": 115,
+    "waves": [
+      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
+      [{"enemy": "bandido", "element": "Dark"}, {"enemy": "bandido", "element": "Light"}, {"enemy": "troll", "element": "Fire"}]
+    ]
+  },
+  {
+    "number": 20,
+    "name": "O Mestre de Correntes",
+    "level": 30,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 1600,
+    "essence": 120,
+    "lines": ["O Silêncio não é o fim, Conjurador. É o descanso.", "Toda corrente que eu prendo é uma voz a menos gritando.", "Solte seus sigilos e descanse também."],
+    "waves": [
+      [{"enemy": "bandido", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],
+      [{"enemy": "troll", "element": "Water"}, {"enemy": "lobo", "element": "Fire"}],
+      [{"enemy": "mestre_de_correntes", "element": "Dark"}, {"enemy": "bandido", "element": "Wind"}, {"enemy": "bandido", "element": "Fire"}]
+    ]
+  }
+]

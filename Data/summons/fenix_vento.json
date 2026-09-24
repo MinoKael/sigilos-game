@@ -1,0 +1,35 @@
+{
+  "id": "fenix_vento",
+  "name": "Fênix de Cinza de Vento",
+  "family": "fenix",
+  "element": "Wind",
+  "glyph": "Eye",
+  "role": "Attacker",
+  "leader": {"stat": "Speed", "value": 0.15},
+  "basic": {
+    "name": "Rasante de Brasa",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.1},
+      {"kind": "Impeto", "target": "Target", "power": -20}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.1},
+      {"kind": "Impeto", "target": "Target", "power": -40}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Tempestade de Penas",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.8},
+      {"kind": "Impeto", "target": "AllAllies", "power": 20}
+    ],
+    "enhanceCost": 3,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.8},
+      {"kind": "Impeto", "target": "AllAllies", "power": 20},
+      {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+    ]
+  }
+}

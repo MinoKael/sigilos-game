@@ -1,0 +1,34 @@
+{
+  "id": "diabrete_vento",
+  "name": "Diabrete de Selo de Vento",
+  "family": "diabrete",
+  "element": "Wind",
+  "glyph": "Spiral",
+  "role": "Control",
+  "basic": {
+    "name": "Rodopio",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.5, "turns": 2}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Redemoinho",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.6},
+      {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.6},
+      {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2},
+      {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
+    ]
+  }
+}

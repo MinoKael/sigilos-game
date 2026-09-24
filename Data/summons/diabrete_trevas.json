@@ -1,0 +1,34 @@
+{
+  "id": "diabrete_trevas",
+  "name": "Diabrete de Selo de Trevas",
+  "family": "diabrete",
+  "element": "Dark",
+  "glyph": "Veil",
+  "role": "Attacker",
+  "basic": {
+    "name": "Golpe Sombrio",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.5, "turns": 2}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Sumir no Selo",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Status", "target": "Self", "status": "Hidden"},
+      {"kind": "Impeto", "target": "Self", "power": 30}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Status", "target": "Self", "status": "Hidden"},
+      {"kind": "Impeto", "target": "Self", "power": 30},
+      {"kind": "Status", "target": "LowestAlly", "status": "Hidden"}
+    ]
+  }
+}

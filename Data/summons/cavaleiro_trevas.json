@@ -1,0 +1,32 @@
+{
+  "id": "cavaleiro_trevas",
+  "name": "Cavaleiro Juramentado de Trevas",
+  "family": "cavaleiro",
+  "element": "Dark",
+  "glyph": "Bone",
+  "role": "Front",
+  "leader": {"stat": "Resistance", "value": 0.2},
+  "basic": {
+    "name": "Lâmina Faminta",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0, "drain": 0.3}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0, "drain": 0.3},
+      {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.5, "turns": 2}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Juramento Sombrio",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.7, "drain": 0.3}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.7, "drain": 0.3},
+      {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
+    ]
+  }
+}

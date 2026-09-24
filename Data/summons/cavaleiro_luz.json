@@ -1,0 +1,34 @@
+{
+  "id": "cavaleiro_luz",
+  "name": "Cavaleiro Juramentado de Luz",
+  "family": "cavaleiro",
+  "element": "Light",
+  "glyph": "Bond",
+  "role": "Front",
+  "leader": {"stat": "Defense", "value": 0.2},
+  "basic": {
+    "name": "Juramento",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Status", "target": "Target", "status": "Taunt"}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Voto de Escudo",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Status", "target": "AllEnemies", "status": "Taunt"},
+      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "turns": 2},
+      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+    ]
+  }
+}

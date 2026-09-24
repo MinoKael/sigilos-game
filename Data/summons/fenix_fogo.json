@@ -1,0 +1,34 @@
+{
+  "id": "fenix_fogo",
+  "name": "Fênix de Cinza de Fogo",
+  "family": "fenix",
+  "element": "Fire",
+  "glyph": "Spiral",
+  "role": "Attacker",
+  "leader": {"stat": "Attack", "value": 0.18},
+  "basic": {
+    "name": "Chama Espiral",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Status", "target": "Target", "status": "Burn", "turns": 2}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Voo Rubro",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.9},
+      {"kind": "Status", "target": "AllEnemies", "status": "Burn"}
+    ],
+    "enhanceCost": 3,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 1.35},
+      {"kind": "Status", "target": "AllEnemies", "status": "Burn"}
+    ]
+  }
+}

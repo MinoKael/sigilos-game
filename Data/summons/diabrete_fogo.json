@@ -1,0 +1,32 @@
+{
+  "id": "diabrete_fogo",
+  "name": "Diabrete de Selo de Fogo",
+  "family": "diabrete",
+  "element": "Fire",
+  "glyph": "Shard",
+  "role": "Attacker",
+  "basic": {
+    "name": "Faísca",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 0.55, "hits": 2}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 0.55, "hits": 2},
+      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Selo Rompido",
+    "cooldown": 3,
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.8},
+      {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.8, "ignoreDefense": 0.3},
+      {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+    ]
+  }
+}

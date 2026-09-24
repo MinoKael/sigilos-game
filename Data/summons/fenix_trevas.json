@@ -1,0 +1,35 @@
+{
+  "id": "fenix_trevas",
+  "name": "Fênix de Cinza de Trevas",
+  "family": "fenix",
+  "element": "Dark",
+  "glyph": "Veil",
+  "role": "Attacker",
+  "leader": {"stat": "CritDamage", "value": 0.3},
+  "basic": {
+    "name": "Garra Velada",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2},
+      {"kind": "Status", "target": "Self", "status": "Hidden"}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Eclipse",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 2.2},
+      {"kind": "Status", "target": "Self", "status": "Hidden"}
+    ],
+    "enhanceCost": 3,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 2.2, "ignoreDefense": 0.5},
+      {"kind": "Status", "target": "Self", "status": "Hidden"}
+    ]
+  }
+}

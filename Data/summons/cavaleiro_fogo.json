@@ -1,0 +1,31 @@
+{
+  "id": "cavaleiro_fogo",
+  "name": "Cavaleiro Juramentado de Fogo",
+  "family": "cavaleiro",
+  "element": "Fire",
+  "glyph": "Shard",
+  "role": "Attacker",
+  "leader": {"stat": "Attack", "value": 0.15},
+  "basic": {
+    "name": "Lâmina Ardente",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.1}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.1},
+      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Carga Flamejante",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.8}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 0.8, "ignoreDefense": 0.3}
+    ]
+  }
+}

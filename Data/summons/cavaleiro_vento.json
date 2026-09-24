@@ -1,0 +1,32 @@
+{
+  "id": "cavaleiro_vento",
+  "name": "Cavaleiro Juramentado de Vento",
+  "family": "cavaleiro",
+  "element": "Wind",
+  "glyph": "Eye",
+  "role": "Support",
+  "leader": {"stat": "Speed", "value": 0.1},
+  "basic": {
+    "name": "Estocada Veloz",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0}
+    ],
+    "enhanceCost": 1,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Impeto", "target": "AllAllies", "power": 10}
+    ]
+  },
+  "glyphSkill": {
+    "name": "Clarim de Guerra",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Impeto", "target": "AllAllies", "power": 25}
+    ],
+    "enhanceCost": 2,
+    "enhancedEffects": [
+      {"kind": "Impeto", "target": "AllAllies", "power": 25},
+      {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
+    ]
+  }
+}

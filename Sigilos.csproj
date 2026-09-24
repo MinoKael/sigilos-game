@@ -1,0 +1,26 @@
+<Project Sdk="Godot.NET.Sdk/4.7.1">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Sigilos</RootNamespace>
+  </PropertyGroup>
+  <!--
+    Tests/ é um console app separado que compila Core/ por link. Sem este Remove, o Godot.NET.Sdk
+    (que compila **/*.cs) puxaria os testes e o obj/ deles para dentro do jogo.
+    Tools/ só tem Python, mas fica fora pelo mesmo motivo. As duas pastas têm .gdignore.
+  -->
+  <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
+    <Compile Remove="Tools\**" />
+    <None Remove="Tools\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\*.json" />
+    <None Include="Data\*\*.json" />
+    <None Include="docs\*.md" />
+  </ItemGroup>
+</Project>

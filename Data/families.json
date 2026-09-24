@@ -1,0 +1,25 @@
+// Famílias de invocação (GDD, seção 8). O MVP tem 3 das 8: uma de cada raridade.
+// "image" é o arquivo em Assets/Creatures: um desenho por família, recolorido no elemento.
+[
+  {
+    "id": "diabrete",
+    "name": "Diabretes de Selo",
+    "rarity": 3,
+    "image": "imp",
+    "passive": { "name": "Fuga Covarde", "kind": "SpeedWhenLowest", "value": 0.15 }
+  },
+  {
+    "id": "cavaleiro",
+    "name": "Cavaleiros Juramentados",
+    "rarity": 4,
+    "image": "knight",
+    "passive": { "name": "Último Voto", "kind": "ShieldOnDeath", "value": 0.15 }
+  },
+  {
+    "id": "fenix",
+    "name": "Fênix de Cinza",
+    "rarity": 5,
+    "image": "phoenix",
+    "passive": { "name": "Das Cinzas", "kind": "RebirthOnce", "value": 0.4 }
+  }
+]
