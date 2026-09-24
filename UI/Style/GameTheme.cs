@@ -3,7 +3,7 @@ using Godot;
 namespace Sigilos.UI.Style
 {
 	/// <summary>
-	/// O tema da interface, na linha de Summoners War: painéis escuros com moldura dourada, botões de
+	/// O tema da interface: painéis escuros com moldura dourada, botões de
 	/// bronze, fonte serifada nos títulos e fonte limpa nos números. As fontes são do sistema — nenhum
 	/// arquivo de fonte no projeto.
 	///

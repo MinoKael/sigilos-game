@@ -1,6 +1,8 @@
 // Região 1: Planície dos Menires (GDD, seção 4). Sem regra de batalha: ensina o básico.
 // Inimigos no nível da fase. Pergaminhos só na primeira vitória; Essência, Pó de Sigilo e experiência
-// em toda vitória. A runa sai sempre na primeira vitória e com 50% de chance nas outras.
+// em toda vitória. A runa sai sempre na primeira vitória e com 50% de chance nas outras. A partir da
+// fase 10, "toolGrade" solta Pedra de Afiar ou Gema (1 Mágica ... 4 Lendária) na primeira vitória
+// e com 15% de chance nas outras. O Pó é escasso de propósito: a melhora de runa nunca falha.
 [
   {
     "number": 1,
@@ -9,9 +11,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 60,
     "essence": 19,
-    "dust": 13,
+    "dust": 10,
     "experience": 60,
     "runeGrade": 1,
+    "toolGrade": 0,
     "lines": ["Os Menires ainda guardam a estrada. O Silêncio passou por eles mesmo assim.", "Grave o primeiro sigilo, Conjurador. Eles não esperam."],
     "waves": [
       [{"enemy": "limo", "element": "Water"}, {"enemy": "limo", "element": "Fire"}]
@@ -24,9 +27,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 120,
     "essence": 23,
-    "dust": 16,
+    "dust": 12,
     "experience": 80,
     "runeGrade": 1,
+    "toolGrade": 0,
     "waves": [
       [{"enemy": "goblin", "element": "Wind"}, {"enemy": "limo", "element": "Water"}],
       [{"enemy": "goblin", "element": "Fire"}]
@@ -39,9 +43,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 180,
     "essence": 27,
-    "dust": 19,
+    "dust": 14,
     "experience": 100,
     "runeGrade": 1,
+    "toolGrade": 0,
     "waves": [
       [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
       [{"enemy": "limo", "element": "Wind"}, {"enemy": "limo", "element": "Water"}]
@@ -54,9 +59,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 240,
     "essence": 31,
-    "dust": 22,
+    "dust": 16,
     "experience": 120,
     "runeGrade": 1,
+    "toolGrade": 0,
     "lines": ["Lobos não uivam para o Silêncio. Estes uivam."],
     "waves": [
       [{"enemy": "lobo", "element": "Wind"}, {"enemy": "goblin", "element": "Water"}],
@@ -70,9 +76,10 @@
     "firstClearScrolls": 3,
     "firstClearEssence": 300,
     "essence": 35,
-    "dust": 25,
+    "dust": 18,
     "experience": 140,
     "runeGrade": 2,
+    "toolGrade": 0,
     "waves": [
       [{"enemy": "bandido", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}],
       [{"enemy": "lobo", "element": "Water"}, {"enemy": "bandido", "element": "Wind"}, {"enemy": "goblin", "element": "Fire"}]
@@ -85,9 +92,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 360,
     "essence": 39,
-    "dust": 28,
+    "dust": 20,
     "experience": 160,
     "runeGrade": 2,
+    "toolGrade": 0,
     "waves": [
       [{"enemy": "limo", "element": "Fire"}, {"enemy": "limo", "element": "Water"}, {"enemy": "limo", "element": "Wind"}],
       [{"enemy": "lobo", "element": "Wind"}, {"enemy": "lobo", "element": "Water"}],
@@ -101,9 +109,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 420,
     "essence": 43,
-    "dust": 31,
+    "dust": 22,
     "experience": 180,
     "runeGrade": 2,
+    "toolGrade": 0,
     "waves": [
       [{"enemy": "bandido", "element": "Fire"}, {"enemy": "bandido", "element": "Wind"}],
       [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}]
@@ -116,9 +125,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 480,
     "essence": 47,
-    "dust": 34,
+    "dust": 24,
     "experience": 200,
     "runeGrade": 2,
+    "toolGrade": 0,
     "lines": ["Um Menir partido ao meio. O Glifo gravado nele sumiu."],
     "waves": [
       [{"enemy": "limo", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "limo", "element": "Water"}],
@@ -132,9 +142,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 540,
     "essence": 51,
-    "dust": 37,
+    "dust": 26,
     "experience": 220,
     "runeGrade": 2,
+    "toolGrade": 0,
     "waves": [
       [{"enemy": "lobo", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],
       [{"enemy": "lobo", "element": "Dark"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "goblin", "element": "Fire"}]
@@ -147,9 +158,10 @@
     "firstClearScrolls": 3,
     "firstClearEssence": 600,
     "essence": 55,
-    "dust": 40,
+    "dust": 28,
     "experience": 240,
     "runeGrade": 3,
+    "toolGrade": 1,
     "lines": ["A colina tremeu antes de o troll aparecer.", "Ele não está com raiva. Está vazio."],
     "waves": [
       [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],
@@ -164,9 +176,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 660,
     "essence": 59,
-    "dust": 43,
+    "dust": 30,
     "experience": 260,
     "runeGrade": 3,
+    "toolGrade": 1,
     "waves": [
       [{"enemy": "bandido", "element": "Water"}, {"enemy": "bandido", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}],
       [{"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}, {"enemy": "limo", "element": "Fire"}]
@@ -179,9 +192,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 720,
     "essence": 63,
-    "dust": 46,
+    "dust": 32,
     "experience": 280,
     "runeGrade": 3,
+    "toolGrade": 1,
     "waves": [
       [{"enemy": "limo", "element": "Dark"}, {"enemy": "limo", "element": "Light"}, {"enemy": "goblin", "element": "Wind"}],
       [{"enemy": "bandido", "element": "Dark"}, {"enemy": "bandido", "element": "Light"}],
@@ -195,9 +209,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 780,
     "essence": 67,
-    "dust": 49,
+    "dust": 34,
     "experience": 300,
     "runeGrade": 3,
+    "toolGrade": 1,
     "waves": [
       [{"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "limo", "element": "Water"}],
       [{"enemy": "bandido", "element": "Water"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Fire"}]
@@ -210,9 +225,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 840,
     "essence": 71,
-    "dust": 52,
+    "dust": 36,
     "experience": 320,
     "runeGrade": 3,
+    "toolGrade": 1,
     "lines": ["Aqui os Menires foram derrubados de propósito."],
     "waves": [
       [{"enemy": "goblin", "element": "Dark"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "limo", "element": "Dark"}],
@@ -227,9 +243,10 @@
     "firstClearScrolls": 3,
     "firstClearEssence": 900,
     "essence": 75,
-    "dust": 55,
+    "dust": 38,
     "experience": 340,
     "runeGrade": 4,
+    "toolGrade": 2,
     "lines": ["Cheiro de enxofre. Algo grande dorme sobre ossos queimados."],
     "waves": [
       [{"enemy": "goblin", "element": "Fire"}, {"enemy": "lobo", "element": "Fire"}, {"enemy": "bandido", "element": "Fire"}],
@@ -244,9 +261,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 960,
     "essence": 79,
-    "dust": 58,
+    "dust": 40,
     "experience": 360,
     "runeGrade": 4,
+    "toolGrade": 2,
     "waves": [
       [{"enemy": "bandido", "element": "Wind"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "bandido", "element": "Fire"}],
       [{"enemy": "troll", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}]
@@ -259,9 +277,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 1020,
     "essence": 83,
-    "dust": 61,
+    "dust": 42,
     "experience": 380,
     "runeGrade": 4,
+    "toolGrade": 2,
     "lines": ["Correntes pendem das árvores. Algumas ainda balançam."],
     "waves": [
       [{"enemy": "lobo", "element": "Dark"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}],
@@ -275,9 +294,10 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 1080,
     "essence": 87,
-    "dust": 64,
+    "dust": 44,
     "experience": 400,
     "runeGrade": 4,
+    "toolGrade": 2,
     "waves": [
       [{"enemy": "bandido", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}],
       [{"enemy": "troll", "element": "Wind"}, {"enemy": "bandido", "element": "Water"}],
@@ -291,11 +311,12 @@
     "firstClearScrolls": 1,
     "firstClearEssence": 1140,
     "essence": 91,
-    "dust": 67,
+    "dust": 46,
     "experience": 420,
     "runeGrade": 4,
+    "toolGrade": 2,
     "waves": [
-      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
+      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
       [{"enemy": "bandido", "element": "Dark"}, {"enemy": "bandido", "element": "Light"}, {"enemy": "troll", "element": "Fire"}]
     ]
   },
@@ -306,9 +327,10 @@
     "firstClearScrolls": 3,
     "firstClearEssence": 1200,
     "essence": 95,
-    "dust": 70,
+    "dust": 48,
     "experience": 440,
     "runeGrade": 5,
+    "toolGrade": 3,
     "lines": ["O Silêncio não é o fim, Conjurador. É o descanso.", "Toda corrente que eu prendo é uma voz a menos gritando.", "Solte seus sigilos e descanse também."],
     "waves": [
       [{"enemy": "bandido", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],

@@ -4,17 +4,17 @@ using System.Collections.Generic;
 namespace Sigilos.Core.Player
 {
 	/// <summary>
-	/// O começo de uma conta: três Diabretes de Selo, Pergaminhos para a primeira invocação — uma 5★
-	/// garantida (GDD, seção 12) — e algumas runas de 2 estrelas para aprender a equipar.
+	/// O começo de uma conta: 60 Pergaminhos para a primeira invocação — uma 5★
+	/// garantida (GDD, seção 12).
 	/// </summary>
 	public static class NewGame
 	{
-		public const int StartingScrolls = 10;
+		public const int StartingScrolls = 60;
 		public const int StartingDust = 300;
-		public const int StarterRunes = 6;
+		public const int StarterRunes = 0;
 		public const int StarterRuneGrade = 2;
 
-		public static readonly IReadOnlyList<string> StarterSummons = new[] { "diabrete_fogo", "diabrete_agua", "diabrete_luz" };
+		public static readonly IReadOnlyList<string> StarterSummons = [];
 
 		public static PlayerState Create(DateTime now, Random random)
 		{
@@ -24,7 +24,7 @@ namespace Sigilos.Core.Player
 				Scrolls = StartingScrolls,
 				Dust = StartingDust,
 				LastIdleCollect = now,
-				Team = new List<string>(StarterSummons),
+				Team = [.. StarterSummons],
 			};
 
 			foreach (var id in StarterSummons)

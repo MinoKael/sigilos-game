@@ -4,6 +4,8 @@ Sep 23, 2026 · @Mikael
 
 > **Revisão de 24/09/2026, depois dos primeiros testes do MVP.** O Erudito e todo o Grimório (páginas, Formas, Círculos, Ressonância) saíram do jogo. A base mecânica e visual passa a ser Summoners War: nível de 1 a 40 por invocação, Despertar com nome próprio e estrelas roxas, runas de 6 espaços. O Éter ficou escasso (só Glifo e inimigo derrubado geram) e é exclusivo do modo manual: o automático nunca o gasta. O jogo ganhou a tela de Monstros e o Compêndio, que explica Glifos, elementos, efeitos, runas e regras.
 
+> **Segunda revisão de 24/09/2026: runas e atributos iguais aos de Summoners War.** Runas e atributos das invocações são a parte mais importante do jogo, então seguem Summoners War em tudo: runas de 1 a 6 estrelas, raridade pelo número de subatributos, melhora até +15 com 4 subatributos, atributo inato, as tabelas de números de lá, custo para tirar runa, Pedra de Afiar e Gema Encantada, e os 16 conjuntos (dois por Glifo). A única diferença: **a melhora de runa nunca falha**; em troca, cada nível custa o preço médio de Summoners War contando as falhas, e o Pó de Sigilo ficou escasso. Os atributos passaram para a escala de lá (uma 5★ no nível 40 tem cerca de 9 mil de Vida), com Crítico 15%, Dano crítico 50%, Resistência 15% e Precisão 0% de base, a curva de Defesa de lá, a Liderança sobre a base e o Despertar com os bônus de lá.
+
 ## 1. Visão geral
 
 **Sigilos** (título provisório) é um gacha de fantasia para um jogador, offline e sem loja: você coleciona criaturas, grava sigilos nelas e comanda batalhas por turnos em que as magias são montadas símbolo por símbolo.
@@ -38,7 +40,7 @@ De cada jogo entra só o que serve aos pilares; o resto é cortado de propósito
 
 | Referência | O que entra | O que fica de fora |
 | --- | --- | --- |
-| Summoners War: Sky Arena (base mecânica e visual) | Barra de ataque por Velocidade; nível de 1 a 40 por monstro; painéis escuros com moldura dourada; runas em 6 espaços com conjuntos de 2 e 4 peças; famílias de monstros em 5 elementos; Despertar; duplicatas que sobem habilidades; habilidade de líder; masmorras que soltam conjuntos específicos; masmorras secretas por família; arena contra defesa controlada pela IA | Evolução de estrelas com monstros de sacrifício; runas até +15 com 4 subatributos; guerra de guildas, cerco e PvP em tempo real; cristais e pacotes |
+| Summoners War: Sky Arena (base mecânica e visual) | Barra de ataque por Velocidade; nível de 1 a 40 por monstro; painéis escuros com moldura dourada; runas em 6 espaços com conjuntos de 2 e 4 peças; famílias de monstros em 5 elementos; Despertar; duplicatas que sobem habilidades; habilidade de líder; masmorras que soltam conjuntos específicos; masmorras secretas por família; arena contra defesa controlada pela IA | Evolução de estrelas com monstros de sacrifício; chance de falha na melhora de runa; conjuntos de runa da Fenda; guerra de guildas, cerco e PvP em tempo real; cristais e pacotes |
 | Epic Seven | Almas compartilhadas que turbinam habilidades (viram o Éter); recargas de habilidade; heróis com nome e personalidade; Abismo como torre de desafio | Equipamento separado das runas; artefatos; cutscenes; Labirinto; PvP em tempo real |
 | AFK Arena e AFK Journey | Recompensas ociosas; nível compartilhado entre heróis; batalha automática com time preparado; sessões curtas sem stamina | Dezenas de moedas e menus; eventos com prazo; pacotes pagos |
 | Tormenta (RPG) | Escolas de magia viram Glifos; pagar mana extra por aprimoramentos | Nomes, deuses, lugares e textos do cenário; grimório e círculos de custo (saíram na revisão de 24/09) |
@@ -87,23 +89,23 @@ A arte de personagem é rabiscada por escolha visual e de produção: é o que p
 Os oito Glifos são o vocabulário do mundo. No jogo eles aparecem em três lugares, sempre com o mesmo desenho:
 
 - **Invocações:** cada uma tem um Glifo, que dá o estilo das habilidades dela.
-- **Runas:** cada conjunto de runas é um Glifo (seção 10).
+- **Runas:** cada Glifo empresta o desenho a dois dos 16 conjuntos de runas de Summoners War (seção 10).
 - **Gacha:** você direciona a Invocação Ritual para Glifos que já conhece (seção 9).
 
 O Compêndio, dentro do jogo, explica cada Glifo, elemento, efeito, runa e regra de combate com os números atuais.
 
 ### Os 8 Glifos
 
-| Glifo | Escola de origem | Estilo das habilidades | Conjunto de runas |
+| Glifo | Escola de origem | Estilo das habilidades | Conjuntos de runas |
 | --- | --- | --- | --- |
-| Muralha | Abjuração | Escudos, Égide, enfraquecer o ataque inimigo | 2 peças: +15% de Defesa |
-| Olho | Adivinhação | Empurrar o Ímpeto de aliados, atrasar inimigos, prever críticos | 2 peças: +20% de Foco |
-| Porta | Convocação | Espíritos e aliados extras (ainda sem invocação) | 4 peças: 20% de chance de turno extra |
-| Laço | Encantamento | Provocar e atordoar | 4 peças: 25% de chance de atordoar ao acertar |
-| Estilhaço | Evocação | Dano direto, ignorar Defesa, agir de novo ao derrubar | 4 peças: +40% de Dano crítico |
-| Véu | Ilusão | Ficar Oculto, cegar, esquivar | 2 peças: +20% de Resistência |
-| Ossada | Necromancia | Drenar vida, amaldiçoar | 4 peças: drena 35% do dano causado |
-| Espiral | Transmutação | Aumentar ou reduzir atributos, Queimadura | 4 peças: +25% de Velocidade |
+| Muralha | Abjuração | Escudos, Égide, enfraquecer o ataque inimigo | Guarda, Escudo |
+| Olho | Adivinhação | Empurrar o Ímpeto de aliados, atrasar inimigos, prever críticos | Foco, Lâmina |
+| Porta | Convocação | Espíritos e aliados extras (ainda sem invocação) | Violência, Vingança |
+| Laço | Encantamento | Provocar e atordoar | Desespero, Vontade |
+| Estilhaço | Evocação | Dano direto, ignorar Defesa, agir de novo ao derrubar | Fúria, Fatal |
+| Véu | Ilusão | Ficar Oculto, cegar, esquivar | Perseverança, Nêmesis |
+| Ossada | Necromancia | Drenar vida, amaldiçoar | Vampiro, Destruição |
+| Espiral | Transmutação | Aumentar ou reduzir atributos, Queimadura | Energia, Rapidez |
 
 ### Elementos
 
@@ -161,7 +163,7 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 | --- | --- |
 | Identidade | Família, elemento, Glifo e papel (Frente, Atacante, Suporte ou Controle) |
 | Raridade | 1, 2, 3, 4 ou 5 estrelas naturais, definida pela família |
-| Atributos | Vida, Ataque, Defesa, Velocidade, Crítico, Dano crítico, Foco (chance de aplicar efeitos), Resistência |
+| Atributos | Os de Summoners War: Vida, Ataque, Defesa, Velocidade, Crítico, Dano crítico, Resistência e Precisão (chance de aplicar efeitos) |
 | Básico | Habilidade sempre disponível |
 | Glifo | Habilidade forte com recarga de 3 a 5 turnos |
 | Assinatura | Passiva; famílias de 4 e 5 estrelas também têm Liderança |
@@ -193,7 +195,7 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 | Fênix de Cinza de Fogo | 5★ · Espiral · Atacante | Chama Espiral: 120% de dano e converte um efeito positivo do alvo em Queimadura. +1 Éter: converte dois | Voo Rubro (4): 90% em todos e Queimadura por 1 turno. +3 Éter: dano ×1,5 | Na primeira vez que cai, renasce com 40% da Vida no turno seguinte dela |
 | Sábio Sem Rosto de Trevas | 5★ · Porta · Controle | Toque do Limiar: 100% de dano e 30% de chance de atordoar | Abrir a Porta (5): invoca uma cópia de um inimigo, que luta do seu lado por 2 turnos com 50% dos atributos. +3 Éter: 100% dos atributos | Sempre que um aliado usa uma habilidade aprimorada, ganha +20% de Ímpeto |
 
-As melhores Assinaturas nascem do conceito da família: a fênix renasce, o menir não se move. Esse é o molde para as outras 32. Os custos de Éter destes exemplos são os da primeira versão; os valores atuais (3 no básico, 5 ou 6 no Glifo) estão em Data/summons.
+As melhores Assinaturas nascem do conceito da família: a fênix renasce, o menir não se move. Esse é o molde para as outras 32. Os números destes exemplos são os da primeira versão; os atuais estão em Data/summons, com custos de Éter de 3 no básico e 5 ou 6 no Glifo e multiplicadores na escala de Summoners War (o básico da Fênix de Fogo virou 420%, como o da Fênix de lá).
 
 ## 9. O gacha: Invocação ritual
 
@@ -215,7 +217,7 @@ Invocar é um ritual: você gasta Pergaminhos, escolhe até 2 Glifos que já con
 **Tiques: surpresa para quem criou o jogo.** Você vai conhecer todas as criaturas, então o gacha precisa de uma surpresa que você não controla. Cada cópia obtida sorteia um Tique entre 12, um traço de personalidade com ganho e custo:
 
 - **Apressado:** +8 de Velocidade, −10% de Vida.
-- **Meticuloso:** +15% de Foco, começa a luta com −10% de Ímpeto.
+- **Meticuloso:** +15% de Precisão, começa a luta com −10% de Ímpeto.
 - **Imprudente:** +20% de Crítico, −10% de Defesa.
 - **Teimoso:** +20% de Resistência, −8% de Ataque.
 
@@ -231,27 +233,45 @@ Há quatro eixos de poder: nível, Ecos, Despertar e runas. Qualquer sistema nov
 | --- | --- | --- |
 | Nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 1 de experiência) | Nível de 1 a 40 por invocação; Vida, Ataque e Defesa crescem de 25% a 100% |
 | Ecos | Duplicatas, de 0 a 5 | Cada Eco deixa as habilidades 5% mais fortes; no quinto, +10% de atributos |
-| Despertar | Essência: 1500 (3★), 3000 (4★), 6000 (5★) | Nome próprio, desenho novo, estrelas roxas, Assinatura melhorada, +15% de Vida, Ataque e Defesa e um atributo extra da variante |
-| Runas | Drop das fases da Campanha (Masmorras na v0.5), melhoradas com Pó de Sigilo | Atributos, conjuntos e o ajuste fino de Velocidade |
+| Despertar | Essência: 1500 (3★), 3000 (4★), 6000 (5★) | Nome próprio, desenho novo, estrelas roxas, Assinatura melhorada, +20% de Vida, +7% de Ataque e Defesa e o bônus de Summoners War da variante: +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
+| Runas | Drop das fases da Campanha (Masmorras na v0.5), melhoradas com Pó de Sigilo; Pedras de Afiar e Gemas a partir da fase 10 | Atributos, conjuntos e o ajuste fino de Velocidade |
 
-**Nível por invocação, como em Summoners War.** Cada invocação sobe de 1 a 40. Os atributos de base do apêndice são os de uma 5★ no nível 40 sem Despertar. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
+**Nível por invocação, como em Summoners War.** Cada invocação sobe de 1 a 40. Os atributos de base do apêndice são os de uma 5★ no nível 40 sem Despertar, na escala de Summoners War: o nível 40 equivale ao 6★ nível 40 de lá, e o nível 1 ao nível 1 da estrela natural (5★: 43% do máximo; 4★: 32%; 3★: 22%). A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
 
 **Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), um segundo desenho, estrelas roxas no lugar das douradas, a Assinatura melhorada e atributos maiores. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
 
-**Runas: as de Summoners War, com menos sorteio.** Cada invocação tem 6 espaços dispostos em círculo, o próprio círculo de conjuração. Os espaços 1, 3 e 5 têm atributo principal fixo (Ataque, Defesa e Vida); os espaços 2, 4 e 6 variam. Cada runa tem de 1 a 5 estrelas, 3 subatributos e melhora de +0 a +9; em +3, +6 e +9 um subatributo sorteado aumenta. Nenhuma melhora falha.
+**Runas: as de Summoners War, sem falha na melhora.** Cada invocação tem 6 espaços dispostos em círculo, o próprio círculo de conjuração. Tudo segue Summoners War, com os números de lá:
 
-| Conjunto | Peças | Bônus |
-| --- | --- | --- |
-| Espiral | 4 | +25% de Velocidade |
-| Porta | 4 | 20% de chance de ganhar um turno extra |
-| Laço | 4 | 25% de chance de atordoar ao acertar |
-| Estilhaço | 4 | +40% de dano crítico |
-| Ossada | 4 | Drena 35% do dano causado |
-| Muralha | 2 | +15% de Defesa |
-| Olho | 2 | +20% de Foco |
-| Véu | 2 | +20% de Resistência |
+- **Espaços.** 1, 3 e 5 têm principal fixo (Ataque, Defesa e Vida fixos). O 2 pode ter Velocidade; o 4, Crítico ou Dano crítico; o 6, Resistência ou Precisão; os três também podem ter Vida, Ataque ou Defesa, fixos ou em porcentagem. O espaço 1 nunca tem Defesa nos subatributos e o 3 nunca tem Ataque.
+- **Estrelas e raridade.** De 1 a 6 estrelas, que decidem o tamanho de todos os números. A raridade é o número de subatributos: Normal (0), Mágica (1), Rara (2), Heroica (3), Lendária (4). Às vezes a runa vem com um atributo inato, que nunca cresce.
+- **Melhora.** De +0 a +15. Em +3, +6, +9 e +12 entra um subatributo novo (até 4) ou, com 4, um deles cresce; em +15 o principal dá um salto (Velocidade 6★: 31 em +12, 42 em +15).
+- **Sem falha, mas cara.** A melhora nunca falha. Cada nível custa o Mana médio de Summoners War contando as falhas (custo ÷ chance), a 100 de Mana por Pó: uma 5★ de +0 a +12 custa cerca de 1.760 Pó; uma 6★ até +15, cerca de 8.950. O Pó é escasso de propósito.
+- **Tirar custa.** Tirar uma runa de uma invocação custa Pó (10 para 1★ até 500 para 6★), inclusive quando outra runa entra no lugar. Desfazer uma runa do inventário devolve pouco Pó.
+- **Pedras.** A Pedra de Afiar soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade; uma pedra nova troca o bônus antigo. A Gema Encantada troca um subatributo de uma runa +12, e só um por runa. Graus de Mágica a Lendária, com as faixas de Summoners War; servem em qualquer conjunto, como as Imemoriais de lá.
+- **Porcentagem sobre a base.** Toda porcentagem de runa, de conjunto e de Liderança é sobre o atributo de base, e o que não fecha número inteiro arredonda para cima.
 
-Com 6 espaços cabem um conjunto de 4 e um de 2, ou três de 2. Refazer um subatributo custa Pó de Sigilo e evita que um drop ruim seja perdido; desfazer uma runa devolve Pó.
+Os 16 conjuntos são os de Summoners War sem os da Fenda. Cada Glifo empresta o desenho a dois:
+
+| Glifo | Conjunto | Peças | Bônus |
+| --- | --- | --- | --- |
+| Espiral | Energia | 2 | +15% de Vida |
+| Espiral | Rapidez | 4 | +25% de Velocidade |
+| Muralha | Guarda | 2 | +15% de Defesa |
+| Muralha | Escudo | 2 | No começo de cada onda, escudo de 15% da Vida de base do dono em todos os aliados por 3 turnos |
+| Olho | Foco | 2 | +20% de Precisão |
+| Olho | Lâmina | 2 | +12% de Crítico |
+| Porta | Violência | 4 | 22% de chance de turno extra; cada turno extra seguido multiplica a chance por 0,55 |
+| Porta | Vingança | 2 | 15% de chance de contra-atacar com o básico (75% do dano) ao ser atingido |
+| Laço | Desespero | 4 | 25% de chance de atordoar cada alvo atingido; a Resistência não barra |
+| Laço | Vontade | 2 | Imunidade por 1 turno no começo de cada onda |
+| Estilhaço | Fúria | 4 | +40% de Dano crítico |
+| Estilhaço | Fatal | 4 | +35% de Ataque |
+| Véu | Perseverança | 2 | +20% de Resistência |
+| Véu | Nêmesis | 2 | +4% de Ímpeto a cada 7% da Vida máxima perdida num golpe |
+| Ossada | Vampiro | 4 | Drena 35% do dano causado |
+| Ossada | Destruição | 2 | 30% do dano causado tira Vida máxima do alvo (até 4% por habilidade, 60% no total) |
+
+Com 6 espaços cabem um conjunto de 4 e um de 2, ou três de 2; três conjuntos iguais valem três vezes.
 
 ## 11. Loop ocioso e modos de jogo
 
@@ -289,7 +309,7 @@ Quatro moedas, e nunca mais que isso. Jogando normalmente entram cerca de 4 Perg
 | --- | --- | --- |
 | Pergaminhos Místicos | Ociosidade, primeira vitória de cada fase, Torre, conquistas | Invocar |
 | Essência | Ociosidade, fases | Nível das invocações e Despertar |
-| Pó de Sigilo | Ociosidade, fases, Masmorras, Torre, traçado limpo, runas desfeitas | Melhorar runas e refazer subatributos |
+| Pó de Sigilo | Ociosidade, fases, Masmorras, Torre, traçado limpo, runas desfeitas | Melhorar e tirar runas. Escasso de propósito: a melhora nunca falha, então o preço é a média de Summoners War |
 | Fragmentos | Duplicatas excedentes, Arena | Trocar por uma invocação escolhida |
 
 ### Ritmo-alvo
@@ -341,7 +361,7 @@ O maior risco não é técnico: é o escopo crescer até o projeto parar. Os out
 | Risco | Por que preocupa | Mitigação |
 | --- | --- | --- |
 | Escopo crescente | É o que mais mata projetos pessoais | Sistema novo substitui um eixo, não soma; toda fase termina jogável |
-| Runas pesadas | Seis espaços com subatributos é o sistema mais caro de balancear e de interface | +9 e 3 subatributos em vez de +15 e 4; conjuntos fixos; subatributo refazível |
+| Runas pesadas | Seis espaços com subatributos é o sistema mais caro de balancear e de interface | Copiar as regras e tabelas de Summoners War em vez de inventar números; melhora sem falha; simulador e testes com os valores de lá |
 | Automático forte demais | Se o automático resolve tudo, o manual perde sentido | O automático nunca gasta Éter; aprimorar é decisão do jogador |
 | Gacha sem tensão | Você conhece todas as criaturas | Tiques, Convidados, garantia visível e o ritual do traçado |
 
@@ -361,10 +381,12 @@ São valores de partida para o simulador, feitos para serem mudados no primeiro 
 ### Dano
 
 ```latex
-D = ATQ \times M \times \frac{K}{K + DEF} \times E \times C, \quad K = 600
+D = ATQ \times M \times \frac{K}{K + DEF} \times E \times C, \quad K = \frac{1140}{3{,}5} \approx 326
 ```
 
-K é a constante de Defesa: Defesa 600 corta o dano pela metade. M é o multiplicador da habilidade (por exemplo, 0,8 para 80%). E vale 1,25 com vantagem elemental, 0,75 com desvantagem e 1 no neutro. C vale 1,5 no crítico (mais o bônus de Dano crítico) e 1 fora dele.
+É a curva de Defesa de Summoners War, 1000 / (1140 + 3,5 × DEF), com Defesa 0 valendo o golpe cheio: Defesa 326 corta o dano pela metade. M é o multiplicador da habilidade, na escala de lá (por exemplo, 4,2 para 420%). E vale 1,25 com vantagem elemental, 0,75 com desvantagem e 1 no neutro. C vale 1 + Dano crítico no crítico (50% de base) e 1 fora dele.
+
+Atributo em combate, como em Summoners War: runas + base × (1 + Liderança + conjuntos), vezes os efeitos (+50% de Ataque, +70% de Defesa, +30% de Velocidade; −50% de Ataque). Efeito negativo pega se passar pela Resistência do alvo menos a Precisão de quem lança, e essa chance de barrar nunca fica abaixo de 15%.
 
 ### Ímpeto
 
@@ -378,12 +400,14 @@ I é o Ímpeto atual em porcentagem; a unidade com o menor t age primeiro. Empur
 
 | Papel | Vida | Ataque | Defesa | Velocidade |
 | --- | --- | --- | --- | --- |
-| Frente | 6000 | 500 | 400 | 95 |
-| Atacante | 4000 | 900 | 200 | 110 |
-| Suporte | 4200 | 550 | 250 | 115 |
-| Controle | 4500 | 650 | 250 | 105 |
+| Frente | 11100 | 620 | 700 | 98 |
+| Atacante | 9300 | 900 | 500 | 103 |
+| Suporte | 10400 | 660 | 640 | 107 |
+| Controle | 9900 | 760 | 580 | 102 |
 
-Invocações de 4★ usam 92% desses valores e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos começam em 25% e crescem em linha reta até o 40. Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
+É a escala de Summoners War: a Fênix de Fogo de lá tem, em 6★ nível 40, 9225 de Vida, 834 de Ataque e 527 de Defesa. Todos os papéis começam com Crítico 15%, Dano crítico 50%, Resistência 15% e Precisão 0%, como quase todo monstro de lá; esses quatro não crescem com o nível.
+
+Invocações de 4★ usam 92% desses valores no nível 40 e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos começam no valor do nível 1 da estrela natural de Summoners War (5★: 43%; 4★: 32%; 3★ e inimigos: 22%) e crescem em linha reta até o 40. Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
 
 Inimigos têm 1 ou 2 estrelas e compensam a raridade baixa com multiplicadores de Vida e Ataque por criatura (Data/enemies.json): não usam runas nem aprimoramentos.
 

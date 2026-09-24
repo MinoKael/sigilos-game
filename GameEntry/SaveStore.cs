@@ -9,8 +9,9 @@ namespace Sigilos.GameEntry
 	/// abre e grava. Rodando com <c>-- --save=nome</c>, o arquivo ganha esse nome: uma partida de
 	/// teste não apaga a de verdade.
 	///
-	/// Um save que não dá para ler (formato antigo ou arquivo quebrado) não é apagado: vira
-	/// <c>nome.antigo.json</c> e o jogo começa uma conta nova.
+	/// Um save do formato anterior é convertido (<see cref="PlayerSave.FromJson"/>). Um que não dá para
+	/// ler (formato mais antigo ou arquivo quebrado) não é apagado: vira <c>nome.antigo.json</c> e o
+	/// jogo começa uma conta nova.
 	/// </summary>
 	public sealed class SaveStore
 	{

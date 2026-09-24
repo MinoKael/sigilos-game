@@ -5,11 +5,9 @@ namespace Sigilos.Tests
 {
 	internal static class StatusTests
 	{
-		private static void Give(BattleSession session, BattleUnit caster, BattleUnit target, StatusKind status, int turns = 1)
-		{
-			var effect = new EffectDefinition { Kind = EffectKind.Status, Target = target.Side == caster.Side ? TargetKind.Self : TargetKind.Target, Status = status, Turns = turns };
-			new EffectResolver(session).Resolve(target.Side == caster.Side ? target : caster, new[] { effect }, target);
-		}
+		/// <summary>Põe o efeito direto, sem sorteio: a Resistência mínima de 15% não entra no teste.</summary>
+		private static void Give(BattleUnit caster, BattleUnit target, StatusKind status, int turns = 1) =>
+			target.AddStatus(new StatusEffect(status, turns, 0, status == StatusKind.Taunt ? caster : null));
 
 		[Test]
 		private static void HiddenCannotBeChosen()
@@ -19,7 +17,7 @@ namespace Sigilos.Tests
 			var b = TestData.Unit("b", Side.Enemies);
 			var session = TestData.Session(new[] { hero }, new[] { a, b });
 
-			Give(session, a, a, StatusKind.Hidden);
+			Give(a, a, StatusKind.Hidden);
 			var choosable = session.ChoosableTargets(hero);
 			Assert.Equal(1, choosable.Count, "só um alvo visível");
 			Assert.Equal(b, choosable[0], "o visível");
@@ -33,7 +31,7 @@ namespace Sigilos.Tests
 			var b = TestData.Unit("b", Side.Enemies);
 			var session = TestData.Session(new[] { hero }, new[] { a, b });
 
-			Give(session, b, hero, StatusKind.Taunt);
+			Give(b, hero, StatusKind.Taunt);
 			var choosable = session.ChoosableTargets(hero);
 			Assert.Equal(1, choosable.Count, "provocado tem um alvo só");
 			Assert.Equal(b, choosable[0], "quem provocou");
@@ -46,7 +44,7 @@ namespace Sigilos.Tests
 			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 			var session = TestData.Session(new[] { hero }, new[] { foe });
 			session.Start();
-			Give(session, foe, hero, StatusKind.Stun);
+			Give(foe, hero, StatusKind.Stun);
 
 			var turn = session.BeginTurn();
 			Assert.Equal(hero, turn.Actor, "o herói é o mais rápido");
@@ -85,7 +83,7 @@ namespace Sigilos.Tests
 			var foe = TestData.Unit("inimigo", Side.Enemies);
 			var session = TestData.Session(new[] { hero }, new[] { foe });
 			session.Start();
-			Give(session, foe, foe, StatusKind.Ward);
+			Give(foe, foe, StatusKind.Ward);
 
 			TestData.RunUntilTurnOf(session, hero);
 			session.Act(new UnitAction(SkillSlot.Basic, false, foe));

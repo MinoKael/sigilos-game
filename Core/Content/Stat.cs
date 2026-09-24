@@ -1,6 +1,6 @@
 namespace Sigilos.Core.Content
 {
-	/// <summary>Os oito atributos de uma unidade. Só a Liderança os cita pelo nome.</summary>
+	/// <summary>Os oito atributos de uma unidade.</summary>
 	public enum Stat
 	{
 		Health,
@@ -9,7 +9,7 @@ namespace Sigilos.Core.Content
 		Speed,
 		Crit,
 		CritDamage,
-		Focus,
 		Resistance,
+		Accuracy,
 	}
 }

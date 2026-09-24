@@ -15,7 +15,7 @@ namespace Sigilos.Core.Player
 		public const int TeamSize = 4;
 
 		/// <summary>Formato do save. Um save de formato mais antigo não é lido: a conta recomeça.</summary>
-		public const int CurrentVersion = 2;
+		public const int CurrentVersion = 3;
 
 		/// <summary>0 num save anterior ao campo existir.</summary>
 		public int Version { get; set; }
@@ -24,7 +24,7 @@ namespace Sigilos.Core.Player
 		public int Scrolls { get; set; }
 		public int Essence { get; set; }
 
-		/// <summary>Pó de Sigilo: melhora e refaz runas.</summary>
+		/// <summary>Pó de Sigilo: melhora e tira runas. Escasso de propósito: a melhora nunca falha.</summary>
 		public int Dust { get; set; }
 
 		public int Fragments { get; set; }
@@ -48,8 +48,11 @@ namespace Sigilos.Core.Player
 
 		public int NextRuneId { get; set; } = 1;
 
+		/// <summary>Pedras de Afiar e Gemas Encantadas guardadas. Pedras iguais se repetem na lista.</summary>
+		public List<RuneTool> Tools { get; set; } = new();
+
 		/// <summary>A última escolha de automático na tela de batalha: a próxima luta começa igual.</summary>
-		public bool AutoBattle { get; set; } = true;
+		public bool AutoBattle { get; set; } = false;
 
 		public DateTime LastIdleCollect { get; set; }
 		public DateTime LastQuickChannel { get; set; } = DateTime.MinValue;
@@ -63,8 +66,6 @@ namespace Sigilos.Core.Player
 		public bool Owns(string summonId) => Summons.ContainsKey(summonId);
 
 		public OwnedSummon Summon(string summonId) => Summons[summonId];
-
-		public int Echoes(string summonId) => Summons.TryGetValue(summonId, out var owned) ? owned.Echoes : 0;
 
 		public IReadOnlyList<Rune> RunesOn(string summonId) => Runes.Where(r => r.EquippedOn == summonId).OrderBy(r => r.Slot).ToList();
 	}

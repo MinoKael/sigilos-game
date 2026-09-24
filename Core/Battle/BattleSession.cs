@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
+using Sigilos.Core.Runes;
 
 namespace Sigilos.Core.Battle
 {
@@ -67,7 +68,7 @@ namespace Sigilos.Core.Battle
 
 		public IReadOnlyList<BattleEvent> Start()
 		{
-			Emit(new WaveStarted(Wave, WaveCount, Enemies));
+			StartWave();
 			return Flush();
 		}
 
@@ -138,11 +139,19 @@ namespace Sigilos.Core.Battle
 			if (slot == SkillSlot.Glyph)
 				unit.GlyphCooldown = skill.Cooldown;
 
-			// Conjunto da Porta: chance de agir de novo logo em seguida.
-			if (unit.IsAlive && unit.RuneEffects.ExtraTurn > 0 && Random.NextDouble() < unit.RuneEffects.ExtraTurn)
+			// Conjunto Violento: chance de agir de novo, uma vez por turno
+			if (unit.IsAlive && unit.RuneEffects.ExtraTurnChance > 0)
 			{
-				unit.Impeto = BattleRules.FullImpeto;
-				Emit(new ExtraTurn(unit));
+				if (Random.NextDouble() < unit.RuneEffects.ExtraTurnChance && unit.ExtraTurnAvailable)
+				{
+					unit.ExtraTurnAvailable = false;
+					unit.Impeto = BattleRules.FullImpeto;
+					Emit(new ExtraTurn(unit));
+				}
+				else
+				{
+					unit.ExtraTurnAvailable = true;
+				}
 			}
 
 			FinishTurn(unit);
@@ -233,6 +242,25 @@ namespace Sigilos.Core.Battle
 			return (next, elapsed);
 		}
 
+		/// <summary>
+		/// Começo de cada onda: os conjuntos Vontade (Imunidade) e Escudo (um escudo para cada aliado,
+		/// somando os donos do conjunto) valem de novo.
+		/// </summary>
+		private void StartWave()
+		{
+			Emit(new WaveStarted(Wave, WaveCount, Enemies));
+
+			var living = _allies.Where(u => u.IsAlive).ToList();
+			var shield = living.Sum(u => u.RuneEffects.AllyShield);
+			foreach (var ally in living)
+			{
+				if (ally.RuneEffects.ImmunityTurns > 0)
+					_effects.GiveStatus(ally, StatusKind.Immunity, ally.RuneEffects.ImmunityTurns);
+				if (shield > 0)
+					_effects.GiveShield(ally, shield, RuneSets.ShieldTurns);
+			}
+		}
+
 		private void BurnTick(BattleUnit unit)
 		{
 			foreach (var _ in unit.Statuses.Where(s => s.Kind == StatusKind.Burn).ToList())
@@ -278,7 +306,7 @@ namespace Sigilos.Core.Battle
 			if (_waveIndex + 1 < _waves.Count)
 			{
 				_waveIndex++;
-				Emit(new WaveStarted(Wave, WaveCount, Enemies));
+				StartWave();
 			}
 			else
 			{

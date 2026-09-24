@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
+using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
 
 namespace Sigilos.UI
@@ -80,8 +82,8 @@ namespace Sigilos.UI
 			Stat.Speed => "Velocidade",
 			Stat.Crit => "Crítico",
 			Stat.CritDamage => "Dano crítico",
-			Stat.Focus => "Foco",
 			Stat.Resistance => "Resistência",
+			Stat.Accuracy => "Precisão",
 			_ => stat.ToString(),
 		};
 
@@ -94,12 +96,85 @@ namespace Sigilos.UI
 			RuneStat.Crit => "Crítico",
 			RuneStat.CritDamage => "Dano crítico",
 			RuneStat.Resistance => "Resistência",
-			_ => "Foco",
+			_ => "Precisão",
+		};
+
+		/// <summary>Nome curto que separa o fixo do percentual: "Ataque" e "Ataque%".</summary>
+		public static string Label(RuneStat stat) => stat switch
+		{
+			RuneStat.HealthPercent or RuneStat.AttackPercent or RuneStat.DefensePercent => $"{Name(stat)}%",
+			_ => Name(stat),
 		};
 
 		/// <summary>"Ataque +12%" ou "Ataque +110".</summary>
 		public static string Format(RuneStat stat, double value) =>
 			RuneRules.IsFlat(stat) ? $"{Name(stat)} +{value:0}" : $"{Name(stat)} +{value * 100:0.#}%";
+
+		/// <summary>Subatributo com o que a Pedra de Afiar somou: "Ataque +12% (+5% afiado)".</summary>
+		public static string Format(RuneSubstat substat)
+		{
+			var text = Format(substat.Stat, substat.Total);
+			if (substat.Grind > 0)
+				text += $" ({Amount(substat.Stat, substat.Grind)} afiado)";
+			return text;
+		}
+
+		/// <summary>"+5%" ou "+20".</summary>
+		public static string Amount(RuneStat stat, double value) =>
+			RuneRules.IsFlat(stat) ? $"+{value:0}" : $"+{value * 100:0.#}%";
+
+		public static string Name(RuneSet set) => set switch
+		{
+			RuneSet.Energy => "Energia",
+			RuneSet.Swift => "Rapidez",
+			RuneSet.Guard => "Guarda",
+			RuneSet.Shield => "Escudo",
+			RuneSet.Focus => "Foco",
+			RuneSet.Blade => "Lâmina",
+			RuneSet.Violent => "Violência",
+			RuneSet.Revenge => "Vingança",
+			RuneSet.Despair => "Desespero",
+			RuneSet.Will => "Vontade",
+			RuneSet.Rage => "Fúria",
+			RuneSet.Fatal => "Fatal",
+			RuneSet.Endure => "Perseverança",
+			RuneSet.Nemesis => "Nêmesis",
+			RuneSet.Vampire => "Vampiro",
+			RuneSet.Destroy => "Destruição",
+			_ => set.ToString(),
+		};
+
+		/// <summary>"Violência (2)": conjunto e espaço.</summary>
+		public static string Title(Rune rune) => $"{Name(rune.Set)} ({rune.Slot})";
+
+		public static string Name(RuneRarity rarity) => rarity switch
+		{
+			RuneRarity.Magic => "Mágica",
+			RuneRarity.Rare => "Rara",
+			RuneRarity.Hero => "Heroica",
+			RuneRarity.Legendary => "Lendária",
+			_ => "Normal",
+		};
+
+		/// <summary>"Pedra de Afiar Heroica · Ataque%".</summary>
+		public static string Name(RuneTool tool) =>
+			$"{(tool.Kind == RuneToolKind.Grindstone ? "Pedra de Afiar" : "Gema Encantada")} {Name(tool.Grade)} · {Label(tool.Stat)}";
+
+		/// <summary>O que a pedra dá: "+4% a +7%".</summary>
+		public static string Range(RuneTool tool)
+		{
+			var (min, max) = tool.Kind == RuneToolKind.Grindstone
+				? RuneRules.GrindRange(tool.Stat, tool.Grade) ?? (0, 0)
+				: RuneRules.GemRange(tool.Stat, tool.Grade);
+			return $"{Amount(tool.Stat, min)} a {Amount(tool.Stat, max)}";
+		}
+
+		/// <summary>O bônus do Despertar: "+15 de Velocidade" ou "+25% de Precisão".</summary>
+		public static string AwakeningBonus(Stat stat)
+		{
+			var value = Awakening.Bonus(stat);
+			return StatBlock.IsAbsolute(stat) ? $"+{value:0} de {Name(stat)}" : $"+{value * 100:0}% de {Name(stat)}";
+		}
 
 		/// <summary>Valor de atributo para a ficha: número inteiro ou porcentagem.</summary>
 		public static string Value(Stat stat, double value) =>
@@ -116,6 +191,7 @@ namespace Sigilos.UI
 			StatusKind.Blind => "Cegueira",
 			StatusKind.Ward => "Égide",
 			StatusKind.Foresight => "Presságio",
+			StatusKind.Immunity => "Imunidade",
 			StatusKind.AttackUp => "Ataque+",
 			StatusKind.AttackDown => "Ataque−",
 			StatusKind.DefenseUp => "Defesa+",
@@ -126,18 +202,19 @@ namespace Sigilos.UI
 		public static string Explain(StatusKind status) => status switch
 		{
 			StatusKind.Shield => "Absorve dano até o valor do escudo.",
-			StatusKind.Burn => "Perde 6% da Vida máxima no começo de cada turno. Acumula até 3.",
+			StatusKind.Burn => $"Perde {Percent(BattleRules.BurnFraction)} da Vida máxima no começo de cada turno. Acumula até {BattleRules.MaxBurnStacks}.",
 			StatusKind.Stun => "Perde o próximo turno.",
 			StatusKind.Taunt => "Só pode mirar em quem provocou.",
 			StatusKind.Hidden => "Não pode ser alvo de ataques únicos.",
-			StatusKind.Curse => "Recebe 25% a mais de dano.",
-			StatusKind.Blind => "Cada golpe tem 50% de chance de errar.",
+			StatusKind.Curse => $"Recebe {Percent(BattleRules.CurseBonus)} a mais de dano.",
+			StatusKind.Blind => $"Cada golpe tem {Percent(BattleRules.BlindMissChance)} de chance de errar.",
 			StatusKind.Ward => "Anula o próximo golpe recebido.",
 			StatusKind.Foresight => "O próximo golpe causado é crítico.",
-			StatusKind.AttackUp => "+30% de Ataque.",
-			StatusKind.AttackDown => "−30% de Ataque.",
-			StatusKind.DefenseUp => "+50% de Defesa.",
-			StatusKind.SpeedUp => "+30% de Velocidade.",
+			StatusKind.Immunity => "Nenhum efeito negativo pega.",
+			StatusKind.AttackUp => $"+{Percent(BattleRules.AttackUpBonus)} de Ataque.",
+			StatusKind.AttackDown => $"−{Percent(BattleRules.AttackDownPenalty)} de Ataque.",
+			StatusKind.DefenseUp => $"+{Percent(BattleRules.DefenseUpBonus)} de Defesa.",
+			StatusKind.SpeedUp => $"+{Percent(BattleRules.SpeedUpBonus)} de Velocidade.",
 			_ => "",
 		};
 
@@ -153,6 +230,7 @@ namespace Sigilos.UI
 			StatusKind.Blind => "CEG",
 			StatusKind.Ward => "ÉGI",
 			StatusKind.Foresight => "PRS",
+			StatusKind.Immunity => "IMU",
 			StatusKind.AttackUp => "ATQ+",
 			StatusKind.AttackDown => "ATQ−",
 			StatusKind.DefenseUp => "DEF+",
@@ -167,12 +245,18 @@ namespace Sigilos.UI
 		/// <summary>"4 peças: +25% de Velocidade".</summary>
 		public static string Describe(RuneSetDefinition set)
 		{
+			var value = Percent(set.Value);
 			var bonus = set.Effect switch
 			{
-				RuneSetEffect.Drain => $"drena {set.Value * 100:0}% do dano causado",
-				RuneSetEffect.StunOnHit => $"{set.Value * 100:0}% de chance de atordoar a cada golpe",
-				RuneSetEffect.ExtraTurn => $"{set.Value * 100:0}% de chance de agir de novo",
-				_ => $"+{set.Value * 100:0}% de {Name(set.Stat ?? Stat.Health)}",
+				RuneSetEffect.Drain => $"drena {value} do dano causado",
+				RuneSetEffect.Stun => $"{value} de chance de atordoar cada alvo atingido (a Resistência não barra)",
+				RuneSetEffect.ExtraTurn => $"{value} de chance de turno extra",
+				RuneSetEffect.AllyShield => $"no começo de cada onda, todos os aliados ganham escudo de {value} da Vida de base do dono por {RuneSets.ShieldTurns} turnos",
+				RuneSetEffect.Immunity => $"Imunidade por {set.Value:0} turno no começo de cada onda",
+				RuneSetEffect.Counter => $"{value} de chance de contra-atacar com o básico ({Percent(RuneSets.CounterDamage)} do dano) ao ser atingido",
+				RuneSetEffect.Nemesis => $"+{value} de Ímpeto a cada {Percent(RuneSets.NemesisStep)} da Vida máxima perdida num golpe",
+				RuneSetEffect.Destroy => $"{Percent(RuneSets.DestroyShare)} do dano causado tira Vida máxima do alvo (até {value} por habilidade, {Percent(RuneSets.DestroyLimit)} no total)",
+				_ => $"+{value} de {Name(set.Stat ?? Stat.Health)}",
 			};
 			return $"{set.Pieces} peças: {bonus}";
 		}

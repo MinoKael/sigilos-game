@@ -1,10 +1,11 @@
 using Godot;
 using Sigilos.Core.Content;
+using Sigilos.Core.Runes;
 
 namespace Sigilos.UI.Style
 {
 	/// <summary>
-	/// As cores do jogo num lugar só. Base visual de Summoners War: painéis escuros com moldura dourada,
+	/// As cores do jogo num lugar só. Base visual: painéis escuros com moldura dourada,
 	/// texto claro, estrelas douradas (roxas depois do Despertar) e uma cor forte por elemento — "o
 	/// elemento se lê antes do desenho" (GDD, seção 5).
 	/// </summary>
@@ -52,14 +53,14 @@ namespace Sigilos.UI.Style
 			_ => TextFaded,
 		};
 
-		/// <summary>Cor da runa pelas estrelas, como as raridades de runa de Summoners War.</summary>
-		public static Color RuneGrade(int grade) => grade switch
+		/// <summary>Cor da runa e das pedras pela raridade: branca, verde, azul, roxa, laranja.</summary>
+		public static Color Of(RuneRarity rarity) => rarity switch
 		{
-			>= 5 => Color.Color8(240, 150, 60),
-			4 => Color.Color8(186, 118, 250),
-			3 => Color.Color8(90, 150, 240),
-			2 => Color.Color8(110, 200, 110),
-			_ => Color.Color8(190, 190, 190),
+			RuneRarity.Legendary => Color.Color8(240, 150, 60),
+			RuneRarity.Hero => Color.Color8(186, 118, 250),
+			RuneRarity.Rare => Color.Color8(90, 150, 240),
+			RuneRarity.Magic => Color.Color8(110, 200, 110),
+			_ => Color.Color8(200, 200, 200),
 		};
 
 		public static Color Of(Element element) => element switch

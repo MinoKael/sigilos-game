@@ -5,26 +5,26 @@
   "element": "Water",
   "glyph": "Bone",
   "role": "Attacker",
-  "awakening": {"name": "Sorvo", "stat": "Crit", "value": 0.12},
+  "awakening": {"name": "Sorvo", "stat": "Crit"},
   "basic": {
     "name": "Mordisco Gelado",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0, "drain": 0.2}
+      {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.4, "drain": 0.5}
+      {"kind": "Damage", "target": "Target", "power": 4.9, "drain": 0.5}
     ]
   },
   "glyphSkill": {
     "name": "Sede do Selo",
     "cooldown": 3,
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.5, "drain": 0.5}
+      {"kind": "Damage", "target": "Target", "power": 5.25, "drain": 0.5}
     ],
     "enhanceCost": 5,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 2.2, "drain": 0.8},
+      {"kind": "Damage", "target": "Target", "power": 7.7, "drain": 0.8},
       {"kind": "Heal", "target": "LowestAlly", "power": 0.15}
     ]
   }

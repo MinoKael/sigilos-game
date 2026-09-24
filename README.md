@@ -5,8 +5,9 @@ invocações, suba o nível delas até 40, desperte, equipe runas e comande bata
 de Ímpeto. O design completo está em [SIGILOS — Game Design Document.md](SIGILOS%20—%20Game%20Design%20Document.md).
 
 Este repositório é o **MVP**: combate com Ímpeto e Éter (Éter só no manual), gacha com garantia,
-ociosidade, nível 1–40 por invocação, Despertar, runas com 6 espaços e 8 conjuntos, tela de Monstros,
-Compêndio e a região 1 (20 fases).
+ociosidade, nível 1–40 por invocação, Despertar, runas e atributos iguais aos de Summoners War (1 a 6
+estrelas, +15, 4 subatributos, 16 conjuntos, Pedra de Afiar e Gema Encantada; só a melhora nunca falha),
+tela de Monstros, Compêndio e a região 1 (20 fases).
 
 ## Rodar
 

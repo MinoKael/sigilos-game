@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Player
@@ -13,10 +14,12 @@ namespace Sigilos.Core.Player
 
 		public static string ToJson(PlayerState player) => JsonSerializer.Serialize(player, Options);
 
-		/// <summary>Nulo quando o save é de um formato antigo (<see cref="PlayerState.CurrentVersion"/>).</summary>
 		public static PlayerState? FromJson(string json)
 		{
-			var player = JsonSerializer.Deserialize<PlayerState>(json, Options);
+			if (JsonNode.Parse(json) is not JsonObject node)
+				return null;
+
+			var player = node.Deserialize<PlayerState>(Options);
 			return player is { Version: PlayerState.CurrentVersion } ? player : null;
 		}
 	}

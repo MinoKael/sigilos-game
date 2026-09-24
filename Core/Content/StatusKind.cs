@@ -31,6 +31,9 @@ namespace Sigilos.Core.Content
 		/// <summary>O próximo golpe causado é crítico.</summary>
 		Foresight,
 
+		/// <summary>Nenhum efeito negativo pega (conjunto Vontade).</summary>
+		Immunity,
+
 		AttackUp,
 		AttackDown,
 		DefenseUp,

@@ -5,16 +5,16 @@
   "element": "Dark",
   "glyph": "Veil",
   "role": "Attacker",
-  "awakening": {"name": "Negrume", "stat": "CritDamage", "value": 0.25},
+  "awakening": {"name": "Negrume", "stat": "Accuracy"},
   "basic": {
     "name": "Golpe Sombrio",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.5},
+      {"kind": "Damage", "target": "Target", "power": 5.25},
       {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.7, "turns": 2}
     ]
   },

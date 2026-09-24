@@ -4,6 +4,7 @@ using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
+using Sigilos.Core.Runes;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 
@@ -135,7 +136,15 @@ namespace Sigilos.UI.Screens
 				? $"Vitória: {stage.Essence} Essência, {stage.Dust} Pó, {stage.Experience} de experiência para o time e {Campaign.RepeatRuneChance * 100:0}% de chance de runa {Texts.Stars(stage.RuneGrade)}"
 				: $"Primeira vitória: {Texts.Scrolls(stage.FirstClearScrolls)}, {stage.Essence + stage.FirstClearEssence} Essência, {stage.Dust} Pó, " +
 				  $"{stage.Experience} de experiência para o time e uma runa {Texts.Stars(stage.RuneGrade)}";
-			_detail.AddChild(new Label { Text = reward, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(400, 0) });
+			if (stage.ToolGrade > 0)
+			{
+				var grade = Texts.Name((RuneRarity)stage.ToolGrade);
+				reward += cleared
+					? $". {Campaign.RepeatToolChance * 100:0}% de chance de Pedra de Afiar ou Gema {grade}"
+					: $". Solta uma Pedra de Afiar ou Gema {grade}";
+			}
+
+			_detail.AddChild(new Label { Text = reward + ".", AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(400, 0) });
 
 			foreach (var line in stage.Lines)
 			{

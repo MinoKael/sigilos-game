@@ -139,9 +139,10 @@ namespace Sigilos.GameEntry
 			var runes = new RuneScreen(_database, _player, summonId);
 			runes.BackRequested += () => ShowStorage(summonId);
 			runes.EquipRequested += id => Change(() => RuneInventory.Equip(_player, Rune(id), summonId), runes.Refresh);
-			runes.UnequipRequested += id => Change(() => RuneInventory.Unequip(Rune(id)), runes.Refresh);
-			runes.UpgradeRequested += id => Change(() => RuneInventory.Upgrade(_random, _player, Rune(id)), runes.Refresh);
-			runes.RerollRequested += (id, index) => Change(() => RuneInventory.Reroll(_random, _player, Rune(id), index), runes.Refresh);
+			runes.UnequipRequested += id => Change(() => RuneInventory.Unequip(_player, Rune(id)), runes.Refresh);
+			runes.UpgradeRequested += (id, target) => Change(() => RuneInventory.Upgrade(_random, _player, Rune(id), target), runes.Refresh);
+			runes.GrindRequested += (id, index, tool) => Change(() => RuneInventory.Grind(_random, _player, Rune(id), index, tool), runes.Refresh);
+			runes.EnchantRequested += (id, index, tool) => Change(() => RuneInventory.Enchant(_random, _player, Rune(id), index, tool), runes.Refresh);
 			runes.SellRequested += id => Change(() => RuneInventory.Sell(_player, Rune(id)), runes.Refresh);
 			Swap(runes);
 		}
@@ -190,8 +191,9 @@ namespace Sigilos.GameEntry
 
 			var reward = Campaign.ApplyVictory(_random, _player, stage);
 			Save();
-			var rune = reward.Rune == null ? "" : $", runa {Texts.Stars(reward.Rune.Grade)}";
-			return $"Vitória na fase {stage.Number}: +{reward.Essence} Essência, +{reward.Dust} Pó, +{reward.Experience} de experiência{rune}.";
+			var rune = reward.Rune == null ? "" : $", runa {Texts.Name(reward.Rune.Set)} {Texts.Stars(reward.Rune.Grade)}";
+			var tool = reward.Tool == null ? "" : $", {Texts.Name(reward.Tool)}";
+			return $"Vitória na fase {stage.Number}: +{reward.Essence} Essência, +{reward.Dust} Pó, +{reward.Experience} de experiência{rune}{tool}.";
 		}
 
 		private void ToggleTeam(string id)

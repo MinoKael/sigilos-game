@@ -14,5 +14,6 @@ namespace Sigilos.Core.Progression
 		int Experience,
 		bool FirstClear,
 		Rune? Rune,
+		RuneTool? Tool,
 		IReadOnlyList<string> LevelUps);
 }

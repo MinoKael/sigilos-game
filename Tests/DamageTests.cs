@@ -14,6 +14,27 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void DefenseFollowsTheSummonersWarCurve()
+		{
+			// Summoners War: 1000 / (1140 + 3,5 × DEF). A nossa é a mesma curva com Defesa 0 = golpe cheio.
+			var attacker = TestData.Unit("a", Side.Allies, attack: 1000, element: Element.Light);
+			foreach (var defense in new[] { 300.0, 700, 1500 })
+			{
+				var target = TestData.Unit("b", Side.Enemies, defense: defense, element: Element.Light);
+				var summonersWar = 1000 * 1000 / (1140 + 3.5 * defense);
+				Assert.Near(summonersWar * 1.14, DamageFormula.Compute(attacker, target, 1, 0, false), $"DEF {defense}", 1);
+			}
+		}
+
+		[Test]
+		private static void ResistanceHasAFloorOfFifteenPercent()
+		{
+			Assert.Near(0.15, BattleRules.ResistChance(new StatBlock(), new StatBlock { Accuracy = 0.5 }), "sem Resistência ainda barra 15%");
+			Assert.Near(0.60, BattleRules.ResistChance(new StatBlock { Resistance = 0.85 }, new StatBlock { Accuracy = 0.25 }), "85% − 25%");
+			Assert.Near(0.90, BattleRules.ResistChance(new StatBlock { Resistance = 1.3 }, new StatBlock { Accuracy = 0.1 }), "Resistência para em 100%");
+		}
+
+		[Test]
 		private static void ElementAdvantageAndDisadvantage()
 		{
 			Assert.Near(1.25, ElementChart.Multiplier(Element.Fire, Element.Wind), "Fogo vence Vento");
@@ -30,11 +51,9 @@ namespace Sigilos.Tests
 		{
 			var attacker = TestData.Unit("a", Side.Allies, element: Element.Light);
 			var target = TestData.Unit("b", Side.Enemies, element: Element.Light);
-			Assert.Near(150, DamageFormula.Compute(attacker, target, 1, 0, true), "crítico");
+			Assert.Near(150, DamageFormula.Compute(attacker, target, 1, 0, true), "crítico: 1 + Dano crítico de 50%");
 
-			var session = TestData.Session(new[] { attacker }, new[] { target });
-			var curse = new EffectDefinition { Kind = EffectKind.Status, Status = StatusKind.Curse, Turns = 2 };
-			new EffectResolver(session).Resolve(attacker, new[] { curse }, target);
+			target.AddStatus(new StatusEffect(StatusKind.Curse, 2));
 			Assert.Near(125, DamageFormula.Compute(attacker, target, 1, 0, false), "Maldição");
 		}
 

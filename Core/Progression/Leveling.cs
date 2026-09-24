@@ -5,7 +5,7 @@ namespace Sigilos.Core.Progression
 {
 	/// <summary>
 	/// Nível de cada invocação, de 1 a 40. A experiência vem de duas fontes: toda vitória dá
-	/// experiência ao time que lutou (como em Summoners War), e a Essência da ociosidade pode ser
+	/// experiência ao time que lutou, e a Essência da ociosidade pode ser
 	/// infundida, 1 Essência por ponto de experiência.
 	/// </summary>
 	public static class Leveling

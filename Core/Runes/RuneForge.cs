@@ -1,66 +1,141 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Runes
 {
 	/// <summary>
-	/// Cria e transforma runas: sorteio de uma runa nova, melhora de nível e refazer subatributo. Não
-	/// cobra nada: quem paga o Pó de Sigilo é o inventário do jogador (Core/Player/RuneInventory).
+	/// Cria e transforma runas: o drop, a melhora, a Pedra de Afiar e a Gema
+	/// Encantada. Não cobra nada nem guarda pedras: isso é do inventário do jogador
+	/// (Core/Player/RuneInventory). Cada operação impossível devolve falso sem mudar a runa.
 	/// </summary>
 	public static class RuneForge
 	{
 		private static readonly RuneStat[] AllStats = Enum.GetValues<RuneStat>();
-		private static readonly Glyph[] AllSets = Enum.GetValues<Glyph>();
+		private static readonly RuneSet[] AllSets = Enum.GetValues<RuneSet>();
 
-		public static Rune Generate(Random random, int id, int grade)
+		/// <summary>Nível mínimo para usar Gema Encantada.</summary>
+		public const int EnchantLevel = 12;
+
+		/// <summary>Uma runa de drop. Sem <paramref name="slot"/>, o espaço também é sorteado.</summary>
+		public static Rune Generate(Random random, int id, int grade, int? slot = null)
 		{
-			var slot = random.Next(1, RuneRules.Slots + 1);
-			var options = RuneRules.MainOptions(slot);
+			var chosenSlot = slot ?? random.Next(1, RuneRules.Slots + 1);
+			var options = RuneRules.MainOptions(chosenSlot);
 			var rune = new Rune
 			{
 				Id = id,
 				Set = AllSets[random.Next(AllSets.Length)],
-				Slot = slot,
+				Slot = chosenSlot,
 				Grade = Math.Clamp(grade, 1, RuneRules.MaxGrade),
 				Main = options[random.Next(options.Count)],
 			};
 
-			for (var i = 0; i < RuneRules.SubstatCount; i++)
-			{
-				var stat = FreeStat(random, rune);
-				rune.Substats.Add(new RuneSubstat { Stat = stat, Value = RuneRules.RollSubstat(random, stat, rune.Grade) });
-			}
+			if (random.NextDouble() < RuneRules.InnateChance)
+				rune.Innate = NewSubstat(random, rune);
+
+			var count = (int)RuneRules.RollRarity(random);
+			for (var i = 0; i < count; i++)
+				rune.Substats.Add(NewSubstat(random, rune));
 
 			return rune;
 		}
 
-		/// <summary>+1 de melhora. Em +3, +6 e +9, um subatributo ao acaso ganha mais um sorteio.</summary>
-		public static void RaiseLevel(Random random, Rune rune)
+		/// <summary>Uma pedra de drop: metade Pedras de Afiar, metade Gemas, atributo ao acaso.</summary>
+		public static RuneTool GenerateTool(Random random, RuneRarity grade)
+		{
+			if (random.NextDouble() < 0.5)
+			{
+				var grindable = AllStats.Where(RuneRules.IsGrindable).ToList();
+				return new RuneTool(RuneToolKind.Grindstone, grindable[random.Next(grindable.Count)], grade);
+			}
+
+			return new RuneTool(RuneToolKind.Gem, AllStats[random.Next(AllStats.Length)], grade);
+		}
+
+		/// <summary>
+		/// +1 de melhora, que nunca falha. Em +3, +6, +9 e +12 a runa ganha um subatributo novo até ter 4;
+		/// com 4, um deles, ao acaso, ganha mais um sorteio.
+		/// </summary>
+		public static bool RaiseLevel(Random random, Rune rune)
 		{
 			if (rune.Level >= RuneRules.MaxLevel)
-				return;
+				return false;
 
 			rune.Level++;
 			if (!RuneRules.IsMilestone(rune.Level))
-				return;
+				return true;
 
-			var substat = rune.Substats[random.Next(rune.Substats.Count)];
-			substat.Value += RuneRules.RollSubstat(random, substat.Stat, rune.Grade);
+			if (rune.Substats.Count < RuneRules.MaxSubstats)
+			{
+				rune.Substats.Add(NewSubstat(random, rune));
+			}
+			else
+			{
+				var substat = rune.Substats[random.Next(rune.Substats.Count)];
+				substat.Value += RuneRules.RollSubstat(random, substat.Stat, rune.Grade);
+			}
+
+			return true;
 		}
 
-		/// <summary>Troca um subatributo por outro sorteado. As melhoras que ele tinha se perdem.</summary>
-		public static void Reroll(Random random, Rune rune, int index)
+		/// <summary>
+		/// A pedra pode ser usada se afia o mesmo atributo e ainda pode passar do bônus atual. O bônus
+		/// novo substitui o antigo e pode sair menor.
+		/// </summary>
+		public static bool CanGrind(Rune rune, int index, RuneTool tool) =>
+			tool.Kind == RuneToolKind.Grindstone &&
+			index >= 0 && index < rune.Substats.Count &&
+			rune.Substats[index].Stat == tool.Stat &&
+			RuneRules.GrindRange(tool.Stat, tool.Grade) is { } range &&
+			range.Max > rune.Substats[index].Grind + 1e-9;
+
+		public static bool Grind(Random random, Rune rune, int index, RuneTool tool)
 		{
-			var stat = FreeStat(random, rune);
-			rune.Substats[index] = new RuneSubstat { Stat = stat, Value = RuneRules.RollSubstat(random, stat, rune.Grade) };
+			if (!CanGrind(rune, index, tool))
+				return false;
+
+			rune.Substats[index].Grind = RuneRules.RollGrind(random, tool.Stat, tool.Grade);
+			return true;
 		}
 
-		/// <summary>Um atributo que a runa ainda não tem, nem como principal nem como subatributo.</summary>
-		private static RuneStat FreeStat(Random random, Rune rune)
+		/// <summary>
+		/// A gema troca um subatributo de uma runa +12 por outro que a runa ainda não tem. Só um
+		/// subatributo por runa pode ser encantado (o mesmo pode ser trocado de novo).
+		/// </summary>
+		public static bool CanEnchant(Rune rune, int index, RuneTool tool) =>
+			tool.Kind == RuneToolKind.Gem &&
+			rune.Level >= EnchantLevel &&
+			index >= 0 && index < rune.Substats.Count &&
+			rune.Substats.Where((s, i) => i != index).All(s => !s.Enchanted && s.Stat != tool.Stat) &&
+			rune.Innate?.Stat != tool.Stat &&
+			RuneRules.CanBeSubstat(rune.Slot, rune.Main, tool.Stat);
+
+		/// <summary>As melhoras e o bônus de pedra do subatributo trocado se perdem.</summary>
+		public static bool Enchant(Random random, Rune rune, int index, RuneTool tool)
 		{
-			var free = AllStats.Where(s => s != rune.Main && rune.Substats.All(sub => sub.Stat != s)).ToList();
-			return free[random.Next(free.Count)];
+			if (!CanEnchant(rune, index, tool))
+				return false;
+
+			rune.Substats[index] = new RuneSubstat
+			{
+				Stat = tool.Stat,
+				Value = RuneRules.RollGem(random, tool.Stat, tool.Grade),
+				Enchanted = true,
+			};
+			return true;
+		}
+
+		/// <summary>Um atributo que a runa aceita e ainda não tem, nem como nativo nem como subatributo.</summary>
+		private static RuneSubstat NewSubstat(Random random, Rune rune)
+		{
+			var taken = new HashSet<RuneStat>(rune.Substats.Select(s => s.Stat));
+			if (rune.Innate != null)
+				taken.Add(rune.Innate.Stat);
+
+			var free = AllStats.Where(s => RuneRules.CanBeSubstat(rune.Slot, rune.Main, s) && !taken.Contains(s)).ToList();
+			var stat = free[random.Next(free.Count)];
+			return new RuneSubstat { Stat = stat, Value = RuneRules.RollSubstat(random, stat, rune.Grade) };
 		}
 	}
 }

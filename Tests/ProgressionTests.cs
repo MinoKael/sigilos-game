@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
@@ -83,8 +84,9 @@ namespace Sigilos.Tests
 			Assert.True(player.Summon(summon.Id).Awakened, "marcado como desperto");
 
 			var after = SummonStats.For(database.Roles[summon.Role], summon, 10, 0, true, Array.Empty<Core.Runes.Rune>()).Total;
-			Assert.Near(before.Attack * (1 + Awakening.StatBonus), after.Attack, "+15% de Ataque", 1e-6);
-			Assert.True(after.Get(summon.Awakening.Stat) > before.Get(summon.Awakening.Stat), "o atributo extra da variante sobe");
+			Assert.Near(Math.Round(before.Health * (1 + Awakening.HealthBonus)), after.Health, "+20% de Vida");
+			Assert.Near(Math.Round(before.Attack * (1 + Awakening.AttackDefenseBonus)), after.Attack, "+7% de Ataque");
+			Assert.Near(before.Get(summon.Awakening.Stat) + Awakening.Bonus(summon.Awakening.Stat), after.Get(summon.Awakening.Stat), "o bônus de Summoners War da variante", 1e-9);
 			Assert.Equal(summon.Awakening.Name, summon.NameFor(true), "nome próprio");
 		}
 
@@ -112,11 +114,23 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void GrowthMatchesTheAppendix()
+		private static void GrowthMatchesSummonersWar()
 		{
-			Assert.Near(0.25, Growth.LevelFactor(1), "nível 1");
-			Assert.Near(1.0, Growth.LevelFactor(40), "nível 40");
-			Assert.Near(0.85, Growth.RarityFactor(3), "3★");
+			// Diabrete de Fogo de Summoners War: 3★ nível 1 tem 1425 de Vida; 6★ nível 40, 6420 (22%).
+			Assert.Near(0.22, Growth.LevelFactor(3, 1), "3★ no nível 1");
+			// Fênix de Fogo: 5★ nível 1 tem 3990; 6★ nível 40, 9225 (43%).
+			Assert.Near(0.43, Growth.LevelFactor(5, 1), "5★ no nível 1");
+			Assert.Near(1.0, Growth.LevelFactor(3, 40), "nível 40");
+			Assert.Near(0.85, Growth.RarityFactor(3), "3★ no nível 40");
+
+			var roles = TestData.LoadReal().Roles;
+			foreach (var role in roles.Values)
+			{
+				Assert.Near(0.15, role.Crit, "Crítico de base 15%");
+				Assert.Near(0.5, role.CritDamage, "Dano crítico de base 50%");
+				Assert.Near(0.15, role.Resistance, "Resistência de base 15%");
+				Assert.Near(0, role.Accuracy, "Precisão de base 0%");
+			}
 		}
 
 		[Test]
@@ -126,14 +140,47 @@ namespace Sigilos.Tests
 			player.Summon(NewGame.StarterSummons[0]).Level = 12;
 			player.Runes[0].EquippedOn = NewGame.StarterSummons[0];
 
-			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(player));
+			player.Tools.Add(new Core.Runes.RuneTool(Core.Runes.RuneToolKind.Gem, Core.Runes.RuneStat.Speed, Core.Runes.RuneRarity.Hero));
+
+			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(player), new Random(1));
 			Assert.True(loaded != null, "lê o formato atual");
 			Assert.Equal(12, loaded!.Summon(NewGame.StarterSummons[0]).Level, "nível");
 			Assert.Equal(NewGame.StarterRunes, loaded.Runes.Count, "runas");
 			Assert.Equal(1, loaded.RunesOn(NewGame.StarterSummons[0]).Count, "runa equipada");
 			Assert.Equal(Start, loaded.LastIdleCollect, "relógio da ociosidade");
+			Assert.Equal(player.Tools[0], loaded.Tools.Single(), "pedra guardada");
 
-			Assert.True(PlayerSave.FromJson("{ \"Scrolls\": 3 }") == null, "save sem versão é recusado");
+			Assert.True(PlayerSave.FromJson("{ \"Scrolls\": 3 }", new Random(1)) == null, "save sem versão é recusado");
+		}
+
+		[Test]
+		private static void VersionTwoSaveKeepsEverythingButTheOldRunes()
+		{
+			const string version2 = """
+				{
+				  "Version": 2, "Scrolls": 7, "Essence": 900, "Dust": 450, "HighestStage": 6,
+				  "Summons": { "diabrete_fogo": { "Level": 21, "Experience": 5, "Echoes": 1, "Awakened": true } },
+				  "Team": [ "diabrete_fogo" ],
+				  "Runes": [
+				    { "Id": 1, "Set": "Spiral", "Slot": 2, "Grade": 4, "Level": 9, "Main": "Focus", "Substats": [], "EquippedOn": "diabrete_fogo" },
+				    { "Id": 2, "Set": "Door", "Slot": 5, "Grade": 2, "Level": 0, "Main": "HealthFlat", "Substats": [] }
+				  ],
+				  "NextRuneId": 3
+				}
+				""";
+
+			var player = PlayerSave.FromJson(version2, new Random(1));
+			Assert.True(player != null, "o formato 2 é convertido");
+			Assert.Equal(PlayerState.CurrentVersion, player!.Version, "versão atual");
+			Assert.Equal(21, player.Summon("diabrete_fogo").Level, "nível fica");
+			Assert.True(player.Summon("diabrete_fogo").Awakened, "Despertar fica");
+			Assert.Equal(450, player.Dust, "Pó fica");
+			Assert.Equal(6, player.HighestStage, "fases ficam");
+			Assert.Equal("4,2", string.Join(",", player.Runes.Select(r => r.Grade)), "uma runa nova por runa antiga, com as mesmas estrelas");
+			Assert.Equal("2,5", string.Join(",", player.Runes.Select(r => r.Slot)), "no mesmo espaço");
+			Assert.Equal("diabrete_fogo", player.Runes[0].EquippedOn, "na mesma invocação");
+			Assert.Equal(null, player.Runes[1].EquippedOn, "a do inventário continua no inventário");
+			Assert.True(player.Runes.All(r => r.Level == 0), "em +0");
 		}
 	}
 }

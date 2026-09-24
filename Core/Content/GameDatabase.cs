@@ -119,6 +119,8 @@ namespace Sigilos.Core.Content
 					yield return $"Invocação {summon.Id}: família '{summon.FamilyId}' não existe.";
 				if (summon.Awakening.Name.Length == 0)
 					yield return $"Invocação {summon.Id}: sem nome de Despertar.";
+				if (summon.Awakening.Stat is not (Stat.Speed or Stat.Crit or Stat.Resistance or Stat.Accuracy))
+					yield return $"Invocação {summon.Id}: o Despertar dá Velocidade, Crítico, Resistência ou Precisão, não {summon.Awakening.Stat}.";
 				if (summon.GlyphSkill.Cooldown <= 0)
 					yield return $"Invocação {summon.Id}: habilidade de Glifo sem recarga.";
 				foreach (var problem in ValidateSkill(summon.Basic).Concat(ValidateSkill(summon.GlyphSkill)))
@@ -143,8 +145,10 @@ namespace Sigilos.Core.Content
 					yield return $"Fases: esperava a fase {i + 1}, veio a {stage.Number}.";
 				if (stage.Waves.Count is < 1 or > MaxWaves)
 					yield return $"Fase {stage.Number}: {stage.Waves.Count} ondas (de 1 a {MaxWaves}).";
-				if (stage.RuneGrade is < 1 or > 5)
-					yield return $"Fase {stage.Number}: runa de {stage.RuneGrade} estrelas (de 1 a 5).";
+				if (stage.RuneGrade is < 1 or > 6)
+					yield return $"Fase {stage.Number}: runa de {stage.RuneGrade} estrelas (de 1 a 6).";
+				if (stage.ToolGrade is < 0 or > 4)
+					yield return $"Fase {stage.Number}: pedra de grau {stage.ToolGrade} (de 0, sem pedra, a 4, Lendária).";
 				foreach (var wave in stage.Waves)
 				{
 					if (wave.Count is < 1 or > MaxEnemiesPerWave)

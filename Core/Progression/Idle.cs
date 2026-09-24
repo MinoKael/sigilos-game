@@ -18,7 +18,7 @@ namespace Sigilos.Core.Progression
 
 		public static double ScrollsPerHour(int highestStage) => 0.12 + 0.004 * highestStage;
 		public static double EssencePerHour(int highestStage) => 60 + 12 * highestStage;
-		public static double DustPerHour(int highestStage) => 15 + 3 * highestStage;
+		public static double DustPerHour(int highestStage) => 6 + 1.5 * highestStage;
 
 		/// <summary>Horas acumuladas agora, já com o teto.</summary>
 		public static double PendingHours(PlayerState player, DateTime now)

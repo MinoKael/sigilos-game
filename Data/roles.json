@@ -1,9 +1,11 @@
-// Atributos de base por papel: uma 5★ no nível 40, sem Despertar e sem runas.
-// 4★ usam 92% e 3★ 85%; Vida, Ataque e Defesa começam em 25% no nível 1 (Core/Progression/Growth.cs).
-// Crítico, Dano crítico, Foco e Resistência são frações e não crescem com o nível: sobem com runas.
+// Atributos de base por papel: uma 5★ no nível 40, sem Despertar e sem runas
+// (uma 5★ natural em 6★ nível 40; a Fênix de Fogo de lá tem 9225 de Vida, 834 de Ataque e 527 de Defesa).
+// 4★ usam 92% e 3★ 85%; o nível 1 vale 43% (5★), 32% (4★) ou 22% (3★) disso (Core/Progression/Growth.cs).
+// Crítico 15%, Dano crítico 50%, Resistência 5% e Precisão 0% são os de quase todo monstro:
+// não crescem com o nível. Sobem com runas, Despertar e Liderança.
 {
-  "Front":    { "health": 6000, "attack": 500, "defense": 400, "speed": 95,  "crit": 0.15, "critDamage": 0, "focus": 0,    "resistance": 0.25 },
-  "Attacker": { "health": 4000, "attack": 900, "defense": 200, "speed": 110, "crit": 0.25, "critDamage": 0, "focus": 0,    "resistance": 0.15 },
-  "Support":  { "health": 4200, "attack": 550, "defense": 250, "speed": 115, "crit": 0.15, "critDamage": 0, "focus": 0.15, "resistance": 0.20 },
-  "Control":  { "health": 4500, "attack": 650, "defense": 250, "speed": 105, "crit": 0.15, "critDamage": 0, "focus": 0.25, "resistance": 0.15 }
+  "Front":    { "health": 11100, "attack": 620, "defense": 700, "speed": 98,  "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
+  "Attacker": { "health": 9300,  "attack": 900, "defense": 500, "speed": 103, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
+  "Support":  { "health": 10400, "attack": 660, "defense": 640, "speed": 107, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
+  "Control":  { "health": 9900,  "attack": 760, "defense": 580, "speed": 102, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 }
 }

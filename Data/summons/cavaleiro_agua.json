@@ -6,16 +6,16 @@
   "glyph": "Wall",
   "role": "Front",
   "leader": {"stat": "Health", "value": 0.15},
-  "awakening": {"name": "Dama Maré", "stat": "Defense", "value": 0.15},
+  "awakening": {"name": "Dama Maré", "stat": "Resistance"},
   "basic": {
     "name": "Golpe de Escudo",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 0.9},
+      {"kind": "Damage", "target": "Target", "power": 3.15},
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Damage", "target": "Target", "power": 4.2},
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.8, "turns": 2}
     ]
   },

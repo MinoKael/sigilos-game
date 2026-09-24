@@ -6,15 +6,15 @@
   "glyph": "Bone",
   "role": "Front",
   "leader": {"stat": "Resistance", "value": 0.2},
-  "awakening": {"name": "Dom Sepulcro", "stat": "Health", "value": 0.15},
+  "awakening": {"name": "Dom Sepulcro", "stat": "Accuracy"},
   "basic": {
     "name": "Lâmina Faminta",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0, "drain": 0.3}
+      {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.3}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.4, "drain": 0.5},
+      {"kind": "Damage", "target": "Target", "power": 4.9, "drain": 0.5},
       {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.7, "turns": 2}
     ]
   },
@@ -22,11 +22,11 @@
     "name": "Juramento Sombrio",
     "cooldown": 4,
     "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.7, "drain": 0.3}
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.3}
     ],
     "enhanceCost": 5,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 1.0, "drain": 0.4},
+      {"kind": "Damage", "target": "AllEnemies", "power": 3.5, "drain": 0.4},
       {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2}
     ]
   }

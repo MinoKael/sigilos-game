@@ -21,7 +21,7 @@ namespace Sigilos.UI.Components
 
 			Add(row, "scroll", _scrolls, "Pergaminhos Místicos: invocam criaturas.");
 			Add(row, "essence", _essence, "Essência: sobe o nível das invocações e paga o Despertar.");
-			Add(row, "dust", _dust, "Pó de Sigilo: melhora e refaz runas.");
+			Add(row, "dust", _dust, "Pó de Sigilo: melhora e tira runas. Escasso: a melhora nunca falha.");
 			Add(row, "fragments", _fragments, "Fragmentos: vêm de duplicatas além dos 5 Ecos.");
 		}
 

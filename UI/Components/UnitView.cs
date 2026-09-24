@@ -8,7 +8,7 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma unidade em campo, como em Summoners War: desenho, nível, Vida, escudo, barra de Ímpeto e
+	/// Uma unidade em campo: desenho, nível, Vida, escudo, barra de Ímpeto e
 	/// efeitos. Lê o estado do <see cref="BattleUnit"/> em <see cref="Refresh"/> e faz as animações de
 	/// interpolação do GDD (avançar, recuar, tremer) — nunca quadro a quadro.
 	/// </summary>

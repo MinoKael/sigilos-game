@@ -5,16 +5,16 @@
   "element": "Wind",
   "glyph": "Spiral",
   "role": "Control",
-  "awakening": {"name": "Rodamoinho", "stat": "Focus", "value": 0.2},
+  "awakening": {"name": "Rodamoinho", "stat": "Accuracy"},
   "basic": {
     "name": "Rodopio",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.3},
+      {"kind": "Damage", "target": "Target", "power": 4.55},
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.75, "turns": 2}
     ]
   },
@@ -22,12 +22,12 @@
     "name": "Redemoinho",
     "cooldown": 4,
     "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.6},
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
       {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
     ],
     "enhanceCost": 5,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.9},
+      {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
       {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.8, "turns": 2},
       {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
     ]

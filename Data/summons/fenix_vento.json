@@ -6,16 +6,16 @@
   "glyph": "Eye",
   "role": "Attacker",
   "leader": {"stat": "Speed", "value": 0.15},
-  "awakening": {"name": "Zéfira", "stat": "Speed", "value": 0.1},
+  "awakening": {"name": "Zéfira", "stat": "Speed"},
   "basic": {
     "name": "Rasante de Brasa",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.1},
+      {"kind": "Damage", "target": "Target", "power": 3.85},
       {"kind": "Impeto", "target": "Target", "power": -20}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.5},
+      {"kind": "Damage", "target": "Target", "power": 5.25},
       {"kind": "Impeto", "target": "Target", "power": -50}
     ]
   },
@@ -23,12 +23,12 @@
     "name": "Tempestade de Penas",
     "cooldown": 4,
     "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.8},
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
       {"kind": "Impeto", "target": "AllAllies", "power": 20}
     ],
     "enhanceCost": 6,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 1.1},
+      {"kind": "Damage", "target": "AllEnemies", "power": 3.85},
       {"kind": "Impeto", "target": "AllAllies", "power": 35},
       {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
     ]

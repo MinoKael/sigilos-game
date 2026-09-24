@@ -4,7 +4,7 @@ namespace Sigilos.Core.Content
 {
 	/// <summary>
 	/// Os oito atributos de uma unidade. Vida, Ataque, Defesa e Velocidade são números absolutos;
-	/// Crítico, Dano crítico, Foco e Resistência são frações (0,15 = 15%).
+	/// Crítico, Dano crítico, Resistência e Precisão são frações (0,15 = 15%).
 	/// </summary>
 	public sealed record StatBlock
 	{
@@ -14,8 +14,8 @@ namespace Sigilos.Core.Content
 		public double Speed { get; init; }
 		public double Crit { get; init; }
 		public double CritDamage { get; init; }
-		public double Focus { get; init; }
 		public double Resistance { get; init; }
+		public double Accuracy { get; init; }
 
 		public double Get(Stat stat) => stat switch
 		{
@@ -25,7 +25,7 @@ namespace Sigilos.Core.Content
 			Stat.Speed => Speed,
 			Stat.Crit => Crit,
 			Stat.CritDamage => CritDamage,
-			Stat.Focus => Focus,
+			Stat.Accuracy => Accuracy,
 			Stat.Resistance => Resistance,
 			_ => throw new ArgumentOutOfRangeException(nameof(stat), stat, null),
 		};
@@ -38,7 +38,7 @@ namespace Sigilos.Core.Content
 			Stat.Speed => this with { Speed = value },
 			Stat.Crit => this with { Crit = value },
 			Stat.CritDamage => this with { CritDamage = value },
-			Stat.Focus => this with { Focus = value },
+			Stat.Accuracy => this with { Accuracy = value },
 			Stat.Resistance => this with { Resistance = value },
 			_ => throw new ArgumentOutOfRangeException(nameof(stat), stat, null),
 		};
@@ -55,27 +55,8 @@ namespace Sigilos.Core.Content
 			Speed = Speed + other.Speed,
 			Crit = Crit + other.Crit,
 			CritDamage = CritDamage + other.CritDamage,
-			Focus = Focus + other.Focus,
+			Accuracy = Accuracy + other.Accuracy,
 			Resistance = Resistance + other.Resistance,
-		};
-
-		/// <summary>
-		/// Um bônus no estilo de Liderança e de Despertar: em atributo absoluto, <paramref name="value"/>
-		/// multiplica (0,15 = +15%); em fração, soma.
-		/// </summary>
-		public StatBlock WithBonus(Stat stat, double value)
-		{
-			var current = Get(stat);
-			return With(stat, IsAbsolute(stat) ? current * (1 + value) : current + value);
-		}
-
-		/// <summary>Multiplica os quatro atributos absolutos. As frações ficam como estão.</summary>
-		public StatBlock ScaleAbsolute(double factor) => this with
-		{
-			Health = Health * factor,
-			Attack = Attack * factor,
-			Defense = Defense * factor,
-			Speed = Speed * factor,
 		};
 	}
 }

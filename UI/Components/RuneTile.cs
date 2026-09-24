@@ -6,12 +6,13 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma runa em miniatura: o Glifo do conjunto na cor das estrelas, o espaço e a melhora. Sem runa,
-	/// mostra o espaço vazio. Clicável.
+	/// Uma runa em miniatura: moldura e Glifo na cor da raridade,
+	/// espaço e melhora em cima, o conjunto e as estrelas embaixo. Sem runa, mostra o espaço vazio.
+	/// Clicável.
 	/// </summary>
 	public partial class RuneTile : PanelContainer
 	{
-		public static readonly Vector2 TileSize = new(76, 84);
+		public static readonly Vector2 TileSize = new(86, 104);
 
 		private readonly StyleBoxFlat _box;
 
@@ -23,7 +24,7 @@ namespace Sigilos.UI.Components
 			MouseFilter = MouseFilterEnum.Stop;
 			MouseDefaultCursorShape = CursorShape.PointingHand;
 
-			var color = rune == null ? Palette.TextFaded : Palette.RuneGrade(rune.Grade);
+			var color = rune == null ? Palette.TextFaded : Palette.Of(rune.Rarity);
 			_box = GameTheme.Box(Palette.Inset, color, rune == null ? 1 : 2, 8, 4);
 			AddThemeStyleboxOverride("panel", _box);
 
@@ -33,22 +34,23 @@ namespace Sigilos.UI.Components
 
 			var top = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
 			top.AddChild(Small($"{slot}", Palette.TextFaded));
-			top.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			top.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
 			if (rune != null)
 				top.AddChild(Small($"+{rune.Level}", Palette.Text));
 			column.AddChild(top);
 
-			column.AddChild(rune == null
-				? new Label { Text = "vazio", ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, SizeFlagsVertical = SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center }
-				: new Doodle(Art.Glyph(rune.Set), color, boil: false) { CustomMinimumSize = new Vector2(0, 44), SizeFlagsVertical = SizeFlags.ExpandFill });
-
-			if (rune != null)
+			if (rune == null)
 			{
-				var stars = Small(Texts.Stars(rune.Grade), color);
-				stars.HorizontalAlignment = HorizontalAlignment.Center;
-				column.AddChild(stars);
-				TooltipText = $"Runa de {Texts.Name(rune.Set)} ({rune.Slot})\n{Texts.Format(rune.Main, rune.MainValue)}";
+				column.AddChild(new Label { Text = "vazio", ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, SizeFlagsVertical = SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center });
+				return;
 			}
+
+			var set = RuneSets.For(rune.Set);
+			column.AddChild(new Doodle(Art.Glyph(set.Glyph), color, boil: false) { CustomMinimumSize = new Vector2(0, 42), SizeFlagsVertical = SizeFlags.ExpandFill });
+			column.AddChild(Centered(Small(Texts.Name(rune.Set), color)));
+			column.AddChild(Centered(Small(Texts.Stars(rune.Grade), Palette.Gold)));
+
+			TooltipText = $"{Texts.Title(rune)} · {Texts.Name(rune.Rarity)} {Texts.Stars(rune.Grade)} +{rune.Level}\n{Texts.Format(rune.Main, rune.MainValue)}";
 		}
 
 		public event Action<RuneTile>? Pressed;
@@ -69,6 +71,12 @@ namespace Sigilos.UI.Components
 			var label = new Label { Text = text, MouseFilter = MouseFilterEnum.Ignore };
 			label.AddThemeFontSizeOverride("font_size", 11);
 			label.AddThemeColorOverride("font_color", color);
+			return label;
+		}
+
+		private static Label Centered(Label label)
+		{
+			label.HorizontalAlignment = HorizontalAlignment.Center;
 			return label;
 		}
 	}

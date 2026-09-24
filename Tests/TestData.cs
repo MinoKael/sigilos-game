@@ -32,7 +32,10 @@ namespace Sigilos.Tests
 			Effects = new[] { new EffectDefinition { Kind = EffectKind.Damage, Power = 1 } },
 		};
 
-		/// <summary>Unidade sem crítico, sem Resistência, com Ataque 100 e Defesa 0 por padrão.</summary>
+		/// <summary>
+		/// Unidade com Ataque 100 e Defesa 0 por padrão, sem chance de crítico (o Dano crítico é o de
+		/// base de Summoners War, 50%) e sem Resistência — que ainda assim barra 15% dos efeitos negativos.
+		/// </summary>
 		public static BattleUnit Unit(
 			string name,
 			Side side,
@@ -40,15 +43,27 @@ namespace Sigilos.Tests
 			double health = 1000,
 			double attack = 100,
 			double defense = 0,
+			double resistance = 0,
 			Element element = Element.Fire,
 			SkillDefinition? basic = null,
 			SkillDefinition? glyphSkill = null,
 			PassiveDefinition? passive = null,
 			RuneSetEffects? runeEffects = null)
 		{
-			var stats = new StatBlock { Health = health, Attack = attack, Defense = defense, Speed = speed };
+			var stats = new StatBlock { Health = health, Attack = attack, Defense = defense, Speed = speed, CritDamage = 0.5, Resistance = resistance };
 			return new BattleUnit(name, name, "", side, element, null, 1, false, stats, basic ?? Strike, glyphSkill, passive, 1, runeEffects ?? RuneSetEffects.None);
 		}
+
+		/// <summary>Efeitos de conjunto de runa: só os citados, o resto zero.</summary>
+		public static RuneSetEffects Effects(
+			double drain = 0,
+			double stun = 0,
+			double extraTurn = 0,
+			double shield = 0,
+			int immunity = 0,
+			double counter = 0,
+			double nemesis = 0,
+			double destroy = 0) => new(drain, stun, extraTurn, shield, immunity, counter, nemesis, destroy);
 
 		/// <summary>Uma luta de uma onda só.</summary>
 		public static BattleSession Session(IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> enemies, int seed = 1)

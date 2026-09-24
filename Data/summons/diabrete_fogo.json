@@ -5,15 +5,15 @@
   "element": "Fire",
   "glyph": "Shard",
   "role": "Attacker",
-  "awakening": {"name": "Fagulha", "stat": "Crit", "value": 0.15},
+  "awakening": {"name": "Fagulha", "stat": "Crit"},
   "basic": {
     "name": "Faísca",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 0.55, "hits": 2}
+      {"kind": "Damage", "target": "Target", "power": 1.93, "hits": 2}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 0.55, "hits": 3},
+      {"kind": "Damage", "target": "Target", "power": 1.93, "hits": 3},
       {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.4, "turns": 2}
     ]
   },
@@ -21,12 +21,12 @@
     "name": "Selo Rompido",
     "cooldown": 3,
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.8},
+      {"kind": "Damage", "target": "Target", "power": 6.3},
       {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
     ],
     "enhanceCost": 5,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 2.6, "ignoreDefense": 0.5},
+      {"kind": "Damage", "target": "Target", "power": 9.1, "ignoreDefense": 0.5},
       {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
     ]
   }

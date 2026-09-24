@@ -33,6 +33,9 @@ namespace Sigilos.Core.Battle
 	/// <summary>A Resistência do alvo barrou um efeito negativo.</summary>
 	public sealed record Resisted(BattleUnit Target) : BattleEvent;
 
+	/// <summary>A Imunidade do alvo barrou um efeito negativo.</summary>
+	public sealed record Immune(BattleUnit Target) : BattleEvent;
+
 	public sealed record StatusRemoved(BattleUnit Target, StatusKind Status) : BattleEvent;
 
 	public sealed record ImpetoChanged(BattleUnit Target, double Amount) : BattleEvent;
@@ -40,8 +43,14 @@ namespace Sigilos.Core.Battle
 	/// <summary>A unidade perdeu o turno atordoada.</summary>
 	public sealed record TurnSkipped(BattleUnit Unit) : BattleEvent;
 
-	/// <summary>O conjunto de runas da Porta deu mais um turno.</summary>
+	/// <summary>O conjunto Violento deu mais um turno.</summary>
 	public sealed record ExtraTurn(BattleUnit Unit) : BattleEvent;
+
+	/// <summary>O conjunto Vingança contra-ataca com o básico.</summary>
+	public sealed record Counterattack(BattleUnit Unit) : BattleEvent;
+
+	/// <summary>O conjunto Destruição tirou Vida máxima do alvo.</summary>
+	public sealed record MaxHealthReduced(BattleUnit Target, int Amount) : BattleEvent;
 
 	public sealed record Died(BattleUnit Unit) : BattleEvent;
 

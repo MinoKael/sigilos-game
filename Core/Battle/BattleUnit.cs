@@ -75,11 +75,15 @@ namespace Sigilos.Core.Battle
 		/// <summary>Multiplica dano, cura e escudo das habilidades (Ecos).</summary>
 		public double SkillPower { get; }
 
-		/// <summary>Dreno, atordoar ao acertar e turno extra dos conjuntos de runas.</summary>
+		/// <summary>O que os conjuntos de runas fazem em combate (Vampiro, Desespero, Violento...).</summary>
 		public RuneSetEffects RuneEffects { get; }
 
 		public double Health { get; set; }
-		public double MaxHealth => Stats.Health;
+
+		/// <summary>Vida máxima que o conjunto Destruição de um inimigo já tirou.</summary>
+		public double HealthDestroyed { get; set; }
+
+		public double MaxHealth => Stats.Health - HealthDestroyed;
 		public double HealthFraction => MaxHealth <= 0 ? 0 : Health / MaxHealth;
 		public bool IsAlive => Health > 0;
 
@@ -91,8 +95,10 @@ namespace Sigilos.Core.Battle
 
 		public bool RebirthUsed { get; set; }
 
-		/// <summary>Caída, mas renasce quando o Ímpeto dela encher (Assinatura da Fênix).</summary>
-		public bool PendingRebirth { get; set; }
+		public bool ExtraTurnAvailable { get; set; }
+
+        /// <summary>Caída, mas renasce quando o Ímpeto dela encher (Assinatura da Fênix).</summary>
+        public bool PendingRebirth { get; set; }
 
 		/// <summary>O próprio time (inclui ela mesma). Ligado pelo <see cref="BattleFactory"/>.</summary>
 		public IReadOnlyList<BattleUnit> Team { get; internal set; } = Array.Empty<BattleUnit>();

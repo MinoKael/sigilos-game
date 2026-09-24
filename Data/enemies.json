@@ -8,10 +8,10 @@
     "name": "Limo Profanado",
     "role": "Front",
     "rarity": 1,
-    "healthScale": 1.5, "attackScale": 1.6,
+    "healthScale": 1.6, "attackScale": 1.7,
     "image": "slime",
     "basic": { "name": "Engolfar", "effects": [
-      {"kind": "Damage", "power": 0.9},
+      {"kind": "Damage", "power": 3.15},
       {"kind": "Status", "status": "AttackDown", "chance": 0.2, "turns": 2}
     ] }
   },
@@ -20,10 +20,10 @@
     "name": "Goblin",
     "role": "Attacker",
     "rarity": 1,
-    "healthScale": 1.5, "attackScale": 1.6,
+    "healthScale": 1.6, "attackScale": 1.7,
     "image": "goblin",
     "basic": { "name": "Facada", "effects": [
-      {"kind": "Damage", "power": 0.5, "hits": 2}
+      {"kind": "Damage", "power": 1.75, "hits": 2}
     ] }
   },
   {
@@ -31,10 +31,10 @@
     "name": "Lobo Profanado",
     "role": "Attacker",
     "rarity": 2,
-    "healthScale": 1.5, "attackScale": 1.6,
+    "healthScale": 1.6, "attackScale": 1.7,
     "image": "wolf",
     "basic": { "name": "Mordida", "effects": [
-      {"kind": "Damage", "power": 1.0}
+      {"kind": "Damage", "power": 3.5}
     ] },
     "glyphSkill": { "name": "Uivo", "cooldown": 4, "effects": [
       {"kind": "Impeto", "target": "AllAllies", "power": 25}
@@ -45,10 +45,10 @@
     "name": "Bandido",
     "role": "Control",
     "rarity": 2,
-    "healthScale": 1.5, "attackScale": 1.6,
+    "healthScale": 1.6, "attackScale": 1.7,
     "image": "bandit",
     "basic": { "name": "Golpe Sujo", "effects": [
-      {"kind": "Damage", "power": 1.0},
+      {"kind": "Damage", "power": 3.5},
       {"kind": "Status", "status": "Blind", "chance": 0.25, "turns": 2}
     ] },
     "glyphSkill": { "name": "Bomba de Fumaça", "cooldown": 4, "effects": [
@@ -60,10 +60,10 @@
     "name": "Troll da Colina",
     "role": "Front",
     "rarity": 2,
-    "healthScale": 2.5, "attackScale": 1.3,
+    "healthScale": 2.7, "attackScale": 1.4,
     "image": "troll",
     "basic": { "name": "Porrete", "effects": [
-      {"kind": "Damage", "power": 1.2}
+      {"kind": "Damage", "power": 4.2}
     ] },
     "glyphSkill": { "name": "Regenerar", "cooldown": 4, "effects": [
       {"kind": "Heal", "target": "Self", "power": 0.2}
@@ -74,13 +74,13 @@
     "name": "Dragão Jovem",
     "role": "Attacker",
     "rarity": 2,
-    "healthScale": 2.5, "attackScale": 1.4,
+    "healthScale": 2.6, "attackScale": 1.4,
     "image": "dragon",
     "basic": { "name": "Garra", "effects": [
-      {"kind": "Damage", "power": 1.1}
+      {"kind": "Damage", "power": 3.85}
     ] },
     "glyphSkill": { "name": "Sopro", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.7},
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
       {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
     ] }
   },
@@ -89,14 +89,14 @@
     "name": "O Mestre de Correntes",
     "role": "Control",
     "rarity": 3,
-    "healthScale": 5.0, "attackScale": 1.6,
+    "healthScale": 4.5, "attackScale": 1.4,
     "image": "chain_master",
     "basic": { "name": "Corrente", "effects": [
-      {"kind": "Damage", "power": 1.0},
+      {"kind": "Damage", "power": 3.5},
       {"kind": "Status", "status": "Taunt", "chance": 0.3}
     ] },
     "glyphSkill": { "name": "Grilhões", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.6},
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
       {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
     ] }
   }

@@ -6,16 +6,16 @@
   "glyph": "Wall",
   "role": "Support",
   "leader": {"stat": "Health", "value": 0.2},
-  "awakening": {"name": "Nereia", "stat": "Resistance", "value": 0.25},
+  "awakening": {"name": "Nereia", "stat": "Resistance"},
   "basic": {
     "name": "Orvalho",
     "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
     ],
     "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Damage", "target": "Target", "power": 4.2},
       {"kind": "Heal", "target": "LowestAlly", "power": 0.2}
     ]
   },

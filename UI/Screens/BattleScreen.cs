@@ -13,7 +13,7 @@ using Side = Sigilos.Core.Battle.Side;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A luta na tela, no molde de Summoners War. Quem decide as regras é o <see cref="BattleSession"/>;
+	/// A luta na tela. Quem decide as regras é o <see cref="BattleSession"/>;
 	/// esta tela só:
 	///
 	/// 1. pede o próximo turno,
@@ -113,7 +113,9 @@ namespace Sigilos.UI.Screens
 				foreach (var id in reward.LevelUps)
 					lines.Add($"{_session.Allies.First(a => a.DefinitionId == id).Name} subiu de nível!");
 				if (reward.Rune is { } rune)
-					lines.Add($"Runa de {Texts.Name(rune.Set)} {Texts.Stars(rune.Grade)} (espaço {rune.Slot}): {Texts.Format(rune.Main, rune.MainValue)}");
+					lines.Add($"{Texts.Title(rune)} {Texts.Stars(rune.Grade)}: {Texts.Format(rune.Main, rune.MainValue)}");
+				if (reward.Tool is { } tool)
+					lines.Add($"{Texts.Name(tool)}: {Texts.Range(tool)}");
 			}
 			else
 			{
@@ -388,6 +390,16 @@ namespace Sigilos.UI.Screens
 					_views[extra.Unit].Float("Turno extra!", Palette.Gold);
 					return 0.3;
 
+				case Counterattack counter:
+					_views[counter.Unit].Float("Contra-ataque!", Palette.Gold);
+					_views[counter.Unit].Lunge(counter.Unit.Side == Side.Allies ? 1 : -1, Speed);
+					return 0.3;
+
+				case MaxHealthReduced reduced:
+					_views[reduced.Target].Float($"-{reduced.Amount} Vida máx.", Palette.Negative);
+					_views[reduced.Target].Refresh();
+					return 0.1;
+
 				case Damaged damaged:
 					var hit = _views[damaged.Target];
 					hit.Shake(Speed);
@@ -416,6 +428,10 @@ namespace Sigilos.UI.Screens
 
 				case Resisted resisted:
 					_views[resisted.Target].Float("Resistiu", Palette.TextFaded);
+					return 0.06;
+
+				case Immune immune:
+					_views[immune.Target].Float("Imune", Palette.Positive);
 					return 0.06;
 
 				case StatusRemoved removed:

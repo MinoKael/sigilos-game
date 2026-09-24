@@ -11,7 +11,7 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Monstros: o "storage" de Summoners War. À esquerda o time e a coleção; à direita a ficha da
+	/// Monstros: o "storage". À esquerda o time e a coleção; à direita a ficha da
 	/// invocação escolhida — nível e experiência, atributos (base + runas), Glifo explicado,
 	/// habilidades, Assinatura, Liderança, Despertar e as 6 runas — com os botões de cada ação.
 	///
@@ -192,8 +192,8 @@ namespace Sigilos.UI.Screens
 			Section(owned.Awakened ? $"Desperto · {summon.Awakening.Name}" : "Despertar");
 			Text(owned.Awakened
 				? "Nome próprio, desenho novo e Assinatura melhorada."
-				: $"Vira {summon.Awakening.Name}: +{Awakening.StatBonus * 100:0}% de Vida, Ataque e Defesa, " +
-				  $"+{summon.Awakening.Value * 100:0}% de {Texts.Name(summon.Awakening.Stat)}, desenho novo e Assinatura melhorada " +
+				: $"Vira {summon.Awakening.Name}: +{Awakening.HealthBonus * 100:0}% de Vida, +{Awakening.AttackDefenseBonus * 100:0}% de Ataque e Defesa, " +
+				  $"{Texts.AwakeningBonus(summon.Awakening.Stat)}, desenho novo e Assinatura melhorada " +
 				  $"({Texts.Describe(summon.Family.Passive, true)})", GameTheme.Faded);
 		}
 
@@ -273,7 +273,7 @@ namespace Sigilos.UI.Screens
 			if (!owned.Awakened)
 				Add(flow, $"Despertar ({Awakening.Cost(summon.Rarity)} Essência)", !Awakening.CanAwaken(_player, summon), "Para sempre.", () => AwakenRequested?.Invoke(id));
 
-			Add(flow, "Runas", false, "Equipar, melhorar e refazer runas.", () => RunesRequested?.Invoke(id));
+			Add(flow, "Runas", false, "Equipar, melhorar, afiar e encantar runas.", () => RunesRequested?.Invoke(id));
 			return flow;
 		}
 

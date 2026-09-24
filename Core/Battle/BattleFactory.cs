@@ -32,8 +32,8 @@ namespace Sigilos.Core.Battle
 			var summon = member.Summon;
 			var sheet = SummonStats.For(database.Roles[summon.Role], summon, member.Level, member.Echoes, member.Awakened, member.Runes.ToList());
 
-			// A Liderança da primeira invocação vale para o time inteiro, sobre o total com runas.
-			var stats = leader == null ? sheet.Total : sheet.Total.WithBonus(leader.Stat, leader.Value);
+			// A Liderança da primeira invocação vale para o time inteiro, sobre a base (não sobre as runas).
+			var stats = sheet.TotalWith(leader);
 
 			return new BattleUnit(
 				summon.Id,

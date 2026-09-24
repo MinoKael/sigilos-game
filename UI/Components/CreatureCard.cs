@@ -7,7 +7,7 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Cartão de invocação no estilo de Summoners War: moldura pela raridade, estrelas douradas (roxas
+	/// Cartão de invocação: moldura pela raridade, estrelas douradas (roxas
 	/// depois do Despertar), nível no canto, desenho na cor do elemento, Glifo e nome. Usado na
 	/// coleção, no time e no resultado do ritual. Clicável quando alguém assina <see cref="Pressed"/>.
 	/// </summary>
