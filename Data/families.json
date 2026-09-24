@@ -1,25 +1,29 @@
 // Famílias de invocação (GDD, seção 8). O MVP tem 3 das 8: uma de cada raridade.
-// "image" é o arquivo em Assets/Creatures: um desenho por família, recolorido no elemento.
+// "image" e "awakenedImage" são arquivos em Assets/Creatures: um desenho por família, recolorido no
+// elemento, e um segundo para o Despertar. "awakenedValue" é a Assinatura melhorada pelo Despertar.
 [
   {
     "id": "diabrete",
     "name": "Diabretes de Selo",
     "rarity": 3,
     "image": "imp",
-    "passive": { "name": "Fuga Covarde", "kind": "SpeedWhenLowest", "value": 0.15 }
+    "awakenedImage": "imp_awakened",
+    "passive": { "name": "Fuga Covarde", "kind": "SpeedWhenLowest", "value": 0.15, "awakenedValue": 0.30 }
   },
   {
     "id": "cavaleiro",
     "name": "Cavaleiros Juramentados",
     "rarity": 4,
     "image": "knight",
-    "passive": { "name": "Último Voto", "kind": "ShieldOnDeath", "value": 0.15 }
+    "awakenedImage": "knight_awakened",
+    "passive": { "name": "Último Voto", "kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25 }
   },
   {
     "id": "fenix",
     "name": "Fênix de Cinza",
     "rarity": 5,
     "image": "phoenix",
-    "passive": { "name": "Das Cinzas", "kind": "RebirthOnce", "value": 0.4 }
+    "awakenedImage": "phoenix_awakened",
+    "passive": { "name": "Das Cinzas", "kind": "RebirthOnce", "value": 0.4, "awakenedValue": 0.6 }
   }
 ]

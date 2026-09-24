@@ -7,27 +7,14 @@ namespace Sigilos.Core.Battle
 	public static class AutoBattle
 	{
 		/// <summary>Devolve verdadeiro na vitória.</summary>
-		public static bool Run(BattleSession session, Posture posture)
+		public static bool Run(BattleSession session)
 		{
 			session.Start();
 			while (!session.IsOver)
 			{
 				var turn = session.BeginTurn();
-				if (!turn.NeedsDecision)
-					continue;
-
-				switch (turn.Actor)
-				{
-					case ConjurerSeat:
-						session.Act(AutoPilot.ForConjurer(session, posture));
-						break;
-					case BattleUnit { Side: Side.Allies } ally:
-						session.Act(AutoPilot.ForAlly(session, ally, posture));
-						break;
-					case BattleUnit enemy:
-						session.Act(AutoPilot.ForEnemy(session, enemy));
-						break;
-				}
+				if (turn.NeedsDecision)
+					session.Act(AutoPilot.For(session, turn.Actor));
 			}
 
 			return session.Victory == true;

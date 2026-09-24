@@ -6,16 +6,17 @@
   "glyph": "Wall",
   "role": "Support",
   "leader": {"stat": "Health", "value": 0.2},
+  "awakening": {"name": "Nereia", "stat": "Resistance", "value": 0.25},
   "basic": {
     "name": "Orvalho",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.0},
       {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0},
-      {"kind": "Heal", "target": "LowestAlly", "power": 0.16}
+      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Heal", "target": "LowestAlly", "power": 0.2}
     ]
   },
   "glyphSkill": {
@@ -25,10 +26,10 @@
       {"kind": "Heal", "target": "AllAllies", "power": 0.2},
       {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
     ],
-    "enhanceCost": 3,
+    "enhanceCost": 6,
     "enhancedEffects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.2},
-      {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2},
+      {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+      {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
       {"kind": "Cleanse", "target": "AllAllies"}
     ]
   }

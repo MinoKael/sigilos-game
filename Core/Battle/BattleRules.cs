@@ -11,17 +11,20 @@ namespace Sigilos.Core.Battle
 		public const double FullImpeto = 100;
 
 		/// <summary>Perde quem não vencer em 30 rodadas. Uma rodada é o tempo que Velocidade 100 leva
-		/// para encher a barra: o Conjurador (Velocidade 100) age uma vez por rodada.</summary>
+		/// para encher a barra.</summary>
 		public const int RoundLimit = 30;
 
-		// Éter: recurso único do time, de 0 a 10.
+		// Éter: recurso único do time, de 0 a 10, só para aprimorar habilidades no manual.
+		// Básico não gera Éter; Glifo e inimigo derrubado geram 1. Todo aprimoramento custa pelo menos
+		// MinEnhanceCost, mais do que um turno rende: não existe ciclo de usa-e-ganha.
 		public const int MaxEther = 10;
-		public const int BasicEtherGain = 1;
-		public const int GlyphEtherGain = 2;
+		public const int BasicEtherGain = 0;
+		public const int GlyphEtherGain = 1;
 		public const int KillEtherGain = 1;
+		public const int MinEnhanceCost = 2;
 
 		// Dano: D = ATQ × M × K / (K + DEF) × E × C.
-		public const double DefenseConstant = 100;
+		public const double DefenseConstant = 600;
 		public const double CritMultiplier = 1.5;
 		public const double AdvantageMultiplier = 1.25;
 		public const double DisadvantageMultiplier = 0.75;

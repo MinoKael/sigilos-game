@@ -25,24 +25,19 @@ namespace Sigilos.Core.Content
 
 		private readonly Dictionary<string, SummonDefinition> _summonsById;
 		private readonly Dictionary<string, EnemyDefinition> _enemiesById;
-		private readonly Dictionary<string, PageDefinition> _pagesById;
 
 		public GameDatabase(
 			IReadOnlyDictionary<Role, StatBlock> roles,
 			IReadOnlyList<FamilyDefinition> families,
 			IReadOnlyList<SummonDefinition> summons,
 			IReadOnlyList<EnemyDefinition> enemies,
-			IReadOnlyList<StageDefinition> stages,
-			IReadOnlyList<PageDefinition> pages,
-			IReadOnlyList<ConjurerDefinition> conjurers)
+			IReadOnlyList<StageDefinition> stages)
 		{
 			Roles = roles;
 			Families = families;
 			Summons = summons;
 			Enemies = enemies;
 			Stages = stages.OrderBy(s => s.Number).ToList();
-			Pages = pages;
-			Conjurers = conjurers;
 
 			var familiesById = families.ToDictionary(f => f.Id);
 			foreach (var summon in summons)
@@ -53,10 +48,9 @@ namespace Sigilos.Core.Content
 
 			_summonsById = summons.ToDictionary(s => s.Id);
 			_enemiesById = enemies.ToDictionary(e => e.Id);
-			_pagesById = pages.ToDictionary(p => p.Id);
 		}
 
-		/// <summary>Atributos de base por papel, no nível 60 e com 5 estrelas (GDD, seção 15).</summary>
+		/// <summary>Atributos de base por papel, no nível 40, com 5 estrelas e sem Despertar.</summary>
 		public IReadOnlyDictionary<Role, StatBlock> Roles { get; }
 
 		public IReadOnlyList<FamilyDefinition> Families { get; }
@@ -66,35 +60,25 @@ namespace Sigilos.Core.Content
 		/// <summary>Em ordem de número.</summary>
 		public IReadOnlyList<StageDefinition> Stages { get; }
 
-		public IReadOnlyList<PageDefinition> Pages { get; }
-		public IReadOnlyList<ConjurerDefinition> Conjurers { get; }
-
 		public SummonDefinition Summon(string id) => _summonsById[id];
 		public EnemyDefinition Enemy(string id) => _enemiesById[id];
-		public PageDefinition Page(string id) => _pagesById[id];
 		public StageDefinition Stage(int number) => Stages.First(s => s.Number == number);
-		public ConjurerDefinition Conjurer(string id) => Conjurers.First(c => c.Id == id);
 
 		public bool HasSummon(string id) => _summonsById.ContainsKey(id);
-		public bool HasPage(string id) => _pagesById.ContainsKey(id);
 
 		public static GameDatabase FromJson(
 			string roles,
 			string families,
 			IEnumerable<string> summons,
 			string enemies,
-			string stages,
-			string pages,
-			string conjurers)
+			string stages)
 		{
 			return new GameDatabase(
 				Parse<Dictionary<Role, StatBlock>>(roles, "roles.json"),
 				Parse<List<FamilyDefinition>>(families, "families.json"),
 				summons.Select(text => Parse<SummonDefinition>(text, "summons/*.json")).ToList(),
 				Parse<List<EnemyDefinition>>(enemies, "enemies.json"),
-				Parse<List<StageDefinition>>(stages, "stages.json"),
-				Parse<List<PageDefinition>>(pages, "pages.json"),
-				Parse<List<ConjurerDefinition>>(conjurers, "conjurers.json"));
+				Parse<List<StageDefinition>>(stages, "stages.json"));
 		}
 
 		private static T Parse<T>(string json, string file)
@@ -123,14 +107,18 @@ namespace Sigilos.Core.Content
 			{
 				if (family.Rarity is < 1 or > 5)
 					yield return $"Família {family.Id}: raridade {family.Rarity} fora de 1 a 5.";
-				if (family.Image.Length == 0)
-					yield return $"Família {family.Id}: sem imagem.";
+				if (family.Image.Length == 0 || family.AwakenedImage.Length == 0)
+					yield return $"Família {family.Id}: falta a imagem normal ou a do Despertar.";
+				if (family.Passive.AwakenedValue < family.Passive.Value)
+					yield return $"Família {family.Id}: a Assinatura desperta é mais fraca que a normal.";
 			}
 
 			foreach (var summon in Summons)
 			{
 				if (Families.All(f => f.Id != summon.FamilyId))
 					yield return $"Invocação {summon.Id}: família '{summon.FamilyId}' não existe.";
+				if (summon.Awakening.Name.Length == 0)
+					yield return $"Invocação {summon.Id}: sem nome de Despertar.";
 				if (summon.GlyphSkill.Cooldown <= 0)
 					yield return $"Invocação {summon.Id}: habilidade de Glifo sem recarga.";
 				foreach (var problem in ValidateSkill(summon.Basic).Concat(ValidateSkill(summon.GlyphSkill)))
@@ -155,6 +143,8 @@ namespace Sigilos.Core.Content
 					yield return $"Fases: esperava a fase {i + 1}, veio a {stage.Number}.";
 				if (stage.Waves.Count is < 1 or > MaxWaves)
 					yield return $"Fase {stage.Number}: {stage.Waves.Count} ondas (de 1 a {MaxWaves}).";
+				if (stage.RuneGrade is < 1 or > 5)
+					yield return $"Fase {stage.Number}: runa de {stage.RuneGrade} estrelas (de 1 a 5).";
 				foreach (var wave in stage.Waves)
 				{
 					if (wave.Count is < 1 or > MaxEnemiesPerWave)
@@ -163,17 +153,6 @@ namespace Sigilos.Core.Content
 						yield return $"Fase {stage.Number}: inimigo '{slot.Enemy}' não existe.";
 				}
 			}
-
-			foreach (var page in Pages)
-			{
-				if (page.Circle is < 1 or > 3)
-					yield return $"Página {page.Id}: Círculo {page.Circle} fora de 1 a 3.";
-				if (page.Glyph == Glyph.Door)
-					yield return $"Página {page.Id}: Porta ainda não tem fórmula no MVP.";
-			}
-
-			if (Conjurers.Count == 0)
-				yield return "conjurers.json: nenhum Conjurador.";
 		}
 
 		private static IEnumerable<string> ValidateSkill(SkillDefinition skill)

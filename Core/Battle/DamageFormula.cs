@@ -9,15 +9,15 @@ namespace Sigilos.Core.Battle
 	/// </summary>
 	public static class DamageFormula
 	{
-		public static double Compute(Caster caster, BattleUnit target, double power, double ignoreDefense, bool crit)
+		public static double Compute(BattleUnit attacker, BattleUnit target, double power, double ignoreDefense, bool crit)
 		{
 			var defense = target.Defense * (1 - Math.Clamp(ignoreDefense, 0, 1));
 			var mitigation = BattleRules.DefenseConstant / (BattleRules.DefenseConstant + defense);
-			var element = caster.Element is { } attackerElement ? ElementChart.Multiplier(attackerElement, target.Element) : 1;
-			var critical = crit ? BattleRules.CritMultiplier + caster.CritDamage : 1;
+			var element = ElementChart.Multiplier(attacker.Element, target.Element);
+			var critical = crit ? BattleRules.CritMultiplier + attacker.Stats.CritDamage : 1;
 			var curse = target.Has(StatusKind.Curse) ? 1 + BattleRules.CurseBonus : 1;
 
-			var damage = caster.Attack * power * caster.SkillPower * mitigation * element * critical * curse;
+			var damage = attacker.Attack * power * attacker.SkillPower * mitigation * element * critical * curse;
 			return Math.Max(1, Math.Round(damage));
 		}
 	}

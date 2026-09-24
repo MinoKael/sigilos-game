@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
+using Sigilos.Core.Runes;
 
 namespace Sigilos.Tests
 {
@@ -22,25 +23,13 @@ namespace Sigilos.Tests
 				families: Read("families.json"),
 				summons: Directory.GetFiles(Path.Combine(data, "summons"), "*.json").OrderBy(f => f).Select(File.ReadAllText),
 				enemies: Read("enemies.json"),
-				stages: Read("stages.json"),
-				pages: Read("pages.json"),
-				conjurers: Read("conjurers.json"));
+				stages: Read("stages.json"));
 		}
 
 		public static readonly SkillDefinition Strike = new()
 		{
 			Name = "Golpe",
 			Effects = new[] { new EffectDefinition { Kind = EffectKind.Damage, Power = 1 } },
-		};
-
-		public static readonly ConjurerDefinition Conjurer = new()
-		{
-			Id = "teste",
-			Name = "Conjurador de Teste",
-			Speed = 100,
-			Power = 100,
-			PageSlots = 4,
-			ChannelGain = 2,
 		};
 
 		/// <summary>Unidade sem crítico, sem Resistência, com Ataque 100 e Defesa 0 por padrão.</summary>
@@ -54,49 +43,34 @@ namespace Sigilos.Tests
 			Element element = Element.Fire,
 			SkillDefinition? basic = null,
 			SkillDefinition? glyphSkill = null,
-			PassiveDefinition? passive = null)
+			PassiveDefinition? passive = null,
+			RuneSetEffects? runeEffects = null)
 		{
 			var stats = new StatBlock { Health = health, Attack = attack, Defense = defense, Speed = speed };
-			return new BattleUnit(name, name, "", side, element, null, stats, basic ?? Strike, glyphSkill, passive, 1);
+			return new BattleUnit(name, name, "", side, element, null, 1, false, stats, basic ?? Strike, glyphSkill, passive, 1, runeEffects ?? RuneSetEffects.None);
 		}
 
-		/// <summary>Uma luta de uma onda só, com o Conjurador de teste e as páginas pedidas.</summary>
-		public static BattleSession Session(
-			IReadOnlyList<BattleUnit> allies,
-			IReadOnlyList<BattleUnit> enemies,
-			IReadOnlyList<PageSlot>? pages = null,
-			double conjurerSpeed = 100,
-			int seed = 1)
+		/// <summary>Uma luta de uma onda só.</summary>
+		public static BattleSession Session(IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> enemies, int seed = 1)
 		{
 			foreach (var ally in allies)
 				ally.Team = allies;
 			foreach (var enemy in enemies)
 				enemy.Team = enemies;
 
-			var conjurer = new ConjurerSeat(Conjurer with { Speed = conjurerSpeed }, 100, pages ?? new List<PageSlot>());
-			return new BattleSession(allies, new[] { enemies }, conjurer, seed);
+			return new BattleSession(allies, new[] { enemies }, seed);
 		}
 
-		/// <summary>Avança até a vez de <paramref name="unit"/>, resolvendo os outros turnos no automático.</summary>
-		public static void RunUntilTurnOf(BattleSession session, ITurnTaker unit)
+		/// <summary>Avança até a vez de <paramref name="unit"/>, resolvendo os outros turnos com o básico.</summary>
+		public static void RunUntilTurnOf(BattleSession session, BattleUnit unit)
 		{
 			while (!session.IsOver)
 			{
 				var turn = session.BeginTurn();
 				if (ReferenceEquals(turn.Actor, unit) && turn.NeedsDecision)
 					return;
-				if (!turn.NeedsDecision)
-					continue;
-
-				switch (turn.Actor)
-				{
-					case ConjurerSeat:
-						session.Act(ConjurerAction.Channel);
-						break;
-					case BattleUnit actor:
-						session.Act(new UnitAction(SkillSlot.Basic, false, null));
-						break;
-				}
+				if (turn.NeedsDecision)
+					session.Act(new UnitAction(SkillSlot.Basic, false, null));
 			}
 		}
 	}

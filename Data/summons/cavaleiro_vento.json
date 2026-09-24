@@ -6,15 +6,16 @@
   "glyph": "Eye",
   "role": "Support",
   "leader": {"stat": "Speed", "value": 0.1},
+  "awakening": {"name": "Dom Vendaval", "stat": "Speed", "value": 0.1},
   "basic": {
     "name": "Estocada Veloz",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.0}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0},
-      {"kind": "Impeto", "target": "AllAllies", "power": 10}
+      {"kind": "Damage", "target": "Target", "power": 1.4},
+      {"kind": "Impeto", "target": "AllAllies", "power": 15}
     ]
   },
   "glyphSkill": {
@@ -23,9 +24,9 @@
     "effects": [
       {"kind": "Impeto", "target": "AllAllies", "power": 25}
     ],
-    "enhanceCost": 2,
+    "enhanceCost": 5,
     "enhancedEffects": [
-      {"kind": "Impeto", "target": "AllAllies", "power": 25},
+      {"kind": "Impeto", "target": "AllAllies", "power": 40},
       {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
     ]
   }

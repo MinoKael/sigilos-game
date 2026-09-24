@@ -1,12 +1,12 @@
 # Sigilos
 
-Gacha de fantasia offline para um jogador: colecione invocações, monte o Grimório e comande batalhas
-por turnos em que a magia é montada símbolo por símbolo. O design completo está em
-[SIGILOS — Game Design Document.md](SIGILOS%20—%20Game%20Design%20Document.md).
+Gacha de fantasia offline para um jogador, com base mecânica e visual em Summoners War: colecione
+invocações, suba o nível delas até 40, desperte, equipe runas e comande batalhas por turnos com barra
+de Ímpeto. O design completo está em [SIGILOS — Game Design Document.md](SIGILOS%20—%20Game%20Design%20Document.md).
 
-Este repositório é o **MVP** (fases 1 e 2 do roadmap do GDD): combate com Ímpeto e Éter, Erudito com
-Grimório de páginas prontas, automático com Postura de Éter, gacha com garantia, ociosidade, nível
-compartilhado e a região 1 (20 fases).
+Este repositório é o **MVP**: combate com Ímpeto e Éter (Éter só no manual), gacha com garantia,
+ociosidade, nível 1–40 por invocação, Despertar, runas com 6 espaços e 8 conjuntos, tela de Monstros,
+Compêndio e a região 1 (20 fases).
 
 ## Rodar
 
@@ -31,14 +31,14 @@ dotnet run --project Tests -- --luta=10
 ferramenta de balanceamento. `--luta=N` imprime uma luta da fase N turno a turno.
 
 Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro save;
-`--tela=campanha|invocar|time|batalha` abre essa tela direto.
+`--tela=campanha|invocar|monstros|runas|compendio|batalha` abre essa tela direto.
 
 ## Pastas
 
 | Pasta | O que tem | Depende de |
 | --- | --- | --- |
 | `Core/` | Regras do jogo em C# puro, sem Godot | nada |
-| `Data/` | Conteúdo em JSON: invocações, inimigos, fases, páginas | — |
+| `Data/` | Conteúdo em JSON: papéis, famílias, invocações, inimigos, fases | — |
 | `UI/` | Telas e componentes Godot. Mostram e avisam por evento | Core |
 | `GameEntry/` | Nó raiz: carrega dados e save, troca telas, aplica regras | Core, UI |
 | `Assets/` | SVGs do Wikimedia Commons e o shader de traço | — |
@@ -50,7 +50,7 @@ Detalhes, regras de dependência e onde mexer para cada tipo de mudança: [docs/
 ## Arte
 
 Toda imagem vem do Wikimedia Commons: runas (Glifos) e símbolos alquímicos (elementos) em domínio
-público, criaturas e ícones do game-icons.net (CC BY 3.0). Lista e autores em
+público, criaturas (normais e despertas) e ícones do game-icons.net (CC BY 3.0). Lista e autores em
 [Assets/CREDITOS.md](Assets/CREDITOS.md). O shader `doodle` e parte dos SVGs vieram de Rabiscos&Runas.
 
 Para baixar de novo (o Python do Inkscape não tem certificados SSL, use `py`; se o Wikimedia

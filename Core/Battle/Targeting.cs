@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
@@ -13,11 +14,11 @@ namespace Sigilos.Core.Battle
 	public static class Targeting
 	{
 		/// <summary>Inimigos que <paramref name="caster"/> pode escolher como alvo único.</summary>
-		public static IReadOnlyList<BattleUnit> Choosable(Caster caster, IReadOnlyList<BattleUnit> opponents)
+		public static IReadOnlyList<BattleUnit> Choosable(BattleUnit caster, IReadOnlyList<BattleUnit> opponents)
 		{
 			var alive = opponents.Where(u => u.IsAlive).ToList();
 
-			var taunter = caster.Unit?.Find(StatusKind.Taunt)?.Source;
+			var taunter = caster.Find(StatusKind.Taunt)?.Source;
 			if (taunter != null && alive.Contains(taunter))
 				return new[] { taunter };
 
@@ -29,7 +30,7 @@ namespace Sigilos.Core.Battle
 		/// O alvo principal de uma habilidade: o escolhido, se ainda vale; senão, o primeiro que vale.
 		/// Nulo quando não sobrou inimigo.
 		/// </summary>
-		public static BattleUnit? PickMain(Caster caster, BattleUnit? chosen, IReadOnlyList<BattleUnit> opponents)
+		public static BattleUnit? PickMain(BattleUnit caster, BattleUnit? chosen, IReadOnlyList<BattleUnit> opponents)
 		{
 			var choosable = Choosable(caster, opponents);
 			return chosen != null && choosable.Contains(chosen) ? chosen : choosable.FirstOrDefault();
@@ -38,52 +39,17 @@ namespace Sigilos.Core.Battle
 		/// <summary>As unidades atingidas por um efeito. <paramref name="main"/> vem de <see cref="PickMain"/>.</summary>
 		public static IReadOnlyList<BattleUnit> Resolve(
 			TargetKind kind,
-			Caster caster,
+			BattleUnit caster,
 			BattleUnit? main,
 			IReadOnlyList<BattleUnit> allies,
-			IReadOnlyList<BattleUnit> opponents)
+			IReadOnlyList<BattleUnit> opponents) => kind switch
 		{
-			switch (kind)
-			{
-				case TargetKind.Target:
-					return main is { IsAlive: true } ? new List<BattleUnit> { main } : new List<BattleUnit>();
-
-				case TargetKind.TwoEnemies:
-				{
-					var hit = new List<BattleUnit>();
-					if (main is { IsAlive: true })
-						hit.Add(main);
-
-					var second = opponents
-						.Where(u => u.IsAlive && u != main && !u.Has(StatusKind.Hidden))
-						.OrderBy(u => u.HealthFraction)
-						.FirstOrDefault();
-					if (second != null)
-						hit.Add(second);
-					return hit;
-				}
-
-				case TargetKind.AllEnemies:
-					return opponents.Where(u => u.IsAlive).ToList();
-
-				case TargetKind.Self:
-					return caster.Unit is { IsAlive: true } self ? new List<BattleUnit> { self } : new List<BattleUnit>();
-
-				case TargetKind.LowestAlly:
-					return allies.Where(u => u.IsAlive).OrderBy(u => u.HealthFraction).Take(1).ToList();
-
-				case TargetKind.TwoAllies:
-					return allies.Where(u => u.IsAlive).OrderBy(u => u.HealthFraction).Take(2).ToList();
-
-				case TargetKind.AllAllies:
-					return allies.Where(u => u.IsAlive).ToList();
-
-				case TargetKind.DeadAlly:
-					return allies.Where(u => !u.IsAlive && !u.PendingRebirth).Take(1).ToList();
-
-				default:
-					return new List<BattleUnit>();
-			}
-		}
+			TargetKind.Target => main is { IsAlive: true } ? new[] { main } : Array.Empty<BattleUnit>(),
+			TargetKind.AllEnemies => opponents.Where(u => u.IsAlive).ToList(),
+			TargetKind.Self => caster.IsAlive ? new[] { caster } : Array.Empty<BattleUnit>(),
+			TargetKind.LowestAlly => allies.Where(u => u.IsAlive).OrderBy(u => u.HealthFraction).Take(1).ToList(),
+			TargetKind.AllAllies => allies.Where(u => u.IsAlive).ToList(),
+			_ => Array.Empty<BattleUnit>(),
+		};
 	}
 }

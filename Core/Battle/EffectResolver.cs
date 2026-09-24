@@ -6,8 +6,8 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Battle
 {
 	/// <summary>
-	/// Faz cada <see cref="EffectDefinition"/> acontecer: dano, cura, escudo, efeitos, Ímpeto. Serve
-	/// igual para habilidades e páginas — o <see cref="Caster"/> esconde a diferença.
+	/// Faz cada <see cref="EffectDefinition"/> acontecer: dano, cura, escudo, efeitos, Ímpeto. Aplica
+	/// também o que os conjuntos de runas fazem a cada golpe (dreno da Ossada, atordoar do Laço).
 	///
 	/// Quem escolhe <b>quando</b> resolver é o <see cref="BattleSession"/>; esta classe só resolve e
 	/// avisa a sessão do que aconteceu (eventos, quedas, Éter).
@@ -21,7 +21,7 @@ namespace Sigilos.Core.Battle
 			_session = session;
 		}
 
-		public void Resolve(Caster caster, IReadOnlyList<EffectDefinition> effects, BattleUnit? chosen)
+		public void Resolve(BattleUnit caster, IReadOnlyList<EffectDefinition> effects, BattleUnit? chosen)
 		{
 			var allies = _session.SideOf(caster.Side);
 			var opponents = _session.SideOf(caster.Side == Side.Allies ? Side.Enemies : Side.Allies);
@@ -47,11 +47,10 @@ namespace Sigilos.Core.Battle
 							Heal(target, effect.Power * target.MaxHealth * caster.SkillPower);
 							break;
 						case EffectKind.Shield:
-							var basis = caster.Unit?.MaxHealth ?? target.MaxHealth;
-							GiveShield(target, effect.Power * basis * caster.SkillPower, effect.Turns);
+							GiveShield(target, effect.Power * caster.MaxHealth * caster.SkillPower, effect.Turns);
 							break;
 						case EffectKind.Status:
-							ApplyStatus(caster, target, effect);
+							ApplyStatus(caster, target, effect.Status, effect.Chance, effect.Turns);
 							break;
 						case EffectKind.Impeto:
 							PushImpeto(caster, target, effect);
@@ -59,16 +58,13 @@ namespace Sigilos.Core.Battle
 						case EffectKind.Cleanse:
 							Cleanse(target);
 							break;
-						case EffectKind.Revive:
-							Revive(target, effect.Power);
-							break;
 					}
 				}
 
-				if (effect.Kind == EffectKind.Damage && caster.Unit?.Find(StatusKind.Foresight) is { } foresight)
+				if (effect.Kind == EffectKind.Damage && caster.Find(StatusKind.Foresight) is { } foresight)
 				{
-					caster.Unit.RemoveStatus(foresight);
-					_session.Emit(new StatusRemoved(caster.Unit, StatusKind.Foresight));
+					caster.RemoveStatus(foresight);
+					_session.Emit(new StatusRemoved(caster, StatusKind.Foresight));
 				}
 			}
 		}
@@ -94,13 +90,13 @@ namespace Sigilos.Core.Battle
 		}
 
 		/// <summary>Devolve verdadeiro se o alvo caiu.</summary>
-		private bool Damage(Caster caster, BattleUnit target, EffectDefinition effect)
+		private bool Damage(BattleUnit caster, BattleUnit target, EffectDefinition effect)
 		{
-			var element = caster.Element is { } attacker ? ElementChart.Multiplier(attacker, target.Element) : 1;
+			var element = ElementChart.Multiplier(caster.Element, target.Element);
 
 			for (var hit = 0; hit < effect.Hits && target.IsAlive; hit++)
 			{
-				if (caster.Unit?.Has(StatusKind.Blind) == true && _session.Random.NextDouble() < BattleRules.BlindMissChance)
+				if (caster.Has(StatusKind.Blind) && _session.Random.NextDouble() < BattleRules.BlindMissChance)
 				{
 					_session.Emit(new Missed(target));
 					continue;
@@ -113,21 +109,25 @@ namespace Sigilos.Core.Battle
 					continue;
 				}
 
-				var crit = caster.Unit?.Has(StatusKind.Foresight) == true || _session.Random.NextDouble() < caster.Crit;
+				var crit = caster.Has(StatusKind.Foresight) || _session.Random.NextDouble() < caster.Stats.Crit;
 				var amount = DamageFormula.Compute(caster, target, effect.Power, effect.IgnoreDefense, crit);
 				var absorbed = Absorb(target, amount);
 				var dealt = amount - absorbed;
 				target.Health = Math.Max(0, target.Health - dealt);
 				_session.Emit(new Damaged(target, (int)dealt, (int)absorbed, crit, element));
 
-				if (effect.Drain > 0)
-					Drain(caster, effect.Drain * amount);
+				var drain = effect.Drain + caster.RuneEffects.Drain;
+				if (drain > 0)
+					Heal(caster, drain * amount);
 
 				if (!target.IsAlive)
 				{
 					_session.KnockOut(target);
 					return true;
 				}
+
+				if (caster.RuneEffects.StunOnHit > 0)
+					ApplyStatus(caster, target, StatusKind.Stun, caster.RuneEffects.StunOnHit, 1);
 			}
 
 			return false;
@@ -146,14 +146,6 @@ namespace Sigilos.Core.Battle
 			return absorbed;
 		}
 
-		/// <summary>Quem drena recupera Vida. O Conjurador não tem Vida: o dreno das páginas cura o aliado mais ferido.</summary>
-		private void Drain(Caster caster, double amount)
-		{
-			var receiver = caster.Unit ?? _session.SideOf(Side.Allies).Where(u => u.IsAlive).MinBy(u => u.HealthFraction);
-			if (receiver != null)
-				Heal(receiver, amount);
-		}
-
 		private void Heal(BattleUnit target, double amount)
 		{
 			if (!target.IsAlive)
@@ -167,52 +159,45 @@ namespace Sigilos.Core.Battle
 			_session.Emit(new Healed(target, (int)healed));
 		}
 
-		private void ApplyStatus(Caster caster, BattleUnit target, EffectDefinition effect)
+		private void ApplyStatus(BattleUnit caster, BattleUnit target, StatusKind status, double chance, int turns)
 		{
 			if (!target.IsAlive)
 				return;
 
 			var roll = _session.Random.NextDouble();
-			if (roll >= effect.Chance)
+			if (roll >= chance)
 				return;
 
-			if (BattleRules.IsNegative(effect.Status) && target.Side != caster.Side)
+			// Resistência do alvo menos o Foco de quem lança: a parte que sobra é a chance de barrar.
+			if (BattleRules.IsNegative(status) && target.Side != caster.Side)
 			{
-				var resisted = Math.Max(0, target.Stats.Resistance - caster.Focus);
-				if (roll >= effect.Chance * (1 - resisted))
+				var resisted = Math.Max(0, target.Stats.Resistance - caster.Stats.Focus);
+				if (roll >= chance * (1 - resisted))
 				{
 					_session.Emit(new Resisted(target));
 					return;
 				}
 			}
 
-			// A provocação aponta para quem provocou. Página não tem corpo: aponta para a Líder.
-			BattleUnit? source = null;
-			if (effect.Status == StatusKind.Taunt)
-			{
-				source = caster.Unit ?? _session.SideOf(caster.Side).FirstOrDefault(u => u.IsAlive);
-				if (source == null)
-					return;
-			}
-
-			var existing = target.Find(effect.Status);
-			if (effect.Status == StatusKind.Burn && target.Count(StatusKind.Burn) < BattleRules.MaxBurnStacks)
+			var source = status == StatusKind.Taunt ? caster : null;
+			var existing = target.Find(status);
+			if (status == StatusKind.Burn && target.Count(StatusKind.Burn) < BattleRules.MaxBurnStacks)
 				existing = null;
 
 			if (existing == null)
 			{
-				target.AddStatus(new StatusEffect(effect.Status, effect.Turns, 0, source) { Fresh = IsActing(target) });
+				target.AddStatus(new StatusEffect(status, turns, 0, source) { Fresh = IsActing(target) });
 			}
 			else
 			{
-				existing.Turns = Math.Max(existing.Turns, effect.Turns);
+				existing.Turns = Math.Max(existing.Turns, turns);
 				existing.Source = source ?? existing.Source;
 			}
 
-			_session.Emit(new StatusApplied(target, effect.Status, effect.Turns));
+			_session.Emit(new StatusApplied(target, status, turns));
 		}
 
-		private void PushImpeto(Caster caster, BattleUnit target, EffectDefinition effect)
+		private void PushImpeto(BattleUnit caster, BattleUnit target, EffectDefinition effect)
 		{
 			if (!target.IsAlive)
 				return;
@@ -220,7 +205,7 @@ namespace Sigilos.Core.Battle
 			// Atrasar inimigo passa pela Resistência, como qualquer efeito negativo.
 			if (effect.Power < 0 && target.Side != caster.Side)
 			{
-				var chance = effect.Chance * (1 - Math.Max(0, target.Stats.Resistance - caster.Focus));
+				var chance = effect.Chance * (1 - Math.Max(0, target.Stats.Resistance - caster.Stats.Focus));
 				if (_session.Random.NextDouble() >= chance)
 				{
 					_session.Emit(new Resisted(target));
@@ -242,17 +227,6 @@ namespace Sigilos.Core.Battle
 
 			target.RemoveStatus(negative);
 			_session.Emit(new StatusRemoved(target, negative.Kind));
-		}
-
-		private void Revive(BattleUnit target, double fraction)
-		{
-			if (target.IsAlive || target.PendingRebirth)
-				return;
-
-			target.Health = Math.Max(1, Math.Round(target.MaxHealth * fraction));
-			target.Impeto = 0;
-			target.ClearStatuses();
-			_session.Emit(new Revived(target));
 		}
 
 		private bool IsActing(BattleUnit unit) => ReferenceEquals(_session.Current, unit);

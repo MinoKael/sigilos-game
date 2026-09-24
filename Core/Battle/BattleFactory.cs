@@ -2,18 +2,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Progression;
+using Sigilos.Core.Runes;
 
 namespace Sigilos.Core.Battle
 {
 	/// <summary>
-	/// Monta uma <see cref="BattleSession"/> a partir de um time e de uma fase: calcula atributos
-	/// (papel, raridade, nível, Ecos, Liderança), cria as ondas e o Grimório com custos e Ressonância.
+	/// Monta uma <see cref="BattleSession"/> a partir de um time e de uma fase: atributos de cada
+	/// invocação pela mesma ficha que a tela de Monstros mostra (<see cref="SummonStats"/>), mais a
+	/// Liderança da primeira, e as ondas de inimigos no nível da fase.
 	/// </summary>
 	public static class BattleFactory
 	{
 		public static BattleSession Create(GameDatabase database, BattleTeam team, StageDefinition stage, int seed)
 		{
-			var allies = team.Members.Select(member => Ally(database, member, team)).ToList();
+			var leader = team.Members.FirstOrDefault()?.Summon.Leader;
+			var allies = team.Members.Select(member => Ally(database, member, leader)).ToList();
 			foreach (var ally in allies)
 				ally.Team = allies;
 
@@ -21,31 +24,32 @@ namespace Sigilos.Core.Battle
 				.Select(wave => Wave(database, wave, stage.Level))
 				.ToList();
 
-			return new BattleSession(allies, waves, Conjurer(team), seed);
+			return new BattleSession(allies, waves, seed);
 		}
 
-		private static BattleUnit Ally(GameDatabase database, TeamMember member, BattleTeam team)
+		private static BattleUnit Ally(GameDatabase database, TeamMember member, LeaderDefinition? leader)
 		{
 			var summon = member.Summon;
-			var stats = Growth.Stats(database.Roles[summon.Role], summon.Rarity, team.Level, member.Echoes);
+			var sheet = SummonStats.For(database.Roles[summon.Role], summon, member.Level, member.Echoes, member.Awakened, member.Runes.ToList());
 
-			// A Liderança da primeira invocação vale para o time inteiro.
-			var leader = team.Members.FirstOrDefault()?.Summon.Leader;
-			if (leader != null)
-				stats = WithLeader(stats, leader);
+			// A Liderança da primeira invocação vale para o time inteiro, sobre o total com runas.
+			var stats = leader == null ? sheet.Total : sheet.Total.WithBonus(leader.Stat, leader.Value);
 
 			return new BattleUnit(
 				summon.Id,
-				summon.Name,
-				summon.Family.Image,
+				summon.NameFor(member.Awakened),
+				summon.ImageFor(member.Awakened),
 				Side.Allies,
 				summon.Element,
 				summon.Glyph,
+				member.Level,
+				member.Awakened,
 				stats,
 				summon.Basic,
 				summon.GlyphSkill,
 				summon.Family.Passive,
-				Growth.SkillPower(member.Echoes));
+				Growth.SkillPower(member.Echoes),
+				sheet.Runes.Effects);
 		}
 
 		private static IReadOnlyList<BattleUnit> Wave(GameDatabase database, IReadOnlyList<StageEnemy> slots, int level)
@@ -54,7 +58,7 @@ namespace Sigilos.Core.Battle
 			{
 				var enemy = database.Enemy(slot.Enemy);
 				var stats = Growth.Stats(database.Roles[enemy.Role], enemy.Rarity, level);
-				stats = stats with { Health = stats.Health * enemy.HealthScale };
+				stats = stats with { Health = stats.Health * enemy.HealthScale, Attack = stats.Attack * enemy.AttackScale };
 				return new BattleUnit(
 					enemy.Id,
 					enemy.Name,
@@ -62,41 +66,19 @@ namespace Sigilos.Core.Battle
 					Side.Enemies,
 					slot.Element,
 					null,
+					level,
+					false,
 					stats,
 					enemy.Basic,
 					enemy.GlyphSkill,
 					null,
-					1);
+					1,
+					RuneSetEffects.None);
 			}).ToList();
 
 			foreach (var unit in units)
 				unit.Team = units;
 			return units;
-		}
-
-		private static ConjurerSeat Conjurer(BattleTeam team)
-		{
-			var glyphCounts = team.Members
-				.GroupBy(m => m.Summon.Glyph)
-				.ToDictionary(g => g.Key, g => g.Count());
-
-			var pages = team.Pages
-				.Take(team.Conjurer.PageSlots)
-				.Select(page =>
-				{
-					var count = glyphCounts.TryGetValue(page.Glyph, out var n) ? n : 0;
-					return new PageSlot(page, PageFormula.Cost(page, team.Conjurer, count), count > 0, PageFormula.Effects(page));
-				})
-				.ToList();
-
-			return new ConjurerSeat(team.Conjurer, Growth.ConjurerPower(team.Conjurer.Power, team.Level), pages);
-		}
-
-		private static StatBlock WithLeader(StatBlock stats, LeaderDefinition leader)
-		{
-			var current = stats.Get(leader.Stat);
-			var absolute = leader.Stat is Stat.Health or Stat.Attack or Stat.Defense or Stat.Speed;
-			return stats.With(leader.Stat, absolute ? current * (1 + leader.Value) : current + leader.Value);
 		}
 	}
 }

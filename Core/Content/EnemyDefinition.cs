@@ -13,8 +13,11 @@ namespace Sigilos.Core.Content
 		/// <summary>Estrelas, de 1 a 5: escala os atributos como nas invocações.</summary>
 		public int Rarity { get; init; }
 
-		/// <summary>Multiplica a Vida. Chefes usam mais de 1.</summary>
+		/// <summary>Multiplica a Vida. Chefes usam mais.</summary>
 		public double HealthScale { get; init; } = 1;
+
+		/// <summary>Multiplica o Ataque. Compensa a raridade baixa: inimigo não tem runa nem aprimoramento.</summary>
+		public double AttackScale { get; init; } = 1;
 
 		public string Image { get; init; } = "";
 		public SkillDefinition Basic { get; init; } = new();

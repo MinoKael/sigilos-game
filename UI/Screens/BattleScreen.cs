@@ -13,12 +13,14 @@ using Side = Sigilos.Core.Battle.Side;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A luta na tela. Quem decide as regras é o <see cref="BattleSession"/>; esta tela só:
+	/// A luta na tela, no molde de Summoners War. Quem decide as regras é o <see cref="BattleSession"/>;
+	/// esta tela só:
 	///
 	/// 1. pede o próximo turno,
 	/// 2. anima os <see cref="BattleEvent"/> que voltam,
-	/// 3. na vez de um aliado ou do Conjurador, espera o clique do jogador (manual) ou pergunta ao
-	///    <see cref="AutoPilot"/> (automático). O automático pode ser ligado e desligado no meio.
+	/// 3. na vez de um aliado, espera o clique do jogador (manual) ou pergunta ao
+	///    <see cref="AutoPilot"/> (automático). O automático pode ser ligado e desligado no meio e
+	///    nunca gasta Éter: aprimorar é decisão do jogador.
 	///
 	/// No fim avisa <see cref="Finished"/>; o GameRoot aplica a recompensa e chama <see cref="ShowResult"/>.
 	/// </summary>
@@ -28,38 +30,35 @@ namespace Sigilos.UI.Screens
 
 		private readonly BattleSession _session;
 		private readonly StageDefinition _stage;
-		private readonly Posture _posture;
 		private readonly Dictionary<BattleUnit, UnitView> _views = new();
 
 		private readonly GridContainer _allies = new() { Columns = 2 };
 		private readonly GridContainer _enemies = new() { Columns = 3 };
-		private readonly Label _wave = new() { ThemeTypeVariation = GameTheme.OnStone };
-		private readonly Label _round = new() { ThemeTypeVariation = GameTheme.OnStone };
+		private readonly Label _wave = new();
+		private readonly Label _round = new();
 		private readonly Label _banner = new();
-		private readonly Label _prompt = new() { ThemeTypeVariation = GameTheme.OnStone };
+		private readonly Label _prompt = new();
 		private readonly HBoxContainer _actions = new();
 		private readonly EtherGauge _ether = new();
+		private readonly Label _etherHint = new() { ThemeTypeVariation = GameTheme.Faded };
 		private readonly Button _autoButton = new() { ToggleMode = true };
 		private readonly Button _speedButton = new();
-		private readonly PanelContainer _conjurerCard = new();
-		private readonly ProgressBar _conjurerImpeto = new() { ShowPercentage = false, CustomMinimumSize = new Vector2(0, 6), MaxValue = 100 };
-		private TurnOrderBar _order = null!;
+		private readonly TurnOrderBar _order = new();
 
 		private bool _auto;
 		private int _speedIndex;
 		private bool _closed;
 
-		/// <summary>A decisão que a tela está esperando do jogador; nula quando ninguém espera.</summary>
+		/// <summary>Decide no automático a vez que está esperando o jogador; nulo quando ninguém espera.</summary>
 		private Action? _decideAutomatically;
 
 		/// <summary>O que um clique em unidade faz agora; nulo fora da escolha de alvo.</summary>
 		private Action<BattleUnit>? _pickTarget;
 
-		public BattleScreen(BattleSession session, StageDefinition stage, Posture posture, bool auto)
+		public BattleScreen(BattleSession session, StageDefinition stage, bool auto)
 		{
 			_session = session;
 			_stage = stage;
-			_posture = posture;
 			_auto = auto;
 		}
 
@@ -78,10 +77,11 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 
 			page.AddChild(TopBar());
-			_order = new TurnOrderBar(_session.Conjurer.Definition.Image);
 			page.AddChild(_order);
 			page.AddChild(Field());
 			page.AddChild(BottomBar());
+			RefreshAuto();
+			_order.Show(_session.PredictOrder(8));
 
 			Run();
 		}
@@ -89,7 +89,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Mostra vitória ou derrota e o que a luta rendeu. <paramref name="reward"/> é nulo na derrota.</summary>
 		public void ShowResult(bool victory, StageReward? reward)
 		{
-			var overlay = new ColorRect { Color = new Color(0, 0, 0, 0.55f) };
+			var overlay = new ColorRect { Color = new Color(0, 0, 0, 0.6f) };
 			overlay.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(overlay);
 
@@ -98,7 +98,7 @@ namespace Sigilos.UI.Screens
 			overlay.AddChild(center);
 
 			var (panel, content) = Layout.Section(victory ? "Vitória" : "Derrota");
-			panel.CustomMinimumSize = new Vector2(420, 0);
+			panel.CustomMinimumSize = new Vector2(440, 0);
 			center.AddChild(panel);
 
 			var lines = new List<string>();
@@ -108,18 +108,23 @@ namespace Sigilos.UI.Screens
 					lines.Add("Primeira vitória nesta fase!");
 				if (reward.Scrolls > 0)
 					lines.Add($"+{Texts.Scrolls(reward.Scrolls)}");
-				lines.Add($"+{reward.Essence} Essência");
+				lines.Add($"+{reward.Essence} Essência   +{reward.Dust} Pó de Sigilo");
+				lines.Add($"+{reward.Experience} de experiência para cada invocação do time");
+				foreach (var id in reward.LevelUps)
+					lines.Add($"{_session.Allies.First(a => a.DefinitionId == id).Name} subiu de nível!");
+				if (reward.Rune is { } rune)
+					lines.Add($"Runa de {Texts.Name(rune.Set)} {Texts.Stars(rune.Grade)} (espaço {rune.Slot}): {Texts.Format(rune.Main, rune.MainValue)}");
 			}
 			else
 			{
 				lines.Add(_session.Round > BattleRules.RoundLimit
 					? $"O tempo acabou: {BattleRules.RoundLimit} rodadas."
 					: "Todas as invocações caíram.");
-				lines.Add("Eleve o nível no Santuário ou troque o time e o Grimório.");
+				lines.Add("Suba o nível, equipe runas ou desperte invocações em Monstros. No manual, o Éter paga aprimoramentos.");
 			}
 
 			foreach (var line in lines)
-				content.AddChild(new Label { Text = line, AutowrapMode = TextServer.AutowrapMode.WordSmart });
+				content.AddChild(new Label { Text = line, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(400, 0) });
 
 			var close = new Button { Text = "Continuar", CustomMinimumSize = new Vector2(0, 48) };
 			close.Pressed += Close;
@@ -130,22 +135,23 @@ namespace Sigilos.UI.Screens
 
 		private Control TopBar()
 		{
-			var bar = new PanelContainer { ThemeTypeVariation = GameTheme.DarkPanel };
+			var bar = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel };
 			var row = new HBoxContainer();
 			row.AddThemeConstantOverride("separation", 24);
 			bar.AddChild(row);
 
-			var title = new Label { Text = $"Fase {_stage.Number} · {_stage.Name}", ThemeTypeVariation = GameTheme.OnStone };
+			var title = new Label { Text = $"Fase {_stage.Number} · {_stage.Name}" };
 			title.AddThemeFontOverride("font", GameTheme.Serif);
 			title.AddThemeFontSizeOverride("font_size", 20);
+			title.AddThemeColorOverride("font_color", Palette.Gold);
 			row.AddChild(title);
 			row.AddChild(_wave);
 			row.AddChild(_round);
 			row.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill });
 
 			_autoButton.ButtonPressed = _auto;
+			_autoButton.TooltipText = "No automático as invocações agem sozinhas e o Éter não é usado.";
 			_autoButton.Toggled += SetAuto;
-			RefreshAutoText();
 			row.AddChild(_autoButton);
 
 			_speedButton.Text = "Velocidade 1×";
@@ -180,7 +186,6 @@ namespace Sigilos.UI.Screens
 			_banner.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_banner.AddThemeFontOverride("font", GameTheme.Serif);
 			_banner.AddThemeFontSizeOverride("font_size", 24);
-			_banner.AddThemeColorOverride("font_color", Palette.Bone);
 			field.AddChild(_banner);
 
 			_enemies.AddThemeConstantOverride("h_separation", 10);
@@ -192,30 +197,19 @@ namespace Sigilos.UI.Screens
 
 		private Control BottomBar()
 		{
-			var bottom = new HBoxContainer();
-			bottom.AddThemeConstantOverride("separation", 16);
+			var bottom = new VBoxContainer();
+			var etherRow = new HBoxContainer();
+			etherRow.AddThemeConstantOverride("separation", 16);
+			etherRow.AddChild(_ether);
+			etherRow.AddChild(_etherHint);
+			bottom.AddChild(etherRow);
 
-			_conjurerCard.CustomMinimumSize = new Vector2(150, 0);
-			_conjurerCard.TooltipText = $"{_session.Conjurer.Name}: fora de campo, não pode ser atacado. No turno dele, lança uma página ou canaliza Éter.";
-			var column = new VBoxContainer();
-			var row = new HBoxContainer();
-			row.AddChild(Doodle.Icon(Art.Creature(_session.Conjurer.Definition.Image), 40, Palette.Gold));
-			row.AddChild(new Label { Text = _session.Conjurer.Name, VerticalAlignment = VerticalAlignment.Center });
-			column.AddChild(row);
-			_conjurerImpeto.AddThemeStyleboxOverride("fill", GameTheme.Box(Palette.Gold, Palette.Gold, 0, 3, 0));
-			column.AddChild(_conjurerImpeto);
-			_conjurerCard.AddChild(column);
-			bottom.AddChild(_conjurerCard);
-
-			var right = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			right.AddChild(_ether);
-			var actionRow = new HBoxContainer();
+			var actionRow = new HBoxContainer { CustomMinimumSize = new Vector2(0, 44) };
 			actionRow.AddThemeConstantOverride("separation", 10);
 			actionRow.AddChild(_prompt);
 			_actions.AddThemeConstantOverride("separation", 8);
 			actionRow.AddChild(_actions);
-			right.AddChild(actionRow);
-			bottom.AddChild(right);
+			bottom.AddChild(actionRow);
 			return bottom;
 		}
 
@@ -237,16 +231,12 @@ namespace Sigilos.UI.Screens
 				if (!turn.NeedsDecision || _closed)
 					continue;
 
-				IReadOnlyList<BattleEvent> events = turn.Actor switch
-				{
-					ConjurerSeat => _session.Act(await DecideConjurer()),
-					BattleUnit { Side: Side.Allies } ally => _session.Act(await DecideAlly(ally)),
-					BattleUnit enemy => _session.Act(AutoPilot.ForEnemy(_session, enemy)),
-					_ => Array.Empty<BattleEvent>(),
-				};
+				var action = turn.Actor.Side == Side.Allies
+					? await DecideAlly(turn.Actor)
+					: AutoPilot.ForEnemy(_session, turn.Actor);
 				if (_closed)
 					return;
-				await Play(events);
+				await Play(_session.Act(action));
 			}
 
 			if (!_closed)
@@ -258,7 +248,7 @@ namespace Sigilos.UI.Screens
 		private Task<UnitAction> DecideAlly(BattleUnit ally)
 		{
 			if (_auto)
-				return Task.FromResult(AutoPilot.ForAlly(_session, ally, _posture));
+				return Task.FromResult(AutoPilot.ForAlly(_session, ally));
 
 			var decision = new TaskCompletionSource<UnitAction>(TaskCreationOptions.RunContinuationsAsynchronously);
 			void Decide(UnitAction action)
@@ -267,21 +257,20 @@ namespace Sigilos.UI.Screens
 				decision.TrySetResult(action);
 			}
 
-			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally, _posture));
+			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally));
 			_prompt.Text = $"Vez de {ally.Name}:";
 
-			var enhance = new CheckBox { Text = "Aprimorar", TooltipText = "Paga Éter para usar a versão aprimorada." };
-			enhance.AddThemeColorOverride("font_color", Palette.Bone);
-			enhance.AddThemeColorOverride("font_hover_color", Palette.Bone);
-			enhance.AddThemeColorOverride("font_pressed_color", Palette.Bone);
+			var costs = string.Join(", ", new[] { ally.Basic, ally.GlyphSkill }
+				.Where(s => s is { CanEnhance: true })
+				.Select(s => $"{s!.Name} {s.EnhanceCost}"));
+			var enhance = new CheckBox { Text = $"Aprimorar (Éter: {costs})", TooltipText = "Paga Éter para usar a versão aprimorada da habilidade escolhida." };
 
 			foreach (var slot in new[] { SkillSlot.Basic, SkillSlot.Glyph })
 			{
 				var skill = ally.Skill(slot);
 				var ready = slot == SkillSlot.Basic || ally.IsGlyphReady;
-				var cost = skill.CanEnhance ? $" [+{skill.EnhanceCost}]" : "";
 				var wait = ready ? "" : $" (⟳{ally.GlyphCooldown})";
-				var button = new Button { Text = $"{skill.Name}{cost}{wait}", Disabled = !ready, TooltipText = Texts.Describe(skill) };
+				var button = new Button { Text = $"{skill.Name}{wait}", Disabled = !ready, TooltipText = Texts.Describe(skill) };
 				button.Pressed += () =>
 				{
 					var enhanced = enhance.ButtonPressed && _session.CanEnhance(ally, skill);
@@ -297,52 +286,11 @@ namespace Sigilos.UI.Screens
 			return decision.Task;
 		}
 
-		private Task<ConjurerAction> DecideConjurer()
+		private void PickTarget(BattleUnit actor, Action<BattleUnit> onPicked)
 		{
-			if (_auto)
-				return Task.FromResult(AutoPilot.ForConjurer(_session, _posture));
+			foreach (var view in _views.Values)
+				view.SetTargetable(false);
 
-			var decision = new TaskCompletionSource<ConjurerAction>(TaskCreationOptions.RunContinuationsAsynchronously);
-			void Decide(ConjurerAction action)
-			{
-				ClearActions();
-				decision.TrySetResult(action);
-			}
-
-			_decideAutomatically = () => Decide(AutoPilot.ForConjurer(_session, _posture));
-			_prompt.Text = $"Vez do {_session.Conjurer.Name}:";
-
-			foreach (var page in _session.Conjurer.Pages)
-			{
-				var why = !page.Resonant ? "sem Ressonância" : page.Cooldown > 0 ? $"recarga {page.Cooldown}" : _session.Ether < page.Cost ? "Éter insuficiente" : "";
-				var button = new Button
-				{
-					Text = $"{page.Page.Name} ({page.Cost})",
-					Icon = Art.Glyph(page.Page.Glyph),
-					ExpandIcon = true, 
-					Disabled = !_session.CanCast(page),
-					TooltipText = $"{Texts.Name(page.Page.Glyph)} · {Texts.Name(page.Page.Form)} · Círculo {Texts.Circle(page.Page.Circle)}\n{Texts.Describe(page.Page)}{(why.Length > 0 ? $"\n({why})" : "")}",
-                };
-                button.AddThemeConstantOverride("icon_max_width", 40);
-                var captured = page;
-				button.Pressed += () =>
-				{
-					if (captured.NeedsTarget)
-						PickTarget(_session.Conjurer, target => Decide(new ConjurerAction(captured, target)));
-					else
-						Decide(new ConjurerAction(captured, null));
-				};
-				_actions.AddChild(button);
-			}
-
-			var channel = new Button { Text = $"Canalizar (+{_session.Conjurer.Definition.ChannelGain} Éter)" };
-			channel.Pressed += () => Decide(ConjurerAction.Channel);
-			_actions.AddChild(channel);
-			return decision.Task;
-		}
-
-		private void PickTarget(ITurnTaker actor, Action<BattleUnit> onPicked)
-		{
 			var choosable = _session.ChoosableTargets(actor);
 			foreach (var unit in choosable)
 				_views[unit].SetTargetable(true);
@@ -350,11 +298,8 @@ namespace Sigilos.UI.Screens
 			_prompt.Text = "Escolha o alvo:";
 			_pickTarget = unit =>
 			{
-				if (!choosable.Contains(unit))
-					return;
-				foreach (var view in _views.Values)
-					view.SetTargetable(false);
-				onPicked(unit);
+				if (choosable.Contains(unit))
+					onPicked(unit);
 			};
 		}
 
@@ -371,12 +316,18 @@ namespace Sigilos.UI.Screens
 		private void SetAuto(bool on)
 		{
 			_auto = on;
-			RefreshAutoText();
+			RefreshAuto();
 			if (on)
 				_decideAutomatically?.Invoke();
 		}
 
-		private void RefreshAutoText() => _autoButton.Text = _auto ? "Automático: ligado" : "Automático: desligado";
+		private void RefreshAuto()
+		{
+			_autoButton.Text = _auto ? "Automático: ligado" : "Automático: desligado";
+			_etherHint.Text = _auto
+				? "Automático não usa Éter. Desligue para aprimorar habilidades."
+				: "Glifo e inimigo derrubado geram Éter; marque Aprimorar para gastá-lo.";
+		}
 
 		private void Close()
 		{
@@ -419,27 +370,22 @@ namespace Sigilos.UI.Screens
 				case TurnStarted turn:
 					foreach (var view in _views.Values)
 					{
-						view.SetActive(ReferenceEquals(view.Unit, turn.Actor));
+						view.SetActive(view.Unit == turn.Actor);
 						view.Refresh();
 					}
 
-					_conjurerCard.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Parchment, turn.Actor is ConjurerSeat ? Palette.Gold : Palette.Ink, turn.Actor is ConjurerSeat ? 4 : 2, 6, 8));
-					_conjurerImpeto.Value = _session.Conjurer.Impeto;
 					_round.Text = $"Rodada {Math.Min(turn.Round, BattleRules.RoundLimit)}/{BattleRules.RoundLimit}";
 					_order.Show(_session.PredictOrder(8));
 					return 0.12;
 
 				case SkillUsed used:
-					_banner.Text = $"{used.Actor.Name}\n{used.Skill.Name}{(used.Enhanced ? " ✦" : "")}";
+					_banner.Text = $"{used.Actor.Name}\n{used.Skill.Name}{(used.Enhanced ? " · aprimorada" : "")}";
+					_banner.AddThemeColorOverride("font_color", used.Enhanced ? Palette.Ether : Palette.Text);
 					_views[used.Actor].Lunge(used.Actor.Side == Side.Allies ? 1 : -1, Speed);
 					return 0.35;
 
-				case PageCast cast:
-					_banner.Text = $"{_session.Conjurer.Name} lança\n{cast.Page.Page.Name}";
-					return 0.45;
-
-				case Channeled channeled:
-					_banner.Text = $"{_session.Conjurer.Name} canaliza\n+{channeled.Gain} Éter";
+				case ExtraTurn extra:
+					_views[extra.Unit].Float("Turno extra!", Palette.Gold);
 					return 0.3;
 
 				case Damaged damaged:
@@ -450,7 +396,7 @@ namespace Sigilos.UI.Screens
 					return 0.14;
 
 				case Missed missed:
-					_views[missed.Target].Float("Errou", Palette.Bone);
+					_views[missed.Target].Float("Errou", Palette.TextFaded);
 					return 0.1;
 
 				case Warded warded:
@@ -464,12 +410,12 @@ namespace Sigilos.UI.Screens
 					return 0.1;
 
 				case StatusApplied applied:
-					_views[applied.Target].Float(Texts.Name(applied.Status), Palette.Bone);
+					_views[applied.Target].Float(Texts.Name(applied.Status), BattleRules.IsNegative(applied.Status) ? Palette.Negative : Palette.Positive);
 					_views[applied.Target].Refresh();
 					return 0.06;
 
 				case Resisted resisted:
-					_views[resisted.Target].Float("Resistiu", Palette.Bone);
+					_views[resisted.Target].Float("Resistiu", Palette.TextFaded);
 					return 0.06;
 
 				case StatusRemoved removed:
@@ -481,7 +427,7 @@ namespace Sigilos.UI.Screens
 					return 0.05;
 
 				case TurnSkipped skipped:
-					_views[skipped.Unit].Float("Atordoado", Palette.Bone);
+					_views[skipped.Unit].Float("Atordoado", Palette.Negative);
 					_banner.Text = $"{skipped.Unit.Name}\nperde o turno";
 					return 0.4;
 

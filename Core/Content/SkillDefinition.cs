@@ -25,7 +25,7 @@ namespace Sigilos.Core.Content
 		public bool CanEnhance => EnhanceCost > 0 && EnhancedEffects.Count > 0;
 
 		/// <summary>A habilidade pede que se escolha um inimigo.</summary>
-		public bool NeedsTarget => Effects.Any(e => e.Target is TargetKind.Target or TargetKind.TwoEnemies);
+		public bool NeedsTarget => Effects.Any(e => e.Target == TargetKind.Target);
 
 		public IReadOnlyList<EffectDefinition> EffectsFor(bool enhanced) => enhanced && CanEnhance ? EnhancedEffects : Effects;
 	}

@@ -8,7 +8,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void DefenseHalvesDamageAtTheConstant()
 		{
-			var attacker = Caster.Of(TestData.Unit("a", Side.Allies, element: Element.Light));
+			var attacker = TestData.Unit("a", Side.Allies, element: Element.Light);
 			var target = TestData.Unit("b", Side.Enemies, defense: BattleRules.DefenseConstant, element: Element.Light);
 			Assert.Near(50, DamageFormula.Compute(attacker, target, 1, 0, false), "dano com DEF = K");
 		}
@@ -28,13 +28,13 @@ namespace Sigilos.Tests
 		[Test]
 		private static void CritAndCurseMultiply()
 		{
-			var attacker = Caster.Of(TestData.Unit("a", Side.Allies, element: Element.Light));
+			var attacker = TestData.Unit("a", Side.Allies, element: Element.Light);
 			var target = TestData.Unit("b", Side.Enemies, element: Element.Light);
 			Assert.Near(150, DamageFormula.Compute(attacker, target, 1, 0, true), "crítico");
 
-			var session = TestData.Session(new[] { TestData.Unit("x", Side.Allies) }, new[] { target });
+			var session = TestData.Session(new[] { attacker }, new[] { target });
 			var curse = new EffectDefinition { Kind = EffectKind.Status, Status = StatusKind.Curse, Turns = 2 };
-			new EffectResolver(session).Resolve(Caster.Of(session.Allies[0]), new[] { curse }, target);
+			new EffectResolver(session).Resolve(attacker, new[] { curse }, target);
 			Assert.Near(125, DamageFormula.Compute(attacker, target, 1, 0, false), "Maldição");
 		}
 

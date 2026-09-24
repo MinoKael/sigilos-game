@@ -1,6 +1,6 @@
-// Atributos de base por papel, no nível 60 e com 5 estrelas (GDD, seção 15).
+// Atributos de base por papel: uma 5★ no nível 40, sem Despertar e sem runas.
 // 4★ usam 92% e 3★ 85%; Vida, Ataque e Defesa começam em 25% no nível 1 (Core/Progression/Growth.cs).
-// Crítico, Dano crítico, Foco e Resistência são frações e não crescem com o nível.
+// Crítico, Dano crítico, Foco e Resistência são frações e não crescem com o nível: sobem com runas.
 {
   "Front":    { "health": 6000, "attack": 500, "defense": 400, "speed": 95,  "crit": 0.15, "critDamage": 0, "focus": 0,    "resistance": 0.25 },
   "Attacker": { "health": 4000, "attack": 900, "defense": 200, "speed": 110, "crit": 0.25, "critDamage": 0, "focus": 0,    "resistance": 0.15 },

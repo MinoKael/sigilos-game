@@ -19,7 +19,7 @@ namespace Sigilos.UI.Components
 			label.AddThemeFontOverride("font", GameTheme.Serif);
 			label.AddThemeFontSizeOverride("font_size", size);
 			label.AddThemeColorOverride("font_color", color);
-			label.AddThemeColorOverride("font_outline_color", Palette.Ink);
+			label.AddThemeColorOverride("font_outline_color", Palette.Background);
 			label.AddThemeConstantOverride("outline_size", 6);
 			parent.AddChild(label);
 

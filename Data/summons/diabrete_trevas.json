@@ -5,16 +5,17 @@
   "element": "Dark",
   "glyph": "Veil",
   "role": "Attacker",
+  "awakening": {"name": "Negrume", "stat": "CritDamage", "value": 0.25},
   "basic": {
     "name": "Golpe Sombrio",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.0},
       {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0},
-      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.5, "turns": 2}
+      {"kind": "Damage", "target": "Target", "power": 1.5},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.7, "turns": 2}
     ]
   },
   "glyphSkill": {
@@ -24,11 +25,11 @@
       {"kind": "Status", "target": "Self", "status": "Hidden"},
       {"kind": "Impeto", "target": "Self", "power": 30}
     ],
-    "enhanceCost": 2,
+    "enhanceCost": 5,
     "enhancedEffects": [
       {"kind": "Status", "target": "Self", "status": "Hidden"},
-      {"kind": "Impeto", "target": "Self", "power": 30},
-      {"kind": "Status", "target": "LowestAlly", "status": "Hidden"}
+      {"kind": "Status", "target": "LowestAlly", "status": "Hidden"},
+      {"kind": "Impeto", "target": "Self", "power": 60}
     ]
   }
 }

@@ -7,12 +7,9 @@ namespace Sigilos.Core.Content
 	public enum TargetKind
 	{
 		Target,
-		TwoEnemies,
 		AllEnemies,
 		Self,
 		LowestAlly,
-		TwoAllies,
 		AllAllies,
-		DeadAlly,
 	}
 }

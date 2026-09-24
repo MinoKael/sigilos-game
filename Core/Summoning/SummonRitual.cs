@@ -67,20 +67,20 @@ namespace Sigilos.Core.Summoning
 		{
 			if (!player.Owns(summon.Id))
 			{
-				player.Collection[summon.Id] = 0;
+				player.Summons[summon.Id] = new OwnedSummon();
 				return new SummonResult(summon, SummonOutcome.New, 0, 0);
 			}
 
-			var echoes = player.Echoes(summon.Id);
-			if (echoes < Growth.MaxEchoes)
+			var owned = player.Summon(summon.Id);
+			if (owned.Echoes < Growth.MaxEchoes)
 			{
-				player.Collection[summon.Id] = echoes + 1;
-				return new SummonResult(summon, SummonOutcome.Echo, echoes + 1, 0);
+				owned.Echoes++;
+				return new SummonResult(summon, SummonOutcome.Echo, owned.Echoes, 0);
 			}
 
 			var fragments = SummonRates.FragmentsFor(summon.Rarity);
 			player.Fragments += fragments;
-			return new SummonResult(summon, SummonOutcome.Fragments, echoes, fragments);
+			return new SummonResult(summon, SummonOutcome.Fragments, owned.Echoes, fragments);
 		}
 
 		private static int RollRarity(Random random, PlayerState player, GameDatabase database)

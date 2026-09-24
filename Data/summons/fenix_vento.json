@@ -6,16 +6,17 @@
   "glyph": "Eye",
   "role": "Attacker",
   "leader": {"stat": "Speed", "value": 0.15},
+  "awakening": {"name": "Zéfira", "stat": "Speed", "value": 0.1},
   "basic": {
     "name": "Rasante de Brasa",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.1},
       {"kind": "Impeto", "target": "Target", "power": -20}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.1},
-      {"kind": "Impeto", "target": "Target", "power": -40}
+      {"kind": "Damage", "target": "Target", "power": 1.5},
+      {"kind": "Impeto", "target": "Target", "power": -50}
     ]
   },
   "glyphSkill": {
@@ -25,10 +26,10 @@
       {"kind": "Damage", "target": "AllEnemies", "power": 0.8},
       {"kind": "Impeto", "target": "AllAllies", "power": 20}
     ],
-    "enhanceCost": 3,
+    "enhanceCost": 6,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.8},
-      {"kind": "Impeto", "target": "AllAllies", "power": 20},
+      {"kind": "Damage", "target": "AllEnemies", "power": 1.1},
+      {"kind": "Impeto", "target": "AllAllies", "power": 35},
       {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
     ]
   }

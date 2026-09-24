@@ -14,7 +14,7 @@ namespace Sigilos.Tests
 		private static void FirstSummonEverIsFiveStars()
 		{
 			var database = TestData.LoadReal();
-			var player = NewGame.Create(DateTime.UnixEpoch);
+			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
 			var results = SummonRitual.Perform(new Random(7), database, player, 1, Array.Empty<Glyph>());
 			Assert.Equal(5, results.Single().Summon.Rarity, "primeira invocação");
 		}
@@ -101,7 +101,7 @@ namespace Sigilos.Tests
 		private static void OnlyKnownGlyphsDirect()
 		{
 			var database = TestData.LoadReal();
-			var player = NewGame.Create(DateTime.UnixEpoch);
+			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
 			var known = SummonRitual.KnownGlyphs(player, database);
 			Assert.True(known.Contains(Glyph.Shard) && known.Contains(Glyph.Bone) && known.Contains(Glyph.Eye), "Glifos do time inicial");
 			Assert.False(known.Contains(Glyph.Veil), "Véu ainda desconhecido");

@@ -5,16 +5,17 @@
   "element": "Light",
   "glyph": "Eye",
   "role": "Support",
+  "awakening": {"name": "Lampejo", "stat": "Speed", "value": 0.1},
   "basic": {
     "name": "Clarão",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 0.9},
       {"kind": "Impeto", "target": "Target", "power": -15}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 0.9},
-      {"kind": "Impeto", "target": "Target", "power": -30}
+      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Impeto", "target": "Target", "power": -40}
     ]
   },
   "glyphSkill": {
@@ -23,9 +24,10 @@
     "effects": [
       {"kind": "Impeto", "target": "AllAllies", "power": 20}
     ],
-    "enhanceCost": 2,
+    "enhanceCost": 5,
     "enhancedEffects": [
-      {"kind": "Impeto", "target": "AllAllies", "power": 35}
+      {"kind": "Impeto", "target": "AllAllies", "power": 45},
+      {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
     ]
   }
 }

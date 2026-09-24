@@ -1,7 +1,7 @@
 namespace Sigilos.Core.Content
 {
 	/// <summary>
-	/// Uma peça de habilidade ou de página: "o que faz" e "em quem". Cada campo só vale para alguns
+	/// Uma peça de habilidade: "o que faz" e "em quem". Cada campo só vale para alguns
 	/// tipos; os outros ficam no padrão.
 	///
 	/// - Damage: <see cref="Power"/> é o multiplicador sobre o Ataque (0,8 = 80%), em <see cref="Hits"/>
@@ -11,7 +11,6 @@ namespace Sigilos.Core.Content
 	/// - Status: aplica <see cref="Status"/> com <see cref="Chance"/>, por <see cref="Turns"/>.
 	/// - Impeto: soma <see cref="Power"/> pontos de Ímpeto (negativo atrasa).
 	/// - Cleanse: remove um efeito negativo de cada alvo.
-	/// - Revive: devolve um aliado caído com <see cref="Power"/> da Vida.
 	///
 	/// <see cref="OnKill"/> faz o efeito só acontecer se o dano anterior da mesma habilidade derrubou o alvo.
 	/// </summary>

@@ -10,7 +10,7 @@ namespace Sigilos.UI.Components
 
 		public static ColorRect Background()
 		{
-			var background = new ColorRect { Color = Palette.Stone, MouseFilter = Control.MouseFilterEnum.Ignore };
+			var background = new ColorRect { Color = Palette.Background, MouseFilter = Control.MouseFilterEnum.Ignore };
 			background.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 			return background;
 		}
@@ -37,7 +37,25 @@ namespace Sigilos.UI.Components
 				child.QueueFree();
 		}
 
-		/// <summary>Painel de pergaminho com cabeçalho. O conteúdo vai na coluna devolvida.</summary>
+		/// <summary>
+		/// Botão com ícone de Assets/ à esquerda. O ícone é desenhado pelo <see cref="Doodle"/> na cor do
+		/// texto: os SVG são pretos, e o ícone comum do botão só consegue escurecer, nunca clarear.
+		/// </summary>
+		public static Button IconButton(string text, Texture2D? icon, int iconSize = 36, Color? ink = null)
+		{
+			var button = new Button { Text = text };
+			button.AddThemeConstantOverride("h_separation", 0);
+			var doodle = Doodle.Icon(icon, iconSize, ink ?? Palette.Gold);
+			doodle.AnchorTop = doodle.AnchorBottom = 0.5f;
+			doodle.OffsetLeft = 10;
+			doodle.OffsetRight = 10 + iconSize;
+			doodle.OffsetTop = -iconSize / 2f;
+			doodle.OffsetBottom = iconSize / 2f;
+			button.AddChild(doodle);
+			return button;
+		}
+
+		/// <summary>Painel com cabeçalho. O conteúdo vai na coluna devolvida.</summary>
 		public static (PanelContainer Panel, VBoxContainer Content) Section(string title)
 		{
 			var panel = new PanelContainer();

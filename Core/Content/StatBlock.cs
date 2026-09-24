@@ -43,6 +43,32 @@ namespace Sigilos.Core.Content
 			_ => throw new ArgumentOutOfRangeException(nameof(stat), stat, null),
 		};
 
+		/// <summary>Vida, Ataque, Defesa e Velocidade são números; os outros quatro são frações.</summary>
+		public static bool IsAbsolute(Stat stat) => stat is Stat.Health or Stat.Attack or Stat.Defense or Stat.Speed;
+
+		/// <summary>Soma atributo a atributo.</summary>
+		public StatBlock Plus(StatBlock other) => new()
+		{
+			Health = Health + other.Health,
+			Attack = Attack + other.Attack,
+			Defense = Defense + other.Defense,
+			Speed = Speed + other.Speed,
+			Crit = Crit + other.Crit,
+			CritDamage = CritDamage + other.CritDamage,
+			Focus = Focus + other.Focus,
+			Resistance = Resistance + other.Resistance,
+		};
+
+		/// <summary>
+		/// Um bônus no estilo de Liderança e de Despertar: em atributo absoluto, <paramref name="value"/>
+		/// multiplica (0,15 = +15%); em fração, soma.
+		/// </summary>
+		public StatBlock WithBonus(Stat stat, double value)
+		{
+			var current = Get(stat);
+			return With(stat, IsAbsolute(stat) ? current * (1 + value) : current + value);
+		}
+
 		/// <summary>Multiplica os quatro atributos absolutos. As frações ficam como estão.</summary>
 		public StatBlock ScaleAbsolute(double factor) => this with
 		{

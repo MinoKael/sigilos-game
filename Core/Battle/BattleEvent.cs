@@ -14,13 +14,9 @@ namespace Sigilos.Core.Battle
 
 	public sealed record WaveStarted(int Wave, int WaveCount, IReadOnlyList<BattleUnit> Enemies) : BattleEvent;
 
-	public sealed record TurnStarted(ITurnTaker Actor, int Round) : BattleEvent;
+	public sealed record TurnStarted(BattleUnit Actor, int Round) : BattleEvent;
 
 	public sealed record SkillUsed(BattleUnit Actor, SkillDefinition Skill, bool Enhanced) : BattleEvent;
-
-	public sealed record PageCast(PageSlot Page) : BattleEvent;
-
-	public sealed record Channeled(int Gain) : BattleEvent;
 
 	/// <summary><paramref name="Absorbed"/> é a parte que o escudo segurou.</summary>
 	public sealed record Damaged(BattleUnit Target, int Amount, int Absorbed, bool Crit, double ElementMultiplier) : BattleEvent;
@@ -43,6 +39,9 @@ namespace Sigilos.Core.Battle
 
 	/// <summary>A unidade perdeu o turno atordoada.</summary>
 	public sealed record TurnSkipped(BattleUnit Unit) : BattleEvent;
+
+	/// <summary>O conjunto de runas da Porta deu mais um turno.</summary>
+	public sealed record ExtraTurn(BattleUnit Unit) : BattleEvent;
 
 	public sealed record Died(BattleUnit Unit) : BattleEvent;
 

@@ -67,7 +67,7 @@ namespace Sigilos.UI.Screens
 			panel.CustomMinimumSize = new Vector2(400, 0);
 			content.AddChild(new Label
 			{
-				Text = $"Taxas: 3★ 65% · 4★ 28% · 5★ 7%.\nLuz e Trevas têm metade da chance das outras variantes.\nDuplicatas viram Ecos (até 5) e depois Fragmentos.",
+				Text = $"Taxas: 3★ 65% · 4★ 28% · 5★ 7%.\nLuz e Trevas têm metade da chance das outras variantes.\nDuplicatas viram Ecos (até 5: habilidades mais fortes) e depois Fragmentos.",
 				ThemeTypeVariation = GameTheme.Faded,
 				AutowrapMode = TextServer.AutowrapMode.WordSmart,
 			});
@@ -94,7 +94,7 @@ namespace Sigilos.UI.Screens
 			_stage.AddChild(_results);
 
 			// O círculo em repouso: some quando o primeiro ritual começa.
-			var idle = new Doodle(Art.Icon("summon"), Palette.StoneLight);
+			var idle = new Doodle(Art.Icon("summon"), Palette.PanelLight);
 			idle.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			_idleCircle = idle;
 			_stage.AddChild(idle);
@@ -135,7 +135,7 @@ namespace Sigilos.UI.Screens
 			var tween = CreateTween();
 			tween.TweenProperty(_sigil, "scale", Vector2.One, RitualSeconds * 0.6).SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
 			tween.Parallel().TweenProperty(_sigil, "rotation", Mathf.Tau, RitualSeconds);
-			tween.Parallel().TweenMethod(Callable.From<Color>(c => _sigil.SetInk(c)), Palette.Gold, Palette.Rarity(best).Lerp(Colors.White, 0.3f), RitualSeconds);
+			tween.Parallel().TweenMethod(Callable.From<Color>(c => _sigil.SetInk(c)), Palette.Gold, Palette.Frame(best).Lerp(Colors.White, 0.3f), RitualSeconds);
 			tween.TweenProperty(_sigil, "modulate:a", 0f, 0.25);
 			tween.TweenCallback(Callable.From(() => Reveal(results)));
 		}
@@ -155,7 +155,7 @@ namespace Sigilos.UI.Screens
 					SummonOutcome.Echo => $"Eco {result.Echoes}",
 					_ => $"+{result.Fragments} Fragmentos",
 				};
-				var card = new CreatureCard(result.Summon, result.Echoes, badge, 140) { Modulate = new Color(1, 1, 1, 0) };
+				var card = new CreatureCard(result.Summon, _player.Summons.GetValueOrDefault(result.Summon.Id), badge, 140) { Modulate = new Color(1, 1, 1, 0) };
 				_results.AddChild(card);
 				card.CreateTween().TweenProperty(card, "modulate:a", 1f, 0.25).SetDelay(0.08 * i);
 			}
@@ -171,15 +171,11 @@ namespace Sigilos.UI.Screens
 			foreach (var glyph in SummonRitual.KnownGlyphs(_player, _database))
 			{
 				var chosen = _directed.Contains(glyph);
-				var button = new Button
-				{
-					ToggleMode = true,
-					ButtonPressed = chosen,
-					TooltipText = Texts.Name(glyph),
-					Icon = Art.Glyph(glyph),
-					ExpandIcon = true,
-					CustomMinimumSize = new Vector2(44, 52),
-				};
+				var button = Layout.IconButton("", Art.Glyph(glyph), 28, chosen ? Palette.Background : Palette.Gold);
+				button.ToggleMode = true;
+				button.ButtonPressed = chosen;
+				button.TooltipText = $"{Texts.Name(glyph)}: {Texts.Meaning(glyph)}";
+				button.CustomMinimumSize = new Vector2(48, 52);
 				button.Toggled += on =>
 				{
 					if (on && _directed.Count < SummonRates.MaxDirectedGlyphs)

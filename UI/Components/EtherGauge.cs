@@ -13,13 +13,15 @@ namespace Sigilos.UI.Components
 		public EtherGauge()
 		{
 			AddThemeConstantOverride("separation", 4);
-			_label = new Label { ThemeTypeVariation = GameTheme.OnStone, CustomMinimumSize = new Vector2(92, 0) };
+			TooltipText = "Éter: recurso do time, de 0 a 10. Vem de habilidades de Glifo e de inimigos derrubados; paga aprimoramentos no manual.";
+			MouseFilter = MouseFilterEnum.Stop;
+			_label = new Label { CustomMinimumSize = new Vector2(92, 0), MouseFilter = MouseFilterEnum.Ignore };
 			_label.AddThemeFontOverride("font", GameTheme.Serif);
 			AddChild(_label);
 
 			for (var i = 0; i < _pips.Length; i++)
 			{
-				_pips[i] = new Panel { CustomMinimumSize = new Vector2(20, 20), TooltipText = "Éter: recurso único do time (0 a 10)." };
+				_pips[i] = new Panel { CustomMinimumSize = new Vector2(20, 20), MouseFilter = MouseFilterEnum.Ignore };
 				AddChild(_pips[i]);
 			}
 
@@ -32,7 +34,7 @@ namespace Sigilos.UI.Components
 			for (var i = 0; i < _pips.Length; i++)
 			{
 				var lit = i < ether;
-				_pips[i].AddThemeStyleboxOverride("panel", GameTheme.Box(lit ? Palette.Ether : Palette.StoneLight, lit ? Palette.Bone : Palette.InkFaded, 1, 10, 0));
+				_pips[i].AddThemeStyleboxOverride("panel", GameTheme.Box(lit ? Palette.Ether : Palette.Inset, lit ? Palette.Text : Palette.GoldDark, 1, 10, 0));
 			}
 		}
 	}

@@ -8,7 +8,7 @@ namespace Sigilos.Tests
 		private static void Give(BattleSession session, BattleUnit caster, BattleUnit target, StatusKind status, int turns = 1)
 		{
 			var effect = new EffectDefinition { Kind = EffectKind.Status, Target = target.Side == caster.Side ? TargetKind.Self : TargetKind.Target, Status = status, Turns = turns };
-			new EffectResolver(session).Resolve(Caster.Of(target.Side == caster.Side ? target : caster), new[] { effect }, target);
+			new EffectResolver(session).Resolve(target.Side == caster.Side ? target : caster, new[] { effect }, target);
 		}
 
 		[Test]
@@ -22,7 +22,7 @@ namespace Sigilos.Tests
 			Give(session, a, a, StatusKind.Hidden);
 			var choosable = session.ChoosableTargets(hero);
 			Assert.Equal(1, choosable.Count, "só um alvo visível");
-			Assert.Equal<object>(b, choosable[0], "o visível");
+			Assert.Equal(b, choosable[0], "o visível");
 		}
 
 		[Test]
@@ -36,7 +36,7 @@ namespace Sigilos.Tests
 			Give(session, b, hero, StatusKind.Taunt);
 			var choosable = session.ChoosableTargets(hero);
 			Assert.Equal(1, choosable.Count, "provocado tem um alvo só");
-			Assert.Equal<object>(b, choosable[0], "quem provocou");
+			Assert.Equal(b, choosable[0], "quem provocou");
 		}
 
 		[Test]
@@ -49,7 +49,7 @@ namespace Sigilos.Tests
 			Give(session, foe, hero, StatusKind.Stun);
 
 			var turn = session.BeginTurn();
-			Assert.Equal<object>(hero, turn.Actor, "o herói é o mais rápido");
+			Assert.Equal(hero, turn.Actor, "o herói é o mais rápido");
 			Assert.False(turn.NeedsDecision, "atordoado não decide");
 			Assert.False(hero.Has(StatusKind.Stun), "o atordoamento de 1 turno acaba no turno perdido");
 
@@ -113,6 +113,19 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void ImpSpeedsUpOnlyWhenStrictlyLowest()
+		{
+			var passive = new PassiveDefinition { Kind = PassiveKind.SpeedWhenLowest, Value = 0.15 };
+			var imp = TestData.Unit("diabrete", Side.Allies, speed: 100, passive: passive);
+			var friend = TestData.Unit("amigo", Side.Allies);
+			TestData.Session(new[] { imp, friend }, new[] { TestData.Unit("inimigo", Side.Enemies) });
+
+			Assert.Near(100, imp.TurnSpeed, "todos com Vida cheia: empate não conta");
+			imp.Health = 500;
+			Assert.Near(115, imp.TurnSpeed, "o mais ferido ganha 15%");
+		}
+
+		[Test]
 		private static void PhoenixRisesOnceOnItsNextTurn()
 		{
 			var passive = new PassiveDefinition { Kind = PassiveKind.RebirthOnce, Value = 0.4 };
@@ -129,10 +142,8 @@ namespace Sigilos.Tests
 			while (!phoenix.IsAlive && !session.IsOver)
 			{
 				var turn = session.BeginTurn();
-				if (turn.NeedsDecision && turn.Actor is BattleUnit unit)
-					session.Act(new UnitAction(SkillSlot.Basic, false, unit.Side == Side.Enemies ? friend : foe));
-				else if (turn.NeedsDecision)
-					session.Act(ConjurerAction.Channel);
+				if (turn.NeedsDecision)
+					session.Act(new UnitAction(SkillSlot.Basic, false, turn.Actor.Side == Side.Enemies ? friend : foe));
 			}
 
 			Assert.Near(400, phoenix.Health, "renasce com 40% da Vida");

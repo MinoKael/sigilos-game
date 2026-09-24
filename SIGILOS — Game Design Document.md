@@ -2,11 +2,13 @@
 
 Sep 23, 2026 · @Mikael
 
+> **Revisão de 24/09/2026, depois dos primeiros testes do MVP.** O Erudito e todo o Grimório (páginas, Formas, Círculos, Ressonância) saíram do jogo. A base mecânica e visual passa a ser Summoners War: nível de 1 a 40 por invocação, Despertar com nome próprio e estrelas roxas, runas de 6 espaços. O Éter ficou escasso (só Glifo e inimigo derrubado geram) e é exclusivo do modo manual: o automático nunca o gasta. O jogo ganhou a tela de Monstros e o Compêndio, que explica Glifos, elementos, efeitos, runas e regras.
+
 ## 1. Visão geral
 
 **Sigilos** (título provisório) é um gacha de fantasia para um jogador, offline e sem loja: você coleciona criaturas, grava sigilos nelas e comanda batalhas por turnos em que as magias são montadas símbolo por símbolo.
 
-Em uma frase: a coleção e as runas de Summoners War: Sky Arena, o recurso compartilhado de Epic Seven, o ritmo de um AFK e magias montadas peça por peça como no Tormenta. A arte de personagem é rabiscada por escolha visual; o mundo é fantasia levada a sério.
+Em uma frase: Summoners War: Sky Arena como base mecânica e visual (coleção, nível, Despertar, runas, barra de ataque), o recurso compartilhado de Epic Seven e o ritmo de um AFK. A arte de personagem é rabiscada por escolha visual; o mundo é fantasia levada a sério.
 
 **Objetivo do projeto.** Um jogo que você mesmo abra todo dia por 5 a 15 minutos, durante meses, pelo prazer de montar combinações e ver o time crescer. Critério de sucesso: jogar a versão 1.0 por 90 dias seguidos sem se obrigar.
 
@@ -16,7 +18,7 @@ Em uma frase: a coleção e as runas de Summoners War: Sky Arena, o recurso comp
 | Plataforma | PC primeiro; Android depois, com o mesmo código |
 | Sessão típica | 5 a 15 min, 1 ou 2 vezes por dia |
 | Equipe | 1 pessoa, cerca de 8 a 10 h por semana (premissa a confirmar) |
-| Tamanho da 1.0 | 40 invocações (8 famílias em 5 elementos), 3 regiões (60 fases), Torre de 60 andares, 3 Conjuradores |
+| Tamanho da 1.0 | 40 invocações (8 famílias em 5 elementos), 3 regiões (60 fases), Torre de 60 andares |
 | Prazo estimado | MVP jogável em cerca de 3 meses; 1.0 em 9 a 12 meses |
 
 **O que o jogo não é.** Sem monetização, servidor, PvP online, stamina, eventos com prazo, cutscenes ou dublagem. Esses sistemas existem para reter pagantes e custam meses; num projeto pessoal só atrapalham.
@@ -25,7 +27,7 @@ Em uma frase: a coleção e as runas de Summoners War: Sky Arena, o recurso comp
 
 Toda decisão de sistema passa por estes quatro filtros; o que não serve a nenhum deles sai do escopo.
 
-1. **Magia é linguagem.** Habilidades, feitiços e equipamento são feitos dos mesmos símbolos. A profundidade vem de combinar poucas peças, não de acumular sistemas.
+1. **Magia é linguagem.** Habilidades, runas e invocação são feitos dos mesmos oito Glifos. A profundidade vem de combinar poucas peças, não de acumular sistemas.
 2. **Velocidade é tática.** Quem age primeiro e quem é atrasado decide a luta; a barra de Ímpeto é a principal camada de estratégia.
 3. **Respeite o tempo.** O progresso acontece com o jogo fechado. Nada pune quem ficou dias sem abrir.
 4. **Rabisco é estilo, não tema.** A arte é rápida de propósito para o conteúdo crescer; o mundo continua sendo fantasia épica. Nenhum desenho leva mais de 15 minutos.
@@ -36,12 +38,12 @@ De cada jogo entra só o que serve aos pilares; o resto é cortado de propósito
 
 | Referência | O que entra | O que fica de fora |
 | --- | --- | --- |
-| Summoners War: Sky Arena | Barra de ataque por Velocidade; runas em 6 espaços com conjuntos de 2 e 4 peças; famílias de monstros em 5 elementos; Despertar; duplicatas que sobem habilidades; habilidade de líder; masmorras que soltam conjuntos específicos; masmorras secretas por família; arena contra defesa controlada pela IA | Evolução de estrelas com monstros de sacrifício; runas até +15 com 4 subatributos; guerra de guildas, cerco e PvP em tempo real; cristais e pacotes |
+| Summoners War: Sky Arena (base mecânica e visual) | Barra de ataque por Velocidade; nível de 1 a 40 por monstro; painéis escuros com moldura dourada; runas em 6 espaços com conjuntos de 2 e 4 peças; famílias de monstros em 5 elementos; Despertar; duplicatas que sobem habilidades; habilidade de líder; masmorras que soltam conjuntos específicos; masmorras secretas por família; arena contra defesa controlada pela IA | Evolução de estrelas com monstros de sacrifício; runas até +15 com 4 subatributos; guerra de guildas, cerco e PvP em tempo real; cristais e pacotes |
 | Epic Seven | Almas compartilhadas que turbinam habilidades (viram o Éter); recargas de habilidade; heróis com nome e personalidade; Abismo como torre de desafio | Equipamento separado das runas; artefatos; cutscenes; Labirinto; PvP em tempo real |
 | AFK Arena e AFK Journey | Recompensas ociosas; nível compartilhado entre heróis; batalha automática com time preparado; sessões curtas sem stamina | Dezenas de moedas e menus; eventos com prazo; pacotes pagos |
-| Tormenta (RPG) | Escolas de magia viram Glifos; círculos com custo crescente; pagar mana extra por aprimoramentos; o grimório como objeto central | Nomes, deuses, lugares e textos do cenário |
+| Tormenta (RPG) | Escolas de magia viram Glifos; pagar mana extra por aprimoramentos | Nomes, deuses, lugares e textos do cenário; grimório e círculos de custo (saíram na revisão de 24/09) |
 
-Summoners War e Epic Seven se sobrepõem muito (ordem de turnos, elementos). Onde divergem, Summoners War decide coleção e runas, e Epic Seven decide o recurso compartilhado.
+Summoners War e Epic Seven se sobrepõem muito (ordem de turnos, elementos). Summoners War é a base; de Epic Seven fica o recurso compartilhado (Éter).
 
 O mundo e os nomes são originais. Assim o jogo pode ser mostrado a amigos sem nenhuma dúvida de propriedade intelectual.
 
@@ -57,7 +59,7 @@ Neste mundo tudo o que existe foi escrito com oito Glifos primordiais, e conjura
 | --- | --- | --- | --- |
 | 1 | Planície dos Menires | Nenhuma; ensina o básico | O Mestre de Correntes, rival especialista em Laço |
 | 2 | Arquipélago Afogado | Maré: a cada 3 rodadas, unidades de Água ganham +20% de Ímpeto | A Serpe-Mãe |
-| 3 | Cidadela do Selo Partido | Glifos instáveis: páginas do Grimório custam +1 Éter em rodadas ímpares | O Arauto do Silêncio |
+| 3 | Cidadela do Selo Partido | Glifos instáveis: aprimoramentos custam +1 Éter em rodadas ímpares | O Arauto do Silêncio |
 | Pós-jogo | Torre dos Círculos | Andares com regras fixas, uma por andar | — |
 
 **Tom.** Fantasia épica clássica, séria no mundo e com leveza nas falas. No máximo três falas por fase: a história é tempero, nunca obstáculo entre o jogador e a luta.
@@ -73,105 +75,71 @@ A arte de personagem é rabiscada por escolha visual e de produção: é o que p
 | Despertar | Um segundo desenho por família, mais detalhado e colorido: 16 desenhos de criatura na 1.0 |
 | Animação | Linha tremida: 3 versões do mesmo desenho alternando a cerca de 8 quadros por segundo. Movimento só por interpolação (avançar, recuar, tremer), nunca quadro a quadro |
 | Inimigos | Criaturas clássicas de RPG, como slime, goblin, lobo, bandido, troll, dragão, etc. Todos seriam as criaturas de 1 ou 2 estrelas da pool de invocações. |
-| Sigilos e Glifos | Vetores geométricos limpos, com brilho: 8 Glifos e 3 Formas |
-| Raridade | 1, 2, 3, 4 ou 5 estrelas. Mas do 3 pra frente com moldura de bronze, prata ou ouro |
-| Interface | Pergaminho discreto, fonte serifada legível nos títulos e fonte limpa nos números |
+| Glifos e runas | Vetores geométricos limpos, com brilho: 8 Glifos, que também são os desenhos dos conjuntos de runas |
+| Raridade | 1, 2, 3, 4 ou 5 estrelas. Mas do 3 pra frente com moldura de bronze, prata ou ouro. Estrelas douradas; roxas depois do Despertar |
+| Interface | Base de Summoners War: painéis escuros com moldura dourada, fonte serifada nos títulos e fonte limpa nos números |
 | Som | Pedra, papel e sussurros de conjuração; música orquestral de biblioteca livre |
 
 **Paleta.** Uma cor forte por elemento (vermelho Fogo, azul Água, verde Vento, dourado Luz, violeta Trevas) sobre fundos neutros de pergaminho e pedra. O elemento se lê antes do desenho.
 
-## 6. O sistema de Símbolos
+## 6. Glifos e elementos
 
-Toda magia é uma frase de três peças: **Glifo** (o que faz), **Forma** (quantos alvos) e **Círculo** (quanto custa e quão forte é). Aprimoramentos são sufixos opcionais, pagos com Éter na hora de usar.
+Os oito Glifos são o vocabulário do mundo. No jogo eles aparecem em três lugares, sempre com o mesmo desenho:
 
-A leitura de Tormenta usada aqui: magia como sistema de partes (escola, círculo, custo em mana e aprimoramentos), com cada escola representada por um símbolo próprio. Os mesmos 8 símbolos aparecem nas criaturas, nos feitiços e no equipamento.
+- **Invocações:** cada uma tem um Glifo, que dá o estilo das habilidades dela.
+- **Runas:** cada conjunto de runas é um Glifo (seção 10).
+- **Gacha:** você direciona a Invocação Ritual para Glifos que já conhece (seção 9).
+
+O Compêndio, dentro do jogo, explica cada Glifo, elemento, efeito, runa e regra de combate com os números atuais.
 
 ### Os 8 Glifos
 
-| Glifo | Escola de origem | Efeito base | Extra no Círculo III |
+| Glifo | Escola de origem | Estilo das habilidades | Conjunto de runas |
 | --- | --- | --- | --- |
-| Muralha | Abjuração | Escudo e redução de dano | Anula o próximo ataque recebido por cada aliado |
-| Olho | Adivinhação | Empurra o Ímpeto de aliados; revela Ocultos | Próximo ataque do alvo é crítico |
-| Porta | Convocação | Invoca um espírito do elemento que age por 2 turnos | O espírito age na hora e dura 3 turnos |
-| Laço | Encantamento | Provocação | Atordoa por 1 turno |
-| Estilhaço | Evocação | Dano direto | Ignora metade da Defesa |
-| Véu | Ilusão | Oculto (não pode ser alvo de ataques únicos) e esquiva | Cria um sósia que absorve 1 ataque |
-| Ossada | Necromancia | Drena vida | Revive um aliado com 30% da Vida |
-| Espiral | Transmutação | Aumenta ou reduz atributos | Troca dois atributos do alvo entre si |
-
-### Formas e Círculos
-
-| Forma | Alvos | Custo extra |
-| --- | --- | --- |
-| Único | 1 | +0 Éter |
-| Dupla | 2 | +1 Éter |
-| Todos | Todos os aliados ou todos os inimigos | +2 Éter |
-
-Círculo I custa 1 Éter, II custa 3 e III custa 6. A curva cresce rápido de propósito: um Círculo III é o momento decisivo da luta, não a rotina.
+| Muralha | Abjuração | Escudos, Égide, enfraquecer o ataque inimigo | 2 peças: +15% de Defesa |
+| Olho | Adivinhação | Empurrar o Ímpeto de aliados, atrasar inimigos, prever críticos | 2 peças: +20% de Foco |
+| Porta | Convocação | Espíritos e aliados extras (ainda sem invocação) | 4 peças: 20% de chance de turno extra |
+| Laço | Encantamento | Provocar e atordoar | 4 peças: 25% de chance de atordoar ao acertar |
+| Estilhaço | Evocação | Dano direto, ignorar Defesa, agir de novo ao derrubar | 4 peças: +40% de Dano crítico |
+| Véu | Ilusão | Ficar Oculto, cegar, esquivar | 2 peças: +20% de Resistência |
+| Ossada | Necromancia | Drenar vida, amaldiçoar | 4 peças: drena 35% do dano causado |
+| Espiral | Transmutação | Aumentar ou reduzir atributos, Queimadura | 4 peças: +25% de Velocidade |
 
 ### Elementos
 
 Toda invocação tem um elemento. Fogo vence Vento, Vento vence Água, Água vence Fogo; Luz e Trevas têm vantagem uma sobre a outra. Vantagem dá +25% de dano; desvantagem, −25%.
 
-### Ressonância
-
-O Grimório só aceita Glifos que existem no seu time. Montar o time é escolher o vocabulário de magia do Conjurador. Duas invocações do mesmo Glifo reduzem em 1 Éter o custo das páginas desse Glifo (mínimo 1).
-
-### Onde os símbolos aparecem
-
-- **Invocações:** cada uma tem um Glifo, que define o estilo das suas habilidades.
-- **Grimório:** páginas que você monta com Glifo, Forma e Círculo.
-- **Sigilos:** o equipamento, no lugar das runas; cada conjunto é um Glifo (seção 10).
-- **Gacha:** você traça Glifos para direcionar o resultado (seção 9).
-
 ## 7. Combate
 
-Batalha por turnos sem tabuleiro, como em Summoners War e Epic Seven: 4 invocações contra até 5 inimigos por onda, e cada unidade age quando sua barra de Ímpeto enche. Você vence ao derrotar todas as ondas.
+Batalha por turnos sem tabuleiro, como em Summoners War: 4 invocações contra até 5 inimigos por onda, e cada unidade age quando sua barra de Ímpeto enche. Você vence ao derrotar todas as ondas.
 
 ### Montagem do time
 
-Quatro invocações; a primeira é a Líder e aplica sua Liderança ao time, se tiver uma. O Conjurador fica fora de campo, não pode ser atacado e entra na barra de Ímpeto como qualquer unidade. Cada fase tem até 3 ondas, como as masmorras de Summoners War.
+Quatro invocações; a primeira é a Líder e aplica sua Liderança ao time, se tiver uma. Cada fase tem até 3 ondas, como as masmorras de Summoners War.
 
 ### Turno
 
 ```mermaid
 flowchart LR
-  A[Ímpeto chega a 100%] --> B{É o Conjurador?}
-  B -- Não --> C[Básico ou Glifo]
-  C --> D[Paga aprimoramento?]
-  D --> E[Ganha Éter]
-  B -- Sim --> F{Página disponível?}
-  F -- Sim --> G[Lança a página]
-  F -- Não --> H[Canaliza: +2 Éter]
-  E --> I[Ímpeto volta a 0%]
-  G --> I
-  H --> I
+  A[Ímpeto chega a 100%] --> B{Manual?}
+  B -- Sim --> C[Básico ou Glifo]
+  C --> D{Paga aprimoramento com Éter?}
+  D --> E[Resolve a habilidade]
+  B -- Não --> F[Automático escolhe, sem Éter]
+  F --> E
+  E --> G[Glifo usado: +1 Éter]
+  G --> H[Ímpeto volta a 0%]
 ```
 
 A barra enche em proporção à Velocidade. Efeitos empurram ou atrasam barras, e a ordem dos turnos no início da luta costuma decidir o resultado: é o ajuste fino de velocidade que os dois jogos têm em comum.
 
 ### Éter
 
-Recurso único do time, equivalente às Almas de Epic Seven e ao PM de Tormenta. Começa em 0 e vai até 10.
+Recurso único do time, equivalente às Almas de Epic Seven. Começa em 0 e vai até 10. É escasso de propósito: numa luta inteira dá para pagar poucos aprimoramentos, então cada um é uma decisão.
 
-- **Ganho:** +1 por habilidade básica; +2 por habilidade de Glifo; +2 quando o Conjurador canaliza; +1 por inimigo derrotado.
-- **Gasto:** aprimoramentos das habilidades e páginas do Grimório.
-
-A decisão central da luta é gastar agora em aprimoramentos ou guardar para uma página de Círculo III.
-
-### O Conjurador
-
-Tem Velocidade fixa (100 no início, subindo com o nível de conta). No turno dele, lança uma página que possa pagar ou canaliza Éter. A 1.0 tem três Conjuradores; o MVP tem só o primeiro.
-
-| Conjurador | Estilo | Regra própria |
-| --- | --- | --- |
-| Erudito | Controle | Grimório com 4 páginas em vez de 3; Círculo II custa 1 Éter a menos |
-| Ritualista | Explosão | Círculo III custa 5 em vez de 6; Velocidade 20 pontos menor |
-| Canalizador | Sustento | Canalizar dá +3 Éter; não pode usar Círculo III |
-
-### Grimório
-
-Três páginas montadas antes da luta, todas disponíveis desde o início. Cada página tem recarga igual ao seu Círculo: 1, 2 ou 3 turnos do Conjurador.
+- **Ganho:** +1 por habilidade de Glifo e +1 por inimigo derrotado. O básico não gera Éter.
+- **Gasto:** só aprimoramentos, e só no modo manual. O básico aprimorado custa 3; o Glifo aprimorado, 5 (6 nas 5★). Nenhum aprimoramento custa menos que 2 — mais do que um turno rende —, então não existe ciclo de usa-e-ganha.
+- **Aprimoramento:** a versão aprimorada é clara e forte (mais golpes, chance dobrada, efeito extra), para valer o custo.
 
 ### Vitória e derrota
 
@@ -179,13 +147,9 @@ Você vence ao derrotar todas as ondas. Perde se as 4 invocações caírem ou se
 
 ### Automático e manual
 
-Toda luta pode ser automática. Você não controla a IA passo a passo; define regras antes da luta:
+Toda luta pode ser automática: usa o Glifo quando está pronto e mira com vantagem elemental e, no empate, no mais ferido. **O automático nunca gasta Éter.** O aprimoramento é poder reservado a quem joga no manual; assim a automação não fica mais forte com um recurso que existe para premiar decisões.
 
-- **Postura de Éter:** Agressiva (gasta em aprimoramentos de dano), Econômica (guarda para Círculo III) ou Equilibrada.
-- **Alvo preferido** de cada invocação: menos Vida, vantagem elemental ou maior ameaça.
-- **Ordem do Grimório:** a posição de cada página define a prioridade de uso.
-
-Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham repetição automática e um botão Resolver, que simula na hora.
+Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham o botão Resolver, que simula na hora.
 
 ## 8. Invocações
 
@@ -227,9 +191,9 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 | Serpe de Trevas | 4★ · Ossada · Controle | Mordida Vil: 110% de dano, drena 30% como Vida. +1 Éter: −50% de cura no alvo por 2 turnos | Hálito de Túmulo (3): 80% em todos, 50% de chance de Maldição (+25% de dano recebido) por 2 turnos. +2 Éter: chance de 100% | Sempre que um inimigo cai, recupera 15% da Vida e gera 1 Éter |
 | Oráculo de Vidro de Água | 4★ · Olho · Suporte | Visão Fria: 90% de dano e atrasa o Ímpeto do alvo em 15%. +1 Éter: atrasa 30% | Profecia (4): todos os aliados ganham +25% de Ímpeto. +2 Éter: e +15% de Velocidade por 2 turnos | Liderança: +15% de Velocidade. Aliados não sofrem críticos na primeira rodada |
 | Fênix de Cinza de Fogo | 5★ · Espiral · Atacante | Chama Espiral: 120% de dano e converte um efeito positivo do alvo em Queimadura. +1 Éter: converte dois | Voo Rubro (4): 90% em todos e Queimadura por 1 turno. +3 Éter: dano ×1,5 | Na primeira vez que cai, renasce com 40% da Vida no turno seguinte dela |
-| Sábio Sem Rosto de Trevas | 5★ · Porta · Controle | Toque do Limiar: 100% de dano e 30% de chance de atordoar | Abrir a Porta (5): invoca uma cópia de um inimigo, que luta do seu lado por 2 turnos com 50% dos atributos. +3 Éter: 100% dos atributos | Sempre que você lança uma página do Grimório, ganha +20% de Ímpeto |
+| Sábio Sem Rosto de Trevas | 5★ · Porta · Controle | Toque do Limiar: 100% de dano e 30% de chance de atordoar | Abrir a Porta (5): invoca uma cópia de um inimigo, que luta do seu lado por 2 turnos com 50% dos atributos. +3 Éter: 100% dos atributos | Sempre que um aliado usa uma habilidade aprimorada, ganha +20% de Ímpeto |
 
-As melhores Assinaturas nascem do conceito da família: a fênix renasce, o menir não se move. Esse é o molde para as outras 32.
+As melhores Assinaturas nascem do conceito da família: a fênix renasce, o menir não se move. Esse é o molde para as outras 32. Os custos de Éter destes exemplos são os da primeira versão; os valores atuais (3 no básico, 5 ou 6 no Glifo) estão em Data/summons.
 
 ## 9. O gacha: Invocação ritual
 
@@ -261,18 +225,20 @@ Ao receber uma duplicata, você escolhe manter o Tique antigo ou ficar com o nov
 
 ## 10. Progressão
 
-Há quatro eixos de poder: nível compartilhado, Ecos, Despertar e Sigilos. Qualquer sistema novo precisa substituir um deles, não somar.
+Há quatro eixos de poder: nível, Ecos, Despertar e runas. Qualquer sistema novo precisa substituir um deles, não somar.
 
 | Eixo | Como sobe | O que dá |
 | --- | --- | --- |
-| Nível | Gastando Essência nas 5 invocações de maior nível | Todas as outras ficam no nível da quinta. Testar qualquer time custa zero |
-| Ecos | Duplicatas, de 0 a 5 | Cada Eco sobe um nível de habilidade (mais dano ou menos recarga), como em Summoners War; no quinto, +10% de atributos |
-| Despertar | Essência e vitória na Provação da família | Nome próprio, desenho novo e Assinatura melhorada |
-| Sigilos | Drop de Masmorras, melhorados com Pó de Sigilo | Atributos, conjuntos e o ajuste fino de Velocidade |
+| Nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 1 de experiência) | Nível de 1 a 40 por invocação; Vida, Ataque e Defesa crescem de 25% a 100% |
+| Ecos | Duplicatas, de 0 a 5 | Cada Eco deixa as habilidades 5% mais fortes; no quinto, +10% de atributos |
+| Despertar | Essência: 1500 (3★), 3000 (4★), 6000 (5★) | Nome próprio, desenho novo, estrelas roxas, Assinatura melhorada, +15% de Vida, Ataque e Defesa e um atributo extra da variante |
+| Runas | Drop das fases da Campanha (Masmorras na v0.5), melhoradas com Pó de Sigilo | Atributos, conjuntos e o ajuste fino de Velocidade |
 
-**Nível compartilhado.** É o sistema de AFK Arena que mais combina com um elenco grande e um jogador só, e substitui a evolução com monstros de sacrifício. O teto é 20 na região 1, 40 na 2 e 60 na 3.
+**Nível por invocação, como em Summoners War.** Cada invocação sobe de 1 a 40. Os atributos de base do apêndice são os de uma 5★ no nível 40 sem Despertar. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
 
-**Sigilos: as runas de Summoners War, com menos sorteio.** Cada invocação tem 6 espaços dispostos em círculo, o próprio círculo de conjuração. Os espaços 1, 3 e 5 têm atributo principal fixo (Ataque, Defesa e Vida); os espaços 2, 4 e 6 variam. Cada Sigilo tem 3 subatributos e melhora de +0 a +9; em +3, +6 e +9 um subatributo sorteado aumenta.
+**Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), um segundo desenho, estrelas roxas no lugar das douradas, a Assinatura melhorada e atributos maiores. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
+
+**Runas: as de Summoners War, com menos sorteio.** Cada invocação tem 6 espaços dispostos em círculo, o próprio círculo de conjuração. Os espaços 1, 3 e 5 têm atributo principal fixo (Ataque, Defesa e Vida); os espaços 2, 4 e 6 variam. Cada runa tem de 1 a 5 estrelas, 3 subatributos e melhora de +0 a +9; em +3, +6 e +9 um subatributo sorteado aumenta. Nenhuma melhora falha.
 
 | Conjunto | Peças | Bônus |
 | --- | --- | --- |
@@ -285,7 +251,7 @@ Há quatro eixos de poder: nível compartilhado, Ecos, Despertar e Sigilos. Qual
 | Olho | 2 | +20% de Foco |
 | Véu | 2 | +20% de Resistência |
 
-Com 6 espaços cabem um conjunto de 4 e um de 2, ou três de 2. Refazer um subatributo custa Pó de Sigilo e evita que um drop ruim seja perdido.
+Com 6 espaços cabem um conjunto de 4 e um de 2, ou três de 2. Refazer um subatributo custa Pó de Sigilo e evita que um drop ruim seja perdido; desfazer uma runa devolve Pó.
 
 ## 11. Loop ocioso e modos de jogo
 
@@ -296,7 +262,7 @@ flowchart LR
   A[Abre o jogo] --> B[Coleta a ociosidade]
   B --> C[1 a 3 lutas]
   C --> D[Invoca com Pergaminhos]
-  D --> E[Ajusta Sigilos e Grimório]
+  D --> E[Ajusta runas, níveis e time]
   E --> F[Fecha]
   F -- horas depois --> A
 ```
@@ -306,7 +272,7 @@ flowchart LR
 | Modo | Inspiração | Controle | Para que serve | Entra em |
 | --- | --- | --- | --- | --- |
 | Campanha: 3 regiões de 20 fases | AFK | Automático | Aumenta a ociosidade e o teto de nível | MVP (região 1) |
-| Masmorras de Sigilos: Golem Rúnico, Ninho da Serpe, Cripta do Rei Ossudo, Santuário Afogado | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Resolver | Cada uma solta 2 conjuntos de Sigilo | v0.5 |
+| Masmorras de Runas: Golem Rúnico, Ninho da Serpe, Cripta do Rei Ossudo, Santuário Afogado | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Resolver | Cada uma solta 2 conjuntos de runa | v0.5 |
 | Torre dos Círculos: 60 andares com regras fixas | Torre de Summoners War e Abismo de Epic Seven | Manual | Pergaminhos, Pó de Sigilo, desafio de montagem | v0.5 |
 | Provações: uma luta fixa por família | Despertar de Summoners War | Manual | Libera o Despertar | v0.5 |
 | Portais Secretos: surgem ao vencer Masmorras e ficam até você usar | Masmorras secretas de Summoners War | Automático | Três vitórias no mesmo portal dão uma invocação daquela família | v1.0 |
@@ -322,8 +288,8 @@ Quatro moedas, e nunca mais que isso. Jogando normalmente entram cerca de 4 Perg
 | Moeda | De onde vem | Para onde vai |
 | --- | --- | --- |
 | Pergaminhos Místicos | Ociosidade, primeira vitória de cada fase, Torre, conquistas | Invocar |
-| Essência | Ociosidade, fases | Nível compartilhado e Despertar |
-| Pó de Sigilo | Ociosidade, Masmorras, Torre, traçado limpo | Melhorar Sigilos e refazer subatributos |
+| Essência | Ociosidade, fases | Nível das invocações e Despertar |
+| Pó de Sigilo | Ociosidade, fases, Masmorras, Torre, traçado limpo, runas desfeitas | Melhorar runas e refazer subatributos |
 | Fragmentos | Duplicatas excedentes, Arena | Trocar por uma invocação escolhida |
 
 ### Ritmo-alvo
@@ -358,15 +324,15 @@ Cada fase termina num jogo que você já consegue jogar; se o projeto parar em q
 | Fase | Duração | Entrega | Pergunta que responde |
 | --- | --- | --- | --- |
 | 0. Simulador em texto | 2 semanas | Combate em linha de comando ou planilha: Ímpeto, Éter, 8 invocações | A matemática de velocidade e Éter é interessante? |
-| 1. Núcleo de combate | 6 a 8 semanas | Tela de batalha, ondas, Erudito, 8 invocações, 3 páginas prontas, IA automática, 10 fases | O automático é bom de assistir e o manual é bom de jogar? |
-| 2. MVP: loop AFK e gacha | 4 a 6 semanas | Ociosidade, nível compartilhado, invocação com garantia, 3 famílias (15 invocações), região 1 | Dá vontade de voltar no dia seguinte? |
-| 3. v0.5: profundidade | 8 a 10 semanas | Grimório montável, Sigilos, Masmorras, Provações e Despertar, Torre até 30, traçado, 5 famílias (25) | Existe teorização para semanas? |
-| 4. v1.0: conteúdo | 10 a 12 semanas | 8 famílias (40), regiões 2 e 3, Torre 60, Arena, Portais Secretos, 3 Conjuradores, Tiques | Você joga 90 dias seguidos? |
+| 1. Núcleo de combate | 6 a 8 semanas | Tela de batalha, ondas, 8 invocações, IA automática, 10 fases | O automático é bom de assistir e o manual é bom de jogar? |
+| 2. MVP: loop AFK e gacha | 4 a 6 semanas | Ociosidade, nível 1–40, Despertar, runas, invocação com garantia, 3 famílias (15 invocações), região 1 | Dá vontade de voltar no dia seguinte? |
+| 3. v0.5: profundidade | 8 a 10 semanas | Masmorras de Runas, Provações, Torre até 30, traçado, 5 famílias (25) | Existe teorização para semanas? |
+| 4. v1.0: conteúdo | 10 a 12 semanas | 8 famílias (40), regiões 2 e 3, Torre 60, Arena, Portais Secretos, Tiques | Você joga 90 dias seguidos? |
 | Depois | Contínuo | Uma família nova (5 invocações) quando der vontade, Convidados, Espelho | — |
 
 A fase 0 é a mais barata e a mais importante: combate por turnos com velocidade é quase só matemática, então dá para testar sem nenhum gráfico.
 
-**Ordem de corte se atrasar:** Arena, depois Portais Secretos, depois o terceiro Conjurador, depois a região 3 vira pós-1.0. Nunca cortar: Éter compartilhado, Sigilos e ociosidade.
+**Ordem de corte se atrasar:** Arena, depois Portais Secretos, depois a região 3 vira pós-1.0. Nunca cortar: Éter compartilhado, runas e ociosidade.
 
 ## 14. Riscos e perguntas em aberto
 
@@ -375,9 +341,8 @@ O maior risco não é técnico: é o escopo crescer até o projeto parar. Os out
 | Risco | Por que preocupa | Mitigação |
 | --- | --- | --- |
 | Escopo crescente | É o que mais mata projetos pessoais | Sistema novo substitui um eixo, não soma; toda fase termina jogável |
-| Sigilos pesados | Seis espaços com subatributos é o sistema mais caro de balancear e de interface | +9 e 3 subatributos em vez de +15 e 4; conjuntos fixos; subatributo refazível |
-| IA gastando Éter mal | Automático burro frustra | Posturas simples, testadas em massa no simulador |
-| Combinações do Grimório | 8 Glifos × 3 Formas × 3 Círculos dão 72 páginas possíveis | Efeitos calculados por fórmula, não à mão; simulador para achar combos quebrados |
+| Runas pesadas | Seis espaços com subatributos é o sistema mais caro de balancear e de interface | +9 e 3 subatributos em vez de +15 e 4; conjuntos fixos; subatributo refazível |
+| Automático forte demais | Se o automático resolve tudo, o manual perde sentido | O automático nunca gasta Éter; aprimorar é decisão do jogador |
 | Gacha sem tensão | Você conhece todas as criaturas | Tiques, Convidados, garantia visível e o ritual do traçado |
 
 ### Perguntas em aberto
@@ -396,10 +361,10 @@ São valores de partida para o simulador, feitos para serem mudados no primeiro 
 ### Dano
 
 ```latex
-D = ATQ \times M \times \frac{100}{100 + DEF} \times E \times C
+D = ATQ \times M \times \frac{K}{K + DEF} \times E \times C, \quad K = 600
 ```
 
-M é o multiplicador da habilidade (por exemplo, 0,8 para 80%). E vale 1,25 com vantagem elemental, 0,75 com desvantagem e 1 no neutro. C vale 1,5 no crítico (mais o bônus de Dano crítico) e 1 fora dele.
+K é a constante de Defesa: Defesa 600 corta o dano pela metade. M é o multiplicador da habilidade (por exemplo, 0,8 para 80%). E vale 1,25 com vantagem elemental, 0,75 com desvantagem e 1 no neutro. C vale 1,5 no crítico (mais o bônus de Dano crítico) e 1 fora dele.
 
 ### Ímpeto
 
@@ -409,23 +374,7 @@ t = \frac{100 - I}{VEL}
 
 I é o Ímpeto atual em porcentagem; a unidade com o menor t age primeiro. Empurrar o Ímpeto em 20% soma 20 a I, na hora.
 
-### Páginas do Grimório
-
-```latex
-\text{Custo} = C + F - R, \quad C \in \{1, 3, 6\}, \; F \in \{0, 1, 2\}, \; R \in \{0, 1\}
-```
-
-C é o custo do Círculo, F o da Forma (Único, Dupla, Todos) e R a Ressonância. Custo mínimo de 1.
-
-| Círculo | Potência por alvo | Potência por Éter (Único) | Recarga |
-| --- | --- | --- | --- |
-| I | 100% | 100% | 1 turno |
-| II | 200% | 67% | 2 turnos |
-| III | 350% e o efeito extra do Glifo | 58% | 3 turnos |
-
-Formas com mais alvos reduzem a potência por alvo: Dupla 75%, Todos 55%. Círculos altos rendem menos por Éter de propósito; o que compram é explosão de poder e o efeito extra.
-
-### Atributos de base no nível 60 (5★)
+### Atributos de base no nível 40 (5★, sem Despertar)
 
 | Papel | Vida | Ataque | Defesa | Velocidade |
 | --- | --- | --- | --- | --- |
@@ -434,6 +383,7 @@ Formas com mais alvos reduzem a potência por alvo: Dupla 75%, Todos 55%. Círcu
 | Suporte | 4200 | 550 | 250 | 115 |
 | Controle | 4500 | 650 | 250 | 105 |
 
-Invocações de 4★ usam 92% desses valores e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos começam em 25% e crescem em linha reta até o 60. Velocidade só muda por Sigilos, Tiques e Liderança, para o ajuste fino continuar importando.
+Invocações de 4★ usam 92% desses valores e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos começam em 25% e crescem em linha reta até o 40. Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
 
-O Conjurador não tem Vida: só Velocidade (100 no início) e Poder, que escala as páginas com o nível de conta.
+Inimigos têm 1 ou 2 estrelas e compensam a raridade baixa com multiplicadores de Vida e Ataque por criatura (Data/enemies.json): não usam runas nem aprimoramentos.
+

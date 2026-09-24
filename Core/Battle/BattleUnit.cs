@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
+using Sigilos.Core.Runes;
 
 namespace Sigilos.Core.Battle
 {
@@ -10,7 +11,7 @@ namespace Sigilos.Core.Battle
 	/// efeitos, recarga) e calcula os atributos de agora a partir dos efeitos ativos.
 	/// Quem decide o que acontece com ela é o <see cref="BattleSession"/>.
 	/// </summary>
-	public sealed class BattleUnit : ITurnTaker
+	public sealed class BattleUnit
 	{
 		private readonly List<StatusEffect> _statuses = new();
 
@@ -21,11 +22,14 @@ namespace Sigilos.Core.Battle
 			Side side,
 			Element element,
 			Glyph? glyph,
+			int level,
+			bool awakened,
 			StatBlock stats,
 			SkillDefinition basic,
 			SkillDefinition? glyphSkill,
 			PassiveDefinition? passive,
-			double skillPower)
+			double skillPower,
+			RuneSetEffects runeEffects)
 		{
 			DefinitionId = definitionId;
 			Name = name;
@@ -33,11 +37,14 @@ namespace Sigilos.Core.Battle
 			Side = side;
 			Element = element;
 			Glyph = glyph;
+			Level = level;
+			Awakened = awakened;
 			Stats = stats;
 			Basic = basic;
 			GlyphSkill = glyphSkill;
 			Passive = passive;
 			SkillPower = skillPower;
+			RuneEffects = runeEffects;
 			Health = stats.Health;
 		}
 
@@ -52,21 +59,31 @@ namespace Sigilos.Core.Battle
 		/// <summary>Só invocações têm Glifo; inimigos ficam nulos.</summary>
 		public Glyph? Glyph { get; }
 
-		/// <summary>Atributos de base da luta, já com nível, raridade, Ecos e Liderança.</summary>
+		public int Level { get; }
+		public bool Awakened { get; }
+
+		/// <summary>Atributos da luta, já com nível, raridade, Ecos, Despertar, runas e Liderança.</summary>
 		public StatBlock Stats { get; }
 
 		public SkillDefinition Basic { get; }
 		public SkillDefinition? GlyphSkill { get; }
 		public PassiveDefinition? Passive { get; }
 
+		/// <summary>O número da Assinatura, já melhorado se a invocação despertou.</summary>
+		public double PassiveValue => Passive?.ValueFor(Awakened) ?? 0;
+
 		/// <summary>Multiplica dano, cura e escudo das habilidades (Ecos).</summary>
 		public double SkillPower { get; }
+
+		/// <summary>Dreno, atordoar ao acertar e turno extra dos conjuntos de runas.</summary>
+		public RuneSetEffects RuneEffects { get; }
 
 		public double Health { get; set; }
 		public double MaxHealth => Stats.Health;
 		public double HealthFraction => MaxHealth <= 0 ? 0 : Health / MaxHealth;
 		public bool IsAlive => Health > 0;
 
+		/// <summary>De 0 a 100: a unidade age quando chega a 100.</summary>
 		public double Impeto { get; set; }
 
 		/// <summary>Turnos até a habilidade de Glifo voltar. 0 = pronta.</summary>
@@ -82,10 +99,12 @@ namespace Sigilos.Core.Battle
 
 		public IReadOnlyList<StatusEffect> Statuses => _statuses;
 
+		/// <summary>Está na barra de Ímpeto: viva, ou caída esperando renascer.</summary>
 		public bool CanTakeTurn => IsAlive || PendingRebirth;
 
 		public bool IsGlyphReady => GlyphSkill != null && GlyphCooldown == 0;
 
+		/// <summary>Velocidade de agora, com efeitos e Assinatura. A barra enche em proporção a ela.</summary>
 		public double TurnSpeed
 		{
 			get
@@ -94,7 +113,7 @@ namespace Sigilos.Core.Battle
 				if (Has(StatusKind.SpeedUp))
 					speed *= 1 + BattleRules.SpeedUpBonus;
 				if (Passive?.Kind == PassiveKind.SpeedWhenLowest && IsLowestInTeam())
-					speed *= 1 + Passive.Value;
+					speed *= 1 + PassiveValue;
 				return Math.Max(1, speed);
 			}
 		}
@@ -148,10 +167,11 @@ namespace Sigilos.Core.Battle
 			return expired;
 		}
 
+		/// <summary>Estritamente a menos Vida: empate (todos cheios no começo da luta) não conta.</summary>
 		private bool IsLowestInTeam()
 		{
-			var alive = Team.Where(u => u.IsAlive).ToList();
-			return alive.Count > 1 && alive.MinBy(u => u.HealthFraction) == this;
+			var others = Team.Where(u => u.IsAlive && u != this).ToList();
+			return others.Count > 0 && others.All(u => u.HealthFraction > HealthFraction);
 		}
 	}
 }

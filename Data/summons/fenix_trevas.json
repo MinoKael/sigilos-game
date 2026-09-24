@@ -6,16 +6,17 @@
   "glyph": "Veil",
   "role": "Attacker",
   "leader": {"stat": "CritDamage", "value": 0.3},
+  "awakening": {"name": "Nictéria", "stat": "CritDamage", "value": 0.3},
   "basic": {
     "name": "Garra Velada",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.2},
       {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.2},
-      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2},
+      {"kind": "Damage", "target": "Target", "power": 1.6},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.6, "turns": 2},
       {"kind": "Status", "target": "Self", "status": "Hidden"}
     ]
   },
@@ -26,9 +27,9 @@
       {"kind": "Damage", "target": "Target", "power": 2.2},
       {"kind": "Status", "target": "Self", "status": "Hidden"}
     ],
-    "enhanceCost": 3,
+    "enhanceCost": 6,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 2.2, "ignoreDefense": 0.5},
+      {"kind": "Damage", "target": "Target", "power": 3.2, "ignoreDefense": 0.5},
       {"kind": "Status", "target": "Self", "status": "Hidden"}
     ]
   }

@@ -21,6 +21,15 @@ namespace Sigilos.Core.Content
 		/// <summary>Toda vitória, inclusive a primeira.</summary>
 		public int Essence { get; init; }
 
+		/// <summary>Pó de Sigilo de toda vitória: melhora e refaz runas.</summary>
+		public int Dust { get; init; }
+
+		/// <summary>Experiência de cada invocação do time em toda vitória.</summary>
+		public int Experience { get; init; }
+
+		/// <summary>Estrelas da runa que a vitória solta (1 a 5).</summary>
+		public int RuneGrade { get; init; } = 1;
+
 		/// <summary>Até 3 falas antes da luta: "a história é tempero" (GDD, seção 4).</summary>
 		public IReadOnlyList<string> Lines { get; init; } = new List<string>();
 	}

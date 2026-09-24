@@ -6,16 +6,17 @@
   "glyph": "Wall",
   "role": "Front",
   "leader": {"stat": "Health", "value": 0.15},
+  "awakening": {"name": "Dama Maré", "stat": "Defense", "value": 0.15},
   "basic": {
     "name": "Golpe de Escudo",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 0.9},
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 0.9},
-      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.6, "turns": 2}
+      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.8, "turns": 2}
     ]
   },
   "glyphSkill": {
@@ -24,10 +25,11 @@
     "effects": [
       {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
     ],
-    "enhanceCost": 2,
+    "enhanceCost": 5,
     "enhancedEffects": [
-      {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
-      {"kind": "Cleanse", "target": "AllAllies"}
+      {"kind": "Shield", "target": "AllAllies", "power": 0.3, "turns": 2},
+      {"kind": "Cleanse", "target": "AllAllies"},
+      {"kind": "Status", "target": "LowestAlly", "status": "Ward"}
     ]
   }
 }

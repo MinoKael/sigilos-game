@@ -6,16 +6,17 @@
   "glyph": "Bond",
   "role": "Control",
   "leader": {"stat": "Crit", "value": 0.15},
+  "awakening": {"name": "Solária", "stat": "Focus", "value": 0.25},
   "basic": {
     "name": "Aurora",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.1},
       {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.1},
-      {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.4}
+      {"kind": "Damage", "target": "Target", "power": 1.5},
+      {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.5}
     ]
   },
   "glyphSkill": {
@@ -25,10 +26,10 @@
       {"kind": "Damage", "target": "AllEnemies", "power": 0.8},
       {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
     ],
-    "enhanceCost": 3,
+    "enhanceCost": 6,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 0.8},
-      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.7}
+      {"kind": "Damage", "target": "AllEnemies", "power": 1.1},
+      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.75}
     ]
   }
 }

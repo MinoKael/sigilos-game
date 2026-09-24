@@ -13,6 +13,11 @@ namespace Sigilos.Core.Player
 
 		public static string ToJson(PlayerState player) => JsonSerializer.Serialize(player, Options);
 
-		public static PlayerState FromJson(string json) => JsonSerializer.Deserialize<PlayerState>(json, Options) ?? new PlayerState();
+		/// <summary>Nulo quando o save é de um formato antigo (<see cref="PlayerState.CurrentVersion"/>).</summary>
+		public static PlayerState? FromJson(string json)
+		{
+			var player = JsonSerializer.Deserialize<PlayerState>(json, Options);
+			return player is { Version: PlayerState.CurrentVersion } ? player : null;
+		}
 	}
 }

@@ -1,7 +1,6 @@
 namespace Sigilos.Core.Content
 {
-	/// <summary>O que um efeito faz. Habilidades e páginas do Grimório usam o mesmo vocabulário:
-	/// "magia é linguagem" (GDD, pilar 1).</summary>
+	/// <summary>O que um efeito faz. Toda habilidade é uma lista destes (Data/summons, Data/enemies).</summary>
 	public enum EffectKind
 	{
 		Damage,
@@ -10,6 +9,5 @@ namespace Sigilos.Core.Content
 		Status,
 		Impeto,
 		Cleanse,
-		Revive,
 	}
 }

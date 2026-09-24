@@ -24,10 +24,17 @@ namespace Sigilos.Core.Content
 		/// <summary>Só famílias de 4 e 5 estrelas têm.</summary>
 		public LeaderDefinition? Leader { get; init; }
 
+		/// <summary>Nome próprio e bônus depois do Despertar.</summary>
+		public AwakeningDefinition Awakening { get; init; } = new();
+
 		/// <summary>Ligada pelo <see cref="GameDatabase"/> depois da leitura.</summary>
 		[JsonIgnore]
 		public FamilyDefinition Family { get; internal set; } = new();
 
 		public int Rarity => Family.Rarity;
+
+		public string NameFor(bool awakened) => awakened ? Awakening.Name : Name;
+
+		public string ImageFor(bool awakened) => awakened ? Family.AwakenedImage : Family.Image;
 	}
 }

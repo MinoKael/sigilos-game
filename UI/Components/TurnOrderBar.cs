@@ -6,35 +6,24 @@ using Side = Sigilos.Core.Battle.Side;
 
 namespace Sigilos.UI.Components
 {
-	/// <summary>Os próximos a agir, da esquerda para a direita, na cor de cada um.</summary>
+	/// <summary>Os próximos a agir, da esquerda para a direita. Borda verde: aliado; vermelha: inimigo.</summary>
 	public partial class TurnOrderBar : HBoxContainer
 	{
-		private readonly string _conjurerImage;
-
-		public TurnOrderBar(string conjurerImage)
+		public TurnOrderBar()
 		{
-			_conjurerImage = conjurerImage;
 			AddThemeConstantOverride("separation", 6);
 		}
 
-		public void Show(IReadOnlyList<ITurnTaker> order)
+		public void Show(IReadOnlyList<BattleUnit> order)
 		{
 			Layout.Clear(this);
+			AddChild(new Label { Text = "Próximos:" });
 
-			var label = new Label { Text = "Próximos:", ThemeTypeVariation = GameTheme.OnStone };
-			AddChild(label);
-
-			foreach (var taker in order)
+			foreach (var unit in order)
 			{
-				var (image, ink, border) = taker switch
-				{
-					BattleUnit unit => (unit.Image, Palette.Of(unit.Element), unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow),
-					_ => (_conjurerImage, Palette.Gold, Palette.Gold),
-				};
-
-				var frame = new PanelContainer { TooltipText = taker.Name, MouseFilter = MouseFilterEnum.Stop };
-				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Parchment, border, 2, 4, 2));
-				frame.AddChild(Doodle.Icon(Art.Creature(image), 34, ink));
+				var frame = new PanelContainer { TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
+				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow, 2, 4, 2));
+				frame.AddChild(Doodle.Icon(Art.Creature(unit.Image), 34, Palette.Of(unit.Element)));
 				AddChild(frame);
 			}
 		}

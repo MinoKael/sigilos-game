@@ -6,15 +6,16 @@
   "glyph": "Spiral",
   "role": "Attacker",
   "leader": {"stat": "Attack", "value": 0.18},
+  "awakening": {"name": "Ignara", "stat": "Crit", "value": 0.15},
   "basic": {
     "name": "Chama Espiral",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.2},
       {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.2},
+      {"kind": "Damage", "target": "Target", "power": 1.6},
       {"kind": "Status", "target": "Target", "status": "Burn", "turns": 2}
     ]
   },
@@ -25,10 +26,10 @@
       {"kind": "Damage", "target": "AllEnemies", "power": 0.9},
       {"kind": "Status", "target": "AllEnemies", "status": "Burn"}
     ],
-    "enhanceCost": 3,
+    "enhanceCost": 6,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 1.35},
-      {"kind": "Status", "target": "AllEnemies", "status": "Burn"}
+      {"kind": "Damage", "target": "AllEnemies", "power": 1.4},
+      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "turns": 2}
     ]
   }
 }

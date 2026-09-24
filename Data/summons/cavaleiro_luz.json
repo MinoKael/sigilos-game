@@ -6,15 +6,16 @@
   "glyph": "Bond",
   "role": "Front",
   "leader": {"stat": "Defense", "value": 0.2},
+  "awakening": {"name": "Dom Alvor", "stat": "Resistance", "value": 0.2},
   "basic": {
     "name": "Juramento",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.0},
       {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
     ],
-    "enhanceCost": 1,
+    "enhanceCost": 3,
     "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.0},
+      {"kind": "Damage", "target": "Target", "power": 1.3},
       {"kind": "Status", "target": "Target", "status": "Taunt"}
     ]
   },
@@ -25,10 +26,11 @@
       {"kind": "Status", "target": "AllEnemies", "status": "Taunt"},
       {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
     ],
-    "enhanceCost": 2,
+    "enhanceCost": 5,
     "enhancedEffects": [
       {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "turns": 2},
-      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3},
+      {"kind": "Status", "target": "Self", "status": "Ward"}
     ]
   }
 }

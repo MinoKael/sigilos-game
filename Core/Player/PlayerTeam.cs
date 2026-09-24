@@ -13,17 +13,15 @@ namespace Sigilos.Core.Player
 		public static BattleTeam Build(PlayerState player, GameDatabase database)
 		{
 			var members = player.Team
-				.Where(database.HasSummon)
-				.Where(player.Owns)
-				.Select(id => new TeamMember(database.Summon(id), player.Echoes(id)))
+				.Where(id => database.HasSummon(id) && player.Owns(id))
+				.Select(id =>
+				{
+					var owned = player.Summon(id);
+					return new TeamMember(database.Summon(id), owned.Level, owned.Echoes, owned.Awakened, player.RunesOn(id));
+				})
 				.ToList();
 
-			var pages = player.Grimoire
-				.Where(database.HasPage)
-				.Select(database.Page)
-				.ToList();
-
-			return new BattleTeam(members, player.Level, database.Conjurer(player.ConjurerId), pages);
+			return new BattleTeam(members);
 		}
 	}
 }

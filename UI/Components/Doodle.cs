@@ -31,6 +31,6 @@ namespace Sigilos.UI.Components
 
 		/// <summary>Ícone pequeno de tamanho fixo, parado, para rótulos e botões.</summary>
 		public static Doodle Icon(Texture2D? texture, int size, Color? ink = null) =>
-			new(texture, ink ?? Palette.Ink, boil: false) { CustomMinimumSize = new Vector2(size, size) };
+			new(texture, ink ?? Palette.Text, boil: false) { CustomMinimumSize = new Vector2(size, size) };
 	}
 }

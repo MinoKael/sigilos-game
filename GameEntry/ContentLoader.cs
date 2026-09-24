@@ -24,9 +24,7 @@ namespace Sigilos.GameEntry
 				families: Read("families.json"),
 				summons: summons,
 				enemies: Read("enemies.json"),
-				stages: Read("stages.json"),
-				pages: Read("pages.json"),
-				conjurers: Read("conjurers.json"));
+				stages: Read("stages.json"));
 
 			foreach (var problem in database.Validate())
 				GD.PushError($"Data/: {problem}");

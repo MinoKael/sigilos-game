@@ -46,7 +46,7 @@ namespace Sigilos.UI.Screens
 			back.Pressed += () => BackRequested?.Invoke();
 			header.AddChild(back);
 			page.AddChild(header);
-			page.AddChild(new Label { Text = "Região 1 · sem regra de batalha: ensina o básico.", ThemeTypeVariation = GameTheme.OnStone });
+			page.AddChild(new Label { Text = "Região 1 · sem regra de batalha: ensina o básico.", ThemeTypeVariation = GameTheme.Faded });
 
 			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			body.AddThemeConstantOverride("separation", 20);
@@ -62,7 +62,7 @@ namespace Sigilos.UI.Screens
 			content.AddChild(_detail);
 			body.AddChild(panel);
 
-			_message.ThemeTypeVariation = GameTheme.OnStone;
+			_message.AddThemeColorOverride("font_color", Palette.Gold);
 			_message.HorizontalAlignment = HorizontalAlignment.Center;
 			page.AddChild(_message);
 
@@ -93,7 +93,7 @@ namespace Sigilos.UI.Screens
 					TooltipText = stage.Name,
 				};
 				if (stage == _selected)
-					button.AddThemeStyleboxOverride("normal", GameTheme.Box(Palette.Gold, Palette.Ink, 3, 5, 8));
+					button.AddThemeStyleboxOverride("normal", GameTheme.Box(Palette.Gold, Palette.Text, 3, 5, 8));
 				var captured = stage;
 				button.Pressed += () =>
 				{
@@ -112,7 +112,8 @@ namespace Sigilos.UI.Screens
 			var stage = _selected;
 			var cleared = Campaign.IsCleared(_player, stage.Number);
 			_detail.AddChild(new Label { Text = $"{stage.Number}. {stage.Name}", ThemeTypeVariation = GameTheme.Heading });
-			_detail.AddChild(new Label { Text = $"Inimigos no nível {stage.Level} · seu time no nível {_player.Level}" });
+			var levels = _player.Team.Where(_player.Owns).Select(id => _player.Summon(id).Level).ToList();
+			_detail.AddChild(new Label { Text = $"Inimigos no nível {stage.Level} · time nos níveis {string.Join(", ", levels)}" });
 
 			for (var i = 0; i < stage.Waves.Count; i++)
 			{
@@ -131,9 +132,10 @@ namespace Sigilos.UI.Screens
 			}
 
 			var reward = cleared
-				? $"Vitória: {stage.Essence} Essência"
-				: $"Primeira vitória: {Texts.Scrolls(stage.FirstClearScrolls)} e {stage.Essence + stage.FirstClearEssence} Essência";
-			_detail.AddChild(new Label { Text = reward });
+				? $"Vitória: {stage.Essence} Essência, {stage.Dust} Pó, {stage.Experience} de experiência para o time e {Campaign.RepeatRuneChance * 100:0}% de chance de runa {Texts.Stars(stage.RuneGrade)}"
+				: $"Primeira vitória: {Texts.Scrolls(stage.FirstClearScrolls)}, {stage.Essence + stage.FirstClearEssence} Essência, {stage.Dust} Pó, " +
+				  $"{stage.Experience} de experiência para o time e uma runa {Texts.Stars(stage.RuneGrade)}";
+			_detail.AddChild(new Label { Text = reward, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(400, 0) });
 
 			foreach (var line in stage.Lines)
 			{
@@ -161,7 +163,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(buttons);
 
 			if (_player.Team.Count == 0)
-				_detail.AddChild(new Label { Text = "Monte um time em Time e Grimório.", ThemeTypeVariation = GameTheme.Faded });
+				_detail.AddChild(new Label { Text = "Monte um time em Monstros.", ThemeTypeVariation = GameTheme.Faded });
 			else if (_player.Team.Count(_player.Owns) < PlayerState.TeamSize)
 				_detail.AddChild(new Label { Text = $"O time tem {_player.Team.Count} de {PlayerState.TeamSize} invocações.", ThemeTypeVariation = GameTheme.Faded });
 		}

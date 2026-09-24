@@ -1,13 +1,14 @@
 // Criaturas Profanadas da região 1 (GDD, seção 5): clássicos de RPG com 1 ou 2 estrelas, mais o chefe.
 // O elemento de cada inimigo é escolhido na fase (Data/stages.json), como as famílias de invocação.
-// "healthScale" multiplica a Vida: chefes usam mais de 1.
+// "healthScale" e "attackScale" multiplicam Vida e Ataque: compensam a raridade baixa (inimigo não tem
+// runa nem aprimoramento), e chefes usam mais Vida.
 [
   {
     "id": "limo",
     "name": "Limo Profanado",
     "role": "Front",
     "rarity": 1,
-    "healthScale": 1.3,
+    "healthScale": 1.5, "attackScale": 1.6,
     "image": "slime",
     "basic": { "name": "Engolfar", "effects": [
       {"kind": "Damage", "power": 0.9},
@@ -19,7 +20,7 @@
     "name": "Goblin",
     "role": "Attacker",
     "rarity": 1,
-    "healthScale": 1.3,
+    "healthScale": 1.5, "attackScale": 1.6,
     "image": "goblin",
     "basic": { "name": "Facada", "effects": [
       {"kind": "Damage", "power": 0.5, "hits": 2}
@@ -30,7 +31,7 @@
     "name": "Lobo Profanado",
     "role": "Attacker",
     "rarity": 2,
-    "healthScale": 1.3,
+    "healthScale": 1.5, "attackScale": 1.6,
     "image": "wolf",
     "basic": { "name": "Mordida", "effects": [
       {"kind": "Damage", "power": 1.0}
@@ -44,7 +45,7 @@
     "name": "Bandido",
     "role": "Control",
     "rarity": 2,
-    "healthScale": 1.3,
+    "healthScale": 1.5, "attackScale": 1.6,
     "image": "bandit",
     "basic": { "name": "Golpe Sujo", "effects": [
       {"kind": "Damage", "power": 1.0},
@@ -59,7 +60,7 @@
     "name": "Troll da Colina",
     "role": "Front",
     "rarity": 2,
-    "healthScale": 3.0,
+    "healthScale": 2.5, "attackScale": 1.3,
     "image": "troll",
     "basic": { "name": "Porrete", "effects": [
       {"kind": "Damage", "power": 1.2}
@@ -73,7 +74,7 @@
     "name": "Dragão Jovem",
     "role": "Attacker",
     "rarity": 2,
-    "healthScale": 2.5,
+    "healthScale": 2.5, "attackScale": 1.4,
     "image": "dragon",
     "basic": { "name": "Garra", "effects": [
       {"kind": "Damage", "power": 1.1}
@@ -88,7 +89,7 @@
     "name": "O Mestre de Correntes",
     "role": "Control",
     "rarity": 3,
-    "healthScale": 5.0,
+    "healthScale": 5.0, "attackScale": 1.6,
     "image": "chain_master",
     "basic": { "name": "Corrente", "effects": [
       {"kind": "Damage", "power": 1.0},
