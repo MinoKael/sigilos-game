@@ -41,7 +41,7 @@ namespace Sigilos.GameEntry
 			ContentLoader.LoadTexts(Argument("--language=") ?? ContentLoader.BaseLanguage);
 			_database = ContentLoader.Load();
 			_store = new SaveStore(Argument("--save=") ?? DefaultSlot);
-			_player = _store.Load() ?? NewGame.Create(DateTime.Now, _random);
+			_player = _store.Load() ?? NewGame.Create(DateTime.Now, _random, _database);
 
 			_ui = new Control { Theme = GameTheme.Build() };
 			_ui.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
@@ -189,12 +189,13 @@ namespace Sigilos.GameEntry
 			storage.InfuseRequested += (id, toMax) => Change(() =>
 			{
 				var monster = _player.Monster(id)!;
-				Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.Missing(monster));
+				Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.InfuseCosts(monster).Next);
 			}, storage.Refresh);
 			storage.AwakenRequested += id => Change(() => Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), storage.Refresh);
+			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), storage.Refresh);
 			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), storage.Refresh);
 			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), storage.Refresh);
-			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_player, target, materials), storage.Refresh);
+			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), storage.Refresh);
 			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), storage.Refresh);
 			Swap(storage);
 		}

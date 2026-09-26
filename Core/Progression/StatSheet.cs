@@ -5,7 +5,7 @@ using Sigilos.Core.Runes;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// A ficha de uma invocação mostra: a base (nível, raridade, Ecos, Despertar)
+	/// A ficha de uma invocação mostra: a base (estrelas, nível, Despertar)
 	/// e o que as runas somam, separados. A batalha usa o <see cref="TotalWith"/>.
 	/// </summary>
 	public sealed record StatSheet(StatBlock Base, RuneBonus Runes)

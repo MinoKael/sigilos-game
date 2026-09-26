@@ -55,9 +55,14 @@ namespace Sigilos.UI.Screens
 			Card(grid, "summon", T("compendium.basic.summon.title"), T("compendium.basic.summon.text"));
 			Card(grid, "storage", T("compendium.basic.monsters.title"), T("compendium.basic.monsters.text", PlayerState.CollectionCapacity, RuneInventory.Capacity));
 			Card(grid, "team", T("compendium.basic.teams.title"), T("compendium.basic.teams.text", PlayerState.TeamSize));
-			Card(grid, "essence", T("compendium.basic.level.title"), T("compendium.basic.level.text", Leveling.MaxLevel));
-			Card(grid, "fragments", T("compendium.basic.echoes.title"), T("compendium.basic.echoes.text", Growth.MaxEchoes, Texts.Percent(Growth.SkillPowerPerEcho), Texts.Percent(Growth.FullEchoStatBonus)));
+			Card(grid, "essence", T("compendium.basic.level.title"), T("compendium.basic.level.text", Growth.MaxLevel(3), Growth.MaxLevel(Growth.MaxStars), Leveling.ExperiencePerEssence));
+			var (e3, f3) = Evolution.Cost(3);
+			var (e4, f4) = Evolution.Cost(4);
+			var (e5, f5) = Evolution.Cost(5);
+			Card(grid, "summon", T("compendium.basic.stars.title"), T("compendium.basic.stars.text", Growth.MaxStars, e3, f3, e4, f4, e5, f5));
+			Card(grid, "fragments", T("compendium.basic.skills.title"), T("compendium.basic.skills.text"));
 			Card(grid, "grimoire", T("compendium.basic.awaken.title"), T("compendium.basic.awaken.text",
+				Awakening.Cost(3), Awakening.Cost(4), Awakening.Cost(5),
 				Texts.Percent(Awakening.HealthBonus), Texts.Percent(Awakening.AttackDefenseBonus),
 				Texts.AwakeningBonus(Stat.Speed), Texts.AwakeningBonus(Stat.Crit), Texts.AwakeningBonus(Stat.Resistance), Texts.AwakeningBonus(Stat.Accuracy)));
 		}
@@ -66,13 +71,12 @@ namespace Sigilos.UI.Screens
 		{
 			var grid = Cards(column);
 			Card(grid, RuneSets.For(RuneSet.Nemesis).Glyph, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
-			Card(grid, "essence", T("compendium.combat.aether.title"), T("compendium.combat.aether.text", Texts.Ether, BattleRules.MaxEther, BattleRules.SpecialEtherGain, BattleRules.KillEtherGain, BattleRules.MinEnhanceCost));
 			Card(grid, "campaign", T("compendium.combat.fight.title"), T("compendium.combat.fight.text", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
 			Card(grid, Texts.GlyphOf(Stat.Defense), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
 			Card(grid, Texts.GlyphOf(Stat.Crit), T("compendium.combat.crit.title"), T("compendium.combat.crit.text"));
 			Card(grid, Texts.GlyphOf(Stat.Resistance), T("compendium.combat.resistance.title"), T("compendium.combat.resistance.text", Texts.Percent(BattleRules.MinResistChance)));
 			Card(grid, "team", T("compendium.combat.leader.title"), T("compendium.combat.leader.text"));
-			Card(grid, "search", T("compendium.combat.auto.title"), T("compendium.combat.auto.text", Texts.Ether));
+			Card(grid, "search", T("compendium.combat.auto.title"), T("compendium.combat.auto.text", AutoBattle.RepeatRuns));
 
 			column.AddChild(new Label { Text = T("compendium.combat.elements"), ThemeTypeVariation = GameTheme.Heading });
 			column.AddChild(Layout.Text(T("compendium.combat.elements_text", Texts.Percent(BattleRules.AdvantageMultiplier - 1), Texts.Percent(1 - BattleRules.DisadvantageMultiplier)), GameTheme.Faded));

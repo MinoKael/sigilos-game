@@ -6,10 +6,10 @@ using Sigilos.Core.Player;
 
 namespace Sigilos.Tests
 {
-	/// <summary>As Assinaturas das famílias que vieram dos inimigos: Limos, Goblins, Lobos, Bandidos, Trolls e Dragões.</summary>
+	/// <summary>As Passivas das famílias que vieram dos inimigos: Limos, Goblins, Lobos, Bandidos, Trolls e Dragões.</summary>
 	internal static class SignatureTests
 	{
-		private static PassiveDefinition Passive(PassiveKind kind, double value) => new() { Name = kind.ToString(), Kind = kind, Value = value, AwakenedValue = value };
+		private static PassiveDefinition Passive(PassiveKind kind, double value) => new() { Kind = kind, Value = value };
 
 		private static double Hit(BattleUnit attacker, BattleUnit target) => DamageFormula.Compute(attacker, target, 1, 0, false);
 
@@ -78,7 +78,7 @@ namespace Sigilos.Tests
 				var session = TestData.Session(new[] { dragon }, new[] { foe }, seed);
 				session.Start();
 				TestData.RunUntilTurnOf(session, dragon);
-				var events = session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+				var events = session.Act(new UnitAction(0, foe));
 				Assert.True(events.OfType<StatusApplied>().Count(e => e.Status == StatusKind.Burn) + events.OfType<Resisted>().Count() == 1, "um sorteio por alvo");
 				if (foe.Has(StatusKind.Burn))
 					burned++;
@@ -92,17 +92,17 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var troll = database.Summon("troll_water");
-			var encounter = new Encounter(20, new[] { new[] { new StageEnemy { Summon = troll.Id } } }, Scale: 1.5);
+			var encounter = new Encounter(4, 20, new[] { new[] { new StageEnemy { Summon = troll.Id } } }, Scale: 1.5);
 			var team = PlayerTeam.Build(TestData.PlayerWith("imp_fire"), database, Teams.Campaign);
 			var session = BattleFactory.Create(database, team, encounter, 1);
 			session.Start();
 
 			var foe = session.Enemies.Single();
-			var basis = Core.Progression.Growth.Stats(database.Roles[troll.Role], troll.Rarity, 20);
+			var basis = Core.Progression.Growth.Stats(database.Roles[troll.Role], troll.Rarity, 4, 20);
 			var (health, attack) = BattleFactory.FoeScale(troll.Rarity);
 			Assert.Equal(troll.Name, foe.Name, "a mesma variante que o jogador invoca");
 			Assert.Equal(troll.Element, foe.Element, "o elemento vem da variante");
-			Assert.Equal(troll.Family.Passive, foe.Passive, "com a Assinatura da família");
+			Assert.Equal(troll.Skills.Single(s => s.IsPassive).Passive, foe.Passive, "com a Passiva da variante");
 			Assert.Near(basis.Health * health * 1.5, foe.MaxHealth, "Vida reforçada pelas estrelas e pelo encontro", 1e-6);
 			Assert.Near(basis.Attack * attack * 1.5, foe.Stats.Attack, "Ataque também", 1e-6);
 		}

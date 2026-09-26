@@ -5,24 +5,40 @@
   "element": "Light",
   "role": "Support",
   "leader": {"stat": "Defense", "value": 0.2},
-  "awakening": {"name": "Dawnhorn", "stat": "Resistance"},
-  "basic": {
-    "name": "Blessed Club",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5},
-      {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
-    ]
-  },
-  "special": {
-    "name": "Regrowth",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.3},
-      {"kind": "Cleanse", "target": "AllAllies"}
-    ]
-  }
+  "awakening": {"name": "Dawnhorn"},
+  "skills": [
+    {
+      "name": "Blessed Club",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Regrowth",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Heal", "target": "AllAllies", "power": 0.2}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ],
+      "awakenedEffects": [
+        {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+        {"kind": "Cleanse", "target": "AllAllies"}
+      ]
+    },
+    {
+      "name": "Regeneration",
+      "passive": {"kind": "RegenEachTurn", "value": 0.05, "awakenedValue": 0.08}
+    }
+  ]
 }

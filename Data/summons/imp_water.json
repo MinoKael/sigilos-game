@@ -4,23 +4,45 @@
   "family": "imp",
   "element": "Water",
   "role": "Attacker",
-  "awakening": {"name": "Gulp", "stat": "Crit"},
-  "basic": {
-    "name": "Frost Nip",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
-    ]
+  "awakening": {
+    "name": "Gulp",
+    "skill": {
+      "name": "Deep Thirst",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 7.7, "drain": 0.8},
+        {"kind": "Heal", "target": "LowestAlly", "power": 0.15}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
   },
-  "special": {
-    "name": "Seal's Thirst",
-    "cooldown": 3,
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 5.25, "drain": 0.5}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 7.7, "drain": 0.8},
-      {"kind": "Heal", "target": "LowestAlly", "power": 0.15}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Frost Nip",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Seal's Thirst",
+      "cooldown": 3,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 5.25, "drain": 0.5}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

@@ -158,7 +158,7 @@ namespace Sigilos.UI.Screens
 			var family = summon.Family;
 			var familyTitle = new Label { Text = family.Name, ThemeTypeVariation = GameTheme.Title };
 			_sheet.AddChild(familyTitle);
-			_sheet.AddChild(RichText.Label(T("grimoire.family", Texts.Stars(family.Rarity), family.Passive.Name, Texts.Describe(family.Passive, _awakened)), 0, GameTheme.Faded));
+			_sheet.AddChild(Layout.Text(T("grimoire.family", Texts.Stars(family.Rarity), Growth.MaxStars), GameTheme.Faded));
 			_sheet.AddChild(ElementPicker(summon));
 			_sheet.AddChild(new HSeparator());
 
@@ -180,11 +180,11 @@ namespace Sigilos.UI.Screens
 			var table = new GridContainer { Columns = 3 };
 			table.AddThemeConstantOverride("h_separation", 24);
 			Cell(table, "", true);
-			Cell(table, T("grimoire.level", 1), true);
-			Cell(table, T("grimoire.level", Growth.MaxLevel), true);
+			Cell(table, T("grimoire.level", Texts.Stars(summon.Rarity), 1), true);
+			Cell(table, T("grimoire.level", Texts.Stars(Growth.MaxStars), Growth.MaxLevel(Growth.MaxStars)), true);
 			var roleBase = _database.Roles[summon.Role];
-			var low = SummonStats.For(roleBase, summon, 1, 0, _awakened, Array.Empty<Rune>()).Base;
-			var high = SummonStats.For(roleBase, summon, Growth.MaxLevel, 0, _awakened, Array.Empty<Rune>()).Base;
+			var low = SummonStats.For(roleBase, summon, summon.Rarity, 1, _awakened, Array.Empty<Rune>()).Base;
+			var high = SummonStats.For(roleBase, summon, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars), _awakened, Array.Empty<Rune>()).Base;
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
 				Cell(table, Texts.Name(stat));
@@ -195,19 +195,27 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(table);
 
 			_sheet.AddChild(new Label { Text = T("grimoire.skills"), ThemeTypeVariation = GameTheme.Heading });
-			_sheet.AddChild(RichText.Label(T("monsters.basic", summon.Basic.Name)));
-			_sheet.AddChild(RichText.Label(Texts.Describe(summon.Basic), 0, GameTheme.Faded));
-			_sheet.AddChild(RichText.Label(T("monsters.special", summon.Special.Name, summon.Special.Cooldown)));
-			_sheet.AddChild(RichText.Label(Texts.Describe(summon.Special), 0, GameTheme.Faded));
-			_sheet.AddChild(RichText.Label(T("monsters.signature", summon.Family.Passive.Name)));
-			_sheet.AddChild(RichText.Label(Texts.Describe(summon.Family.Passive, _awakened), 0, GameTheme.Faded));
+			var skills = summon.SkillsFor(_awakened);
+			for (var i = 0; i < summon.AllSkills.Count; i++)
+			{
+				var skill = summon.AllSkills[i];
+				var header = Texts.SkillHeader(skill, i, 1, _awakened);
+				if (i >= skills.Count)
+					header += " " + T("monsters.skill_locked");
+				_sheet.AddChild(RichText.Label(header));
+				_sheet.AddChild(RichText.Label(Texts.Describe(skill, _awakened), 0, GameTheme.Faded));
+				var ups = Texts.LevelUps(skill, 1);
+				if (ups.Length > 0)
+					_sheet.AddChild(RichText.Label(ups, 0, GameTheme.Faded));
+			}
+
 			_sheet.AddChild(RichText.Label(summon.Leader is { } leader
 				? T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat))
 				: T("grimoire.no_leadership")));
 
 			_sheet.AddChild(new Label { Text = T("grimoire.awaken"), ThemeTypeVariation = GameTheme.Heading });
 			_sheet.AddChild(RichText.Label(T("monsters.awaken_text", summon.Awakening.Name, Texts.Percent(Awakening.HealthBonus), Texts.Percent(Awakening.AttackDefenseBonus),
-				Texts.AwakeningBonus(summon.Awakening.Stat), Texts.Describe(summon.Family.Passive, true)), 0, GameTheme.Faded));
+				Texts.AwakeningGain(summon)), 0, GameTheme.Faded));
 			_sheet.AddChild(new Label { Text = T("grimoire.awaken_cost", Awakening.Cost(summon.Rarity)), ThemeTypeVariation = GameTheme.Faded });
 		}
 

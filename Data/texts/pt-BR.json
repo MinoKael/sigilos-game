@@ -15,6 +15,7 @@
     "and": " e ",
     "stage": "fase {0}",
     "floor": "{0}, andar {1}",
+    "stars_level": "Nv {1} {0}",
     "resolve_defeat": "Derrota na {0} (rodada {1}).",
     "resolve_victory": "Vitória na {0}: −{1} Mana, +{2} Essência, +{3} de experiência{4}.",
     "resolve_rune": "runa de {0} {1}",
@@ -52,8 +53,7 @@
   },
 
   "term": {
-    "impetus": "Ímpeto",
-    "aether": "Éter"
+    "impetus": "Ímpeto"
   },
 
   "turns": {
@@ -67,10 +67,10 @@
     "mana_of": "{0}/{1}",
     "tip": {
       "mana": "Mana: toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {0} por hora até o máximo, que vai de {1} no nível 1 da conta a {2} no nível {3}. A Loja e a subida de nível da conta passam do máximo.",
-      "essence": "Essência: sobe o nível dos monstros, paga o Despertar e melhora runas.",
+      "essence": "Essência: sobe o nível e evolui monstros, paga o Despertar e melhora runas.",
       "gold": "Ouro: a moeda rara. Compra Mana e Pergaminhos na Loja. Vem da canalização, de cada nível da conta e da primeira vitória em cada andar de Masmorra.",
       "scrolls": "Pergaminhos Místicos: invocam monstros.",
-      "fragments": "Fragmentos: vêm de monstros liberados."
+      "fragments": "Fragmentos: vêm de monstros liberados e pagam a evolução."
     }
   },
 
@@ -326,10 +326,21 @@
     "impetus": "{0}{1}% de {2} {3}",
     "cleanse": "remove um efeito negativo {0}",
     "on_kill": "se derrubar o alvo, {0}",
-    "enhanced": "Aprimorada ({0} {1}): {2}"
+    "awakened": "Desperta: {0}",
+    "header": "Habilidade {0} · {1}",
+    "header_passive": "Passiva · {0}",
+    "cooldown": "(recarga {0})",
+    "level": "Nv {0}/{1}",
+    "level_line": "Nv.{0} {1}",
+    "level_up": {
+      "Damage": "Dano +{0}",
+      "Recovery": "Recuperação +{0}",
+      "EffectRate": "Chance de efeito +{0}",
+      "Cooldown": "Recarga −{0}"
+    }
   },
 
-  "signature": {
+  "passive": {
     "SpeedWhenLowest": "+{0} de Velocidade enquanto for o aliado com menos Vida.",
     "ShieldOnDeath": "Ao cair, dá {0} de {1} da própria Vida a todos os aliados.",
     "RebirthOnce": "Na primeira vez que cai, renasce com {0} da Vida no turno seguinte dela.",
@@ -342,7 +353,9 @@
   },
 
   "awaken": {
-    "bonus": "{0} de {1}"
+    "bonus": "{0} de {1}",
+    "new_skill": "uma habilidade nova, {0}",
+    "improves": "{0} mais forte"
   },
 
   "tool": {
@@ -353,8 +366,7 @@
 
   "card": {
     "tip": "{0}\n{1} · {2}",
-    "level": "Nv {0}",
-    "echoes": "Eco {0}"
+    "level": "Nv {0}"
   },
 
   "rune": {
@@ -381,18 +393,18 @@
     "account_max": "Conta nível {0} (máximo) · Mana máxima {1}",
     "account_max_tip": "A conta chegou ao nível {0}, o máximo.",
     "campaign": "Campanha · Fase {0}: {1}",
-    "first_summon_tip": "Sua primeira invocação é uma 5★ garantida. Abra a Invocação Ritual.",
+    "first_summon_tip": "Sua primeira invocação é uma 5★ garantida. Abra a Invocação.",
     "first_stage_tip": "Os monstros novos já entram na equipe da Campanha. Vença a primeira fase!",
     "campaign_team": "Equipe da Campanha · a primeira é a Líder",
     "monsters": "Monstros",
-    "monsters_tip": "Coleção, Baú, níveis, Despertar, fundir e liberar.",
+    "monsters_tip": "Coleção, Baú, níveis, evolução, Despertar, habilidades e liberar.",
     "teams": "Equipes",
     "teams_tip": "Uma equipe para a Campanha e uma para cada Masmorra.",
     "runes": "Runas",
     "runes_tip": "Inventário de runas com busca, Pedras de Afiar e Gemas Encantadas.",
     "dungeons": "Masmorras",
     "dungeons_tip": "Runas de 5 e 6 estrelas e pedras. Cada vitória custa Mana.",
-    "summon": "Invocação Ritual",
+    "summon": "Invocação",
     "summon_tip": "Gaste Pergaminhos para invocar monstros.",
     "shop": "Loja",
     "shop_tip": "Troque Ouro por Mana e Pergaminhos.",
@@ -408,7 +420,7 @@
     "stage": "Fase",
     "stage_title": "{0}. {1}",
     "number_cleared": "{0} ✓",
-    "levels": "Inimigos no nível {0} · equipe nos níveis {1}",
+    "levels": "Inimigos {0} · equipe {1}",
     "wave": "Onda {0}:",
     "enemy_tip": "{0} ({1})",
     "reward": "Vitória: {0} Essência, {1} de experiência para a equipe e a conta e {2} de chance de runa {3}.",
@@ -428,8 +440,8 @@
     "drops_runes": "Solta runas de 4 a 6 estrelas, só destes conjuntos:",
     "drops_tools": "Solta Pedras de Afiar e Gemas Encantadas, que servem em qualquer runa.",
     "team": "Equipe desta Masmorra: {0} de {1}",
-    "floor": "Andar {0} · inimigos nível {1}",
-    "floor_cleared": "Andar {0} · inimigos nível {1} ✓",
+    "floor": "Andar {0} · inimigos {1}",
+    "floor_cleared": "Andar {0} · inimigos {1} ✓",
     "drop_rune": "Runa {0}, no mínimo {1}",
     "drop_tool": "{0} × pedra {1}",
     "reward": "+{0} Essência, +{1} de experiência",
@@ -437,11 +449,11 @@
   },
 
   "summon": {
-    "title": "Invocação Ritual",
+    "title": "Invocação",
     "ritual": "O ritual",
     "rates": "Taxas: 3★ {0} · 4★ {1} · 5★ {2}.\nLuz e Trevas têm metade da chance das outras variantes.",
     "pity": "5★ garantida em {0} invocações",
-    "copies": "Cada invocação é um monstro novo, no nível 1, mesmo que você já tenha outro igual. Cópias repetidas podem ser fundidas (Ecos) ou liberadas em Monstros. Com a coleção cheia ({0}), o monstro vai para o Baú.",
+    "copies": "Cada invocação é um monstro novo, nas estrelas naturais e no nível 1, mesmo que você já tenha outro igual. Cópias repetidas sobem habilidades ou viram Fragmentos em Monstros. Com a coleção cheia ({0}), o monstro vai para o Baú.",
     "pull": "Invocar {0} ({1})",
     "shop": "Comprar Pergaminhos",
     "shop_tip": "A Loja troca Ouro por Pergaminhos.",
@@ -458,7 +470,7 @@
       "Scrolls": "{0} Pergaminhos"
     },
     "info_mana": "Mana para mais lutas. Pode passar do máximo.",
-    "info_scrolls": "Pergaminhos Místicos para a Invocação Ritual.",
+    "info_scrolls": "Pergaminhos Místicos para a Invocação.",
     "price": "{0} Ouro",
     "no_gold": "Faltam {0} de Ouro.",
     "confirm": "Comprar {0} ({1}) por {2} Ouro?",
@@ -471,7 +483,7 @@
     "vault": "Baú ({0})",
     "in_team": "em equipe",
     "vault_empty": "O Baú está vazio. Guarde aqui os monstros que você não usa: eles não ocupam vaga na coleção.",
-    "collection_empty": "Nenhum monstro ainda. Faça uma Invocação Ritual.",
+    "collection_empty": "Nenhum monstro ainda. Faça uma Invocação.",
     "choose": "Escolha um monstro.",
     "in_vault": "No Baú: não luta, mas guarda as runas (elas não ocupam o inventário).",
     "no_team": "Fora de equipes.",
@@ -480,23 +492,23 @@
     "runes": "Runas",
     "no_set": "Nenhum conjunto completo.",
     "skills": "Habilidades",
-    "basic": "Básico · {0}",
-    "special": "Especial · {0} (recarga {1})",
-    "signature": "Assinatura · {0}",
+    "skill_locked": "(liberada no Despertar)",
     "leadership": "Liderança · +{0} de {1} (sobre a base) para a equipe, só como Líder",
     "awakened": "Desperto · {0}",
     "awaken": "Despertar",
-    "awakened_text": "Nome próprio, desenho novo e Assinatura melhorada.",
-    "awaken_text": "Vira {0}: +{1} de Vida, +{2} de Ataque e Defesa, {3}, desenho novo e Assinatura melhorada ({4})",
-    "echoes": "Eco {0}/{1}",
+    "awakened_text": "Nome próprio, desenho novo e o bônus do Despertar.",
+    "awaken_text": "Vira {0}: +{1} de Vida, +{2} de Ataque e Defesa, desenho novo e {3}.",
     "level": "Nível {0} de {1}",
+    "natural_stars": "Estrelas naturais: {0}. Todo monstro evolui até 6★.",
     "level_max": "Nível {0} (máximo)",
     "experience": "Experiência: {0}/{1}",
     "element_role": "{0} · {1}",
     "level_up": "+1 nível ({0} Essência)",
-    "level_up_tip": "Infunde Essência como experiência.",
+    "level_up_tip": "Infunde Essência como experiência: {0} de experiência por Essência.",
     "max_level_button": "Nível máximo ({0})",
-    "max_level_tip": "Infunde toda a Essência que der, até o nível 40.",
+    "max_level_tip": "Infunde toda a Essência que der, até o nível {0}.",
+    "evolve": "Evoluir para {0} ({1} Essência, {2} Fragmentos)",
+    "evolve_tip": "Ganha uma estrela e volta ao nível 1; o nível máximo passa a {0}.",
     "awaken_button": "Despertar ({0} Essência)",
     "awaken_tip": "Para sempre.",
     "runes_button": "Runas",
@@ -505,9 +517,9 @@
     "store_tip": "Sai de todas as equipes e leva as runas junto: elas deixam de ocupar o inventário.",
     "take_from_vault": "Tirar do Baú",
     "collection_full": "A coleção está cheia.",
-    "fuse": "Fundir cópia ({0})",
-    "fuse_full": "Já tem todos os Ecos.",
-    "fuse_tip": "Funde outra cópia da mesma variante: +1 Eco (habilidades {0} mais fortes, até {1}). A cópia some.",
+    "fuse": "Subir habilidade ({0})",
+    "fuse_full": "Todas as habilidades no nível máximo.",
+    "fuse_tip": "Funde outra cópia da mesma variante: uma habilidade sorteada sobe um nível (faltam {0}). A cópia some.",
     "fuse_item": "{0} · Nv {1}{2}",
     "in_vault_short": " · Baú",
     "fuse_confirm": "Fundir {0} (Nv {1})? A cópia some, e as runas dela voltam ao inventário.",
@@ -521,12 +533,12 @@
     "mark_copies_tip": "Marca todas as outras cópias da mesma variante, na coleção e no Baú.",
     "unmark": "Desmarcar",
     "fuse_marked": "Fundir em {0} ({1})",
-    "fuse_marked_tip": "Viram Ecos do monstro da ficha, as cópias mais fracas primeiro. Cabem mais {0}.",
-    "fuse_marked_invalid": "Marque só cópias de {0} (sem ele mesmo). Cabem mais {1} Ecos.",
-    "fuse_many_confirm": "Fundir {0} cópias em {1}? Ecos: {2} → {3}. As cópias somem; as runas delas voltam ao inventário.",
+    "fuse_marked_tip": "Cada cópia sobe uma habilidade sorteada do monstro da ficha, as cópias mais fracas primeiro. Faltam {0} níveis.",
+    "fuse_marked_invalid": "Marque só cópias de {0} (sem ele mesmo). Faltam {1} níveis de habilidade.",
+    "fuse_many_confirm": "Fundir {0} cópias em {1}? Cada uma sobe uma habilidade sorteada (faltam {2} níveis). As cópias somem; as runas delas voltam ao inventário.",
     "release_marked": "Liberar {0} (+{1} Fragmentos)",
     "release_many_confirm": "Liberar {0} monstros por {1} Fragmentos? Eles somem para sempre; as runas voltam ao inventário.",
-    "valuable_warning": "Atenção: a seleção tem monstro desperto, com nível, com Ecos, em equipe ou com runas."
+    "valuable_warning": "Atenção: a seleção tem monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas."
   },
 
   "teams": {
@@ -634,22 +646,22 @@
       "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares e solta o que a Campanha não solta: runas de 4 a 6 estrelas de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada vitória custa Mana; a primeira vitória em cada andar dá Ouro." },
       "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
-      "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
+      "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
       "monsters": { "title": "Monstros e Baú", "text": "A coleção tem {0} vagas; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas." },
       "teams": { "title": "Equipes", "text": "Uma equipe de até {0} monstros para a Campanha e uma para cada Masmorra. A primeira é a Líder." },
-      "level": { "title": "Nível", "text": "De 1 a {0}. Vitórias dão experiência à equipe que lutou; a Essência sobe o nível na hora, em Monstros. A mesma Essência paga o Despertar e a melhora de runas." },
-      "echoes": { "title": "Ecos e Fragmentos", "text": "Fundir uma cópia repetida dá +1 Eco (até {0}): cada Eco deixa as habilidades {1} mais fortes, e o último soma {2} aos atributos. As cópias que sobram podem ser liberadas em Fragmentos." },
-      "awaken": { "title": "Despertar", "text": "Paga Essência e o monstro ganha nome próprio, desenho novo, estrelas roxas, Assinatura melhorada, +{0} de Vida, +{1} de Ataque e Defesa e um bônus da variante: {2}, {3}, {4} ou {5}." }
+      "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
+      "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela; o nível volta a 1 e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
+      "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia repetida sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
+      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, desenho novo, estrelas roxas, +{3} de Vida e +{4} de Ataque e Defesa, e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {5}, {6}, {7} ou {8})." }
     },
     "combat": {
       "impetus": { "title": "Ímpeto", "text": "Cada unidade tem uma barra de {0} que enche em proporção à Velocidade; quem chega a 100% age. Empurrar ou atrasar a barra muda a ordem — a faixa \"Próximos\" mostra quem vem." },
-      "aether": { "title": "Éter", "text": "{0} é o recurso do time, de 0 a {1}. O básico não gera nem gasta Éter; cada habilidade especial gera {2} e cada inimigo derrubado, {3}. Ele paga a versão aprimorada da habilidade especial (nenhuma custa menos de {4}): marque \"Aprimorar\" antes de escolhê-la. Só no manual." },
       "fight": { "title": "A luta", "text": "Até {0} monstros contra até {2} inimigos por onda, em até {1} ondas. Passar de {3} rodadas é derrota." },
       "damage": { "title": "Dano", "text": "Ataque × multiplicador da habilidade × {0} / ({0} + Defesa do alvo). Defesa {0} corta o dano pela metade." },
       "crit": { "title": "Crítico", "text": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo monstro começa com 15% de Crítico e 50% de Dano crítico." },
       "resistance": { "title": "Resistência e Precisão", "text": "Todo efeito negativo pode ser barrado: a chance é a Resistência do alvo menos a Precisão de quem lança, nunca abaixo de {0}." },
       "leader": { "title": "Líder", "text": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio das runas." },
-      "auto": { "title": "Automático e Resolver", "text": "O automático escolhe sozinho e nunca gasta {0}. Fases e andares já vencidos ganham o botão Resolver, que simula a luta na hora." },
+      "auto": { "title": "Automático e Resolver", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham o Resolver, que simula a luta na hora, e o Auto ×{0}, que faz {0} lutas seguidas." },
       "elements": "Elementos",
       "elements_text": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence.",
       "wins": "{0} vence {1}"
@@ -688,12 +700,12 @@
       "gems": "Gemas Encantadas"
     },
     "not_owned": "não obtida",
-    "family": "{0} · Assinatura: {1} — {2}",
+    "family": "{0} naturais · evolui até {1}★",
     "copies": "×{0}",
     "sheet": "{0} · {1} · {2} · {3}",
     "view_awakened": "Ver desperta ({0})",
-    "stats": "Atributos de base (sem runas, sem Ecos)",
-    "level": "Nível {0}",
+    "stats": "Atributos de base (sem runas)",
+    "level": "{0} Nv {1}",
     "skills": "Habilidades",
     "no_leadership": "Sem Liderança.",
     "awaken": "Despertar",
@@ -734,7 +746,7 @@
     "tool": "{0}: {1}",
     "timeout": "O tempo acabou: {0} rodadas.",
     "all_fell": "Todos os monstros caíram.",
-    "defeat_tip": "Suba o nível, equipe runas ou desperte monstros. No manual, o Éter aprimora as habilidades especiais.",
+    "defeat_tip": "Suba o nível, evolua, equipe runas ou desperte monstros.",
     "effects": "Efeitos",
     "effects_tip": "Mostra os efeitos sobre cada aliado e inimigo. Clicar numa unidade também abre.",
     "effects_unit": "{0} ({1})",
@@ -746,18 +758,12 @@
     "enemy": "inimigo",
     "auto_on": "Automático: ligado",
     "auto_off": "Automático: desligado",
-    "auto_tip": "No automático os monstros agem sozinhos e o Éter não é usado.",
+    "auto_tip": "No automático os monstros agem sozinhos, usando a habilidade pronta mais forte.",
     "speed": "Velocidade {0}×",
     "retreat": "Recuar",
     "retreat_tip": "Sai da luta sem recompensa.",
     "turn_of": "Vez de {0}:",
-    "enhance": "Aprimorar {0} (Éter: {1})",
-    "enhance_tip": "Paga Éter para usar a versão aprimorada da habilidade especial. O básico nunca é aprimorado.",
     "choose_target": "Escolha o alvo:",
-    "aether_tip_auto": "Automático não usa Éter. Desligue para aprimorar habilidades.",
-    "aether_tip_manual": "Habilidade especial e inimigo derrubado geram Éter; marque Aprimorar para gastá-lo na especial.",
-    "aether": "Éter {0}/{1}",
-    "aether_tip": "Éter: recurso do time, de 0 a {0}. Vem das habilidades especiais e de inimigos derrubados; aprimora a habilidade especial no manual.",
     "next_up": "Próximos:",
     "unit_tip": "{0} · Nv {1}",
     "impetus_tip": "Ímpeto: age quando a barra enche.",
@@ -767,7 +773,6 @@
     "wave_banner": "Onda {0}",
     "round": "Rodada {0}/{1}",
     "uses": "{0}\n{1}",
-    "uses_enhanced": "{0}\n{1} · aprimorada",
     "extra_turn": "Turno extra!",
     "counterattack": "Contra-ataque!",
     "max_hp": "-{0} Vida máx.",

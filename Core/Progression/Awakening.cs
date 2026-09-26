@@ -6,12 +6,12 @@ namespace Sigilos.Core.Progression
 {
 	/// <summary>
 	/// O Despertar (GDD, seção 10): paga Essência e a invocação ganha nome próprio, desenho novo,
-	/// Assinatura melhorada, atributos maiores e o bônus da variante (Data/summons, campo "awakening").
-	/// É para sempre.
+	/// atributos maiores e o bônus da variante (Data/summons, campo "awakening"): um atributo, uma
+	/// habilidade nova ou uma habilidade melhorada. É para sempre e vale em qualquer estrela.
 	///
-	/// Os números seguem: a Vida é o que mais cresce (o Diabrete de Fogo ganha 20% de
-	/// Vida e 7% de Ataque e Defesa) e o bônus é um de quatro: +15 de Velocidade, +15% de Crítico,
-	/// +25% de Resistência ou +25% de Precisão.
+	/// A Vida é o que mais cresce (+20%; Ataque e Defesa +7%). O bônus de atributo é um de quatro:
+	/// +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão. O preço sobe com as
+	/// estrelas naturais.
 	/// </summary>
 	public static class Awakening
 	{
@@ -20,9 +20,9 @@ namespace Sigilos.Core.Progression
 
 		public static int Cost(int rarity) => rarity switch
 		{
-			>= 5 => 6000,
-			4 => 3000,
-			_ => 1500,
+			>= 5 => 75_000,
+			4 => 50_000,
+			_ => 25_000,
 		};
 
 		/// <summary>O bônus da variante: Velocidade em número, os outros em fração.</summary>
@@ -57,7 +57,7 @@ namespace Sigilos.Core.Progression
 				Attack = Math.Round(stats.Attack * (1 + AttackDefenseBonus)),
 				Defense = Math.Round(stats.Defense * (1 + AttackDefenseBonus)),
 			};
-			return grown.With(awakening.Stat, grown.Get(awakening.Stat) + Bonus(awakening.Stat));
+			return awakening.Stat is { } stat ? grown.With(stat, grown.Get(stat) + Bonus(stat)) : grown;
 		}
 	}
 }

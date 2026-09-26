@@ -4,24 +4,38 @@
   "family": "imp",
   "element": "Fire",
   "role": "Attacker",
-  "awakening": {"name": "Cinder", "stat": "Crit"},
-  "basic": {
-    "name": "Spark",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.93, "hits": 2}
-    ]
+  "awakening": {
+    "name": "Cinder",
+    "skill": {
+      "name": "Coward's Flight",
+      "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
+    }
   },
-  "special": {
-    "name": "Broken Seal",
-    "cooldown": 3,
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 6.3},
-      {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 9.1, "ignoreDefense": 0.5},
-      {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Spark",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 1.93, "hits": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Broken Seal",
+      "cooldown": 3,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 6.3},
+        {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

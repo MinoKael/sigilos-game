@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Sigilos.Core.Content
 {
 	/// <summary>
@@ -11,7 +13,7 @@ namespace Sigilos.Core.Content
 		public string Name { get; init; } = "";
 		public Role Role { get; init; }
 
-		/// <summary>Estrelas, de 1 a 5: escala os atributos como nas invocações.</summary>
+		/// <summary>Estrelas naturais: escalam os atributos como nas invocações.</summary>
 		public int Rarity { get; init; }
 
 		/// <summary>Multiplica a Vida. Chefes usam mais.</summary>
@@ -21,9 +23,8 @@ namespace Sigilos.Core.Content
 		public double AttackScale { get; init; } = 1;
 
 		public string Image { get; init; } = "";
-		public SkillDefinition Basic { get; init; } = new();
 
-		/// <summary>Opcional: habilidade forte com recarga.</summary>
-		public SkillDefinition? Special { get; init; }
+		/// <summary>Como nas invocações: a primeira sem recarga, as outras com recarga ou passivas.</summary>
+		public IReadOnlyList<SkillDefinition> Skills { get; init; } = new List<SkillDefinition>();
 	}
 }

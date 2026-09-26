@@ -67,7 +67,7 @@ namespace Sigilos.Tests
 
 			session.Start();
 			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			session.Act(new UnitAction(0, foe));
 			Assert.Near(960, foe.Health, "Vida depois de 100 de dano contra escudo de 60");
 			Assert.False(foe.Has(StatusKind.Shield), "escudo gasto some");
 		}

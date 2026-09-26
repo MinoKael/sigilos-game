@@ -11,14 +11,16 @@
     "rarity": 3,
     "healthScale": 5.6, "attackScale": 1.6,
     "image": "chain_master",
-    "basic": { "name": "Chain", "effects": [
-      {"kind": "Damage", "power": 3.5},
-      {"kind": "Status", "status": "Taunt", "chance": 0.3}
-    ] },
-    "special": { "name": "Shackles", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
-      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
-    ] }
+    "skills": [
+      { "name": "Chain", "effects": [
+        {"kind": "Damage", "power": 3.5},
+        {"kind": "Status", "status": "Taunt", "chance": 0.3}
+      ] },
+      { "name": "Shackles", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
+      ] }
+    ]
   },
   {
     "id": "runic_golem",
@@ -27,14 +29,16 @@
     "rarity": 3,
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "rock_golem",
-    "basic": { "name": "Stone Fist", "effects": [
-      {"kind": "Damage", "power": 3.5},
-      {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 0.3, "turns": 2}
-    ] },
-    "special": { "name": "Earthquake", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
-    ] }
+    "skills": [
+      { "name": "Stone Fist", "effects": [
+        {"kind": "Damage", "power": 3.5},
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Earthquake", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
+      ] }
+    ]
   },
   {
     "id": "elder_wyvern",
@@ -43,14 +47,16 @@
     "rarity": 3,
     "healthScale": 5.4, "attackScale": 1.45,
     "image": "wyvern",
-    "basic": { "name": "Searing Bite", "effects": [
-      {"kind": "Damage", "power": 3.8},
-      {"kind": "Status", "status": "Burn", "chance": 0.4, "turns": 2}
-    ] },
-    "special": { "name": "Ash Breath", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.6},
-      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
-    ] }
+    "skills": [
+      { "name": "Searing Bite", "effects": [
+        {"kind": "Damage", "power": 3.8},
+        {"kind": "Status", "status": "Burn", "chance": 0.4, "turns": 2}
+      ] },
+      { "name": "Ash Breath", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.6},
+        {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
+      ] }
+    ]
   },
   {
     "id": "bone_king",
@@ -59,13 +65,15 @@
     "rarity": 3,
     "healthScale": 6.8, "attackScale": 1.6,
     "image": "crowned_skull",
-    "basic": { "name": "Grave Touch", "effects": [
-      {"kind": "Damage", "power": 3.5, "drain": 0.3}
-    ] },
-    "special": { "name": "Crown of Dust", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.0},
-      {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
-    ] }
+    "skills": [
+      { "name": "Grave Touch", "effects": [
+        {"kind": "Damage", "power": 3.5, "drain": 0.3}
+      ] },
+      { "name": "Crown of Dust", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.0},
+        {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
+      ] }
+    ]
   },
   {
     "id": "drowned_guardian",
@@ -74,14 +82,16 @@
     "rarity": 3,
     "healthScale": 6.4, "attackScale": 1.55,
     "image": "kraken",
-    "basic": { "name": "Tentacle", "effects": [
-      {"kind": "Damage", "power": 3.5},
-      {"kind": "Impeto", "power": -20, "chance": 0.5}
-    ] },
-    "special": { "name": "Black Tide", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-      {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
-    ] }
+    "skills": [
+      { "name": "Tentacle", "effects": [
+        {"kind": "Damage", "power": 3.5},
+        {"kind": "Impeto", "power": -20, "chance": 0.5}
+      ] },
+      { "name": "Black Tide", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
+      ] }
+    ]
   },
   {
     "id": "forge_guardian",
@@ -90,13 +100,15 @@
     "rarity": 3,
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "golem_head",
-    "basic": { "name": "Hammer Blow", "effects": [
-      {"kind": "Damage", "power": 3.6}
-    ] },
-    "special": { "name": "Anvil Ember", "cooldown": 4, "effects": [
-      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
-    ] }
+    "skills": [
+      { "name": "Hammer Blow", "effects": [
+        {"kind": "Damage", "power": 3.6}
+      ] },
+      { "name": "Anvil Ember", "cooldown": 4, "effects": [
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
+      ] }
+    ]
   }
 ]

@@ -1,6 +1,6 @@
 namespace Sigilos.Core.Content
 {
-	/// <summary>As Assinaturas que o MVP implementa. Cada uma nasce do conceito de uma família.</summary>
+	/// <summary>As Passivas que o MVP implementa. Cada uma nasce do conceito de uma família.</summary>
 	public enum PassiveKind
 	{
 		/// <summary>Diabretes: mais Velocidade enquanto for o aliado com menos Vida.</summary>

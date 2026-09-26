@@ -47,10 +47,10 @@ namespace Sigilos.Core.Battle
 							Damage(caster, target, effect, hit);
 							break;
 						case EffectKind.Heal:
-							Heal(target, effect.Power * target.MaxHealth * caster.SkillPower);
+							Heal(target, effect.Power * target.MaxHealth);
 							break;
 						case EffectKind.Shield:
-							GiveShield(target, effect.Power * caster.MaxHealth * caster.SkillPower, effect.Turns);
+							GiveShield(target, effect.Power * caster.MaxHealth, effect.Turns);
 							break;
 						case EffectKind.Status:
 							ApplyStatus(caster, target, effect.Status, effect.Chance, effect.Turns);
@@ -143,7 +143,7 @@ namespace Sigilos.Core.Battle
 				if (caster.RuneEffects.StunChance > 0 && hit.DespairRolled.Add(target))
 					ApplyStatus(caster, target, StatusKind.Stun, caster.RuneEffects.StunChance, 1, resistible: false);
 
-				// Assinatura dos Dragões: um sorteio de Queimadura por alvo a cada habilidade.
+				// Passiva dos Dragões: um sorteio de Queimadura por alvo a cada habilidade.
 				if (caster.Passive?.Kind == PassiveKind.BurnOnHit && hit.BurnRolled.Add(target))
 					ApplyStatus(caster, target, StatusKind.Burn, caster.PassiveValue, BattleRules.BurnOnHitTurns);
 			}
@@ -192,7 +192,7 @@ namespace Sigilos.Core.Battle
 					continue;
 
 				_session.Emit(new Counterattack(target));
-				Resolve(target, target.Basic.Effects, attacker, counter: true);
+				Resolve(target, target.Skill(0).Effects, attacker, counter: true);
 			}
 		}
 

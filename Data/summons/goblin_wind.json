@@ -4,22 +4,37 @@
   "family": "goblin",
   "element": "Wind",
   "role": "Attacker",
-  "awakening": {"name": "Zipp", "stat": "Speed"},
-  "basic": {
-    "name": "Quick Stab",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 2}
-    ]
+  "awakening": {
+    "name": "Zipp",
+    "skill": {
+      "name": "Cheap Shot",
+      "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+    }
   },
-  "special": {
-    "name": "Knife Flurry",
-    "cooldown": 3,
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.4, "hits": 4}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 5}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Quick Stab",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Knife Flurry",
+      "cooldown": 3,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 1.4, "hits": 4}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

@@ -4,26 +4,37 @@
   "family": "imp",
   "element": "Dark",
   "role": "Attacker",
-  "awakening": {"name": "Murk", "stat": "Accuracy"},
-  "basic": {
-    "name": "Shadow Strike",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5},
-      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
-    ]
+  "awakening": {
+    "name": "Murk",
+    "skill": {
+      "name": "Coward's Flight",
+      "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
+    }
   },
-  "special": {
-    "name": "Vanish into the Seal",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Status", "target": "Self", "status": "Hidden"},
-      {"kind": "Impeto", "target": "Self", "power": 30}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Status", "target": "Self", "status": "Hidden"},
-      {"kind": "Status", "target": "LowestAlly", "status": "Hidden"},
-      {"kind": "Impeto", "target": "Self", "power": 60}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Shadow Strike",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Vanish into the Seal",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Status", "target": "Self", "status": "Hidden"},
+        {"kind": "Impeto", "target": "Self", "power": 30}
+      ],
+      "levels": [
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

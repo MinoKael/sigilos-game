@@ -6,25 +6,45 @@
   "role": "Support",
   "leader": {"stat": "Health", "value": 0.2},
   "awakening": {"name": "Nereia", "stat": "Resistance"},
-  "basic": {
-    "name": "Dew",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5},
-      {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
-    ]
-  },
-  "special": {
-    "name": "Renewing Rain",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.2},
-      {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.3},
-      {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
-      {"kind": "Cleanse", "target": "AllAllies"}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Dew",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Renewing Rain",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Heal", "target": "AllAllies", "power": 0.2},
+        {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "Tide of Renewal",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+        {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
+        {"kind": "Cleanse", "target": "AllAllies"}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

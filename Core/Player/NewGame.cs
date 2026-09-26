@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Player
 {
@@ -21,7 +22,7 @@ namespace Sigilos.Core.Player
 		/// <summary>Variantes que a conta já traz, na equipe da Campanha.</summary>
 		public static readonly IReadOnlyList<string> StarterSummons = [];
 
-		public static PlayerState Create(DateTime now, Random random)
+		public static PlayerState Create(DateTime now, Random random, GameDatabase database)
 		{
 			var player = new PlayerState
 			{
@@ -35,7 +36,7 @@ namespace Sigilos.Core.Player
 
 			var starters = new List<OwnedSummon>();
 			foreach (var id in StarterSummons)
-				starters.Add(Roster.Add(player, id));
+				starters.Add(Roster.Add(player, database.Summon(id)));
 			Teams.FillCampaign(player, starters);
 
 			for (var i = 0; i < StarterRunes; i++)

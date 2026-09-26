@@ -4,25 +4,39 @@
   "family": "slime",
   "element": "Dark",
   "role": "Control",
-  "awakening": {"name": "Tarrow", "stat": "Accuracy"},
-  "basic": {
-    "name": "Tar Grip",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.15},
-      {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
-    ]
+  "awakening": {
+    "name": "Tarrow",
+    "skill": {
+      "name": "Gelatinous Body",
+      "passive": {"kind": "DamageReduction", "value": 0.2}
+    }
   },
-  "special": {
-    "name": "Black Mire",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
-      {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.35, "turns": 2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
-      {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.7, "turns": 2}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Tar Grip",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.15},
+        {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Black Mire",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
+        {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.35, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

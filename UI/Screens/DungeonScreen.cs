@@ -191,7 +191,7 @@ namespace Sigilos.UI.Screens
 			panel.AddChild(row);
 
 			var text = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var title = new Label { Text = T(cleared ? "dungeons.floor_cleared" : "dungeons.floor", number, floor.Level), ThemeTypeVariation = GameTheme.Heading };
+			var title = new Label { Text = T(cleared ? "dungeons.floor_cleared" : "dungeons.floor", number, T("common.stars_level", Texts.Stars(floor.Stars), floor.Level)), ThemeTypeVariation = GameTheme.Heading };
 			text.AddChild(title);
 			var drop = dungeon.Kind == DungeonKind.Runes
 				? T("dungeons.drop_rune", floor.MinGrade == floor.MaxGrade ? Texts.Stars(floor.MinGrade) : $"{Texts.Stars(floor.MinGrade)}–{Texts.Stars(floor.MaxGrade)}", Texts.Name(floor.MinRarity))

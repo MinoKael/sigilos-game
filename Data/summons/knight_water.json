@@ -5,25 +5,41 @@
   "element": "Water",
   "role": "Front",
   "leader": {"stat": "Health", "value": 0.15},
-  "awakening": {"name": "Dame Tide", "stat": "Resistance"},
-  "basic": {
-    "name": "Shield Bash",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.15},
-      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
-    ]
-  },
-  "special": {
-    "name": "Tide Wall",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Shield", "target": "AllAllies", "power": 0.3, "turns": 2},
-      {"kind": "Cleanse", "target": "AllAllies"},
-      {"kind": "Status", "target": "LowestAlly", "status": "Ward"}
-    ]
-  }
+  "awakening": {"name": "Dame Tide"},
+  "skills": [
+    {
+      "name": "Shield Bash",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.15},
+        {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Tide Wall",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ],
+      "awakenedEffects": [
+        {"kind": "Shield", "target": "AllAllies", "power": 0.3, "turns": 2},
+        {"kind": "Cleanse", "target": "AllAllies"},
+        {"kind": "Status", "target": "LowestAlly", "status": "Ward"}
+      ]
+    },
+    {
+      "name": "Last Vow",
+      "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
+    }
+  ]
 }

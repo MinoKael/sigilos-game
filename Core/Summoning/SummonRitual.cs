@@ -53,7 +53,7 @@ namespace Sigilos.Core.Summoning
 		public static SummonResult Receive(PlayerState player, SummonDefinition summon)
 		{
 			var firstCopy = !player.Owns(summon.Id);
-			return new SummonResult(summon, Roster.Add(player, summon.Id), firstCopy);
+			return new SummonResult(summon, Roster.Add(player, summon), firstCopy);
 		}
 
 		private static int RollRarity(Random random, PlayerState player, GameDatabase database)

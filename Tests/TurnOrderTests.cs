@@ -56,7 +56,7 @@ namespace Sigilos.Tests
 					break;
 				if (turn.Actor == ally)
 					allyTurns++;
-				session.Act(new UnitAction(SkillSlot.Basic, false, null));
+				session.Act(new UnitAction(0, null));
 			}
 
 			Assert.Equal(5, allyTurns, "turnos de Velocidade 100 em 5 rodadas");

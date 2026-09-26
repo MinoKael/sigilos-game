@@ -13,8 +13,8 @@ namespace Sigilos.Core.Progression
 		public const int LevelUpGold = 20;
 		public const int MaxLevel = 60;
 
-		/// <summary>Experiência para sair de <paramref name="level"/> e chegar ao próximo.</summary>
-		public static int ExperienceToNext(int level) => 100 * level;
+		/// <summary>Experiência para sair de <paramref name="level"/> e chegar ao próximo (a conta ganha o mesmo que cada monstro).</summary>
+		public static int ExperienceToNext(int level) => 300 * level;
 
 		/// <summary>Soma experiência; cada nível ganho dá Ouro, e a Mana enche. Devolve os níveis ganhos.</summary>
 		public static int GiveExperience(PlayerState player, int amount)

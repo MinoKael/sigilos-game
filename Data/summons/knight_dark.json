@@ -5,23 +5,39 @@
   "element": "Dark",
   "role": "Front",
   "leader": {"stat": "Resistance", "value": 0.2},
-  "awakening": {"name": "Sir Sepulcher", "stat": "Accuracy"},
-  "basic": {
-    "name": "Hungry Blade",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.3}
-    ]
-  },
-  "special": {
-    "name": "Dark Oath",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.3}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.5, "drain": 0.4},
-      {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2}
-    ]
-  }
+  "awakening": {"name": "Sir Sepulcher"},
+  "skills": [
+    {
+      "name": "Hungry Blade",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.3}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Dark Oath",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.3}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ],
+      "awakenedEffects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.5, "drain": 0.4},
+        {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2}
+      ]
+    },
+    {
+      "name": "Last Vow",
+      "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
+    }
+  ]
 }

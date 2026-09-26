@@ -1,78 +1,15 @@
-// Summon families (GDD, section 8). Every common enemy of the stages and Dungeons is a summon of
-// one of these families (Data/stages.json, "summon"); only the bosses live in Data/enemies.json.
-// "image" and "awakenedImage" are files in Assets/Creatures: one drawing per family, recolored by
-// element, and a second one for the Awakening. "awakenedValue" is the Signature improved by the Awakening.
+// Summon families (GDD, section 8). A family decides the natural stars and the drawing; each variant
+// (Data/summons) decides element, role, skills and Passive. "image" and "awakenedImage" are files in
+// Assets/Creatures: one drawing per family, recolored by element, and a second one for the Awakening.
+// Every common enemy of the stages and Dungeons is a summon of one of these families.
 [
-  {
-    "id": "imp",
-    "name": "Seal Imps",
-    "rarity": 3,
-    "image": "imp",
-    "awakenedImage": "imp_awakened",
-    "passive": { "name": "Coward's Flight", "kind": "SpeedWhenLowest", "value": 0.15, "awakenedValue": 0.30 }
-  },
-  {
-    "id": "knight",
-    "name": "Sworn Knights",
-    "rarity": 4,
-    "image": "knight",
-    "awakenedImage": "knight_awakened",
-    "passive": { "name": "Last Vow", "kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25 }
-  },
-  {
-    "id": "phoenix",
-    "name": "Phoenixes",
-    "rarity": 5,
-    "image": "phoenix",
-    "awakenedImage": "phoenix_awakened",
-    "passive": { "name": "From the Ashes", "kind": "RebirthOnce", "value": 0.4, "awakenedValue": 0.6 }
-  },
-  {
-    "id": "slime",
-    "name": "Slimes",
-    "rarity": 3,
-    "image": "slime",
-    "awakenedImage": "slime_awakened",
-    "passive": { "name": "Gelatinous Body", "kind": "DamageReduction", "value": 0.12, "awakenedValue": 0.2 }
-  },
-  {
-    "id": "goblin",
-    "name": "Goblins",
-    "rarity": 3,
-    "image": "goblin",
-    "awakenedImage": "goblin_awakened",
-    "passive": { "name": "Cheap Shot", "kind": "BonusVsDebuffed", "value": 0.2, "awakenedValue": 0.35 }
-  },
-  {
-    "id": "wolf",
-    "name": "Wolves",
-    "rarity": 3,
-    "image": "wolf",
-    "awakenedImage": "wolf_awakened",
-    "passive": { "name": "Hunter's Instinct", "kind": "BonusVsWounded", "value": 0.25, "awakenedValue": 0.4 }
-  },
-  {
-    "id": "bandit",
-    "name": "Bandits",
-    "rarity": 3,
-    "image": "bandit",
-    "awakenedImage": "bandit_awakened",
-    "passive": { "name": "Ambush", "kind": "ImpetoAtWaveStart", "value": 0.3, "awakenedValue": 0.5 }
-  },
-  {
-    "id": "troll",
-    "name": "Trolls",
-    "rarity": 4,
-    "image": "troll",
-    "awakenedImage": "troll_awakened",
-    "passive": { "name": "Regeneration", "kind": "RegenEachTurn", "value": 0.05, "awakenedValue": 0.08 }
-  },
-  {
-    "id": "dragon",
-    "name": "Dragons",
-    "rarity": 5,
-    "image": "dragon",
-    "awakenedImage": "dragon_awakened",
-    "passive": { "name": "Dragonfire", "kind": "BurnOnHit", "value": 0.2, "awakenedValue": 0.35 }
-  }
+  {"id": "imp", "name": "Seal Imps", "rarity": 3, "image": "imp", "awakenedImage": "imp_awakened"},
+  {"id": "knight", "name": "Sworn Knights", "rarity": 4, "image": "knight", "awakenedImage": "knight_awakened"},
+  {"id": "phoenix", "name": "Phoenixes", "rarity": 5, "image": "phoenix", "awakenedImage": "phoenix_awakened"},
+  {"id": "slime", "name": "Slimes", "rarity": 3, "image": "slime", "awakenedImage": "slime_awakened"},
+  {"id": "goblin", "name": "Goblins", "rarity": 3, "image": "goblin", "awakenedImage": "goblin_awakened"},
+  {"id": "wolf", "name": "Wolves", "rarity": 3, "image": "wolf", "awakenedImage": "wolf_awakened"},
+  {"id": "bandit", "name": "Bandits", "rarity": 3, "image": "bandit", "awakenedImage": "bandit_awakened"},
+  {"id": "troll", "name": "Trolls", "rarity": 4, "image": "troll", "awakenedImage": "troll_awakened"},
+  {"id": "dragon", "name": "Dragons", "rarity": 5, "image": "dragon", "awakenedImage": "dragon_awakened"}
 ]

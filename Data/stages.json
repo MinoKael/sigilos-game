@@ -1,19 +1,20 @@
 // Region 1: Plain of Menhirs (GDD, section 4). No battle rule: teaches the basics.
-// Enemies at the stage level: "summon" is a summon variant from Data/summons (buffed for the fight),
+// Enemies at the stage stars and level ("stars", "level"): "summon" is a summon variant from Data/summons (buffed for the fight),
 // "enemy" a unique creature from Data/enemies.json with its "element". "mana" is the cost of each victory (a defeat costs nothing). Scrolls only
-// on the first victory; Essence and experience (for the team and the account) on every victory. The rune
+// on the first victory; Essence and experience (per team monster, on the Summoners War scale; the account gets the same) on every victory. The rune
 // (up to 4 stars) always drops on the first victory and with a 50% chance on later ones. 5 and 6 star
 // runes and the tools come from the Dungeons (Data/dungeons.json).
 [
   {
     "number": 1,
     "name": "Menhir Road",
+    "stars": 3,
     "level": 1,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 60,
     "essence": 119,
-    "experience": 60,
+    "experience": 110,
     "runeGrade": 1,
     "lines": ["The Menhirs still guard the road. The Silence got past them anyway.", "Carve your first sigil, Conjurer. They won't wait."],
     "waves": [
@@ -23,12 +24,13 @@
   {
     "number": 2,
     "name": "Fallen Stones",
+    "stars": 3,
     "level": 3,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 120,
     "essence": 143,
-    "experience": 80,
+    "experience": 270,
     "runeGrade": 1,
     "waves": [
       [{"summon": "goblin_wind"}, {"summon": "slime_water"}],
@@ -38,12 +40,13 @@
   {
     "number": 3,
     "name": "Shepherds' Trail",
-    "level": 4,
+    "stars": 3,
+    "level": 5,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 180,
     "essence": 167,
-    "experience": 100,
+    "experience": 270,
     "runeGrade": 1,
     "waves": [
       [{"summon": "goblin_fire"}, {"summon": "goblin_water"}],
@@ -53,12 +56,13 @@
   {
     "number": 4,
     "name": "Howls in the Valley",
-    "level": 6,
+    "stars": 3,
+    "level": 8,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 240,
     "essence": 191,
-    "experience": 120,
+    "experience": 380,
     "runeGrade": 1,
     "lines": ["Wolves don't howl at the Silence. These do."],
     "waves": [
@@ -69,12 +73,13 @@
   {
     "number": 5,
     "name": "Old Bridge",
-    "level": 7,
+    "stars": 3,
+    "level": 11,
     "mana": 2,
     "firstClearScrolls": 3,
     "firstClearEssence": 300,
     "essence": 215,
-    "experience": 140,
+    "experience": 380,
     "runeGrade": 2,
     "waves": [
       [{"summon": "bandit_fire"}, {"summon": "goblin_wind"}],
@@ -84,12 +89,13 @@
   {
     "number": 6,
     "name": "Still Marsh",
-    "level": 9,
+    "stars": 3,
+    "level": 14,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 360,
     "essence": 239,
-    "experience": 160,
+    "experience": 380,
     "runeGrade": 2,
     "waves": [
       [{"summon": "slime_fire"}, {"summon": "slime_water"}, {"summon": "slime_wind"}],
@@ -100,12 +106,13 @@
   {
     "number": 7,
     "name": "Burned Camp",
-    "level": 10,
+    "stars": 3,
+    "level": 17,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 420,
     "essence": 263,
-    "experience": 180,
+    "experience": 450,
     "runeGrade": 2,
     "waves": [
       [{"summon": "bandit_fire"}, {"summon": "bandit_wind"}],
@@ -115,12 +122,13 @@
   {
     "number": 8,
     "name": "Cracked Menhir",
-    "level": 12,
+    "stars": 3,
+    "level": 20,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 480,
     "essence": 287,
-    "experience": 200,
+    "experience": 520,
     "runeGrade": 2,
     "lines": ["A Menhir split in half. The Glyph carved on it is gone."],
     "waves": [
@@ -131,12 +139,13 @@
   {
     "number": 9,
     "name": "Wolves' Den",
-    "level": 13,
+    "stars": 3,
+    "level": 23,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 540,
     "essence": 311,
-    "experience": 220,
+    "experience": 600,
     "runeGrade": 2,
     "waves": [
       [{"summon": "wolf_fire"}, {"summon": "wolf_water"}, {"summon": "wolf_wind"}],
@@ -146,12 +155,13 @@
   {
     "number": 10,
     "name": "Troll Hill",
-    "level": 15,
+    "stars": 3,
+    "level": 25,
     "mana": 3,
     "firstClearScrolls": 3,
     "firstClearEssence": 600,
     "essence": 335,
-    "experience": 240,
+    "experience": 700,
     "runeGrade": 3,
     "lines": ["The hill shook before the troll showed up.", "He isn't angry. He's empty."],
     "waves": [
@@ -163,12 +173,13 @@
   {
     "number": 11,
     "name": "Unmarked Road",
-    "level": 16,
+    "stars": 4,
+    "level": 6,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 660,
     "essence": 359,
-    "experience": 260,
+    "experience": 780,
     "runeGrade": 3,
     "waves": [
       [{"summon": "bandit_water"}, {"summon": "bandit_fire"}, {"summon": "goblin_wind"}],
@@ -178,12 +189,13 @@
   {
     "number": 12,
     "name": "Abandoned Mill",
-    "level": 18,
+    "stars": 4,
+    "level": 10,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 720,
     "essence": 383,
-    "experience": 280,
+    "experience": 860,
     "runeGrade": 3,
     "waves": [
       [{"summon": "slime_dark"}, {"summon": "slime_light"}, {"summon": "goblin_wind"}],
@@ -194,12 +206,13 @@
   {
     "number": 13,
     "name": "River Ford",
-    "level": 20,
+    "stars": 4,
+    "level": 14,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 780,
     "essence": 407,
-    "experience": 300,
+    "experience": 940,
     "runeGrade": 3,
     "waves": [
       [{"summon": "wolf_water"}, {"summon": "wolf_water"}, {"summon": "slime_water"}],
@@ -209,12 +222,13 @@
   {
     "number": 14,
     "name": "Menhir Graveyard",
-    "level": 21,
+    "stars": 4,
+    "level": 18,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 840,
     "essence": 431,
-    "experience": 320,
+    "experience": 1010,
     "runeGrade": 3,
     "lines": ["Here the Menhirs were toppled on purpose."],
     "waves": [
@@ -226,12 +240,13 @@
   {
     "number": 15,
     "name": "Ash Nest",
-    "level": 23,
+    "stars": 4,
+    "level": 22,
     "mana": 4,
     "firstClearScrolls": 3,
     "firstClearEssence": 900,
     "essence": 455,
-    "experience": 340,
+    "experience": 1040,
     "runeGrade": 4,
     "lines": ["The smell of sulfur. Something big sleeps on burned bones."],
     "waves": [
@@ -243,12 +258,13 @@
   {
     "number": 16,
     "name": "Stone Gate",
-    "level": 24,
+    "stars": 4,
+    "level": 26,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 960,
     "essence": 479,
-    "experience": 360,
+    "experience": 1100,
     "runeGrade": 4,
     "waves": [
       [{"summon": "bandit_wind"}, {"summon": "bandit_water"}, {"summon": "bandit_fire"}],
@@ -258,12 +274,13 @@
   {
     "number": 17,
     "name": "Forest of Chains",
-    "level": 26,
+    "stars": 4,
+    "level": 30,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 1020,
     "essence": 503,
-    "experience": 380,
+    "experience": 1180,
     "runeGrade": 4,
     "lines": ["Chains hang from the trees. Some are still swinging."],
     "waves": [
@@ -274,12 +291,13 @@
   {
     "number": 18,
     "name": "The Master's Guard",
-    "level": 27,
+    "stars": 5,
+    "level": 10,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 1080,
     "essence": 527,
-    "experience": 400,
+    "experience": 1280,
     "runeGrade": 4,
     "waves": [
       [{"summon": "bandit_light"}, {"summon": "bandit_dark"}, {"summon": "wolf_fire"}],
@@ -290,12 +308,13 @@
   {
     "number": 19,
     "name": "Hall of Links",
-    "level": 29,
+    "stars": 5,
+    "level": 20,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 1140,
     "essence": 551,
-    "experience": 420,
+    "experience": 1400,
     "runeGrade": 4,
     "waves": [
       [{"summon": "goblin_fire"}, {"summon": "goblin_wind"}, {"summon": "wolf_light"}],
@@ -305,12 +324,13 @@
   {
     "number": 20,
     "name": "The Chain Master",
+    "stars": 5,
     "level": 30,
     "mana": 5,
     "firstClearScrolls": 3,
     "firstClearEssence": 1200,
     "essence": 575,
-    "experience": 440,
+    "experience": 1520,
     "runeGrade": 4,
     "lines": ["The Silence is not the end, Conjurer. It is rest.", "Every chain I fasten is one less voice screaming.", "Let go of your sigils and rest too."],
     "waves": [

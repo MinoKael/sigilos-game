@@ -6,25 +6,36 @@
   "role": "Support",
   "leader": {"stat": "Defense", "value": 0.25},
   "awakening": {"name": "Aurelion", "stat": "Resistance"},
-  "basic": {
-    "name": "Radiant Claw",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.85},
-      {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
-    ]
-  },
-  "special": {
-    "name": "Holy Breath",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.2},
-      {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.3},
-      {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
-      {"kind": "Status", "target": "AllAllies", "status": "Immunity"}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Radiant Claw",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.85},
+        {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Holy Breath",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Heal", "target": "AllAllies", "power": 0.2},
+        {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "Dragonfire",
+      "passive": {"kind": "BurnOnHit", "value": 0.2}
+    }
+  ]
 }

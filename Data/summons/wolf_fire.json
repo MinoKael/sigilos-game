@@ -4,24 +4,38 @@
   "family": "wolf",
   "element": "Fire",
   "role": "Attacker",
-  "awakening": {"name": "Cinderfang", "stat": "Crit"},
-  "basic": {
-    "name": "Ember Bite",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5},
-      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
-    ]
+  "awakening": {
+    "name": "Cinderfang",
+    "skill": {
+      "name": "Hunter's Instinct",
+      "passive": {"kind": "BonusVsWounded", "value": 0.4}
+    }
   },
-  "special": {
-    "name": "Blazing Rush",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.45}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
-      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.4, "turns": 2}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Ember Bite",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Blazing Rush",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.45}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

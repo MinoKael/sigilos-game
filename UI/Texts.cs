@@ -138,7 +138,6 @@ namespace Sigilos.UI
 
 		public static string Impeto => Term(T("term.impetus"), RuneSets.For(RuneSet.Nemesis).Glyph);
 
-		public static string Ether => Term(T("term.aether"));
 
 		/// <summary>Tira BBCode e Glifos: para dica de mouse, que é texto puro.</summary>
 		public static string Plain(string rich) => System.Text.RegularExpressions.Regex.Replace(rich, @"\[[^\]]*\]", "");
@@ -169,19 +168,66 @@ namespace Sigilos.UI
 			var value = Percent(passive.ValueFor(awakened));
 			return passive.Kind switch
 			{
-				PassiveKind.ShieldOnDeath => T("signature.ShieldOnDeath", Term(StatusKind.Shield), value),
-				PassiveKind.ImpetoAtWaveStart => T("signature.ImpetoAtWaveStart", value, Impeto),
-				PassiveKind.BurnOnHit => T("signature.BurnOnHit", value, Term(StatusKind.Burn)),
-				PassiveKind.BonusVsWounded => T("signature.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
-				_ => T($"signature.{passive.Kind}", value),
+				PassiveKind.ShieldOnDeath => T("passive.ShieldOnDeath", Term(StatusKind.Shield), value),
+				PassiveKind.ImpetoAtWaveStart => T("passive.ImpetoAtWaveStart", value, Impeto),
+				PassiveKind.BurnOnHit => T("passive.BurnOnHit", value, Term(StatusKind.Burn)),
+				PassiveKind.BonusVsWounded => T("passive.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
+				_ => T($"passive.{passive.Kind}", value),
 			};
 		}
 
-		public static string Describe(SkillDefinition skill)
+		/// <summary>
+		/// O que a habilidade faz, desperta ou não. Sem despertar, a versão do Despertar (quando existe)
+		/// aparece numa linha à parte, para o jogador saber o que vai ganhar.
+		/// </summary>
+		public static string Describe(SkillDefinition skill, bool awakened = false)
 		{
-			var text = Describe(skill.Effects);
-			return skill.CanEnhance ? $"{text}\n{T("skill.enhanced", skill.EnhanceCost, Ether, Describe(skill.EnhancedEffects))}" : text;
+			if (skill.Passive is { } passive)
+			{
+				var text = Describe(passive, awakened);
+				return !awakened && passive.AwakenedValue > 0 ? $"{text}\n{T("skill.awakened", Describe(passive, true))}" : text;
+			}
+
+			if (awakened && skill.AwakenedEffects.Count > 0)
+				return Describe(skill.AwakenedEffects);
+			var basic = Describe(skill.Effects);
+			return skill.AwakenedEffects.Count > 0 ? $"{basic}\n{T("skill.awakened", Describe(skill.AwakenedEffects))}" : basic;
 		}
+
+		/// <summary>"Habilidade 2 · Selo Rompido (recarga 3) · Nv 1/4", "Passiva · Das Cinzas".</summary>
+		public static string SkillHeader(SkillDefinition skill, int index, int level, bool awakened)
+		{
+			var header = skill.IsPassive ? T("skill.header_passive", skill.Name) : T("skill.header", index + 1, skill.Name);
+			if (!skill.IsPassive && skill.Cooldown > 0)
+				header += " " + T("skill.cooldown", skill.At(level, awakened).Cooldown);
+			if (skill.MaxLevel > 1)
+				header += " · " + T("skill.level", level, skill.MaxLevel);
+			return header;
+		}
+
+		/// <summary>O que o Despertar dá além de Vida, Ataque e Defesa: atributo, habilidade nova ou habilidade melhorada.</summary>
+		public static string AwakeningGain(SummonDefinition summon)
+		{
+			var gains = new List<string>();
+			if (summon.Awakening.Stat is { } stat)
+				gains.Add(AwakeningBonus(stat));
+			if (summon.Awakening.Skill is { } skill)
+				gains.Add(T("awaken.new_skill", skill.Name));
+			var improved = summon.Skills.Where(s => s.ChangesOnAwakening).Select(s => s.Name).ToList();
+			if (improved.Count > 0)
+				gains.Add(T("awaken.improves", string.Join(T("common.and"), improved)));
+			return string.Join(T("common.and"), gains);
+		}
+
+		/// <summary>"Nv.2 Dano +10% · Nv.3 Recarga −1": os níveis que faltam a partir de <paramref name="level"/>.</summary>
+		public static string LevelUps(SkillDefinition skill, int level) => string.Join(" · ", skill.Levels
+			.Select((up, i) => (Level: i + 2, Up: up))
+			.Where(x => x.Level > level)
+			.Select(x => T("skill.level_line", x.Level, LevelUp(x.Up))));
+
+		public static string LevelUp(SkillLevelUp up) => up.Kind == SkillLevelKind.Cooldown
+			? T("skill.level_up.Cooldown", (int)up.Value)
+			: T($"skill.level_up.{up.Kind}", Percent(up.Value));
 
 		public static string Describe(IEnumerable<EffectDefinition> effects) => string.Join("; ", effects.Select(Describe)) + ".";
 
@@ -232,7 +278,8 @@ namespace Sigilos.UI
 				.Concat(Keys<StatusKind>("effect.{0}.short"))
 				.Concat(Keys<StatusKind>("effect.{0}.info"))
 				.Concat(Keys<TargetKind>("target.{0}"))
-				.Concat(Keys<PassiveKind>("signature.{0}"))
+				.Concat(Keys<PassiveKind>("passive.{0}"))
+				.Concat(Keys<SkillLevelKind>("skill.level_up.{0}"))
 				.Concat(Keys<RuneToolKind>("tool.{0}"))
 				.Concat(Keys<DungeonKind>("dungeons.kind.{0}"))
 				.Concat(Keys<RuneSort>("filter.order.{0}"))

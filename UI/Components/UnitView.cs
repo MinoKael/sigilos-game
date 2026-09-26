@@ -108,7 +108,9 @@ namespace Sigilos.UI.Components
 				.Select(s => Texts.Short(s.Kind))
 				.Distinct());
 			_statuses.TooltipText = string.Join("\n", Unit.Statuses.Select(s => T("battle.effect_tip", Texts.Name(s.Kind), s.Turns, Texts.Plain(Texts.Explain(s.Kind)))));
-			_cooldown.Text = Unit.Special != null && Unit.SpecialCooldown > 0 ? $"⟳{Unit.SpecialCooldown}" : "";
+			_cooldown.Text = string.Join(" ", Enumerable.Range(1, Math.Max(0, Unit.Skills.Count - 1))
+				.Where(i => Unit.Cooldown(i) > 0)
+				.Select(i => $"⟳{Unit.Cooldown(i)}"));
 			Modulate = Unit.IsAlive ? Colors.White : new Color(1, 1, 1, 0.35f);
 		}
 

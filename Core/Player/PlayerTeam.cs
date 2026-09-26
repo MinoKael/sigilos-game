@@ -16,10 +16,18 @@ namespace Sigilos.Core.Player
 			var members = Teams.Of(player, content)
 				.Select(player.Monster)
 				.Where(m => m is { Stored: false } && database.HasSummon(m.SummonId))
-				.Select(m => new TeamMember(database.Summon(m!.SummonId), m.Level, m.Echoes, m.Awakened, player.RunesOn(m.Id)))
+				.Select(m => Member(database.Summon(m!.SummonId), m, player))
 				.ToList();
 
 			return new BattleTeam(members);
 		}
+
+		private static TeamMember Member(SummonDefinition summon, OwnedSummon monster, PlayerState player) => new(
+			summon,
+			monster.Stars,
+			monster.Level,
+			monster.Awakened,
+			Enumerable.Range(0, summon.AllSkills.Count).Select(monster.SkillLevel).ToList(),
+			player.RunesOn(monster.Id));
 	}
 }

@@ -5,26 +5,40 @@
   "element": "Light",
   "role": "Front",
   "leader": {"stat": "Defense", "value": 0.2},
-  "awakening": {"name": "Sir Dawn", "stat": "Resistance"},
-  "basic": {
-    "name": "Oath",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5},
-      {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
-    ]
-  },
-  "special": {
-    "name": "Shield Vow",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Status", "target": "AllEnemies", "status": "Taunt"},
-      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "turns": 2},
-      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3},
-      {"kind": "Status", "target": "Self", "status": "Ward"}
-    ]
-  }
+  "awakening": {"name": "Sir Dawn"},
+  "skills": [
+    {
+      "name": "Oath",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Shield Vow",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Status", "target": "AllEnemies", "status": "Taunt"},
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Cooldown", "value": 1}
+      ],
+      "awakenedEffects": [
+        {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "turns": 2},
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3},
+        {"kind": "Status", "target": "Self", "status": "Ward"}
+      ]
+    },
+    {
+      "name": "Last Vow",
+      "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
+    }
+  ]
 }

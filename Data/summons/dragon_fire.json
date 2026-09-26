@@ -6,24 +6,36 @@
   "role": "Attacker",
   "leader": {"stat": "Attack", "value": 0.18},
   "awakening": {"name": "Pyrrhax", "stat": "Crit"},
-  "basic": {
-    "name": "Claw",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 4.2},
-      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
-    ]
-  },
-  "special": {
-    "name": "Breath",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
-      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 4.9},
-      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "turns": 2}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Claw",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.2},
+        {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Breath",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+        {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "Dragonfire",
+      "passive": {"kind": "BurnOnHit", "value": 0.2}
+    }
+  ]
 }

@@ -13,9 +13,10 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Monstros: à esquerda a coleção e o Baú, em abas; à direita a ficha do escolhido — nível e
-	/// experiência, atributos (base + runas), habilidades, Assinatura, Liderança, Despertar e as 6
-	/// runas — com os botões de cada ação: subir nível, despertar, runas, Baú, fundir e liberar.
+	/// Monstros: à esquerda a coleção e o Baú, em abas; à direita a ficha do escolhido — estrelas,
+	/// nível e experiência, atributos (base + runas), habilidades com os níveis delas, Liderança,
+	/// Despertar e as 6 runas — com os botões de cada ação: subir nível, evoluir, despertar, runas,
+	/// Baú, fundir (sobe uma habilidade) e liberar.
 	///
 	/// "Selecionar" marca vários cartões (nas duas abas) para fundir no monstro da ficha ou liberar de
 	/// uma vez. Cada botão vira um evento; o GameRoot aplica a regra e chama <see cref="Refresh"/>.
@@ -47,6 +48,7 @@ namespace Sigilos.UI.Screens
 		public event Action<int, bool>? InfuseRequested;
 
 		public event Action<int>? AwakenRequested;
+		public event Action<int>? EvolveRequested;
 		public event Action<int>? RunesRequested;
 		public event Action<int>? StoreRequested;
 		public event Action<int>? RetrieveRequested;
@@ -166,15 +168,15 @@ namespace Sigilos.UI.Screens
 			_selection.AddChild(release);
 		}
 
-		/// <summary>Funde os marcados no monstro da ficha: só cópias da mesma variante, até 5 Ecos, as mais fracas primeiro.</summary>
+		/// <summary>Funde os marcados no monstro da ficha: só cópias da mesma variante, uma habilidade sorteada sobe por cópia, as mais fracas primeiro.</summary>
 		private Button FuseMarked(OwnedSummon target, IReadOnlyList<OwnedSummon> marked)
 		{
 			var name = _database.Summon(target.SummonId).NameFor(target.Awakened);
-			var room = Growth.MaxEchoes - target.Echoes;
-			var valid = marked.Count > 0 && room > 0 && marked.All(m => Fusion.CanFuse(_player, target.Id, m.Id));
+			var room = Fusion.SkillUpsLeft(_database, target);
+			var valid = marked.Count > 0 && room > 0 && marked.All(m => Fusion.CanFuse(_player, _database, target.Id, m.Id));
 			var materials = marked
 				.OrderBy(m => m.Awakened)
-				.ThenBy(m => m.Echoes)
+				.ThenBy(m => m.Stars)
 				.ThenBy(m => m.Level)
 				.Take(Math.Max(0, room))
 				.ToList();
@@ -182,14 +184,14 @@ namespace Sigilos.UI.Screens
 			var button = new Button { Text = T("monsters.fuse_marked", name, materials.Count), Disabled = !valid };
 			button.TooltipText = valid ? T("monsters.fuse_marked_tip", room) : T("monsters.fuse_marked_invalid", name, room);
 			button.Pressed += () => Confirm(
-				T("monsters.fuse_many_confirm", materials.Count, name, target.Echoes, target.Echoes + materials.Count) + Warning(materials),
+				T("monsters.fuse_many_confirm", materials.Count, name, room) + Warning(materials),
 				() => FuseRequested?.Invoke(target.Id, materials.Select(m => m.Id).ToList()));
 			return button;
 		}
 
-		/// <summary>Aviso quando a seleção leva monstro desperto, com nível, com Ecos, em equipe ou com runas.</summary>
+		/// <summary>Aviso quando a seleção leva monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas.</summary>
 		private string Warning(IEnumerable<OwnedSummon> monsters) =>
-			monsters.Any(m => m.Awakened || m.Level > 1 || m.Echoes > 0 || TeamNames(m.Id).Count > 0 || _player.RunesOn(m.Id).Count > 0)
+			monsters.Any(m => m.Awakened || m.Level > 1 || m.Stars > _database.Summon(m.SummonId).Rarity || m.SkillLevels.Any(l => l > 1) || TeamNames(m.Id).Count > 0 || _player.RunesOn(m.Id).Count > 0)
 				? "\n\n" + T("monsters.valuable_warning")
 				: "";
 
@@ -212,7 +214,8 @@ namespace Sigilos.UI.Screens
 			Layout.Clear(_roster);
 			var monsters = (_showStorage ? _player.Storage : _player.Collection)
 				.Where(m => _database.HasSummon(m.SummonId))
-				.OrderByDescending(m => _database.Summon(m.SummonId).Rarity)
+				.OrderByDescending(m => m.Stars)
+				.ThenByDescending(m => _database.Summon(m.SummonId).Rarity)
 				.ThenByDescending(m => m.Level)
 				.ThenBy(m => _database.Summon(m.SummonId).Element)
 				.ThenBy(m => m.Id)
@@ -221,7 +224,7 @@ namespace Sigilos.UI.Screens
 			foreach (var monster in monsters)
 			{
 				var inTeam = TeamNames(monster.Id).Count > 0;
-				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, inTeam ? T("monsters.in_team") : null, 104);
+				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, width: 104);
 				card.SetSelected(monster.Id == _selected);
 				card.SetMarked(_marked.Contains(monster.Id));
 				card.Pressed += c =>
@@ -257,7 +260,7 @@ namespace Sigilos.UI.Screens
 
 			var summon = _database.Summon(monster.SummonId);
 			var runes = _player.RunesOn(monster.Id);
-			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Level, monster.Echoes, monster.Awakened, runes);
+			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Stars, monster.Level, monster.Awakened, runes);
 
 			_detail.AddChild(Identity(summon, monster));
 			_detail.AddChild(Actions(summon, monster));
@@ -288,20 +291,28 @@ namespace Sigilos.UI.Screens
 				: string.Join("\n", sheet.Runes.ActiveSets.Select(s => $"{Texts.Term(s.Set)}: {Texts.Describe(s)}")), GameTheme.Faded);
 
 			Section(T("monsters.skills"));
-			Rich(T("monsters.basic", summon.Basic.Name));
-			Rich(Texts.Describe(summon.Basic), GameTheme.Faded);
-			Rich(T("monsters.special", summon.Special.Name, summon.Special.Cooldown));
-			Rich(Texts.Describe(summon.Special), GameTheme.Faded);
-			Rich(T("monsters.signature", summon.Family.Passive.Name));
-			Rich(Texts.Describe(summon.Family.Passive, monster.Awakened), GameTheme.Faded);
+			var skills = summon.AllSkills;
+			for (var i = 0; i < skills.Count; i++)
+			{
+				var skill = skills[i];
+				var level = monster.SkillLevel(i);
+				var header = Texts.SkillHeader(skill, i, level, monster.Awakened);
+				if (!monster.Awakened && i >= summon.Skills.Count)
+					header += " " + T("monsters.skill_locked");
+				Rich(header);
+				Rich(Texts.Describe(skill, monster.Awakened), GameTheme.Faded);
+				var ups = Texts.LevelUps(skill, level);
+				if (ups.Length > 0)
+					Rich(ups, GameTheme.Faded);
+			}
+
 			if (summon.Leader is { } leader)
 				Rich(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)));
 
 			Section(monster.Awakened ? T("monsters.awakened", summon.Awakening.Name) : T("monsters.awaken"));
 			Rich(monster.Awakened
 				? T("monsters.awakened_text")
-				: T("monsters.awaken_text", summon.Awakening.Name, Texts.Percent(Awakening.HealthBonus), Texts.Percent(Awakening.AttackDefenseBonus),
-					Texts.AwakeningBonus(summon.Awakening.Stat), Texts.Describe(summon.Family.Passive, true)), GameTheme.Faded);
+				: T("monsters.awaken_text", summon.Awakening.Name, Texts.Percent(Awakening.HealthBonus), Texts.Percent(Awakening.AttackDefenseBonus), Texts.AwakeningGain(summon)), GameTheme.Faded);
 		}
 
 		private Control Identity(SummonDefinition summon, OwnedSummon monster)
@@ -322,16 +333,17 @@ namespace Sigilos.UI.Screens
 			if (monster.Awakened)
 				info.AddChild(new Label { Text = summon.Name, ThemeTypeVariation = GameTheme.Faded });
 
-			var stars = new Label { Text = Texts.Stars(summon.Rarity) + (monster.Echoes > 0 ? "   " + T("monsters.echoes", monster.Echoes, Growth.MaxEchoes) : "") };
+			var stars = new Label { Text = Texts.Stars(monster.Stars), TooltipText = T("monsters.natural_stars", summon.Rarity), MouseFilter = MouseFilterEnum.Stop };
 			stars.AddThemeColorOverride("font_color", Palette.Stars(monster.Awakened));
 			info.AddChild(stars);
 
-			info.AddChild(new Label { Text = monster.Level >= Leveling.MaxLevel ? T("monsters.level_max", monster.Level) : T("monsters.level", monster.Level, Leveling.MaxLevel) });
-			if (monster.Level < Leveling.MaxLevel)
+			var max = Leveling.MaxLevel(monster);
+			info.AddChild(new Label { Text = Leveling.IsMaxLevel(monster) ? T("monsters.level_max", monster.Level) : T("monsters.level", monster.Level, max) });
+			if (!Leveling.IsMaxLevel(monster))
 			{
-				var bar = new ProgressBar { MaxValue = Leveling.ExperienceToNext(monster.Level), Value = monster.Experience, ShowPercentage = false, CustomMinimumSize = new Vector2(0, 8) };
+				var bar = new ProgressBar { MaxValue = Leveling.ExperienceToNext(monster), Value = monster.Experience, ShowPercentage = false, CustomMinimumSize = new Vector2(0, 8) };
 				bar.AddThemeStyleboxOverride("fill", GameTheme.Box(Palette.Gold, Palette.Gold, 0, 3, 0));
-				bar.TooltipText = T("monsters.experience", monster.Experience, Leveling.ExperienceToNext(monster.Level));
+				bar.TooltipText = T("monsters.experience", monster.Experience, Leveling.ExperienceToNext(monster));
 				info.AddChild(bar);
 			}
 
@@ -350,11 +362,18 @@ namespace Sigilos.UI.Screens
 			flow.AddThemeConstantOverride("v_separation", 6);
 			var id = monster.Id;
 
-			if (monster.Level < Leveling.MaxLevel)
+			if (!Leveling.IsMaxLevel(monster))
 			{
-				var next = Leveling.Missing(monster);
-				Add(flow, T("monsters.level_up", next), _player.Essence < next, T("monsters.level_up_tip"), () => InfuseRequested?.Invoke(id, false));
-				Add(flow, T("monsters.max_level_button", Leveling.MissingToMax(monster)), _player.Essence <= 0, T("monsters.max_level_tip"), () => InfuseRequested?.Invoke(id, true));
+				var (next, full) = Leveling.InfuseCosts(monster);
+				var tip = T("monsters.level_up_tip", Leveling.ExperiencePerEssence);
+				Add(flow, T("monsters.level_up", next), _player.Essence < next, tip, () => InfuseRequested?.Invoke(id, false));
+				Add(flow, T("monsters.max_level_button", full), _player.Essence <= 0, T("monsters.max_level_tip", Leveling.MaxLevel(monster)), () => InfuseRequested?.Invoke(id, true));
+			}
+			else if (Evolution.IsReady(monster))
+			{
+				var (essenceCost, fragmentCost) = Evolution.Cost(monster.Stars);
+				Add(flow, T("monsters.evolve", Texts.Stars(monster.Stars + 1), essenceCost, fragmentCost), !Evolution.CanEvolve(_player, monster),
+					T("monsters.evolve_tip", Growth.MaxLevel(monster.Stars + 1)), () => EvolveRequested?.Invoke(id));
 			}
 
 			if (!monster.Awakened)
@@ -380,14 +399,13 @@ namespace Sigilos.UI.Screens
 			return flow;
 		}
 
-		/// <summary>Fundir: escolhe qual cópia da mesma variante vira Eco deste monstro.</summary>
+		/// <summary>Fundir: escolhe qual cópia da mesma variante vira nível de habilidade deste monstro.</summary>
 		private Control FuseMenu(SummonDefinition summon, OwnedSummon monster)
 		{
-			var copies = _player.Monsters.Where(m => Fusion.CanFuse(_player, monster.Id, m.Id)).OrderBy(m => m.Level).ToList();
+			var copies = _player.Monsters.Where(m => Fusion.CanFuse(_player, _database, monster.Id, m.Id)).OrderBy(m => m.Level).ToList();
+			var left = Fusion.SkillUpsLeft(_database, monster);
 			var menu = new MenuButton { Text = T("monsters.fuse", copies.Count), Flat = false, Disabled = copies.Count == 0 };
-			menu.TooltipText = monster.Echoes >= Growth.MaxEchoes
-				? T("monsters.fuse_full")
-				: T("monsters.fuse_tip", Texts.Percent(Growth.SkillPowerPerEcho), Growth.MaxEchoes);
+			menu.TooltipText = left == 0 ? T("monsters.fuse_full") : T("monsters.fuse_tip", left);
 			var popup = menu.GetPopup();
 			for (var i = 0; i < copies.Count; i++)
 			{

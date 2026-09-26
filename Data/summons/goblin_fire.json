@@ -4,25 +4,39 @@
   "family": "goblin",
   "element": "Fire",
   "role": "Attacker",
-  "awakening": {"name": "Grizzle", "stat": "Crit"},
-  "basic": {
-    "name": "Torch Stab",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.9, "hits": 2},
-      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
-    ]
+  "awakening": {
+    "name": "Grizzle",
+    "skill": {
+      "name": "Cheap Shot",
+      "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+    }
   },
-  "special": {
-    "name": "Firebomb",
-    "cooldown": 3,
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 5.25},
-      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 7.7},
-      {"kind": "Status", "target": "Target", "status": "Burn", "turns": 2}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Torch Stab",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 1.9, "hits": 2},
+        {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Firebomb",
+      "cooldown": 3,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 5.25},
+        {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

@@ -120,8 +120,8 @@ namespace Sigilos.UI.Screens
 			var stage = _selected;
 			var cleared = Campaign.IsCleared(_player, stage.Number);
 			_detail.AddChild(new Label { Text = T("campaign.stage_title", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading });
-			var levels = Teams.Of(_player, Teams.Campaign).Select(_player.Monster).OfType<OwnedSummon>().Select(m => m.Level).ToList();
-			_detail.AddChild(new Label { Text = T("campaign.levels", stage.Level, levels.Count == 0 ? "—" : string.Join(", ", levels)) });
+			var levels = Teams.Of(_player, Teams.Campaign).Select(_player.Monster).OfType<OwnedSummon>().Select(m => T("common.stars_level", Texts.Stars(m.Stars), m.Level)).ToList();
+			_detail.AddChild(new Label { Text = T("campaign.levels", T("common.stars_level", Texts.Stars(stage.Stars), stage.Level), levels.Count == 0 ? "—" : string.Join(", ", levels)) });
 
 			for (var i = 0; i < stage.Waves.Count; i++)
 			{

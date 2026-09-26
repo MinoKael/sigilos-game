@@ -77,7 +77,7 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = TestData.PlayerWith("phoenix_fire");
-			var golemMonster = Roster.Add(player, "imp_fire");
+			var golemMonster = Roster.Add(player, TestData.Summon("imp_fire"));
 			Teams.Toggle(player, "golem", golemMonster.Id);
 
 			Dungeons.ApplyVictory(new Random(1), player, database.Dungeon("golem"), 1);

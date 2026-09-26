@@ -14,6 +14,8 @@ Sep 23, 2026 · @Mikael
 
 > **Sexta revisão de 25/09/2026: inimigos são invocações.** Limo, Goblin, Lobo e Bandido viraram famílias de invocação 3★, o Troll 4★ e o Dragão 5★, cada uma com 5 elementos e Assinatura própria (Corpo Gelatinoso reduz dano; Golpe Baixo bate mais em quem tem efeito negativo; Instinto de Caça bate mais em quem está abaixo da metade da Vida; Emboscada começa cada onda com Ímpeto; Regeneração cura no começo do turno; Fogo de Dragão queima quem acerta). Os inimigos comuns de fases e Masmorras são essas invocações com Vida e Ataque reforçados pela raridade e pela dificuldade do encontro; só os chefes continuam como criaturas únicas. O Grimório agrupa as invocações por família, com os elementos no detalhe. Entrou a **Batalha automática**: até 30 lutas seguidas, como o Resolver, mas cada luta leva o tempo que levaria no automático em 2×. A tela de batalha ficou com duas velocidades, 1× e 2× (o 2× corre três vezes mais rápido). O Éter passou a aprimorar só a habilidade especial: o básico não tem versão aprimorada.
 
+> **Sétima revisão de 26/09/2026: habilidades, estrelas e experiência de Summoners War.** Sem PvP, o Éter não era estratégia: saiu do jogo. A antiga versão aprimorada virou o que o Despertar libera, e o que o Despertar dá segue as estrelas naturais, como lá: as 3★ ganham uma habilidade nova (uma Passiva ou uma ativa), as 4★ uma habilidade mais forte (e algumas uma terceira ativa), as 5★ quase não mudam (só o atributo). O Despertar custa 25 000 de Essência nas 3★, 50 000 nas 4★ e 75 000 nas 5★. A Assinatura virou **Passiva**, e nem todo monstro tem uma: alguns têm uma terceira habilidade ativa no lugar. Os Ecos saíram: cada habilidade tem níveis (mais dano, mais cura, mais chance de efeito ou menos recarga), e fundir uma cópia sobe o nível de uma habilidade sorteada. Toda invocação nasce nas estrelas naturais e **evolui** até 6★ com Essência e Fragmentos quando chega ao nível máximo da estrela (10 + 5 por estrela: 25 no 3★, 40 no 6★), voltando ao nível 1, como lá. A experiência de cada nível é a tabela de Summoners War por estrela, e a experiência de fases e Masmorras segue a escala de lá (de 110 na fase 1 a 2400 no andar 5), com a Essência valendo 10 de experiência. Fases e andares têm estrelas e nível: a Campanha vai de 3★ nível 1 a 5★ nível 30, e as Masmorras de 4★ nível 25 a 6★ nível 35.
+
 ## 1. Visão geral
 
 **Sigilos** (título provisório) é um gacha de fantasia para um jogador, offline e sem dinheiro de verdade (a Loja só troca Ouro ganho jogando): você coleciona criaturas, grava sigilos nelas e comanda batalhas por turnos em que as magias são montadas símbolo por símbolo.
@@ -69,7 +71,7 @@ Neste mundo tudo o que existe foi escrito com dezesseis Glifos primordiais, e co
 | --- | --- | --- | --- |
 | 1 | Planície dos Menires | Nenhuma; ensina o básico | O Mestre de Correntes, rival especialista em Laço |
 | 2 | Arquipélago Afogado | Maré: a cada 3 rodadas, unidades de Água ganham +20% de Ímpeto | A Serpe-Mãe |
-| 3 | Cidadela do Selo Partido | Glifos instáveis: aprimoramentos custam +1 Éter em rodadas ímpares | O Arauto do Silêncio |
+| 3 | Cidadela do Selo Partido | Glifos instáveis: as habilidades começam a luta em recarga | O Arauto do Silêncio |
 | Pós-jogo | Torre dos Círculos | Andares com regras fixas, uma por andar | — |
 
 **Tom.** Fantasia épica clássica, séria no mundo e com leveza nas falas. No máximo três falas por fase: a história é tempero, nunca obstáculo entre o jogador e a luta.
@@ -136,24 +138,22 @@ Uma equipe de até 5 monstros por conteúdo: uma para a Campanha e uma para cada
 ```mermaid
 flowchart LR
   A[Ímpeto chega a 100%] --> B{Manual?}
-  B -- Sim --> C[Básico ou Especial]
-  C --> D{Paga aprimoramento com Éter?}
-  D --> E[Resolve a habilidade]
-  B -- Não --> F[Automático escolhe, sem Éter]
+  B -- Sim --> C[Escolhe uma habilidade pronta]
+  C --> E[Resolve a habilidade]
+  B -- Não --> F[Automático usa a mais forte pronta]
   F --> E
-  E --> G[Especial usada: +1 Éter]
+  E --> G[A usada entra em recarga]
   G --> H[Ímpeto volta a 0%]
 ```
 
 A barra enche em proporção à Velocidade. Efeitos empurram ou atrasam barras, e a ordem dos turnos no início da luta costuma decidir o resultado: é o ajuste fino de velocidade que os dois jogos têm em comum.
 
-### Éter
+### Habilidades
 
-Recurso único do time, equivalente às Almas de Epic Seven. Começa em 0 e vai até 10. É escasso de propósito: numa luta inteira dá para pagar poucos aprimoramentos, então cada um é uma decisão.
+Como em Summoners War: a primeira habilidade é a básica, sempre pronta; as outras ativas têm recarga em turnos (a recarga conta o turno em que foi usada). Uma Passiva, se houver, age sozinha. O Éter saiu na sétima revisão: sem PvP, não era estratégia.
 
-- **Ganho:** +1 por habilidade especial e +1 por inimigo derrotado. O básico não gera Éter.
-- **Gasto:** só o aprimoramento da habilidade especial, e só no modo manual; o básico nunca gasta Éter. O especial aprimorado custa 5 (6 nas 5★). Nenhum aprimoramento custa menos que 2 — mais do que um turno rende —, então não existe ciclo de usa-e-ganha.
-- **Aprimoramento:** a versão aprimorada é clara e forte (mais golpes, chance dobrada, efeito extra), para valer o custo.
+- **Níveis:** cada habilidade tem de 1 a 5 melhorias (+dano, +cura, +chance de efeito ou −1 de recarga), e cada cópia fundida sobe uma delas, sorteada.
+- **Despertar:** a habilidade que muda ao despertar troca os efeitos pelos da versão desperta; a que o Despertar dá só existe no monstro desperto.
 
 ### Vitória e derrota
 
@@ -161,7 +161,7 @@ Você vence ao derrotar todas as ondas. Perde se a equipe inteira cair ou se 30 
 
 ### Automático e manual
 
-Toda luta pode ser automática: usa a habilidade especial quando está pronta e mira com vantagem elemental e, no empate, no mais ferido. **O automático nunca gasta Éter.** O aprimoramento é poder reservado a quem joga no manual; assim a automação não fica mais forte com um recurso que existe para premiar decisões.
+Toda luta pode ser automática: usa a habilidade pronta de maior número (a mais forte) e mira com vantagem elemental e, no empate, no mais ferido. No manual, o jogador escolhe a ordem das recargas e o alvo.
 
 Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham o botão Resolver, que simula na hora.
 
@@ -174,12 +174,13 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 | Campo | Conteúdo |
 | --- | --- |
 | Identidade | Família, elemento e papel (Frente, Atacante, Suporte ou Controle) |
-| Raridade | 1, 2, 3, 4 ou 5 estrelas naturais, definida pela família |
+| Raridade | 3, 4 ou 5 estrelas naturais, definida pela família; toda invocação evolui até 6★ |
 | Atributos | Os de Summoners War: Vida, Ataque, Defesa, Velocidade, Crítico, Dano crítico, Resistência e Precisão (chance de aplicar efeitos) |
-| Básico | Habilidade sempre disponível |
-| Especial | Habilidade forte com recarga de 3 a 5 turnos |
-| Assinatura | Passiva; famílias de 4 e 5 estrelas também têm Liderança |
-| Despertar | Nome próprio, desenho novo e Assinatura melhorada |
+| Básica | Habilidade sempre disponível |
+| Ativas | Uma ou duas com recarga de 3 a 5 turnos |
+| Passiva | Nem todos têm: alguns têm uma terceira ativa no lugar; famílias de 4 e 5 estrelas também têm Liderança |
+| Níveis | Cada habilidade sobe com cópias fundidas |
+| Despertar | Nome próprio, desenho novo e, pelas estrelas naturais, uma habilidade nova (3★), uma mais forte (4★) ou um atributo (5★) |
 
 ### Famílias
 
@@ -196,7 +197,7 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 
 ### Exemplos
 
-| Invocação | Ficha | Básico | Especial (recarga) | Assinatura |
+| Invocação | Ficha | Básico | Especial (recarga) | Passiva |
 | --- | --- | --- | --- | --- |
 | Menir Desperto de Água | 3★ · Frente | Golpe de Pedra: 90% de dano e 30% de chance de reduzir o Ataque do alvo. +1 Éter: chance de 60% | Círculo de Pedra (4): escudo de 20% da Vida do Menir em todos os aliados por 2 turnos. +2 Éter: remove também um efeito negativo | Pedra não se move: imune a atraso de Ímpeto e a atordoamento |
 | Diabrete de Selo de Fogo | 3★ · Atacante | Faísca: 2 golpes de 55%. +1 Éter: cada golpe tem 30% de chance de Queimadura | Selo Rompido (3): 180% num alvo; se ele cair, o Diabrete age de novo. +2 Éter: ignora 30% da Defesa | +15% de Velocidade enquanto for o aliado com menos Vida |
@@ -207,11 +208,11 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 | Fênix de Cinza de Fogo | 5★ · Atacante | Chama Espiral: 120% de dano e converte um efeito positivo do alvo em Queimadura. +1 Éter: converte dois | Voo Rubro (4): 90% em todos e Queimadura por 1 turno. +3 Éter: dano ×1,5 | Na primeira vez que cai, renasce com 40% da Vida no turno seguinte dela |
 | Sábio Sem Rosto de Trevas | 5★ · Controle | Toque do Limiar: 100% de dano e 30% de chance de atordoar | Abrir a Porta (5): invoca uma cópia de um inimigo, que luta do seu lado por 2 turnos com 50% dos atributos. +3 Éter: 100% dos atributos | Sempre que um aliado usa uma habilidade aprimorada, ganha +20% de Ímpeto |
 
-As melhores Assinaturas nascem do conceito da família: a fênix renasce, o menir não se move. Esse é o molde para as outras 32. Os números destes exemplos são os da primeira versão; os atuais estão em Data/summons, com custos de Éter de 3 no básico e 5 ou 6 no especial e multiplicadores na escala de Summoners War (o básico da Fênix de Fogo virou 420%, como o da Fênix de lá).
+As melhores Passivas nascem do conceito da família: a fênix renasce, o menir não se move. Esse é o molde para as outras 32. Os números destes exemplos são os da primeira versão (o "+N Éter" virou o que o Despertar libera); os atuais estão em Data/summons, com multiplicadores na escala de Summoners War (o básico da Fênix de Fogo virou 420%, como o da Fênix de lá).
 
 ## 9. O gacha: Invocação ritual
 
-Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocação é um monstro novo, no nível 1 e sem Despertar, mesmo que você já tenha outro igual. As taxas são generosas e a garantia é sempre visível, porque não há ninguém para vender nada.
+Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocação é um monstro novo, nas estrelas naturais, no nível 1 e sem Despertar, mesmo que você já tenha outro igual. As taxas são generosas e a garantia é sempre visível, porque não há ninguém para vender nada.
 
 | Regra | Valor inicial |
 | --- | --- |
@@ -220,7 +221,7 @@ Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocaçã
 | Luz e Trevas | Metade da chance das outras variantes da mesma raridade, como em Summoners War |
 | Garantia | 5★ após 60 invocações sem nenhuma, com contador na tela |
 | Coleção | 50 vagas; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele) |
-| Cópia repetida | Fundida em outra da mesma variante: +1 Eco, até 5 |
+| Cópia repetida | Fundida em outra da mesma variante: sobe uma habilidade sorteada em um nível, até todas no máximo |
 | Liberar | O monstro vira Fragmentos: 5 (3★), 10 (4★) ou 20 (5★) |
 | Troca por Fragmentos | Qualquer invocação: 30, 60 ou 120 Fragmentos, conforme a raridade |
 
@@ -239,18 +240,18 @@ Ao receber uma duplicata, você escolhe manter o Tique antigo ou ficar com o nov
 
 ## 10. Progressão
 
-Há quatro eixos de poder: nível, Ecos, Despertar e runas. Qualquer sistema novo precisa substituir um deles, não somar.
+Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e runas. Qualquer sistema novo precisa substituir um deles, não somar.
 
 | Eixo | Como sobe | O que dá |
 | --- | --- | --- |
-| Nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 1 de experiência) | Nível de 1 a 40 por invocação; Vida, Ataque e Defesa crescem de 25% a 100% |
-| Ecos | Fundir cópias da mesma variante, de 0 a 5 | Cada Eco deixa as habilidades 5% mais fortes; no quinto, +10% de atributos |
-| Despertar | Essência: 1500 (3★), 3000 (4★), 6000 (5★) | Nome próprio, desenho novo, estrelas roxas, Assinatura melhorada, +20% de Vida, +7% de Ataque e Defesa e o bônus de Summoners War da variante: +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
+| Estrelas e nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 10 de experiência); no nível máximo, Evolução com Essência e Fragmentos | Das estrelas naturais até 6★; nível máximo 10 + 5 por estrela (25 no 3★, 40 no 6★); Vida, Ataque e Defesa pela faixa de Summoners War de cada estrela |
+| Níveis de habilidade | Fundir cópias da mesma variante | Cada cópia sobe uma habilidade sorteada: mais dano, cura, chance de efeito ou menos recarga |
+| Despertar | Essência pelas estrelas naturais: 25 000 (3★), 50 000 (4★), 75 000 (5★) | Nome próprio, desenho novo, estrelas roxas, +20% de Vida, +7% de Ataque e Defesa e, pelas estrelas naturais, uma habilidade nova (3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
 | Runas | Campanha (até 4★) e Masmorras (4★ a 6★, conjuntos certos), melhoradas com Essência; Pedras de Afiar e Gemas da Forja | Atributos, conjuntos e o ajuste fino de Velocidade |
 
-**Nível por invocação, como em Summoners War.** Cada invocação sobe de 1 a 40. Os atributos de base do apêndice são os de uma 5★ no nível 40 sem Despertar, na escala de Summoners War: o nível 40 equivale ao 6★ nível 40 de lá, e o nível 1 ao nível 1 da estrela natural (5★: 43% do máximo; 4★: 32%; 3★: 22%). A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
+**Estrelas e nível, como em Summoners War.** Cada invocação nasce nas estrelas naturais, no nível 1, e sobe até o máximo da estrela (25 no 3★, 30 no 4★, 35 no 5★, 40 no 6★), com a experiência de cada nível da tabela de Summoners War. No máximo, a Evolução gasta Essência e Fragmentos (2 000 e 5 no 1★ até 100 000 e 80 no 5★), dá uma estrela e volta ao nível 1. Os atributos de base do apêndice são os de 6★ nível 40; cada estrela tem a faixa de lá (3★: de 22% a 40% do máximo; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%), e 3★ e 4★ naturais chegam a 85% e 92% desses valores no 6★ nível 40. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
 
-**Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), um segundo desenho, estrelas roxas no lugar das douradas, a Assinatura melhorada e atributos maiores. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
+**Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), um segundo desenho, estrelas roxas no lugar das douradas, atributos maiores e o que as estrelas naturais pedem: habilidade nova, habilidade mais forte ou atributo. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
 
 **Runas: as de Summoners War, sem falha na melhora.** Cada invocação tem 6 espaços dispostos em círculo, o próprio círculo de conjuração. Tudo segue Summoners War, com os números de lá:
 
@@ -316,7 +317,7 @@ flowchart LR
 
 **Mana.** Toda vitória custa Mana: de 2 a 5 por fase da Campanha e de 4 a 8 por andar de Masmorra. A derrota não custa nada, mas só começa a luta quem tem a Mana da vitória. A canalização recarrega 12 por hora até o máximo, que começa em 60 e sobe 1 por nível da conta até 120 no nível 60 (o último nível soma 2); o que passaria do máximo se perde. Subir de nível a conta enche a Mana, e a Mana comprada na Loja passa do máximo. Farmar runas é o centro do jogo, e o Ouro é a válvula para farmar mais.
 
-**Nível da conta.** Toda vitória dá a experiência da luta também à conta (100 × nível para o próximo), até o nível 60. Cada nível dá 20 de Ouro, enche a Mana e aumenta a Mana máxima.
+**Nível da conta.** Toda vitória dá a experiência da luta também à conta (300 × nível para o próximo), até o nível 60. Cada nível dá 20 de Ouro, enche a Mana e aumenta a Mana máxima.
 
 ## 12. Economia
 
@@ -325,10 +326,10 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Moeda | De onde vem | Para onde vai |
 | --- | --- | --- |
 | Mana | Canalização (até o máximo), nível da conta, Loja | Cada vitória (a derrota não custa nada) |
-| Essência | Canalização, fases, Masmorras, runas desfeitas | Nível das invocações, Despertar e melhora de runas |
+| Essência | Canalização, fases, Masmorras, runas desfeitas | Nível e Evolução das invocações, Despertar e melhora de runas |
 | Ouro | Canalização, nível da conta, primeira vitória em cada andar de Masmorra, Torre, conquistas | Loja: Mana e Pergaminhos |
 | Pergaminhos Místicos | Primeira vitória de cada fase, Loja, Torre, conquistas | Invocar |
-| Fragmentos | Monstros liberados, Arena | Trocar por uma invocação escolhida |
+| Fragmentos | Monstros liberados, Arena | Evolução e troca por uma invocação escolhida |
 
 **Loja.** Troca Ouro por Mana (30 por 15, 120 por 50) ou Pergaminhos (1 por 20, 10 por 180). As ofertas moram em Data/shop.json.
 
@@ -340,7 +341,7 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Primeiro Despertar | Cerca de 2 semanas |
 | Região 1 completa | Cerca de 2 semanas |
 | As 40 invocações coletadas | Cerca de 8 semanas |
-| Primeira 5★ com 5 Ecos | Cerca de 3 meses |
+| Primeira 6★ com as habilidades no máximo | Cerca de 3 meses |
 | Torre no andar 60 | Cerca de 4 meses |
 
 Se o jogo ficar chato no teste, a primeira alavanca é dar mais Ouro ou baratear a Loja. Aqui a generosidade não tem custo comercial.
@@ -382,7 +383,7 @@ O maior risco não é técnico: é o escopo crescer até o projeto parar. Os out
 | --- | --- | --- |
 | Escopo crescente | É o que mais mata projetos pessoais | Sistema novo substitui um eixo, não soma; toda fase termina jogável |
 | Runas pesadas | Seis espaços com subatributos é o sistema mais caro de balancear e de interface | Copiar as regras e tabelas de Summoners War em vez de inventar números; melhora sem falha; simulador e testes com os valores de lá |
-| Automático forte demais | Se o automático resolve tudo, o manual perde sentido | O automático nunca gasta Éter; aprimorar é decisão do jogador |
+| Automático forte demais | Se o automático resolve tudo, o manual perde sentido | Campanha e Masmorras são para o automático; Torre e Provações pedem a ordem das recargas no manual |
 | Gacha sem tensão | Você conhece todas as criaturas | Tiques, Convidados, garantia visível e o ritual do traçado |
 
 ### Perguntas em aberto
@@ -416,7 +417,7 @@ t = \frac{100 - I}{VEL}
 
 I é o Ímpeto atual em porcentagem; a unidade com o menor t age primeiro. Empurrar o Ímpeto em 20% soma 20 a I, na hora.
 
-### Atributos de base no nível 40 (5★, sem Despertar)
+### Atributos de base em 6★ nível 40 (5★ natural, sem Despertar)
 
 | Papel | Vida | Ataque | Defesa | Velocidade |
 | --- | --- | --- | --- | --- |
@@ -427,7 +428,7 @@ I é o Ímpeto atual em porcentagem; a unidade com o menor t age primeiro. Empur
 
 É a escala de Summoners War: a Fênix de Fogo de lá tem, em 6★ nível 40, 9225 de Vida, 834 de Ataque e 527 de Defesa. Todos os papéis começam com Crítico 15%, Dano crítico 50%, Resistência 5% e Precisão 0%, como quase todo monstro de lá; esses quatro não crescem com o nível.
 
-Invocações de 4★ usam 92% desses valores no nível 40 e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos começam no valor do nível 1 da estrela natural de Summoners War (5★: 43%; 4★: 32%; 3★ e inimigos: 22%) e crescem em linha reta até o 40. Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
+Invocações de 4★ naturais usam 92% desses valores e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos seguem a faixa de Summoners War de cada estrela, em linha reta do nível 1 ao máximo dela (3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
 
-Os inimigos comuns são invocações (3★ a 5★) com Vida e Ataque multiplicados pelas estrelas e pela força do encontro; os chefes têm multiplicadores próprios (Data/enemies.json). Nenhum inimigo usa runas nem aprimoramentos.
+Os inimigos comuns são invocações (3★ a 5★ naturais), nas estrelas e no nível do encontro, com Vida e Ataque multiplicados pelas estrelas naturais e pela força do encontro; os chefes têm multiplicadores próprios (Data/enemies.json). Nenhum inimigo usa runas nem Despertar, e as habilidades ficam no nível 1.
 

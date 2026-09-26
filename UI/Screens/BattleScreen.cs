@@ -18,8 +18,7 @@ namespace Sigilos.UI.Screens
 	/// 1. pede o próximo turno,
 	/// 2. anima os <see cref="BattleEvent"/> que voltam,
 	/// 3. na vez de um aliado, espera o clique do jogador (manual) ou pergunta ao
-	///    <see cref="AutoPilot"/> (automático). O automático pode ser ligado e desligado no meio e
-	///    nunca gasta Éter: aprimorar é decisão do jogador.
+	///    <see cref="AutoPilot"/> (automático). O automático pode ser ligado e desligado no meio.
 	///
 	/// O painel de Efeitos mostra, a qualquer momento, o que está sobre cada aliado e inimigo. No fim
 	/// avisa <see cref="Finished"/>; o GameRoot aplica a recompensa e chama <see cref="ShowResult"/>.
@@ -37,8 +36,6 @@ namespace Sigilos.UI.Screens
 		private readonly Label _banner = new();
 		private readonly Label _prompt = new();
 		private readonly HBoxContainer _actions = new();
-		private readonly EtherGauge _ether = new();
-		private readonly Label _etherHint = new() { ThemeTypeVariation = GameTheme.Faded };
 		private readonly Button _autoButton = new() { ToggleMode = true };
 		private readonly Button _speedButton = new();
 		private readonly Button _effectsButton = new() { ToggleMode = true };
@@ -219,11 +216,6 @@ namespace Sigilos.UI.Screens
 		private Control BottomBar()
 		{
 			var bottom = new VBoxContainer();
-			var etherRow = new HBoxContainer();
-			etherRow.AddThemeConstantOverride("separation", 16);
-			etherRow.AddChild(_ether);
-			etherRow.AddChild(_etherHint);
-			bottom.AddChild(etherRow);
 
 			var actionRow = new HBoxContainer { CustomMinimumSize = new Vector2(0, 44) };
 			actionRow.AddThemeConstantOverride("separation", 10);
@@ -353,33 +345,23 @@ namespace Sigilos.UI.Screens
 			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally));
 			_prompt.Text = T("battle.turn_of", ally.Name);
 
-			// Só a habilidade especial aprimora: a caixa some quando ela não tem aprimoramento.
-			var special = ally.Special;
-			var enhance = new CheckBox
+			for (var i = 0; i < ally.Skills.Count; i++)
 			{
-				Text = special is { CanEnhance: true } ? T("battle.enhance", special.Name, special.EnhanceCost) : "",
-				TooltipText = T("battle.enhance_tip"),
-				Visible = special is { CanEnhance: true },
-			};
-
-			foreach (var slot in new[] { SkillSlot.Basic, SkillSlot.Special })
-			{
-				var skill = ally.Skill(slot);
-				var ready = slot == SkillSlot.Basic || ally.IsSpecialReady;
-				var wait = ready ? "" : $" (⟳{ally.SpecialCooldown})";
+				var index = i;
+				var skill = ally.Skill(index);
+				var ready = ally.IsReady(index);
+				var wait = ready ? "" : $" (⟳{ally.Cooldown(index)})";
 				var button = new Button { Text = $"{skill.Name}{wait}", Disabled = !ready, TooltipText = Texts.Plain(Texts.Describe(skill)) };
 				button.Pressed += () =>
 				{
-					var enhanced = enhance.ButtonPressed && _session.CanEnhance(ally, skill);
 					if (skill.NeedsTarget)
-						PickTarget(ally, target => Decide(new UnitAction(slot, enhanced, target)));
+						PickTarget(ally, target => Decide(new UnitAction(index, target)));
 					else
-						Decide(new UnitAction(slot, enhanced, null));
+						Decide(new UnitAction(index, null));
 				};
 				_actions.AddChild(button);
 			}
 
-			_actions.AddChild(enhance);
 			return decision.Task;
 		}
 
@@ -421,7 +403,6 @@ namespace Sigilos.UI.Screens
 		private void RefreshAuto()
 		{
 			_autoButton.Text = _auto ? T("battle.auto_on") : T("battle.auto_off");
-			_etherHint.Text = _auto ? T("battle.aether_tip_auto") : T("battle.aether_tip_manual");
 		}
 
 		private void Close()
@@ -477,8 +458,8 @@ namespace Sigilos.UI.Screens
 					return;
 
 				case SkillUsed used:
-					_banner.Text = used.Enhanced ? T("battle.uses_enhanced", used.Actor.Name, used.Skill.Name) : T("battle.uses", used.Actor.Name, used.Skill.Name);
-					_banner.AddThemeColorOverride("font_color", used.Enhanced ? Palette.Ether : Palette.Text);
+					_banner.Text = T("battle.uses", used.Actor.Name, used.Skill.Name);
+					_banner.AddThemeColorOverride("font_color", Palette.Text);
 					_views[used.Actor].Lunge(used.Actor.Side == Side.Allies ? 1 : -1, Speed);
 					return;
 
@@ -550,10 +531,6 @@ namespace Sigilos.UI.Screens
 				case Revived revived:
 					_views[revived.Unit].Float(T("battle.revives"), Palette.Gold);
 					_views[revived.Unit].Refresh();
-					return;
-
-				case EtherChanged ether:
-					_ether.SetValue(ether.Ether);
 					return;
 
 				case BattleEnded ended:

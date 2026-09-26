@@ -14,6 +14,7 @@ namespace Sigilos.Core.Battle
 	public sealed class BattleUnit
 	{
 		private readonly List<StatusEffect> _statuses = new();
+		private readonly int[] _cooldowns;
 
 		public BattleUnit(
 			string definitionId,
@@ -24,10 +25,8 @@ namespace Sigilos.Core.Battle
 			int level,
 			bool awakened,
 			StatBlock stats,
-			SkillDefinition basic,
-			SkillDefinition? special,
+			IReadOnlyList<SkillDefinition> skills,
 			PassiveDefinition? passive,
-			double skillPower,
 			RuneSetEffects runeEffects)
 		{
 			DefinitionId = definitionId;
@@ -38,10 +37,9 @@ namespace Sigilos.Core.Battle
 			Level = level;
 			Awakened = awakened;
 			Stats = stats;
-			Basic = basic;
-			Special = special;
+			Skills = skills;
+			_cooldowns = new int[skills.Count];
 			Passive = passive;
-			SkillPower = skillPower;
 			RuneEffects = runeEffects;
 			Health = stats.Health;
 		}
@@ -57,18 +55,17 @@ namespace Sigilos.Core.Battle
 		public int Level { get; }
 		public bool Awakened { get; }
 
-		/// <summary>Atributos da luta, já com nível, raridade, Ecos, Despertar, runas e Liderança.</summary>
+		/// <summary>Atributos da luta, já com estrelas, nível, Despertar, runas e Liderança.</summary>
 		public StatBlock Stats { get; }
 
-		public SkillDefinition Basic { get; }
-		public SkillDefinition? Special { get; }
+		/// <summary>As habilidades ativas, já no nível e na versão (desperta ou não) com que lutam. A 0 é a básica.</summary>
+		public IReadOnlyList<SkillDefinition> Skills { get; }
+
+		/// <summary>A Passiva, se a unidade tem uma.</summary>
 		public PassiveDefinition? Passive { get; }
 
-		/// <summary>O número da Assinatura, já melhorado se a invocação despertou.</summary>
+		/// <summary>O número da Passiva, já melhorado se a invocação despertou.</summary>
 		public double PassiveValue => Passive?.ValueFor(Awakened) ?? 0;
-
-		/// <summary>Multiplica dano, cura e escudo das habilidades (Ecos).</summary>
-		public double SkillPower { get; }
 
 		/// <summary>O que os conjuntos de runas fazem em combate (Vampiro, Desespero, Violento...).</summary>
 		public RuneSetEffects RuneEffects { get; }
@@ -85,15 +82,24 @@ namespace Sigilos.Core.Battle
 		/// <summary>De 0 a 100: a unidade age quando chega a 100.</summary>
 		public double Impeto { get; set; }
 
-		/// <summary>Turnos até a habilidade especial voltar. 0 = pronta.</summary>
-		public int SpecialCooldown { get; set; }
+		/// <summary>Turnos até a habilidade <paramref name="index"/> voltar. 0 = pronta.</summary>
+		public int Cooldown(int index) => index > 0 && index < _cooldowns.Length ? _cooldowns[index] : 0;
+
+		public void SetCooldown(int index, int turns)
+		{
+			if (index > 0 && index < _cooldowns.Length)
+				_cooldowns[index] = turns;
+		}
+
+		/// <summary>A básica está sempre pronta; as outras, fora da recarga.</summary>
+		public bool IsReady(int index) => index >= 0 && index < Skills.Count && Cooldown(index) == 0;
 
 		public bool RebirthUsed { get; set; }
 
 		/// <summary>O Violento deu um turno extra: o próximo turno desta unidade é ele.</summary>
 		public bool ExtraTurnPending { get; set; }
 
-        /// <summary>Caída, mas renasce quando o Ímpeto dela encher (Assinatura da Fênix).</summary>
+        /// <summary>Caída, mas renasce quando o Ímpeto dela encher (Passiva da Fênix).</summary>
         public bool PendingRebirth { get; set; }
 
 		/// <summary>O próprio time (inclui ela mesma). Ligado pelo <see cref="BattleFactory"/>.</summary>
@@ -104,9 +110,7 @@ namespace Sigilos.Core.Battle
 		/// <summary>Está na barra de Ímpeto: viva, ou caída esperando renascer.</summary>
 		public bool CanTakeTurn => IsAlive || PendingRebirth;
 
-		public bool IsSpecialReady => Special != null && SpecialCooldown == 0;
-
-		/// <summary>Velocidade de agora, com efeitos e Assinatura. A barra enche em proporção a ela.</summary>
+		/// <summary>Velocidade de agora, com efeitos e Passiva. A barra enche em proporção a ela.</summary>
 		public double TurnSpeed
 		{
 			get
@@ -135,7 +139,17 @@ namespace Sigilos.Core.Battle
 
 		public double Defense => Has(StatusKind.DefenseUp) ? Stats.Defense * (1 + BattleRules.DefenseUpBonus) : Stats.Defense;
 
-		public SkillDefinition Skill(SkillSlot slot) => slot == SkillSlot.Special && Special != null ? Special : Basic;
+		public SkillDefinition Skill(int index) => Skills[index >= 0 && index < Skills.Count ? index : 0];
+
+		/// <summary>Fim do turno do dono: cada recarga perde um turno.</summary>
+		internal void TickCooldowns()
+		{
+			for (var i = 1; i < _cooldowns.Length; i++)
+			{
+				if (_cooldowns[i] > 0)
+					_cooldowns[i]--;
+			}
+		}
 
 		public bool Has(StatusKind kind) => _statuses.Any(s => s.Kind == kind);
 

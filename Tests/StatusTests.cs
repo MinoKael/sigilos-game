@@ -68,12 +68,12 @@ namespace Sigilos.Tests
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(SkillSlot.Basic, false, null));
+			session.Act(new UnitAction(0, null));
 			Assert.True(hero.Has(StatusKind.Hidden), "Oculto logo depois de usar");
 
 			TestData.RunUntilTurnOf(session, hero);
 			Assert.True(hero.Has(StatusKind.Hidden), "ainda Oculto no começo do turno seguinte");
-			session.Act(new UnitAction(SkillSlot.Basic, false, null));
+			session.Act(new UnitAction(0, null));
 		}
 
 		[Test]
@@ -86,11 +86,11 @@ namespace Sigilos.Tests
 			Give(foe, foe, StatusKind.Ward);
 
 			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			session.Act(new UnitAction(0, foe));
 			Assert.Near(1000, foe.Health, "primeiro golpe anulado");
 
 			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			session.Act(new UnitAction(0, foe));
 			Assert.Near(900, foe.Health, "segundo golpe passa");
 		}
 
@@ -105,7 +105,7 @@ namespace Sigilos.Tests
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, foe);
-			session.Act(new UnitAction(SkillSlot.Basic, false, knight));
+			session.Act(new UnitAction(0, knight));
 			Assert.False(knight.IsAlive, "o cavaleiro caiu");
 			Assert.Near(150, friend.Find(StatusKind.Shield)?.Value ?? 0, "escudo de 15% da Vida do cavaleiro");
 		}
@@ -134,14 +134,14 @@ namespace Sigilos.Tests
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, foe);
-			session.Act(new UnitAction(SkillSlot.Basic, false, phoenix));
+			session.Act(new UnitAction(0, phoenix));
 			Assert.True(phoenix.PendingRebirth, "caída, esperando renascer");
 
 			while (!phoenix.IsAlive && !session.IsOver)
 			{
 				var turn = session.BeginTurn();
 				if (turn.NeedsDecision)
-					session.Act(new UnitAction(SkillSlot.Basic, false, turn.Actor.Side == Side.Enemies ? friend : foe));
+					session.Act(new UnitAction(0, turn.Actor.Side == Side.Enemies ? friend : foe));
 			}
 
 			Assert.Near(400, phoenix.Health, "renasce com 40% da Vida");

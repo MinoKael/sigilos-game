@@ -4,24 +4,38 @@
   "family": "bandit",
   "element": "Wind",
   "role": "Attacker",
-  "awakening": {"name": "Swipe", "stat": "Speed"},
-  "basic": {
-    "name": "Quick Cut",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 2}
-    ]
+  "awakening": {
+    "name": "Swipe",
+    "skill": {
+      "name": "Ambush",
+      "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}
+    }
   },
-  "special": {
-    "name": "Ransack",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 4.9},
-      {"kind": "Impeto", "target": "Target", "power": -30}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 6.3},
-      {"kind": "Impeto", "target": "Target", "power": -60}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Quick Cut",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Ransack",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.9},
+        {"kind": "Impeto", "target": "Target", "power": -30}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

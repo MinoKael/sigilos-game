@@ -115,7 +115,7 @@ namespace Sigilos.UI.Screens
 				if (i < team.Count)
 				{
 					var monster = team[i];
-					var card = new CreatureCard(_database.Summon(monster.SummonId), monster, i == 0 ? T("teams.leader") : null, 110);
+					var card = new CreatureCard(_database.Summon(monster.SummonId), monster, false, i == 0 ? T("teams.leader") : null, 110);
 					card.TooltipText = T("teams.take_out_tip");
 					card.Pressed += c => ToggleRequested?.Invoke(_content, c.Monster!.Id);
 					slot.AddChild(card);
@@ -158,7 +158,7 @@ namespace Sigilos.UI.Screens
 			foreach (var monster in monsters)
 			{
 				var inTeam = team.Contains(monster.Id);
-				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, inTeam ? T("teams.on_team") : null, 104);
+				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, false, inTeam ? T("teams.on_team") : null, 104);
 				card.SetSelected(inTeam);
 				card.Pressed += c => ToggleRequested?.Invoke(_content, c.Monster!.Id);
 				_roster.AddChild(card);

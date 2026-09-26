@@ -4,24 +4,43 @@
   "family": "goblin",
   "element": "Light",
   "role": "Support",
-  "awakening": {"name": "Glimmik", "stat": "Speed"},
-  "basic": {
-    "name": "Shiny Distraction",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.15},
-      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
-    ]
+  "awakening": {
+    "name": "Glimmik",
+    "skill": {
+      "name": "Golden Charm",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+        {"kind": "Impeto", "target": "AllAllies", "power": 20}
+      ],
+      "levels": [
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
   },
-  "special": {
-    "name": "Lucky Charm",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
-      {"kind": "Impeto", "target": "AllAllies", "power": 20}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Shiny Distraction",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.15},
+        {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Lucky Charm",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

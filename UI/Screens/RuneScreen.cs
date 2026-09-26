@@ -209,7 +209,7 @@ namespace Sigilos.UI.Screens
 				return;
 
 			var summon = _database.Summon(monster.SummonId);
-			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Level, monster.Echoes, monster.Awakened, _player.RunesOn(monster.Id));
+			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Stars, monster.Level, monster.Awakened, _player.RunesOn(monster.Id));
 			_summary.AddChild(new Label { Text = T("runes.active_sets"), ThemeTypeVariation = GameTheme.Heading });
 			_summary.AddChild(RichText.Label(sheet.Runes.ActiveSets.Count == 0
 				? T("runes.no_sets")

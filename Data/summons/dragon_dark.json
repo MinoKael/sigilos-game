@@ -6,23 +6,35 @@
   "role": "Attacker",
   "leader": {"stat": "CritDamage", "value": 0.3},
   "awakening": {"name": "Umbrax", "stat": "Accuracy"},
-  "basic": {
-    "name": "Shadow Claw",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 4.2, "drain": 0.25}
-    ]
-  },
-  "special": {
-    "name": "Void Breath",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
-      {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 4.9, "ignoreDefense": 0.3},
-      {"kind": "Status", "target": "AllEnemies", "status": "Curse", "turns": 2}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Shadow Claw",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.2, "drain": 0.25}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Void Breath",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+        {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "Dragonfire",
+      "passive": {"kind": "BurnOnHit", "value": 0.2}
+    }
+  ]
 }

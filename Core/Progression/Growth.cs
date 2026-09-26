@@ -4,47 +4,45 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// Como os atributos de base crescem com nível, raridade e Ecos. Os valores de Data/roles.json
-	/// são de uma 5★ no nível 40 sem Despertar e sem runas — o equivalente a uma 5★ natural de Summoners
-	/// War em 6★ nível 40.
+	/// Como os atributos de base crescem com estrelas e nível. Os valores de Data/roles.json são os de
+	/// uma 5★ natural em 6★ nível 40, sem Despertar e sem runas.
 	///
-	/// - Nível: Vida, Ataque e Defesa crescem em linha reta do nível 1 ao 40. O nível 1 vale o que a
-	///   estrela natural vale no nível 1 comparada ao 6★ nível 40 (Diabrete 3★: 22%,
-	///   4★: 32%; Fênix 5★: 43%). Sem evolução de estrelas, o nível 40 é o 6★ máximo.
-	///   Velocidade é fixa desde o nível 1.
-	/// - Raridade: no nível 40, 5★ usa 100% dos valores, 4★ 92%, 3★ 85%.
-	/// - Ecos: cada Eco reforça as habilidades; o quinto soma 10% aos atributos.
+	/// - Estrelas: todo monstro nasce nas estrelas naturais e evolui até 6★ (<see cref="Evolution"/>).
+	///   Cada estrela tem o seu nível máximo (15, 20, 25, 30, 35 e 40) e a sua faixa de atributos, em
+	///   fração do 6★ nível 40: 3★ vai de 22% a 40%, 4★ de 32% a 54%, 5★ de 43% a 74% e 6★ de 59% a
+	///   100%. Evoluir volta ao nível 1, com atributos um pouco menores que no máximo da estrela
+	///   anterior. Dentro da estrela, o crescimento é em linha reta. Velocidade não muda.
+	/// - Estrelas naturais: no 6★ nível 40, as 5★ naturais usam 100% dos valores, as 4★ 92% e as 3★ 85%.
 	/// </summary>
 	public static class Growth
 	{
-		public const int MaxLevel = 40;
-		public const int MaxEchoes = 5;
+		public const int MaxStars = 6;
 
-		/// <summary>Quanto cada Eco soma ao multiplicador das habilidades (dano, cura, escudo).</summary>
-		public const double SkillPowerPerEcho = 0.05;
-
-		/// <summary>Bônus de atributos com os 5 Ecos.</summary>
-		public const double FullEchoStatBonus = 0.10;
-
-		/// <summary>
-		/// Fração dos atributos do nível 40 que a raridade tem no nível 1. Abaixo de 3★ só há inimigos,
-		/// que crescem como 3★: assim a distância entre eles e o time não muda com o nível.
-		/// </summary>
-		public static double StartFraction(int rarity) => rarity switch
+		/// <summary>Fração do 6★ nível 40 no nível 1 e no nível máximo de cada estrela, do 1★ ao 6★.</summary>
+		private static readonly (double Start, double End)[] Bands =
 		{
-			>= 5 => 0.43,
-			4 => 0.32,
-			_ => 0.22,
+			(0.114, 0.206),
+			(0.159, 0.286),
+			(0.221, 0.398),
+			(0.318, 0.541),
+			(0.433, 0.736),
+			(0.587, 1.000),
 		};
 
-		public static double LevelFactor(int rarity, int level)
+		/// <summary>Nível máximo das estrelas: 15 no 1★, +5 por estrela, 40 no 6★.</summary>
+		public static int MaxLevel(int stars) => 10 + 5 * Math.Clamp(stars, 1, MaxStars);
+
+		/// <summary>Fração dos atributos do 6★ nível 40 que estas estrelas e este nível têm.</summary>
+		public static double Fraction(int stars, int level)
 		{
-			var clamped = Math.Clamp(level, 1, MaxLevel);
-			var start = StartFraction(rarity);
-			return start + (1 - start) * (clamped - 1) / (MaxLevel - 1);
+			var clampedStars = Math.Clamp(stars, 1, MaxStars);
+			var (start, end) = Bands[clampedStars - 1];
+			var max = MaxLevel(clampedStars);
+			var clampedLevel = Math.Clamp(level, 1, max);
+			return start + (end - start) * (clampedLevel - 1) / (max - 1);
 		}
 
-		public static double RarityFactor(int rarity) => rarity switch
+		public static double RarityFactor(int naturalStars) => naturalStars switch
 		{
 			>= 5 => 1.00,
 			4 => 0.92,
@@ -53,10 +51,10 @@ namespace Sigilos.Core.Progression
 			_ => 0.70,
 		};
 
-		/// <summary>Atributos de base: papel escalado por raridade, nível e Ecos. Sem Despertar e sem runas.</summary>
-		public static StatBlock Stats(StatBlock roleBase, int rarity, int level, int echoes = 0)
+		/// <summary>Atributos de base: papel escalado pelas estrelas naturais, pelas estrelas de agora e pelo nível.</summary>
+		public static StatBlock Stats(StatBlock roleBase, int naturalStars, int stars, int level)
 		{
-			var factor = RarityFactor(rarity) * LevelFactor(rarity, level) * (echoes >= MaxEchoes ? 1 + FullEchoStatBonus : 1);
+			var factor = RarityFactor(naturalStars) * Fraction(stars, level);
 			return roleBase with
 			{
 				Health = Math.Round(roleBase.Health * factor),
@@ -64,7 +62,5 @@ namespace Sigilos.Core.Progression
 				Defense = Math.Round(roleBase.Defense * factor),
 			};
 		}
-
-		public static double SkillPower(int echoes) => 1 + SkillPowerPerEcho * Math.Clamp(echoes, 0, MaxEchoes);
 	}
 }

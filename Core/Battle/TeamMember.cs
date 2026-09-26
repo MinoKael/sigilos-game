@@ -4,6 +4,9 @@ using Sigilos.Core.Runes;
 
 namespace Sigilos.Core.Battle
 {
-	/// <summary>Uma invocação escalada para a luta, com o que ela cresceu e as runas que usa.</summary>
-	public sealed record TeamMember(SummonDefinition Summon, int Level, int Echoes, bool Awakened, IReadOnlyList<Rune> Runes);
+	/// <summary>
+	/// Uma invocação escalada para a luta, com o que ela cresceu e as runas que usa.
+	/// <see cref="SkillLevels"/> segue a ordem de <see cref="SummonDefinition.AllSkills"/>.
+	/// </summary>
+	public sealed record TeamMember(SummonDefinition Summon, int Stars, int Level, bool Awakened, IReadOnlyList<int> SkillLevels, IReadOnlyList<Rune> Runes);
 }

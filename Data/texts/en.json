@@ -18,6 +18,7 @@
     "and": " and ",
     "stage": "stage {0}",
     "floor": "{0}, floor {1}",
+    "stars_level": "Lv {1} {0}",
     "resolve_defeat": "Defeat at {0} (round {1}).",
     "resolve_victory": "Victory at {0}: −{1} Mana, +{2} Essence, +{3} experience{4}.",
     "resolve_rune": "{0} rune {1}",
@@ -55,8 +56,7 @@
   },
 
   "term": {
-    "impetus": "Impetus",
-    "aether": "Aether"
+    "impetus": "Impetus"
   },
 
   "turns": {
@@ -70,10 +70,10 @@
     "mana_of": "{0}/{1}",
     "tip": {
       "mana": "Mana: every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {0} per hour up to the maximum, which goes from {1} at account level 1 to {2} at level {3}. The Shop and account level-ups go past the maximum.",
-      "essence": "Essence: levels up monsters, pays for Awakening and upgrades runes.",
+      "essence": "Essence: levels up and evolves monsters, pays for Awakening and upgrades runes.",
       "gold": "Gold: the rare currency. Buys Mana and Scrolls at the Shop. Comes from channeling, from every account level and from the first victory on each Dungeon floor.",
       "scrolls": "Mystic Scrolls: summon monsters.",
-      "fragments": "Fragments: come from released monsters."
+      "fragments": "Fragments: come from released monsters and pay for evolution."
     }
   },
 
@@ -329,10 +329,21 @@
     "impetus": "{0}{1}% {2} {3}",
     "cleanse": "removes one harmful effect {0}",
     "on_kill": "on a knockout, {0}",
-    "enhanced": "Enhanced ({0} {1}): {2}"
+    "awakened": "Awakened: {0}",
+    "header": "Skill {0} · {1}",
+    "header_passive": "Passive · {0}",
+    "cooldown": "(cooldown {0})",
+    "level": "Lv {0}/{1}",
+    "level_line": "Lv.{0} {1}",
+    "level_up": {
+      "Damage": "Damage +{0}",
+      "Recovery": "Recovery +{0}",
+      "EffectRate": "Effect rate +{0}",
+      "Cooldown": "Cooldown −{0}"
+    }
   },
 
-  "signature": {
+  "passive": {
     "SpeedWhenLowest": "+{0} Speed while it is the ally with the least HP.",
     "ShieldOnDeath": "When it falls, gives every ally a {0} worth {1} of its own HP.",
     "RebirthOnce": "The first time it falls, it revives with {0} HP on its next turn.",
@@ -345,7 +356,9 @@
   },
 
   "awaken": {
-    "bonus": "{0} {1}"
+    "bonus": "{0} {1}",
+    "new_skill": "a new skill, {0}",
+    "improves": "a stronger {0}"
   },
 
   "tool": {
@@ -356,8 +369,7 @@
 
   "card": {
     "tip": "{0}\n{1} · {2}",
-    "level": "Lv {0}",
-    "echoes": "Echo {0}"
+    "level": "Lv {0}"
   },
 
   "rune": {
@@ -384,18 +396,18 @@
     "account_max": "Account level {0} (max) · Max Mana {1}",
     "account_max_tip": "The account reached level {0}, the maximum.",
     "campaign": "Campaign · Stage {0}: {1}",
-    "first_summon_tip": "Your first summon is a guaranteed 5★. Open Ritual Summoning.",
+    "first_summon_tip": "Your first summon is a guaranteed 5★. Open Summoning.",
     "first_stage_tip": "New monsters join the Campaign team automatically. Win the first stage!",
     "campaign_team": "Campaign team · the first one is the Leader",
     "monsters": "Monsters",
-    "monsters_tip": "Collection, Vault, levels, Awakening, fusing and releasing.",
+    "monsters_tip": "Collection, Vault, levels, evolution, Awakening, skill-ups and releasing.",
     "teams": "Teams",
     "teams_tip": "One team for the Campaign and one for each Dungeon.",
     "runes": "Runes",
     "runes_tip": "Rune inventory with search, Grindstones and Enchanted Gems.",
     "dungeons": "Dungeons",
     "dungeons_tip": "5 and 6 star runes and tools. Each victory costs Mana.",
-    "summon": "Ritual Summoning",
+    "summon": "Summoning",
     "summon_tip": "Spend Scrolls to summon monsters.",
     "shop": "Shop",
     "shop_tip": "Trade Gold for Mana and Scrolls.",
@@ -411,7 +423,7 @@
     "stage": "Stage",
     "stage_title": "{0}. {1}",
     "number_cleared": "{0} ✓",
-    "levels": "Enemies at level {0} · team at levels {1}",
+    "levels": "Enemies {0} · team {1}",
     "wave": "Wave {0}:",
     "enemy_tip": "{0} ({1})",
     "reward": "Victory: {0} Essence, {1} experience for the team and the account, and a {2} chance of a {3} rune.",
@@ -431,8 +443,8 @@
     "drops_runes": "Drops 4 to 6 star runes, only from these sets:",
     "drops_tools": "Drops Grindstones and Enchanted Gems, which work on any rune.",
     "team": "This Dungeon's team: {0} of {1}",
-    "floor": "Floor {0} · enemies level {1}",
-    "floor_cleared": "Floor {0} · enemies level {1} ✓",
+    "floor": "Floor {0} · enemies {1}",
+    "floor_cleared": "Floor {0} · enemies {1} ✓",
     "drop_rune": "{0} rune, at least {1}",
     "drop_tool": "{0} × {1} tool",
     "reward": "+{0} Essence, +{1} experience",
@@ -440,11 +452,11 @@
   },
 
   "summon": {
-    "title": "Ritual Summoning",
+    "title": "Summoning",
     "ritual": "The ritual",
     "rates": "Rates: 3★ {0} · 4★ {1} · 5★ {2}.\nLight and Dark have half the chance of the other variants.",
     "pity": "5★ guaranteed in {0} summons",
-    "copies": "Every summon is a new monster at level 1, even if you already have the same one. Duplicate copies can be fused (Echoes) or released in Monsters. With a full collection ({0}), the monster goes to the Vault.",
+    "copies": "Every summon is a new monster at its natural stars and level 1, even if you already have the same one. Duplicate copies raise skill levels or are released into Fragments in Monsters. With a full collection ({0}), the monster goes to the Vault.",
     "pull": "Summon {0} ({1})",
     "shop": "Buy Scrolls",
     "shop_tip": "The Shop trades Gold for Scrolls.",
@@ -461,7 +473,7 @@
       "Scrolls": "{0} Scrolls"
     },
     "info_mana": "Mana for more fights. Can go past the maximum.",
-    "info_scrolls": "Mystic Scrolls for Ritual Summoning.",
+    "info_scrolls": "Mystic Scrolls for Summoning.",
     "price": "{0} Gold",
     "no_gold": "{0} Gold short.",
     "confirm": "Buy {0} ({1}) for {2} Gold?",
@@ -474,7 +486,7 @@
     "vault": "Vault ({0})",
     "in_team": "in a team",
     "vault_empty": "The Vault is empty. Keep the monsters you don't use here: they don't take collection slots.",
-    "collection_empty": "No monsters yet. Perform a Ritual Summoning.",
+    "collection_empty": "No monsters yet. Perform a Summoning.",
     "choose": "Choose a monster.",
     "in_vault": "In the Vault: doesn't fight, but keeps its runes (they don't take inventory space).",
     "no_team": "Not in any team.",
@@ -483,23 +495,23 @@
     "runes": "Runes",
     "no_set": "No complete set.",
     "skills": "Skills",
-    "basic": "Basic · {0}",
-    "special": "Special · {0} (cooldown {1})",
-    "signature": "Signature · {0}",
+    "skill_locked": "(unlocked by Awakening)",
     "leadership": "Leadership · +{0} {1} (on base) for the team, only as Leader",
     "awakened": "Awakened · {0}",
     "awaken": "Awakening",
-    "awakened_text": "Own name, new art and an improved Signature.",
-    "awaken_text": "Becomes {0}: +{1} HP, +{2} Attack and Defense, {3}, new art and an improved Signature ({4})",
-    "echoes": "Echo {0}/{1}",
+    "awakened_text": "Own name, new art and the Awakening bonus.",
+    "awaken_text": "Becomes {0}: +{1} HP, +{2} Attack and Defense, new art and {3}.",
     "level": "Level {0} of {1}",
+    "natural_stars": "Natural stars: {0}. Every monster evolves up to 6★.",
     "level_max": "Level {0} (max)",
     "experience": "Experience: {0}/{1}",
     "element_role": "{0} · {1}",
     "level_up": "+1 level ({0} Essence)",
-    "level_up_tip": "Infuses Essence as experience.",
+    "level_up_tip": "Infuses Essence as experience: {0} experience per Essence.",
     "max_level_button": "Max level ({0})",
-    "max_level_tip": "Infuses all the Essence it can, up to level 40.",
+    "max_level_tip": "Infuses all the Essence it can, up to level {0}.",
+    "evolve": "Evolve to {0} ({1} Essence, {2} Fragments)",
+    "evolve_tip": "Gains a star and goes back to level 1; the new max level is {0}.",
     "awaken_button": "Awaken ({0} Essence)",
     "awaken_tip": "Forever.",
     "runes_button": "Runes",
@@ -508,9 +520,9 @@
     "store_tip": "Leaves every team and takes its runes along: they stop taking inventory space.",
     "take_from_vault": "Take out of Vault",
     "collection_full": "The collection is full.",
-    "fuse": "Fuse copy ({0})",
-    "fuse_full": "Already has every Echo.",
-    "fuse_tip": "Fuses another copy of the same variant: +1 Echo (skills {0} stronger, up to {1}). The copy is gone.",
+    "fuse": "Skill-up copy ({0})",
+    "fuse_full": "Every skill is at max level.",
+    "fuse_tip": "Fuses another copy of the same variant: a random skill goes up one level ({0} levels left). The copy is gone.",
     "fuse_item": "{0} · Lv {1}{2}",
     "in_vault_short": " · Vault",
     "fuse_confirm": "Fuse {0} (Lv {1})? The copy is gone, and its runes go back to the inventory.",
@@ -524,12 +536,12 @@
     "mark_copies_tip": "Marks every other copy of the same variant, in the collection and in the Vault.",
     "unmark": "Unmark",
     "fuse_marked": "Fuse into {0} ({1})",
-    "fuse_marked_tip": "They become Echoes of the monster on the sheet, weakest copies first. {0} more fit.",
-    "fuse_marked_invalid": "Mark only copies of {0} (not itself). {1} more Echoes fit.",
-    "fuse_many_confirm": "Fuse {0} copies into {1}? Echoes: {2} → {3}. The copies are gone; their runes go back to the inventory.",
+    "fuse_marked_tip": "Each copy raises a random skill of the monster on the sheet, weakest copies first. {0} levels left.",
+    "fuse_marked_invalid": "Mark only copies of {0} (not itself). {1} skill levels left.",
+    "fuse_many_confirm": "Fuse {0} copies into {1}? Each raises a random skill ({2} levels left). The copies are gone; their runes go back to the inventory.",
     "release_marked": "Release {0} (+{1} Fragments)",
     "release_many_confirm": "Release {0} monsters for {1} Fragments? They are gone for good; their runes go back to the inventory.",
-    "valuable_warning": "Warning: the selection has an awakened, leveled, echoed, teamed or runed monster."
+    "valuable_warning": "Warning: the selection has an awakened, evolved, leveled, skilled-up, teamed or runed monster."
   },
 
   "teams": {
@@ -637,22 +649,22 @@
       "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors and drops what the Campaign doesn't: 4 to 6 star runes from four specific sets, or Grindstones and Gems (the Forge). Each victory costs Mana; the first victory on each floor gives Gold." },
       "mana": { "title": "Mana and account level", "text": "Every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {2} per hour up to the maximum: {0} at account level 1, {1} at level {3}, the maximum. Every victory also gives experience to the account, and each level refills Mana." },
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Scrolls." },
-      "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy at level 1. The first one is a guaranteed 5★, and the 5★ guarantee is always on display." },
+      "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The first one is a guaranteed 5★, and the 5★ guarantee is always on display." },
       "monsters": { "title": "Monsters and Vault", "text": "The collection has {0} slots; the Vault keeps whatever goes past that, with no limit. A monster in the Vault doesn't fight, but keeps its runes: they don't take any of the {1} slots of the rune inventory." },
       "teams": { "title": "Teams", "text": "A team of up to {0} monsters for the Campaign and one for each Dungeon. The first one is the Leader." },
-      "level": { "title": "Level", "text": "From 1 to {0}. Victories give experience to the team that fought; Essence levels up instantly, in Monsters. The same Essence pays for Awakening and rune upgrades." },
-      "echoes": { "title": "Echoes and Fragments", "text": "Fusing a duplicate copy gives +1 Echo (up to {0}): each Echo makes the skills {1} stronger, and the last one adds {2} to the stats. Leftover copies can be released into Fragments." },
-      "awaken": { "title": "Awakening", "text": "Pay Essence and the monster gets its own name, new art, purple stars, an improved Signature, +{0} HP, +{1} Attack and Defense, and a variant bonus: {2}, {3}, {4} or {5}." }
+      "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
+      "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star; the level goes back to 1 and the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
+      "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a duplicate copy raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
+      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, new art, purple stars, +{3} HP and +{4} Attack and Defense, plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {5}, {6}, {7} or {8})." }
     },
     "combat": {
       "impetus": { "title": "Impetus", "text": "Each unit has a {0} bar that fills in proportion to Speed; whoever reaches 100% acts. Pushing or delaying the bar changes the order — the \"Next\" strip shows who is coming." },
-      "aether": { "title": "Aether", "text": "{0} is the team's resource, from 0 to {1}. Basic skills neither generate nor spend it; each special skill generates {2} and each enemy knocked out, {3}. It pays for the enhanced version of the special skill (none costs less than {4}): tick \"Enhance\" before choosing it. Manual only." },
       "fight": { "title": "The fight", "text": "Up to {0} monsters against up to {2} enemies per wave, in up to {1} waves. Going past {3} rounds is a defeat." },
       "damage": { "title": "Damage", "text": "Attack × skill multiplier × {0} / ({0} + target's Defense). {0} Defense halves the damage." },
       "crit": { "title": "Critical hits", "text": "A critical hit multiplies damage by 1 + Crit Damage. Every monster starts with 15% Crit Rate and 50% Crit Damage." },
       "resistance": { "title": "Resistance and Accuracy", "text": "Every harmful effect can be blocked: the chance is the target's Resistance minus the caster's Accuracy, never below {0}." },
       "leader": { "title": "Leader", "text": "The first one in the team applies its Leadership to everyone. The percentage is on the base stat, never on what came from runes." },
-      "auto": { "title": "Auto and Resolve", "text": "Auto chooses on its own and never spends {0}. Stages and floors already cleared get the Resolve button, which simulates the fight instantly." },
+      "auto": { "title": "Auto and Resolve", "text": "Auto uses the strongest ready skill on its own. Stages and floors already cleared get Resolve, which simulates the fight instantly, and Auto ×{0}, which runs {0} fights in a row." },
       "elements": "Elements",
       "elements_text": "With advantage, damage goes up {0}; with disadvantage, it goes down {1}. Auto targets whoever it beats first.",
       "wins": "{0} beats {1}"
@@ -691,12 +703,12 @@
       "gems": "Enchanted Gems"
     },
     "not_owned": "not owned",
-    "family": "{0} · Signature: {1} — {2}",
+    "family": "{0} natural · evolves up to {1}★",
     "copies": "×{0}",
     "sheet": "{0} · {1} · {2} · {3}",
     "view_awakened": "View awakened ({0})",
-    "stats": "Base stats (no runes, no Echoes)",
-    "level": "Level {0}",
+    "stats": "Base stats (no runes)",
+    "level": "{0} Lv {1}",
     "skills": "Skills",
     "no_leadership": "No Leadership.",
     "awaken": "Awakening",
@@ -737,7 +749,7 @@
     "tool": "{0}: {1}",
     "timeout": "Time ran out: {0} rounds.",
     "all_fell": "Every monster fell.",
-    "defeat_tip": "Level up, equip runes or awaken monsters. In manual, Aether enhances the special skills.",
+    "defeat_tip": "Level up, evolve, equip runes or awaken monsters.",
     "effects": "Effects",
     "effects_tip": "Shows the effects on each ally and enemy. Clicking a unit opens it too.",
     "effects_unit": "{0} ({1})",
@@ -749,18 +761,12 @@
     "enemy": "enemy",
     "auto_on": "Auto: on",
     "auto_off": "Auto: off",
-    "auto_tip": "On auto the monsters act on their own and Aether is not used.",
+    "auto_tip": "On auto the monsters act on their own, using the strongest ready skill.",
     "speed": "Speed {0}×",
     "retreat": "Retreat",
     "retreat_tip": "Leaves the fight with no reward.",
     "turn_of": "{0}'s turn:",
-    "enhance": "Enhance {0} (Aether: {1})",
-    "enhance_tip": "Pays Aether to use the enhanced version of the special skill. Basic skills are never enhanced.",
     "choose_target": "Choose the target:",
-    "aether_tip_auto": "Auto doesn't use Aether. Turn it off to enhance skills.",
-    "aether_tip_manual": "Special skills and knocked-out enemies generate Aether; tick Enhance to spend it on the special skill.",
-    "aether": "Aether {0}/{1}",
-    "aether_tip": "Aether: the team's resource, from 0 to {0}. Comes from special skills and knocked-out enemies; enhances the special skill in manual.",
     "next_up": "Next:",
     "unit_tip": "{0} · Lv {1}",
     "impetus_tip": "Impetus: acts when the bar fills.",
@@ -770,7 +776,6 @@
     "wave_banner": "Wave {0}",
     "round": "Round {0}/{1}",
     "uses": "{0}\n{1}",
-    "uses_enhanced": "{0}\n{1} · enhanced",
     "extra_turn": "Extra turn!",
     "counterattack": "Counterattack!",
     "max_hp": "-{0} max HP",

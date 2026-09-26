@@ -6,24 +6,44 @@
   "role": "Attacker",
   "leader": {"stat": "Speed", "value": 0.15},
   "awakening": {"name": "Zephyrax", "stat": "Speed"},
-  "basic": {
-    "name": "Gust Claw",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 2.2, "hits": 2}
-    ]
-  },
-  "special": {
-    "name": "Cyclone",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
-      {"kind": "Impeto", "target": "AllEnemies", "power": -25}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 4.9},
-      {"kind": "Impeto", "target": "AllEnemies", "power": -50},
-      {"kind": "Status", "target": "Self", "status": "SpeedUp", "turns": 2}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Gust Claw",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 2.2, "hits": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Cyclone",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+        {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "Tempest",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 4.9},
+        {"kind": "Impeto", "target": "AllEnemies", "power": -50},
+        {"kind": "Status", "target": "Self", "status": "SpeedUp", "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

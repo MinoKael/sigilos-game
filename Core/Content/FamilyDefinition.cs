@@ -1,8 +1,8 @@
 namespace Sigilos.Core.Content
 {
 	/// <summary>
-	/// Uma família de invocações (Data/families.json). A família decide a raridade, o desenho e a
-	/// Assinatura; cada variante (Data/summons/*.json) decide elemento, papel e habilidades.
+	/// Uma família de invocações (Data/families.json). A família decide as estrelas naturais e o
+	/// desenho; cada variante (Data/summons/*.json) decide elemento, papel, habilidades e Passiva.
 	/// Um desenho por família, recolorido nos 5 elementos, e um segundo para o Despertar (GDD, seção 5).
 	/// </summary>
 	public sealed record FamilyDefinition
@@ -18,7 +18,5 @@ namespace Sigilos.Core.Content
 
 		/// <summary>O segundo desenho, depois do Despertar (GDD, seção 5).</summary>
 		public string AwakenedImage { get; init; } = "";
-
-		public PassiveDefinition Passive { get; init; } = new();
 	}
 }

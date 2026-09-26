@@ -4,25 +4,47 @@
   "family": "goblin",
   "element": "Water",
   "role": "Control",
-  "awakening": {"name": "Snivvel", "stat": "Accuracy"},
-  "basic": {
-    "name": "Net Throw",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.15},
-      {"kind": "Impeto", "target": "Target", "power": -20}
-    ]
+  "awakening": {
+    "name": "Snivvel",
+    "skill": {
+      "name": "Drowning Snare",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.9},
+        {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.7}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
   },
-  "special": {
-    "name": "Soaking Trap",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5},
-      {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 4.9},
-      {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.7}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Net Throw",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.15},
+        {"kind": "Impeto", "target": "Target", "power": -20}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Soaking Trap",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

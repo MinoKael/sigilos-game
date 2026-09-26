@@ -10,7 +10,7 @@ namespace Sigilos.Tests
 	{
 		private static readonly DateTime Start = new(2026, 9, 23, 8, 0, 0);
 
-		private static PlayerState NewPlayer() => NewGame.Create(Start, new Random(1));
+		private static PlayerState NewPlayer() => NewGame.Create(Start, new Random(1), TestData.Database);
 
 		[Test]
 		private static void IdleStopsAtTwelveHours()
@@ -48,50 +48,87 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void ExperienceRaisesLevelUpToForty()
+		private static void ExperienceFollowsTheStarTable()
 		{
-			var summon = new OwnedSummon();
-			Assert.Equal(1, Leveling.AddExperience(summon, Leveling.ExperienceToNext(1)), "um nível exato");
-			Assert.Equal(2, summon.Level, "nível 2");
+			Assert.Equal(662, Leveling.ExperienceToNext(3, 1), "3★ nível 1 da tabela");
+			Assert.Equal(112046, Leveling.ExperienceToNext(6, 39), "6★ nível 39 da tabela");
+			Assert.Equal(82182, Leveling.TotalFor(3), "3★ do 1 ao 25");
+			Assert.Equal(1005420, Leveling.TotalFor(6), "6★ do 1 ao 40");
 
-			Leveling.AddExperience(summon, 1_000_000);
-			Assert.Equal(Leveling.MaxLevel, summon.Level, "teto 40");
-			Assert.Equal(0, Leveling.MissingToMax(summon), "nada falta no teto");
+			var monster = new OwnedSummon { Stars = 3 };
+			Assert.Equal(1, Leveling.AddExperience(monster, 662), "um nível exato");
+			Assert.Equal(2, monster.Level, "nível 2");
+
+			Leveling.AddExperience(monster, 10_000_000);
+			Assert.Equal(25, monster.Level, "o 3★ para no 25");
+			Assert.Equal(0, monster.Experience, "no máximo a experiência para");
+			Assert.Equal(0, Leveling.MissingToMax(monster), "nada falta no máximo");
 		}
 
 		[Test]
-		private static void InfusingEssenceNeverGoesPastForty()
+		private static void InfusingEssenceStopsAtTheStarMax()
 		{
 			var player = NewPlayer();
 			player.Essence = 1_000_000;
-			var monster = Roster.Add(player, "imp_fire");
-			var needed = Leveling.MissingToMax(monster);
+			var monster = Roster.Add(player, TestData.Summon("imp_fire"));
+			var needed = Leveling.EssenceFor(Leveling.MissingToMax(monster));
 
-			Assert.Equal(needed, Leveling.Infuse(player, monster, int.MaxValue), "gasta só o que falta até o 40");
-			Assert.Equal(40, monster.Level, "nível 40");
+			Assert.Equal(needed, Leveling.Infuse(player, monster, int.MaxValue), "gasta só o que falta até o máximo");
+			Assert.Equal(25, monster.Level, "3★ no nível 25");
 			Assert.Equal(1_000_000 - needed, player.Essence, "o resto da Essência fica");
+			Assert.Equal((82182 + Leveling.ExperiencePerEssence - 1) / Leveling.ExperiencePerEssence, needed, "cada Essência vale 10 de experiência");
+		}
+
+		[Test]
+		private static void EvolutionNeedsMaxLevelEssenceAndFragments()
+		{
+			var player = NewPlayer();
+			var monster = Roster.Add(player, TestData.Summon("imp_fire"));
+			player.Essence = 1_000_000;
+			Assert.Equal(3, monster.Stars, "nasce nas estrelas naturais");
+			Assert.False(Evolution.IsReady(monster), "precisa do nível máximo");
+
+			monster.Level = 25;
+			Assert.False(Evolution.CanEvolve(player, monster), "sem Fragmentos não evolui");
+			var (essence, fragments) = Evolution.Cost(3);
+			player.Fragments = fragments;
+			Assert.True(Evolution.Evolve(player, monster), "evolui");
+			Assert.Equal(4, monster.Stars, "ganha uma estrela");
+			Assert.Equal(1, monster.Level, "volta ao nível 1");
+			Assert.Equal(30, Leveling.MaxLevel(monster), "o máximo sobe para 30");
+			Assert.Equal(1_000_000 - essence, player.Essence, "paga a Essência");
+			Assert.Equal(0, player.Fragments, "e os Fragmentos");
+
+			monster.Stars = 6;
+			monster.Level = 40;
+			Assert.False(Evolution.IsReady(monster), "6★ é o máximo");
 		}
 
 		[Test]
 		private static void AwakeningCostsEssenceAndChangesTheSheet()
 		{
-			var database = TestData.LoadReal();
+			var database = TestData.Database;
+			Assert.Equal(25_000, Awakening.Cost(3), "3★ natural");
+			Assert.Equal(50_000, Awakening.Cost(4), "4★ natural");
+			Assert.Equal(75_000, Awakening.Cost(5), "5★ natural");
+
 			var player = NewPlayer();
-			var summon = database.Summon("imp_fire");
-			var monster = Roster.Add(player, summon.Id);
+			var summon = database.Summon("phoenix_fire");
+			var monster = Roster.Add(player, summon);
 			player.Essence = Awakening.Cost(summon.Rarity) - 1;
 			Assert.False(Awakening.Awaken(player, monster, summon), "sem Essência não desperta");
 
 			player.Essence = Awakening.Cost(summon.Rarity);
-			var before = SummonStats.For(database.Roles[summon.Role], summon, 10, 0, false, Array.Empty<Core.Runes.Rune>()).Total;
+			var before = SummonStats.For(database.Roles[summon.Role], summon, 5, 10, false, Array.Empty<Core.Runes.Rune>()).Total;
 			Assert.True(Awakening.Awaken(player, monster, summon), "desperta");
 			Assert.True(monster.Awakened, "marcado como desperto");
 			Assert.False(Awakening.Awaken(player, monster, summon), "desperta uma vez só");
 
-			var after = SummonStats.For(database.Roles[summon.Role], summon, 10, 0, true, Array.Empty<Core.Runes.Rune>()).Total;
+			var after = SummonStats.For(database.Roles[summon.Role], summon, 5, 10, true, Array.Empty<Core.Runes.Rune>()).Total;
+			var stat = summon.Awakening.Stat!.Value;
 			Assert.Near(Math.Round(before.Health * (1 + Awakening.HealthBonus)), after.Health, "+20% de Vida");
 			Assert.Near(Math.Round(before.Attack * (1 + Awakening.AttackDefenseBonus)), after.Attack, "+7% de Ataque");
-			Assert.Near(before.Get(summon.Awakening.Stat) + Awakening.Bonus(summon.Awakening.Stat), after.Get(summon.Awakening.Stat), "o bônus da variante", 1e-9);
+			Assert.Near(before.Get(stat) + Awakening.Bonus(stat), after.Get(stat), "o bônus da variante", 1e-9);
 			Assert.Equal(summon.Awakening.Name, summon.NameFor(true), "nome próprio");
 		}
 
@@ -106,11 +143,11 @@ namespace Sigilos.Tests
 			Assert.True(first.FirstClear, "primeira vitória");
 			Assert.Equal(stage.FirstClearScrolls, first.Scrolls, "Pergaminhos da primeira vitória");
 			Assert.True(first.Rune != null && player.Runes.Count == 1, "a primeira vitória sempre solta runa");
-			// A fase 1 dá mais experiência do que o nível 1 pede: a Líder vai ao nível 2 e sobra o resto.
+			// A fase 1 dá menos experiência do que o nível 1 do 3★ pede: fica guardada.
 			var leader = player.Monster(Teams.Of(player, Teams.Campaign)[0])!;
-			Assert.Equal(2, leader.Level, "subiu de nível");
-			Assert.Equal(stage.Experience - Leveling.ExperienceToNext(1), leader.Experience, "o resto da experiência fica");
-			Assert.Equal(leader.Id, first.LevelUps.Single(), "quem subiu");
+			Assert.Equal(1, leader.Level, "ainda no nível 1");
+			Assert.Equal(stage.Experience, leader.Experience, "a experiência fica");
+			Assert.Equal(0, first.LevelUps.Count, "ninguém subiu");
 			Assert.True(Campaign.IsUnlocked(player, 2), "fase 2 abre");
 
 			var again = Campaign.ApplyVictory(new Random(1), player, stage);
@@ -121,10 +158,14 @@ namespace Sigilos.Tests
 		[Test]
 		private static void GrowthStartsByNaturalStars()
 		{
-			Assert.Near(0.22, Growth.LevelFactor(3, 1), "3★ no nível 1");
-			Assert.Near(0.43, Growth.LevelFactor(5, 1), "5★ no nível 1");
-			Assert.Near(1.0, Growth.LevelFactor(3, 40), "nível 40");
-			Assert.Near(0.85, Growth.RarityFactor(3), "3★ no nível 40");
+			Assert.Near(0.221, Growth.Fraction(3, 1), "3★ no nível 1");
+			Assert.Near(0.398, Growth.Fraction(3, 25), "3★ no nível 25");
+			Assert.Near(0.318, Growth.Fraction(4, 1), "evoluir volta abaixo do máximo anterior");
+			Assert.Near(0.433, Growth.Fraction(5, 1), "5★ no nível 1");
+			Assert.Near(1.0, Growth.Fraction(6, 40), "6★ no nível 40");
+			Assert.Equal(25, Growth.MaxLevel(3), "3★ vai até o 25");
+			Assert.Equal(40, Growth.MaxLevel(6), "6★ vai até o 40");
+			Assert.Near(0.85, Growth.RarityFactor(3), "3★ natural no 6★ nível 40");
 
 			var roles = TestData.LoadReal().Roles;
 			foreach (var role in roles.Values)

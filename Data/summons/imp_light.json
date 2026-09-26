@@ -4,24 +4,43 @@
   "family": "imp",
   "element": "Light",
   "role": "Support",
-  "awakening": {"name": "Glint", "stat": "Speed"},
-  "basic": {
-    "name": "Flash",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.15},
-      {"kind": "Impeto", "target": "Target", "power": -15}
-    ]
+  "awakening": {
+    "name": "Glint",
+    "skill": {
+      "name": "Radiant Omen",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Impeto", "target": "AllAllies", "power": 45},
+        {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+      ],
+      "levels": [
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
   },
-  "special": {
-    "name": "Foresee",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Impeto", "target": "AllAllies", "power": 20}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Impeto", "target": "AllAllies", "power": 45},
-      {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Flash",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.15},
+        {"kind": "Impeto", "target": "Target", "power": -15}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Foresee",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Impeto", "target": "AllAllies", "power": 20}
+      ],
+      "levels": [
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

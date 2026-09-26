@@ -12,7 +12,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void AccountLevelRaisesMaxManaUpTo120()
 		{
-			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
+			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), TestData.Database);
 			Assert.Equal(60, Mana.Max(player), "nível 1");
 
 			player.AccountLevel = 2;
@@ -26,7 +26,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void AccountLevelUpGivesGoldAndFillsMana()
 		{
-			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
+			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), TestData.Database);
 			player.Mana = 5;
 			var gold = player.Gold;
 

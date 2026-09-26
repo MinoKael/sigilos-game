@@ -18,16 +18,16 @@ namespace Sigilos.Tests
 			vampire.Health = 500;
 
 			TestData.RunUntilTurnOf(session, vampire);
-			var events = session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			var events = session.Act(new UnitAction(0, foe));
 			Assert.Near(550, vampire.Health, "drena 50% de 100");
 			Assert.True(events.OfType<ExtraTurn>().Any(), "100% de turno extra");
 			Assert.Equal(vampire, session.BeginTurn().Actor, "age de novo em seguida");
 
-			var extra = session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			var extra = session.Act(new UnitAction(0, foe));
 			Assert.False(extra.OfType<ExtraTurn>().Any(), "o turno extra não dá outro: um por turno");
 
 			TestData.RunUntilTurnOf(session, vampire);
-			var next = session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			var next = session.Act(new UnitAction(0, foe));
 			Assert.True(next.OfType<ExtraTurn>().Any(), "o turno normal seguinte sorteia de novo");
 		}
 
@@ -40,7 +40,7 @@ namespace Sigilos.Tests
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, jailer);
-			session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			session.Act(new UnitAction(0, foe));
 			Assert.True(foe.Has(StatusKind.Stun), "Desespero não passa pela Resistência");
 		}
 
@@ -54,7 +54,7 @@ namespace Sigilos.Tests
 			Assert.True(stubborn.Has(StatusKind.Immunity), "Imune desde o começo");
 
 			TestData.RunUntilTurnOf(session, jailer);
-			var events = session.Act(new UnitAction(SkillSlot.Basic, false, stubborn));
+			var events = session.Act(new UnitAction(0, stubborn));
 			Assert.True(events.OfType<Immune>().Any(), "a Imunidade barrou");
 			Assert.False(stubborn.Has(StatusKind.Stun), "nem o Desespero passa");
 		}
@@ -83,7 +83,7 @@ namespace Sigilos.Tests
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, foe);
-			var events = session.Act(new UnitAction(SkillSlot.Basic, false, avenger));
+			var events = session.Act(new UnitAction(0, avenger));
 			Assert.True(events.OfType<Counterattack>().Any(), "contra-atacou");
 			Assert.Near(925, foe.Health, "75% de um golpe de 100");
 		}
@@ -97,7 +97,7 @@ namespace Sigilos.Tests
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, foe);
-			var events = session.Act(new UnitAction(SkillSlot.Basic, false, nemesis));
+			var events = session.Act(new UnitAction(0, nemesis));
 			var gain = events.OfType<ImpetoChanged>().Single(e => e.Target == nemesis);
 			Assert.Near(8, gain.Amount, "150 de dano = 2 × 7% da Vida: +8% de Ímpeto");
 		}
@@ -111,7 +111,7 @@ namespace Sigilos.Tests
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, destroyer);
-			session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			session.Act(new UnitAction(0, foe));
 			Assert.Near(970, foe.MaxHealth, "30% de 100 de dano");
 			Assert.Near(900, foe.Health, "a Vida atual não cai de novo");
 		}

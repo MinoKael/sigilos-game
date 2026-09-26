@@ -5,26 +5,42 @@
   "element": "Dark",
   "role": "Front",
   "leader": {"stat": "Accuracy", "value": 0.2},
-  "awakening": {"name": "Gravemaw", "stat": "Accuracy"},
-  "basic": {
-    "name": "Crushing Grip",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.85},
-      {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
-    ]
-  },
-  "special": {
-    "name": "Menace",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.5},
-      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8},
-      {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-      {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
-    ]
-  }
+  "awakening": {"name": "Gravemaw"},
+  "skills": [
+    {
+      "name": "Crushing Grip",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.85},
+        {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Menace",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.5},
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ],
+      "awakenedEffects": [
+        {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8},
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
+        {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
+      ]
+    },
+    {
+      "name": "Regeneration",
+      "passive": {"kind": "RegenEachTurn", "value": 0.05, "awakenedValue": 0.08}
+    }
+  ]
 }

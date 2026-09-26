@@ -4,26 +4,39 @@
   "family": "imp",
   "element": "Wind",
   "role": "Control",
-  "awakening": {"name": "Eddy", "stat": "Accuracy"},
-  "basic": {
-    "name": "Spin",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.5},
-      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
-    ]
+  "awakening": {
+    "name": "Eddy",
+    "skill": {
+      "name": "Coward's Flight",
+      "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
+    }
   },
-  "special": {
-    "name": "Whirlwind",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
-      {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
-      {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.8, "turns": 2},
-      {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Spin",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Whirlwind",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

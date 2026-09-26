@@ -6,24 +6,36 @@
   "role": "Control",
   "leader": {"stat": "Crit", "value": 0.15},
   "awakening": {"name": "Solaria", "stat": "Accuracy"},
-  "basic": {
-    "name": "Aurora",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.85},
-      {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
-    ]
-  },
-  "special": {
-    "name": "Solar Crown",
-    "cooldown": 5,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
-      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.85},
-      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.75}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Aurora",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.85},
+        {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Solar Crown",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "From the Ashes",
+      "passive": {"kind": "RebirthOnce", "value": 0.4}
+    }
+  ]
 }

@@ -30,14 +30,21 @@ namespace Sigilos.Tests
 				shop: Read("shop.json"));
 		}
 
+		private static GameDatabase? _database;
+
+		/// <summary>O banco de verdade, lido uma vez só.</summary>
+		public static GameDatabase Database => _database ??= LoadReal();
+
+		public static SummonDefinition Summon(string id) => Database.Summon(id);
+
 		/// <summary>O time de quem joga sem sorte: a 5★ garantida e quatro 3★.</summary>
 		public static readonly string[] TypicalTeam = { "phoenix_fire", "imp_fire", "imp_water", "imp_light", "imp_wind" };
 
 		/// <summary>Uma conta nova com estes monstros na equipe da Campanha.</summary>
 		public static PlayerState PlayerWith(params string[] summonIds)
 		{
-			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
-			Teams.FillCampaign(player, summonIds.Select(id => Roster.Add(player, id)).ToList());
+			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), Database);
+			Teams.FillCampaign(player, summonIds.Select(id => Roster.Add(player, Summon(id))).ToList());
 			return player;
 		}
 
@@ -66,7 +73,8 @@ namespace Sigilos.Tests
 			RuneSetEffects? runeEffects = null)
 		{
 			var stats = new StatBlock { Health = health, Attack = attack, Defense = defense, Speed = speed, CritDamage = 0.5, Resistance = resistance };
-			return new BattleUnit(name, name, "", side, element, 1, false, stats, basic ?? Strike, special, passive, 1, runeEffects ?? RuneSetEffects.None);
+			var skills = special == null ? new[] { basic ?? Strike } : new[] { basic ?? Strike, special };
+			return new BattleUnit(name, name, "", side, element, 1, false, stats, skills, passive, runeEffects ?? RuneSetEffects.None);
 		}
 
 		/// <summary>Efeitos de conjunto de runa: só os citados, o resto zero.</summary>
@@ -100,7 +108,7 @@ namespace Sigilos.Tests
 				if (ReferenceEquals(turn.Actor, unit) && turn.NeedsDecision)
 					return;
 				if (turn.NeedsDecision)
-					session.Act(new UnitAction(SkillSlot.Basic, false, null));
+					session.Act(new UnitAction(0, null));
 			}
 		}
 	}

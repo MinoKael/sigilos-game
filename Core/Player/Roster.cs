@@ -1,4 +1,5 @@
 using System.Linq;
+using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Player
 {
@@ -11,10 +12,10 @@ namespace Sigilos.Core.Player
 	{
 		public static bool IsFull(PlayerState player) => player.Collection.Count() >= PlayerState.CollectionCapacity;
 
-		/// <summary>Uma cópia nova da variante, no nível 1: na coleção, ou no Baú se a coleção está cheia.</summary>
-		public static OwnedSummon Add(PlayerState player, string summonId)
+		/// <summary>Uma cópia nova da variante, nas estrelas naturais e no nível 1: na coleção, ou no Baú se a coleção está cheia.</summary>
+		public static OwnedSummon Add(PlayerState player, SummonDefinition summon)
 		{
-			var monster = new OwnedSummon { Id = player.NextMonsterId++, SummonId = summonId, Stored = IsFull(player) };
+			var monster = new OwnedSummon { Id = player.NextMonsterId++, SummonId = summon.Id, Stars = summon.Rarity, Stored = IsFull(player) };
 			player.Monsters.Add(monster);
 			return monster;
 		}

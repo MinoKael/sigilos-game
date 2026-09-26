@@ -8,7 +8,9 @@ namespace Sigilos.Core.Content
 	/// </summary>
 	public sealed record DungeonFloor
 	{
-		/// <summary>Nível de todos os inimigos do andar.</summary>
+		/// <summary>Estrelas e nível de todos os inimigos do andar.</summary>
+		public int Stars { get; init; } = 6;
+
 		public int Level { get; init; }
 
 		public IReadOnlyList<IReadOnlyList<StageEnemy>> Waves { get; init; } = new List<IReadOnlyList<StageEnemy>>();
@@ -41,6 +43,6 @@ namespace Sigilos.Core.Content
 		/// <summary>Multiplica Vida e Ataque de todos os inimigos do andar.</summary>
 		public double Scale { get; init; } = 1;
 
-		public Encounter Encounter => new(Level, Waves, Scale);
+		public Encounter Encounter => new(Stars, Level, Waves, Scale);
 	}
 }

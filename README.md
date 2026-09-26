@@ -1,12 +1,14 @@
 # Sigilos
 
 Gacha de fantasia offline para um jogador, com base mecânica e visual em Summoners War: colecione
-invocações, suba o nível delas até 40, desperte, equipe runas e comande batalhas por turnos com barra
+invocações, suba o nível e as estrelas delas até 6★ nível 40, desperte, equipe runas e comande batalhas por turnos com barra
 de Ímpeto. O design completo está em [SIGILOS — Game Design Document.md](SIGILOS%20—%20Game%20Design%20Document.md).
 
-Este repositório é o **MVP**: combate 5 contra 5 com Ímpeto e Éter (Éter só no manual), gacha com
-garantia em que cada invocação é uma cópia nova, coleção com Baú, Ecos por fusão, uma equipe por
-conteúdo, ociosidade, nível 1–40, Despertar, runas e atributos iguais aos de Summoners War (1 a 6
+Este repositório é o **MVP**: combate 5 contra 5 com Ímpeto e habilidades com recarga (básica, ativas
+e Passiva), gacha com garantia em que cada invocação é uma cópia nova, coleção com Baú, cópias fundidas
+sobem o nível de uma habilidade sorteada, uma equipe por conteúdo, ociosidade, estrelas e experiência
+pela tabela de Summoners War (Evolução até 6★ com Essência e Fragmentos), Despertar que dá habilidade
+nova (3★), habilidade mais forte (4★) ou atributo (5★), runas e atributos iguais aos de Summoners War (1 a 6
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
 melhora nunca falha), 9 famílias de invocação (45 variantes; os inimigos comuns são essas invocações
 reforçadas), a região 1 (20 fases), cinco Masmorras, Batalha automática (30 lutas seguidas), Mana para

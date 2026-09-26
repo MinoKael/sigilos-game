@@ -8,7 +8,7 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Cartão de monstro: moldura pela raridade, estrelas douradas (roxas depois do Despertar), nível
+	/// Cartão de monstro: moldura pelas estrelas naturais, estrelas de agora douradas (roxas depois do Despertar), nível
 	/// no canto, desenho na cor do elemento e nome. Usado na coleção, nas equipes e no resultado do
 	/// ritual. Clicável quando alguém assina <see cref="Pressed"/>.
 	/// </summary>
@@ -27,7 +27,7 @@ namespace Sigilos.UI.Components
 
 		/// <param name="monster">Nulo quando não é um monstro da conta (Grimório): mostra nível 1, sem Despertar.</param>
 		/// <param name="badge">Linha de baixo, no lugar dos Ecos: "Líder", "Nova!", "Baú".</param>
-		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, string? badge = null, float width = 150, bool awakenedPreview = false)
+		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, bool showName = false, string? badge = null, float width = 150, bool awakenedPreview = false)
 		{
 			Summon = summon;
 			Monster = monster;
@@ -48,39 +48,42 @@ namespace Sigilos.UI.Components
 
 			var top = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
 			top.AddChild(Doodle.Icon(Art.Element(summon.Element), 18, Palette.Of(summon.Element)));
-			var stars = new Label { Text = Texts.Stars(summon.Rarity), SizeFlagsHorizontal = SizeFlags.ExpandFill, HorizontalAlignment = HorizontalAlignment.Center };
+			var stars = new Label { Text = Texts.Stars(monster?.Stars ?? summon.Rarity), SizeFlagsHorizontal = SizeFlags.ExpandFill, HorizontalAlignment = HorizontalAlignment.Center };
 			stars.AddThemeColorOverride("font_color", Palette.Stars(awakened));
 			stars.AddThemeFontSizeOverride("font_size", 14);
 			top.AddChild(stars);
 			column.AddChild(top);
 
-			var portrait = new Control { SizeFlagsVertical = SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, width * 0.6f), MouseFilter = MouseFilterEnum.Ignore };
+			var portrait = new Control { SizeFlagsVertical = SizeFlags.Fill, CustomMinimumSize = new Vector2(0, width * 0.8f), MouseFilter = MouseFilterEnum.Ignore };
 			var art = new Doodle(Art.Creature(summon.ImageFor(awakened)), Palette.Of(summon.Element));
 			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			portrait.AddChild(art);
-			var level = new Label { Text = T("card.level", monster?.Level ?? 1), Position = new Vector2(2, 0) };
-			level.AddThemeFontSizeOverride("font_size", 12);
-			level.AddThemeColorOverride("font_outline_color", Palette.Background);
-			level.AddThemeConstantOverride("outline_size", 4);
-			portrait.AddChild(level);
 			column.AddChild(portrait);
 
-			var label = new Label
+			if (showName)
 			{
-				Text = name,
-				HorizontalAlignment = HorizontalAlignment.Center,
-				AutowrapMode = TextServer.AutowrapMode.WordSmart,
-				CustomMinimumSize = new Vector2(width - 16, 0),
-			};
-			label.AddThemeFontSizeOverride("font_size", 13);
-			if (awakened)
-				label.AddThemeColorOverride("font_color", Palette.Awakened);
-			column.AddChild(label);
+				var label = new Label
+				{
+					Text = name,
+					HorizontalAlignment = HorizontalAlignment.Center,
+					AutowrapMode = TextServer.AutowrapMode.WordSmart,
+					CustomMinimumSize = new Vector2(width - 16, 0),
+				};
+				label.AddThemeFontSizeOverride("font_size", 13);
+				if (awakened)
+					label.AddThemeColorOverride("font_color", Palette.Awakened);
+				column.AddChild(label);
+			}
 
-			var footer = badge ?? (monster is { Echoes: > 0 } ? T("card.echoes", monster.Echoes) : "");
+			var footer = badge ?? "";
 			if (footer.Length > 0)
 				column.AddChild(new Label { Text = footer, ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center });
-
+            var level = new Label { Text = T("card.level", monster?.Level ?? 1), Position = new Vector2(2, 0) };
+            level.AddThemeFontSizeOverride("font_size", 12);
+            level.AddThemeColorOverride("font_outline_color", Palette.Background);
+            level.AddThemeConstantOverride("outline_size", 4);
+            column.AddChild(level);
+            
 			_mark.AddThemeColorOverride("font_color", Palette.Positive);
 			_mark.AddThemeColorOverride("font_outline_color", Palette.Background);
 			_mark.AddThemeConstantOverride("outline_size", 6);

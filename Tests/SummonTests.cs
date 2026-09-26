@@ -13,7 +13,7 @@ namespace Sigilos.Tests
 		private static void FirstSummonEverIsFiveStars()
 		{
 			var database = TestData.LoadReal();
-			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
+			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), TestData.Database);
 			var results = SummonRitual.Perform(new Random(7), database, player, 1);
 			Assert.Equal(5, results.Single().Summon.Rarity, "primeira invocação");
 		}

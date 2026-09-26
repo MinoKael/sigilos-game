@@ -139,8 +139,6 @@ namespace Sigilos.Core.Content
 					yield return $"Família {family.Id}: raridade {family.Rarity} fora de 1 a 5.";
 				if (family.Image.Length == 0 || family.AwakenedImage.Length == 0)
 					yield return $"Família {family.Id}: falta a imagem normal ou a do Despertar.";
-				if (family.Passive.AwakenedValue < family.Passive.Value)
-					yield return $"Família {family.Id}: a Assinatura desperta é mais fraca que a normal.";
 			}
 
 			foreach (var summon in Summons)
@@ -149,25 +147,20 @@ namespace Sigilos.Core.Content
 					yield return $"Invocação {summon.Id}: família '{summon.FamilyId}' não existe.";
 				if (summon.Awakening.Name.Length == 0)
 					yield return $"Invocação {summon.Id}: sem nome de Despertar.";
-				if (summon.Awakening.Stat is not (Stat.Speed or Stat.Crit or Stat.Resistance or Stat.Accuracy))
-					yield return $"Invocação {summon.Id}: o Despertar dá Velocidade, Crítico, Resistência ou Precisão, não {summon.Awakening.Stat}.";
-				if (summon.Special.Cooldown <= 0)
-					yield return $"Invocação {summon.Id}: habilidade especial sem recarga.";
-				if (summon.Basic.EnhanceCost > 0 || summon.Basic.EnhancedEffects.Count > 0)
-					yield return $"Invocação {summon.Id}: o básico tem aprimoramento, mas o Éter é só da habilidade especial.";
-				foreach (var problem in ValidateSkill(summon.Basic).Concat(ValidateSkill(summon.Special)))
+				if (summon.Awakening.Stat is { } stat && stat is not (Stat.Speed or Stat.Crit or Stat.Resistance or Stat.Accuracy))
+					yield return $"Invocação {summon.Id}: o Despertar dá Velocidade, Crítico, Resistência ou Precisão, não {stat}.";
+				if (summon.Awakening.Stat == null && summon.Awakening.Skill == null && summon.Skills.All(s => !s.ChangesOnAwakening))
+					yield return $"Invocação {summon.Id}: o Despertar não dá nada (atributo, habilidade nova ou melhorada).";
+				if (summon.Awakening.Skill is { Cooldown: 0, IsPassive: false })
+					yield return $"Invocação {summon.Id}: a habilidade do Despertar precisa de recarga ou ser passiva.";
+				foreach (var problem in ValidateSkills(summon.AllSkills))
 					yield return $"Invocação {summon.Id}: {problem}";
 			}
 
 			foreach (var enemy in Enemies)
 			{
-				foreach (var problem in ValidateSkill(enemy.Basic))
+				foreach (var problem in ValidateSkills(enemy.Skills))
 					yield return $"Inimigo {enemy.Id}: {problem}";
-				if (enemy.Special != null)
-				{
-					foreach (var problem in ValidateSkill(enemy.Special))
-						yield return $"Inimigo {enemy.Id}: {problem}";
-				}
 			}
 
 			for (var i = 0; i < Stages.Count; i++)
@@ -177,6 +170,8 @@ namespace Sigilos.Core.Content
 					yield return $"Fases: esperava a fase {i + 1}, veio a {stage.Number}.";
 				if (stage.Mana <= 0)
 					yield return $"Fase {stage.Number}: sem custo de Mana.";
+				if (!ValidLevel(stage.Stars, stage.Level))
+					yield return $"Fase {stage.Number}: inimigos {stage.Stars}★ nível {stage.Level}.";
 				if (stage.RuneGrade is < 1 or > MaxCampaignRuneGrade)
 					yield return $"Fase {stage.Number}: runa de {stage.RuneGrade} estrelas (a Campanha solta de 1 a {MaxCampaignRuneGrade}; as maiores vêm das Masmorras).";
 				foreach (var problem in ValidateWaves(stage.Waves))
@@ -196,6 +191,8 @@ namespace Sigilos.Core.Content
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: {problem}";
 					if (floor.Mana <= 0)
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: sem custo de Mana.";
+					if (!ValidLevel(floor.Stars, floor.Level))
+						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: inimigos {floor.Stars}★ nível {floor.Level}.";
 					if (dungeon.Kind == DungeonKind.Runes && (floor.MinGrade < 1 || floor.MaxGrade > 6 || floor.MinGrade > floor.MaxGrade))
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: estrelas de {floor.MinGrade} a {floor.MaxGrade}.";
 					if (dungeon.Kind == DungeonKind.Tools && (floor.ToolGrade is < 1 or > 4 || floor.ToolCount < 1))
@@ -232,11 +229,29 @@ namespace Sigilos.Core.Content
 			}
 		}
 
+		/// <summary>Estrelas de 1 a 6, nível até o máximo delas (15 no 1★, +5 por estrela).</summary>
+		private static bool ValidLevel(int stars, int level) => stars is >= 1 and <= 6 && level >= 1 && level <= 10 + 5 * stars;
+
+		/// <summary>A primeira é ativa e sem recarga; as outras ativas têm recarga; no máximo uma passiva.</summary>
+		private static IEnumerable<string> ValidateSkills(IReadOnlyList<SkillDefinition> skills)
+		{
+			if (skills.Count == 0 || skills[0].IsPassive || skills[0].Cooldown != 0)
+				yield return "a primeira habilidade é ativa e sem recarga.";
+			if (skills.Skip(1).Any(s => !s.IsPassive && s.Cooldown <= 0))
+				yield return "habilidade ativa além da primeira sem recarga.";
+			if (skills.Count(s => s.IsPassive) > 1)
+				yield return "mais de uma passiva.";
+			foreach (var problem in skills.SelectMany(ValidateSkill))
+				yield return problem;
+		}
+
 		private static IEnumerable<string> ValidateSkill(SkillDefinition skill)
 		{
-			if (skill.Effects.Count == 0)
+			if (skill.Effects.Count == 0 && !skill.IsPassive)
 				yield return $"'{skill.Name}' não tem efeitos.";
-			foreach (var effect in skill.Effects.Concat(skill.EnhancedEffects))
+			if (skill.Levels.Any(l => l.Value <= 0))
+				yield return $"'{skill.Name}': nível que não melhora nada.";
+			foreach (var effect in skill.Effects.Concat(skill.AwakenedEffects))
 			{
 				if (effect.Hits < 1)
 					yield return $"'{skill.Name}': efeito com {effect.Hits} golpes.";
@@ -246,8 +261,6 @@ namespace Sigilos.Core.Content
 					yield return $"'{skill.Name}': efeito de status sem duração.";
 			}
 
-			if (skill.EnhanceCost > 0 && skill.EnhancedEffects.Count == 0)
-				yield return $"'{skill.Name}': tem custo de aprimoramento mas não tem efeitos aprimorados.";
 		}
 	}
 }

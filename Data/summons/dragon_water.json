@@ -6,25 +6,45 @@
   "role": "Control",
   "leader": {"stat": "Health", "value": 0.2},
   "awakening": {"name": "Maelstra", "stat": "Accuracy"},
-  "basic": {
-    "name": "Tidal Claw",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 4.2},
-      {"kind": "Impeto", "target": "Target", "power": -20}
-    ]
-  },
-  "special": {
-    "name": "Deluge",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
-      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 4.55},
-      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.5},
-      {"kind": "Impeto", "target": "AllEnemies", "power": -20}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Tidal Claw",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.2},
+        {"kind": "Impeto", "target": "Target", "power": -20}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Deluge",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "Maelstrom",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 4.55},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.5},
+        {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

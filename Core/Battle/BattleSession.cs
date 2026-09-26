@@ -7,7 +7,7 @@ using Sigilos.Core.Runes;
 namespace Sigilos.Core.Battle
 {
 	/// <summary>
-	/// Uma luta do começo ao fim: barra de Ímpeto, Éter, ondas, vitória e derrota (GDD, seção 7).
+	/// Uma luta do começo ao fim: barra de Ímpeto, recargas, ondas, vitória e derrota (GDD, seção 7).
 	/// Não sabe que existe tela nem quem decide: a cada turno devolve quem age, recebe a decisão
 	/// (do jogador ou do <see cref="AutoPilot"/>) e devolve a lista de <see cref="BattleEvent"/>.
 	///
@@ -49,8 +49,6 @@ namespace Sigilos.Core.Battle
 		public int Wave => _waveIndex + 1;
 
 		public int WaveCount => _waves.Count;
-
-		public int Ether { get; private set; }
 
 		/// <summary>Tempo de luta em rodadas: Velocidade 100 enche a barra em 1,0.</summary>
 		public double Time { get; private set; }
@@ -112,7 +110,7 @@ namespace Sigilos.Core.Battle
 				return new TurnStart(unit, false, Flush());
 			}
 
-			// Assinatura dos Trolls: recupera Vida no começo do turno, mesmo atordoado.
+			// Passiva dos Trolls: recupera Vida no começo do turno, mesmo atordoado.
 			if (unit.Passive?.Kind == PassiveKind.RegenEachTurn)
 				_effects.Heal(unit, unit.PassiveValue * unit.MaxHealth);
 
@@ -127,28 +125,20 @@ namespace Sigilos.Core.Battle
 		}
 
 		/// <summary>
-		/// A habilidade do turno, o aprimoramento pago com Éter e o ganho de Éter. Pedido impossível
-		/// (especial em recarga, Éter curto) vira o básico sem aprimoramento.
+		/// A habilidade do turno e a recarga dela. Pedido impossível (habilidade em recarga ou que não
+		/// existe) vira a básica.
 		/// </summary>
 		public IReadOnlyList<BattleEvent> Act(UnitAction action)
 		{
 			if (IsOver || Current is not { } unit)
 				throw new InvalidOperationException("Não é turno de ninguém.");
 
-			var slot = action.Slot == SkillSlot.Special && unit.IsSpecialReady ? SkillSlot.Special : SkillSlot.Basic;
-			var skill = unit.Skill(slot);
-			var enhance = action.Enhance && CanEnhance(unit, skill);
+			var index = unit.IsReady(action.Skill) ? action.Skill : 0;
+			var skill = unit.Skill(index);
 
-			if (enhance)
-				ChangeEther(-skill.EnhanceCost);
-
-			Emit(new SkillUsed(unit, skill, enhance));
-			_effects.Resolve(unit, skill.EffectsFor(enhance), action.Target);
-
-			if (unit.Side == Side.Allies)
-				ChangeEther(slot == SkillSlot.Special ? BattleRules.SpecialEtherGain : BattleRules.BasicEtherGain);
-			if (slot == SkillSlot.Special)
-				unit.SpecialCooldown = skill.Cooldown;
+			Emit(new SkillUsed(unit, skill));
+			_effects.Resolve(unit, skill.Effects, action.Target);
+			unit.SetCooldown(index, skill.Cooldown);
 
 			// Conjunto Violento: chance de agir de novo. O turno extra não sorteia outro: um por turno.
 			if (unit.IsAlive && !_extraTurn && unit.RuneEffects.ExtraTurnChance > 0 && Random.NextDouble() < unit.RuneEffects.ExtraTurnChance)
@@ -161,10 +151,6 @@ namespace Sigilos.Core.Battle
 			FinishTurn(unit);
 			return Flush();
 		}
-
-		/// <summary>Só aliados aprimoram (inimigos não usam Éter), e só a habilidade especial.</summary>
-		public bool CanEnhance(BattleUnit unit, SkillDefinition skill) =>
-			unit.Side == Side.Allies && ReferenceEquals(skill, unit.Special) && skill.CanEnhance && Ether >= skill.EnhanceCost;
 
 		/// <summary>Inimigos que <paramref name="actor"/> pode escolher como alvo agora.</summary>
 		public IReadOnlyList<BattleUnit> ChoosableTargets(BattleUnit actor) =>
@@ -190,16 +176,13 @@ namespace Sigilos.Core.Battle
 
 		internal void Emit(BattleEvent battleEvent) => _pending.Add(battleEvent);
 
-		/// <summary>Uma unidade caiu: Éter pelo inimigo, Assinaturas de queda.</summary>
+		/// <summary>Uma unidade caiu: Passivas de queda.</summary>
 		internal void KnockOut(BattleUnit unit)
 		{
 			unit.Health = 0;
 			unit.Impeto = 0;
 			unit.ClearStatuses();
 			Emit(new Died(unit));
-
-			if (unit.Side == Side.Enemies)
-				ChangeEther(BattleRules.KillEtherGain);
 
 			switch (unit.Passive)
 			{
@@ -264,7 +247,7 @@ namespace Sigilos.Core.Battle
 					_effects.GiveShield(ally, shield, RuneSets.ShieldTurns);
 			}
 
-			// Assinatura dos Bandidos: dos dois lados, cada onda começa com pelo menos esse Ímpeto.
+			// Passiva dos Bandidos: dos dois lados, cada onda começa com pelo menos esse Ímpeto.
 			foreach (var unit in living.Concat(Enemies).Where(u => u.Passive?.Kind == PassiveKind.ImpetoAtWaveStart))
 				_effects.GainImpeto(unit, Math.Max(0, unit.PassiveValue * BattleRules.FullImpeto - unit.Impeto));
 		}
@@ -290,8 +273,7 @@ namespace Sigilos.Core.Battle
 			{
 				foreach (var expired in unit.TickStatuses())
 					Emit(new StatusRemoved(unit, expired.Kind));
-				if (unit.SpecialCooldown > 0)
-					unit.SpecialCooldown--;
+				unit.TickCooldowns();
 			}
 
 			CheckOutcome();
@@ -320,14 +302,6 @@ namespace Sigilos.Core.Battle
 			{
 				End(true);
 			}
-		}
-
-		private void ChangeEther(int delta)
-		{
-			var before = Ether;
-			Ether = Math.Clamp(Ether + delta, 0, BattleRules.MaxEther);
-			if (Ether != before)
-				Emit(new EtherChanged(Ether, Ether - before));
 		}
 
 		private void End(bool victory)

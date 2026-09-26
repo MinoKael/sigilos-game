@@ -6,25 +6,45 @@
   "role": "Attacker",
   "leader": {"stat": "Speed", "value": 0.15},
   "awakening": {"name": "Zephyra", "stat": "Speed"},
-  "basic": {
-    "name": "Ember Dive",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.85},
-      {"kind": "Impeto", "target": "Target", "power": -20}
-    ]
-  },
-  "special": {
-    "name": "Feather Storm",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
-      {"kind": "Impeto", "target": "AllAllies", "power": 20}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 3.85},
-      {"kind": "Impeto", "target": "AllAllies", "power": 35},
-      {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Ember Dive",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.85},
+        {"kind": "Impeto", "target": "Target", "power": -20}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.05},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.15}
+      ]
+    },
+    {
+      "name": "Feather Storm",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+        {"kind": "Impeto", "target": "AllAllies", "power": 20}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "Hurricane of Feathers",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.85},
+        {"kind": "Impeto", "target": "AllAllies", "power": 35},
+        {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

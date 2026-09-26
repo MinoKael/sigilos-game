@@ -133,7 +133,7 @@ namespace Sigilos.UI.Screens
 			{
 				var result = results[i];
 				var badge = result.Monster.Stored ? T("summon.sent_to_vault") : result.FirstCopy ? T("summon.new") : T("summon.copy");
-				var card = new CreatureCard(result.Summon, result.Monster, badge, 140) { Modulate = new Color(1, 1, 1, 0) };
+				var card = new CreatureCard(result.Summon, result.Monster, true, badge, 140) { Modulate = new Color(1, 1, 1, 0) };
 				_results.AddChild(card);
 				card.CreateTween().TweenProperty(card, "modulate:a", 1f, 0.25).SetDelay(0.08 * i);
 			}

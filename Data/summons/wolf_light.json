@@ -4,25 +4,47 @@
   "family": "wolf",
   "element": "Light",
   "role": "Support",
-  "awakening": {"name": "Moonfur", "stat": "Resistance"},
-  "basic": {
-    "name": "Radiant Bite",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 3.15},
-      {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
-    ]
+  "awakening": {
+    "name": "Moonfur",
+    "skill": {
+      "name": "Full Moon",
+      "cooldown": 5,
+      "effects": [
+        {"kind": "Heal", "target": "AllAllies", "power": 0.25},
+        {"kind": "Cleanse", "target": "AllAllies"}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
   },
-  "special": {
-    "name": "Moon Howl",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.15},
-      {"kind": "Cleanse", "target": "LowestAlly"}
-    ],
-    "enhanceCost": 5,
-    "enhancedEffects": [
-      {"kind": "Heal", "target": "AllAllies", "power": 0.25},
-      {"kind": "Cleanse", "target": "AllAllies"}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Radiant Bite",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.15},
+        {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Moon Howl",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Heal", "target": "AllAllies", "power": 0.15},
+        {"kind": "Cleanse", "target": "LowestAlly"}
+      ],
+      "levels": [
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Recovery", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    }
+  ]
 }

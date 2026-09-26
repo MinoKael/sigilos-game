@@ -6,24 +6,36 @@
   "role": "Attacker",
   "leader": {"stat": "CritDamage", "value": 0.3},
   "awakening": {"name": "Nycteria", "stat": "Crit"},
-  "basic": {
-    "name": "Veiled Claw",
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 4.2},
-      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
-    ]
-  },
-  "special": {
-    "name": "Eclipse",
-    "cooldown": 4,
-    "effects": [
-      {"kind": "Damage", "target": "Target", "power": 7.7},
-      {"kind": "Status", "target": "Self", "status": "Hidden"}
-    ],
-    "enhanceCost": 6,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 11.2, "ignoreDefense": 0.5},
-      {"kind": "Status", "target": "Self", "status": "Hidden"}
-    ]
-  }
+  "skills": [
+    {
+      "name": "Veiled Claw",
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.2},
+        {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+      ],
+      "levels": [
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Damage", "value": 0.1}
+      ]
+    },
+    {
+      "name": "Eclipse",
+      "cooldown": 4,
+      "effects": [
+        {"kind": "Damage", "target": "Target", "power": 7.7},
+        {"kind": "Status", "target": "Self", "status": "Hidden"}
+      ],
+      "levels": [
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Damage", "value": 0.1},
+        {"kind": "Cooldown", "value": 1}
+      ]
+    },
+    {
+      "name": "From the Ashes",
+      "passive": {"kind": "RebirthOnce", "value": 0.4}
+    }
+  ]
 }

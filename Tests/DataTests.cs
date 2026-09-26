@@ -32,23 +32,33 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void NoEnhancementIsCheaperThanTheMinimum()
+		private static void AwakeningFollowsNaturalStars()
 		{
-			// Sem isto volta o ciclo de usa-e-ganha: aprimorar com o Éter que o próprio turno rende.
-			var database = TestData.LoadReal();
-			var skills = database.Summons.SelectMany(s => new[] { s.Basic, s.Special }).Where(s => s.CanEnhance);
-			foreach (var skill in skills)
-				Assert.True(skill.EnhanceCost >= BattleRules.MinEnhanceCost, $"'{skill.Name}' custa {skill.EnhanceCost} Éter");
+			// 3★ ganham habilidade nova, 4★ uma habilidade mais forte, 5★ um atributo.
+			foreach (var summon in TestData.Database.Summons)
+			{
+				switch (summon.Rarity)
+				{
+					case 3:
+						Assert.True(summon.Awakening.Skill != null, $"{summon.Id}: 3★ ganha habilidade no Despertar");
+						break;
+					case 4:
+						Assert.True(summon.Skills.Any(s => s.ChangesOnAwakening), $"{summon.Id}: 4★ melhora uma habilidade");
+						break;
+					default:
+						Assert.True(summon.Awakening.Stat != null && summon.Skills.All(s => !s.ChangesOnAwakening), $"{summon.Id}: 5★ só ganha atributo");
+						break;
+				}
+			}
 		}
 
 		[Test]
-		private static void OnlySpecialSkillsUseEther()
+		private static void EveryActiveSkillCanLevelUp()
 		{
-			var database = TestData.LoadReal();
-			foreach (var summon in database.Summons)
+			foreach (var summon in TestData.Database.Summons)
 			{
-				Assert.False(summon.Basic.CanEnhance, $"{summon.Id}: o básico não usa Éter");
-				Assert.True(summon.Special.CanEnhance, $"{summon.Id}: a especial tem aprimoramento");
+				foreach (var skill in summon.AllSkills.Where(s => !s.IsPassive))
+					Assert.True(skill.MaxLevel > 1, $"{summon.Id}: '{skill.Name}' sobe de nível com cópias");
 			}
 		}
 

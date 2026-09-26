@@ -35,7 +35,6 @@ namespace Sigilos.UI.Style
 		/// <summary>Estrelas e nome de invocação desperta.</summary>
 		public static readonly Color Awakened = Color.Color8(186, 118, 250);
 
-		public static readonly Color Ether = Color.Color8(78, 200, 190);
 		public static readonly Color Health = Color.Color8(96, 180, 90);
 		public static readonly Color HealthLow = Color.Color8(210, 74, 60);
 		public static readonly Color Shield = Color.Color8(170, 196, 220);
