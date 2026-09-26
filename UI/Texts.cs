@@ -17,47 +17,47 @@ namespace Sigilos.UI
 	/// diz exatamente o que o combate faz.
 	///
 	/// Texto rico (<see cref="Term"/>, <see cref="Describe(SkillDefinition)"/>...) é BBCode do Godot
-	/// mais a marca [glifo=Nome], que o <see cref="Components.RichText"/> desenha; em dica de mouse,
+	/// mais a marca [glyph=Nome], que o <see cref="Components.RichText"/> desenha; em dica de mouse,
 	/// use <see cref="Plain"/>.
 	/// </summary>
 	public static class Texts
 	{
-		public static string Name(Element element) => T($"elemento.{element}");
-		public static string Name(Role role) => T($"papel.{role}");
-		public static string Name(Stat stat) => T($"atributo.{stat}");
+		public static string Name(Element element) => T($"element.{element}");
+		public static string Name(Role role) => T($"role.{role}");
+		public static string Name(Stat stat) => T($"stat.{stat}");
 		/// <summary>O que o atributo faz. {0} é a Defesa que corta o dano pela metade; {1}, a Resistência mínima.</summary>
-		public static string Explain(Stat stat) => T($"atributo_explica.{stat}", Math.Round(BattleRules.DefenseConstant), Percent(BattleRules.MinResistChance));
-		public static string Name(RuneStat stat) => T($"runa_atributo.{stat}");
-		public static string Name(RuneSet set) => T($"conjunto.{set}");
-		public static string Name(Glyph glyph) => T($"glifo.{glyph}.nome");
-		public static string Meaning(Glyph glyph) => T($"glifo.{glyph}.sentido");
-		public static string Name(RuneRarity rarity) => T($"raridade.{rarity}");
-		public static string Name(StatusKind status) => T($"efeito.{status}.nome");
-		public static string Short(StatusKind status) => T($"efeito.{status}.sigla");
-		public static string Name(DungeonKind kind) => T($"masmorras.tipo.{kind}");
-		public static string Name(RuneSort sort) => T($"filtro.ordem.{sort}");
+		public static string Explain(Stat stat) => T($"stat_info.{stat}", Math.Round(BattleRules.DefenseConstant), Percent(BattleRules.MinResistChance));
+		public static string Name(RuneStat stat) => T($"rune_stat.{stat}");
+		public static string Name(RuneSet set) => T($"set.{set}");
+		public static string Name(Glyph glyph) => T($"glyph.{glyph}.name");
+		public static string Meaning(Glyph glyph) => T($"glyph.{glyph}.meaning");
+		public static string Name(RuneRarity rarity) => T($"rarity.{rarity}");
+		public static string Name(StatusKind status) => T($"effect.{status}.name");
+		public static string Short(StatusKind status) => T($"effect.{status}.short");
+		public static string Name(DungeonKind kind) => T($"dungeons.kind.{kind}");
+		public static string Name(RuneSort sort) => T($"filter.order.{sort}");
 
 		/// <summary>"30 Mana", "10 Pergaminhos", "1 Pergaminho".</summary>
-		public static string Amount(ShopItem item, int amount) => item == ShopItem.Scrolls ? Scrolls(amount) : T($"loja.item.{item}", amount);
+		public static string Amount(ShopItem item, int amount) => item == ShopItem.Scrolls ? Scrolls(amount) : T($"shop.item.{item}", amount);
 
 		/// <summary>Por que a luta não começou, com o custo em Mana dela.</summary>
-		public static string Refusal(EntryProblem problem, int mana) => T($"entrada.{problem}", mana, Core.Player.RuneInventory.Capacity);
+		public static string Refusal(EntryProblem problem, int mana) => T($"entry.{problem}", mana, Core.Player.RuneInventory.Capacity);
 
 		public static string Explain(StatusKind status) => status switch
 		{
-			StatusKind.Burn => T("efeito.Burn.explica", Percent(BattleRules.BurnFraction), BattleRules.MaxBurnStacks),
-			StatusKind.Curse => T("efeito.Curse.explica", Percent(BattleRules.CurseBonus)),
-			StatusKind.Blind => T("efeito.Blind.explica", Percent(BattleRules.BlindMissChance)),
-			StatusKind.AttackUp => T("efeito.AttackUp.explica", Percent(BattleRules.AttackUpBonus)),
-			StatusKind.AttackDown => T("efeito.AttackDown.explica", Percent(BattleRules.AttackDownPenalty)),
-			StatusKind.DefenseUp => T("efeito.DefenseUp.explica", Percent(BattleRules.DefenseUpBonus)),
-			StatusKind.SpeedUp => T("efeito.SpeedUp.explica", Percent(BattleRules.SpeedUpBonus)),
-			_ => T($"efeito.{status}.explica"),
+			StatusKind.Burn => T("effect.Burn.info", Percent(BattleRules.BurnFraction), BattleRules.MaxBurnStacks),
+			StatusKind.Curse => T("effect.Curse.info", Percent(BattleRules.CurseBonus)),
+			StatusKind.Blind => T("effect.Blind.info", Percent(BattleRules.BlindMissChance)),
+			StatusKind.AttackUp => T("effect.AttackUp.info", Percent(BattleRules.AttackUpBonus)),
+			StatusKind.AttackDown => T("effect.AttackDown.info", Percent(BattleRules.AttackDownPenalty)),
+			StatusKind.DefenseUp => T("effect.DefenseUp.info", Percent(BattleRules.DefenseUpBonus)),
+			StatusKind.SpeedUp => T("effect.SpeedUp.info", Percent(BattleRules.SpeedUpBonus)),
+			_ => T($"effect.{status}.info"),
 		};
 
 		/// <summary>"Ataque" e "Ataque%": separa o fixo do percentual.</summary>
 		public static string Label(RuneStat stat) => stat is RuneStat.HealthPercent or RuneStat.AttackPercent or RuneStat.DefensePercent
-			? T("runa_atributo.percentual", Name(stat))
+			? T("rune_stat.percent", Name(stat))
 			: Name(stat);
 
 		/// <summary>"Ataque +12%" ou "Ataque +110".</summary>
@@ -67,7 +67,7 @@ namespace Sigilos.UI
 		public static string Format(RuneSubstat substat)
 		{
 			var text = Format(substat.Stat, substat.Total);
-			return substat.Grind > 0 ? T("runa.afiado", text, Amount(substat.Stat, substat.Grind)) : text;
+			return substat.Grind > 0 ? T("rune.ground", text, Amount(substat.Stat, substat.Grind)) : text;
 		}
 
 		/// <summary>"+5%" ou "+20".</summary>
@@ -81,10 +81,10 @@ namespace Sigilos.UI
 			: string.Format(Culture, "{0:0.#}%", value * 100);
 
 		/// <summary>"Violência (2)": conjunto e espaço.</summary>
-		public static string Title(Rune rune) => T("runa.titulo", Name(rune.Set), rune.Slot);
+		public static string Title(Rune rune) => T("rune.title", Name(rune.Set), rune.Slot);
 
 		/// <summary>"Pedra de Afiar Heroica · Ataque%".</summary>
-		public static string Name(RuneTool tool) => T($"pedra.{tool.Kind}", Name(tool.Grade), Label(tool.Stat));
+		public static string Name(RuneTool tool) => T($"tool.{tool.Kind}", Name(tool.Grade), Label(tool.Stat));
 
 		/// <summary>O que a pedra dá: "+4% a +7%".</summary>
 		public static string Range(RuneTool tool)
@@ -92,21 +92,21 @@ namespace Sigilos.UI
 			var (min, max) = tool.Kind == RuneToolKind.Grindstone
 				? RuneRules.GrindRange(tool.Stat, tool.Grade) ?? (0, 0)
 				: RuneRules.GemRange(tool.Stat, tool.Grade);
-			return T("pedra.faixa", Amount(tool.Stat, min), Amount(tool.Stat, max));
+			return T("tool.range", Amount(tool.Stat, min), Amount(tool.Stat, max));
 		}
 
 		/// <summary>O bônus do Despertar: "+15 de Velocidade" ou "+25% de Precisão".</summary>
 		public static string AwakeningBonus(Stat stat)
 		{
 			var value = Awakening.Bonus(stat);
-			return T("despertar.bonus", StatBlock.IsAbsolute(stat) ? string.Format(Culture, "+{0:0}", value) : $"+{Percent(value)}", Name(stat));
+			return T("awaken.bonus", StatBlock.IsAbsolute(stat) ? string.Format(Culture, "+{0:0}", value) : $"+{Percent(value)}", Name(stat));
 		}
 
 		public static string Stars(int count) => new('★', count);
 
-		public static string Scrolls(int count) => count == 1 ? T("moeda.pergaminho") : T("moeda.pergaminhos", count);
+		public static string Scrolls(int count) => count == 1 ? T("currency.scroll") : T("currency.scrolls", count);
 
-		public static string Turns(int turns) => turns == 1 ? T("turnos.um") : T("turnos.varios", turns);
+		public static string Turns(int turns) => turns == 1 ? T("turns.one") : T("turns.many", turns);
 
 		public static string Percent(double fraction) => string.Format(Culture, "{0:0.#}%", fraction * 100);
 
@@ -130,15 +130,15 @@ namespace Sigilos.UI
 
 		/// <summary>Um termo único do jogo, em dourado, com o Glifo na frente quando tem.</summary>
 		public static string Term(string text, Glyph? glyph = null) =>
-			$"{(glyph is { } g ? $"[glifo={g}]" : "")}[color=#{Palette.Gold.ToHtml(false)}]{text}[/color]";
+			$"{(glyph is { } g ? $"[glyph={g}]" : "")}[color=#{Palette.Gold.ToHtml(false)}]{text}[/color]";
 
 		public static string Term(StatusKind status) => Term(Name(status), GlyphOf(status));
 
 		public static string Term(RuneSet set) => Term(Name(set), RuneSets.For(set).Glyph);
 
-		public static string Impeto => Term(T("termo.impeto"), RuneSets.For(RuneSet.Nemesis).Glyph);
+		public static string Impeto => Term(T("term.impetus"), RuneSets.For(RuneSet.Nemesis).Glyph);
 
-		public static string Ether => Term(T("termo.eter"));
+		public static string Ether => Term(T("term.aether"));
 
 		/// <summary>Tira BBCode e Glifos: para dica de mouse, que é texto puro.</summary>
 		public static string Plain(string rich) => System.Text.RegularExpressions.Regex.Replace(rich, @"\[[^\]]*\]", "");
@@ -151,17 +151,17 @@ namespace Sigilos.UI
 			var value = Percent(set.Value);
 			var bonus = set.Effect switch
 			{
-				RuneSetEffect.Drain => T("conjunto_efeito.Drain", value),
-				RuneSetEffect.Stun => T("conjunto_efeito.Stun", value, Term(StatusKind.Stun)),
-				RuneSetEffect.ExtraTurn => T("conjunto_efeito.ExtraTurn", value),
-				RuneSetEffect.AllyShield => T("conjunto_efeito.AllyShield", Term(StatusKind.Shield), value, RuneSets.ShieldTurns),
-				RuneSetEffect.Immunity => T("conjunto_efeito.Immunity", Term(StatusKind.Immunity), Turns((int)set.Value)),
-				RuneSetEffect.Counter => T("conjunto_efeito.Counter", value, Percent(RuneSets.CounterDamage)),
-				RuneSetEffect.Nemesis => T("conjunto_efeito.Nemesis", value, Impeto, Percent(RuneSets.NemesisStep)),
-				RuneSetEffect.Destroy => T("conjunto_efeito.Destroy", Percent(RuneSets.DestroyShare), value, Percent(RuneSets.DestroyLimit)),
-				_ => T("conjunto_efeito.Stat", value, Name(set.Stat ?? Stat.Health)),
+				RuneSetEffect.Drain => T("set_effect.Drain", value),
+				RuneSetEffect.Stun => T("set_effect.Stun", value, Term(StatusKind.Stun)),
+				RuneSetEffect.ExtraTurn => T("set_effect.ExtraTurn", value),
+				RuneSetEffect.AllyShield => T("set_effect.AllyShield", Term(StatusKind.Shield), value, RuneSets.ShieldTurns),
+				RuneSetEffect.Immunity => T("set_effect.Immunity", Term(StatusKind.Immunity), Turns((int)set.Value)),
+				RuneSetEffect.Counter => T("set_effect.Counter", value, Percent(RuneSets.CounterDamage)),
+				RuneSetEffect.Nemesis => T("set_effect.Nemesis", value, Impeto, Percent(RuneSets.NemesisStep)),
+				RuneSetEffect.Destroy => T("set_effect.Destroy", Percent(RuneSets.DestroyShare), value, Percent(RuneSets.DestroyLimit)),
+				_ => T("set_effect.Stat", value, Name(set.Stat ?? Stat.Health)),
 			};
-			return T("conjunto_efeito.pecas", set.Pieces, bonus);
+			return T("set_effect.pieces", set.Pieces, bonus);
 		}
 
 		public static string Describe(PassiveDefinition passive, bool awakened)
@@ -169,44 +169,44 @@ namespace Sigilos.UI
 			var value = Percent(passive.ValueFor(awakened));
 			return passive.Kind switch
 			{
-				PassiveKind.ShieldOnDeath => T("assinatura.ShieldOnDeath", Term(StatusKind.Shield), value),
-				_ => T($"assinatura.{passive.Kind}", value),
+				PassiveKind.ShieldOnDeath => T("signature.ShieldOnDeath", Term(StatusKind.Shield), value),
+				_ => T($"signature.{passive.Kind}", value),
 			};
 		}
 
 		public static string Describe(SkillDefinition skill)
 		{
 			var text = Describe(skill.Effects);
-			return skill.CanEnhance ? $"{text}\n{T("habilidade.aprimorada", skill.EnhanceCost, Ether, Describe(skill.EnhancedEffects))}" : text;
+			return skill.CanEnhance ? $"{text}\n{T("skill.enhanced", skill.EnhanceCost, Ether, Describe(skill.EnhancedEffects))}" : text;
 		}
 
 		public static string Describe(IEnumerable<EffectDefinition> effects) => string.Join("; ", effects.Select(Describe)) + ".";
 
 		private static string Describe(EffectDefinition effect)
 		{
-			var where = T($"alvo.{effect.Target}");
-			var chance = effect.Chance < 1 ? T("habilidade.chance", Percent(effect.Chance)) : "";
+			var where = T($"target.{effect.Target}");
+			var chance = effect.Chance < 1 ? T("skill.chance", Percent(effect.Chance)) : "";
 			var text = effect.Kind switch
 			{
 				EffectKind.Damage => DamageText(effect, where),
-				EffectKind.Heal => T("habilidade.cura", Percent(effect.Power), where),
-				EffectKind.Shield => T("habilidade.escudo", Term(StatusKind.Shield), Percent(effect.Power), where, Turns(effect.Turns)),
-				EffectKind.Status => T("habilidade.efeito", chance, Term(effect.Status), where, Turns(effect.Turns)),
-				EffectKind.Impeto => T("habilidade.impeto", effect.Power >= 0 ? "+" : "−", Math.Abs(effect.Power), Impeto, where),
-				EffectKind.Cleanse => T("habilidade.purifica", where),
+				EffectKind.Heal => T("skill.heal", Percent(effect.Power), where),
+				EffectKind.Shield => T("skill.shield", Term(StatusKind.Shield), Percent(effect.Power), where, Turns(effect.Turns)),
+				EffectKind.Status => T("skill.effect", chance, Term(effect.Status), where, Turns(effect.Turns)),
+				EffectKind.Impeto => T("skill.impetus", effect.Power >= 0 ? "+" : "−", Math.Abs(effect.Power), Impeto, where),
+				EffectKind.Cleanse => T("skill.cleanse", where),
 				_ => effect.Kind.ToString(),
 			};
-			return effect.OnKill ? T("habilidade.se_derrubar", text) : text;
+			return effect.OnKill ? T("skill.on_kill", text) : text;
 		}
 
 		private static string DamageText(EffectDefinition effect, string where)
 		{
-			var hits = effect.Hits > 1 ? T("habilidade.golpes", effect.Hits) : "";
-			var text = T("habilidade.dano", hits, Percent(effect.Power), where);
+			var hits = effect.Hits > 1 ? T("skill.hits", effect.Hits) : "";
+			var text = T("skill.damage", hits, Percent(effect.Power), where);
 			if (effect.IgnoreDefense > 0)
-				text += T("habilidade.ignora", Percent(effect.IgnoreDefense));
+				text += T("skill.ignores", Percent(effect.IgnoreDefense));
 			if (effect.Drain > 0)
-				text += T("habilidade.drena", Percent(effect.Drain));
+				text += T("skill.drain", Percent(effect.Drain));
 			return text;
 		}
 
@@ -216,26 +216,26 @@ namespace Sigilos.UI
 			IEnumerable<string> Keys<TEnum>(string format) where TEnum : struct, Enum =>
 				Enum.GetValues<TEnum>().Select(value => string.Format(format, value));
 
-			return Keys<Element>("elemento.{0}")
-				.Concat(Keys<Role>("papel.{0}"))
-				.Concat(Keys<Stat>("atributo.{0}"))
-				.Concat(Keys<Stat>("atributo_explica.{0}"))
-				.Concat(Keys<RuneStat>("runa_atributo.{0}"))
-				.Concat(Keys<RuneSet>("conjunto.{0}"))
-				.Concat(Keys<Glyph>("glifo.{0}.nome"))
-				.Concat(Keys<Glyph>("glifo.{0}.sentido"))
-				.Concat(Keys<RuneRarity>("raridade.{0}"))
-				.Concat(Keys<StatusKind>("efeito.{0}.nome"))
-				.Concat(Keys<StatusKind>("efeito.{0}.sigla"))
-				.Concat(Keys<StatusKind>("efeito.{0}.explica"))
-				.Concat(Keys<TargetKind>("alvo.{0}"))
-				.Concat(Keys<PassiveKind>("assinatura.{0}"))
-				.Concat(Keys<RuneToolKind>("pedra.{0}"))
-				.Concat(Keys<DungeonKind>("masmorras.tipo.{0}"))
-				.Concat(Keys<RuneSort>("filtro.ordem.{0}"))
-				.Concat(Keys<ShopItem>("loja.item.{0}"))
-				.Concat(Keys<EntryProblem>("entrada.{0}").Where(k => !k.EndsWith("None")))
-				.Concat(Keys<RuneSetEffect>("conjunto_efeito.{0}").Where(k => !k.EndsWith("None")))
+			return Keys<Element>("element.{0}")
+				.Concat(Keys<Role>("role.{0}"))
+				.Concat(Keys<Stat>("stat.{0}"))
+				.Concat(Keys<Stat>("stat_info.{0}"))
+				.Concat(Keys<RuneStat>("rune_stat.{0}"))
+				.Concat(Keys<RuneSet>("set.{0}"))
+				.Concat(Keys<Glyph>("glyph.{0}.name"))
+				.Concat(Keys<Glyph>("glyph.{0}.meaning"))
+				.Concat(Keys<RuneRarity>("rarity.{0}"))
+				.Concat(Keys<StatusKind>("effect.{0}.name"))
+				.Concat(Keys<StatusKind>("effect.{0}.short"))
+				.Concat(Keys<StatusKind>("effect.{0}.info"))
+				.Concat(Keys<TargetKind>("target.{0}"))
+				.Concat(Keys<PassiveKind>("signature.{0}"))
+				.Concat(Keys<RuneToolKind>("tool.{0}"))
+				.Concat(Keys<DungeonKind>("dungeons.kind.{0}"))
+				.Concat(Keys<RuneSort>("filter.order.{0}"))
+				.Concat(Keys<ShopItem>("shop.item.{0}"))
+				.Concat(Keys<EntryProblem>("entry.{0}").Where(k => !k.EndsWith("None")))
+				.Concat(Keys<RuneSetEffect>("set_effect.{0}").Where(k => !k.EndsWith("None")))
 				.Where(key => !Has(key));
 		}
 	}

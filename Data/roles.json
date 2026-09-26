@@ -1,8 +1,8 @@
-// Atributos de base por papel: uma 5★ no nível 40, sem Despertar e sem runas
-// (uma 5★ natural em 6★ nível 40; a Fênix de Fogo de lá tem 9225 de Vida, 834 de Ataque e 527 de Defesa).
-// 4★ usam 92% e 3★ 85%; o nível 1 vale 43% (5★), 32% (4★) ou 22% (3★) disso (Core/Progression/Growth.cs).
-// Crítico 15%, Dano crítico 50%, Resistência 5% e Precisão 0% são os de quase todo monstro:
-// não crescem com o nível. Sobem com runas, Despertar e Liderança.
+// Base stats per role: a 5★ at level 40, with no Awakening and no runes (a natural 5★ raised to
+// 6★ level 40 in the reference game; its Fire Phoenix has 9225 HP, 834 Attack and 527 Defense).
+// 4★ use 92% and 3★ 85%; level 1 is worth 43% (5★), 32% (4★) or 22% (3★) of that (Core/Progression/Growth.cs).
+// Crit Rate 15%, Crit Damage 50%, Resistance 5% and Accuracy 0% are the same for almost every monster:
+// they don't grow with level. Runes, Awakening and Leadership raise them.
 {
   "Front":    { "health": 11100, "attack": 620, "defense": 700, "speed": 98,  "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
   "Attacker": { "health": 9300,  "attack": 900, "defense": 500, "speed": 103, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },

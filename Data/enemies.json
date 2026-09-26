@@ -1,17 +1,17 @@
-// Criaturas Profanadas da região 1 (GDD, seção 5): clássicos de RPG com 1 ou 2 estrelas, mais o chefe.
-// O elemento de cada inimigo é escolhido na fase (Data/stages.json), como as famílias de invocação.
-// Os cinco últimos são os chefes das Masmorras (Data/dungeons.json).
-// "healthScale" e "attackScale" multiplicam Vida e Ataque: compensam a raridade baixa (inimigo não tem
-// runa nem aprimoramento), e chefes usam mais Vida.
+// Defiled Creatures of region 1 (GDD, section 5): RPG classics with 1 or 2 stars, plus the boss.
+// Each enemy's element is chosen in the stage (Data/stages.json), like the summon families.
+// The last five are the Dungeon bosses (Data/dungeons.json).
+// "healthScale" and "attackScale" multiply HP and Attack: they make up for the low rarity (enemies
+// have no runes or enhancements), and bosses get more HP.
 [
   {
-    "id": "limo",
-    "name": "Limo Profanado",
+    "id": "slime",
+    "name": "Defiled Slime",
     "role": "Front",
     "rarity": 1,
     "healthScale": 2.0, "attackScale": 1.95,
     "image": "slime",
-    "basic": { "name": "Engolfar", "effects": [
+    "basic": { "name": "Engulf", "effects": [
       {"kind": "Damage", "power": 3.15},
       {"kind": "Status", "status": "AttackDown", "chance": 0.2, "turns": 2}
     ] }
@@ -23,158 +23,158 @@
     "rarity": 1,
     "healthScale": 2.0, "attackScale": 1.95,
     "image": "goblin",
-    "basic": { "name": "Facada", "effects": [
+    "basic": { "name": "Stab", "effects": [
       {"kind": "Damage", "power": 1.75, "hits": 2}
     ] }
   },
   {
-    "id": "lobo",
-    "name": "Lobo Profanado",
+    "id": "wolf",
+    "name": "Defiled Wolf",
     "role": "Attacker",
     "rarity": 2,
     "healthScale": 2.0, "attackScale": 1.95,
     "image": "wolf",
-    "basic": { "name": "Mordida", "effects": [
+    "basic": { "name": "Bite", "effects": [
       {"kind": "Damage", "power": 3.5}
     ] },
-    "special": { "name": "Uivo", "cooldown": 4, "effects": [
+    "special": { "name": "Howl", "cooldown": 4, "effects": [
       {"kind": "Impeto", "target": "AllAllies", "power": 25}
     ] }
   },
   {
-    "id": "bandido",
-    "name": "Bandido",
+    "id": "bandit",
+    "name": "Bandit",
     "role": "Control",
     "rarity": 2,
     "healthScale": 2.0, "attackScale": 1.95,
     "image": "bandit",
-    "basic": { "name": "Golpe Sujo", "effects": [
+    "basic": { "name": "Dirty Blow", "effects": [
       {"kind": "Damage", "power": 3.5},
       {"kind": "Status", "status": "Blind", "chance": 0.25, "turns": 2}
     ] },
-    "special": { "name": "Bomba de Fumaça", "cooldown": 4, "effects": [
+    "special": { "name": "Smoke Bomb", "cooldown": 4, "effects": [
       {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
     ] }
   },
   {
     "id": "troll",
-    "name": "Troll da Colina",
+    "name": "Hill Troll",
     "role": "Front",
     "rarity": 2,
     "healthScale": 3.4, "attackScale": 1.6,
     "image": "troll",
-    "basic": { "name": "Porrete", "effects": [
+    "basic": { "name": "Club", "effects": [
       {"kind": "Damage", "power": 4.2}
     ] },
-    "special": { "name": "Regenerar", "cooldown": 4, "effects": [
+    "special": { "name": "Regenerate", "cooldown": 4, "effects": [
       {"kind": "Heal", "target": "Self", "power": 0.2}
     ] }
   },
   {
-    "id": "dragao",
-    "name": "Dragão Jovem",
+    "id": "dragon",
+    "name": "Young Dragon",
     "role": "Attacker",
     "rarity": 2,
     "healthScale": 3.2, "attackScale": 1.6,
     "image": "dragon",
-    "basic": { "name": "Garra", "effects": [
+    "basic": { "name": "Claw", "effects": [
       {"kind": "Damage", "power": 3.85}
     ] },
-    "special": { "name": "Sopro", "cooldown": 4, "effects": [
+    "special": { "name": "Breath", "cooldown": 4, "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
       {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
     ] }
   },
   {
-    "id": "mestre_de_correntes",
-    "name": "O Mestre de Correntes",
+    "id": "chain_master",
+    "name": "The Chain Master",
     "role": "Control",
     "rarity": 3,
     "healthScale": 5.6, "attackScale": 1.6,
     "image": "chain_master",
-    "basic": { "name": "Corrente", "effects": [
+    "basic": { "name": "Chain", "effects": [
       {"kind": "Damage", "power": 3.5},
       {"kind": "Status", "status": "Taunt", "chance": 0.3}
     ] },
-    "special": { "name": "Grilhões", "cooldown": 4, "effects": [
+    "special": { "name": "Shackles", "cooldown": 4, "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
       {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
     ] }
   },
   {
-    "id": "golem_runico",
-    "name": "Golem Rúnico",
+    "id": "runic_golem",
+    "name": "Runic Golem",
     "role": "Front",
     "rarity": 3,
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "rock_golem",
-    "basic": { "name": "Punho de Pedra", "effects": [
+    "basic": { "name": "Stone Fist", "effects": [
       {"kind": "Damage", "power": 3.5},
       {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 0.3, "turns": 2}
     ] },
-    "special": { "name": "Terremoto", "cooldown": 4, "effects": [
+    "special": { "name": "Earthquake", "cooldown": 4, "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
       {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
     ] }
   },
   {
-    "id": "serpe_ancia",
-    "name": "Serpe Anciã",
+    "id": "elder_wyvern",
+    "name": "Elder Wyvern",
     "role": "Attacker",
     "rarity": 3,
     "healthScale": 5.4, "attackScale": 1.45,
     "image": "wyvern",
-    "basic": { "name": "Mordida Ardente", "effects": [
+    "basic": { "name": "Searing Bite", "effects": [
       {"kind": "Damage", "power": 3.8},
       {"kind": "Status", "status": "Burn", "chance": 0.4, "turns": 2}
     ] },
-    "special": { "name": "Sopro de Cinzas", "cooldown": 4, "effects": [
+    "special": { "name": "Ash Breath", "cooldown": 4, "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.6},
       {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
     ] }
   },
   {
-    "id": "rei_ossudo",
-    "name": "Rei Ossudo",
+    "id": "bone_king",
+    "name": "Bone King",
     "role": "Control",
     "rarity": 3,
     "healthScale": 6.8, "attackScale": 1.6,
     "image": "crowned_skull",
-    "basic": { "name": "Toque do Túmulo", "effects": [
+    "basic": { "name": "Grave Touch", "effects": [
       {"kind": "Damage", "power": 3.5, "drain": 0.3}
     ] },
-    "special": { "name": "Coroa de Pó", "cooldown": 4, "effects": [
+    "special": { "name": "Crown of Dust", "cooldown": 4, "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.0},
       {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
     ] }
   },
   {
-    "id": "guardiao_afogado",
-    "name": "Guardião Afogado",
+    "id": "drowned_guardian",
+    "name": "Drowned Guardian",
     "role": "Support",
     "rarity": 3,
     "healthScale": 6.4, "attackScale": 1.55,
     "image": "kraken",
-    "basic": { "name": "Tentáculo", "effects": [
+    "basic": { "name": "Tentacle", "effects": [
       {"kind": "Damage", "power": 3.5},
       {"kind": "Impeto", "power": -20, "chance": 0.5}
     ] },
-    "special": { "name": "Maré Negra", "cooldown": 4, "effects": [
+    "special": { "name": "Black Tide", "cooldown": 4, "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
       {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
     ] }
   },
   {
-    "id": "guardiao_da_forja",
-    "name": "Guardião da Forja",
+    "id": "forge_guardian",
+    "name": "Forge Guardian",
     "role": "Front",
     "rarity": 3,
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "golem_head",
-    "basic": { "name": "Martelada", "effects": [
+    "basic": { "name": "Hammer Blow", "effects": [
       {"kind": "Damage", "power": 3.6}
     ] },
-    "special": { "name": "Brasa da Bigorna", "cooldown": 4, "effects": [
+    "special": { "name": "Anvil Ember", "cooldown": 4, "effects": [
       {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
       {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
       {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}

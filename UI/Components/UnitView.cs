@@ -31,7 +31,7 @@ namespace Sigilos.UI.Components
 			CustomMinimumSize = CardSize;
 			MouseFilter = MouseFilterEnum.Stop;
 			PivotOffset = CardSize / 2;
-			TooltipText = T("batalha.unidade_dica", unit.Name, unit.Level);
+			TooltipText = T("battle.unit_tip", unit.Name, unit.Level);
 
 			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, 6, 6);
 			AddThemeStyleboxOverride("panel", _box);
@@ -53,7 +53,7 @@ namespace Sigilos.UI.Components
 			var art = new Doodle(Art.Creature(unit.Image), Palette.Of(unit.Element));
 			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			portrait.AddChild(art);
-			var level = new Label { Text = T("carta.nivel", unit.Level) };
+			var level = new Label { Text = T("card.level", unit.Level) };
 			level.AddThemeFontSizeOverride("font_size", 12);
 			level.AddThemeColorOverride("font_outline_color", Palette.Background);
 			level.AddThemeConstantOverride("outline_size", 4);
@@ -73,7 +73,7 @@ namespace Sigilos.UI.Components
 			column.AddChild(_healthText);
 
 			_impeto = Bar(Palette.Gold, 5);
-			_impeto.TooltipText = T("batalha.impeto_dica");
+			_impeto.TooltipText = T("battle.impetus_tip");
 			column.AddChild(_impeto);
 
 			var bottom = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
@@ -101,13 +101,13 @@ namespace Sigilos.UI.Components
 			_shield.Value = shield;
 			_shield.Visible = shield > 0;
 
-			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}/{Unit.MaxHealth:0}" : Unit.PendingRebirth ? T("batalha.renascendo") : T("batalha.caido");
+			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}/{Unit.MaxHealth:0}" : Unit.PendingRebirth ? T("battle.reviving") : T("battle.fallen");
 			_impeto.Value = Unit.Impeto;
 			_statuses.Text = string.Join(" ", Unit.Statuses
 				.Where(s => s.Kind != StatusKind.Shield)
 				.Select(s => Texts.Short(s.Kind))
 				.Distinct());
-			_statuses.TooltipText = string.Join("\n", Unit.Statuses.Select(s => T("batalha.efeito_dica", Texts.Name(s.Kind), s.Turns, Texts.Plain(Texts.Explain(s.Kind)))));
+			_statuses.TooltipText = string.Join("\n", Unit.Statuses.Select(s => T("battle.effect_tip", Texts.Name(s.Kind), s.Turns, Texts.Plain(Texts.Explain(s.Kind)))));
 			_cooldown.Text = Unit.Special != null && Unit.SpecialCooldown > 0 ? $"⟳{Unit.SpecialCooldown}" : "";
 			Modulate = Unit.IsAlive ? Colors.White : new Color(1, 1, 1, 0.35f);
 		}

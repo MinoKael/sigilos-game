@@ -45,12 +45,12 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("equipes.titulo"), null, T("geral.voltar"), () => BackRequested?.Invoke()));
+			page.AddChild(Layout.Header(T("teams.title"), null, T("common.back"), () => BackRequested?.Invoke()));
 
 			_contents.AddThemeConstantOverride("separation", 6);
 			page.AddChild(_contents);
 
-			var (teamPanel, team) = Layout.Section(T("equipes.vagas", PlayerState.TeamSize));
+			var (teamPanel, team) = Layout.Section(T("teams.capacity", PlayerState.TeamSize));
 			var teamRow = new HBoxContainer();
 			teamRow.AddThemeConstantOverride("separation", 16);
 			_slots.AddThemeConstantOverride("separation", 8);
@@ -62,7 +62,7 @@ namespace Sigilos.UI.Screens
 
 			var rosterPanel = new PanelContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			var rosterColumn = new VBoxContainer();
-			rosterColumn.AddChild(new Label { Text = T("equipes.colecao"), ThemeTypeVariation = GameTheme.Heading });
+			rosterColumn.AddChild(new Label { Text = T("teams.collection"), ThemeTypeVariation = GameTheme.Heading });
 			var scroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
 			_roster.AddThemeConstantOverride("h_separation", 8);
 			_roster.AddThemeConstantOverride("v_separation", 8);
@@ -84,7 +84,7 @@ namespace Sigilos.UI.Screens
 		private void RefreshContents()
 		{
 			Layout.Clear(_contents);
-			ContentButton(Teams.Campaign, T("equipes.campanha"), "campaign", true);
+			ContentButton(Teams.Campaign, T("teams.campaign"), "campaign", true);
 			foreach (var dungeon in _database.Dungeons)
 				ContentButton(dungeon.Id, dungeon.Name, "dungeon", Dungeons.IsUnlocked(_player, dungeon));
 		}
@@ -95,7 +95,7 @@ namespace Sigilos.UI.Screens
 			button.ToggleMode = true;
 			button.ButtonPressed = content == _content;
 			button.CustomMinimumSize = new Vector2(0, 40);
-			button.TooltipText = open ? T("equipes.conteudo_dica", Teams.Of(_player, content).Count, PlayerState.TeamSize) : T("equipes.conteudo_fechado");
+			button.TooltipText = open ? T("teams.content_tip", Teams.Of(_player, content).Count, PlayerState.TeamSize) : T("teams.content_locked");
 			button.Pressed += () =>
 			{
 				_content = content;
@@ -115,13 +115,13 @@ namespace Sigilos.UI.Screens
 				if (i < team.Count)
 				{
 					var monster = team[i];
-					var card = new CreatureCard(_database.Summon(monster.SummonId), monster, i == 0 ? T("equipes.lider") : null, 110);
-					card.TooltipText = T("equipes.tirar_dica");
+					var card = new CreatureCard(_database.Summon(monster.SummonId), monster, i == 0 ? T("teams.leader") : null, 110);
+					card.TooltipText = T("teams.take_out_tip");
 					card.Pressed += c => ToggleRequested?.Invoke(_content, c.Monster!.Id);
 					slot.AddChild(card);
 					if (i > 0)
 					{
-						var leader = new Button { Text = T("equipes.tornar_lider") };
+						var leader = new Button { Text = T("teams.make_leader") };
 						leader.Pressed += () => LeaderRequested?.Invoke(_content, monster.Id);
 						slot.AddChild(leader);
 					}
@@ -129,7 +129,7 @@ namespace Sigilos.UI.Screens
 				else
 				{
 					var empty = new PanelContainer { CustomMinimumSize = new Vector2(110, 143), ThemeTypeVariation = GameTheme.InsetPanel };
-					empty.AddChild(new Label { Text = T("equipes.vazio"), ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+					empty.AddChild(new Label { Text = T("teams.empty"), ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
 					slot.AddChild(empty);
 				}
 
@@ -137,11 +137,11 @@ namespace Sigilos.UI.Screens
 			}
 
 			var leaderSummon = team.Count > 0 ? _database.Summon(team[0].SummonId) : null;
-			_leader.AddChild(new Label { Text = T("equipes.lideranca"), ThemeTypeVariation = GameTheme.Heading });
+			_leader.AddChild(new Label { Text = T("teams.leadership"), ThemeTypeVariation = GameTheme.Heading });
 			_leader.AddChild(Layout.Text(leaderSummon?.Leader is { } skill
-				? T("equipes.lideranca_texto", leaderSummon.NameFor(team[0].Awakened), Texts.Percent(skill.Value), Texts.Name(skill.Stat))
-				: T("equipes.sem_lideranca"), GameTheme.Faded, 300));
-			_leader.AddChild(Layout.Text(T("equipes.dica"), GameTheme.Faded, 300));
+				? T("teams.leadership_text", leaderSummon.NameFor(team[0].Awakened), Texts.Percent(skill.Value), Texts.Name(skill.Stat))
+				: T("teams.no_leadership"), GameTheme.Faded, 300));
+			_leader.AddChild(Layout.Text(T("teams.tip"), GameTheme.Faded, 300));
 		}
 
 		private void RefreshRoster()
@@ -158,7 +158,7 @@ namespace Sigilos.UI.Screens
 			foreach (var monster in monsters)
 			{
 				var inTeam = team.Contains(monster.Id);
-				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, inTeam ? T("equipes.na_equipe") : null, 104);
+				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, inTeam ? T("teams.on_team") : null, 104);
 				card.SetSelected(inTeam);
 				card.Pressed += c => ToggleRequested?.Invoke(_content, c.Monster!.Id);
 				_roster.AddChild(card);

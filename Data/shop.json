@@ -1,9 +1,9 @@
-// A Loja (GDD, seção 12): troca Ouro por Mana ou Pergaminhos. "item" é Mana ou Scrolls, "amount" a
-// quantidade e "price" o preço em Ouro. O Ouro só vem de jogar: canalização, nível da conta e primeira
-// vitória em andar de Masmorra. A Mana comprada pode passar do máximo.
+// The Shop (GDD, section 12): trades Gold for Mana or Scrolls. "item" is Mana or Scrolls, "amount" the
+// quantity and "price" the price in Gold. Gold only comes from playing: channeling, account levels and
+// the first victory on each Dungeon floor. Bought Mana can go past the maximum.
 [
-  {"id": "mana_frasco", "name": "Frasco de Mana", "item": "Mana", "amount": 30, "price": 15},
-  {"id": "mana_cantaro", "name": "Cântaro de Mana", "item": "Mana", "amount": 120, "price": 50},
-  {"id": "pergaminho", "name": "Pergaminho Místico", "item": "Scrolls", "amount": 1, "price": 20},
-  {"id": "pergaminhos_10", "name": "Maço de Pergaminhos", "item": "Scrolls", "amount": 10, "price": 180}
+  {"id": "mana_flask", "name": "Mana Flask", "item": "Mana", "amount": 30, "price": 15},
+  {"id": "mana_jug", "name": "Mana Jug", "item": "Mana", "amount": 120, "price": 50},
+  {"id": "scroll", "name": "Mystic Scroll", "item": "Scrolls", "amount": 1, "price": 20},
+  {"id": "scrolls_10", "name": "Bundle of Scrolls", "item": "Scrolls", "amount": 10, "price": 180}
 ]

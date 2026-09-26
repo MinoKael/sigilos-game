@@ -1,12 +1,12 @@
 {
-  "id": "diabrete_fogo",
-  "name": "Diabrete de Fogo",
-  "family": "diabrete",
+  "id": "imp_fire",
+  "name": "Fire Imp",
+  "family": "imp",
   "element": "Fire",
   "role": "Attacker",
-  "awakening": {"name": "Fagulha", "stat": "Crit"},
+  "awakening": {"name": "Cinder", "stat": "Crit"},
   "basic": {
-    "name": "Faísca",
+    "name": "Spark",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 1.93, "hits": 2}
     ],
@@ -17,7 +17,7 @@
     ]
   },
   "special": {
-    "name": "Selo Rompido",
+    "name": "Broken Seal",
     "cooldown": 3,
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 6.3},

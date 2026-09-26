@@ -1,12 +1,12 @@
 {
-  "id": "diabrete_luz",
-  "name": "Diabrete de Luz",
-  "family": "diabrete",
+  "id": "imp_light",
+  "name": "Light Imp",
+  "family": "imp",
   "element": "Light",
   "role": "Support",
-  "awakening": {"name": "Lampejo", "stat": "Speed"},
+  "awakening": {"name": "Glint", "stat": "Speed"},
   "basic": {
-    "name": "Clarão",
+    "name": "Flash",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.15},
       {"kind": "Impeto", "target": "Target", "power": -15}
@@ -18,7 +18,7 @@
     ]
   },
   "special": {
-    "name": "Olhar Adiante",
+    "name": "Foresee",
     "cooldown": 4,
     "effects": [
       {"kind": "Impeto", "target": "AllAllies", "power": 20}

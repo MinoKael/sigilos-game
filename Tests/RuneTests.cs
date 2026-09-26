@@ -155,7 +155,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void EquipSwapsTheSlotAndStoredMonstersKeepTheirRunes()
 		{
-			var player = TestData.PlayerWith("diabrete_fogo", "diabrete_agua");
+			var player = TestData.PlayerWith("imp_fire", "imp_water");
 			var (a, b) = (player.Monsters[0].Id, player.Monsters[1].Id);
 			var small = Rune(RuneSet.Energy, 2, RuneStat.Speed, grade: 3);
 			var big = Rune(RuneSet.Swift, 2, RuneStat.Speed, grade: 5);

@@ -36,7 +36,7 @@ namespace Sigilos.UI.Components
 
 			CustomMinimumSize = new Vector2(width, width * 1.3f);
 			MouseFilter = MouseFilterEnum.Stop;
-			TooltipText = T("carta.dica", name, Texts.Name(summon.Element), Texts.Name(summon.Role));
+			TooltipText = T("card.tip", name, Texts.Name(summon.Element), Texts.Name(summon.Role));
 
 			_frame = Palette.Frame(summon.Rarity);
 			_box = GameTheme.Box(Palette.Inset, _frame, summon.Rarity >= 3 ? 3 : 2, 6, 6);
@@ -58,7 +58,7 @@ namespace Sigilos.UI.Components
 			var art = new Doodle(Art.Creature(summon.ImageFor(awakened)), Palette.Of(summon.Element));
 			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			portrait.AddChild(art);
-			var level = new Label { Text = T("carta.nivel", monster?.Level ?? 1), Position = new Vector2(2, 0) };
+			var level = new Label { Text = T("card.level", monster?.Level ?? 1), Position = new Vector2(2, 0) };
 			level.AddThemeFontSizeOverride("font_size", 12);
 			level.AddThemeColorOverride("font_outline_color", Palette.Background);
 			level.AddThemeConstantOverride("outline_size", 4);
@@ -77,7 +77,7 @@ namespace Sigilos.UI.Components
 				label.AddThemeColorOverride("font_color", Palette.Awakened);
 			column.AddChild(label);
 
-			var footer = badge ?? (monster is { Echoes: > 0 } ? T("carta.ecos", monster.Echoes) : "");
+			var footer = badge ?? (monster is { Echoes: > 0 } ? T("card.echoes", monster.Echoes) : "");
 			if (footer.Length > 0)
 				column.AddChild(new Label { Text = footer, ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center });
 

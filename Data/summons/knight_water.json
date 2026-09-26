@@ -1,13 +1,13 @@
 {
-  "id": "cavaleiro_agua",
-  "name": "Cavaleiro de Água",
-  "family": "cavaleiro",
+  "id": "knight_water",
+  "name": "Water Knight",
+  "family": "knight",
   "element": "Water",
   "role": "Front",
   "leader": {"stat": "Health", "value": 0.15},
-  "awakening": {"name": "Dama Maré", "stat": "Resistance"},
+  "awakening": {"name": "Dame Tide", "stat": "Resistance"},
   "basic": {
-    "name": "Golpe de Escudo",
+    "name": "Shield Bash",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.15},
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
@@ -19,7 +19,7 @@
     ]
   },
   "special": {
-    "name": "Muralha de Maré",
+    "name": "Tide Wall",
     "cooldown": 4,
     "effects": [
       {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}

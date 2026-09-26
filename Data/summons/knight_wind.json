@@ -1,13 +1,13 @@
 {
-  "id": "cavaleiro_vento",
-  "name": "Cavaleiro de Vento",
-  "family": "cavaleiro",
+  "id": "knight_wind",
+  "name": "Wind Knight",
+  "family": "knight",
   "element": "Wind",
   "role": "Support",
   "leader": {"stat": "Speed", "value": 0.1},
-  "awakening": {"name": "Dom Vendaval", "stat": "Speed"},
+  "awakening": {"name": "Sir Gale", "stat": "Speed"},
   "basic": {
-    "name": "Estocada Veloz",
+    "name": "Swift Thrust",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5}
     ],
@@ -18,7 +18,7 @@
     ]
   },
   "special": {
-    "name": "Clarim de Guerra",
+    "name": "War Horn",
     "cooldown": 4,
     "effects": [
       {"kind": "Impeto", "target": "AllAllies", "power": 25}

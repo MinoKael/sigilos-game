@@ -64,7 +64,7 @@ namespace Sigilos.Tests
 		{
 			var player = NewPlayer();
 			player.Essence = 1_000_000;
-			var monster = Roster.Add(player, "diabrete_fogo");
+			var monster = Roster.Add(player, "imp_fire");
 			var needed = Leveling.MissingToMax(monster);
 
 			Assert.Equal(needed, Leveling.Infuse(player, monster, int.MaxValue), "gasta só o que falta até o 40");
@@ -77,7 +77,7 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = NewPlayer();
-			var summon = database.Summon("diabrete_fogo");
+			var summon = database.Summon("imp_fire");
 			var monster = Roster.Add(player, summon.Id);
 			player.Essence = Awakening.Cost(summon.Rarity) - 1;
 			Assert.False(Awakening.Awaken(player, monster, summon), "sem Essência não desperta");
@@ -99,7 +99,7 @@ namespace Sigilos.Tests
 		private static void FirstVictoryPaysScrollsRuneAndExperience()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("diabrete_fogo");
+			var player = TestData.PlayerWith("imp_fire");
 			var stage = database.Stage(1);
 
 			var first = Campaign.ApplyVictory(new Random(1), player, stage);
@@ -138,7 +138,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void SaveRoundTripsAndOldSavesAreRefused()
 		{
-			var player = TestData.PlayerWith("diabrete_fogo", "fenix_fogo");
+			var player = TestData.PlayerWith("imp_fire", "phoenix_fire");
 			var monster = player.Monsters[0];
 			monster.Level = 12;
 			var rune = RuneInventory.Create(new Random(1), player, 3);

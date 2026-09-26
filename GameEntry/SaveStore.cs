@@ -10,7 +10,7 @@ namespace Sigilos.GameEntry
 	/// teste não apaga a de verdade.
 	///
 	/// Um save que não dá para ler (formato antigo ou arquivo quebrado) não é apagado: vira
-	/// <c>nome.antigo-data.json</c> e o jogo começa uma conta nova.
+	/// <c>nome.old-data.json</c> e o jogo começa uma conta nova.
 	/// </summary>
 	public sealed class SaveStore
 	{
@@ -42,7 +42,7 @@ namespace Sigilos.GameEntry
 			if (player == null)
 			{
 				// Com data no nome: um backup nunca apaga outro mais velho.
-				var backup = $"user://{_slot}.antigo-{DateTime.Now:yyyyMMdd-HHmmss}.json";
+				var backup = $"user://{_slot}.old-{DateTime.Now:yyyyMMdd-HHmmss}.json";
 				if (DirAccess.RenameAbsolute(_path, backup) == Error.Ok)
 					GD.PushWarning($"Save de formato antigo guardado em {backup}; começando uma conta nova.");
 				else

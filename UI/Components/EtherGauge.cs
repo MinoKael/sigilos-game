@@ -14,7 +14,7 @@ namespace Sigilos.UI.Components
 		public EtherGauge()
 		{
 			AddThemeConstantOverride("separation", 4);
-			TooltipText = T("batalha.eter_dica", BattleRules.MaxEther);
+			TooltipText = T("battle.aether_tip", BattleRules.MaxEther);
 			MouseFilter = MouseFilterEnum.Stop;
 			_label = new Label { CustomMinimumSize = new Vector2(92, 0), MouseFilter = MouseFilterEnum.Ignore };
 			_label.AddThemeFontOverride("font", GameTheme.Serif);
@@ -31,7 +31,7 @@ namespace Sigilos.UI.Components
 
 		public void SetValue(int ether)
 		{
-			_label.Text = T("batalha.eter", ether, BattleRules.MaxEther);
+			_label.Text = T("battle.aether", ether, BattleRules.MaxEther);
 			for (var i = 0; i < _pips.Length; i++)
 			{
 				var lit = i < ether;

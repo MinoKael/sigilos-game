@@ -1,11 +1,11 @@
 {
-  "id": "fenix_luz",
-  "name": "Fênix de Luz",
-  "family": "fenix",
+  "id": "phoenix_light",
+  "name": "Light Phoenix",
+  "family": "phoenix",
   "element": "Light",
   "role": "Control",
   "leader": {"stat": "Crit", "value": 0.15},
-  "awakening": {"name": "Solária", "stat": "Accuracy"},
+  "awakening": {"name": "Solaria", "stat": "Accuracy"},
   "basic": {
     "name": "Aurora",
     "effects": [
@@ -19,7 +19,7 @@
     ]
   },
   "special": {
-    "name": "Coroa Solar",
+    "name": "Solar Crown",
     "cooldown": 5,
     "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.8},

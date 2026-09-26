@@ -98,7 +98,7 @@ namespace Sigilos.Tests
 		private static void KnightShieldsAlliesWhenFalling()
 		{
 			var passive = new PassiveDefinition { Kind = PassiveKind.ShieldOnDeath, Value = 0.15 };
-			var knight = TestData.Unit("cavaleiro", Side.Allies, health: 1000, passive: passive);
+			var knight = TestData.Unit("knight", Side.Allies, health: 1000, passive: passive);
 			var friend = TestData.Unit("amigo", Side.Allies);
 			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 300, attack: 10_000);
 			var session = TestData.Session(new[] { knight, friend }, new[] { foe });
@@ -114,7 +114,7 @@ namespace Sigilos.Tests
 		private static void ImpSpeedsUpOnlyWhenStrictlyLowest()
 		{
 			var passive = new PassiveDefinition { Kind = PassiveKind.SpeedWhenLowest, Value = 0.15 };
-			var imp = TestData.Unit("diabrete", Side.Allies, speed: 100, passive: passive);
+			var imp = TestData.Unit("imp", Side.Allies, speed: 100, passive: passive);
 			var friend = TestData.Unit("amigo", Side.Allies);
 			TestData.Session(new[] { imp, friend }, new[] { TestData.Unit("inimigo", Side.Enemies) });
 

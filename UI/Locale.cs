@@ -7,12 +7,12 @@ namespace Sigilos.UI
 {
 	/// <summary>
 	/// Todo texto da interface mora em Data/texts/{idioma}.json, por chave. O arquivo é aninhado para
-	/// ficar legível (<c>{"runas": {"melhorar": "Melhorar"}}</c>) e a chave junta os nomes com ponto
-	/// (<c>runas.melhorar</c>). Os marcadores {0}, {1}... recebem os valores, como em
+	/// ficar legível (<c>{"runes": {"grind": "Grind"}}</c>) e a chave junta os nomes com ponto
+	/// (<c>runes.grind</c>). Os marcadores {0}, {1}... recebem os valores, como em
 	/// <see cref="string.Format(System.IFormatProvider, string, object[])"/>.
 	///
-	/// Para traduzir, copie pt-BR.json com outro nome, troque os textos e rode o jogo com
-	/// <c>-- --idioma=nome</c>. Chave que falta aparece entre ‹ › na tela e no console.
+	/// A base é en.json. Para traduzir, copie en.json com outro nome, troque os textos e rode o jogo com
+	/// <c>-- --language=nome</c>. Chave que falta aparece entre ‹ › na tela e no console.
 	/// </summary>
 	public static class Locale
 	{
@@ -20,7 +20,7 @@ namespace Sigilos.UI
 		private static readonly HashSet<string> Reported = new();
 
 		/// <summary>Formato de números e datas do idioma.</summary>
-		public static CultureInfo Culture { get; private set; } = CultureInfo.GetCultureInfo("pt-BR");
+		public static CultureInfo Culture { get; private set; } = CultureInfo.GetCultureInfo("en");
 
 		public static void Load(string json, string language)
 		{

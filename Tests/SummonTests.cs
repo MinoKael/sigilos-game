@@ -53,7 +53,7 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = Player();
-			var summon = database.Summon("fenix_fogo");
+			var summon = database.Summon("phoenix_fire");
 
 			var first = SummonRitual.Receive(player, summon);
 			first.Monster.Awakened = true;
@@ -72,7 +72,7 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = Player();
-			var summon = database.Summon("diabrete_fogo");
+			var summon = database.Summon("imp_fire");
 			for (var i = 0; i < PlayerState.CollectionCapacity; i++)
 				SummonRitual.Receive(player, summon);
 

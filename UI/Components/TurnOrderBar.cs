@@ -18,7 +18,7 @@ namespace Sigilos.UI.Components
 		public void Show(IReadOnlyList<BattleUnit> order)
 		{
 			Layout.Clear(this);
-			AddChild(new Label { Text = T("batalha.proximos") });
+			AddChild(new Label { Text = T("battle.next_up") });
 
 			foreach (var unit in order)
 			{

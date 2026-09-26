@@ -48,8 +48,8 @@ namespace Sigilos.UI.Screens
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
 
-			page.AddChild(Layout.Header(T("campanha.titulo"), _currencies, T("geral.voltar_santuario"), () => BackRequested?.Invoke()));
-			page.AddChild(new Label { Text = T("campanha.subtitulo"), ThemeTypeVariation = GameTheme.Faded });
+			page.AddChild(Layout.Header(T("campaign.title"), _currencies, T("common.back_to_hub"), () => BackRequested?.Invoke()));
+			page.AddChild(new Label { Text = T("campaign.subtitle"), ThemeTypeVariation = GameTheme.Faded });
 
 			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			body.AddThemeConstantOverride("separation", 20);
@@ -60,7 +60,7 @@ namespace Sigilos.UI.Screens
 			body.AddChild(_grid);
 
 			_detail.AddThemeConstantOverride("separation", 8);
-			var (panel, content) = Layout.Section(T("campanha.fase"));
+			var (panel, content) = Layout.Section(T("campaign.stage"));
 			panel.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			content.AddChild(_detail);
 			body.AddChild(panel);
@@ -91,7 +91,7 @@ namespace Sigilos.UI.Screens
 				var cleared = Campaign.IsCleared(_player, stage.Number);
 				var button = new Button
 				{
-					Text = cleared ? T("campanha.numero_vencida", stage.Number) : stage.Number.ToString(),
+					Text = cleared ? T("campaign.number_cleared", stage.Number) : stage.Number.ToString(),
 					CustomMinimumSize = new Vector2(92, 64),
 					Disabled = !Campaign.IsUnlocked(_player, stage.Number),
 					TooltipText = stage.Name,
@@ -115,19 +115,19 @@ namespace Sigilos.UI.Screens
 
 			var stage = _selected;
 			var cleared = Campaign.IsCleared(_player, stage.Number);
-			_detail.AddChild(new Label { Text = T("campanha.fase_titulo", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading });
+			_detail.AddChild(new Label { Text = T("campaign.stage_title", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading });
 			var levels = Teams.Of(_player, Teams.Campaign).Select(_player.Monster).OfType<OwnedSummon>().Select(m => m.Level).ToList();
-			_detail.AddChild(new Label { Text = T("campanha.niveis", stage.Level, levels.Count == 0 ? "—" : string.Join(", ", levels)) });
+			_detail.AddChild(new Label { Text = T("campaign.levels", stage.Level, levels.Count == 0 ? "—" : string.Join(", ", levels)) });
 
 			for (var i = 0; i < stage.Waves.Count; i++)
 			{
 				var row = new HBoxContainer();
-				row.AddChild(new Label { Text = T("campanha.onda", i + 1), CustomMinimumSize = new Vector2(70, 0) });
+				row.AddChild(new Label { Text = T("campaign.wave", i + 1), CustomMinimumSize = new Vector2(70, 0) });
 				foreach (var slot in stage.Waves[i])
 				{
 					var enemy = _database.Enemy(slot.Enemy);
 					var icon = Doodle.Icon(Art.Creature(enemy.Image), 40, Palette.Of(slot.Element));
-					icon.TooltipText = T("campanha.inimigo_dica", enemy.Name, Texts.Name(slot.Element));
+					icon.TooltipText = T("campaign.enemy_tip", enemy.Name, Texts.Name(slot.Element));
 					icon.MouseFilter = MouseFilterEnum.Stop;
 					row.AddChild(icon);
 				}
@@ -136,31 +136,31 @@ namespace Sigilos.UI.Screens
 			}
 
 			var reward = cleared
-				? T("campanha.recompensa", stage.Essence, stage.Experience, Texts.Percent(Campaign.RepeatRuneChance), Texts.Stars(stage.RuneGrade))
-				: T("campanha.recompensa_primeira", Texts.Scrolls(stage.FirstClearScrolls), stage.Essence + stage.FirstClearEssence, stage.Experience, Texts.Stars(stage.RuneGrade));
+				? T("campaign.reward", stage.Essence, stage.Experience, Texts.Percent(Campaign.RepeatRuneChance), Texts.Stars(stage.RuneGrade))
+				: T("campaign.reward_first", Texts.Scrolls(stage.FirstClearScrolls), stage.Essence + stage.FirstClearEssence, stage.Experience, Texts.Stars(stage.RuneGrade));
 			_detail.AddChild(Layout.Text(reward, width: 400));
 
 			foreach (var line in stage.Lines)
-				_detail.AddChild(Layout.Text(T("campanha.fala", line), GameTheme.Faded, 400));
+				_detail.AddChild(Layout.Text(T("campaign.line", line), GameTheme.Faded, 400));
 
 			var buttons = new HBoxContainer();
 			buttons.AddThemeConstantOverride("separation", 12);
 			var problem = Campaign.Check(_player, stage);
 			var blocked = Teams.Of(_player, Teams.Campaign).Count == 0 || problem != EntryProblem.None;
-			var fight = new Button { Text = T("geral.lutar_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), Disabled = blocked };
+			var fight = new Button { Text = T("common.fight_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), Disabled = blocked };
 			fight.Pressed += () => FightRequested?.Invoke(stage);
 			buttons.AddChild(fight);
 			if (cleared)
 			{
-				var resolve = new Button { Text = T("geral.resolver_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), TooltipText = T("geral.resolver_dica"), Disabled = blocked };
+				var resolve = new Button { Text = T("common.resolve_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), TooltipText = T("common.resolve_tip"), Disabled = blocked };
 				resolve.Pressed += () => ResolveRequested?.Invoke(stage);
 				buttons.AddChild(resolve);
 			}
 
-			var team = new Button { Text = T("geral.equipe"), CustomMinimumSize = new Vector2(120, 52) };
+			var team = new Button { Text = T("common.team"), CustomMinimumSize = new Vector2(120, 52) };
 			team.Pressed += () => TeamRequested?.Invoke();
 			buttons.AddChild(team);
-			var shop = new Button { Text = T("geral.loja"), CustomMinimumSize = new Vector2(120, 52), TooltipText = T("geral.loja_dica") };
+			var shop = new Button { Text = T("common.shop"), CustomMinimumSize = new Vector2(120, 52), TooltipText = T("common.shop_tip") };
 			shop.Pressed += () => ShopRequested?.Invoke();
 			buttons.AddChild(shop);
 			_detail.AddChild(buttons);
@@ -174,7 +174,7 @@ namespace Sigilos.UI.Screens
 
 			var size = Teams.Of(_player, Teams.Campaign).Count;
 			if (size < PlayerState.TeamSize)
-				_detail.AddChild(new Label { Text = T("geral.equipe_incompleta", size, PlayerState.TeamSize), ThemeTypeVariation = GameTheme.Faded });
+				_detail.AddChild(new Label { Text = T("common.team_incomplete", size, PlayerState.TeamSize), ThemeTypeVariation = GameTheme.Faded });
 		}
 	}
 }

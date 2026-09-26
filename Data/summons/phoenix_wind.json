@@ -1,13 +1,13 @@
 {
-  "id": "fenix_vento",
-  "name": "Fênix de Vento",
-  "family": "fenix",
+  "id": "phoenix_wind",
+  "name": "Wind Phoenix",
+  "family": "phoenix",
   "element": "Wind",
   "role": "Attacker",
   "leader": {"stat": "Speed", "value": 0.15},
-  "awakening": {"name": "Zéfira", "stat": "Speed"},
+  "awakening": {"name": "Zephyra", "stat": "Speed"},
   "basic": {
-    "name": "Rasante de Brasa",
+    "name": "Ember Dive",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.85},
       {"kind": "Impeto", "target": "Target", "power": -20}
@@ -19,7 +19,7 @@
     ]
   },
   "special": {
-    "name": "Tempestade de Penas",
+    "name": "Feather Storm",
     "cooldown": 4,
     "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.8},

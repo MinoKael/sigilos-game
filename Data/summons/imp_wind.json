@@ -1,12 +1,12 @@
 {
-  "id": "diabrete_vento",
-  "name": "Diabrete de Vento",
-  "family": "diabrete",
+  "id": "imp_wind",
+  "name": "Wind Imp",
+  "family": "imp",
   "element": "Wind",
   "role": "Control",
-  "awakening": {"name": "Rodamoinho", "stat": "Accuracy"},
+  "awakening": {"name": "Eddy", "stat": "Accuracy"},
   "basic": {
-    "name": "Rodopio",
+    "name": "Spin",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
@@ -18,7 +18,7 @@
     ]
   },
   "special": {
-    "name": "Redemoinho",
+    "name": "Whirlwind",
     "cooldown": 4,
     "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.1},

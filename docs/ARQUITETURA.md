@@ -12,7 +12,7 @@ Data/*.json ──texto──▶ GameEntry ──▶ Core   (regras, sem Godot)
   Por isso roda igual no jogo e no console de testes, e o combate é determinístico por semente.
 - **UI/** recebe o que mostra no construtor e avisa por evento C# (`FightRequested`, `AwakenRequested`...).
   Nenhuma tela muda o `PlayerState` nem salva. Nenhuma tela tem texto escrito no código: tudo vem de
-  `Data/texts/pt-BR.json` por chave (`Locale.T("runas.melhorar", ...)`); `UI/Texts.cs` só monta nomes
+  `Data/texts/en.json` por chave (`Locale.T("runes.upgrade_to", ...)`); `UI/Texts.cs` só monta nomes
   por enum e as descrições geradas das regras.
 - **GameEntry/** é a raiz de composição: o `GameRoot` assina os eventos das telas, chama as regras do
   Core, salva e troca de tela. É o único lugar que junta tudo.
@@ -43,8 +43,8 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
 | Nível da conta e Ouro por nível | `Core/Progression/Account.cs` |
 | Loja | ofertas em `Data/shop.json`; regra em `Core/Progression/Shop.cs` |
-| Qualquer texto da interface | `Data/texts/pt-BR.json`, depois `py Tools/texts/check_texts.py` |
-| Traduzir | copie `Data/texts/pt-BR.json` com outro nome e rode com `-- --idioma=nome` |
+| Qualquer texto da interface | `Data/texts/en.json` (a base) e a mesma chave em `Data/texts/pt-BR.json`, depois `py Tools/texts/check_texts.py` |
+| Traduzir | copie `Data/texts/en.json` com outro nome e rode com `-- --language=nome` |
 | Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simular` |
 | Éter (ganho, teto, custo mínimo) | `Core/Battle/BattleRules.cs`; custo de cada aprimoramento em `Data/summons/` |
 | Atributos por papel e nível | `Data/roles.json` (valores de nível 40, escala de Summoners War), `Core/Progression/Growth.cs` |
@@ -59,7 +59,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Ociosidade | `Core/Progression/Idle.cs` |
 | Novo tipo de efeito | `Core/Content/EffectKind.cs` + um `case` em `Core/Battle/EffectResolver.cs` + a descrição em `UI/Texts.cs` e o texto em `Data/texts` |
 | Nova Assinatura | `Core/Content/PassiveKind.cs` + o gancho em `BattleSession` ou `BattleUnit` |
-| Compêndio (regras) e Grimório (catálogo) | textos em `Data/texts` (`compendio.*`, `grimorio.*`); cartões em `UI/Screens/CompendiumScreen.cs` e `GrimoireScreen.cs` |
+| Compêndio (regras) e Grimório (catálogo) | textos em `Data/texts` (`compendium.*`, `grimoire.*`); cartões em `UI/Screens/CompendiumScreen.cs` e `GrimoireScreen.cs` |
 | Cores, fontes | `UI/Style/Palette.cs`, `UI/Style/GameTheme.cs` |
 | Nova tela | `UI/Screens/` + o `Show...` correspondente em `GameEntry/GameRoot.cs` |
 
@@ -91,6 +91,9 @@ problemas no console ao abrir.
 - **Uma batalha, vários conteúdos.** Fase e andar de Masmorra viram um `Encounter` (nível, ondas,
   força); a mesma `BattleFactory`, a mesma tela e o mesmo Resolver servem aos dois. O que muda é a
   equipe (por conteúdo) e a recompensa (`Campaign` ou `Dungeons`, as duas devolvem `VictoryReward`).
+- **O jogo é em inglês; o código fala português.** Ids, nomes em `Data/`, chaves e textos da interface
+  (`Data/texts/en.json`), argumentos e o simulador são em inglês. `pt-BR.json` é uma tradução da
+  interface, com as mesmas chaves. Comentários, mensagens dos testes e estes docs seguem em português.
 - **Texto fora do código.** As telas pedem texto por chave ao `Locale`; o que depende de regra
   (descrição de habilidade, conjunto, efeito) é montado em `Texts` a partir das mesmas regras que o
   combate usa, então a explicação nunca desatualiza. `Tools/texts/check_texts.py` confere as chaves
@@ -112,9 +115,9 @@ problemas no console ao abrir.
 
 ## Save
 
-`PlayerState.CurrentVersion` marca o formato (hoje 5: Mana, Ouro e nível da conta; sem Pó de Sigilo
-nem entradas de Masmorra). Um save de outro formato não é lido: o `SaveStore` guarda o arquivo como
-`nome.antigo-AAAAMMDD-HHMMSS.json` (a data evita apagar um backup mais velho) e começa uma conta nova.
+`PlayerState.CurrentVersion` marca o formato (hoje 6: ids em inglês; o 5 trouxe Mana, Ouro e nível da
+conta). Um save de outro formato não é lido: o `SaveStore` guarda o arquivo como
+`nome.old-AAAAMMDD-HHMMSS.json` (a data evita apagar um backup mais velho) e começa uma conta nova.
 
 ## Exportar
 

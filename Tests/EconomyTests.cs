@@ -45,7 +45,7 @@ namespace Sigilos.Tests
 		private static void VictoryExperienceAlsoGoesToTheAccount()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("fenix_fogo");
+			var player = TestData.PlayerWith("phoenix_fire");
 			var stage = database.Stage(1);
 
 			var reward = Campaign.ApplyVictory(new Random(1), player, stage);
@@ -58,7 +58,7 @@ namespace Sigilos.Tests
 		private static void CampaignChargesManaOnlyOnVictory()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("fenix_fogo");
+			var player = TestData.PlayerWith("phoenix_fire");
 			player.AccountLevel = Account.MaxLevel;
 			var stage = database.Stage(1);
 			var mana = player.Mana;

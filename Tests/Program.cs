@@ -17,8 +17,8 @@ namespace Sigilos.Tests
 	/// Uso (na raiz do repositório):
 	///   dotnet run --project Tests                  roda os testes
 	///   dotnet run --project Tests -- --only=Summon só os testes com "Summon" no nome
-	///   dotnet run --project Tests -- --simular     relatório de balanceamento da campanha
-	///   dotnet run --project Tests -- --luta=10     uma luta da fase 10, turno a turno
+	///   dotnet run --project Tests -- --simulate    relatório de balanceamento da campanha
+	///   dotnet run --project Tests -- --fight=10    uma luta da fase 10, turno a turno
 	/// </summary>
 	internal static class Program
 	{
@@ -27,16 +27,16 @@ namespace Sigilos.Tests
 
 		private static int Main(string[] args)
 		{
-			if (args.Contains("--simular"))
+			if (args.Contains("--simulate"))
 			{
 				CampaignReport.Print(TestData.LoadReal());
 				return 0;
 			}
 
-			var battle = args.FirstOrDefault(a => a.StartsWith("--luta=", StringComparison.Ordinal));
+			var battle = args.FirstOrDefault(a => a.StartsWith("--fight=", StringComparison.Ordinal));
 			if (battle != null)
 			{
-				CampaignReport.PrintBattle(TestData.LoadReal(), int.Parse(battle["--luta=".Length..]));
+				CampaignReport.PrintBattle(TestData.LoadReal(), int.Parse(battle["--fight=".Length..]));
 				return 0;
 			}
 

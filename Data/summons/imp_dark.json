@@ -1,12 +1,12 @@
 {
-  "id": "diabrete_trevas",
-  "name": "Diabrete de Trevas",
-  "family": "diabrete",
+  "id": "imp_dark",
+  "name": "Dark Imp",
+  "family": "imp",
   "element": "Dark",
   "role": "Attacker",
-  "awakening": {"name": "Negrume", "stat": "Accuracy"},
+  "awakening": {"name": "Murk", "stat": "Accuracy"},
   "basic": {
-    "name": "Golpe Sombrio",
+    "name": "Shadow Strike",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
@@ -18,7 +18,7 @@
     ]
   },
   "special": {
-    "name": "Sumir no Selo",
+    "name": "Vanish into the Seal",
     "cooldown": 4,
     "effects": [
       {"kind": "Status", "target": "Self", "status": "Hidden"},

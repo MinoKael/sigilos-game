@@ -44,8 +44,8 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("masmorras.titulo"), _currencies, T("geral.voltar_santuario"), () => BackRequested?.Invoke()));
-			page.AddChild(new Label { Text = T("masmorras.subtitulo"), ThemeTypeVariation = GameTheme.Faded });
+			page.AddChild(Layout.Header(T("dungeons.title"), _currencies, T("common.back_to_hub"), () => BackRequested?.Invoke()));
+			page.AddChild(new Label { Text = T("dungeons.subtitle"), ThemeTypeVariation = GameTheme.Faded });
 
 			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			body.AddThemeConstantOverride("separation", 16);
@@ -99,8 +99,8 @@ namespace Sigilos.UI.Screens
 				text.AddChild(new Label
 				{
 					Text = open
-						? T("masmorras.progresso", Texts.Name(dungeon.Kind), Dungeons.Cleared(_player, dungeon), dungeon.Floors.Count)
-						: T("masmorras.fechada", dungeon.UnlockStage),
+						? T("dungeons.progress", Texts.Name(dungeon.Kind), Dungeons.Cleared(_player, dungeon), dungeon.Floors.Count)
+						: T("dungeons.locked", dungeon.UnlockStage),
 					ThemeTypeVariation = GameTheme.Faded,
 					MouseFilter = MouseFilterEnum.Ignore,
 				});
@@ -144,30 +144,30 @@ namespace Sigilos.UI.Screens
 
 			if (dungeon.Kind == DungeonKind.Runes)
 			{
-				_detail.AddChild(Layout.Text(T("masmorras.solta_runas"), GameTheme.Faded));
+				_detail.AddChild(Layout.Text(T("dungeons.drops_runes"), GameTheme.Faded));
 				foreach (var set in dungeon.Sets)
 					_detail.AddChild(RichText.Label($"{Texts.Term(set)} · {Texts.Describe(RuneSets.For(set))}"));
 			}
 			else
 			{
-				_detail.AddChild(Layout.Text(T("masmorras.solta_pedras"), GameTheme.Faded));
+				_detail.AddChild(Layout.Text(T("dungeons.drops_tools"), GameTheme.Faded));
 			}
 
 			var team = Teams.Of(_player, dungeon.Id).Count;
 			var teamRow = new HBoxContainer();
 			teamRow.AddThemeConstantOverride("separation", 12);
-			teamRow.AddChild(new Label { Text = T("masmorras.equipe", team, PlayerState.TeamSize), SizeFlagsHorizontal = SizeFlags.ExpandFill });
-			var editTeam = new Button { Text = T("geral.equipe") };
+			teamRow.AddChild(new Label { Text = T("dungeons.team", team, PlayerState.TeamSize), SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			var editTeam = new Button { Text = T("common.team") };
 			editTeam.Pressed += () => TeamRequested?.Invoke(dungeon);
 			teamRow.AddChild(editTeam);
-			var shop = new Button { Text = T("geral.loja"), TooltipText = T("geral.loja_dica") };
+			var shop = new Button { Text = T("common.shop"), TooltipText = T("common.shop_tip") };
 			shop.Pressed += () => ShopRequested?.Invoke(dungeon);
 			teamRow.AddChild(shop);
 			_detail.AddChild(teamRow);
 
 			if (!Dungeons.IsUnlocked(_player, dungeon))
 			{
-				_detail.AddChild(new Label { Text = T("masmorras.fechada", dungeon.UnlockStage), ThemeTypeVariation = GameTheme.Heading });
+				_detail.AddChild(new Label { Text = T("dungeons.locked", dungeon.UnlockStage), ThemeTypeVariation = GameTheme.Heading });
 				return;
 			}
 
@@ -187,15 +187,15 @@ namespace Sigilos.UI.Screens
 			panel.AddChild(row);
 
 			var text = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var title = new Label { Text = T(cleared ? "masmorras.andar_vencido" : "masmorras.andar", number, floor.Level), ThemeTypeVariation = GameTheme.Heading };
+			var title = new Label { Text = T(cleared ? "dungeons.floor_cleared" : "dungeons.floor", number, floor.Level), ThemeTypeVariation = GameTheme.Heading };
 			text.AddChild(title);
 			var drop = dungeon.Kind == DungeonKind.Runes
-				? T("masmorras.drop_runa", floor.MinGrade == floor.MaxGrade ? Texts.Stars(floor.MinGrade) : $"{Texts.Stars(floor.MinGrade)}–{Texts.Stars(floor.MaxGrade)}", Texts.Name(floor.MinRarity))
-				: T("masmorras.drop_pedra", floor.ToolCount, Texts.Name((RuneRarity)floor.ToolGrade));
+				? T("dungeons.drop_rune", floor.MinGrade == floor.MaxGrade ? Texts.Stars(floor.MinGrade) : $"{Texts.Stars(floor.MinGrade)}–{Texts.Stars(floor.MaxGrade)}", Texts.Name(floor.MinRarity))
+				: T("dungeons.drop_tool", floor.ToolCount, Texts.Name((RuneRarity)floor.ToolGrade));
 			text.AddChild(new Label { Text = drop });
-			var reward = T("masmorras.recompensa", floor.Essence, floor.Experience);
+			var reward = T("dungeons.reward", floor.Essence, floor.Experience);
 			if (!cleared)
-				reward += T("masmorras.primeira_ouro", floor.FirstClearGold);
+				reward += T("dungeons.first_gold", floor.FirstClearGold);
 			text.AddChild(new Label { Text = reward, ThemeTypeVariation = GameTheme.Faded });
 
 			var problem = Dungeons.Check(_player, dungeon, number);
@@ -210,12 +210,12 @@ namespace Sigilos.UI.Screens
 			row.AddChild(text);
 
 			var disabled = noTeam || problem != EntryProblem.None;
-			var fight = new Button { Text = T("geral.lutar_mana", floor.Mana), Disabled = disabled, CustomMinimumSize = new Vector2(130, 44) };
+			var fight = new Button { Text = T("common.fight_mana", floor.Mana), Disabled = disabled, CustomMinimumSize = new Vector2(130, 44) };
 			fight.Pressed += () => FightRequested?.Invoke(dungeon, number);
 			row.AddChild(fight);
 			if (cleared)
 			{
-				var resolve = new Button { Text = T("geral.resolver_mana", floor.Mana), Disabled = disabled, TooltipText = T("geral.resolver_dica"), CustomMinimumSize = new Vector2(130, 44) };
+				var resolve = new Button { Text = T("common.resolve_mana", floor.Mana), Disabled = disabled, TooltipText = T("common.resolve_tip"), CustomMinimumSize = new Vector2(130, 44) };
 				resolve.Pressed += () => ResolveRequested?.Invoke(dungeon, number);
 				row.AddChild(resolve);
 			}

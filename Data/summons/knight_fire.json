@@ -1,13 +1,13 @@
 {
-  "id": "cavaleiro_fogo",
-  "name": "Cavaleiro de Fogo",
-  "family": "cavaleiro",
+  "id": "knight_fire",
+  "name": "Fire Knight",
+  "family": "knight",
   "element": "Fire",
   "role": "Attacker",
   "leader": {"stat": "Attack", "value": 0.15},
-  "awakening": {"name": "Dom Brasa", "stat": "Crit"},
+  "awakening": {"name": "Sir Ember", "stat": "Crit"},
   "basic": {
-    "name": "Lâmina Ardente",
+    "name": "Burning Blade",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.85}
     ],
@@ -18,7 +18,7 @@
     ]
   },
   "special": {
-    "name": "Carga Flamejante",
+    "name": "Flaming Charge",
     "cooldown": 4,
     "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.8}

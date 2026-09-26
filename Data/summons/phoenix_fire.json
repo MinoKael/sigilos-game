@@ -1,13 +1,13 @@
 {
-  "id": "fenix_fogo",
-  "name": "Fênix de Fogo",
-  "family": "fenix",
+  "id": "phoenix_fire",
+  "name": "Fire Phoenix",
+  "family": "phoenix",
   "element": "Fire",
   "role": "Attacker",
   "leader": {"stat": "Attack", "value": 0.18},
   "awakening": {"name": "Ignara", "stat": "Crit"},
   "basic": {
-    "name": "Chama Espiral",
+    "name": "Spiral Flame",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 4.2},
       {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
@@ -19,7 +19,7 @@
     ]
   },
   "special": {
-    "name": "Voo Rubro",
+    "name": "Crimson Flight",
     "cooldown": 4,
     "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 3.15},

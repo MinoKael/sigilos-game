@@ -9,8 +9,8 @@ garantia em que cada invocação é uma cópia nova, coleção com Baú, Ecos po
 conteúdo, ociosidade, nível 1–40, Despertar, runas e atributos iguais aos de Summoners War (1 a 6
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
 melhora nunca falha), a região 1 (20 fases), cinco Masmorras, Mana para entrar nas lutas, nível da
-conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe). Todo texto da interface mora em
-`Data/texts/pt-BR.json`.
+conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe). O jogo é em inglês: todo texto da
+interface mora em `Data/texts/en.json`, com tradução para português em `Data/texts/pt-BR.json`.
 
 ## Rodar
 
@@ -24,25 +24,26 @@ dotnet run --project Tests
 ```
 
 ```bash
-dotnet run --project Tests -- --simular
+dotnet run --project Tests -- --simulate
 ```
 
 ```bash
-dotnet run --project Tests -- --luta=10
+dotnet run --project Tests -- --fight=10
 ```
 
-`--simular` roda cada fase e cada andar de Masmorra 40 vezes no automático e mostra vitórias,
-rodadas e vida que sobra: é a ferramenta de balanceamento. `--luta=N` imprime uma luta da fase N
+`--simulate` roda cada fase e cada andar de Masmorra 40 vezes no automático e mostra vitórias,
+rodadas e vida que sobra: é a ferramenta de balanceamento. `--fight=N` imprime uma luta da fase N
 turno a turno.
 
 Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro save;
-`--idioma=nome` usa `Data/texts/nome.json`;
-`--tela=campanha|masmorras|invocar|loja|monstros|equipes|runas|compendio|grimorio|batalha` abre essa tela direto.
+`--language=nome` usa `Data/texts/nome.json` (padrão: `en`; `pt-BR` para português);
+`--screen=campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela direto.
 
 ## Textos e tradução
 
-Todo texto da interface está em `Data/texts/pt-BR.json`, por chave. Para traduzir, copie o arquivo
-(`en.json`...), troque os textos e rode com `-- --idioma=en`. Nomes de invocações, inimigos, fases e
+Todo texto da interface está em `Data/texts/en.json`, a base, por chave. Para traduzir, copie o
+arquivo (`es.json`...), troque os textos e rode com `-- --language=es`; `pt-BR.json` já é uma tradução
+pronta. Ids e nomes de dados são em inglês. Nomes de invocações, inimigos, fases e
 Masmorras ficam nos arquivos de `Data/`. Para conferir se falta ou sobra alguma chave:
 
 ```bash

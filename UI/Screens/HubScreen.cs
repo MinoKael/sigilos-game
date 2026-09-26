@@ -27,8 +27,8 @@ namespace Sigilos.UI.Screens
 		private readonly ProgressBar _accountBar = new() { ShowPercentage = false, CustomMinimumSize = new Vector2(0, 8) };
 		private readonly Label _idleTime = new();
 		private readonly Label _idleReward = new();
-		private readonly Button _collect = new() { Text = T("santuario.coletar") };
-		private readonly Button _quickChannel = new() { Text = T("santuario.canalizacao_rapida") };
+		private readonly Button _collect = new() { Text = T("hub.collect") };
+		private readonly Button _quickChannel = new() { Text = T("hub.quick_channel") };
 		private readonly Label _hint = new() { HorizontalAlignment = HorizontalAlignment.Center };
 		private readonly HBoxContainer _team = new();
 		private readonly Button _campaign = Layout.IconButton("", Art.Icon("campaign"), 44);
@@ -58,10 +58,10 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 
 			var header = new HBoxContainer();
-			header.AddChild(new Label { Text = T("santuario.titulo"), ThemeTypeVariation = GameTheme.Title, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			header.AddChild(new Label { Text = T("hub.title"), ThemeTypeVariation = GameTheme.Title, SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			header.AddChild(_currencies);
 			page.AddChild(header);
-			page.AddChild(new Label { Text = T("santuario.subtitulo"), ThemeTypeVariation = GameTheme.Faded });
+			page.AddChild(new Label { Text = T("hub.subtitle"), ThemeTypeVariation = GameTheme.Faded });
 
 			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			body.AddThemeConstantOverride("separation", 20);
@@ -89,20 +89,20 @@ namespace Sigilos.UI.Screens
 
 			var toNext = Account.ExperienceToNext(_player.AccountLevel);
 			var maxed = _player.AccountLevel >= Account.MaxLevel;
-			_account.Text = T(maxed ? "santuario.conta_maxima" : "santuario.conta", _player.AccountLevel, Mana.Max(_player));
+			_account.Text = T(maxed ? "hub.account_max" : "hub.account", _player.AccountLevel, Mana.Max(_player));
 			_accountBar.MaxValue = toNext;
 			_accountBar.Value = maxed ? toNext : _player.AccountExperience;
 			_accountBar.TooltipText = maxed
-				? T("santuario.conta_maxima_dica", Account.MaxLevel)
-				: T("santuario.conta_dica", _player.AccountExperience, toNext, Account.LevelUpGold, Account.MaxLevel, Mana.BaseMax + Mana.MaxFromLevels);
+				? T("hub.account_max_tip", Account.MaxLevel)
+				: T("hub.account_tip", _player.AccountExperience, toNext, Account.LevelUpGold, Account.MaxLevel, Mana.BaseMax + Mana.MaxFromLevels);
 
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
-			_campaign.Text = T("santuario.campanha", next, _database.Stage(next).Name);
+			_campaign.Text = T("hub.campaign", next, _database.Stage(next).Name);
 
 			_hint.Text = _player.TotalPulls == 0
-				? T("santuario.dica_primeira_invocacao")
+				? T("hub.first_summon_tip")
 				: _player.HighestStage == 0
-					? T("santuario.dica_primeira_fase")
+					? T("hub.first_stage_tip")
 					: "";
 
 			Layout.Clear(_team);
@@ -114,11 +114,11 @@ namespace Sigilos.UI.Screens
 		{
 			var preview = Idle.Preview(_player, now);
 			var hours = TimeSpan.FromHours(Idle.PendingHours(_player, now));
-			_idleTime.Text = T("santuario.canalizando", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
-			_idleReward.Text = T("santuario.recompensa", preview.Essence, preview.Gold, preview.Mana);
+			_idleTime.Text = T("hub.channeling", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
+			_idleReward.Text = T("hub.reward", preview.Essence, preview.Gold, preview.Mana);
 			_collect.Disabled = preview.IsEmpty;
 			_quickChannel.Disabled = !Idle.CanQuickChannel(_player, now);
-			_quickChannel.TooltipText = T("santuario.canalizacao_rapida_dica", Idle.QuickChannelHours);
+			_quickChannel.TooltipText = T("hub.quick_channel_tip", Idle.QuickChannelHours);
 		}
 
 		private Control LeftColumn()
@@ -136,8 +136,8 @@ namespace Sigilos.UI.Screens
 			account.AddChild(accountColumn);
 			column.AddChild(account);
 
-			var (idlePanel, idle) = Layout.Section(T("santuario.circulos"));
-			idle.AddChild(Layout.Text(T("santuario.circulos_texto", Mana.PerHour), GameTheme.Faded, 420));
+			var (idlePanel, idle) = Layout.Section(T("hub.circles"));
+			idle.AddChild(Layout.Text(T("hub.circles_text", Mana.PerHour), GameTheme.Faded, 420));
 			idle.AddChild(_idleTime);
 			_idleReward.AddThemeFontOverride("font", GameTheme.Serif);
 			_idleReward.AddThemeFontSizeOverride("font_size", 18);
@@ -148,9 +148,9 @@ namespace Sigilos.UI.Screens
 			idle.AddChild(buttons);
 			column.AddChild(idlePanel);
 
-			column.AddChild(BigButton("santuario.monstros", "storage", () => StorageRequested?.Invoke()));
-			column.AddChild(BigButton("santuario.equipes", "team", () => TeamsRequested?.Invoke()));
-			column.AddChild(BigButton("santuario.runas", "rune", () => RunesRequested?.Invoke()));
+			column.AddChild(BigButton("hub.monsters", "storage", () => StorageRequested?.Invoke()));
+			column.AddChild(BigButton("hub.teams", "team", () => TeamsRequested?.Invoke()));
+			column.AddChild(BigButton("hub.runes", "rune", () => RunesRequested?.Invoke()));
 			return column;
 		}
 
@@ -159,7 +159,7 @@ namespace Sigilos.UI.Screens
 			var column = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			column.AddThemeConstantOverride("separation", 12);
 
-			var (teamPanel, team) = Layout.Section(T("santuario.equipe_campanha"));
+			var (teamPanel, team) = Layout.Section(T("hub.campaign_team"));
 			_team.AddThemeConstantOverride("separation", 8);
 			team.AddChild(_team);
 			column.AddChild(teamPanel);
@@ -168,27 +168,27 @@ namespace Sigilos.UI.Screens
 			_campaign.Pressed += () => CampaignRequested?.Invoke();
 			column.AddChild(_campaign);
 
-			column.AddChild(BigButton("santuario.masmorras", "dungeon", () => DungeonsRequested?.Invoke()));
+			column.AddChild(BigButton("hub.dungeons", "dungeon", () => DungeonsRequested?.Invoke()));
 
 			var shopping = new HBoxContainer();
 			shopping.AddThemeConstantOverride("separation", 12);
-			shopping.AddChild(BigButton("santuario.invocacao", "summon", () => SummonRequested?.Invoke()));
-			shopping.AddChild(BigButton("santuario.loja", "shop", () => ShopRequested?.Invoke()));
+			shopping.AddChild(BigButton("hub.summon", "summon", () => SummonRequested?.Invoke()));
+			shopping.AddChild(BigButton("hub.shop", "shop", () => ShopRequested?.Invoke()));
 			column.AddChild(shopping);
 
 			var books = new HBoxContainer();
 			books.AddThemeConstantOverride("separation", 12);
-			books.AddChild(BigButton("santuario.compendio", "compendium", () => CompendiumRequested?.Invoke()));
-			books.AddChild(BigButton("santuario.grimorio", "grimoire", () => GrimoireRequested?.Invoke()));
+			books.AddChild(BigButton("hub.compendium", "compendium", () => CompendiumRequested?.Invoke()));
+			books.AddChild(BigButton("hub.grimoire", "grimoire", () => GrimoireRequested?.Invoke()));
 			column.AddChild(books);
 			return column;
 		}
 
-		/// <summary>Botão grande com ícone; o texto é a chave, a dica é a chave + "_dica".</summary>
+		/// <summary>Botão grande com ícone; o texto é a chave, a dica é a chave + "_tip".</summary>
 		private static Button BigButton(string key, string icon, Action onPressed)
 		{
 			var button = Layout.IconButton(T(key), Art.Icon(icon), 36);
-			button.TooltipText = T($"{key}_dica");
+			button.TooltipText = T($"{key}_tip");
 			button.CustomMinimumSize = new Vector2(0, 56);
 			button.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			button.Pressed += onPressed;

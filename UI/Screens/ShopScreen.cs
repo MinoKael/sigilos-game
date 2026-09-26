@@ -36,8 +36,8 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("loja.titulo"), _currencies, T("geral.voltar"), () => BackRequested?.Invoke()));
-			page.AddChild(Layout.Text(T("loja.subtitulo", Account.LevelUpGold), GameTheme.Faded));
+			page.AddChild(Layout.Header(T("shop.title"), _currencies, T("common.back"), () => BackRequested?.Invoke()));
+			page.AddChild(Layout.Text(T("shop.subtitle", Account.LevelUpGold), GameTheme.Faded));
 
 			_offers.AddThemeConstantOverride("h_separation", 16);
 			_offers.AddThemeConstantOverride("v_separation", 16);
@@ -73,12 +73,12 @@ namespace Sigilos.UI.Screens
 			amount.AddThemeFontOverride("font", GameTheme.Serif);
 			amount.AddThemeFontSizeOverride("font_size", 22);
 			content.AddChild(amount);
-			content.AddChild(Layout.Text(T(offer.Item == ShopItem.Mana ? "loja.explica_mana" : "loja.explica_pergaminhos"), GameTheme.Faded, 236));
+			content.AddChild(Layout.Text(T(offer.Item == ShopItem.Mana ? "shop.info_mana" : "shop.info_scrolls"), GameTheme.Faded, 236));
 
-			var buy = Layout.IconButton(T("loja.preco", offer.Price), Art.Icon("gold"), 26);
+			var buy = Layout.IconButton(T("shop.price", offer.Price), Art.Icon("gold"), 26);
 			buy.CustomMinimumSize = new Vector2(0, 48);
 			buy.Disabled = !Shop.CanBuy(_player, offer);
-			buy.TooltipText = buy.Disabled ? T("loja.sem_ouro", offer.Price - _player.Gold) : "";
+			buy.TooltipText = buy.Disabled ? T("shop.no_gold", offer.Price - _player.Gold) : "";
 			buy.Pressed += () => Confirm(offer);
 			content.AddChild(buy);
 			return panel;
@@ -88,10 +88,10 @@ namespace Sigilos.UI.Screens
 		{
 			var dialog = new ConfirmationDialog
 			{
-				DialogText = T("loja.confirma", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
-				Title = T("geral.confirmar"),
-				OkButtonText = T("geral.sim"),
-				CancelButtonText = T("geral.nao"),
+				DialogText = T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
+				Title = T("common.confirm"),
+				OkButtonText = T("common.yes"),
+				CancelButtonText = T("common.no"),
 			};
 			dialog.Confirmed += () => BuyRequested?.Invoke(offer);
 			dialog.Confirmed += dialog.QueueFree;

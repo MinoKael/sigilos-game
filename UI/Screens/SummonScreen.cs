@@ -48,26 +48,26 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("invocacao.titulo"), _currencies, T("geral.voltar_santuario"), () => BackRequested?.Invoke()));
+			page.AddChild(Layout.Header(T("summon.title"), _currencies, T("common.back_to_hub"), () => BackRequested?.Invoke()));
 
 			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			body.AddThemeConstantOverride("separation", 20);
 			page.AddChild(body);
 
-			var (panel, content) = Layout.Section(T("invocacao.ritual"));
+			var (panel, content) = Layout.Section(T("summon.ritual"));
 			panel.CustomMinimumSize = new Vector2(400, 0);
 			var threeStar = 1 - SummonRates.FiveStar - SummonRates.FourStar;
-			content.AddChild(Layout.Text(T("invocacao.taxas", Texts.Percent(threeStar), Texts.Percent(SummonRates.FourStar), Texts.Percent(SummonRates.FiveStar)), GameTheme.Faded));
+			content.AddChild(Layout.Text(T("summon.rates", Texts.Percent(threeStar), Texts.Percent(SummonRates.FourStar), Texts.Percent(SummonRates.FiveStar)), GameTheme.Faded));
 			_pity.AddThemeFontOverride("font", GameTheme.Serif);
 			_pity.AddThemeFontSizeOverride("font_size", 20);
 			content.AddChild(_pity);
-			content.AddChild(Layout.Text(T("invocacao.copias", PlayerState.CollectionCapacity), GameTheme.Faded));
+			content.AddChild(Layout.Text(T("summon.copies", PlayerState.CollectionCapacity), GameTheme.Faded));
 			_single.Pressed += () => SummonRequested?.Invoke(1);
 			_ten.Pressed += () => SummonRequested?.Invoke(10);
 			content.AddChild(_single);
 			content.AddChild(_ten);
-			var shop = Layout.IconButton(T("invocacao.loja"), Art.Icon("shop"), 26);
-			shop.TooltipText = T("invocacao.loja_dica");
+			var shop = Layout.IconButton(T("summon.shop"), Art.Icon("shop"), 26);
+			shop.TooltipText = T("summon.shop_tip");
 			shop.Pressed += () => ShopRequested?.Invoke();
 			content.AddChild(shop);
 			body.AddChild(panel);
@@ -90,9 +90,9 @@ namespace Sigilos.UI.Screens
 		public void Refresh()
 		{
 			_currencies.Refresh(_player);
-			_pity.Text = T("invocacao.garantia", SummonRitual.PullsUntilPity(_player));
-			_single.Text = T("invocacao.invocar", 1, Texts.Scrolls(SummonRitual.CostFor(1)));
-			_ten.Text = T("invocacao.invocar", 10, Texts.Scrolls(SummonRitual.CostFor(10)));
+			_pity.Text = T("summon.pity", SummonRitual.PullsUntilPity(_player));
+			_single.Text = T("summon.pull", 1, Texts.Scrolls(SummonRitual.CostFor(1)));
+			_ten.Text = T("summon.pull", 10, Texts.Scrolls(SummonRitual.CostFor(10)));
 			_single.Disabled = _player.Scrolls < SummonRitual.CostFor(1);
 			_ten.Disabled = _player.Scrolls < SummonRitual.CostFor(10);
 		}
@@ -132,7 +132,7 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < results.Count; i++)
 			{
 				var result = results[i];
-				var badge = result.Monster.Stored ? T("invocacao.foi_para_bau") : result.FirstCopy ? T("invocacao.nova") : T("invocacao.copia");
+				var badge = result.Monster.Stored ? T("summon.sent_to_vault") : result.FirstCopy ? T("summon.new") : T("summon.copy");
 				var card = new CreatureCard(result.Summon, result.Monster, badge, 140) { Modulate = new Color(1, 1, 1, 0) };
 				_results.AddChild(card);
 				card.CreateTween().TweenProperty(card, "modulate:a", 1f, 0.25).SetDelay(0.08 * i);

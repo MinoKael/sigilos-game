@@ -108,7 +108,7 @@ namespace Sigilos.UI.Screens
 			center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			overlay.AddChild(center);
 
-			var (panel, content) = Layout.Section(victory ? T("batalha.vitoria") : T("batalha.derrota"));
+			var (panel, content) = Layout.Section(victory ? T("battle.victory") : T("battle.defeat"));
 			panel.CustomMinimumSize = new Vector2(460, 0);
 			center.AddChild(panel);
 
@@ -116,31 +116,31 @@ namespace Sigilos.UI.Screens
 			if (reward != null)
 			{
 				if (reward.FirstClear)
-					lines.Add(T("batalha.primeira_vitoria"));
-				lines.Add(T("batalha.mana", reward.Mana));
+					lines.Add(T("battle.first_victory"));
+				lines.Add(T("battle.mana", reward.Mana));
 				if (reward.Scrolls > 0)
 					lines.Add($"+{Texts.Scrolls(reward.Scrolls)}");
 				if (reward.Gold > 0)
-					lines.Add(T("batalha.ouro", reward.Gold));
-				lines.Add(T("batalha.ganhos", reward.Essence));
-				lines.Add(T("batalha.experiencia", reward.Experience));
-				lines.AddRange(levelUps.Select(name => T("batalha.subiu", name)));
+					lines.Add(T("battle.gold", reward.Gold));
+				lines.Add(T("battle.gains", reward.Essence));
+				lines.Add(T("battle.experience", reward.Experience));
+				lines.AddRange(levelUps.Select(name => T("battle.leveled_up", name)));
 				if (reward.AccountLevels > 0)
-					lines.Add(T("batalha.conta", accountLevel, reward.AccountLevels * Account.LevelUpGold));
+					lines.Add(T("battle.account", accountLevel, reward.AccountLevels * Account.LevelUpGold));
 				if (reward.Rune is { } rune)
-					lines.Add(T("batalha.runa", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), Texts.Format(rune.Main, rune.MainValue)));
-				lines.AddRange(reward.Tools.Select(tool => T("batalha.pedra", Texts.Name(tool), Texts.Range(tool))));
+					lines.Add(T("battle.rune", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), Texts.Format(rune.Main, rune.MainValue)));
+				lines.AddRange(reward.Tools.Select(tool => T("battle.tool", Texts.Name(tool), Texts.Range(tool))));
 			}
 			else
 			{
-				lines.Add(_session.Round > BattleRules.RoundLimit ? T("batalha.tempo", BattleRules.RoundLimit) : T("batalha.todos_cairam"));
-				lines.Add(T("batalha.dica_derrota"));
+				lines.Add(_session.Round > BattleRules.RoundLimit ? T("battle.timeout", BattleRules.RoundLimit) : T("battle.all_fell"));
+				lines.Add(T("battle.defeat_tip"));
 			}
 
 			foreach (var line in lines)
 				content.AddChild(Layout.Text(line, width: 420));
 
-			var close = new Button { Text = T("geral.continuar"), CustomMinimumSize = new Vector2(0, 48) };
+			var close = new Button { Text = T("common.continue"), CustomMinimumSize = new Vector2(0, 48) };
 			close.Pressed += Close;
 			content.AddChild(close);
 		}
@@ -163,8 +163,8 @@ namespace Sigilos.UI.Screens
 			row.AddChild(_round);
 			row.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill });
 
-			_effectsButton.Text = T("batalha.efeitos");
-			_effectsButton.TooltipText = T("batalha.efeitos_dica");
+			_effectsButton.Text = T("battle.effects");
+			_effectsButton.TooltipText = T("battle.effects_tip");
 			_effectsButton.Toggled += on =>
 			{
 				_effects.Visible = on;
@@ -173,19 +173,19 @@ namespace Sigilos.UI.Screens
 			row.AddChild(_effectsButton);
 
 			_autoButton.ButtonPressed = _auto;
-			_autoButton.TooltipText = T("batalha.automatico_dica");
+			_autoButton.TooltipText = T("battle.auto_tip");
 			_autoButton.Toggled += SetAuto;
 			row.AddChild(_autoButton);
 
-			_speedButton.Text = T("batalha.velocidade", 1);
+			_speedButton.Text = T("battle.speed", 1);
 			_speedButton.Pressed += () =>
 			{
 				_speedIndex = (_speedIndex + 1) % Speeds.Length;
-				_speedButton.Text = T("batalha.velocidade", Speed);
+				_speedButton.Text = T("battle.speed", Speed);
 			};
 			row.AddChild(_speedButton);
 
-			var flee = new Button { Text = T("batalha.recuar"), TooltipText = T("batalha.recuar_dica") };
+			var flee = new Button { Text = T("battle.retreat"), TooltipText = T("battle.retreat_tip") };
 			flee.Pressed += Close;
 			row.AddChild(flee);
 			return bar;
@@ -252,7 +252,7 @@ namespace Sigilos.UI.Screens
 
 			var column = new VBoxContainer();
 			var header = new HBoxContainer();
-			header.AddChild(new Label { Text = T("batalha.efeitos"), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			header.AddChild(new Label { Text = T("battle.effects"), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			var close = new Button { Text = "✕" };
 			close.Pressed += () => _effectsButton.ButtonPressed = false;
 			header.AddChild(close);
@@ -275,7 +275,7 @@ namespace Sigilos.UI.Screens
 			var units = _session.Allies.Concat(_session.Enemies).Where(u => u.IsAlive).OrderByDescending(u => u == _focused).ToList();
 			foreach (var unit in units)
 			{
-				var name = new Label { Text = T("batalha.efeitos_unidade", unit.Name, unit.Side == Side.Allies ? T("batalha.aliado") : T("batalha.inimigo")) };
+				var name = new Label { Text = T("battle.effects_unit", unit.Name, unit.Side == Side.Allies ? T("battle.ally") : T("battle.enemy")) };
 				name.AddThemeColorOverride("font_color", unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow);
 				if (unit == _focused)
 					name.AddThemeColorOverride("font_color", Palette.Gold);
@@ -283,14 +283,14 @@ namespace Sigilos.UI.Screens
 
 				if (unit.Statuses.Count == 0)
 				{
-					_effectsList.AddChild(new Label { Text = T("batalha.sem_efeitos"), ThemeTypeVariation = GameTheme.Faded });
+					_effectsList.AddChild(new Label { Text = T("battle.no_effects"), ThemeTypeVariation = GameTheme.Faded });
 					continue;
 				}
 
 				foreach (var status in unit.Statuses)
 				{
-					var extra = status.Kind == Core.Content.StatusKind.Shield ? T("batalha.escudo_valor", Math.Round(status.Value)) : "";
-					_effectsList.AddChild(RichText.Label(T("batalha.efeito_linha", Texts.Term(status.Kind), Texts.Turns(status.Turns), extra, Texts.Explain(status.Kind)), 340));
+					var extra = status.Kind == Core.Content.StatusKind.Shield ? T("battle.shield_value", Math.Round(status.Value)) : "";
+					_effectsList.AddChild(RichText.Label(T("battle.effect_line", Texts.Term(status.Kind), Texts.Turns(status.Turns), extra, Texts.Explain(status.Kind)), 340));
 				}
 			}
 		}
@@ -353,12 +353,12 @@ namespace Sigilos.UI.Screens
 			}
 
 			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally));
-			_prompt.Text = T("batalha.vez_de", ally.Name);
+			_prompt.Text = T("battle.turn_of", ally.Name);
 
 			var costs = string.Join(", ", new[] { ally.Basic, ally.Special }
 				.Where(s => s is { CanEnhance: true })
 				.Select(s => $"{s!.Name} {s.EnhanceCost}"));
-			var enhance = new CheckBox { Text = T("batalha.aprimorar", costs), TooltipText = T("batalha.aprimorar_dica") };
+			var enhance = new CheckBox { Text = T("battle.enhance", costs), TooltipText = T("battle.enhance_tip") };
 
 			foreach (var slot in new[] { SkillSlot.Basic, SkillSlot.Special })
 			{
@@ -390,7 +390,7 @@ namespace Sigilos.UI.Screens
 			foreach (var unit in choosable)
 				_views[unit].SetTargetable(true);
 
-			_prompt.Text = T("batalha.escolha_alvo");
+			_prompt.Text = T("battle.choose_target");
 			_pickTarget = unit =>
 			{
 				if (choosable.Contains(unit))
@@ -418,8 +418,8 @@ namespace Sigilos.UI.Screens
 
 		private void RefreshAuto()
 		{
-			_autoButton.Text = _auto ? T("batalha.automatico_ligado") : T("batalha.automatico_desligado");
-			_etherHint.Text = _auto ? T("batalha.dica_eter_auto") : T("batalha.dica_eter_manual");
+			_autoButton.Text = _auto ? T("battle.auto_on") : T("battle.auto_off");
+			_etherHint.Text = _auto ? T("battle.aether_tip_auto") : T("battle.aether_tip_manual");
 		}
 
 		private void Close()
@@ -458,8 +458,8 @@ namespace Sigilos.UI.Screens
 					Layout.Clear(_enemies);
 					foreach (var enemy in wave.Enemies)
 						_enemies.AddChild(ViewFor(enemy));
-					_wave.Text = T("batalha.onda", wave.Wave, wave.WaveCount);
-					_banner.Text = T("batalha.onda_faixa", wave.Wave);
+					_wave.Text = T("battle.wave", wave.Wave, wave.WaveCount);
+					_banner.Text = T("battle.wave_banner", wave.Wave);
 					return 0.8;
 
 				case TurnStarted turn:
@@ -469,27 +469,27 @@ namespace Sigilos.UI.Screens
 						view.Refresh();
 					}
 
-					_round.Text = T("batalha.rodada", Math.Min(turn.Round, BattleRules.RoundLimit), BattleRules.RoundLimit);
+					_round.Text = T("battle.round", Math.Min(turn.Round, BattleRules.RoundLimit), BattleRules.RoundLimit);
 					_order.Show(_session.PredictOrder(8));
 					return 0.12;
 
 				case SkillUsed used:
-					_banner.Text = used.Enhanced ? T("batalha.usa_aprimorada", used.Actor.Name, used.Skill.Name) : T("batalha.usa", used.Actor.Name, used.Skill.Name);
+					_banner.Text = used.Enhanced ? T("battle.uses_enhanced", used.Actor.Name, used.Skill.Name) : T("battle.uses", used.Actor.Name, used.Skill.Name);
 					_banner.AddThemeColorOverride("font_color", used.Enhanced ? Palette.Ether : Palette.Text);
 					_views[used.Actor].Lunge(used.Actor.Side == Side.Allies ? 1 : -1, Speed);
 					return 0.35;
 
 				case ExtraTurn extra:
-					_views[extra.Unit].Float(T("batalha.turno_extra"), Palette.Gold);
+					_views[extra.Unit].Float(T("battle.extra_turn"), Palette.Gold);
 					return 0.3;
 
 				case Counterattack counter:
-					_views[counter.Unit].Float(T("batalha.contra_ataque"), Palette.Gold);
+					_views[counter.Unit].Float(T("battle.counterattack"), Palette.Gold);
 					_views[counter.Unit].Lunge(counter.Unit.Side == Side.Allies ? 1 : -1, Speed);
 					return 0.3;
 
 				case MaxHealthReduced reduced:
-					_views[reduced.Target].Float(T("batalha.vida_max", reduced.Amount), Palette.Negative);
+					_views[reduced.Target].Float(T("battle.max_hp", reduced.Amount), Palette.Negative);
 					_views[reduced.Target].Refresh();
 					return 0.1;
 
@@ -501,11 +501,11 @@ namespace Sigilos.UI.Screens
 					return 0.14;
 
 				case Missed missed:
-					_views[missed.Target].Float(T("batalha.errou"), Palette.TextFaded);
+					_views[missed.Target].Float(T("battle.missed"), Palette.TextFaded);
 					return 0.1;
 
 				case Warded warded:
-					_views[warded.Target].Float(T("batalha.egide"), Palette.Shield);
+					_views[warded.Target].Float(T("battle.aegis"), Palette.Shield);
 					_views[warded.Target].Refresh();
 					return 0.1;
 
@@ -520,11 +520,11 @@ namespace Sigilos.UI.Screens
 					return 0.06;
 
 				case Resisted resisted:
-					_views[resisted.Target].Float(T("batalha.resistiu"), Palette.TextFaded);
+					_views[resisted.Target].Float(T("battle.resisted"), Palette.TextFaded);
 					return 0.06;
 
 				case Immune immune:
-					_views[immune.Target].Float(T("batalha.imune"), Palette.Positive);
+					_views[immune.Target].Float(T("battle.immune"), Palette.Positive);
 					return 0.06;
 
 				case StatusRemoved removed:
@@ -536,8 +536,8 @@ namespace Sigilos.UI.Screens
 					return 0.05;
 
 				case TurnSkipped skipped:
-					_views[skipped.Unit].Float(T("batalha.atordoado"), Palette.Negative);
-					_banner.Text = T("batalha.perde_turno", skipped.Unit.Name);
+					_views[skipped.Unit].Float(T("battle.stunned"), Palette.Negative);
+					_banner.Text = T("battle.loses_turn", skipped.Unit.Name);
 					return 0.4;
 
 				case Died died:
@@ -545,7 +545,7 @@ namespace Sigilos.UI.Screens
 					return 0.3;
 
 				case Revived revived:
-					_views[revived.Unit].Float(T("batalha.renasce"), Palette.Gold);
+					_views[revived.Unit].Float(T("battle.revives"), Palette.Gold);
 					_views[revived.Unit].Refresh();
 					return 0.4;
 
@@ -554,7 +554,7 @@ namespace Sigilos.UI.Screens
 					return 0;
 
 				case BattleEnded ended:
-					_banner.Text = ended.Victory ? T("batalha.vitoria") : T("batalha.derrota");
+					_banner.Text = ended.Victory ? T("battle.victory") : T("battle.defeat");
 					foreach (var view in _views.Values)
 						view.SetActive(false);
 					return 0.6;

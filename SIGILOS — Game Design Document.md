@@ -10,6 +10,8 @@ Sep 23, 2026 · @Mikael
 
 > **Quarta revisão de 25/09/2026: Mana, Ouro e Loja.** Farmar runas é o centro do jogo. As entradas de Masmorra viraram **Mana**: toda vitória, na Campanha ou numa Masmorra, custa Mana (a derrota não custa nada), e a canalização recarrega até o máximo (60 no nível 1 da conta, 120 no nível 60). A conta ganhou nível, de 1 a 60, com a experiência de toda vitória. O Pó de Sigilo saiu: a **Essência** paga nível, Despertar e melhora de runa, e cada runa melhorada disputa com os monstros. Entrou o **Ouro**, a moeda rara de gacha comum (canalização, nível da conta, primeira vitória em andar de Masmorra), que a **Loja** troca por Mana ou Pergaminhos; a canalização deixou de dar Pergaminhos. O Violento dá no máximo um turno extra por turno do monstro. Monstros no Baú guardam as runas deles, fora das 800 vagas do inventário de runas.
 
+> **Quinta revisão de 25/09/2026: o jogo passa a ser em inglês.** Ids, nomes de dados (invocações, inimigos, fases, Masmorras, Loja) e todo texto da interface nascem em inglês (Data/texts/en.json); o português vira uma tradução da interface (Data/texts/pt-BR.json). Este documento segue em português, e os nomes daqui são os de design: os do jogo estão em Data/ (Baú é Vault, Ímpeto é Impetus, Éter é Aether, Glifo é Glyph).
+
 ## 1. Visão geral
 
 **Sigilos** (título provisório) é um gacha de fantasia para um jogador, offline e sem dinheiro de verdade (a Loja só troca Ouro ganho jogando): você coleciona criaturas, grava sigilos nelas e comanda batalhas por turnos em que as magias são montadas símbolo por símbolo.

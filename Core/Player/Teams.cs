@@ -11,7 +11,7 @@ namespace Sigilos.Core.Player
 	/// </summary>
 	public static class Teams
 	{
-		public const string Campaign = "campanha";
+		public const string Campaign = "campaign";
 
 		public static IReadOnlyList<int> Of(PlayerState player, string content) =>
 			player.Teams.TryGetValue(content, out var team) ? team : Array.Empty<int>();

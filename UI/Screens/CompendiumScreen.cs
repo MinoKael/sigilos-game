@@ -33,31 +33,31 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("compendio.titulo"), null, T("geral.voltar_santuario"), () => BackRequested?.Invoke()));
+			page.AddChild(Layout.Header(T("compendium.title"), null, T("common.back_to_hub"), () => BackRequested?.Invoke()));
 
 			var tabs = new TabContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			page.AddChild(tabs);
-			Basics(Layout.Tab(tabs, T("compendio.aba.basico")));
-			Combat(Layout.Tab(tabs, T("compendio.aba.combate")));
-			Stats(Layout.Tab(tabs, T("compendio.aba.atributos")));
-			Glyphs(Layout.Tab(tabs, T("compendio.aba.glifos")));
-			Statuses(Layout.Tab(tabs, T("compendio.aba.efeitos")));
-			Runes(Layout.Tab(tabs, T("compendio.aba.runas")));
+			Basics(Layout.Tab(tabs, T("compendium.tab.basic")));
+			Combat(Layout.Tab(tabs, T("compendium.tab.combat")));
+			Stats(Layout.Tab(tabs, T("compendium.tab.stats")));
+			Glyphs(Layout.Tab(tabs, T("compendium.tab.glyphs")));
+			Statuses(Layout.Tab(tabs, T("compendium.tab.effects")));
+			Runes(Layout.Tab(tabs, T("compendium.tab.runes")));
 		}
 
 		private static void Basics(VBoxContainer column)
 		{
 			var grid = Cards(column);
-			Card(grid, "campaign", T("compendio.basico.campanha.titulo"), T("compendio.basico.campanha.texto", GameDatabase.MaxCampaignRuneGrade));
-			Card(grid, "dungeon", T("compendio.basico.masmorras.titulo"), T("compendio.basico.masmorras.texto"));
-			Card(grid, "mana", T("compendio.basico.mana.titulo"), T("compendio.basico.mana.texto", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
-			Card(grid, "gold", T("compendio.basico.ouro.titulo"), T("compendio.basico.ouro.texto", Account.LevelUpGold));
-			Card(grid, "summon", T("compendio.basico.invocacao.titulo"), T("compendio.basico.invocacao.texto"));
-			Card(grid, "storage", T("compendio.basico.monstros.titulo"), T("compendio.basico.monstros.texto", PlayerState.CollectionCapacity, RuneInventory.Capacity));
-			Card(grid, "team", T("compendio.basico.equipes.titulo"), T("compendio.basico.equipes.texto", PlayerState.TeamSize));
-			Card(grid, "essence", T("compendio.basico.nivel.titulo"), T("compendio.basico.nivel.texto", Leveling.MaxLevel));
-			Card(grid, "fragments", T("compendio.basico.ecos.titulo"), T("compendio.basico.ecos.texto", Growth.MaxEchoes, Texts.Percent(Growth.SkillPowerPerEcho), Texts.Percent(Growth.FullEchoStatBonus)));
-			Card(grid, "grimoire", T("compendio.basico.despertar.titulo"), T("compendio.basico.despertar.texto",
+			Card(grid, "campaign", T("compendium.basic.campaign.title"), T("compendium.basic.campaign.text", GameDatabase.MaxCampaignRuneGrade));
+			Card(grid, "dungeon", T("compendium.basic.dungeons.title"), T("compendium.basic.dungeons.text"));
+			Card(grid, "mana", T("compendium.basic.mana.title"), T("compendium.basic.mana.text", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
+			Card(grid, "gold", T("compendium.basic.gold.title"), T("compendium.basic.gold.text", Account.LevelUpGold));
+			Card(grid, "summon", T("compendium.basic.summon.title"), T("compendium.basic.summon.text"));
+			Card(grid, "storage", T("compendium.basic.monsters.title"), T("compendium.basic.monsters.text", PlayerState.CollectionCapacity, RuneInventory.Capacity));
+			Card(grid, "team", T("compendium.basic.teams.title"), T("compendium.basic.teams.text", PlayerState.TeamSize));
+			Card(grid, "essence", T("compendium.basic.level.title"), T("compendium.basic.level.text", Leveling.MaxLevel));
+			Card(grid, "fragments", T("compendium.basic.echoes.title"), T("compendium.basic.echoes.text", Growth.MaxEchoes, Texts.Percent(Growth.SkillPowerPerEcho), Texts.Percent(Growth.FullEchoStatBonus)));
+			Card(grid, "grimoire", T("compendium.basic.awaken.title"), T("compendium.basic.awaken.text",
 				Texts.Percent(Awakening.HealthBonus), Texts.Percent(Awakening.AttackDefenseBonus),
 				Texts.AwakeningBonus(Stat.Speed), Texts.AwakeningBonus(Stat.Crit), Texts.AwakeningBonus(Stat.Resistance), Texts.AwakeningBonus(Stat.Accuracy)));
 		}
@@ -65,17 +65,17 @@ namespace Sigilos.UI.Screens
 		private static void Combat(VBoxContainer column)
 		{
 			var grid = Cards(column);
-			Card(grid, RuneSets.For(RuneSet.Nemesis).Glyph, T("compendio.combate.impeto.titulo"), T("compendio.combate.impeto.texto", Texts.Impeto));
-			Card(grid, "essence", T("compendio.combate.eter.titulo"), T("compendio.combate.eter.texto", Texts.Ether, BattleRules.MaxEther, BattleRules.SpecialEtherGain, BattleRules.KillEtherGain, BattleRules.MinEnhanceCost));
-			Card(grid, "campaign", T("compendio.combate.luta.titulo"), T("compendio.combate.luta.texto", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
-			Card(grid, Texts.GlyphOf(Stat.Defense), T("compendio.combate.dano.titulo"), T("compendio.combate.dano.texto", Math.Round(BattleRules.DefenseConstant)));
-			Card(grid, Texts.GlyphOf(Stat.Crit), T("compendio.combate.critico.titulo"), T("compendio.combate.critico.texto"));
-			Card(grid, Texts.GlyphOf(Stat.Resistance), T("compendio.combate.resistencia.titulo"), T("compendio.combate.resistencia.texto", Texts.Percent(BattleRules.MinResistChance)));
-			Card(grid, "team", T("compendio.combate.lider.titulo"), T("compendio.combate.lider.texto"));
-			Card(grid, "search", T("compendio.combate.automatico.titulo"), T("compendio.combate.automatico.texto", Texts.Ether));
+			Card(grid, RuneSets.For(RuneSet.Nemesis).Glyph, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
+			Card(grid, "essence", T("compendium.combat.aether.title"), T("compendium.combat.aether.text", Texts.Ether, BattleRules.MaxEther, BattleRules.SpecialEtherGain, BattleRules.KillEtherGain, BattleRules.MinEnhanceCost));
+			Card(grid, "campaign", T("compendium.combat.fight.title"), T("compendium.combat.fight.text", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
+			Card(grid, Texts.GlyphOf(Stat.Defense), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
+			Card(grid, Texts.GlyphOf(Stat.Crit), T("compendium.combat.crit.title"), T("compendium.combat.crit.text"));
+			Card(grid, Texts.GlyphOf(Stat.Resistance), T("compendium.combat.resistance.title"), T("compendium.combat.resistance.text", Texts.Percent(BattleRules.MinResistChance)));
+			Card(grid, "team", T("compendium.combat.leader.title"), T("compendium.combat.leader.text"));
+			Card(grid, "search", T("compendium.combat.auto.title"), T("compendium.combat.auto.text", Texts.Ether));
 
-			column.AddChild(new Label { Text = T("compendio.combate.elementos"), ThemeTypeVariation = GameTheme.Heading });
-			column.AddChild(Layout.Text(T("compendio.combate.elementos_texto", Texts.Percent(BattleRules.AdvantageMultiplier - 1), Texts.Percent(1 - BattleRules.DisadvantageMultiplier)), GameTheme.Faded));
+			column.AddChild(new Label { Text = T("compendium.combat.elements"), ThemeTypeVariation = GameTheme.Heading });
+			column.AddChild(Layout.Text(T("compendium.combat.elements_text", Texts.Percent(BattleRules.AdvantageMultiplier - 1), Texts.Percent(1 - BattleRules.DisadvantageMultiplier)), GameTheme.Faded));
 			var elements = new HFlowContainer();
 			elements.AddThemeConstantOverride("h_separation", 24);
 			foreach (var element in Enum.GetValues<Element>())
@@ -83,7 +83,7 @@ namespace Sigilos.UI.Screens
 				var beats = Enum.GetValues<Element>().Where(other => ElementChart.HasAdvantage(element, other)).Select(Texts.Name);
 				var row = new HBoxContainer();
 				row.AddChild(Doodle.Icon(Art.Element(element), 32, Palette.Of(element)));
-				var name = new Label { Text = T("compendio.combate.vence", Texts.Name(element), string.Join(T("geral.e"), beats)) };
+				var name = new Label { Text = T("compendium.combat.wins", Texts.Name(element), string.Join(T("common.and"), beats)) };
 				name.AddThemeColorOverride("font_color", Palette.Of(element));
 				row.AddChild(name);
 				elements.AddChild(row);
@@ -94,7 +94,7 @@ namespace Sigilos.UI.Screens
 
 		private static void Stats(VBoxContainer column)
 		{
-			column.AddChild(Layout.Text(T("compendio.atributos.intro"), GameTheme.Faded));
+			column.AddChild(Layout.Text(T("compendium.stats.intro"), GameTheme.Faded));
 			var grid = Cards(column);
 			foreach (var stat in Enum.GetValues<Stat>())
 				Card(grid, Texts.GlyphOf(stat), Texts.Name(stat), Texts.Explain(stat));
@@ -102,7 +102,7 @@ namespace Sigilos.UI.Screens
 
 		private static void Glyphs(VBoxContainer column)
 		{
-			column.AddChild(RichText.Label(T("compendio.glifos.intro", Texts.Term(StatusKind.Stun)), 1150, GameTheme.Faded));
+			column.AddChild(RichText.Label(T("compendium.glyphs.intro", Texts.Term(StatusKind.Stun)), 1150, GameTheme.Faded));
 			var grid = new GridContainer { Columns = 4 };
 			grid.AddThemeConstantOverride("h_separation", 10);
 			grid.AddThemeConstantOverride("v_separation", 10);
@@ -117,7 +117,7 @@ namespace Sigilos.UI.Screens
 				var meaning = new Label { Text = Texts.Meaning(set.Glyph) };
 				meaning.AddThemeColorOverride("font_color", Palette.Gold);
 				text.AddChild(meaning);
-				text.AddChild(new Label { Text = T("compendio.glifos.conjunto", Texts.Name(set.Set)), ThemeTypeVariation = GameTheme.Faded });
+				text.AddChild(new Label { Text = T("compendium.glyphs.set", Texts.Name(set.Set)), ThemeTypeVariation = GameTheme.Faded });
 				row.AddChild(text);
 				panel.AddChild(row);
 				grid.AddChild(panel);
@@ -128,11 +128,11 @@ namespace Sigilos.UI.Screens
 
 		private static void Statuses(VBoxContainer column)
 		{
-			column.AddChild(Layout.Text(T("compendio.efeitos.intro", Texts.Percent(BattleRules.MinResistChance)), GameTheme.Faded));
+			column.AddChild(Layout.Text(T("compendium.effects.intro", Texts.Percent(BattleRules.MinResistChance)), GameTheme.Faded));
 			var grid = Cards(column);
 			foreach (var status in Enum.GetValues<StatusKind>())
 			{
-				var tag = BattleRules.IsNegative(status) ? T("compendio.efeitos.negativo") : T("compendio.efeitos.positivo");
+				var tag = BattleRules.IsNegative(status) ? T("compendium.effects.negative") : T("compendium.effects.positive");
 				var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
 				var row = new HBoxContainer();
 				row.AddThemeConstantOverride("separation", 10);
@@ -148,14 +148,14 @@ namespace Sigilos.UI.Screens
 		private static void Runes(VBoxContainer column)
 		{
 			var grid = Cards(column);
-			Card(grid, "rune", T("compendio.runas.espacos.titulo"), T("compendio.runas.espacos.texto"));
-			Card(grid, "rune", T("compendio.runas.estrelas.titulo"), T("compendio.runas.estrelas.texto", RuneRules.MaxGrade));
-			Card(grid, "essence", T("compendio.runas.melhora.titulo"), T("compendio.runas.melhora.texto", RuneRules.MaxLevel, RuneRules.MaxSubstats));
-			Card(grid, RuneSets.For(RuneSet.Violent).Glyph, T("compendio.runas.conjuntos.titulo"), T("compendio.runas.conjuntos.texto"));
-			Card(grid, "grindstone", T("compendio.runas.afiar.titulo"), T("compendio.runas.afiar.texto"));
-			Card(grid, "gem", T("compendio.runas.gema.titulo"), T("compendio.runas.gema.texto", RuneForge.EnchantLevel));
-			Card(grid, "dungeon", T("compendio.runas.onde.titulo"), T("compendio.runas.onde.texto", GameDatabase.MaxCampaignRuneGrade, Texts.Percent(Campaign.RepeatRuneChance)));
-			Card(grid, "grimoire", T("compendio.runas.grimorio.titulo"), T("compendio.runas.grimorio.texto"));
+			Card(grid, "rune", T("compendium.runes.slots.title"), T("compendium.runes.slots.text"));
+			Card(grid, "rune", T("compendium.runes.stars.title"), T("compendium.runes.stars.text", RuneRules.MaxGrade));
+			Card(grid, "essence", T("compendium.runes.upgrade.title"), T("compendium.runes.upgrade.text", RuneRules.MaxLevel, RuneRules.MaxSubstats));
+			Card(grid, RuneSets.For(RuneSet.Violent).Glyph, T("compendium.runes.sets.title"), T("compendium.runes.sets.text"));
+			Card(grid, "grindstone", T("compendium.runes.grind.title"), T("compendium.runes.grind.text"));
+			Card(grid, "gem", T("compendium.runes.gem.title"), T("compendium.runes.gem.text", RuneForge.EnchantLevel));
+			Card(grid, "dungeon", T("compendium.runes.where.title"), T("compendium.runes.where.text", GameDatabase.MaxCampaignRuneGrade, Texts.Percent(Campaign.RepeatRuneChance)));
+			Card(grid, "grimoire", T("compendium.runes.grimoire.title"), T("compendium.runes.grimoire.text"));
 		}
 
 		private static GridContainer Cards(VBoxContainer column)

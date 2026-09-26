@@ -1,13 +1,13 @@
 {
-  "id": "fenix_agua",
-  "name": "Fênix de Água",
-  "family": "fenix",
+  "id": "phoenix_water",
+  "name": "Water Phoenix",
+  "family": "phoenix",
   "element": "Water",
   "role": "Support",
   "leader": {"stat": "Health", "value": 0.2},
   "awakening": {"name": "Nereia", "stat": "Resistance"},
   "basic": {
-    "name": "Orvalho",
+    "name": "Dew",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
@@ -19,7 +19,7 @@
     ]
   },
   "special": {
-    "name": "Chuva Renovadora",
+    "name": "Renewing Rain",
     "cooldown": 4,
     "effects": [
       {"kind": "Heal", "target": "AllAllies", "power": 0.2},

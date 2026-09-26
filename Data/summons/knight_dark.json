@@ -1,13 +1,13 @@
 {
-  "id": "cavaleiro_trevas",
-  "name": "Cavaleiro de Trevas",
-  "family": "cavaleiro",
+  "id": "knight_dark",
+  "name": "Dark Knight",
+  "family": "knight",
   "element": "Dark",
   "role": "Front",
   "leader": {"stat": "Resistance", "value": 0.2},
-  "awakening": {"name": "Dom Sepulcro", "stat": "Accuracy"},
+  "awakening": {"name": "Sir Sepulcher", "stat": "Accuracy"},
   "basic": {
-    "name": "Lâmina Faminta",
+    "name": "Hungry Blade",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.3}
     ],
@@ -18,7 +18,7 @@
     ]
   },
   "special": {
-    "name": "Juramento Sombrio",
+    "name": "Dark Oath",
     "cooldown": 4,
     "effects": [
       {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.3}

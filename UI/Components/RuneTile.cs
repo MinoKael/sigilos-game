@@ -45,7 +45,7 @@ namespace Sigilos.UI.Components
 
 			if (rune == null)
 			{
-				column.AddChild(new Label { Text = T("runa.vazio"), ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, SizeFlagsVertical = SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center });
+				column.AddChild(new Label { Text = T("rune.empty"), ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, SizeFlagsVertical = SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center });
 				return;
 			}
 
@@ -59,7 +59,7 @@ namespace Sigilos.UI.Components
 			_mark.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
 			AddChild(_mark);
 
-			TooltipText = T("runa.dica", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), rune.Level, Texts.Format(rune.Main, rune.MainValue));
+			TooltipText = T("rune.tip", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), rune.Level, Texts.Format(rune.Main, rune.MainValue));
 		}
 
 		public event Action<RuneTile>? Pressed;
@@ -81,7 +81,7 @@ namespace Sigilos.UI.Components
 				_top.MoveChild(_top.GetChild(_top.GetChildCount() - 1), index);
 			}
 
-			TooltipText += "\n" + T(stored ? "runa.dono_bau" : "runa.dono", name);
+			TooltipText += "\n" + T(stored ? "rune.owner_vault" : "rune.owner", name);
 		}
 
 		/// <summary>Marca para desfazer em massa.</summary>

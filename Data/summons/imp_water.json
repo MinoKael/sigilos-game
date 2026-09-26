@@ -1,12 +1,12 @@
 {
-  "id": "diabrete_agua",
-  "name": "Diabrete de Água",
-  "family": "diabrete",
+  "id": "imp_water",
+  "name": "Water Imp",
+  "family": "imp",
   "element": "Water",
   "role": "Attacker",
-  "awakening": {"name": "Sorvo", "stat": "Crit"},
+  "awakening": {"name": "Gulp", "stat": "Crit"},
   "basic": {
-    "name": "Mordisco Gelado",
+    "name": "Frost Nip",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
     ],
@@ -16,7 +16,7 @@
     ]
   },
   "special": {
-    "name": "Sede do Selo",
+    "name": "Seal's Thirst",
     "cooldown": 3,
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 5.25, "drain": 0.5}

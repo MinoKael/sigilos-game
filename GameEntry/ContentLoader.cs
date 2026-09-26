@@ -35,13 +35,16 @@ namespace Sigilos.GameEntry
 			return database;
 		}
 
-		/// <summary>Carrega Data/texts/{idioma}.json; sem o arquivo, cai para pt-BR.</summary>
+		/// <summary>O idioma base: todo texto nasce em Data/texts/en.json; os outros arquivos são traduções.</summary>
+		public const string BaseLanguage = "en";
+
+		/// <summary>Carrega Data/texts/{idioma}.json; sem o arquivo, cai para a base.</summary>
 		public static void LoadTexts(string language)
 		{
 			if (!FileAccess.FileExists($"{DataFolder}/texts/{language}.json"))
 			{
-				GD.PushWarning($"Sem Data/texts/{language}.json; usando pt-BR.");
-				language = "pt-BR";
+				GD.PushWarning($"Sem Data/texts/{language}.json; usando {BaseLanguage}.");
+				language = BaseLanguage;
 			}
 
 			Locale.Load(Read($"texts/{language}.json"), language);

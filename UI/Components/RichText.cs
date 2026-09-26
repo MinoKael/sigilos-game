@@ -7,11 +7,11 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// Texto com termos dourados e Glifos (<see cref="Texts.Term(string, Glyph?)"/>): BBCode do Godot mais a
-	/// marca [glifo=Nome], que vira o desenho do Glifo em dourado, do tamanho da letra.
+	/// marca [glyph=Nome], que vira o desenho do Glifo em dourado, do tamanho da letra.
 	/// </summary>
 	public static class RichText
 	{
-		private static readonly Regex GlyphMark = new(@"\[glifo=(\w+)\]", RegexOptions.Compiled);
+		private static readonly Regex GlyphMark = new(@"\[glyph=(\w+)\]", RegexOptions.Compiled);
 
 		/// <summary>Um rótulo de texto rico que cresce com o conteúdo e quebra linha.</summary>
 		public static RichTextLabel Label(string text, float width = 0, string? variation = null, int fontSize = 0)
@@ -34,7 +34,7 @@ namespace Sigilos.UI.Components
 			return label;
 		}
 
-		/// <summary>Troca o conteúdo: o BBCode vai inteiro; cada [glifo=Nome] vira imagem.</summary>
+		/// <summary>Troca o conteúdo: o BBCode vai inteiro; cada [glyph=Nome] vira imagem.</summary>
 		public static void Set(RichTextLabel label, string text)
 		{
 			label.Clear();

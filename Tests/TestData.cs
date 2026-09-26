@@ -31,7 +31,7 @@ namespace Sigilos.Tests
 		}
 
 		/// <summary>O time de quem joga sem sorte: a 5★ garantida e quatro 3★.</summary>
-		public static readonly string[] TypicalTeam = { "fenix_fogo", "diabrete_fogo", "diabrete_agua", "diabrete_luz", "diabrete_vento" };
+		public static readonly string[] TypicalTeam = { "phoenix_fire", "imp_fire", "imp_water", "imp_light", "imp_wind" };
 
 		/// <summary>Uma conta nova com estes monstros na equipe da Campanha.</summary>
 		public static PlayerState PlayerWith(params string[] summonIds)

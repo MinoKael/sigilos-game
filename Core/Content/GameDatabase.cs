@@ -188,7 +188,7 @@ namespace Sigilos.Core.Content
 				}
 			}
 
-			if (Dungeons.Select(d => d.Id).Distinct().Count() != Dungeons.Count || Dungeons.Any(d => d.Id == "campanha"))
+			if (Dungeons.Select(d => d.Id).Distinct().Count() != Dungeons.Count || Dungeons.Any(d => d.Id == "campaign"))
 				yield return "Masmorras: ids repetidos ou reservados.";
 
 			foreach (var offer in Shop.Where(o => o.Amount <= 0 || o.Price <= 0 || o.Name.Length == 0))

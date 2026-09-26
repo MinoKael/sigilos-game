@@ -19,7 +19,7 @@ namespace Sigilos.Core.Player
 		public const int CollectionCapacity = 50;
 
 		/// <summary>Formato do save. Um save de formato mais antigo não é lido: a conta recomeça.</summary>
-		public const int CurrentVersion = 5;
+		public const int CurrentVersion = 6;
 
 		/// <summary>0 num save anterior ao campo existir.</summary>
 		public int Version { get; set; }

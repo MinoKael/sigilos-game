@@ -1,13 +1,13 @@
 {
-  "id": "fenix_trevas",
-  "name": "Fênix de Trevas",
-  "family": "fenix",
+  "id": "phoenix_dark",
+  "name": "Dark Phoenix",
+  "family": "phoenix",
   "element": "Dark",
   "role": "Attacker",
   "leader": {"stat": "CritDamage", "value": 0.3},
-  "awakening": {"name": "Nictéria", "stat": "Crit"},
+  "awakening": {"name": "Nycteria", "stat": "Crit"},
   "basic": {
-    "name": "Garra Velada",
+    "name": "Veiled Claw",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 4.2},
       {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}

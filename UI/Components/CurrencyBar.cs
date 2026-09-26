@@ -22,16 +22,16 @@ namespace Sigilos.UI.Components
 			row.AddThemeConstantOverride("separation", 20);
 			AddChild(row);
 
-			Add(row, "mana", _mana, T("moeda.dica.mana", Mana.PerHour, Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Account.MaxLevel));
-			Add(row, "essence", _essence, T("moeda.dica.essencia"));
-			Add(row, "gold", _gold, T("moeda.dica.ouro"));
-			Add(row, "scroll", _scrolls, T("moeda.dica.pergaminhos"));
-			Add(row, "fragments", _fragments, T("moeda.dica.fragmentos"));
+			Add(row, "mana", _mana, T("currency.tip.mana", Mana.PerHour, Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Account.MaxLevel));
+			Add(row, "essence", _essence, T("currency.tip.essence"));
+			Add(row, "gold", _gold, T("currency.tip.gold"));
+			Add(row, "scroll", _scrolls, T("currency.tip.scrolls"));
+			Add(row, "fragments", _fragments, T("currency.tip.fragments"));
 		}
 
 		public void Refresh(PlayerState player)
 		{
-			_mana.Text = T("moeda.mana_de", player.Mana, Mana.Max(player));
+			_mana.Text = T("currency.mana_of", player.Mana, Mana.Max(player));
 			_essence.Text = player.Essence.ToString();
 			_gold.Text = player.Gold.ToString();
 			_scrolls.Text = player.Scrolls.ToString();

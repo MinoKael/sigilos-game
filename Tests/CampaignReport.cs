@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
@@ -23,22 +24,23 @@ namespace Sigilos.Tests
 
 		public static void Print(GameDatabase database)
 		{
-			Console.WriteLine($"Time: {string.Join(", ", TestData.TypicalTeam)} | {Seeds} lutas por linha");
+			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+			Console.WriteLine($"Team: {string.Join(", ", TestData.TypicalTeam)} | {Seeds} fights per row");
 			Console.WriteLine();
-			Console.WriteLine("Campanha, sem runas");
-			Console.WriteLine("fase  inimigos  time  vitórias  rodadas  vida que sobra");
+			Console.WriteLine("Campaign, no runes");
+			Console.WriteLine("stage  enemies  team      wins   rounds      HP left");
 			foreach (var stage in database.Stages)
 			{
 				foreach (var level in new[] { stage.Level, Math.Max(1, stage.Level - 3) })
 				{
 					var (wins, rounds, health) = Run(database, stage.Encounter, Team(database, level, runed: false));
-					Console.WriteLine($"{stage.Number,4}  {stage.Level,8}  {level,4}  {wins,8:P0}  {rounds,7:F1}  {health,14:P0}");
+					Console.WriteLine($"{stage.Number,5}  {stage.Level,7}  {level,4}  {wins,8:P0}  {rounds,7:F1}  {health,11:P0}");
 				}
 			}
 
 			Console.WriteLine();
-			Console.WriteLine("Masmorras, time no nível 40: sem runas | com runas 5★ +9");
-			Console.WriteLine("masmorra     andar  inimigos  vitórias  rodadas | vitórias  rodadas");
+			Console.WriteLine("Dungeons, team at level 40: no runes | 5★ +9 runes");
+			Console.WriteLine("dungeon      floor   enemies      wins   rounds |     wins   rounds");
 			foreach (var dungeon in database.Dungeons)
 			{
 				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
@@ -51,7 +53,7 @@ namespace Sigilos.Tests
 			}
 		}
 
-		/// <summary>Uma luta só, turno a turno: <c>dotnet run --project Tests -- --luta=10</c>.</summary>
+		/// <summary>Uma luta só, turno a turno: <c>dotnet run --project Tests -- --fight=10</c>.</summary>
 		public static void PrintBattle(GameDatabase database, int stageNumber)
 		{
 			var stage = database.Stage(stageNumber);
@@ -70,13 +72,13 @@ namespace Sigilos.Tests
 				Console.WriteLine(e switch
 				{
 					TurnStarted t => $"\n[{t.Round,2}] {t.Actor.Name}",
-					SkillUsed s => $"     usa {s.Skill.Name}{(s.Enhanced ? " (aprimorada)" : "")}",
-					Damaged d => $"     {d.Target.Name} -{d.Amount}{(d.Crit ? " crítico" : "")}",
+					SkillUsed s => $"     uses {s.Skill.Name}{(s.Enhanced ? " (enhanced)" : "")}",
+					Damaged d => $"     {d.Target.Name} -{d.Amount}{(d.Crit ? " crit" : "")}",
 					Healed h => $"     {h.Target.Name} +{h.Amount}",
-					StatusApplied a => $"     {a.Target.Name} recebe {a.Status} ({a.Turns})",
-					Died d => $"     {d.Unit.Name} cai",
-					WaveStarted w => $"\n=== onda {w.Wave}/{w.WaveCount}",
-					BattleEnded b => $"\n=== {(b.Victory ? "vitória" : "derrota")}",
+					StatusApplied a => $"     {a.Target.Name} gets {a.Status} ({a.Turns})",
+					Died d => $"     {d.Unit.Name} falls",
+					WaveStarted w => $"\n=== wave {w.Wave}/{w.WaveCount}",
+					BattleEnded b => $"\n=== {(b.Victory ? "victory" : "defeat")}",
 					_ => $"     {e.GetType().Name}",
 				});
 			}

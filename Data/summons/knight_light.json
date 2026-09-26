@@ -1,13 +1,13 @@
 {
-  "id": "cavaleiro_luz",
-  "name": "Cavaleiro de Luz",
-  "family": "cavaleiro",
+  "id": "knight_light",
+  "name": "Light Knight",
+  "family": "knight",
   "element": "Light",
   "role": "Front",
   "leader": {"stat": "Defense", "value": 0.2},
-  "awakening": {"name": "Dom Alvor", "stat": "Resistance"},
+  "awakening": {"name": "Sir Dawn", "stat": "Resistance"},
   "basic": {
-    "name": "Juramento",
+    "name": "Oath",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
@@ -19,7 +19,7 @@
     ]
   },
   "special": {
-    "name": "Voto de Escudo",
+    "name": "Shield Vow",
     "cooldown": 4,
     "effects": [
       {"kind": "Status", "target": "AllEnemies", "status": "Taunt"},

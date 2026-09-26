@@ -22,8 +22,8 @@ namespace Sigilos.GameEntry
 	/// escolheu; quem muda o <see cref="PlayerState"/> e salva é esta classe.
 	///
 	/// Argumentos de desenvolvimento (depois de <c>--</c>): <c>--save=nome</c> usa outro arquivo de
-	/// save; <c>--idioma=nome</c> usa Data/texts/nome.json;
-	/// <c>--tela=campanha|masmorras|invocar|loja|monstros|equipes|runas|compendio|grimorio|batalha</c> abre essa tela direto.
+	/// save; <c>--language=nome</c> usa Data/texts/nome.json (padrão: en);
+	/// <c>--screen=campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto.
 	/// </summary>
 	public partial class GameRoot : Node
 	{
@@ -38,7 +38,7 @@ namespace Sigilos.GameEntry
 
 		public override void _Ready()
 		{
-			ContentLoader.LoadTexts(Argument("--idioma=") ?? "pt-BR");
+			ContentLoader.LoadTexts(Argument("--language=") ?? ContentLoader.BaseLanguage);
 			_database = ContentLoader.Load();
 			_store = new SaveStore(Argument("--save=") ?? DefaultSlot);
 			_player = _store.Load() ?? NewGame.Create(DateTime.Now, _random);
@@ -47,36 +47,36 @@ namespace Sigilos.GameEntry
 			_ui.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 			AddChild(_ui);
 
-			switch (Argument("--tela="))
+			switch (Argument("--screen="))
 			{
-				case "campanha":
+				case "campaign":
 					ShowCampaign();
 					break;
-				case "masmorras":
+				case "dungeons":
 					ShowDungeons(null);
 					break;
-				case "invocar":
+				case "summon":
 					ShowSummon();
 					break;
-				case "loja":
+				case "shop":
 					ShowShop(ShowHub);
 					break;
-				case "monstros":
+				case "monsters":
 					ShowStorage(null);
 					break;
-				case "equipes":
+				case "teams":
 					ShowTeams(Teams.Campaign, ShowHub);
 					break;
-				case "runas":
+				case "runes":
 					ShowRunes(Teams.Of(_player, Teams.Campaign).FirstOrDefault(), ShowHub);
 					break;
-				case "compendio":
+				case "compendium":
 					ShowCompendium();
 					break;
-				case "grimorio":
+				case "grimoire":
 					ShowGrimoire();
 					break;
-				case "batalha":
+				case "battle":
 					FightStage(_database.Stage(Math.Min(_player.HighestStage + 1, _database.Stages.Count)));
 					break;
 				default:
@@ -190,7 +190,7 @@ namespace Sigilos.GameEntry
 			shop.BuyRequested += offer => Change(() =>
 			{
 				if (Shop.Buy(_player, offer))
-					shop.ShowMessage(T("loja.comprado", Texts.Amount(offer.Item, offer.Amount)));
+					shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
 			}, shop.Refresh);
 			Swap(shop);
 		}
@@ -249,7 +249,7 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("batalha.titulo_fase", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, () => Campaign.ApplyVictory(_random, _player, stage), Back);
+			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, () => Campaign.ApplyVictory(_random, _player, stage), Back);
 		}
 
 		private void FightFloor(DungeonDefinition dungeon, int floor)
@@ -265,7 +265,7 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("batalha.titulo_andar", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back);
+			Fight(T("battle.title_floor", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back);
 		}
 
 		/// <summary>Sem ninguém na equipe do conteúdo, abre a tela de Equipes em vez da luta.</summary>
@@ -306,7 +306,7 @@ namespace Sigilos.GameEntry
 			var problem = Campaign.Check(_player, stage);
 			return problem != EntryProblem.None
 				? Texts.Refusal(problem, stage.Mana)
-				: Resolve(stage.Encounter, Teams.Campaign, T("geral.fase", stage.Number), () => Campaign.ApplyVictory(_random, _player, stage));
+				: Resolve(stage.Encounter, Teams.Campaign, T("common.stage", stage.Number), () => Campaign.ApplyVictory(_random, _player, stage));
 		}
 
 		private string ResolveFloor(DungeonDefinition dungeon, int floor)
@@ -314,7 +314,7 @@ namespace Sigilos.GameEntry
 			var problem = Dungeons.Check(_player, dungeon, floor);
 			return problem != EntryProblem.None
 				? Texts.Refusal(problem, dungeon.Floor(floor).Mana)
-				: Resolve(dungeon.Floor(floor).Encounter, dungeon.Id, T("geral.andar", dungeon.Name, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor));
+				: Resolve(dungeon.Floor(floor).Encounter, dungeon.Id, T("common.floor", dungeon.Name, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor));
 		}
 
 		private string Resolve(Encounter encounter, string content, string where, Func<VictoryReward> victoryReward)
@@ -323,20 +323,20 @@ namespace Sigilos.GameEntry
 			if (!AutoBattle.Run(session))
 			{
 				Save();
-				return T("geral.resolver_derrota", where, Math.Min(session.Round, BattleRules.RoundLimit));
+				return T("common.resolve_defeat", where, Math.Min(session.Round, BattleRules.RoundLimit));
 			}
 
 			var reward = victoryReward();
 			Save();
 			var drops = new List<string>();
 			if (reward.Gold > 0)
-				drops.Add(T("geral.resolver_ouro", reward.Gold));
+				drops.Add(T("common.resolve_gold", reward.Gold));
 			if (reward.Rune is { } rune)
-				drops.Add(T("geral.resolver_runa", Texts.Name(rune.Set), Texts.Stars(rune.Grade)));
+				drops.Add(T("common.resolve_rune", Texts.Name(rune.Set), Texts.Stars(rune.Grade)));
 			drops.AddRange(reward.Tools.Select(Texts.Name));
 			if (reward.AccountLevels > 0)
-				drops.Add(T("geral.resolver_conta", _player.AccountLevel, reward.AccountLevels * Account.LevelUpGold));
-			return T("geral.resolver_vitoria", where, reward.Mana, reward.Essence, reward.Experience, drops.Count == 0 ? "" : ", " + string.Join(", ", drops));
+				drops.Add(T("common.resolve_account", _player.AccountLevel, reward.AccountLevels * Account.LevelUpGold));
+			return T("common.resolve_victory", where, reward.Mana, reward.Essence, reward.Experience, drops.Count == 0 ? "" : ", " + string.Join(", ", drops));
 		}
 
 		// Infraestrutura ----------------------------------------------------------------------------
