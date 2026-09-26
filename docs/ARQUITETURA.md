@@ -37,7 +37,11 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | --- | --- |
 | Nova variante de invocação | um arquivo em `Data/summons/` (nenhum código) |
 | Nova família | `Data/families.json` + dois SVG em `Assets/Creatures/` (normal e desperto) + 5 arquivos em `Data/summons/` |
-| Novo inimigo ou fase | `Data/enemies.json`, `Data/stages.json` |
+| Nova família ou variante de invocação | `Data/families.json` e um arquivo em `Data/summons` (a arte em `Assets/Creatures`, com a do Despertar) |
+| Inimigos de fase ou andar | ondas em `Data/stages.json` e `Data/dungeons.json`: `"summon"` é uma variante de invocação, `"enemy"` um chefe de `Data/enemies.json` |
+| Reforço dos inimigos-invocação | `BattleFactory.FoeScale` (por estrelas) e `scale` do andar |
+| Nova Assinatura | `Core/Content/PassiveKind.cs` + o gancho (dano em `DamageFormula`, turno e onda em `BattleSession`, golpe em `EffectResolver`) + texto em `Data/texts` (`signature.*`) |
+| Ritmo da luta na tela e da Batalha automática | `UI/BattlePace.cs`; quantas lutas em `AutoBattle.RepeatRuns` |
 | Nova Masmorra ou andar | `Data/dungeons.json` (andares, conjuntos, drop, `mana`, `firstClearGold`, `scale` de força); regras em `Core/Progression/Dungeons.cs` |
 | Custo em Mana de fase | `Data/stages.json` (`mana`) |
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
@@ -102,6 +106,13 @@ problemas no console ao abrir.
   pedras e custo de melhora são as tabelas de lá, uma linha por estrela, em `RuneRules`. O custo sem
   falha é derivado delas (custo ÷ chance de sucesso), então mudar o preço em Essência é mudar
   `CostPerEssence`.
+- **Inimigo comum é invocação.** A mesma variante que o jogador invoca, no nível do encontro, sem
+  runas nem Despertar, com Vida e Ataque reforçados por estrelas (`BattleFactory.FoeScale`). Só o que
+  não existe como invocação (os chefes) mora em `Data/enemies.json`. Assim cada criatura nova serve aos
+  dois lados.
+- **A Batalha automática espera o tempo da tela.** As lutas são resolvidas na hora (`AutoBattle.Run`
+  guarda os eventos), mas a recompensa só entra depois de `BattlePace.Seconds(eventos, 2×)`: a mesma
+  conta que a tela de batalha usa para esperar entre eventos.
 - **Confere na entrada, cobra na vitória.** `Campaign.Check` e `Dungeons.Check` devolvem um
   `EntryProblem` (fechado, sem Mana, inventário de runas cheio) sem mudar nada; a Mana só sai no
   `ApplyVictory`, então a derrota (ou o Recuar) não custa nada.

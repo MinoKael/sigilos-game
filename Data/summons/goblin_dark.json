@@ -1,0 +1,27 @@
+{
+  "id": "goblin_dark",
+  "name": "Dark Goblin",
+  "family": "goblin",
+  "element": "Dark",
+  "role": "Attacker",
+  "awakening": {"name": "Skulk", "stat": "Crit"},
+  "basic": {
+    "name": "Backstab",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5, "ignoreDefense": 0.2}
+    ]
+  },
+  "special": {
+    "name": "Poisoned Blade",
+    "cooldown": 3,
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 4.9},
+      {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.6, "turns": 2}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 7.0},
+      {"kind": "Status", "target": "Target", "status": "Curse", "turns": 2}
+    ]
+  }
+}

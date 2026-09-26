@@ -1,0 +1,30 @@
+{
+  "id": "troll_water",
+  "name": "Water Troll",
+  "family": "troll",
+  "element": "Water",
+  "role": "Front",
+  "leader": {"stat": "Health", "value": 0.15},
+  "awakening": {"name": "Mossback", "stat": "Resistance"},
+  "basic": {
+    "name": "Club",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.85},
+      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Stone Skin",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+      {"kind": "Heal", "target": "Self", "power": 0.15}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+      {"kind": "Heal", "target": "Self", "power": 0.25},
+      {"kind": "Status", "target": "Self", "status": "Ward"}
+    ]
+  }
+}

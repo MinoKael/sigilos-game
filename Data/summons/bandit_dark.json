@@ -1,0 +1,29 @@
+{
+  "id": "bandit_dark",
+  "name": "Dark Bandit",
+  "family": "bandit",
+  "element": "Dark",
+  "role": "Control",
+  "awakening": {"name": "Shiv", "stat": "Accuracy"},
+  "basic": {
+    "name": "Cheap Trick",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5},
+      {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15}
+    ]
+  },
+  "special": {
+    "name": "Vanish",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Status", "target": "Self", "status": "Hidden"},
+      {"kind": "Impeto", "target": "Self", "power": 30}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Status", "target": "Self", "status": "Hidden"},
+      {"kind": "Status", "target": "Self", "status": "Foresight"},
+      {"kind": "Impeto", "target": "Self", "power": 50}
+    ]
+  }
+}

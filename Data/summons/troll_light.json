@@ -1,0 +1,28 @@
+{
+  "id": "troll_light",
+  "name": "Light Troll",
+  "family": "troll",
+  "element": "Light",
+  "role": "Support",
+  "leader": {"stat": "Defense", "value": 0.2},
+  "awakening": {"name": "Dawnhorn", "stat": "Resistance"},
+  "basic": {
+    "name": "Blessed Club",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5},
+      {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+    ]
+  },
+  "special": {
+    "name": "Regrowth",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Heal", "target": "AllAllies", "power": 0.2}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+      {"kind": "Cleanse", "target": "AllAllies"}
+    ]
+  }
+}

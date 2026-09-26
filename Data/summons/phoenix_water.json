@@ -11,11 +11,6 @@
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5},
       {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
-    ],
-    "enhanceCost": 3,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 4.2},
-      {"kind": "Heal", "target": "LowestAlly", "power": 0.2}
     ]
   },
   "special": {

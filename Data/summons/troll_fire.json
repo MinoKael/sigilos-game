@@ -1,0 +1,29 @@
+{
+  "id": "troll_fire",
+  "name": "Fire Troll",
+  "family": "troll",
+  "element": "Fire",
+  "role": "Attacker",
+  "leader": {"stat": "Attack", "value": 0.15},
+  "awakening": {"name": "Ashjaw", "stat": "Crit"},
+  "basic": {
+    "name": "Burning Club",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 4.2},
+      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Smash",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.2}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 4.2},
+      {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
+    ]
+  }
+}

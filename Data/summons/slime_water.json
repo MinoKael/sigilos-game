@@ -1,0 +1,27 @@
+{
+  "id": "slime_water",
+  "name": "Water Slime",
+  "family": "slime",
+  "element": "Water",
+  "role": "Front",
+  "awakening": {"name": "Brine", "stat": "Resistance"},
+  "basic": {
+    "name": "Engulf",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.15},
+      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Ooze Wall",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
+      {"kind": "Cleanse", "target": "LowestAlly"}
+    ]
+  }
+}

@@ -10,11 +10,6 @@
     "name": "Swift Thrust",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5}
-    ],
-    "enhanceCost": 3,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 4.9},
-      {"kind": "Impeto", "target": "AllAllies", "power": 15}
     ]
   },
   "special": {

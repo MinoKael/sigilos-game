@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
@@ -35,6 +36,9 @@ namespace Sigilos.UI.Screens
 
 		public event Action<DungeonDefinition, int>? FightRequested;
 		public event Action<DungeonDefinition, int>? ResolveRequested;
+
+		/// <summary>A Batalha automática do andar.</summary>
+		public event Action<DungeonDefinition, int>? RepeatRequested;
 		public event Action<DungeonDefinition>? TeamRequested;
 		public event Action<DungeonDefinition>? ShopRequested;
 		public event Action? BackRequested;
@@ -218,6 +222,9 @@ namespace Sigilos.UI.Screens
 				var resolve = new Button { Text = T("common.resolve_mana", floor.Mana), Disabled = disabled, TooltipText = T("common.resolve_tip"), CustomMinimumSize = new Vector2(130, 44) };
 				resolve.Pressed += () => ResolveRequested?.Invoke(dungeon, number);
 				row.AddChild(resolve);
+				var repeat = new Button { Text = T("common.auto_battle", AutoBattle.RepeatRuns), Disabled = disabled, TooltipText = T("common.auto_battle_tip", AutoBattle.RepeatRuns), CustomMinimumSize = new Vector2(110, 44) };
+				repeat.Pressed += () => RepeatRequested?.Invoke(dungeon, number);
+				row.AddChild(repeat);
 			}
 
 			panel.Modulate = open ? Colors.White : new Color(1, 1, 1, 0.5f);

@@ -42,6 +42,17 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void OnlySpecialSkillsUseEther()
+		{
+			var database = TestData.LoadReal();
+			foreach (var summon in database.Summons)
+			{
+				Assert.False(summon.Basic.CanEnhance, $"{summon.Id}: o básico não usa Éter");
+				Assert.True(summon.Special.CanEnhance, $"{summon.Id}: a especial tem aprimoramento");
+			}
+		}
+
+		[Test]
 		private static void StarterContentExists()
 		{
 			var database = TestData.LoadReal();

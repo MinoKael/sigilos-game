@@ -5,13 +5,15 @@ namespace Sigilos.Tests
 {
 	internal static class EtherTests
 	{
-		private static readonly SkillDefinition Enhanceable = TestData.Strike with
+		private static readonly SkillDefinition SpecialStrike = TestData.Strike with { Name = "Especial", Cooldown = 3 };
+
+		/// <summary>Especial com recarga 1 (pronta todo turno) que dobra o dano aprimorada.</summary>
+		private static readonly SkillDefinition Enhanceable = SpecialStrike with
 		{
+			Cooldown = 1,
 			EnhanceCost = 2,
 			EnhancedEffects = new[] { new EffectDefinition { Kind = EffectKind.Damage, Power = 2 } },
 		};
-
-		private static readonly SkillDefinition SpecialStrike = TestData.Strike with { Name = "Especial", Cooldown = 3 };
 
 		[Test]
 		private static void BasicGivesNothingSpecialGivesOne()
@@ -56,14 +58,36 @@ namespace Sigilos.Tests
 		[Test]
 		private static void EnhancementCostsEtherAndChangesEffects()
 		{
-			var hero = TestData.Unit("herói", Side.Allies, speed: 300, basic: Enhanceable, special: SpecialStrike with { Cooldown = 1 });
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, special: Enhanceable);
 			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 			var session = TestData.Session(new[] { hero }, new[] { foe });
 			session.Start();
 
 			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(SkillSlot.Basic, true, foe));
+			session.Act(new UnitAction(SkillSlot.Special, true, foe));
 			Assert.Near(1_000_000 - 100, foe.Health, "sem Éter, o aprimoramento não acontece");
+			Assert.Equal(1, session.Ether, "a especial gerou 1");
+
+			TestData.RunUntilTurnOf(session, hero);
+			session.Act(new UnitAction(SkillSlot.Special, false, foe));
+			Assert.Equal(2, session.Ether, "duas especiais");
+
+			TestData.RunUntilTurnOf(session, hero);
+			var before = foe.Health;
+			session.Act(new UnitAction(SkillSlot.Special, true, foe));
+			Assert.Near(before - 200, foe.Health, "aprimorada, o dano dobra");
+			Assert.Equal(1, session.Ether, "pagou 2 e a especial devolveu 1");
+		}
+
+		[Test]
+		private static void BasicSkillNeverSpendsEther()
+		{
+			// Um básico com aprimoramento nos dados (a validação barra, mas o combate também não aceita).
+			var basic = TestData.Strike with { EnhanceCost = 2, EnhancedEffects = new[] { new EffectDefinition { Kind = EffectKind.Damage, Power = 2 } } };
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, basic: basic, special: Enhanceable);
+			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
+			var session = TestData.Session(new[] { hero }, new[] { foe });
+			session.Start();
 
 			for (var i = 0; i < 2; i++)
 			{
@@ -71,18 +95,18 @@ namespace Sigilos.Tests
 				session.Act(new UnitAction(SkillSlot.Special, false, foe));
 			}
 
-			Assert.Equal(2, session.Ether, "duas especiais");
 			TestData.RunUntilTurnOf(session, hero);
+			Assert.False(session.CanEnhance(hero, hero.Basic), "o básico não aprimora, nem com Éter");
 			var before = foe.Health;
 			session.Act(new UnitAction(SkillSlot.Basic, true, foe));
-			Assert.Near(before - 200, foe.Health, "aprimorado, o dano dobra");
-			Assert.Equal(0, session.Ether, "pagou 2, o básico não devolve nada");
+			Assert.Near(before - 100, foe.Health, "dano normal");
+			Assert.Equal(2, session.Ether, "nada gasto");
 		}
 
 		[Test]
 		private static void AutoPilotNeverSpendsEther()
 		{
-			var hero = TestData.Unit("herói", Side.Allies, speed: 300, basic: Enhanceable);
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, special: Enhanceable);
 			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 			var session = TestData.Session(new[] { hero }, new[] { foe });
 			session.Start();

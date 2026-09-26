@@ -1,0 +1,27 @@
+{
+  "id": "bandit_wind",
+  "name": "Wind Bandit",
+  "family": "bandit",
+  "element": "Wind",
+  "role": "Attacker",
+  "awakening": {"name": "Swipe", "stat": "Speed"},
+  "basic": {
+    "name": "Quick Cut",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 2}
+    ]
+  },
+  "special": {
+    "name": "Ransack",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 4.9},
+      {"kind": "Impeto", "target": "Target", "power": -30}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 6.3},
+      {"kind": "Impeto", "target": "Target", "power": -60}
+    ]
+  }
+}

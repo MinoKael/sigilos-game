@@ -125,6 +125,14 @@ namespace Sigilos.GameEntry
 				campaign.ShowMessage(ResolveStage(stage));
 				campaign.Refresh();
 			};
+			campaign.RepeatRequested += stage => RepeatBattle(
+				T("battle.title_stage", stage.Number, stage.Name),
+				() => Campaign.Check(_player, stage),
+				stage.Mana,
+				stage.Encounter,
+				Teams.Campaign,
+				() => Campaign.ApplyVictory(_random, _player, stage),
+				() => ShowCampaign(stage.Number, null));
 			Swap(campaign);
 			if (message != null)
 				campaign.ShowMessage(message);
@@ -142,6 +150,14 @@ namespace Sigilos.GameEntry
 				dungeons.ShowMessage(ResolveFloor(dungeon, floor));
 				dungeons.Refresh();
 			};
+			dungeons.RepeatRequested += (dungeon, floor) => RepeatBattle(
+				T("battle.title_floor", dungeon.Name, floor),
+				() => Dungeons.Check(_player, dungeon, floor),
+				dungeon.Floor(floor).Mana,
+				dungeon.Floor(floor).Encounter,
+				dungeon.Id,
+				() => Dungeons.ApplyVictory(_random, _player, dungeon, floor),
+				() => ShowDungeons(dungeon.Id));
 			Swap(dungeons);
 			if (message != null)
 				dungeons.ShowMessage(message);
@@ -337,6 +353,62 @@ namespace Sigilos.GameEntry
 			if (reward.AccountLevels > 0)
 				drops.Add(T("common.resolve_account", _player.AccountLevel, reward.AccountLevels * Account.LevelUpGold));
 			return T("common.resolve_victory", where, reward.Mana, reward.Essence, reward.Experience, drops.Count == 0 ? "" : ", " + string.Join(", ", drops));
+		}
+
+		/// <summary>
+		/// A Batalha automática: até <see cref="AutoBattle.RepeatRuns"/> lutas resolvidas uma atrás da
+		/// outra. Cada luta é resolvida na hora, mas a recompensa só entra depois do tempo que ela levaria
+		/// na tela (<see cref="BattlePace.AutoBattleFactor"/>). Para quando falta Mana ou vaga de runa.
+		/// </summary>
+		private void RepeatBattle(string title, Func<EntryProblem> check, int mana, Encounter encounter, string content, Func<VictoryReward> victoryReward, Action back)
+		{
+			if (NeedsTeam(content, back))
+				return;
+
+			var screen = new RepeatBattleScreen(_player, title, AutoBattle.RepeatRuns);
+			var number = 0;
+			var victory = false;
+
+			void Next()
+			{
+				if (number >= AutoBattle.RepeatRuns)
+				{
+					screen.Finish(T("auto.done", number));
+					return;
+				}
+
+				var problem = check();
+				if (problem != EntryProblem.None)
+				{
+					screen.Finish(Texts.Refusal(problem, mana));
+					return;
+				}
+
+				number++;
+				var session = BattleFactory.Create(_database, PlayerTeam.Build(_player, _database, content), encounter, _random.Next());
+				var log = new List<BattleEvent>();
+				victory = AutoBattle.Run(session, log);
+				screen.BeginRun(number, BattlePace.Seconds(log, BattlePace.AutoBattleFactor));
+			}
+
+			screen.RunFinished += () =>
+			{
+				if (victory)
+				{
+					var reward = victoryReward();
+					Save();
+					screen.AddVictory(reward, _player.AccountLevel);
+				}
+				else
+				{
+					screen.AddDefeat();
+				}
+
+				Next();
+			};
+			screen.BackRequested += back;
+			Swap(screen);
+			Next();
 		}
 
 		// Infraestrutura ----------------------------------------------------------------------------

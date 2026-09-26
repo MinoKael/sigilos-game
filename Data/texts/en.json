@@ -26,7 +26,26 @@
     "fight_mana": "Fight · {0} Mana",
     "resolve_mana": "Resolve · {0} Mana",
     "shop": "Shop",
-    "shop_tip": "Buy Mana and Scrolls with Gold."
+    "shop_tip": "Buy Mana and Scrolls with Gold.",
+    "auto_battle": "Auto ×{0}",
+    "auto_battle_tip": "Auto Battle: up to {0} fights in a row, each taking the time it would take on auto at 2×. Stops when Mana runs out or the rune inventory is full."
+  },
+
+  "auto": {
+    "title": "Auto Battle · {0}",
+    "fight": "Current fight",
+    "run": "Fight {0} of {1}",
+    "time_left": "About {0} left",
+    "stop": "Stop",
+    "stop_tip": "Stops now: the fight in progress gives nothing and costs nothing.",
+    "stopped": "Stopped.",
+    "done": "Done: {0} fights.",
+    "results": "Results",
+    "record": "Victories: {0} · Defeats: {1}",
+    "gains": "−{0} Mana · +{1} Essence · +{2} Gold · +{3} experience",
+    "level_ups": "Level-ups in the team: {0}",
+    "account": "Account at level {0}",
+    "runes": "Runes: {0}"
   },
 
   "entry": {
@@ -316,7 +335,13 @@
   "signature": {
     "SpeedWhenLowest": "+{0} Speed while it is the ally with the least HP.",
     "ShieldOnDeath": "When it falls, gives every ally a {0} worth {1} of its own HP.",
-    "RebirthOnce": "The first time it falls, it revives with {0} HP on its next turn."
+    "RebirthOnce": "The first time it falls, it revives with {0} HP on its next turn.",
+    "DamageReduction": "Takes {0} less damage from every hit.",
+    "BonusVsDebuffed": "+{0} damage against targets with a harmful effect.",
+    "BonusVsWounded": "+{0} damage against targets below {1} HP.",
+    "ImpetoAtWaveStart": "Starts each wave with at least {0} {1}.",
+    "RegenEachTurn": "Recovers {0} of max HP at the start of each of its turns.",
+    "BurnOnHit": "{0} chance to inflict {1} on each target hit, once per skill."
   },
 
   "awaken": {
@@ -621,7 +646,7 @@
     },
     "combat": {
       "impetus": { "title": "Impetus", "text": "Each unit has a {0} bar that fills in proportion to Speed; whoever reaches 100% acts. Pushing or delaying the bar changes the order — the \"Next\" strip shows who is coming." },
-      "aether": { "title": "Aether", "text": "{0} is the team's resource, from 0 to {1}. Basic skills don't generate it; each special skill generates {2} and each enemy knocked out, {3}. It pays for enhanced versions of skills (none costs less than {4}): tick \"Enhance\" before choosing. Manual only." },
+      "aether": { "title": "Aether", "text": "{0} is the team's resource, from 0 to {1}. Basic skills neither generate nor spend it; each special skill generates {2} and each enemy knocked out, {3}. It pays for the enhanced version of the special skill (none costs less than {4}): tick \"Enhance\" before choosing it. Manual only." },
       "fight": { "title": "The fight", "text": "Up to {0} monsters against up to {2} enemies per wave, in up to {1} waves. Going past {3} rounds is a defeat." },
       "damage": { "title": "Damage", "text": "Attack × skill multiplier × {0} / ({0} + target's Defense). {0} Defense halves the damage." },
       "crit": { "title": "Critical hits", "text": "A critical hit multiplies damage by 1 + Crit Damage. Every monster starts with 15% Crit Rate and 50% Crit Damage." },
@@ -666,6 +691,7 @@
       "gems": "Enchanted Gems"
     },
     "not_owned": "not owned",
+    "family": "{0} · Signature: {1} — {2}",
     "copies": "×{0}",
     "sheet": "{0} · {1} · {2} · {3}",
     "view_awakened": "View awakened ({0})",
@@ -711,7 +737,7 @@
     "tool": "{0}: {1}",
     "timeout": "Time ran out: {0} rounds.",
     "all_fell": "Every monster fell.",
-    "defeat_tip": "Level up, equip runes or awaken monsters. In manual, Aether pays for enhancements.",
+    "defeat_tip": "Level up, equip runes or awaken monsters. In manual, Aether enhances the special skills.",
     "effects": "Effects",
     "effects_tip": "Shows the effects on each ally and enemy. Clicking a unit opens it too.",
     "effects_unit": "{0} ({1})",
@@ -728,13 +754,13 @@
     "retreat": "Retreat",
     "retreat_tip": "Leaves the fight with no reward.",
     "turn_of": "{0}'s turn:",
-    "enhance": "Enhance (Aether: {0})",
-    "enhance_tip": "Pays Aether to use the enhanced version of the chosen skill.",
+    "enhance": "Enhance {0} (Aether: {1})",
+    "enhance_tip": "Pays Aether to use the enhanced version of the special skill. Basic skills are never enhanced.",
     "choose_target": "Choose the target:",
     "aether_tip_auto": "Auto doesn't use Aether. Turn it off to enhance skills.",
-    "aether_tip_manual": "Special skills and knocked-out enemies generate Aether; tick Enhance to spend it.",
+    "aether_tip_manual": "Special skills and knocked-out enemies generate Aether; tick Enhance to spend it on the special skill.",
     "aether": "Aether {0}/{1}",
-    "aether_tip": "Aether: the team's resource, from 0 to {0}. Comes from special skills and knocked-out enemies; pays for enhancements in manual.",
+    "aether_tip": "Aether: the team's resource, from 0 to {0}. Comes from special skills and knocked-out enemies; enhances the special skill in manual.",
     "next_up": "Next:",
     "unit_tip": "{0} · Lv {1}",
     "impetus_tip": "Impetus: acts when the bar fills.",

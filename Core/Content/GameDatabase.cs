@@ -79,6 +79,19 @@ namespace Sigilos.Core.Content
 
 		public bool HasSummon(string id) => _summonsById.ContainsKey(id);
 
+		/// <summary>Nome, desenho e elemento de um inimigo de onda, seja invocação ou criatura única.</summary>
+		public (string Name, string Image, Element Element) Foe(StageEnemy slot)
+		{
+			if (slot.Summon is { } id)
+			{
+				var summon = Summon(id);
+				return (summon.Name, summon.ImageFor(false), summon.Element);
+			}
+
+			var enemy = Enemy(slot.Enemy!);
+			return (enemy.Name, enemy.Image, slot.Element);
+		}
+
 		public static GameDatabase FromJson(
 			string roles,
 			string families,
@@ -140,6 +153,8 @@ namespace Sigilos.Core.Content
 					yield return $"Invocação {summon.Id}: o Despertar dá Velocidade, Crítico, Resistência ou Precisão, não {summon.Awakening.Stat}.";
 				if (summon.Special.Cooldown <= 0)
 					yield return $"Invocação {summon.Id}: habilidade especial sem recarga.";
+				if (summon.Basic.EnhanceCost > 0 || summon.Basic.EnhancedEffects.Count > 0)
+					yield return $"Invocação {summon.Id}: o básico tem aprimoramento, mas o Éter é só da habilidade especial.";
 				foreach (var problem in ValidateSkill(summon.Basic).Concat(ValidateSkill(summon.Special)))
 					yield return $"Invocação {summon.Id}: {problem}";
 			}
@@ -205,8 +220,15 @@ namespace Sigilos.Core.Content
 			{
 				if (wave.Count is < 1 or > MaxEnemiesPerWave)
 					yield return $"onda com {wave.Count} inimigos (de 1 a {MaxEnemiesPerWave}).";
-				foreach (var slot in wave.Where(slot => !_enemiesById.ContainsKey(slot.Enemy)))
-					yield return $"inimigo '{slot.Enemy}' não existe.";
+				foreach (var slot in wave)
+				{
+					if ((slot.Summon == null) == (slot.Enemy == null))
+						yield return "cada inimigo tem \"summon\" ou \"enemy\", um dos dois.";
+					else if (slot.Summon != null && !_summonsById.ContainsKey(slot.Summon))
+						yield return $"invocação '{slot.Summon}' não existe.";
+					else if (slot.Enemy != null && !_enemiesById.ContainsKey(slot.Enemy))
+						yield return $"inimigo '{slot.Enemy}' não existe.";
+				}
 			}
 		}
 

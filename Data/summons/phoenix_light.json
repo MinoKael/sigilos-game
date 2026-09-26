@@ -11,11 +11,6 @@
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.85},
       {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
-    ],
-    "enhanceCost": 3,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 5.25},
-      {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.5}
     ]
   },
   "special": {

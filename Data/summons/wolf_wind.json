@@ -1,0 +1,26 @@
+{
+  "id": "wolf_wind",
+  "name": "Wind Wolf",
+  "family": "wolf",
+  "element": "Wind",
+  "role": "Attacker",
+  "awakening": {"name": "Gustpaw", "stat": "Speed"},
+  "basic": {
+    "name": "Bite",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5}
+    ]
+  },
+  "special": {
+    "name": "Howl",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Impeto", "target": "AllAllies", "power": 25}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Impeto", "target": "AllAllies", "power": 40},
+      {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
+    ]
+  }
+}

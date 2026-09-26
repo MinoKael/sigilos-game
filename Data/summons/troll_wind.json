@@ -1,0 +1,29 @@
+{
+  "id": "troll_wind",
+  "name": "Wind Troll",
+  "family": "troll",
+  "element": "Wind",
+  "role": "Control",
+  "leader": {"stat": "Speed", "value": 0.1},
+  "awakening": {"name": "Thunderhide", "stat": "Accuracy"},
+  "basic": {
+    "name": "Boulder Toss",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.85},
+      {"kind": "Impeto", "target": "Target", "power": -20}
+    ]
+  },
+  "special": {
+    "name": "Quake",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+      {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+      {"kind": "Impeto", "target": "AllEnemies", "power": -40}
+    ]
+  }
+}

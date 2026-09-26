@@ -1,0 +1,28 @@
+{
+  "id": "slime_fire",
+  "name": "Fire Slime",
+  "family": "slime",
+  "element": "Fire",
+  "role": "Attacker",
+  "awakening": {"name": "Magmire", "stat": "Crit"},
+  "basic": {
+    "name": "Scalding Glob",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5},
+      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Eruption",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.6, "turns": 2}
+    ]
+  }
+}

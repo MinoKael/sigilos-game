@@ -12,6 +12,8 @@ Sep 23, 2026 · @Mikael
 
 > **Quinta revisão de 25/09/2026: o jogo passa a ser em inglês.** Ids, nomes de dados (invocações, inimigos, fases, Masmorras, Loja) e todo texto da interface nascem em inglês (Data/texts/en.json); o português vira uma tradução da interface (Data/texts/pt-BR.json). Este documento segue em português, e os nomes daqui são os de design: os do jogo estão em Data/ (Baú é Vault, Ímpeto é Impetus, Éter é Aether, Glifo é Glyph).
 
+> **Sexta revisão de 25/09/2026: inimigos são invocações.** Limo, Goblin, Lobo e Bandido viraram famílias de invocação 3★, o Troll 4★ e o Dragão 5★, cada uma com 5 elementos e Assinatura própria (Corpo Gelatinoso reduz dano; Golpe Baixo bate mais em quem tem efeito negativo; Instinto de Caça bate mais em quem está abaixo da metade da Vida; Emboscada começa cada onda com Ímpeto; Regeneração cura no começo do turno; Fogo de Dragão queima quem acerta). Os inimigos comuns de fases e Masmorras são essas invocações com Vida e Ataque reforçados pela raridade e pela dificuldade do encontro; só os chefes continuam como criaturas únicas. O Grimório agrupa as invocações por família, com os elementos no detalhe. Entrou a **Batalha automática**: até 30 lutas seguidas, como o Resolver, mas cada luta leva o tempo que levaria no automático em 2×. A tela de batalha ficou com duas velocidades, 1× e 2× (o 2× corre três vezes mais rápido). O Éter passou a aprimorar só a habilidade especial: o básico não tem versão aprimorada.
+
 ## 1. Visão geral
 
 **Sigilos** (título provisório) é um gacha de fantasia para um jogador, offline e sem dinheiro de verdade (a Loja só troca Ouro ganho jogando): você coleciona criaturas, grava sigilos nelas e comanda batalhas por turnos em que as magias são montadas símbolo por símbolo.
@@ -150,7 +152,7 @@ A barra enche em proporção à Velocidade. Efeitos empurram ou atrasam barras, 
 Recurso único do time, equivalente às Almas de Epic Seven. Começa em 0 e vai até 10. É escasso de propósito: numa luta inteira dá para pagar poucos aprimoramentos, então cada um é uma decisão.
 
 - **Ganho:** +1 por habilidade especial e +1 por inimigo derrotado. O básico não gera Éter.
-- **Gasto:** só aprimoramentos, e só no modo manual. O básico aprimorado custa 3; o especial aprimorado, 5 (6 nas 5★). Nenhum aprimoramento custa menos que 2 — mais do que um turno rende —, então não existe ciclo de usa-e-ganha.
+- **Gasto:** só o aprimoramento da habilidade especial, e só no modo manual; o básico nunca gasta Éter. O especial aprimorado custa 5 (6 nas 5★). Nenhum aprimoramento custa menos que 2 — mais do que um turno rende —, então não existe ciclo de usa-e-ganha.
 - **Aprimoramento:** a versão aprimorada é clara e forte (mais golpes, chance dobrada, efeito extra), para valer o custo.
 
 ### Vitória e derrota
@@ -427,5 +429,5 @@ I é o Ímpeto atual em porcentagem; a unidade com o menor t age primeiro. Empur
 
 Invocações de 4★ usam 92% desses valores no nível 40 e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos começam no valor do nível 1 da estrela natural de Summoners War (5★: 43%; 4★: 32%; 3★ e inimigos: 22%) e crescem em linha reta até o 40. Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
 
-Inimigos têm 1 ou 2 estrelas e compensam a raridade baixa com multiplicadores de Vida e Ataque por criatura (Data/enemies.json): não usam runas nem aprimoramentos.
+Os inimigos comuns são invocações (3★ a 5★) com Vida e Ataque multiplicados pelas estrelas e pela força do encontro; os chefes têm multiplicadores próprios (Data/enemies.json). Nenhum inimigo usa runas nem aprimoramentos.
 

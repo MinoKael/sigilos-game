@@ -1,90 +1,9 @@
-// Defiled Creatures of region 1 (GDD, section 5): RPG classics with 1 or 2 stars, plus the boss.
-// Each enemy's element is chosen in the stage (Data/stages.json), like the summon families.
-// The last five are the Dungeon bosses (Data/dungeons.json).
-// "healthScale" and "attackScale" multiply HP and Attack: they make up for the low rarity (enemies
-// have no runes or enhancements), and bosses get more HP.
+// Unique creatures (GDD, section 5): the bosses, which don't exist as summons. Every other enemy of
+// the stages and Dungeons is a summon of Data/summons with buffed stats (Core/Battle/BattleFactory.cs).
+// Each enemy's element is chosen in the stage (Data/stages.json).
+// "healthScale" and "attackScale" multiply HP and Attack: enemies have no runes or enhancements, and
+// bosses get more HP.
 [
-  {
-    "id": "slime",
-    "name": "Defiled Slime",
-    "role": "Front",
-    "rarity": 1,
-    "healthScale": 2.0, "attackScale": 1.95,
-    "image": "slime",
-    "basic": { "name": "Engulf", "effects": [
-      {"kind": "Damage", "power": 3.15},
-      {"kind": "Status", "status": "AttackDown", "chance": 0.2, "turns": 2}
-    ] }
-  },
-  {
-    "id": "goblin",
-    "name": "Goblin",
-    "role": "Attacker",
-    "rarity": 1,
-    "healthScale": 2.0, "attackScale": 1.95,
-    "image": "goblin",
-    "basic": { "name": "Stab", "effects": [
-      {"kind": "Damage", "power": 1.75, "hits": 2}
-    ] }
-  },
-  {
-    "id": "wolf",
-    "name": "Defiled Wolf",
-    "role": "Attacker",
-    "rarity": 2,
-    "healthScale": 2.0, "attackScale": 1.95,
-    "image": "wolf",
-    "basic": { "name": "Bite", "effects": [
-      {"kind": "Damage", "power": 3.5}
-    ] },
-    "special": { "name": "Howl", "cooldown": 4, "effects": [
-      {"kind": "Impeto", "target": "AllAllies", "power": 25}
-    ] }
-  },
-  {
-    "id": "bandit",
-    "name": "Bandit",
-    "role": "Control",
-    "rarity": 2,
-    "healthScale": 2.0, "attackScale": 1.95,
-    "image": "bandit",
-    "basic": { "name": "Dirty Blow", "effects": [
-      {"kind": "Damage", "power": 3.5},
-      {"kind": "Status", "status": "Blind", "chance": 0.25, "turns": 2}
-    ] },
-    "special": { "name": "Smoke Bomb", "cooldown": 4, "effects": [
-      {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
-    ] }
-  },
-  {
-    "id": "troll",
-    "name": "Hill Troll",
-    "role": "Front",
-    "rarity": 2,
-    "healthScale": 3.4, "attackScale": 1.6,
-    "image": "troll",
-    "basic": { "name": "Club", "effects": [
-      {"kind": "Damage", "power": 4.2}
-    ] },
-    "special": { "name": "Regenerate", "cooldown": 4, "effects": [
-      {"kind": "Heal", "target": "Self", "power": 0.2}
-    ] }
-  },
-  {
-    "id": "dragon",
-    "name": "Young Dragon",
-    "role": "Attacker",
-    "rarity": 2,
-    "healthScale": 3.2, "attackScale": 1.6,
-    "image": "dragon",
-    "basic": { "name": "Claw", "effects": [
-      {"kind": "Damage", "power": 3.85}
-    ] },
-    "special": { "name": "Breath", "cooldown": 4, "effects": [
-      {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
-      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
-    ] }
-  },
   {
     "id": "chain_master",
     "name": "The Chain Master",

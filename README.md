@@ -8,8 +8,9 @@ Este repositório é o **MVP**: combate 5 contra 5 com Ímpeto e Éter (Éter s�
 garantia em que cada invocação é uma cópia nova, coleção com Baú, Ecos por fusão, uma equipe por
 conteúdo, ociosidade, nível 1–40, Despertar, runas e atributos iguais aos de Summoners War (1 a 6
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
-melhora nunca falha), a região 1 (20 fases), cinco Masmorras, Mana para entrar nas lutas, nível da
-conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe). O jogo é em inglês: todo texto da
+melhora nunca falha), 9 famílias de invocação (45 variantes; os inimigos comuns são essas invocações
+reforçadas), a região 1 (20 fases), cinco Masmorras, Batalha automática (30 lutas seguidas), Mana para
+entrar nas lutas, nível da conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe). O jogo é em inglês: todo texto da
 interface mora em `Data/texts/en.json`, com tradução para português em `Data/texts/pt-BR.json`.
 
 ## Rodar

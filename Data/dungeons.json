@@ -14,37 +14,37 @@
     "floors": [
       {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "slime", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "slime", "element": "Light"}],
-          [{"enemy": "goblin", "element": "Light"}, {"enemy": "troll", "element": "Dark"}, {"enemy": "slime", "element": "Fire"}],
-          [{"enemy": "runic_golem", "element": "Wind"}, {"enemy": "slime", "element": "Dark"}]
+          [{"summon": "slime_water"}, {"summon": "goblin_wind"}, {"summon": "slime_light"}],
+          [{"summon": "goblin_light"}, {"summon": "troll_dark"}, {"summon": "slime_fire"}],
+          [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_dark"}]
         ]
       },
       {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "slime", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "slime", "element": "Dark"}],
-          [{"enemy": "goblin", "element": "Dark"}, {"enemy": "troll", "element": "Fire"}, {"enemy": "slime", "element": "Water"}],
-          [{"enemy": "runic_golem", "element": "Wind"}, {"enemy": "slime", "element": "Fire"}, {"enemy": "slime", "element": "Water"}]
+          [{"summon": "slime_wind"}, {"summon": "goblin_light"}, {"summon": "slime_dark"}],
+          [{"summon": "goblin_dark"}, {"summon": "troll_fire"}, {"summon": "slime_water"}],
+          [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_fire"}, {"summon": "slime_water"}]
         ]
       },
       {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "slime", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "slime", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
-          [{"enemy": "goblin", "element": "Fire"}, {"enemy": "troll", "element": "Water"}, {"enemy": "slime", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
-          [{"enemy": "runic_golem", "element": "Wind"}, {"enemy": "slime", "element": "Water"}, {"enemy": "slime", "element": "Wind"}]
+          [{"summon": "slime_light"}, {"summon": "goblin_dark"}, {"summon": "slime_fire"}, {"summon": "goblin_water"}],
+          [{"summon": "goblin_fire"}, {"summon": "troll_water"}, {"summon": "slime_wind"}, {"summon": "goblin_light"}],
+          [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_water"}, {"summon": "slime_wind"}]
         ]
       },
       {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "slime", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "slime", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}],
-          [{"enemy": "goblin", "element": "Water"}, {"enemy": "troll", "element": "Wind"}, {"enemy": "slime", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}],
-          [{"enemy": "runic_golem", "element": "Wind"}, {"enemy": "slime", "element": "Wind"}, {"enemy": "slime", "element": "Light"}, {"enemy": "slime", "element": "Dark"}]
+          [{"summon": "slime_dark"}, {"summon": "goblin_fire"}, {"summon": "slime_water"}, {"summon": "goblin_wind"}],
+          [{"summon": "goblin_water"}, {"summon": "troll_wind"}, {"summon": "slime_light"}, {"summon": "goblin_dark"}],
+          [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_wind"}, {"summon": "slime_light"}, {"summon": "slime_dark"}]
         ]
       },
       {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
         "waves": [
-          [{"enemy": "slime", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "slime", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
-          [{"enemy": "goblin", "element": "Wind"}, {"enemy": "troll", "element": "Light"}, {"enemy": "slime", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}],
-          [{"enemy": "runic_golem", "element": "Wind"}, {"enemy": "slime", "element": "Light"}, {"enemy": "slime", "element": "Dark"}, {"enemy": "slime", "element": "Fire"}]
+          [{"summon": "slime_fire"}, {"summon": "goblin_water"}, {"summon": "slime_wind"}, {"summon": "goblin_light"}],
+          [{"summon": "goblin_wind"}, {"summon": "troll_light"}, {"summon": "slime_dark"}, {"summon": "goblin_fire"}],
+          [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_light"}, {"summon": "slime_dark"}, {"summon": "slime_fire"}]
         ]
       }
     ]
@@ -58,37 +58,37 @@
     "floors": [
       {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "toolGrade": 1, "toolCount": 1,
         "waves": [
-          [{"enemy": "goblin", "element": "Water"}, {"enemy": "bandit", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
-          [{"enemy": "bandit", "element": "Light"}, {"enemy": "troll", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}],
-          [{"enemy": "forge_guardian", "element": "Fire"}, {"enemy": "goblin", "element": "Dark"}]
+          [{"summon": "goblin_water"}, {"summon": "bandit_wind"}, {"summon": "goblin_light"}],
+          [{"summon": "bandit_light"}, {"summon": "troll_dark"}, {"summon": "goblin_fire"}],
+          [{"enemy": "forge_guardian", "element": "Fire"}, {"summon": "goblin_dark"}]
         ]
       },
       {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "toolGrade": 2, "toolCount": 1,
         "waves": [
-          [{"enemy": "goblin", "element": "Wind"}, {"enemy": "bandit", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}],
-          [{"enemy": "bandit", "element": "Dark"}, {"enemy": "troll", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
-          [{"enemy": "forge_guardian", "element": "Fire"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}]
+          [{"summon": "goblin_wind"}, {"summon": "bandit_light"}, {"summon": "goblin_dark"}],
+          [{"summon": "bandit_dark"}, {"summon": "troll_fire"}, {"summon": "goblin_water"}],
+          [{"enemy": "forge_guardian", "element": "Fire"}, {"summon": "goblin_fire"}, {"summon": "goblin_water"}]
         ]
       },
       {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "toolGrade": 3, "toolCount": 1,
         "waves": [
-          [{"enemy": "goblin", "element": "Light"}, {"enemy": "bandit", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "bandit", "element": "Water"}],
-          [{"enemy": "bandit", "element": "Fire"}, {"enemy": "troll", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "bandit", "element": "Light"}],
-          [{"enemy": "forge_guardian", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}]
+          [{"summon": "goblin_light"}, {"summon": "bandit_dark"}, {"summon": "goblin_fire"}, {"summon": "bandit_water"}],
+          [{"summon": "bandit_fire"}, {"summon": "troll_water"}, {"summon": "goblin_wind"}, {"summon": "bandit_light"}],
+          [{"enemy": "forge_guardian", "element": "Fire"}, {"summon": "goblin_water"}, {"summon": "goblin_wind"}]
         ]
       },
       {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "toolGrade": 4, "toolCount": 1,
         "waves": [
-          [{"enemy": "goblin", "element": "Dark"}, {"enemy": "bandit", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "bandit", "element": "Wind"}],
-          [{"enemy": "bandit", "element": "Water"}, {"enemy": "troll", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "bandit", "element": "Dark"}],
-          [{"enemy": "forge_guardian", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}]
+          [{"summon": "goblin_dark"}, {"summon": "bandit_fire"}, {"summon": "goblin_water"}, {"summon": "bandit_wind"}],
+          [{"summon": "bandit_water"}, {"summon": "troll_wind"}, {"summon": "goblin_light"}, {"summon": "bandit_dark"}],
+          [{"enemy": "forge_guardian", "element": "Fire"}, {"summon": "goblin_wind"}, {"summon": "goblin_light"}, {"summon": "goblin_dark"}]
         ]
       },
       {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "toolGrade": 4, "toolCount": 2,
         "waves": [
-          [{"enemy": "goblin", "element": "Fire"}, {"enemy": "bandit", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "bandit", "element": "Light"}],
-          [{"enemy": "bandit", "element": "Wind"}, {"enemy": "troll", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "bandit", "element": "Fire"}],
-          [{"enemy": "forge_guardian", "element": "Fire"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}]
+          [{"summon": "goblin_fire"}, {"summon": "bandit_water"}, {"summon": "goblin_wind"}, {"summon": "bandit_light"}],
+          [{"summon": "bandit_wind"}, {"summon": "troll_light"}, {"summon": "goblin_dark"}, {"summon": "bandit_fire"}],
+          [{"enemy": "forge_guardian", "element": "Fire"}, {"summon": "goblin_light"}, {"summon": "goblin_dark"}, {"summon": "goblin_fire"}]
         ]
       }
     ]
@@ -103,37 +103,37 @@
     "floors": [
       {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "wolf", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}],
-          [{"enemy": "goblin", "element": "Light"}, {"enemy": "dragon", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}],
-          [{"enemy": "elder_wyvern", "element": "Fire"}, {"enemy": "wolf", "element": "Dark"}]
+          [{"summon": "wolf_water"}, {"summon": "goblin_wind"}, {"summon": "wolf_light"}],
+          [{"summon": "goblin_light"}, {"summon": "dragon_dark"}, {"summon": "wolf_fire"}],
+          [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_dark"}]
         ]
       },
       {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "wolf", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}],
-          [{"enemy": "goblin", "element": "Dark"}, {"enemy": "dragon", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}],
-          [{"enemy": "elder_wyvern", "element": "Fire"}, {"enemy": "wolf", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}]
+          [{"summon": "wolf_wind"}, {"summon": "goblin_light"}, {"summon": "wolf_dark"}],
+          [{"summon": "goblin_dark"}, {"summon": "dragon_fire"}, {"summon": "wolf_water"}],
+          [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_fire"}, {"summon": "wolf_water"}]
         ]
       },
       {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "wolf", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
-          [{"enemy": "goblin", "element": "Fire"}, {"enemy": "dragon", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
-          [{"enemy": "elder_wyvern", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}]
+          [{"summon": "wolf_light"}, {"summon": "goblin_dark"}, {"summon": "wolf_fire"}, {"summon": "goblin_water"}],
+          [{"summon": "goblin_fire"}, {"summon": "dragon_water"}, {"summon": "wolf_wind"}, {"summon": "goblin_light"}],
+          [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_water"}, {"summon": "wolf_wind"}]
         ]
       },
       {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "wolf", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}],
-          [{"enemy": "goblin", "element": "Water"}, {"enemy": "dragon", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}],
-          [{"enemy": "elder_wyvern", "element": "Fire"}, {"enemy": "wolf", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}]
+          [{"summon": "wolf_dark"}, {"summon": "goblin_fire"}, {"summon": "wolf_water"}, {"summon": "goblin_wind"}],
+          [{"summon": "goblin_water"}, {"summon": "dragon_wind"}, {"summon": "wolf_light"}, {"summon": "goblin_dark"}],
+          [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_wind"}, {"summon": "wolf_light"}, {"summon": "wolf_dark"}]
         ]
       },
       {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
         "waves": [
-          [{"enemy": "wolf", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
-          [{"enemy": "goblin", "element": "Wind"}, {"enemy": "dragon", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}],
-          [{"enemy": "elder_wyvern", "element": "Fire"}, {"enemy": "wolf", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}]
+          [{"summon": "wolf_fire"}, {"summon": "goblin_water"}, {"summon": "wolf_wind"}, {"summon": "goblin_light"}],
+          [{"summon": "goblin_wind"}, {"summon": "dragon_light"}, {"summon": "wolf_dark"}, {"summon": "goblin_fire"}],
+          [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_light"}, {"summon": "wolf_dark"}, {"summon": "wolf_fire"}]
         ]
       }
     ]
@@ -148,37 +148,37 @@
     "floors": [
       {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "bandit", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}, {"enemy": "bandit", "element": "Light"}],
-          [{"enemy": "wolf", "element": "Light"}, {"enemy": "troll", "element": "Dark"}, {"enemy": "bandit", "element": "Fire"}],
-          [{"enemy": "bone_king", "element": "Dark"}, {"enemy": "bandit", "element": "Dark"}]
+          [{"summon": "bandit_water"}, {"summon": "wolf_wind"}, {"summon": "bandit_light"}],
+          [{"summon": "wolf_light"}, {"summon": "troll_dark"}, {"summon": "bandit_fire"}],
+          [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_dark"}]
         ]
       },
       {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "bandit", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}, {"enemy": "bandit", "element": "Dark"}],
-          [{"enemy": "wolf", "element": "Dark"}, {"enemy": "troll", "element": "Fire"}, {"enemy": "bandit", "element": "Water"}],
-          [{"enemy": "bone_king", "element": "Dark"}, {"enemy": "bandit", "element": "Fire"}, {"enemy": "bandit", "element": "Water"}]
+          [{"summon": "bandit_wind"}, {"summon": "wolf_light"}, {"summon": "bandit_dark"}],
+          [{"summon": "wolf_dark"}, {"summon": "troll_fire"}, {"summon": "bandit_water"}],
+          [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_fire"}, {"summon": "bandit_water"}]
         ]
       },
       {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "bandit", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}, {"enemy": "bandit", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}],
-          [{"enemy": "wolf", "element": "Fire"}, {"enemy": "troll", "element": "Water"}, {"enemy": "bandit", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}],
-          [{"enemy": "bone_king", "element": "Dark"}, {"enemy": "bandit", "element": "Water"}, {"enemy": "bandit", "element": "Wind"}]
+          [{"summon": "bandit_light"}, {"summon": "wolf_dark"}, {"summon": "bandit_fire"}, {"summon": "wolf_water"}],
+          [{"summon": "wolf_fire"}, {"summon": "troll_water"}, {"summon": "bandit_wind"}, {"summon": "wolf_light"}],
+          [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_water"}, {"summon": "bandit_wind"}]
         ]
       },
       {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "bandit", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}, {"enemy": "bandit", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}],
-          [{"enemy": "wolf", "element": "Water"}, {"enemy": "troll", "element": "Wind"}, {"enemy": "bandit", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}],
-          [{"enemy": "bone_king", "element": "Dark"}, {"enemy": "bandit", "element": "Wind"}, {"enemy": "bandit", "element": "Light"}, {"enemy": "bandit", "element": "Dark"}]
+          [{"summon": "bandit_dark"}, {"summon": "wolf_fire"}, {"summon": "bandit_water"}, {"summon": "wolf_wind"}],
+          [{"summon": "wolf_water"}, {"summon": "troll_wind"}, {"summon": "bandit_light"}, {"summon": "wolf_dark"}],
+          [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_wind"}, {"summon": "bandit_light"}, {"summon": "bandit_dark"}]
         ]
       },
       {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
         "waves": [
-          [{"enemy": "bandit", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}, {"enemy": "bandit", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}],
-          [{"enemy": "wolf", "element": "Wind"}, {"enemy": "troll", "element": "Light"}, {"enemy": "bandit", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}],
-          [{"enemy": "bone_king", "element": "Dark"}, {"enemy": "bandit", "element": "Light"}, {"enemy": "bandit", "element": "Dark"}, {"enemy": "bandit", "element": "Fire"}]
+          [{"summon": "bandit_fire"}, {"summon": "wolf_water"}, {"summon": "bandit_wind"}, {"summon": "wolf_light"}],
+          [{"summon": "wolf_wind"}, {"summon": "troll_light"}, {"summon": "bandit_dark"}, {"summon": "wolf_fire"}],
+          [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_light"}, {"summon": "bandit_dark"}, {"summon": "bandit_fire"}]
         ]
       }
     ]
@@ -193,37 +193,37 @@
     "floors": [
       {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "slime", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}, {"enemy": "slime", "element": "Light"}],
-          [{"enemy": "wolf", "element": "Light"}, {"enemy": "dragon", "element": "Dark"}, {"enemy": "slime", "element": "Fire"}],
-          [{"enemy": "drowned_guardian", "element": "Water"}, {"enemy": "slime", "element": "Dark"}]
+          [{"summon": "slime_water"}, {"summon": "wolf_wind"}, {"summon": "slime_light"}],
+          [{"summon": "wolf_light"}, {"summon": "dragon_dark"}, {"summon": "slime_fire"}],
+          [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_dark"}]
         ]
       },
       {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
-          [{"enemy": "slime", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}, {"enemy": "slime", "element": "Dark"}],
-          [{"enemy": "wolf", "element": "Dark"}, {"enemy": "dragon", "element": "Fire"}, {"enemy": "slime", "element": "Water"}],
-          [{"enemy": "drowned_guardian", "element": "Water"}, {"enemy": "slime", "element": "Fire"}, {"enemy": "slime", "element": "Water"}]
+          [{"summon": "slime_wind"}, {"summon": "wolf_light"}, {"summon": "slime_dark"}],
+          [{"summon": "wolf_dark"}, {"summon": "dragon_fire"}, {"summon": "slime_water"}],
+          [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_fire"}, {"summon": "slime_water"}]
         ]
       },
       {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "slime", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}, {"enemy": "slime", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}],
-          [{"enemy": "wolf", "element": "Fire"}, {"enemy": "dragon", "element": "Water"}, {"enemy": "slime", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}],
-          [{"enemy": "drowned_guardian", "element": "Water"}, {"enemy": "slime", "element": "Water"}, {"enemy": "slime", "element": "Wind"}]
+          [{"summon": "slime_light"}, {"summon": "wolf_dark"}, {"summon": "slime_fire"}, {"summon": "wolf_water"}],
+          [{"summon": "wolf_fire"}, {"summon": "dragon_water"}, {"summon": "slime_wind"}, {"summon": "wolf_light"}],
+          [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_water"}, {"summon": "slime_wind"}]
         ]
       },
       {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
         "waves": [
-          [{"enemy": "slime", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}, {"enemy": "slime", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}],
-          [{"enemy": "wolf", "element": "Water"}, {"enemy": "dragon", "element": "Wind"}, {"enemy": "slime", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}],
-          [{"enemy": "drowned_guardian", "element": "Water"}, {"enemy": "slime", "element": "Wind"}, {"enemy": "slime", "element": "Light"}, {"enemy": "slime", "element": "Dark"}]
+          [{"summon": "slime_dark"}, {"summon": "wolf_fire"}, {"summon": "slime_water"}, {"summon": "wolf_wind"}],
+          [{"summon": "wolf_water"}, {"summon": "dragon_wind"}, {"summon": "slime_light"}, {"summon": "wolf_dark"}],
+          [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_wind"}, {"summon": "slime_light"}, {"summon": "slime_dark"}]
         ]
       },
       {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
         "waves": [
-          [{"enemy": "slime", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}, {"enemy": "slime", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}],
-          [{"enemy": "wolf", "element": "Wind"}, {"enemy": "dragon", "element": "Light"}, {"enemy": "slime", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}],
-          [{"enemy": "drowned_guardian", "element": "Water"}, {"enemy": "slime", "element": "Light"}, {"enemy": "slime", "element": "Dark"}, {"enemy": "slime", "element": "Fire"}]
+          [{"summon": "slime_fire"}, {"summon": "wolf_water"}, {"summon": "slime_wind"}, {"summon": "wolf_light"}],
+          [{"summon": "wolf_wind"}, {"summon": "dragon_light"}, {"summon": "slime_dark"}, {"summon": "wolf_fire"}],
+          [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_light"}, {"summon": "slime_dark"}, {"summon": "slime_fire"}]
         ]
       }
     ]

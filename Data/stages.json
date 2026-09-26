@@ -1,5 +1,6 @@
 // Region 1: Plain of Menhirs (GDD, section 4). No battle rule: teaches the basics.
-// Enemies at the stage level. "mana" is the cost of each victory (a defeat costs nothing). Scrolls only
+// Enemies at the stage level: "summon" is a summon variant from Data/summons (buffed for the fight),
+// "enemy" a unique creature from Data/enemies.json with its "element". "mana" is the cost of each victory (a defeat costs nothing). Scrolls only
 // on the first victory; Essence and experience (for the team and the account) on every victory. The rune
 // (up to 4 stars) always drops on the first victory and with a 50% chance on later ones. 5 and 6 star
 // runes and the tools come from the Dungeons (Data/dungeons.json).
@@ -16,7 +17,7 @@
     "runeGrade": 1,
     "lines": ["The Menhirs still guard the road. The Silence got past them anyway.", "Carve your first sigil, Conjurer. They won't wait."],
     "waves": [
-      [{"enemy": "slime", "element": "Water"}, {"enemy": "slime", "element": "Fire"}]
+      [{"summon": "slime_water"}, {"summon": "slime_fire"}]
     ]
   },
   {
@@ -30,8 +31,8 @@
     "experience": 80,
     "runeGrade": 1,
     "waves": [
-      [{"enemy": "goblin", "element": "Wind"}, {"enemy": "slime", "element": "Water"}],
-      [{"enemy": "goblin", "element": "Fire"}]
+      [{"summon": "goblin_wind"}, {"summon": "slime_water"}],
+      [{"summon": "goblin_fire"}]
     ]
   },
   {
@@ -45,8 +46,8 @@
     "experience": 100,
     "runeGrade": 1,
     "waves": [
-      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
-      [{"enemy": "slime", "element": "Wind"}, {"enemy": "slime", "element": "Water"}]
+      [{"summon": "goblin_fire"}, {"summon": "goblin_water"}],
+      [{"summon": "slime_wind"}, {"summon": "slime_water"}]
     ]
   },
   {
@@ -61,8 +62,8 @@
     "runeGrade": 1,
     "lines": ["Wolves don't howl at the Silence. These do."],
     "waves": [
-      [{"enemy": "wolf", "element": "Wind"}, {"enemy": "goblin", "element": "Water"}],
-      [{"enemy": "wolf", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}]
+      [{"summon": "wolf_wind"}, {"summon": "goblin_water"}],
+      [{"summon": "wolf_fire"}, {"summon": "wolf_water"}]
     ]
   },
   {
@@ -76,8 +77,8 @@
     "experience": 140,
     "runeGrade": 2,
     "waves": [
-      [{"enemy": "bandit", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}],
-      [{"enemy": "wolf", "element": "Water"}, {"enemy": "bandit", "element": "Wind"}, {"enemy": "goblin", "element": "Fire"}]
+      [{"summon": "bandit_fire"}, {"summon": "goblin_wind"}],
+      [{"summon": "wolf_water"}, {"summon": "bandit_wind"}, {"summon": "goblin_fire"}]
     ]
   },
   {
@@ -91,9 +92,9 @@
     "experience": 160,
     "runeGrade": 2,
     "waves": [
-      [{"enemy": "slime", "element": "Fire"}, {"enemy": "slime", "element": "Water"}, {"enemy": "slime", "element": "Wind"}],
-      [{"enemy": "wolf", "element": "Wind"}, {"enemy": "wolf", "element": "Water"}],
-      [{"enemy": "bandit", "element": "Water"}, {"enemy": "goblin", "element": "Fire"}]
+      [{"summon": "slime_fire"}, {"summon": "slime_water"}, {"summon": "slime_wind"}],
+      [{"summon": "wolf_wind"}, {"summon": "wolf_water"}],
+      [{"summon": "bandit_water"}, {"summon": "goblin_fire"}]
     ]
   },
   {
@@ -107,8 +108,8 @@
     "experience": 180,
     "runeGrade": 2,
     "waves": [
-      [{"enemy": "bandit", "element": "Fire"}, {"enemy": "bandit", "element": "Wind"}],
-      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}]
+      [{"summon": "bandit_fire"}, {"summon": "bandit_wind"}],
+      [{"summon": "goblin_fire"}, {"summon": "goblin_water"}, {"summon": "wolf_wind"}]
     ]
   },
   {
@@ -123,8 +124,8 @@
     "runeGrade": 2,
     "lines": ["A Menhir split in half. The Glyph carved on it is gone."],
     "waves": [
-      [{"enemy": "slime", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "slime", "element": "Water"}],
-      [{"enemy": "wolf", "element": "Light"}, {"enemy": "wolf", "element": "Dark"}]
+      [{"summon": "slime_light"}, {"summon": "goblin_dark"}, {"summon": "slime_water"}],
+      [{"summon": "wolf_light"}, {"summon": "wolf_dark"}]
     ]
   },
   {
@@ -138,8 +139,8 @@
     "experience": 220,
     "runeGrade": 2,
     "waves": [
-      [{"enemy": "wolf", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}],
-      [{"enemy": "wolf", "element": "Dark"}, {"enemy": "wolf", "element": "Light"}, {"enemy": "goblin", "element": "Fire"}]
+      [{"summon": "wolf_fire"}, {"summon": "wolf_water"}, {"summon": "wolf_wind"}],
+      [{"summon": "wolf_dark"}, {"summon": "wolf_light"}, {"summon": "goblin_fire"}]
     ]
   },
   {
@@ -154,9 +155,9 @@
     "runeGrade": 3,
     "lines": ["The hill shook before the troll showed up.", "He isn't angry. He's empty."],
     "waves": [
-      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}],
-      [{"enemy": "bandit", "element": "Wind"}, {"enemy": "wolf", "element": "Fire"}],
-      [{"enemy": "troll", "element": "Wind"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Fire"}]
+      [{"summon": "goblin_fire"}, {"summon": "goblin_water"}, {"summon": "wolf_wind"}],
+      [{"summon": "bandit_wind"}, {"summon": "wolf_fire"}],
+      [{"summon": "troll_wind"}, {"summon": "goblin_water"}, {"summon": "goblin_fire"}]
     ]
   },
   {
@@ -170,8 +171,8 @@
     "experience": 260,
     "runeGrade": 3,
     "waves": [
-      [{"enemy": "bandit", "element": "Water"}, {"enemy": "bandit", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}],
-      [{"enemy": "wolf", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}, {"enemy": "slime", "element": "Fire"}]
+      [{"summon": "bandit_water"}, {"summon": "bandit_fire"}, {"summon": "goblin_wind"}],
+      [{"summon": "wolf_water"}, {"summon": "wolf_wind"}, {"summon": "slime_fire"}]
     ]
   },
   {
@@ -185,9 +186,9 @@
     "experience": 280,
     "runeGrade": 3,
     "waves": [
-      [{"enemy": "slime", "element": "Dark"}, {"enemy": "slime", "element": "Light"}, {"enemy": "goblin", "element": "Wind"}],
-      [{"enemy": "bandit", "element": "Dark"}, {"enemy": "bandit", "element": "Light"}],
-      [{"enemy": "wolf", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}]
+      [{"summon": "slime_dark"}, {"summon": "slime_light"}, {"summon": "goblin_wind"}],
+      [{"summon": "bandit_dark"}, {"summon": "bandit_light"}],
+      [{"summon": "wolf_fire"}, {"summon": "wolf_water"}, {"summon": "wolf_wind"}]
     ]
   },
   {
@@ -201,8 +202,8 @@
     "experience": 300,
     "runeGrade": 3,
     "waves": [
-      [{"enemy": "wolf", "element": "Water"}, {"enemy": "wolf", "element": "Water"}, {"enemy": "slime", "element": "Water"}],
-      [{"enemy": "bandit", "element": "Water"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Fire"}]
+      [{"summon": "wolf_water"}, {"summon": "wolf_water"}, {"summon": "slime_water"}],
+      [{"summon": "bandit_water"}, {"summon": "goblin_water"}, {"summon": "goblin_fire"}]
     ]
   },
   {
@@ -217,9 +218,9 @@
     "runeGrade": 3,
     "lines": ["Here the Menhirs were toppled on purpose."],
     "waves": [
-      [{"enemy": "goblin", "element": "Dark"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "slime", "element": "Dark"}],
-      [{"enemy": "wolf", "element": "Dark"}, {"enemy": "bandit", "element": "Dark"}],
-      [{"enemy": "troll", "element": "Water"}, {"enemy": "bandit", "element": "Light"}]
+      [{"summon": "goblin_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_dark"}],
+      [{"summon": "wolf_dark"}, {"summon": "bandit_dark"}],
+      [{"summon": "troll_water"}, {"summon": "bandit_light"}]
     ]
   },
   {
@@ -234,9 +235,9 @@
     "runeGrade": 4,
     "lines": ["The smell of sulfur. Something big sleeps on burned bones."],
     "waves": [
-      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "wolf", "element": "Fire"}, {"enemy": "bandit", "element": "Fire"}],
-      [{"enemy": "slime", "element": "Fire"}, {"enemy": "slime", "element": "Fire"}, {"enemy": "wolf", "element": "Wind"}],
-      [{"enemy": "dragon", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}]
+      [{"summon": "goblin_fire"}, {"summon": "wolf_fire"}, {"summon": "bandit_fire"}],
+      [{"summon": "slime_fire"}, {"summon": "slime_fire"}, {"summon": "wolf_wind"}],
+      [{"summon": "dragon_fire"}, {"summon": "goblin_wind"}]
     ]
   },
   {
@@ -250,8 +251,8 @@
     "experience": 360,
     "runeGrade": 4,
     "waves": [
-      [{"enemy": "bandit", "element": "Wind"}, {"enemy": "bandit", "element": "Water"}, {"enemy": "bandit", "element": "Fire"}],
-      [{"enemy": "troll", "element": "Fire"}, {"enemy": "wolf", "element": "Water"}]
+      [{"summon": "bandit_wind"}, {"summon": "bandit_water"}, {"summon": "bandit_fire"}],
+      [{"summon": "troll_fire"}, {"summon": "wolf_water"}]
     ]
   },
   {
@@ -266,8 +267,8 @@
     "runeGrade": 4,
     "lines": ["Chains hang from the trees. Some are still swinging."],
     "waves": [
-      [{"enemy": "wolf", "element": "Dark"}, {"enemy": "wolf", "element": "Light"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}],
-      [{"enemy": "bandit", "element": "Fire"}, {"enemy": "bandit", "element": "Water"}, {"enemy": "slime", "element": "Wind"}]
+      [{"summon": "wolf_dark"}, {"summon": "wolf_light"}, {"summon": "goblin_water"}, {"summon": "goblin_wind"}],
+      [{"summon": "bandit_fire"}, {"summon": "bandit_water"}, {"summon": "slime_wind"}]
     ]
   },
   {
@@ -281,9 +282,9 @@
     "experience": 400,
     "runeGrade": 4,
     "waves": [
-      [{"enemy": "bandit", "element": "Light"}, {"enemy": "bandit", "element": "Dark"}, {"enemy": "wolf", "element": "Fire"}],
-      [{"enemy": "troll", "element": "Wind"}, {"enemy": "bandit", "element": "Water"}],
-      [{"enemy": "dragon", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}]
+      [{"summon": "bandit_light"}, {"summon": "bandit_dark"}, {"summon": "wolf_fire"}],
+      [{"summon": "troll_wind"}, {"summon": "bandit_water"}],
+      [{"summon": "dragon_water"}, {"summon": "wolf_wind"}]
     ]
   },
   {
@@ -297,8 +298,8 @@
     "experience": 420,
     "runeGrade": 4,
     "waves": [
-      [{"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "wolf", "element": "Light"}],
-      [{"enemy": "bandit", "element": "Dark"}, {"enemy": "bandit", "element": "Light"}, {"enemy": "troll", "element": "Fire"}]
+      [{"summon": "goblin_fire"}, {"summon": "goblin_wind"}, {"summon": "wolf_light"}],
+      [{"summon": "bandit_dark"}, {"summon": "bandit_light"}, {"summon": "troll_fire"}]
     ]
   },
   {
@@ -313,9 +314,9 @@
     "runeGrade": 4,
     "lines": ["The Silence is not the end, Conjurer. It is rest.", "Every chain I fasten is one less voice screaming.", "Let go of your sigils and rest too."],
     "waves": [
-      [{"enemy": "bandit", "element": "Fire"}, {"enemy": "bandit", "element": "Water"}, {"enemy": "wolf", "element": "Wind"}],
-      [{"enemy": "troll", "element": "Water"}, {"enemy": "wolf", "element": "Fire"}],
-      [{"enemy": "chain_master", "element": "Dark"}, {"enemy": "bandit", "element": "Wind"}, {"enemy": "bandit", "element": "Fire"}]
+      [{"summon": "bandit_fire"}, {"summon": "bandit_water"}, {"summon": "wolf_wind"}],
+      [{"summon": "troll_water"}, {"summon": "wolf_fire"}],
+      [{"enemy": "chain_master", "element": "Dark"}, {"summon": "bandit_wind"}, {"summon": "bandit_fire"}]
     ]
   }
 ]

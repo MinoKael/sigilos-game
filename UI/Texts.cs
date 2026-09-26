@@ -170,6 +170,9 @@ namespace Sigilos.UI
 			return passive.Kind switch
 			{
 				PassiveKind.ShieldOnDeath => T("signature.ShieldOnDeath", Term(StatusKind.Shield), value),
+				PassiveKind.ImpetoAtWaveStart => T("signature.ImpetoAtWaveStart", value, Impeto),
+				PassiveKind.BurnOnHit => T("signature.BurnOnHit", value, Term(StatusKind.Burn)),
+				PassiveKind.BonusVsWounded => T("signature.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
 				_ => T($"signature.{passive.Kind}", value),
 			};
 		}

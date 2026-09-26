@@ -1,0 +1,27 @@
+{
+  "id": "slime_light",
+  "name": "Light Slime",
+  "family": "slime",
+  "element": "Light",
+  "role": "Support",
+  "awakening": {"name": "Gleamgel", "stat": "Resistance"},
+  "basic": {
+    "name": "Soothing Ooze",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.15},
+      {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+    ]
+  },
+  "special": {
+    "name": "Mending Gel",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Heal", "target": "AllAllies", "power": 0.15}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Heal", "target": "AllAllies", "power": 0.25},
+      {"kind": "Cleanse", "target": "AllAllies"}
+    ]
+  }
+}

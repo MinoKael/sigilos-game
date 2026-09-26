@@ -1,0 +1,27 @@
+{
+  "id": "wolf_water",
+  "name": "Water Wolf",
+  "family": "wolf",
+  "element": "Water",
+  "role": "Front",
+  "awakening": {"name": "Frostmane", "stat": "Resistance"},
+  "basic": {
+    "name": "Cold Bite",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.15},
+      {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Pack Guard",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+      {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
+    ]
+  }
+}

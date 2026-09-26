@@ -1,0 +1,27 @@
+{
+  "id": "wolf_dark",
+  "name": "Dark Wolf",
+  "family": "wolf",
+  "element": "Dark",
+  "role": "Attacker",
+  "awakening": {"name": "Nightmaw", "stat": "Accuracy"},
+  "basic": {
+    "name": "Shadow Bite",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
+    ]
+  },
+  "special": {
+    "name": "Hunt",
+    "cooldown": 3,
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 5.6},
+      {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "Target", "power": 8.05, "ignoreDefense": 0.3},
+      {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+    ]
+  }
+}

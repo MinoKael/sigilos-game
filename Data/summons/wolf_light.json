@@ -1,0 +1,28 @@
+{
+  "id": "wolf_light",
+  "name": "Light Wolf",
+  "family": "wolf",
+  "element": "Light",
+  "role": "Support",
+  "awakening": {"name": "Moonfur", "stat": "Resistance"},
+  "basic": {
+    "name": "Radiant Bite",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.15},
+      {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
+    ]
+  },
+  "special": {
+    "name": "Moon Howl",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Heal", "target": "AllAllies", "power": 0.15},
+      {"kind": "Cleanse", "target": "LowestAlly"}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Heal", "target": "AllAllies", "power": 0.25},
+      {"kind": "Cleanse", "target": "AllAllies"}
+    ]
+  }
+}

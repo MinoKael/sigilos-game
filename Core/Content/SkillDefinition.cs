@@ -6,7 +6,8 @@ namespace Sigilos.Core.Content
 	/// <summary>
 	/// Uma habilidade de invocação ou de inimigo. O aprimoramento é a versão inteira da habilidade
 	/// quando se paga <see cref="EnhanceCost"/> de Éter: a lista de efeitos troca, não soma. Assim o
-	/// arquivo de dados diz exatamente o que acontece nos dois casos.
+	/// arquivo de dados diz exatamente o que acontece nos dois casos. Só a habilidade especial tem
+	/// aprimoramento: o básico nunca gasta Éter.
 	/// </summary>
 	public sealed record SkillDefinition
 	{

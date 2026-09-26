@@ -1,0 +1,27 @@
+{
+  "id": "wolf_fire",
+  "name": "Fire Wolf",
+  "family": "wolf",
+  "element": "Fire",
+  "role": "Attacker",
+  "awakening": {"name": "Cinderfang", "stat": "Crit"},
+  "basic": {
+    "name": "Ember Bite",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5},
+      {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Blazing Rush",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 2.45}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+      {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.4, "turns": 2}
+    ]
+  }
+}

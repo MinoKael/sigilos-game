@@ -15,8 +15,8 @@ namespace Sigilos.Core.Battle
 		/// para encher a barra.</summary>
 		public const int RoundLimit = 30;
 
-		// Éter: recurso único do time, de 0 a 10, só para aprimorar habilidades no manual.
-		// Básico não gera Éter; habilidade especial e inimigo derrubado geram 1. Todo aprimoramento custa pelo menos
+		// Éter: recurso único do time, de 0 a 10, só para aprimorar a habilidade especial no manual.
+		// Básico não gera nem gasta Éter; habilidade especial e inimigo derrubado geram 1. Todo aprimoramento custa pelo menos
 		// MinEnhanceCost, mais do que um turno rende: não existe ciclo de usa-e-ganha.
 		public const int MaxEther = 10;
 		public const int BasicEtherGain = 0;
@@ -47,6 +47,12 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>Duração do escudo que a Assinatura dos Cavaleiros dá ao cair.</summary>
 		public const int DeathShieldTurns = 2;
+
+		/// <summary>Abaixo desta fração da Vida máxima o alvo conta como ferido (Assinatura dos Lobos).</summary>
+		public const double WoundedFraction = 0.5;
+
+		/// <summary>Duração da Queimadura que a Assinatura dos Dragões põe.</summary>
+		public const int BurnOnHitTurns = 2;
 
 		/// <summary>Efeitos negativos: a Resistência do alvo pode barrar, a Imunidade barra sempre e a Purificação remove.</summary>
 		public static bool IsNegative(StatusKind status) => status is

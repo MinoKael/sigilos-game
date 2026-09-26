@@ -1,0 +1,27 @@
+{
+  "id": "bandit_water",
+  "name": "Water Bandit",
+  "family": "bandit",
+  "element": "Water",
+  "role": "Control",
+  "awakening": {"name": "Undertow", "stat": "Accuracy"},
+  "basic": {
+    "name": "Dirty Blow",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.5},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Smoke Bomb",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
+      {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.8, "turns": 2}
+    ]
+  }
+}

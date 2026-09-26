@@ -112,6 +112,10 @@ namespace Sigilos.Core.Battle
 				return new TurnStart(unit, false, Flush());
 			}
 
+			// Assinatura dos Trolls: recupera Vida no começo do turno, mesmo atordoado.
+			if (unit.Passive?.Kind == PassiveKind.RegenEachTurn)
+				_effects.Heal(unit, unit.PassiveValue * unit.MaxHealth);
+
 			if (unit.Has(StatusKind.Stun))
 			{
 				Emit(new TurnSkipped(unit));
@@ -158,9 +162,9 @@ namespace Sigilos.Core.Battle
 			return Flush();
 		}
 
-		/// <summary>Só aliados aprimoram: inimigos não usam Éter.</summary>
+		/// <summary>Só aliados aprimoram (inimigos não usam Éter), e só a habilidade especial.</summary>
 		public bool CanEnhance(BattleUnit unit, SkillDefinition skill) =>
-			unit.Side == Side.Allies && skill.CanEnhance && Ether >= skill.EnhanceCost;
+			unit.Side == Side.Allies && ReferenceEquals(skill, unit.Special) && skill.CanEnhance && Ether >= skill.EnhanceCost;
 
 		/// <summary>Inimigos que <paramref name="actor"/> pode escolher como alvo agora.</summary>
 		public IReadOnlyList<BattleUnit> ChoosableTargets(BattleUnit actor) =>
@@ -259,6 +263,10 @@ namespace Sigilos.Core.Battle
 				if (shield > 0)
 					_effects.GiveShield(ally, shield, RuneSets.ShieldTurns);
 			}
+
+			// Assinatura dos Bandidos: dos dois lados, cada onda começa com pelo menos esse Ímpeto.
+			foreach (var unit in living.Concat(Enemies).Where(u => u.Passive?.Kind == PassiveKind.ImpetoAtWaveStart))
+				_effects.GainImpeto(unit, Math.Max(0, unit.PassiveValue * BattleRules.FullImpeto - unit.Impeto));
 		}
 
 		private void BurnTick(BattleUnit unit)

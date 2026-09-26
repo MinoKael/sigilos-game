@@ -1,8 +1,9 @@
 namespace Sigilos.Core.Content
 {
 	/// <summary>
-	/// Uma criatura Profanada (Data/enemies.json). O elemento não mora aqui: cada fase escolhe o
-	/// elemento de cada inimigo, como as famílias de invocação. Inimigos não usam Éter.
+	/// Uma criatura única (Data/enemies.json): os chefes, que não existem como invocação. Os outros
+	/// inimigos das fases e Masmorras são invocações (<see cref="StageEnemy.Summon"/>). O elemento não
+	/// mora aqui: cada fase escolhe. Inimigos não usam Éter.
 	/// </summary>
 	public sealed record EnemyDefinition
 	{

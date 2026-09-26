@@ -1,0 +1,29 @@
+{
+  "id": "bandit_light",
+  "name": "Light Bandit",
+  "family": "bandit",
+  "element": "Light",
+  "role": "Support",
+  "awakening": {"name": "Robin", "stat": "Speed"},
+  "basic": {
+    "name": "Blinding Coin",
+    "effects": [
+      {"kind": "Damage", "target": "Target", "power": 3.15},
+      {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.2, "turns": 2}
+    ]
+  },
+  "special": {
+    "name": "Share the Loot",
+    "cooldown": 4,
+    "effects": [
+      {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+      {"kind": "Impeto", "target": "AllAllies", "power": 15}
+    ],
+    "enhanceCost": 5,
+    "enhancedEffects": [
+      {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+      {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
+      {"kind": "Impeto", "target": "AllAllies", "power": 25}
+    ]
+  }
+}

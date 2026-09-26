@@ -142,6 +142,10 @@ namespace Sigilos.Core.Battle
 				// Desespero: um sorteio por alvo a cada habilidade, que só a Imunidade barra.
 				if (caster.RuneEffects.StunChance > 0 && hit.DespairRolled.Add(target))
 					ApplyStatus(caster, target, StatusKind.Stun, caster.RuneEffects.StunChance, 1, resistible: false);
+
+				// Assinatura dos Dragões: um sorteio de Queimadura por alvo a cada habilidade.
+				if (caster.Passive?.Kind == PassiveKind.BurnOnHit && hit.BurnRolled.Add(target))
+					ApplyStatus(caster, target, StatusKind.Burn, caster.PassiveValue, BattleRules.BurnOnHitTurns);
 			}
 		}
 
@@ -205,7 +209,7 @@ namespace Sigilos.Core.Battle
 			return absorbed;
 		}
 
-		private void Heal(BattleUnit target, double amount)
+		public void Heal(BattleUnit target, double amount)
 		{
 			if (!target.IsAlive)
 				return;
@@ -278,7 +282,7 @@ namespace Sigilos.Core.Battle
 			GainImpeto(target, effect.Power);
 		}
 
-		private void GainImpeto(BattleUnit target, double amount)
+		public void GainImpeto(BattleUnit target, double amount)
 		{
 			var before = target.Impeto;
 			target.Impeto = Math.Clamp(target.Impeto + amount, 0, BattleRules.FullImpeto);
@@ -298,7 +302,7 @@ namespace Sigilos.Core.Battle
 
 		private bool IsActing(BattleUnit unit) => ReferenceEquals(_session.Current, unit);
 
-		/// <summary>O que uma habilidade fez até agora: dano por alvo, quedas e sorteios do Desespero.</summary>
+		/// <summary>O que uma habilidade fez até agora: dano por alvo, quedas e sorteios do Desespero e dos Dragões.</summary>
 		private sealed class Hit
 		{
 			public Hit(double scale)
@@ -312,6 +316,7 @@ namespace Sigilos.Core.Battle
 			public bool Killed { get; set; }
 			public Dictionary<BattleUnit, double> Dealt { get; } = new();
 			public HashSet<BattleUnit> DespairRolled { get; } = new();
+			public HashSet<BattleUnit> BurnRolled { get; } = new();
 		}
 	}
 }

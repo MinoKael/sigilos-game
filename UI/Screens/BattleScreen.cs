@@ -26,8 +26,6 @@ namespace Sigilos.UI.Screens
 	/// </summary>
 	public partial class BattleScreen : Control
 	{
-		private static readonly float[] Speeds = { 1, 2, 4 };
-
 		private readonly BattleSession _session;
 		private readonly string _title;
 		private readonly Dictionary<BattleUnit, UnitView> _views = new();
@@ -74,7 +72,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>O jogador saiu da tela (depois do resultado ou recuando). O valor é a preferência de automático.</summary>
 		public event Action<bool>? Closed;
 
-		private float Speed => Speeds[_speedIndex];
+		private float Speed => BattlePace.Speeds[_speedIndex].Factor;
 
 		public override void _Ready()
 		{
@@ -177,11 +175,11 @@ namespace Sigilos.UI.Screens
 			_autoButton.Toggled += SetAuto;
 			row.AddChild(_autoButton);
 
-			_speedButton.Text = T("battle.speed", 1);
+			_speedButton.Text = T("battle.speed", BattlePace.Speeds[0].Label);
 			_speedButton.Pressed += () =>
 			{
-				_speedIndex = (_speedIndex + 1) % Speeds.Length;
-				_speedButton.Text = T("battle.speed", Speed);
+				_speedIndex = (_speedIndex + 1) % BattlePace.Speeds.Count;
+				_speedButton.Text = T("battle.speed", BattlePace.Speeds[_speedIndex].Label);
 			};
 			row.AddChild(_speedButton);
 
@@ -355,10 +353,14 @@ namespace Sigilos.UI.Screens
 			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally));
 			_prompt.Text = T("battle.turn_of", ally.Name);
 
-			var costs = string.Join(", ", new[] { ally.Basic, ally.Special }
-				.Where(s => s is { CanEnhance: true })
-				.Select(s => $"{s!.Name} {s.EnhanceCost}"));
-			var enhance = new CheckBox { Text = T("battle.enhance", costs), TooltipText = T("battle.enhance_tip") };
+			// Só a habilidade especial aprimora: a caixa some quando ela não tem aprimoramento.
+			var special = ally.Special;
+			var enhance = new CheckBox
+			{
+				Text = special is { CanEnhance: true } ? T("battle.enhance", special.Name, special.EnhanceCost) : "",
+				TooltipText = T("battle.enhance_tip"),
+				Visible = special is { CanEnhance: true },
+			};
 
 			foreach (var slot in new[] { SkillSlot.Basic, SkillSlot.Special })
 			{
@@ -439,7 +441,8 @@ namespace Sigilos.UI.Screens
 				if (_closed || !IsInsideTree())
 					return;
 
-				var seconds = Show(battleEvent);
+				Show(battleEvent);
+				var seconds = BattlePace.Seconds(battleEvent);
 				if (seconds > 0)
 					await ToSignal(GetTree().CreateTimer(seconds / Speed), SceneTreeTimer.SignalName.Timeout);
 			}
@@ -447,8 +450,8 @@ namespace Sigilos.UI.Screens
 			RefreshEffects();
 		}
 
-		/// <summary>Aplica um evento na tela e devolve quanto tempo esperar antes do próximo.</summary>
-		private double Show(BattleEvent battleEvent)
+		/// <summary>Aplica um evento na tela. Quanto esperar depois é do <see cref="BattlePace"/>.</summary>
+		private void Show(BattleEvent battleEvent)
 		{
 			switch (battleEvent)
 			{
@@ -460,7 +463,7 @@ namespace Sigilos.UI.Screens
 						_enemies.AddChild(ViewFor(enemy));
 					_wave.Text = T("battle.wave", wave.Wave, wave.WaveCount);
 					_banner.Text = T("battle.wave_banner", wave.Wave);
-					return 0.8;
+					return;
 
 				case TurnStarted turn:
 					foreach (var view in _views.Values)
@@ -471,96 +474,96 @@ namespace Sigilos.UI.Screens
 
 					_round.Text = T("battle.round", Math.Min(turn.Round, BattleRules.RoundLimit), BattleRules.RoundLimit);
 					_order.Show(_session.PredictOrder(8));
-					return 0.12;
+					return;
 
 				case SkillUsed used:
 					_banner.Text = used.Enhanced ? T("battle.uses_enhanced", used.Actor.Name, used.Skill.Name) : T("battle.uses", used.Actor.Name, used.Skill.Name);
 					_banner.AddThemeColorOverride("font_color", used.Enhanced ? Palette.Ether : Palette.Text);
 					_views[used.Actor].Lunge(used.Actor.Side == Side.Allies ? 1 : -1, Speed);
-					return 0.35;
+					return;
 
 				case ExtraTurn extra:
 					_views[extra.Unit].Float(T("battle.extra_turn"), Palette.Gold);
-					return 0.3;
+					return;
 
 				case Counterattack counter:
 					_views[counter.Unit].Float(T("battle.counterattack"), Palette.Gold);
 					_views[counter.Unit].Lunge(counter.Unit.Side == Side.Allies ? 1 : -1, Speed);
-					return 0.3;
+					return;
 
 				case MaxHealthReduced reduced:
 					_views[reduced.Target].Float(T("battle.max_hp", reduced.Amount), Palette.Negative);
 					_views[reduced.Target].Refresh();
-					return 0.1;
+					return;
 
 				case Damaged damaged:
 					var hit = _views[damaged.Target];
 					hit.Shake(Speed);
 					hit.Float(damaged.Crit ? $"-{damaged.Amount}!" : $"-{damaged.Amount}", damaged.Crit ? Palette.Gold : Palette.Damage);
 					hit.Refresh();
-					return 0.14;
+					return;
 
 				case Missed missed:
 					_views[missed.Target].Float(T("battle.missed"), Palette.TextFaded);
-					return 0.1;
+					return;
 
 				case Warded warded:
 					_views[warded.Target].Float(T("battle.aegis"), Palette.Shield);
 					_views[warded.Target].Refresh();
-					return 0.1;
+					return;
 
 				case Healed healed:
 					_views[healed.Target].Float($"+{healed.Amount}", Palette.Heal);
 					_views[healed.Target].Refresh();
-					return 0.1;
+					return;
 
 				case StatusApplied applied:
 					_views[applied.Target].Float(Texts.Name(applied.Status), BattleRules.IsNegative(applied.Status) ? Palette.Negative : Palette.Positive);
 					_views[applied.Target].Refresh();
-					return 0.06;
+					return;
 
 				case Resisted resisted:
 					_views[resisted.Target].Float(T("battle.resisted"), Palette.TextFaded);
-					return 0.06;
+					return;
 
 				case Immune immune:
 					_views[immune.Target].Float(T("battle.immune"), Palette.Positive);
-					return 0.06;
+					return;
 
 				case StatusRemoved removed:
 					_views[removed.Target].Refresh();
-					return 0;
+					return;
 
 				case ImpetoChanged changed:
 					_views[changed.Target].Refresh();
-					return 0.05;
+					return;
 
 				case TurnSkipped skipped:
 					_views[skipped.Unit].Float(T("battle.stunned"), Palette.Negative);
 					_banner.Text = T("battle.loses_turn", skipped.Unit.Name);
-					return 0.4;
+					return;
 
 				case Died died:
 					_views[died.Unit].Refresh();
-					return 0.3;
+					return;
 
 				case Revived revived:
 					_views[revived.Unit].Float(T("battle.revives"), Palette.Gold);
 					_views[revived.Unit].Refresh();
-					return 0.4;
+					return;
 
 				case EtherChanged ether:
 					_ether.SetValue(ether.Ether);
-					return 0;
+					return;
 
 				case BattleEnded ended:
 					_banner.Text = ended.Victory ? T("battle.victory") : T("battle.defeat");
 					foreach (var view in _views.Values)
 						view.SetActive(false);
-					return 0.6;
+					return;
 
 				default:
-					return 0;
+					return;
 			}
 		}
 	}

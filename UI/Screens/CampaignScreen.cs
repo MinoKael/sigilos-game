@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
@@ -35,6 +36,9 @@ namespace Sigilos.UI.Screens
 
 		public event Action<StageDefinition>? FightRequested;
 		public event Action<StageDefinition>? ResolveRequested;
+
+		/// <summary>A Batalha automática: várias lutas seguidas da fase, cada uma no tempo que levaria na tela.</summary>
+		public event Action<StageDefinition>? RepeatRequested;
 		public event Action? TeamRequested;
 		public event Action? ShopRequested;
 		public event Action? BackRequested;
@@ -125,9 +129,9 @@ namespace Sigilos.UI.Screens
 				row.AddChild(new Label { Text = T("campaign.wave", i + 1), CustomMinimumSize = new Vector2(70, 0) });
 				foreach (var slot in stage.Waves[i])
 				{
-					var enemy = _database.Enemy(slot.Enemy);
-					var icon = Doodle.Icon(Art.Creature(enemy.Image), 40, Palette.Of(slot.Element));
-					icon.TooltipText = T("campaign.enemy_tip", enemy.Name, Texts.Name(slot.Element));
+					var (name, image, element) = _database.Foe(slot);
+					var icon = Doodle.Icon(Art.Creature(image), 40, Palette.Of(element));
+					icon.TooltipText = T("campaign.enemy_tip", name, Texts.Name(element));
 					icon.MouseFilter = MouseFilterEnum.Stop;
 					row.AddChild(icon);
 				}
@@ -143,8 +147,9 @@ namespace Sigilos.UI.Screens
 			foreach (var line in stage.Lines)
 				_detail.AddChild(Layout.Text(T("campaign.line", line), GameTheme.Faded, 400));
 
-			var buttons = new HBoxContainer();
-			buttons.AddThemeConstantOverride("separation", 12);
+			var buttons = new HFlowContainer();
+			buttons.AddThemeConstantOverride("h_separation", 12);
+			buttons.AddThemeConstantOverride("v_separation", 8);
 			var problem = Campaign.Check(_player, stage);
 			var blocked = Teams.Of(_player, Teams.Campaign).Count == 0 || problem != EntryProblem.None;
 			var fight = new Button { Text = T("common.fight_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), Disabled = blocked };
@@ -155,6 +160,9 @@ namespace Sigilos.UI.Screens
 				var resolve = new Button { Text = T("common.resolve_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), TooltipText = T("common.resolve_tip"), Disabled = blocked };
 				resolve.Pressed += () => ResolveRequested?.Invoke(stage);
 				buttons.AddChild(resolve);
+				var repeat = new Button { Text = T("common.auto_battle", AutoBattle.RepeatRuns), CustomMinimumSize = new Vector2(150, 52), TooltipText = T("common.auto_battle_tip", AutoBattle.RepeatRuns), Disabled = blocked };
+				repeat.Pressed += () => RepeatRequested?.Invoke(stage);
+				buttons.AddChild(repeat);
 			}
 
 			var team = new Button { Text = T("common.team"), CustomMinimumSize = new Vector2(120, 52) };

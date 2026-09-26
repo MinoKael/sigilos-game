@@ -10,11 +10,6 @@
     "name": "Hungry Blade",
     "effects": [
       {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.3}
-    ],
-    "enhanceCost": 3,
-    "enhancedEffects": [
-      {"kind": "Damage", "target": "Target", "power": 4.9, "drain": 0.5},
-      {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.7, "turns": 2}
     ]
   },
   "special": {
