@@ -8,31 +8,45 @@ using Sigilos.Core.Runes;
 namespace Sigilos.Tests
 {
 	/// <summary>
-	/// Relatório, não teste: roda cada fase da campanha muitas vezes no automático e mostra a taxa de
-	/// vitória e a duração. É a "fase 0" do roadmap (GDD, seção 13): testar a matemática de
-	/// Velocidade e Éter sem nenhum gráfico. Uso: <c>dotnet run --project Tests -- --simular</c>.
+	/// Relatório, não teste: roda cada fase da Campanha e cada andar de Masmorra muitas vezes no
+	/// automático e mostra a taxa de vitória e a duração. É a "fase 0" do roadmap (GDD, seção 13):
+	/// testar a matemática sem nenhum gráfico. Uso: <c>dotnet run --project Tests -- --simular</c>.
 	///
-	/// O time é o de quem joga sem sorte: os três Diabretes iniciais e a 5★ garantida do tutorial,
-	/// sem runas e sem Despertar — o pior caso. Cada fase roda com o time no nível dos inimigos e 3
-	/// níveis abaixo. O automático não usa Éter, então o relatório mede o time sem aprimoramentos.
+	/// O time é o de quem joga sem sorte (<see cref="TestData.TypicalTeam"/>): a 5★ garantida e quatro
+	/// 3★, sem Despertar. Na Campanha, sem runas — o pior caso —, no nível dos inimigos e 3 níveis
+	/// abaixo. Nas Masmorras, sem runas e com seis runas 5★ +9 em cada monstro. O automático não usa
+	/// Éter, então o relatório mede o time sem aprimoramentos.
 	/// </summary>
 	internal static class CampaignReport
 	{
 		private const int Seeds = 40;
 
-		private static readonly string[] TypicalTeam = { "fenix_fogo", "diabrete_fogo", "diabrete_agua", "diabrete_luz" };
-
 		public static void Print(GameDatabase database)
 		{
-			Console.WriteLine($"Time: {string.Join(", ", TypicalTeam)}, sem runas | {Seeds} lutas por linha");
+			Console.WriteLine($"Time: {string.Join(", ", TestData.TypicalTeam)} | {Seeds} lutas por linha");
 			Console.WriteLine();
+			Console.WriteLine("Campanha, sem runas");
 			Console.WriteLine("fase  inimigos  time  vitórias  rodadas  vida que sobra");
 			foreach (var stage in database.Stages)
 			{
 				foreach (var level in new[] { stage.Level, Math.Max(1, stage.Level - 3) })
 				{
-					var (wins, rounds, health) = Run(database, stage, level);
+					var (wins, rounds, health) = Run(database, stage.Encounter, Team(database, level, runed: false));
 					Console.WriteLine($"{stage.Number,4}  {stage.Level,8}  {level,4}  {wins,8:P0}  {rounds,7:F1}  {health,14:P0}");
+				}
+			}
+
+			Console.WriteLine();
+			Console.WriteLine("Masmorras, time no nível 40: sem runas | com runas 5★ +9");
+			Console.WriteLine("masmorra     andar  inimigos  vitórias  rodadas | vitórias  rodadas");
+			foreach (var dungeon in database.Dungeons)
+			{
+				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
+				{
+					var encounter = dungeon.Floor(floor).Encounter;
+					var bare = Run(database, encounter, Team(database, 40, runed: false));
+					var runed = Run(database, encounter, Team(database, 40, runed: true));
+					Console.WriteLine($"{dungeon.Id,-12} {floor,5}  {encounter.Level,8}  {bare.Wins,8:P0}  {bare.Rounds,7:F1} | {runed.Wins,8:P0}  {runed.Rounds,7:F1}");
 				}
 			}
 		}
@@ -41,7 +55,7 @@ namespace Sigilos.Tests
 		public static void PrintBattle(GameDatabase database, int stageNumber)
 		{
 			var stage = database.Stage(stageNumber);
-			var session = BattleFactory.Create(database, Team(database, stage.Level), stage, seed: 1);
+			var session = BattleFactory.Create(database, Team(database, stage.Level, runed: false), stage.Encounter, seed: 1);
 			var log = new List<BattleEvent>(session.Start());
 			while (!session.IsOver)
 			{
@@ -68,16 +82,31 @@ namespace Sigilos.Tests
 			}
 		}
 
-		private static BattleTeam Team(GameDatabase database, int level) => new(
-			TypicalTeam.Select(id => new TeamMember(database.Summon(id), level, 0, false, Array.Empty<Rune>())).ToList());
-
-		private static (double Wins, double Rounds, double Health) Run(GameDatabase database, StageDefinition stage, int level)
+		/// <summary>O time típico no nível pedido; com runas, seis runas 5★ +9 sorteadas em cada monstro.</summary>
+		private static BattleTeam Team(GameDatabase database, int level, bool runed)
 		{
-			var team = Team(database, level);
+			var random = new Random(11);
+			return new BattleTeam(TestData.TypicalTeam.Select(id =>
+			{
+				var runes = runed ? Enumerable.Range(1, RuneRules.Slots).Select(slot => Runed(random, slot)).ToList() : new List<Rune>();
+				return new TeamMember(database.Summon(id), level, 0, false, runes);
+			}).ToList());
+		}
+
+		private static Rune Runed(Random random, int slot)
+		{
+			var rune = RuneForge.Generate(random, slot, 5, slot);
+			while (rune.Level < 9)
+				RuneForge.RaiseLevel(random, rune);
+			return rune;
+		}
+
+		private static (double Wins, double Rounds, double Health) Run(GameDatabase database, Encounter encounter, BattleTeam team)
+		{
 			var results = new List<(bool Won, double Rounds, double Health)>();
 			for (var seed = 1; seed <= Seeds; seed++)
 			{
-				var session = BattleFactory.Create(database, team, stage, seed);
+				var session = BattleFactory.Create(database, team, encounter, seed);
 				var won = AutoBattle.Run(session);
 				var health = session.Allies.Sum(u => u.Health) / session.Allies.Sum(u => u.MaxHealth);
 				results.Add((won, session.Time, health));

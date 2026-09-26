@@ -1,6 +1,5 @@
 using System;
 using Godot;
-using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Progression;
 using Sigilos.UI.Style;
@@ -8,15 +7,15 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// A ficha de atributos: nome, valor de base e, em verde, o que as runas
-	/// somam. Passar o mouse num atributo explica o que ele faz.
+	/// A ficha de atributos: Glifo e nome, valor de base e, em verde, o que as runas somam. Passar o
+	/// mouse num atributo explica o que ele faz.
 	/// </summary>
 	public partial class StatTable : GridContainer
 	{
 		public StatTable()
 		{
-			Columns = 3;
-			AddThemeConstantOverride("h_separation", 16);
+			Columns = 4;
+			AddThemeConstantOverride("h_separation", 12);
 			AddThemeConstantOverride("v_separation", 2);
 		}
 
@@ -25,7 +24,11 @@ namespace Sigilos.UI.Components
 			Layout.Clear(this);
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
-				AddChild(new Label { Text = Texts.Name(stat), TooltipText = Explain(stat), MouseFilter = MouseFilterEnum.Stop });
+				var icon = Doodle.Icon(Art.Glyph(Texts.GlyphOf(stat)), 18, Palette.Gold);
+				icon.TooltipText = Texts.Name(Texts.GlyphOf(stat));
+				icon.MouseFilter = MouseFilterEnum.Stop;
+				AddChild(icon);
+				AddChild(new Label { Text = Texts.Name(stat), TooltipText = Texts.Plain(Texts.Explain(stat)), MouseFilter = MouseFilterEnum.Stop });
 
 				var baseValue = new Label { Text = Texts.Value(stat, sheet.Base.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };
 				AddChild(baseValue);
@@ -36,18 +39,5 @@ namespace Sigilos.UI.Components
 				AddChild(bonusLabel);
 			}
 		}
-
-		private static string Explain(Stat stat) => stat switch
-		{
-			Stat.Health => "Quanto dano aguenta antes de cair.",
-			Stat.Attack => "Base do dano: o multiplicador de cada habilidade é sobre ele.",
-			Stat.Defense => $"Reduz o dano recebido: Defesa {BattleRules.DefenseConstant:0} corta o dano pela metade.",
-			Stat.Speed => "Quão rápido a barra de Ímpeto enche. Decide quem age primeiro.",
-			Stat.Crit => "Chance de crítico. O crítico multiplica o dano por 1 + Dano crítico.",
-			Stat.CritDamage => "Quanto o crítico soma ao dano: 50% de base.",
-			Stat.Accuracy => "Precisão: desconta da Resistência do alvo aos seus efeitos negativos.",
-			Stat.Resistance => "Chance de barrar efeitos negativos, menos a Precisão de quem lança (nunca abaixo de 15%).",
-			_ => "",
-		};
 	}
 }

@@ -10,15 +10,13 @@ namespace Sigilos.Core.Player
 	/// </summary>
 	public static class PlayerTeam
 	{
-		public static BattleTeam Build(PlayerState player, GameDatabase database)
+		/// <summary>A equipe do conteúdo (<see cref="Teams"/>), sem monstros que sumiram ou foram para o Baú.</summary>
+		public static BattleTeam Build(PlayerState player, GameDatabase database, string content)
 		{
-			var members = player.Team
-				.Where(id => database.HasSummon(id) && player.Owns(id))
-				.Select(id =>
-				{
-					var owned = player.Summon(id);
-					return new TeamMember(database.Summon(id), owned.Level, owned.Echoes, owned.Awakened, player.RunesOn(id));
-				})
+			var members = Teams.Of(player, content)
+				.Select(player.Monster)
+				.Where(m => m is { Stored: false } && database.HasSummon(m.SummonId))
+				.Select(m => new TeamMember(database.Summon(m!.SummonId), m.Level, m.Echoes, m.Awakened, player.RunesOn(m.Id)))
 				.ToList();
 
 			return new BattleTeam(members);

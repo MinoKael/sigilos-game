@@ -1,9 +1,8 @@
 {
   "id": "fenix_agua",
-  "name": "Fênix de Cinza de Água",
+  "name": "Fênix de Água",
   "family": "fenix",
   "element": "Water",
-  "glyph": "Wall",
   "role": "Support",
   "leader": {"stat": "Health", "value": 0.2},
   "awakening": {"name": "Nereia", "stat": "Resistance"},
@@ -19,7 +18,7 @@
       {"kind": "Heal", "target": "LowestAlly", "power": 0.2}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Chuva Renovadora",
     "cooldown": 4,
     "effects": [

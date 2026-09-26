@@ -11,6 +11,9 @@ namespace Sigilos.Core.Content
 		/// <summary>Nível de todos os inimigos da fase.</summary>
 		public int Level { get; init; }
 
+		/// <summary>Mana de cada vitória. A derrota não custa nada.</summary>
+		public int Mana { get; init; }
+
 		public IReadOnlyList<IReadOnlyList<StageEnemy>> Waves { get; init; } = new List<IReadOnlyList<StageEnemy>>();
 
 		/// <summary>Só na primeira vitória.</summary>
@@ -21,19 +24,15 @@ namespace Sigilos.Core.Content
 		/// <summary>Toda vitória, inclusive a primeira.</summary>
 		public int Essence { get; init; }
 
-		/// <summary>Pó de Sigilo de toda vitória: melhora e tira runas.</summary>
-		public int Dust { get; init; }
-
 		/// <summary>Experiência de cada invocação do time em toda vitória.</summary>
 		public int Experience { get; init; }
 
-		/// <summary>Estrelas da runa que a vitória solta (1 a 6).</summary>
+		/// <summary>Estrelas da runa que a vitória solta (1 a 4; as maiores vêm das Masmorras).</summary>
 		public int RuneGrade { get; init; } = 1;
-
-		/// <summary>Grau da pedra (Afiar ou Gema) que a vitória pode soltar: 0 = nenhuma, 1 Mágica ... 4 Lendária.</summary>
-		public int ToolGrade { get; init; }
 
 		/// <summary>Até 3 falas antes da luta: "a história é tempero" (GDD, seção 4).</summary>
 		public IReadOnlyList<string> Lines { get; init; } = new List<string>();
+
+		public Encounter Encounter => new(Level, Waves);
 	}
 }

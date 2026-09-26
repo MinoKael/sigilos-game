@@ -1,9 +1,8 @@
 {
   "id": "fenix_vento",
-  "name": "Fênix de Cinza de Vento",
+  "name": "Fênix de Vento",
   "family": "fenix",
   "element": "Wind",
-  "glyph": "Eye",
   "role": "Attacker",
   "leader": {"stat": "Speed", "value": 0.15},
   "awakening": {"name": "Zéfira", "stat": "Speed"},
@@ -19,7 +18,7 @@
       {"kind": "Impeto", "target": "Target", "power": -50}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Tempestade de Penas",
     "cooldown": 4,
     "effects": [

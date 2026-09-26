@@ -1,35 +1,40 @@
 using Godot;
 using Sigilos.Core.Player;
+using Sigilos.Core.Progression;
 using Sigilos.UI.Style;
+using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Components
 {
-	/// <summary>Faixa com as quatro moedas. Só mostra; quem muda é o GameRoot.</summary>
+	/// <summary>Faixa com a Mana (atual / máxima) e as moedas. Só mostra; quem muda é o GameRoot.</summary>
 	public partial class CurrencyBar : PanelContainer
 	{
-		private readonly Label _scrolls = new();
+		private readonly Label _mana = new();
 		private readonly Label _essence = new();
-		private readonly Label _dust = new();
+		private readonly Label _gold = new();
+		private readonly Label _scrolls = new();
 		private readonly Label _fragments = new();
 
 		public CurrencyBar()
 		{
 			ThemeTypeVariation = GameTheme.InsetPanel;
 			var row = new HBoxContainer();
-			row.AddThemeConstantOverride("separation", 22);
+			row.AddThemeConstantOverride("separation", 20);
 			AddChild(row);
 
-			Add(row, "scroll", _scrolls, "Pergaminhos Místicos: invocam criaturas.");
-			Add(row, "essence", _essence, "Essência: sobe o nível das invocações e paga o Despertar.");
-			Add(row, "dust", _dust, "Pó de Sigilo: melhora e tira runas. Escasso: a melhora nunca falha.");
-			Add(row, "fragments", _fragments, "Fragmentos: vêm de duplicatas além dos 5 Ecos.");
+			Add(row, "mana", _mana, T("moeda.dica.mana", Mana.PerHour, Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Account.MaxLevel));
+			Add(row, "essence", _essence, T("moeda.dica.essencia"));
+			Add(row, "gold", _gold, T("moeda.dica.ouro"));
+			Add(row, "scroll", _scrolls, T("moeda.dica.pergaminhos"));
+			Add(row, "fragments", _fragments, T("moeda.dica.fragmentos"));
 		}
 
 		public void Refresh(PlayerState player)
 		{
-			_scrolls.Text = player.Scrolls.ToString();
+			_mana.Text = T("moeda.mana_de", player.Mana, Mana.Max(player));
 			_essence.Text = player.Essence.ToString();
-			_dust.Text = player.Dust.ToString();
+			_gold.Text = player.Gold.ToString();
+			_scrolls.Text = player.Scrolls.ToString();
 			_fragments.Text = player.Fragments.ToString();
 		}
 

@@ -1,9 +1,8 @@
 {
   "id": "cavaleiro_fogo",
-  "name": "Cavaleiro Juramentado de Fogo",
+  "name": "Cavaleiro de Fogo",
   "family": "cavaleiro",
   "element": "Fire",
-  "glyph": "Shard",
   "role": "Attacker",
   "leader": {"stat": "Attack", "value": 0.15},
   "awakening": {"name": "Dom Brasa", "stat": "Crit"},
@@ -18,7 +17,7 @@
       {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.6, "turns": 2}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Carga Flamejante",
     "cooldown": 4,
     "effects": [

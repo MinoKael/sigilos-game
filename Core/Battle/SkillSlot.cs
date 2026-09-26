@@ -4,6 +4,6 @@ namespace Sigilos.Core.Battle
 	public enum SkillSlot
 	{
 		Basic,
-		Glyph,
+		Special,
 	}
 }

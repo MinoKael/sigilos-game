@@ -1,9 +1,8 @@
 {
   "id": "diabrete_agua",
-  "name": "Diabrete de Selo de Água",
+  "name": "Diabrete de Água",
   "family": "diabrete",
   "element": "Water",
-  "glyph": "Bone",
   "role": "Attacker",
   "awakening": {"name": "Sorvo", "stat": "Crit"},
   "basic": {
@@ -16,7 +15,7 @@
       {"kind": "Damage", "target": "Target", "power": 4.9, "drain": 0.5}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Sede do Selo",
     "cooldown": 3,
     "effects": [

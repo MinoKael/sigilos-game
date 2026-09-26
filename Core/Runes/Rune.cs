@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Runes
 {
@@ -31,8 +32,8 @@ namespace Sigilos.Core.Runes
 		/// <summary>De 0 a 4. Em +3, +6, +9 e +12 entra um novo ou, com 4, um deles cresce.</summary>
 		public List<RuneSubstat> Substats { get; set; } = new();
 
-		/// <summary>Id da invocação que usa a runa; nulo no inventário.</summary>
-		public string? EquippedOn { get; set; }
+		/// <summary>Id do monstro que usa a runa; nulo no inventário.</summary>
+		public int? EquippedOn { get; set; }
 
 		[JsonIgnore]
 		public double MainValue => RuneRules.MainValue(Main, Grade, Level);

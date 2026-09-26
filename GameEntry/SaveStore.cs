@@ -9,19 +9,18 @@ namespace Sigilos.GameEntry
 	/// abre e grava. Rodando com <c>-- --save=nome</c>, o arquivo ganha esse nome: uma partida de
 	/// teste não apaga a de verdade.
 	///
-	/// Um save do formato anterior é convertido (<see cref="PlayerSave.FromJson"/>). Um que não dá para
-	/// ler (formato mais antigo ou arquivo quebrado) não é apagado: vira <c>nome.antigo.json</c> e o
-	/// jogo começa uma conta nova.
+	/// Um save que não dá para ler (formato antigo ou arquivo quebrado) não é apagado: vira
+	/// <c>nome.antigo-data.json</c> e o jogo começa uma conta nova.
 	/// </summary>
 	public sealed class SaveStore
 	{
+		private readonly string _slot;
 		private readonly string _path;
-		private readonly string _backupPath;
 
 		public SaveStore(string slot)
 		{
+			_slot = slot;
 			_path = $"user://{slot}.json";
-			_backupPath = $"user://{slot}.antigo.json";
 		}
 
 		/// <summary>Nulo quando não há save (primeira vez) ou ele não pôde ser lido.</summary>
@@ -42,8 +41,12 @@ namespace Sigilos.GameEntry
 
 			if (player == null)
 			{
-				DirAccess.RenameAbsolute(_path, _backupPath);
-				GD.PushWarning($"Save de formato antigo guardado em {_backupPath}; começando uma conta nova.");
+				// Com data no nome: um backup nunca apaga outro mais velho.
+				var backup = $"user://{_slot}.antigo-{DateTime.Now:yyyyMMdd-HHmmss}.json";
+				if (DirAccess.RenameAbsolute(_path, backup) == Error.Ok)
+					GD.PushWarning($"Save de formato antigo guardado em {backup}; começando uma conta nova.");
+				else
+					GD.PushError($"Não deu para guardar {_path} em {backup}; ele será sobrescrito.");
 			}
 
 			return player;

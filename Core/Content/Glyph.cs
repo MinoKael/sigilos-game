@@ -1,21 +1,27 @@
 namespace Sigilos.Core.Content
 {
 	/// <summary>
-	/// Os oito Glifos primordiais. O nome no código é a tradução direta do nome no jogo:
-	/// Muralha, Olho, Porta, Laço, Estilhaço, Véu, Ossada, Espiral.
-	///
-	/// Cada invocação tem um Glifo, que dá o estilo das habilidades dela; cada conjunto de runas
-	/// também é um Glifo; e a Invocação Ritual pode ser direcionada por Glifo.
+	/// Os 16 Glifos: símbolos de runa. Cada um é o símbolo de um conjunto de runas e quer dizer a mesma
+	/// coisa em todo o jogo — Gebo (×) é atordoar, Algiz (ᛉ) é Defesa. O nome é o da runa; o desenho
+	/// mora em Assets/Glyphs com o mesmo nome em minúsculas.
 	/// </summary>
 	public enum Glyph
 	{
-		Wall,
-		Eye,
-		Door,
-		Bond,
-		Shard,
-		Veil,
-		Bone,
-		Spiral,
+		Uruz,
+		Raido,
+		Algiz,
+		Othalan,
+		Kauna,
+		Pertho,
+		Jeran,
+		Thurisaz,
+		Gebo,
+		Dagaz,
+		Sowilo,
+		Tiwaz,
+		Iwaz,
+		Naudiz,
+		Laukaz,
+		Haglaz,
 	}
 }

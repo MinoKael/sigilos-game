@@ -1,9 +1,8 @@
 {
   "id": "fenix_trevas",
-  "name": "Fênix de Cinza de Trevas",
+  "name": "Fênix de Trevas",
   "family": "fenix",
   "element": "Dark",
-  "glyph": "Veil",
   "role": "Attacker",
   "leader": {"stat": "CritDamage", "value": 0.3},
   "awakening": {"name": "Nictéria", "stat": "Crit"},
@@ -20,7 +19,7 @@
       {"kind": "Status", "target": "Self", "status": "Hidden"}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Eclipse",
     "cooldown": 4,
     "effects": [

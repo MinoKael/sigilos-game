@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
+using Sigilos.Core.Player;
 using Sigilos.Core.Runes;
 
 namespace Sigilos.Tests
@@ -23,7 +25,20 @@ namespace Sigilos.Tests
 				families: Read("families.json"),
 				summons: Directory.GetFiles(Path.Combine(data, "summons"), "*.json").OrderBy(f => f).Select(File.ReadAllText),
 				enemies: Read("enemies.json"),
-				stages: Read("stages.json"));
+				stages: Read("stages.json"),
+				dungeons: Read("dungeons.json"),
+				shop: Read("shop.json"));
+		}
+
+		/// <summary>O time de quem joga sem sorte: a 5★ garantida e quatro 3★.</summary>
+		public static readonly string[] TypicalTeam = { "fenix_fogo", "diabrete_fogo", "diabrete_agua", "diabrete_luz", "diabrete_vento" };
+
+		/// <summary>Uma conta nova com estes monstros na equipe da Campanha.</summary>
+		public static PlayerState PlayerWith(params string[] summonIds)
+		{
+			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
+			Teams.FillCampaign(player, summonIds.Select(id => Roster.Add(player, id)).ToList());
+			return player;
 		}
 
 		public static readonly SkillDefinition Strike = new()
@@ -34,7 +49,7 @@ namespace Sigilos.Tests
 
 		/// <summary>
 		/// Unidade com Ataque 100 e Defesa 0 por padrão, sem chance de crítico (o Dano crítico é o de
-		/// base de Summoners War, 50%) e sem Resistência — que ainda assim barra 15% dos efeitos negativos.
+		/// base, 50%) e sem Resistência — que ainda assim barra o mínimo dos efeitos negativos.
 		/// </summary>
 		public static BattleUnit Unit(
 			string name,
@@ -46,12 +61,12 @@ namespace Sigilos.Tests
 			double resistance = 0,
 			Element element = Element.Fire,
 			SkillDefinition? basic = null,
-			SkillDefinition? glyphSkill = null,
+			SkillDefinition? special = null,
 			PassiveDefinition? passive = null,
 			RuneSetEffects? runeEffects = null)
 		{
 			var stats = new StatBlock { Health = health, Attack = attack, Defense = defense, Speed = speed, CritDamage = 0.5, Resistance = resistance };
-			return new BattleUnit(name, name, "", side, element, null, 1, false, stats, basic ?? Strike, glyphSkill, passive, 1, runeEffects ?? RuneSetEffects.None);
+			return new BattleUnit(name, name, "", side, element, 1, false, stats, basic ?? Strike, special, passive, 1, runeEffects ?? RuneSetEffects.None);
 		}
 
 		/// <summary>Efeitos de conjunto de runa: só os citados, o resto zero.</summary>

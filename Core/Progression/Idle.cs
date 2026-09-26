@@ -5,8 +5,9 @@ namespace Sigilos.Core.Progression
 {
 	/// <summary>
 	/// Ociosidade (GDD, seção 11): com o jogo fechado, os círculos de invocação continuam canalizando
-	/// Pergaminhos, Essência e Pó de Sigilo. A taxa cresce com a fase mais alta vencida e o acúmulo
-	/// para em 12 horas. Uma vez por dia, a Canalização Rápida entrega 2 horas na hora.
+	/// Essência, Ouro e Mana. Essência e Ouro crescem com a fase mais alta vencida; a Mana enche
+	/// <see cref="Mana.PerHour"/> por hora até o máximo, e o que passaria dele se perde. O acúmulo para
+	/// em 12 horas. Uma vez por dia, a Canalização Rápida entrega 2 horas na hora.
 	///
 	/// O relógio entra como parâmetro (<c>now</c>): os testes escolhem a hora sem mexer no sistema.
 	/// A fração que não fecha uma unidade fica guardada para a próxima coleta.
@@ -16,9 +17,8 @@ namespace Sigilos.Core.Progression
 		public const double CapHours = 12;
 		public const double QuickChannelHours = 2;
 
-		public static double ScrollsPerHour(int highestStage) => 0.12 + 0.004 * highestStage;
-		public static double EssencePerHour(int highestStage) => 60 + 12 * highestStage;
-		public static double DustPerHour(int highestStage) => 6 + 1.5 * highestStage;
+		public static double EssencePerHour(int highestStage) => 120 + 27 * highestStage;
+		public static double GoldPerHour(int highestStage) => 2 + 0.1 * highestStage;
 
 		/// <summary>Horas acumuladas agora, já com o teto.</summary>
 		public static double PendingHours(PlayerState player, DateTime now)
@@ -52,19 +52,20 @@ namespace Sigilos.Core.Progression
 
 		private static IdleReward Reward(PlayerState player, double hours, bool commit)
 		{
-			var scrolls = player.IdleScrollCarry + ScrollsPerHour(player.HighestStage) * hours;
 			var essence = player.IdleEssenceCarry + EssencePerHour(player.HighestStage) * hours;
-			var dust = player.IdleDustCarry + DustPerHour(player.HighestStage) * hours;
-			var reward = new IdleReward((int)Math.Floor(scrolls), (int)Math.Floor(essence), (int)Math.Floor(dust), hours);
+			var gold = player.IdleGoldCarry + GoldPerHour(player.HighestStage) * hours;
+			var mana = player.IdleManaCarry + Mana.PerHour * hours;
+			var room = Mana.Room(player);
+			var reward = new IdleReward((int)Math.Floor(essence), (int)Math.Floor(gold), Math.Min((int)Math.Floor(mana), room), hours);
 
 			if (commit)
 			{
-				player.IdleScrollCarry = scrolls - reward.Scrolls;
 				player.IdleEssenceCarry = essence - reward.Essence;
-				player.IdleDustCarry = dust - reward.Dust;
-				player.Scrolls += reward.Scrolls;
+				player.IdleGoldCarry = gold - reward.Gold;
+				player.IdleManaCarry = reward.Mana < room ? mana - reward.Mana : 0;
 				player.Essence += reward.Essence;
-				player.Dust += reward.Dust;
+				player.Gold += reward.Gold;
+				player.Mana += reward.Mana;
 			}
 
 			return reward;

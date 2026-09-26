@@ -1,9 +1,8 @@
 {
   "id": "diabrete_vento",
-  "name": "Diabrete de Selo de Vento",
+  "name": "Diabrete de Vento",
   "family": "diabrete",
   "element": "Wind",
-  "glyph": "Spiral",
   "role": "Control",
   "awakening": {"name": "Rodamoinho", "stat": "Accuracy"},
   "basic": {
@@ -18,7 +17,7 @@
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.75, "turns": 2}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Redemoinho",
     "cooldown": 4,
     "effects": [

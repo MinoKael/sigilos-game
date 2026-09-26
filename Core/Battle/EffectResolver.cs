@@ -72,7 +72,6 @@ namespace Sigilos.Core.Battle
 			}
 
 			Destroy(caster, hit);
-            ExtraTurnAvailability(caster);
 			if (!counter)
 				Counterattacks(caster, hit);
 		}
@@ -156,13 +155,6 @@ namespace Sigilos.Core.Battle
 			if (steps > 0)
 				GainImpeto(target, steps * target.RuneEffects.NemesisGauge * BattleRules.FullImpeto);
 		}
-		private static void ExtraTurnAvailability(BattleUnit caster)
-		{
-			if (caster.RuneEffects.ExtraTurnChance <= 0)
-				return;
-			caster.ExtraTurnAvailable = true;
-		}
-
 		/// <summary>Destruição: 30% do dano de cada alvo vira Vida máxima perdida, até o teto por habilidade e o limite total.</summary>
 		private void Destroy(BattleUnit caster, Hit hit)
 		{

@@ -11,12 +11,12 @@ namespace Sigilos.Tests
 			EnhancedEffects = new[] { new EffectDefinition { Kind = EffectKind.Damage, Power = 2 } },
 		};
 
-		private static readonly SkillDefinition GlyphStrike = TestData.Strike with { Name = "Glifo", Cooldown = 3 };
+		private static readonly SkillDefinition SpecialStrike = TestData.Strike with { Name = "Especial", Cooldown = 3 };
 
 		[Test]
-		private static void BasicGivesNothingGlyphGivesOne()
+		private static void BasicGivesNothingSpecialGivesOne()
 		{
-			var hero = TestData.Unit("herói", Side.Allies, speed: 300, glyphSkill: GlyphStrike);
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, special: SpecialStrike);
 			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 			var session = TestData.Session(new[] { hero }, new[] { foe });
 			session.Start();
@@ -26,15 +26,15 @@ namespace Sigilos.Tests
 			Assert.Equal(0, session.Ether, "Éter depois do básico");
 
 			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(SkillSlot.Glyph, false, foe));
-			Assert.Equal(1, session.Ether, "Éter depois do Glifo");
-			Assert.Equal(2, hero.GlyphCooldown, "recarga 3 conta o turno de uso");
+			session.Act(new UnitAction(SkillSlot.Special, false, foe));
+			Assert.Equal(1, session.Ether, "Éter depois da especial");
+			Assert.Equal(2, hero.SpecialCooldown, "recarga 3 conta o turno de uso");
 		}
 
 		[Test]
 		private static void KillGivesEtherAndEtherCapsAtTen()
 		{
-			var hero = TestData.Unit("herói", Side.Allies, speed: 300, attack: 10_000, glyphSkill: GlyphStrike with { Cooldown = 1 });
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, attack: 10_000, special: SpecialStrike with { Cooldown = 1 });
 			var foe = TestData.Unit("inimigo", Side.Enemies, health: 10);
 			var other = TestData.Unit("outro", Side.Enemies, health: 1_000_000_000, attack: 1);
 			var session = TestData.Session(new[] { hero }, new[] { foe, other });
@@ -47,7 +47,7 @@ namespace Sigilos.Tests
 			for (var i = 0; i < 20 && !session.IsOver; i++)
 			{
 				TestData.RunUntilTurnOf(session, hero);
-				session.Act(new UnitAction(SkillSlot.Glyph, false, other));
+				session.Act(new UnitAction(SkillSlot.Special, false, other));
 			}
 
 			Assert.Equal(BattleRules.MaxEther, session.Ether, "Éter não passa de 10");
@@ -56,7 +56,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void EnhancementCostsEtherAndChangesEffects()
 		{
-			var hero = TestData.Unit("herói", Side.Allies, speed: 300, basic: Enhanceable, glyphSkill: GlyphStrike with { Cooldown = 1 });
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, basic: Enhanceable, special: SpecialStrike with { Cooldown = 1 });
 			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 			var session = TestData.Session(new[] { hero }, new[] { foe });
 			session.Start();
@@ -68,10 +68,10 @@ namespace Sigilos.Tests
 			for (var i = 0; i < 2; i++)
 			{
 				TestData.RunUntilTurnOf(session, hero);
-				session.Act(new UnitAction(SkillSlot.Glyph, false, foe));
+				session.Act(new UnitAction(SkillSlot.Special, false, foe));
 			}
 
-			Assert.Equal(2, session.Ether, "dois Glifos");
+			Assert.Equal(2, session.Ether, "duas especiais");
 			TestData.RunUntilTurnOf(session, hero);
 			var before = foe.Health;
 			session.Act(new UnitAction(SkillSlot.Basic, true, foe));

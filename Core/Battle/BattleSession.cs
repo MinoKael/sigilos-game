@@ -29,6 +29,9 @@ namespace Sigilos.Core.Battle
 		private readonly List<BattleEvent> _pending = new();
 		private int _waveIndex;
 
+		/// <summary>O turno atual é o extra do Violento.</summary>
+		private bool _extraTurn;
+
 		public BattleSession(IReadOnlyList<BattleUnit> allies, IReadOnlyList<IReadOnlyList<BattleUnit>> waves, int seed)
 		{
 			_allies = allies.ToList();
@@ -89,6 +92,10 @@ namespace Sigilos.Core.Battle
 
 			Emit(new TurnStarted(unit, Round));
 
+			// O turno extra do Violento é gasto aqui, mesmo que a unidade não chegue a agir (atordoada).
+			_extraTurn = unit.ExtraTurnPending;
+			unit.ExtraTurnPending = false;
+
 			if (unit.PendingRebirth)
 			{
 				unit.PendingRebirth = false;
@@ -117,14 +124,14 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>
 		/// A habilidade do turno, o aprimoramento pago com Éter e o ganho de Éter. Pedido impossível
-		/// (Glifo em recarga, Éter curto) vira o básico sem aprimoramento.
+		/// (especial em recarga, Éter curto) vira o básico sem aprimoramento.
 		/// </summary>
 		public IReadOnlyList<BattleEvent> Act(UnitAction action)
 		{
 			if (IsOver || Current is not { } unit)
 				throw new InvalidOperationException("Não é turno de ninguém.");
 
-			var slot = action.Slot == SkillSlot.Glyph && unit.IsGlyphReady ? SkillSlot.Glyph : SkillSlot.Basic;
+			var slot = action.Slot == SkillSlot.Special && unit.IsSpecialReady ? SkillSlot.Special : SkillSlot.Basic;
 			var skill = unit.Skill(slot);
 			var enhance = action.Enhance && CanEnhance(unit, skill);
 
@@ -135,23 +142,16 @@ namespace Sigilos.Core.Battle
 			_effects.Resolve(unit, skill.EffectsFor(enhance), action.Target);
 
 			if (unit.Side == Side.Allies)
-				ChangeEther(slot == SkillSlot.Glyph ? BattleRules.GlyphEtherGain : BattleRules.BasicEtherGain);
-			if (slot == SkillSlot.Glyph)
-				unit.GlyphCooldown = skill.Cooldown;
+				ChangeEther(slot == SkillSlot.Special ? BattleRules.SpecialEtherGain : BattleRules.BasicEtherGain);
+			if (slot == SkillSlot.Special)
+				unit.SpecialCooldown = skill.Cooldown;
 
-			// Conjunto Violento: chance de agir de novo, uma vez por turno
-			if (unit.IsAlive && unit.RuneEffects.ExtraTurnChance > 0)
+			// Conjunto Violento: chance de agir de novo. O turno extra não sorteia outro: um por turno.
+			if (unit.IsAlive && !_extraTurn && unit.RuneEffects.ExtraTurnChance > 0 && Random.NextDouble() < unit.RuneEffects.ExtraTurnChance)
 			{
-				if (Random.NextDouble() < unit.RuneEffects.ExtraTurnChance && unit.ExtraTurnAvailable)
-				{
-					unit.ExtraTurnAvailable = false;
-					unit.Impeto = BattleRules.FullImpeto;
-					Emit(new ExtraTurn(unit));
-				}
-				else
-				{
-					unit.ExtraTurnAvailable = true;
-				}
+				unit.ExtraTurnPending = true;
+				unit.Impeto = BattleRules.FullImpeto;
+				Emit(new ExtraTurn(unit));
 			}
 
 			FinishTurn(unit);
@@ -282,8 +282,8 @@ namespace Sigilos.Core.Battle
 			{
 				foreach (var expired in unit.TickStatuses())
 					Emit(new StatusRemoved(unit, expired.Kind));
-				if (unit.GlyphCooldown > 0)
-					unit.GlyphCooldown--;
+				if (unit.SpecialCooldown > 0)
+					unit.SpecialCooldown--;
 			}
 
 			CheckOutcome();

@@ -16,10 +16,9 @@ namespace Sigilos.Core.Content
 		public string FamilyId { get; init; } = "";
 
 		public Element Element { get; init; }
-		public Glyph Glyph { get; init; }
 		public Role Role { get; init; }
 		public SkillDefinition Basic { get; init; } = new();
-		public SkillDefinition GlyphSkill { get; init; } = new();
+		public SkillDefinition Special { get; init; } = new();
 
 		/// <summary>Só famílias de 4 e 5 estrelas têm.</summary>
 		public LeaderDefinition? Leader { get; init; }

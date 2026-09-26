@@ -43,16 +43,66 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		public static Button IconButton(string text, Texture2D? icon, int iconSize = 36, Color? ink = null)
 		{
-			var button = new Button { Text = text };
-			button.AddThemeConstantOverride("h_separation", 0);
+			// O ícone do botão é transparente e só reserva o lugar: quem desenha é o Doodle por cima.
+			var button = new Button { Text = text, Icon = Blank(iconSize), IconAlignment = HorizontalAlignment.Left };
+			button.AddThemeConstantOverride("h_separation", 8);
 			var doodle = Doodle.Icon(icon, iconSize, ink ?? Palette.Gold);
 			doodle.AnchorTop = doodle.AnchorBottom = 0.5f;
-			doodle.OffsetLeft = 10;
-			doodle.OffsetRight = 10 + iconSize;
+			doodle.OffsetLeft = 8;
+			doodle.OffsetRight = 8 + iconSize;
 			doodle.OffsetTop = -iconSize / 2f;
 			doodle.OffsetBottom = iconSize / 2f;
 			button.AddChild(doodle);
 			return button;
+		}
+
+		private static readonly System.Collections.Generic.Dictionary<int, Texture2D> Blanks = new();
+
+		/// <summary>Textura transparente de um tamanho: reserva lugar sem desenhar nada.</summary>
+		private static Texture2D Blank(int size)
+		{
+			if (!Blanks.TryGetValue(size, out var texture))
+			{
+				texture = ImageTexture.CreateFromImage(Image.CreateEmpty(size, size, false, Image.Format.Rgba8));
+				Blanks[size] = texture;
+			}
+
+			return texture;
+		}
+
+		/// <summary>Cabeçalho de tela: título, moedas (se houver) e o botão de voltar.</summary>
+		public static HBoxContainer Header(string title, CurrencyBar? currencies, string back, System.Action onBack)
+		{
+			var header = new HBoxContainer();
+			header.AddThemeConstantOverride("separation", 12);
+			header.AddChild(new Label { Text = title, ThemeTypeVariation = GameTheme.Title, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+			if (currencies != null)
+				header.AddChild(currencies);
+			var button = new Button { Text = back };
+			button.Pressed += onBack;
+			header.AddChild(button);
+			return header;
+		}
+
+		/// <summary>Uma aba com rolagem vertical; o conteúdo vai na coluna devolvida.</summary>
+		public static VBoxContainer Tab(TabContainer tabs, string title)
+		{
+			var scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
+			var column = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			column.AddThemeConstantOverride("separation", 10);
+			scroll.AddChild(column);
+			tabs.AddChild(scroll);
+			tabs.SetTabTitle(tabs.GetTabCount() - 1, title);
+			return column;
+		}
+
+		/// <summary>Texto simples que quebra linha.</summary>
+		public static Label Text(string text, string? variation = null, float width = 0)
+		{
+			var label = new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(width, 0) };
+			if (variation != null)
+				label.ThemeTypeVariation = variation;
+			return label;
 		}
 
 		/// <summary>Painel com cabeçalho. O conteúdo vai na coluna devolvida.</summary>

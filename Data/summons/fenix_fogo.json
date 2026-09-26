@@ -1,9 +1,8 @@
 {
   "id": "fenix_fogo",
-  "name": "Fênix de Cinza de Fogo",
+  "name": "Fênix de Fogo",
   "family": "fenix",
   "element": "Fire",
-  "glyph": "Spiral",
   "role": "Attacker",
   "leader": {"stat": "Attack", "value": 0.18},
   "awakening": {"name": "Ignara", "stat": "Crit"},
@@ -19,7 +18,7 @@
       {"kind": "Status", "target": "Target", "status": "Burn", "turns": 2}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Voo Rubro",
     "cooldown": 4,
     "effects": [

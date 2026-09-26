@@ -8,7 +8,7 @@ using Sigilos.Core.Runes;
 
 namespace Sigilos.Tests
 {
-	/// <summary>As regras de runa de Summoners War, com a melhora que nunca falha.</summary>
+	/// <summary>As regras de runa, com a melhora que nunca falha.</summary>
 	internal static class RuneTests
 	{
 		private static Rune Rune(RuneSet set, int slot, RuneStat main, int grade = 6, int level = 0, params RuneSubstat[] substats) => new()
@@ -21,7 +21,7 @@ namespace Sigilos.Tests
 			Substats = substats.ToList(),
 		};
 
-		private static RuneSubstat Sub(RuneStat stat, double value) => new() { Stat = stat, Value = value };
+		private static RuneSubstat Sub(RuneStat stat, double value) => RuneSubstat.Rolled(stat, 0, value);
 
 		[Test]
 		private static void DropsFollowTheSlotRules()
@@ -100,23 +100,23 @@ namespace Sigilos.Tests
 		[Test]
 		private static void UpgradeCostIsTheSummonersWarAverage()
 		{
-			Assert.Equal(1, RuneRules.UpgradeCost(1, 0), "1★ +0→+1: 100 de Mana");
-			Assert.Equal(3270, RuneRules.UpgradeCost(6, 14), "6★ +14→+15: 16350 de Mana com 5% de chance");
+			Assert.Equal(10, RuneRules.UpgradeCost(1, 0), "1★ +0→+1: 100 da tabela, 10 de Essência");
+			Assert.Equal(32700, RuneRules.UpgradeCost(6, 14), "6★ +14→+15: 16350 da tabela com 5% de chance");
 
-			// A tabela de custo médio de Summoners War dá 894.206 de Mana para uma 6★ de +0 a +15.
+			// A tabela de custo médio dá 894.206 para uma 6★ de +0 a +15: 89.421 de Essência.
 			var full = RuneRules.UpgradeCost(Rune(RuneSet.Energy, 1, RuneStat.AttackFlat), RuneRules.MaxLevel);
-			Assert.True(full >= 8942 && full <= 8942 + RuneRules.MaxLevel, $"6★ +0→+15 custa {full}");
+			Assert.True(full >= 89421 && full <= 89421 + RuneRules.MaxLevel, $"6★ +0→+15 custa {full}");
 
 			var player = new PlayerState();
 			var rune = Rune(RuneSet.Energy, 1, RuneStat.AttackFlat, grade: 3);
-			player.Dust = RuneRules.UpgradeCost(rune, 6) - 1;
-			Assert.False(RuneInventory.Upgrade(new Random(1), player, rune, 6), "sem Pó para o caminho todo não melhora");
+			player.Essence = RuneRules.UpgradeCost(rune, 6) - 1;
+			Assert.False(RuneInventory.Upgrade(new Random(1), player, rune, 6), "sem Essência para o caminho todo não melhora");
 			Assert.Equal(0, rune.Level, "nada mudou");
 
-			player.Dust++;
-			Assert.True(RuneInventory.Upgrade(new Random(1), player, rune, 6), "com Pó melhora");
+			player.Essence++;
+			Assert.True(RuneInventory.Upgrade(new Random(1), player, rune, 6), "com Essência melhora");
 			Assert.Equal(6, rune.Level, "+6 de uma vez");
-			Assert.Equal(0, player.Dust, "Pó gasto");
+			Assert.Equal(0, player.Essence, "Essência gasta");
 			Assert.Equal(9, RuneRules.NextMilestone(6), "próximo marco");
 		}
 
@@ -153,32 +153,24 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void RemovingARuneCostsLikeSummonersWar()
+		private static void EquipSwapsTheSlotAndStoredMonstersKeepTheirRunes()
 		{
-			var player = new PlayerState { Dust = 1000 };
+			var player = TestData.PlayerWith("diabrete_fogo", "diabrete_agua");
+			var (a, b) = (player.Monsters[0].Id, player.Monsters[1].Id);
 			var small = Rune(RuneSet.Energy, 2, RuneStat.Speed, grade: 3);
 			var big = Rune(RuneSet.Swift, 2, RuneStat.Speed, grade: 5);
 			player.Runes.AddRange(new[] { small, big });
 
-			Assert.True(RuneInventory.Equip(player, small, "a"), "espaço vazio: de graça");
-			Assert.Equal(1000, player.Dust, "nada cobrado");
-
-			Assert.Equal(50, RuneInventory.EquipCost(player, big, "a"), "por cima de uma 3★: paga a saída dela");
-			Assert.True(RuneInventory.Equip(player, big, "a"), "troca");
+			Assert.True(RuneInventory.Equip(player, small, a), "espaço vazio");
+			Assert.True(RuneInventory.Equip(player, big, a), "troca");
 			Assert.Equal(null, small.EquippedOn, "a antiga voltou ao inventário");
-			Assert.Equal(950, player.Dust, "50 de Pó");
+			Assert.True(RuneInventory.Equip(player, big, b), "muda de dono");
+			Assert.Equal(0, player.RunesOn(a).Count, "o primeiro ficou sem runa");
 
-			Assert.True(RuneInventory.Equip(player, big, "b"), "muda de dono");
-			Assert.Equal(700, player.Dust, "paga a saída da 5★: 250");
-
-			Assert.True(RuneInventory.Unequip(player, big), "tira");
-			Assert.Equal(450, player.Dust, "mais 250");
-
-			player.Dust = 0;
-			RuneInventory.Equip(player, big, "a");
-			Assert.True(RuneInventory.Equip(player, small, "b"), "espaço vazio segue de graça");
-			Assert.False(RuneInventory.Unequip(player, big), "sem Pó não tira");
-			Assert.Equal("a", big.EquippedOn, "continua equipada");
+			Roster.Store(player, b);
+			Assert.Equal(b, big.EquippedOn, "no Baú, o monstro fica com as runas");
+			Assert.True(RuneInventory.Equip(player, small, b), "e ainda recebe outras");
+			Assert.Equal(null, big.EquippedOn, "trocando a do mesmo espaço");
 		}
 
 		[Test]
@@ -186,14 +178,54 @@ namespace Sigilos.Tests
 		{
 			var player = new PlayerState();
 			var rune = RuneInventory.Create(new Random(1), player, 3);
-			rune.EquippedOn = "a";
+			rune.EquippedOn = 7;
 			Assert.Equal(0, RuneInventory.Sell(player, rune), "equipada não se desfaz");
 
 			rune.EquippedOn = null;
-			var value = RuneInventory.Sell(player, rune);
-			Assert.True(value > 0, "rende Pó");
-			Assert.Equal(value, player.Dust, "Pó da venda");
-			Assert.Equal(0, player.Runes.Count, "runa desfeita");
+			var extra = RuneInventory.Create(new Random(2), player, 1);
+			var value = RuneInventory.SellAll(player, new[] { rune, extra });
+			Assert.True(value > 0, "rende Essência");
+			Assert.Equal(value, player.Essence, "Essência da venda");
+			Assert.Equal(0, player.Runes.Count, "as duas desfeitas de uma vez");
+		}
+
+		[Test]
+		private static void RuneKeepsTheHistoryOfEveryRoll()
+		{
+			var random = new Random(8);
+			var rune = Rune(RuneSet.Fatal, 2, RuneStat.Speed, 6, 0, Sub(RuneStat.AttackPercent, 0.05));
+			for (var level = 1; level <= 12; level++)
+				RuneForge.RaiseLevel(random, rune);
+
+			var history = rune.Substats.SelectMany(s => s.Rolls.Select(r => (s.Stat, r.Level))).Where(r => r.Level > 0).OrderBy(r => r.Level).ToList();
+			Assert.Equal("3,6,9,12", string.Join(",", history.Select(r => r.Level)), "um sorteio em cada marco");
+			Assert.Equal(4, rune.Substats.Count, "três entraram depois do drop");
+			Assert.Equal(3, rune.Substats[1].Rolls[0].Level, "o segundo subatributo entrou em +3");
+			Assert.Near(rune.Substats.Sum(s => s.Rolls.Sum(r => r.Amount)), rune.Substats.Sum(s => s.Value), "o valor é a soma dos sorteios");
+		}
+
+		[Test]
+		private static void FilterFindsAndSorts()
+		{
+			var runes = new List<Rune>
+			{
+				Rune(RuneSet.Violent, 2, RuneStat.Speed, 6, 12, Sub(RuneStat.Crit, 0.05)),
+				Rune(RuneSet.Violent, 4, RuneStat.CritDamage, 5, 3, Sub(RuneStat.Speed, 5)),
+				Rune(RuneSet.Energy, 2, RuneStat.HealthPercent, 6, 0, Sub(RuneStat.Speed, 4), Sub(RuneStat.Crit, 0.04)),
+			};
+			for (var i = 0; i < runes.Count; i++)
+				runes[i].Id = i + 1;
+
+			var violent = new RuneFilter { Set = RuneSet.Violent }.Apply(runes).Select(r => r.Id);
+			Assert.Equal("1,2", string.Join(",", violent), "conjunto, mais estrelas primeiro");
+
+			var speedAndCrit = new RuneFilter { Substats = new[] { RuneStat.Speed, RuneStat.Crit } }.Apply(runes).Select(r => r.Id);
+			Assert.Equal("3", string.Join(",", speedAndCrit), "só a que tem os dois subatributos");
+
+			var byLevel = new RuneFilter { Sort = RuneSort.Level, MinGrade = 5 }.Apply(runes).Select(r => r.Id);
+			Assert.Equal("1,2,3", string.Join(",", byLevel), "ordem de melhora");
+
+			Assert.Equal(1, new RuneFilter { Main = RuneStat.CritDamage, Slot = 4 }.Apply(runes).Count(), "principal e espaço");
 		}
 
 		[Test]

@@ -1,9 +1,8 @@
 {
   "id": "cavaleiro_agua",
-  "name": "Cavaleiro Juramentado de Água",
+  "name": "Cavaleiro de Água",
   "family": "cavaleiro",
   "element": "Water",
-  "glyph": "Wall",
   "role": "Front",
   "leader": {"stat": "Health", "value": 0.15},
   "awakening": {"name": "Dama Maré", "stat": "Resistance"},
@@ -19,7 +18,7 @@
       {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.8, "turns": 2}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Muralha de Maré",
     "cooldown": 4,
     "effects": [

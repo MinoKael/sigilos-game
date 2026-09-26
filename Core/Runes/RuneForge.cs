@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Runes
 {
@@ -12,20 +13,30 @@ namespace Sigilos.Core.Runes
 	public static class RuneForge
 	{
 		private static readonly RuneStat[] AllStats = Enum.GetValues<RuneStat>();
-		private static readonly RuneSet[] AllSets = Enum.GetValues<RuneSet>();
+		private static readonly IReadOnlyList<RuneSet> AllSets = Enum.GetValues<RuneSet>();
 
 		/// <summary>Nível mínimo para usar Gema Encantada.</summary>
 		public const int EnchantLevel = 12;
 
-		/// <summary>Uma runa de drop. Sem <paramref name="slot"/>, o espaço também é sorteado.</summary>
-		public static Rune Generate(Random random, int id, int grade, int? slot = null)
+		/// <summary>
+		/// Uma runa de drop. Sem <paramref name="slot"/>, o espaço é sorteado; sem <paramref name="sets"/>,
+		/// qualquer conjunto. A raridade nunca sai abaixo de <paramref name="minRarity"/> (Masmorras).
+		/// </summary>
+		public static Rune Generate(
+			Random random,
+			int id,
+			int grade,
+			int? slot = null,
+			IReadOnlyList<RuneSet>? sets = null,
+			RuneRarity minRarity = RuneRarity.Normal)
 		{
 			var chosenSlot = slot ?? random.Next(1, RuneRules.Slots + 1);
 			var options = RuneRules.MainOptions(chosenSlot);
+			var pool = sets is { Count: > 0 } ? sets : AllSets;
 			var rune = new Rune
 			{
 				Id = id,
-				Set = AllSets[random.Next(AllSets.Length)],
+				Set = pool[random.Next(pool.Count)],
 				Slot = chosenSlot,
 				Grade = Math.Clamp(grade, 1, RuneRules.MaxGrade),
 				Main = options[random.Next(options.Count)],
@@ -34,7 +45,7 @@ namespace Sigilos.Core.Runes
 			if (random.NextDouble() < RuneRules.InnateChance)
 				rune.Innate = NewSubstat(random, rune);
 
-			var count = (int)RuneRules.RollRarity(random);
+			var count = (int)RuneRules.RollRarity(random, minRarity);
 			for (var i = 0; i < count; i++)
 				rune.Substats.Add(NewSubstat(random, rune));
 
@@ -73,7 +84,7 @@ namespace Sigilos.Core.Runes
 			else
 			{
 				var substat = rune.Substats[random.Next(rune.Substats.Count)];
-				substat.Value += RuneRules.RollSubstat(random, substat.Stat, rune.Grade);
+				substat.Rolls.Add(new RuneRoll(rune.Level, RuneRules.RollSubstat(random, substat.Stat, rune.Grade)));
 			}
 
 			return true;
@@ -117,12 +128,9 @@ namespace Sigilos.Core.Runes
 			if (!CanEnchant(rune, index, tool))
 				return false;
 
-			rune.Substats[index] = new RuneSubstat
-			{
-				Stat = tool.Stat,
-				Value = RuneRules.RollGem(random, tool.Stat, tool.Grade),
-				Enchanted = true,
-			};
+			var enchanted = RuneSubstat.Rolled(tool.Stat, rune.Level, RuneRules.RollGem(random, tool.Stat, tool.Grade));
+			enchanted.Enchanted = true;
+			rune.Substats[index] = enchanted;
 			return true;
 		}
 
@@ -135,7 +143,7 @@ namespace Sigilos.Core.Runes
 
 			var free = AllStats.Where(s => RuneRules.CanBeSubstat(rune.Slot, rune.Main, s) && !taken.Contains(s)).ToList();
 			var stat = free[random.Next(free.Count)];
-			return new RuneSubstat { Stat = stat, Value = RuneRules.RollSubstat(random, stat, rune.Grade) };
+			return RuneSubstat.Rolled(stat, rune.Level, RuneRules.RollSubstat(random, stat, rune.Grade));
 		}
 	}
 }

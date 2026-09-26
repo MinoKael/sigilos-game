@@ -7,21 +7,21 @@ using Sigilos.Core.Runes;
 namespace Sigilos.Core.Battle
 {
 	/// <summary>
-	/// Monta uma <see cref="BattleSession"/> a partir de um time e de uma fase: atributos de cada
-	/// invocação pela mesma ficha que a tela de Monstros mostra (<see cref="SummonStats"/>), mais a
-	/// Liderança da primeira, e as ondas de inimigos no nível da fase.
+	/// Monta uma <see cref="BattleSession"/> a partir de um time e de um <see cref="Encounter"/> (fase
+	/// ou andar de Masmorra): atributos de cada invocação pela mesma ficha que a tela de Monstros mostra
+	/// (<see cref="SummonStats"/>), mais a Liderança da primeira, e as ondas de inimigos no nível dele.
 	/// </summary>
 	public static class BattleFactory
 	{
-		public static BattleSession Create(GameDatabase database, BattleTeam team, StageDefinition stage, int seed)
+		public static BattleSession Create(GameDatabase database, BattleTeam team, Encounter encounter, int seed)
 		{
 			var leader = team.Members.FirstOrDefault()?.Summon.Leader;
 			var allies = team.Members.Select(member => Ally(database, member, leader)).ToList();
 			foreach (var ally in allies)
 				ally.Team = allies;
 
-			var waves = stage.Waves
-				.Select(wave => Wave(database, wave, stage.Level))
+			var waves = encounter.Waves
+				.Select(wave => Wave(database, wave, encounter.Level, encounter.Scale))
 				.ToList();
 
 			return new BattleSession(allies, waves, seed);
@@ -41,36 +41,34 @@ namespace Sigilos.Core.Battle
 				summon.ImageFor(member.Awakened),
 				Side.Allies,
 				summon.Element,
-				summon.Glyph,
 				member.Level,
 				member.Awakened,
 				stats,
 				summon.Basic,
-				summon.GlyphSkill,
+				summon.Special,
 				summon.Family.Passive,
 				Growth.SkillPower(member.Echoes),
 				sheet.Runes.Effects);
 		}
 
-		private static IReadOnlyList<BattleUnit> Wave(GameDatabase database, IReadOnlyList<StageEnemy> slots, int level)
+		private static IReadOnlyList<BattleUnit> Wave(GameDatabase database, IReadOnlyList<StageEnemy> slots, int level, double scale)
 		{
 			var units = slots.Select(slot =>
 			{
 				var enemy = database.Enemy(slot.Enemy);
 				var stats = Growth.Stats(database.Roles[enemy.Role], enemy.Rarity, level);
-				stats = stats with { Health = stats.Health * enemy.HealthScale, Attack = stats.Attack * enemy.AttackScale };
+				stats = stats with { Health = stats.Health * enemy.HealthScale * scale, Attack = stats.Attack * enemy.AttackScale * scale };
 				return new BattleUnit(
 					enemy.Id,
 					enemy.Name,
 					enemy.Image,
 					Side.Enemies,
 					slot.Element,
-					null,
 					level,
 					false,
 					stats,
 					enemy.Basic,
-					enemy.GlyphSkill,
+					enemy.Special,
 					null,
 					1,
 					RuneSetEffects.None);

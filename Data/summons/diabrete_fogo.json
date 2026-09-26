@@ -1,9 +1,8 @@
 {
   "id": "diabrete_fogo",
-  "name": "Diabrete de Selo de Fogo",
+  "name": "Diabrete de Fogo",
   "family": "diabrete",
   "element": "Fire",
-  "glyph": "Shard",
   "role": "Attacker",
   "awakening": {"name": "Fagulha", "stat": "Crit"},
   "basic": {
@@ -17,7 +16,7 @@
       {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.4, "turns": 2}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Selo Rompido",
     "cooldown": 3,
     "effects": [

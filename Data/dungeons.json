@@ -1,0 +1,230 @@
+// Masmorras (GDD, seção 11). Cada vitória custa a Mana do andar ("mana"); a derrota não custa nada. Cada
+// Masmorra tem a sua equipe. "firstClearGold" é o Ouro da primeira vitória no andar. As de runas soltam runas de 4 a 6 estrelas só dos seus quatro conjuntos, com raridade mínima
+// por andar; a Forja solta Pedras de Afiar e Gemas Encantadas (grau 1 Mágica ... 4 Lendária).
+// Toda vitória solta o drop. "unlockStage" é a fase da Campanha que abre a Masmorra.
+[
+  {
+    "id": "golem",
+    "name": "Golem Rúnico",
+    "kind": "Runes",
+    "image": "rock_golem",
+    "unlockStage": 6,
+    "sets": ["Energy", "Guard", "Swift", "Blade"],
+    "floors": [
+      {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "limo", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "limo", "element": "Light"}],
+          [{"enemy": "goblin", "element": "Light"}, {"enemy": "troll", "element": "Dark"}, {"enemy": "limo", "element": "Fire"}],
+          [{"enemy": "golem_runico", "element": "Wind"}, {"enemy": "limo", "element": "Dark"}]
+        ]
+      },
+      {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "limo", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "limo", "element": "Dark"}],
+          [{"enemy": "goblin", "element": "Dark"}, {"enemy": "troll", "element": "Fire"}, {"enemy": "limo", "element": "Water"}],
+          [{"enemy": "golem_runico", "element": "Wind"}, {"enemy": "limo", "element": "Fire"}, {"enemy": "limo", "element": "Water"}]
+        ]
+      },
+      {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "limo", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "limo", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
+          [{"enemy": "goblin", "element": "Fire"}, {"enemy": "troll", "element": "Water"}, {"enemy": "limo", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
+          [{"enemy": "golem_runico", "element": "Wind"}, {"enemy": "limo", "element": "Water"}, {"enemy": "limo", "element": "Wind"}]
+        ]
+      },
+      {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "limo", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "limo", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}],
+          [{"enemy": "goblin", "element": "Water"}, {"enemy": "troll", "element": "Wind"}, {"enemy": "limo", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}],
+          [{"enemy": "golem_runico", "element": "Wind"}, {"enemy": "limo", "element": "Wind"}, {"enemy": "limo", "element": "Light"}, {"enemy": "limo", "element": "Dark"}]
+        ]
+      },
+      {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
+        "waves": [
+          [{"enemy": "limo", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "limo", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
+          [{"enemy": "goblin", "element": "Wind"}, {"enemy": "troll", "element": "Light"}, {"enemy": "limo", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}],
+          [{"enemy": "golem_runico", "element": "Wind"}, {"enemy": "limo", "element": "Light"}, {"enemy": "limo", "element": "Dark"}, {"enemy": "limo", "element": "Fire"}]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "forja",
+    "name": "Forja Rachada",
+    "kind": "Tools",
+    "image": "golem_head",
+    "unlockStage": 8,
+    "floors": [
+      {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "toolGrade": 1, "toolCount": 1,
+        "waves": [
+          [{"enemy": "goblin", "element": "Water"}, {"enemy": "bandido", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
+          [{"enemy": "bandido", "element": "Light"}, {"enemy": "troll", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}],
+          [{"enemy": "guardiao_da_forja", "element": "Fire"}, {"enemy": "goblin", "element": "Dark"}]
+        ]
+      },
+      {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "toolGrade": 2, "toolCount": 1,
+        "waves": [
+          [{"enemy": "goblin", "element": "Wind"}, {"enemy": "bandido", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}],
+          [{"enemy": "bandido", "element": "Dark"}, {"enemy": "troll", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
+          [{"enemy": "guardiao_da_forja", "element": "Fire"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}]
+        ]
+      },
+      {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "toolGrade": 3, "toolCount": 1,
+        "waves": [
+          [{"enemy": "goblin", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}],
+          [{"enemy": "bandido", "element": "Fire"}, {"enemy": "troll", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "bandido", "element": "Light"}],
+          [{"enemy": "guardiao_da_forja", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}]
+        ]
+      },
+      {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "toolGrade": 4, "toolCount": 1,
+        "waves": [
+          [{"enemy": "goblin", "element": "Dark"}, {"enemy": "bandido", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "bandido", "element": "Wind"}],
+          [{"enemy": "bandido", "element": "Water"}, {"enemy": "troll", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}],
+          [{"enemy": "guardiao_da_forja", "element": "Fire"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}]
+        ]
+      },
+      {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "toolGrade": 4, "toolCount": 2,
+        "waves": [
+          [{"enemy": "goblin", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "bandido", "element": "Light"}],
+          [{"enemy": "bandido", "element": "Wind"}, {"enemy": "troll", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "bandido", "element": "Fire"}],
+          [{"enemy": "guardiao_da_forja", "element": "Fire"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "serpe",
+    "name": "Ninho da Serpe",
+    "kind": "Runes",
+    "image": "wyvern",
+    "unlockStage": 10,
+    "sets": ["Violent", "Focus", "Endure", "Shield"],
+    "floors": [
+      {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "lobo", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
+          [{"enemy": "goblin", "element": "Light"}, {"enemy": "dragao", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}],
+          [{"enemy": "serpe_ancia", "element": "Fire"}, {"enemy": "lobo", "element": "Dark"}]
+        ]
+      },
+      {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "lobo", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}],
+          [{"enemy": "goblin", "element": "Dark"}, {"enemy": "dragao", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}],
+          [{"enemy": "serpe_ancia", "element": "Fire"}, {"enemy": "lobo", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}]
+        ]
+      },
+      {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "lobo", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}],
+          [{"enemy": "goblin", "element": "Fire"}, {"enemy": "dragao", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
+          [{"enemy": "serpe_ancia", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}]
+        ]
+      },
+      {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "lobo", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "goblin", "element": "Wind"}],
+          [{"enemy": "goblin", "element": "Water"}, {"enemy": "dragao", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "goblin", "element": "Dark"}],
+          [{"enemy": "serpe_ancia", "element": "Fire"}, {"enemy": "lobo", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}]
+        ]
+      },
+      {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
+        "waves": [
+          [{"enemy": "lobo", "element": "Fire"}, {"enemy": "goblin", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}, {"enemy": "goblin", "element": "Light"}],
+          [{"enemy": "goblin", "element": "Wind"}, {"enemy": "dragao", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}, {"enemy": "goblin", "element": "Fire"}],
+          [{"enemy": "serpe_ancia", "element": "Fire"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cripta",
+    "name": "Cripta do Rei Ossudo",
+    "kind": "Runes",
+    "image": "crowned_skull",
+    "unlockStage": 13,
+    "sets": ["Vampire", "Destroy", "Nemesis", "Will"],
+    "floors": [
+      {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "bandido", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}, {"enemy": "bandido", "element": "Light"}],
+          [{"enemy": "lobo", "element": "Light"}, {"enemy": "troll", "element": "Dark"}, {"enemy": "bandido", "element": "Fire"}],
+          [{"enemy": "rei_ossudo", "element": "Dark"}, {"enemy": "bandido", "element": "Dark"}]
+        ]
+      },
+      {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "bandido", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}],
+          [{"enemy": "lobo", "element": "Dark"}, {"enemy": "troll", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}],
+          [{"enemy": "rei_ossudo", "element": "Dark"}, {"enemy": "bandido", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}]
+        ]
+      },
+      {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "bandido", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}, {"enemy": "bandido", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}],
+          [{"enemy": "lobo", "element": "Fire"}, {"enemy": "troll", "element": "Water"}, {"enemy": "bandido", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
+          [{"enemy": "rei_ossudo", "element": "Dark"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "bandido", "element": "Wind"}]
+        ]
+      },
+      {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "bandido", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}, {"enemy": "bandido", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],
+          [{"enemy": "lobo", "element": "Water"}, {"enemy": "troll", "element": "Wind"}, {"enemy": "bandido", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}],
+          [{"enemy": "rei_ossudo", "element": "Dark"}, {"enemy": "bandido", "element": "Wind"}, {"enemy": "bandido", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}]
+        ]
+      },
+      {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
+        "waves": [
+          [{"enemy": "bandido", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "bandido", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
+          [{"enemy": "lobo", "element": "Wind"}, {"enemy": "troll", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}],
+          [{"enemy": "rei_ossudo", "element": "Dark"}, {"enemy": "bandido", "element": "Light"}, {"enemy": "bandido", "element": "Dark"}, {"enemy": "bandido", "element": "Fire"}]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "santuario",
+    "name": "Santuário Afogado",
+    "kind": "Runes",
+    "image": "kraken",
+    "unlockStage": 16,
+    "sets": ["Rage", "Fatal", "Despair", "Revenge"],
+    "floors": [
+      {"level": 18, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 200, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "limo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}, {"enemy": "limo", "element": "Light"}],
+          [{"enemy": "lobo", "element": "Light"}, {"enemy": "dragao", "element": "Dark"}, {"enemy": "limo", "element": "Fire"}],
+          [{"enemy": "guardiao_afogado", "element": "Water"}, {"enemy": "limo", "element": "Dark"}]
+        ]
+      },
+      {"level": 24, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 260, "scale": 1.1, "minGrade": 5, "maxGrade": 5, "minRarity": "Magic",
+        "waves": [
+          [{"enemy": "limo", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}, {"enemy": "limo", "element": "Dark"}],
+          [{"enemy": "lobo", "element": "Dark"}, {"enemy": "dragao", "element": "Fire"}, {"enemy": "limo", "element": "Water"}],
+          [{"enemy": "guardiao_afogado", "element": "Water"}, {"enemy": "limo", "element": "Fire"}, {"enemy": "limo", "element": "Water"}]
+        ]
+      },
+      {"level": 30, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 320, "scale": 1.25, "minGrade": 5, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "limo", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}, {"enemy": "limo", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}],
+          [{"enemy": "lobo", "element": "Fire"}, {"enemy": "dragao", "element": "Water"}, {"enemy": "limo", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
+          [{"enemy": "guardiao_afogado", "element": "Water"}, {"enemy": "limo", "element": "Water"}, {"enemy": "limo", "element": "Wind"}]
+        ]
+      },
+      {"level": 35, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 380, "scale": 1.45, "minGrade": 6, "maxGrade": 6, "minRarity": "Rare",
+        "waves": [
+          [{"enemy": "limo", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}, {"enemy": "limo", "element": "Water"}, {"enemy": "lobo", "element": "Wind"}],
+          [{"enemy": "lobo", "element": "Water"}, {"enemy": "dragao", "element": "Wind"}, {"enemy": "limo", "element": "Light"}, {"enemy": "lobo", "element": "Dark"}],
+          [{"enemy": "guardiao_afogado", "element": "Water"}, {"enemy": "limo", "element": "Wind"}, {"enemy": "limo", "element": "Light"}, {"enemy": "limo", "element": "Dark"}]
+        ]
+      },
+      {"level": 40, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 450, "scale": 1.7, "minGrade": 6, "maxGrade": 6, "minRarity": "Hero",
+        "waves": [
+          [{"enemy": "limo", "element": "Fire"}, {"enemy": "lobo", "element": "Water"}, {"enemy": "limo", "element": "Wind"}, {"enemy": "lobo", "element": "Light"}],
+          [{"enemy": "lobo", "element": "Wind"}, {"enemy": "dragao", "element": "Light"}, {"enemy": "limo", "element": "Dark"}, {"enemy": "lobo", "element": "Fire"}],
+          [{"enemy": "guardiao_afogado", "element": "Water"}, {"enemy": "limo", "element": "Light"}, {"enemy": "limo", "element": "Dark"}, {"enemy": "limo", "element": "Fire"}]
+        ]
+      }
+    ]
+  }
+]

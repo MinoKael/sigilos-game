@@ -1,0 +1,9 @@
+// A Loja (GDD, seção 12): troca Ouro por Mana ou Pergaminhos. "item" é Mana ou Scrolls, "amount" a
+// quantidade e "price" o preço em Ouro. O Ouro só vem de jogar: canalização, nível da conta e primeira
+// vitória em andar de Masmorra. A Mana comprada pode passar do máximo.
+[
+  {"id": "mana_frasco", "name": "Frasco de Mana", "item": "Mana", "amount": 30, "price": 15},
+  {"id": "mana_cantaro", "name": "Cântaro de Mana", "item": "Mana", "amount": 120, "price": 50},
+  {"id": "pergaminho", "name": "Pergaminho Místico", "item": "Scrolls", "amount": 1, "price": 20},
+  {"id": "pergaminhos_10", "name": "Maço de Pergaminhos", "item": "Scrolls", "amount": 10, "price": 180}
+]

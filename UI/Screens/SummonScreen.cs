@@ -7,14 +7,13 @@ using Sigilos.Core.Player;
 using Sigilos.Core.Summoning;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
+using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Invocação ritual (GDD, seção 9): escolha até 2 Glifos conhecidos para direcionar, gaste
-	/// Pergaminhos e veja o sigilo girar antes do resultado. A garantia está sempre à vista.
-	///
-	/// O traçado do Glifo com o mouse entra na v0.5; aqui o ritual é só a animação.
+	/// Invocação ritual (GDD, seção 9): gaste Pergaminhos e veja o círculo girar antes do resultado. A
+	/// garantia está sempre à vista. Cada resultado é uma cópia nova, no nível 1 e sem Despertar.
 	/// </summary>
 	public partial class SummonScreen : Control
 	{
@@ -22,11 +21,9 @@ namespace Sigilos.UI.Screens
 
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
-		private readonly List<Glyph> _directed = new();
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly Label _pity = new();
-		private readonly HBoxContainer _glyphs = new();
 		private readonly Button _single = new() { CustomMinimumSize = new Vector2(0, 56) };
 		private readonly Button _ten = new() { CustomMinimumSize = new Vector2(0, 56) };
 		private readonly Control _stage = new() { SizeFlagsVertical = SizeFlags.ExpandFill, SizeFlagsHorizontal = SizeFlags.ExpandFill };
@@ -40,9 +37,10 @@ namespace Sigilos.UI.Screens
 			_player = player;
 		}
 
-		/// <summary>Quantidade (1 ou 10) e os Glifos de direcionamento.</summary>
-		public event Action<int, IReadOnlyList<Glyph>>? SummonRequested;
+		/// <summary>Quantidade: 1 ou 10.</summary>
+		public event Action<int>? SummonRequested;
 
+		public event Action? ShopRequested;
 		public event Action? BackRequested;
 
 		public override void _Ready()
@@ -50,41 +48,28 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-
-			var header = new HBoxContainer();
-			header.AddChild(new Label { Text = "Invocação Ritual", ThemeTypeVariation = GameTheme.Title, SizeFlagsHorizontal = SizeFlags.ExpandFill });
-			header.AddChild(_currencies);
-			var back = new Button { Text = "Voltar ao Santuário" };
-			back.Pressed += () => BackRequested?.Invoke();
-			header.AddChild(back);
-			page.AddChild(header);
+			page.AddChild(Layout.Header(T("invocacao.titulo"), _currencies, T("geral.voltar_santuario"), () => BackRequested?.Invoke()));
 
 			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
 			body.AddThemeConstantOverride("separation", 20);
 			page.AddChild(body);
 
-			var (panel, content) = Layout.Section("O ritual");
+			var (panel, content) = Layout.Section(T("invocacao.ritual"));
 			panel.CustomMinimumSize = new Vector2(400, 0);
-			content.AddChild(new Label
-			{
-				Text = $"Taxas: 3★ 65% · 4★ 28% · 5★ 7%.\nLuz e Trevas têm metade da chance das outras variantes.\nDuplicatas viram Ecos (até 5: habilidades mais fortes) e depois Fragmentos.",
-				ThemeTypeVariation = GameTheme.Faded,
-				AutowrapMode = TextServer.AutowrapMode.WordSmart,
-			});
+			var threeStar = 1 - SummonRates.FiveStar - SummonRates.FourStar;
+			content.AddChild(Layout.Text(T("invocacao.taxas", Texts.Percent(threeStar), Texts.Percent(SummonRates.FourStar), Texts.Percent(SummonRates.FiveStar)), GameTheme.Faded));
 			_pity.AddThemeFontOverride("font", GameTheme.Serif);
 			_pity.AddThemeFontSizeOverride("font_size", 20);
 			content.AddChild(_pity);
-			content.AddChild(new Label
-			{
-				Text = "Direcionar com Glifos que você conhece (até 2): com 1 Glifo, metade dos resultados vem dele; com 2, 30% de cada.",
-				AutowrapMode = TextServer.AutowrapMode.WordSmart,
-			});
-			_glyphs.AddThemeConstantOverride("separation", 6);
-			content.AddChild(_glyphs);
-			_single.Pressed += () => SummonRequested?.Invoke(1, _directed);
-			_ten.Pressed += () => SummonRequested?.Invoke(10, _directed);
+			content.AddChild(Layout.Text(T("invocacao.copias", PlayerState.CollectionCapacity), GameTheme.Faded));
+			_single.Pressed += () => SummonRequested?.Invoke(1);
+			_ten.Pressed += () => SummonRequested?.Invoke(10);
 			content.AddChild(_single);
 			content.AddChild(_ten);
+			var shop = Layout.IconButton(T("invocacao.loja"), Art.Icon("shop"), 26);
+			shop.TooltipText = T("invocacao.loja_dica");
+			shop.Pressed += () => ShopRequested?.Invoke();
+			content.AddChild(shop);
 			body.AddChild(panel);
 
 			body.AddChild(_stage);
@@ -105,15 +90,14 @@ namespace Sigilos.UI.Screens
 		public void Refresh()
 		{
 			_currencies.Refresh(_player);
-			_pity.Text = $"5★ garantida em {SummonRitual.PullsUntilPity(_player)} invocações";
-			_single.Text = $"Invocar 1 ({Texts.Scrolls(SummonRitual.CostFor(1))})";
-			_ten.Text = $"Invocar 10 ({Texts.Scrolls(SummonRitual.CostFor(10))})";
+			_pity.Text = T("invocacao.garantia", SummonRitual.PullsUntilPity(_player));
+			_single.Text = T("invocacao.invocar", 1, Texts.Scrolls(SummonRitual.CostFor(1)));
+			_ten.Text = T("invocacao.invocar", 10, Texts.Scrolls(SummonRitual.CostFor(10)));
 			_single.Disabled = _player.Scrolls < SummonRitual.CostFor(1);
 			_ten.Disabled = _player.Scrolls < SummonRitual.CostFor(10);
-			RebuildGlyphs();
 		}
 
-		/// <summary>O sigilo gira e brilha; depois os cartões aparecem um a um.</summary>
+		/// <summary>O círculo gira e brilha; depois os cartões aparecem um a um.</summary>
 		public void ShowResults(IReadOnlyList<SummonResult> results)
 		{
 			Refresh();
@@ -123,9 +107,8 @@ namespace Sigilos.UI.Screens
 			_idleCircle?.QueueFree();
 			_idleCircle = null;
 
-			var glyph = _directed.Count > 0 ? _directed[0] : results[0].Summon.Glyph;
 			_sigil?.QueueFree();
-			_sigil = new Doodle(Art.Glyph(glyph), Palette.Gold) { CustomMinimumSize = new Vector2(220, 220), Size = new Vector2(220, 220) };
+			_sigil = new Doodle(Art.Icon("summon"), Palette.Gold) { CustomMinimumSize = new Vector2(220, 220), Size = new Vector2(220, 220) };
 			_stage.AddChild(_sigil);
 			_sigil.Position = (_stage.Size - _sigil.Size) / 2;
 			_sigil.PivotOffset = _sigil.Size / 2;
@@ -149,13 +132,8 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < results.Count; i++)
 			{
 				var result = results[i];
-				var badge = result.Outcome switch
-				{
-					SummonOutcome.New => "NOVA!",
-					SummonOutcome.Echo => $"Eco {result.Echoes}",
-					_ => $"+{result.Fragments} Fragmentos",
-				};
-				var card = new CreatureCard(result.Summon, _player.Summons.GetValueOrDefault(result.Summon.Id), badge, 140) { Modulate = new Color(1, 1, 1, 0) };
+				var badge = result.Monster.Stored ? T("invocacao.foi_para_bau") : result.FirstCopy ? T("invocacao.nova") : T("invocacao.copia");
+				var card = new CreatureCard(result.Summon, result.Monster, badge, 140) { Modulate = new Color(1, 1, 1, 0) };
 				_results.AddChild(card);
 				card.CreateTween().TweenProperty(card, "modulate:a", 1f, 0.25).SetDelay(0.08 * i);
 			}
@@ -163,32 +141,6 @@ namespace Sigilos.UI.Screens
 			// Espera o grid medir os cartões antes de centralizar.
 			Callable.From(() => _results.Position = (_stage.Size - _results.GetCombinedMinimumSize()) / 2).CallDeferred();
 			Refresh();
-		}
-
-		private void RebuildGlyphs()
-		{
-			Layout.Clear(_glyphs);
-			foreach (var glyph in SummonRitual.KnownGlyphs(_player, _database))
-			{
-				var chosen = _directed.Contains(glyph);
-				var button = Layout.IconButton("", Art.Glyph(glyph), 28, chosen ? Palette.Background : Palette.Gold);
-				button.ToggleMode = true;
-				button.ButtonPressed = chosen;
-				button.TooltipText = $"{Texts.Name(glyph)}: {Texts.Meaning(glyph)}";
-				button.CustomMinimumSize = new Vector2(48, 52);
-				button.Toggled += on =>
-				{
-					if (on && _directed.Count < SummonRates.MaxDirectedGlyphs)
-						_directed.Add(glyph);
-					else
-						_directed.Remove(glyph);
-					Callable.From(RebuildGlyphs).CallDeferred();
-				};
-				_glyphs.AddChild(button);
-			}
-
-			var names = _directed.Count == 0 ? "nenhum" : string.Join(" e ", _directed.Select(Texts.Name));
-			_glyphs.AddChild(new Label { Text = $"Direcionado: {names}", ThemeTypeVariation = GameTheme.Faded });
 		}
 	}
 }

@@ -1,9 +1,8 @@
 {
   "id": "cavaleiro_vento",
-  "name": "Cavaleiro Juramentado de Vento",
+  "name": "Cavaleiro de Vento",
   "family": "cavaleiro",
   "element": "Wind",
-  "glyph": "Eye",
   "role": "Support",
   "leader": {"stat": "Speed", "value": 0.1},
   "awakening": {"name": "Dom Vendaval", "stat": "Speed"},
@@ -18,7 +17,7 @@
       {"kind": "Impeto", "target": "AllAllies", "power": 15}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Clarim de Guerra",
     "cooldown": 4,
     "effects": [

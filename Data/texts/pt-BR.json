@@ -1,0 +1,655 @@
+// Todos os textos da interface (UI/Locale.cs). Para traduzir, copie este arquivo com outro nome
+// (en.json, es.json...), troque só os textos e rode o jogo com -- --idioma=en.
+// {0}, {1}... recebem valores na ordem em que o código passa. Colchetes como [color=...] e [glifo=...]
+// podem aparecer nos valores: são termos dourados e Glifos, não precisam ser traduzidos.
+// Nomes de invocações, inimigos, fases e Masmorras moram nos arquivos de Data/.
+// Confira com: py Tools/texts/check_texts.py
+{
+  "geral": {
+    "voltar": "Voltar",
+    "voltar_santuario": "Voltar ao Santuário",
+    "resolver_dica": "Simula a luta na hora, no automático.",
+    "equipe": "Equipe",
+    "equipe_incompleta": "A equipe tem {0} de {1} monstros.",
+    "confirmar": "Confirmar",
+    "sim": "Sim",
+    "nao": "Não",
+    "continuar": "Continuar",
+    "e": " e ",
+    "fase": "fase {0}",
+    "andar": "{0}, andar {1}",
+    "resolver_derrota": "Derrota na {0} (rodada {1}).",
+    "resolver_vitoria": "Vitória na {0}: −{1} Mana, +{2} Essência, +{3} de experiência{4}.",
+    "resolver_runa": "runa de {0} {1}",
+    "resolver_ouro": "+{0} Ouro",
+    "resolver_conta": "conta no nível {0} (+{1} Ouro)",
+    "lutar_mana": "Lutar · {0} Mana",
+    "resolver_mana": "Resolver · {0} Mana",
+    "loja": "Loja",
+    "loja_dica": "Compre Mana e Pergaminhos com Ouro."
+  },
+
+  "entrada": {
+    "Locked": "Ainda fechado.",
+    "NoMana": "Falta Mana: a vitória custa {0} (a derrota não custa nada). Colete a canalização no Santuário ou compre na Loja.",
+    "RunesFull": "Inventário de runas cheio ({1}): desfaça runas ou guarde-as num monstro do Baú antes de lutar."
+  },
+
+  "termo": {
+    "impeto": "Ímpeto",
+    "eter": "Éter"
+  },
+
+  "turnos": {
+    "um": "1 turno",
+    "varios": "{0} turnos"
+  },
+
+  "moeda": {
+    "pergaminho": "1 Pergaminho",
+    "pergaminhos": "{0} Pergaminhos",
+    "mana_de": "{0}/{1}",
+    "dica": {
+      "mana": "Mana: toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {0} por hora até o máximo, que vai de {1} no nível 1 da conta a {2} no nível {3}. A Loja e a subida de nível da conta passam do máximo.",
+      "essencia": "Essência: sobe o nível dos monstros, paga o Despertar e melhora runas.",
+      "ouro": "Ouro: a moeda rara. Compra Mana e Pergaminhos na Loja. Vem da canalização, de cada nível da conta e da primeira vitória em cada andar de Masmorra.",
+      "pergaminhos": "Pergaminhos Místicos: invocam monstros.",
+      "fragmentos": "Fragmentos: vêm de monstros liberados."
+    }
+  },
+
+  "elemento": {
+    "Fire": "Fogo",
+    "Water": "Água",
+    "Wind": "Vento",
+    "Light": "Luz",
+    "Dark": "Trevas"
+  },
+
+  "papel": {
+    "Front": "Frente",
+    "Attacker": "Atacante",
+    "Support": "Suporte",
+    "Control": "Controle"
+  },
+
+  "atributo": {
+    "Health": "Vida",
+    "Attack": "Ataque",
+    "Defense": "Defesa",
+    "Speed": "Velocidade",
+    "Crit": "Crítico",
+    "CritDamage": "Dano crítico",
+    "Resistance": "Resistência",
+    "Accuracy": "Precisão"
+  },
+
+  "atributo_explica": {
+    "Health": "Quanto dano aguenta antes de cair.",
+    "Attack": "Base do dano: o multiplicador de cada habilidade é sobre ele.",
+    "Defense": "Reduz o dano recebido: Defesa {0} corta o dano pela metade, e cada ponto a mais rende um pouco menos.",
+    "Speed": "Quão rápido a barra de Ímpeto enche. Decide quem age primeiro e quantas vezes.",
+    "Crit": "Chance de o golpe ser crítico. O crítico multiplica o dano por 1 + Dano crítico.",
+    "CritDamage": "Quanto o crítico soma ao dano. Todo monstro começa com 50%.",
+    "Resistance": "Chance de barrar efeitos negativos, menos a Precisão de quem lança. Nunca fica abaixo de {1}.",
+    "Accuracy": "Desconta da Resistência do alvo aos seus efeitos negativos."
+  },
+
+  "runa_atributo": {
+    "HealthFlat": "Vida",
+    "HealthPercent": "Vida",
+    "AttackFlat": "Ataque",
+    "AttackPercent": "Ataque",
+    "DefenseFlat": "Defesa",
+    "DefensePercent": "Defesa",
+    "Speed": "Velocidade",
+    "Crit": "Crítico",
+    "CritDamage": "Dano crítico",
+    "Resistance": "Resistência",
+    "Accuracy": "Precisão",
+    "percentual": "{0}%"
+  },
+
+  "conjunto": {
+    "Energy": "Energia",
+    "Swift": "Rapidez",
+    "Guard": "Guarda",
+    "Shield": "Escudo",
+    "Focus": "Foco",
+    "Blade": "Lâmina",
+    "Violent": "Violência",
+    "Revenge": "Vingança",
+    "Despair": "Desespero",
+    "Will": "Vontade",
+    "Rage": "Fúria",
+    "Fatal": "Fatal",
+    "Endure": "Perseverança",
+    "Nemesis": "Nêmesis",
+    "Vampire": "Vampiro",
+    "Destroy": "Destruição"
+  },
+
+  "conjunto_efeito": {
+    "pecas": "{0} peças: {1}",
+    "Stat": "+{0} de {1}",
+    "Drain": "drena {0} do dano causado",
+    "Stun": "{0} de chance de causar {1} em cada alvo atingido; a Resistência não barra",
+    "ExtraTurn": "{0} de chance de turno extra depois de agir",
+    "AllyShield": "no começo de cada onda, todos os aliados ganham {0} de {1} da Vida de base do dono por {2} turnos",
+    "Immunity": "{0} por {1} no começo de cada onda",
+    "Counter": "{0} de chance de contra-atacar com o básico ({1} do dano) ao ser atingido",
+    "Nemesis": "+{0} de {1} a cada {2} da Vida máxima perdida num golpe",
+    "Destroy": "{0} do dano causado tira Vida máxima do alvo (até {1} por habilidade, {2} no total)"
+  },
+
+  "glifo": {
+    "Uruz": { "nome": "Uruz", "sentido": "Vida" },
+    "Raido": { "nome": "Raido", "sentido": "Velocidade" },
+    "Algiz": { "nome": "Algiz", "sentido": "Defesa" },
+    "Othalan": { "nome": "Othalan", "sentido": "Escudo" },
+    "Kauna": { "nome": "Kauna", "sentido": "Precisão" },
+    "Pertho": { "nome": "Pertho", "sentido": "Crítico" },
+    "Jeran": { "nome": "Jeran", "sentido": "Turno extra" },
+    "Thurisaz": { "nome": "Thurisaz", "sentido": "Contra-ataque" },
+    "Gebo": { "nome": "Gebo", "sentido": "Atordoar" },
+    "Dagaz": { "nome": "Dagaz", "sentido": "Imunidade" },
+    "Sowilo": { "nome": "Sowilo", "sentido": "Dano crítico" },
+    "Tiwaz": { "nome": "Tiwaz", "sentido": "Ataque" },
+    "Iwaz": { "nome": "Iwaz", "sentido": "Resistência" },
+    "Naudiz": { "nome": "Naudiz", "sentido": "Ímpeto" },
+    "Laukaz": { "nome": "Laukaz", "sentido": "Dreno" },
+    "Haglaz": { "nome": "Haglaz", "sentido": "Destruição" }
+  },
+
+  "raridade": {
+    "Normal": "Normal",
+    "Magic": "Mágica",
+    "Rare": "Rara",
+    "Hero": "Heroica",
+    "Legendary": "Lendária"
+  },
+
+  "efeito": {
+    "Shield": { "nome": "Escudo", "sigla": "ESC", "explica": "Absorve dano até o valor do escudo." },
+    "Burn": { "nome": "Queimadura", "sigla": "QMD", "explica": "Perde {0} da Vida máxima no começo de cada turno. Acumula até {1}." },
+    "Stun": { "nome": "Atordoamento", "sigla": "ATD", "explica": "Perde o próximo turno." },
+    "Taunt": { "nome": "Provocação", "sigla": "PRV", "explica": "Só pode mirar em quem provocou." },
+    "Hidden": { "nome": "Oculto", "sigla": "OCL", "explica": "Não pode ser alvo de ataques únicos." },
+    "Curse": { "nome": "Maldição", "sigla": "MAL", "explica": "Recebe {0} a mais de dano." },
+    "Blind": { "nome": "Cegueira", "sigla": "CEG", "explica": "Cada golpe tem {0} de chance de errar." },
+    "Ward": { "nome": "Égide", "sigla": "ÉGI", "explica": "Anula o próximo golpe recebido." },
+    "Foresight": { "nome": "Presságio", "sigla": "PRS", "explica": "O próximo golpe causado é crítico." },
+    "Immunity": { "nome": "Imunidade", "sigla": "IMU", "explica": "Nenhum efeito negativo pega." },
+    "AttackUp": { "nome": "Ataque+", "sigla": "ATQ+", "explica": "+{0} de Ataque." },
+    "AttackDown": { "nome": "Ataque−", "sigla": "ATQ−", "explica": "−{0} de Ataque." },
+    "DefenseUp": { "nome": "Defesa+", "sigla": "DEF+", "explica": "+{0} de Defesa." },
+    "SpeedUp": { "nome": "Velocidade+", "sigla": "VEL+", "explica": "+{0} de Velocidade." }
+  },
+
+  "alvo": {
+    "Target": "no alvo",
+    "AllEnemies": "em todos os inimigos",
+    "Self": "em si",
+    "LowestAlly": "no aliado mais ferido",
+    "AllAllies": "em todos os aliados"
+  },
+
+  "habilidade": {
+    "chance": "{0} de chance de ",
+    "dano": "{0}{1} do Ataque {2}",
+    "golpes": "{0} golpes de ",
+    "ignora": ", ignora {0} da Defesa",
+    "drena": ", drena {0} como Vida",
+    "cura": "cura {0} da Vida {1}",
+    "escudo": "{0} de {1} da Vida {2} por {3}",
+    "efeito": "{0}{1} {2} por {3}",
+    "impeto": "{0}{1}% de {2} {3}",
+    "purifica": "remove um efeito negativo {0}",
+    "se_derrubar": "se derrubar o alvo, {0}",
+    "aprimorada": "Aprimorada ({0} {1}): {2}"
+  },
+
+  "assinatura": {
+    "SpeedWhenLowest": "+{0} de Velocidade enquanto for o aliado com menos Vida.",
+    "ShieldOnDeath": "Ao cair, dá {0} de {1} da própria Vida a todos os aliados.",
+    "RebirthOnce": "Na primeira vez que cai, renasce com {0} da Vida no turno seguinte dela."
+  },
+
+  "despertar": {
+    "bonus": "{0} de {1}"
+  },
+
+  "pedra": {
+    "Grindstone": "Pedra de Afiar {0} · {1}",
+    "Gem": "Gema Encantada {0} · {1}",
+    "faixa": "{0} a {1}"
+  },
+
+  "carta": {
+    "dica": "{0}\n{1} · {2}",
+    "nivel": "Nv {0}",
+    "ecos": "Eco {0}"
+  },
+
+  "runa": {
+    "titulo": "{0} ({1})",
+    "vazio": "vazio",
+    "afiado": "{0} ({1} afiado)",
+    "dica": "{0} · {1} {2} +{3}\n{4}",
+    "dono": "Equipada em {0}",
+    "dono_bau": "Equipada em {0} (Baú)"
+  },
+
+  "santuario": {
+    "titulo": "Sigilos",
+    "subtitulo": "Santuário do Conjurador · Planície dos Menires",
+    "coletar": "Coletar",
+    "canalizacao_rapida": "Canalização Rápida",
+    "canalizacao_rapida_dica": "Uma vez por dia: {0} horas de ociosidade na hora.",
+    "canalizando": "Canalizando há {0}h{1} (máx. {2} h)",
+    "recompensa": "+{0} Essência   +{1} Ouro   +{2} Mana",
+    "circulos": "Círculos de canalização",
+    "circulos_texto": "Com o jogo fechado, seus círculos continuam canalizando Essência, Ouro e Mana ({0} por hora, até o máximo).",
+    "conta": "Conta nível {0} · Mana máxima {1}",
+    "conta_dica": "{0}/{1} de experiência. Toda vitória dá experiência também à conta; cada nível dá {2} Ouro, enche a Mana e aumenta a Mana máxima, até {4} no nível {3}.",
+    "conta_maxima": "Conta nível {0} (máximo) · Mana máxima {1}",
+    "conta_maxima_dica": "A conta chegou ao nível {0}, o máximo.",
+    "campanha": "Campanha · Fase {0}: {1}",
+    "dica_primeira_invocacao": "Sua primeira invocação é uma 5★ garantida. Abra a Invocação Ritual.",
+    "dica_primeira_fase": "Os monstros novos já entram na equipe da Campanha. Vença a primeira fase!",
+    "equipe_campanha": "Equipe da Campanha · a primeira é a Líder",
+    "monstros": "Monstros",
+    "monstros_dica": "Coleção, Baú, níveis, Despertar, fundir e liberar.",
+    "equipes": "Equipes",
+    "equipes_dica": "Uma equipe para a Campanha e uma para cada Masmorra.",
+    "runas": "Runas",
+    "runas_dica": "Inventário de runas com busca, Pedras de Afiar e Gemas Encantadas.",
+    "masmorras": "Masmorras",
+    "masmorras_dica": "Runas de 5 e 6 estrelas e pedras. Cada vitória custa Mana.",
+    "invocacao": "Invocação Ritual",
+    "invocacao_dica": "Gaste Pergaminhos para invocar monstros.",
+    "loja": "Loja",
+    "loja_dica": "Troque Ouro por Mana e Pergaminhos.",
+    "compendio": "Compêndio",
+    "compendio_dica": "As regras: combate, atributos, Glifos, efeitos e runas.",
+    "grimorio": "Grimório",
+    "grimorio_dica": "Tudo o que existe: invocações, conjuntos, tabelas de runa, pedras e gemas."
+  },
+
+  "campanha": {
+    "titulo": "Planície dos Menires",
+    "subtitulo": "Região 1 · sem regra de batalha: ensina o básico.",
+    "fase": "Fase",
+    "fase_titulo": "{0}. {1}",
+    "numero_vencida": "{0} ✓",
+    "niveis": "Inimigos no nível {0} · equipe nos níveis {1}",
+    "onda": "Onda {0}:",
+    "inimigo_dica": "{0} ({1})",
+    "recompensa": "Vitória: {0} Essência, {1} de experiência para a equipe e a conta e {2} de chance de runa {3}.",
+    "recompensa_primeira": "Primeira vitória: {0}, {1} Essência, {2} de experiência para a equipe e a conta e uma runa {3}.",
+    "fala": "“{0}”"
+  },
+
+  "masmorras": {
+    "titulo": "Masmorras",
+    "subtitulo": "Runas de 5 e 6 estrelas de conjuntos certos, Pedras de Afiar e Gemas. Cada vitória custa a Mana do andar; a derrota não custa nada.",
+    "tipo": {
+      "Runes": "Runas",
+      "Tools": "Pedras"
+    },
+    "progresso": "{0} · {1} de {2} andares vencidos",
+    "fechada": "Abre depois da fase {0} da Campanha.",
+    "solta_runas": "Solta runas de 4 a 6 estrelas, só destes conjuntos:",
+    "solta_pedras": "Solta Pedras de Afiar e Gemas Encantadas, que servem em qualquer runa.",
+    "equipe": "Equipe desta Masmorra: {0} de {1}",
+    "andar": "Andar {0} · inimigos nível {1}",
+    "andar_vencido": "Andar {0} · inimigos nível {1} ✓",
+    "drop_runa": "Runa {0}, no mínimo {1}",
+    "drop_pedra": "{0} × pedra {1}",
+    "recompensa": "+{0} Essência, +{1} de experiência",
+    "primeira_ouro": " · 1ª vitória: +{0} Ouro"
+  },
+
+  "invocacao": {
+    "titulo": "Invocação Ritual",
+    "ritual": "O ritual",
+    "taxas": "Taxas: 3★ {0} · 4★ {1} · 5★ {2}.\nLuz e Trevas têm metade da chance das outras variantes.",
+    "garantia": "5★ garantida em {0} invocações",
+    "copias": "Cada invocação é um monstro novo, no nível 1, mesmo que você já tenha outro igual. Cópias repetidas podem ser fundidas (Ecos) ou liberadas em Monstros. Com a coleção cheia ({0}), o monstro vai para o Baú.",
+    "invocar": "Invocar {0} ({1})",
+    "loja": "Comprar Pergaminhos",
+    "loja_dica": "A Loja troca Ouro por Pergaminhos.",
+    "nova": "Nova!",
+    "copia": "Cópia",
+    "foi_para_bau": "→ Baú"
+  },
+
+  "loja": {
+    "titulo": "Loja",
+    "subtitulo": "Troque Ouro por Mana e Pergaminhos. O Ouro vem da canalização, de cada nível da conta ({0} Ouro) e da primeira vitória em cada andar de Masmorra.",
+    "item": {
+      "Mana": "{0} Mana",
+      "Scrolls": "{0} Pergaminhos"
+    },
+    "explica_mana": "Mana para mais lutas. Pode passar do máximo.",
+    "explica_pergaminhos": "Pergaminhos Místicos para a Invocação Ritual.",
+    "preco": "{0} Ouro",
+    "sem_ouro": "Faltam {0} de Ouro.",
+    "confirma": "Comprar {0} ({1}) por {2} Ouro?",
+    "comprado": "Comprado: +{0}."
+  },
+
+  "monstros": {
+    "titulo": "Monstros",
+    "colecao": "Coleção {0}/{1}",
+    "bau": "Baú ({0})",
+    "em_equipe": "em equipe",
+    "bau_vazio": "O Baú está vazio. Guarde aqui os monstros que você não usa: eles não ocupam vaga na coleção.",
+    "colecao_vazia": "Nenhum monstro ainda. Faça uma Invocação Ritual.",
+    "escolha": "Escolha um monstro.",
+    "no_bau": "No Baú: não luta, mas guarda as runas (elas não ocupam o inventário).",
+    "sem_equipe": "Fora de equipes.",
+    "equipes": "Em equipe: {0}",
+    "atributos": "Atributos · base e bônus das runas",
+    "runas": "Runas",
+    "sem_conjunto": "Nenhum conjunto completo.",
+    "habilidades": "Habilidades",
+    "basico": "Básico · {0}",
+    "especial": "Especial · {0} (recarga {1})",
+    "assinatura": "Assinatura · {0}",
+    "lideranca": "Liderança · +{0} de {1} (sobre a base) para a equipe, só como Líder",
+    "desperto": "Desperto · {0}",
+    "despertar": "Despertar",
+    "desperto_texto": "Nome próprio, desenho novo e Assinatura melhorada.",
+    "despertar_texto": "Vira {0}: +{1} de Vida, +{2} de Ataque e Defesa, {3}, desenho novo e Assinatura melhorada ({4})",
+    "ecos": "Eco {0}/{1}",
+    "nivel": "Nível {0} de {1}",
+    "nivel_maximo": "Nível {0} (máximo)",
+    "experiencia": "Experiência: {0}/{1}",
+    "elemento_papel": "{0} · {1}",
+    "mais_nivel": "+1 nível ({0} Essência)",
+    "mais_nivel_dica": "Infunde Essência como experiência.",
+    "nivel_max_botao": "Nível máximo ({0})",
+    "nivel_max_dica": "Infunde toda a Essência que der, até o nível 40.",
+    "despertar_botao": "Despertar ({0} Essência)",
+    "despertar_dica": "Para sempre.",
+    "runas_botao": "Runas",
+    "runas_dica": "Equipar, melhorar, afiar e encantar runas.",
+    "guardar": "Guardar no Baú",
+    "guardar_dica": "Sai de todas as equipes e leva as runas junto: elas deixam de ocupar o inventário.",
+    "tirar_do_bau": "Tirar do Baú",
+    "colecao_cheia": "A coleção está cheia.",
+    "fundir": "Fundir cópia ({0})",
+    "fundir_cheio": "Já tem todos os Ecos.",
+    "fundir_dica": "Funde outra cópia da mesma variante: +1 Eco (habilidades {0} mais fortes, até {1}). A cópia some.",
+    "fundir_item": "{0} · Nv {1}{2}",
+    "no_bau_curto": " · Baú",
+    "fundir_confirma": "Fundir {0} (Nv {1})? A cópia some, e as runas dela voltam ao inventário.",
+    "liberar": "Liberar (+{0} Fragmentos)",
+    "liberar_dica": "O monstro some e vira Fragmentos.",
+    "liberar_confirma": "Liberar {0} (Nv {1}) por {2} Fragmentos? Não dá para desfazer.",
+    "selecionar": "Selecionar",
+    "selecionar_dica": "Marque vários monstros (nas duas abas) para fundir no monstro da ficha ou liberar de uma vez.",
+    "marcados": "{0} marcados",
+    "marcar_copias": "Marcar cópias de {0}",
+    "marcar_copias_dica": "Marca todas as outras cópias da mesma variante, na coleção e no Baú.",
+    "desmarcar": "Desmarcar",
+    "fundir_marcados": "Fundir em {0} ({1})",
+    "fundir_marcados_dica": "Viram Ecos do monstro da ficha, as cópias mais fracas primeiro. Cabem mais {0}.",
+    "fundir_marcados_invalido": "Marque só cópias de {0} (sem ele mesmo). Cabem mais {1} Ecos.",
+    "fundir_varios_confirma": "Fundir {0} cópias em {1}? Ecos: {2} → {3}. As cópias somem; as runas delas voltam ao inventário.",
+    "liberar_marcados": "Liberar {0} (+{1} Fragmentos)",
+    "liberar_varios_confirma": "Liberar {0} monstros por {1} Fragmentos? Eles somem para sempre; as runas voltam ao inventário.",
+    "aviso_valiosos": "Atenção: a seleção tem monstro desperto, com nível, com Ecos, em equipe ou com runas."
+  },
+
+  "equipes": {
+    "titulo": "Equipes",
+    "campanha": "Campanha",
+    "vagas": "Equipe · {0} vagas, a primeira é a Líder",
+    "colecao": "Coleção · clique para pôr ou tirar da equipe",
+    "conteudo_dica": "{0} de {1} na equipe",
+    "conteudo_fechado": "Masmorra ainda fechada; a equipe já pode ser montada.",
+    "lider": "Líder",
+    "tirar_dica": "Clique para tirar da equipe.",
+    "tornar_lider": "Tornar Líder",
+    "vazio": "vaga",
+    "lideranca": "Liderança",
+    "lideranca_texto": "{0}: +{1} de {2} (sobre a base) para toda a equipe.",
+    "sem_lideranca": "A Líder desta equipe não tem Liderança.",
+    "dica": "Cada conteúdo tem a sua equipe; um monstro pode estar em várias.",
+    "na_equipe": "na equipe"
+  },
+
+  "runas": {
+    "titulo": "Runas",
+    "sem_monstro": "— nenhum monstro —",
+    "monstro_item": "{0} · Nv {1}",
+    "monstro_item_bau": "{0} · Nv {1} · Baú",
+    "escolha_monstro": "Escolha um monstro acima para equipar runas nele.",
+    "conjuntos_ativos": "Conjuntos ativos",
+    "nenhum_conjunto": "Nenhum. Junte 2 ou 4 runas do mesmo conjunto.",
+    "aba_runas": "Runas ({0}/{1})",
+    "aba_pedras": "Pedras ({0})",
+    "aba_gemas": "Gemas ({0})",
+    "encontradas": "{0} runas",
+    "selecionar": "Selecionar",
+    "selecionar_dica": "Marque várias runas para desfazer de uma vez. Runas equipadas não entram.",
+    "marcar_todas": "Marcar todas",
+    "desmarcar": "Desmarcar",
+    "desfazer_marcadas": "Desfazer {0} (+{1} Essência)",
+    "pedras_explica": "Pedra de Afiar: escolha uma runa e use \"Afiar\" num subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo.",
+    "gemas_explica": "Gema Encantada: escolha uma runa +{0} e use \"Encantar\" num subatributo para trocá-lo pelo da gema. Só um subatributo por runa.",
+    "sem_pedras": "Nenhuma. A Forja Rachada, nas Masmorras, solta Pedras de Afiar e Gemas.",
+    "runa": "Runa",
+    "explica": "Escolha uma runa do inventário ou um espaço no círculo.\n\nEspaços 1, 3 e 5 dão sempre Ataque, Defesa e Vida fixos. Os espaços 2, 4 e 6 variam: é neles que moram Velocidade, Crítico, Dano crítico, Resistência, Precisão e as porcentagens.",
+    "conjunto": "Conjunto {0}: {1}",
+    "dica_mudou": "{0} → {1} | {2}",
+    "dica_novo": "novo: {0}",
+    "nativo": "Nativo: {0}",
+    "nativo_dica": "Vem no drop e nunca cresce.",
+    "encantado_dica": "Encantado por Gema. Só um subatributo por runa pode ser encantado.",
+    "marcos": "Em +3, +6, +9 e +12 entra um subatributo novo (até 4) ou, com 4, um deles cresce. Em +15 o principal dá o salto final. A melhora nunca falha.",
+    "maxima": "Melhora máxima.",
+    "equipada_em": "Equipada em {0}.",
+    "equipada_em_bau": "Equipada em {0}, no Baú.",
+    "inventario_cheio": "Inventário de runas cheio ({0}): desfaça runas antes de tirar esta.",
+    "remover": "Remover",
+    "equipar_em": "Equipar em {0}",
+    "melhorar": "Melhorar +{0} ({1} Essência)",
+    "melhorar_ate": "Até +{0} ({1} Essência)",
+    "desfazer": "Desfazer (+{0} Essência)",
+    "afiar": "Afiar",
+    "encantar": "Encantar"
+  },
+
+  "filtro": {
+    "conjunto": "Conjunto",
+    "espaco": "Espaço",
+    "principal": "Principal",
+    "subatributo": "Subatributo",
+    "estrelas": "Estrelas",
+    "raridade": "Raridade",
+    "melhora": "Melhora",
+    "todos": "{0}",
+    "no_minimo": "{0} ou mais",
+    "ordem_dica": "Ordem",
+    "ordem_item": "↓ {0}",
+    "ordem": {
+      "Grade": "estrelas",
+      "Level": "melhora",
+      "Rarity": "raridade",
+      "Set": "conjunto",
+      "Slot": "espaço",
+      "Newest": "mais nova"
+    },
+    "onde": "Onde",
+    "lugar": {
+      "Inventory": "Soltas",
+      "Collection": "Em monstros",
+      "Storage": "No Baú",
+      "All": "Todas"
+    },
+    "limpar": "Limpar"
+  },
+
+  "compendio": {
+    "titulo": "Compêndio",
+    "aba": {
+      "basico": "Como jogar",
+      "combate": "Combate",
+      "atributos": "Atributos",
+      "glifos": "Glifos",
+      "efeitos": "Efeitos",
+      "runas": "Runas"
+    },
+    "basico": {
+      "campanha": { "titulo": "Campanha", "texto": "20 fases com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Pergaminhos e sempre uma runa; as seguintes dão Essência e chance de runa. A Campanha solta runas de até {0} estrelas." },
+      "masmorras": { "titulo": "Masmorras", "texto": "Cada Masmorra tem 5 andares e solta o que a Campanha não solta: runas de 4 a 6 estrelas de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada vitória custa Mana; a primeira vitória em cada andar dá Ouro." },
+      "mana": { "titulo": "Mana e nível da conta", "texto": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
+      "ouro": { "titulo": "Ouro e Loja", "texto": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
+      "invocacao": { "titulo": "Invocação", "texto": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
+      "monstros": { "titulo": "Monstros e Baú", "texto": "A coleção tem {0} vagas; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas." },
+      "equipes": { "titulo": "Equipes", "texto": "Uma equipe de até {0} monstros para a Campanha e uma para cada Masmorra. A primeira é a Líder." },
+      "nivel": { "titulo": "Nível", "texto": "De 1 a {0}. Vitórias dão experiência à equipe que lutou; a Essência sobe o nível na hora, em Monstros. A mesma Essência paga o Despertar e a melhora de runas." },
+      "ecos": { "titulo": "Ecos e Fragmentos", "texto": "Fundir uma cópia repetida dá +1 Eco (até {0}): cada Eco deixa as habilidades {1} mais fortes, e o último soma {2} aos atributos. As cópias que sobram podem ser liberadas em Fragmentos." },
+      "despertar": { "titulo": "Despertar", "texto": "Paga Essência e o monstro ganha nome próprio, desenho novo, estrelas roxas, Assinatura melhorada, +{0} de Vida, +{1} de Ataque e Defesa e um bônus da variante: {2}, {3}, {4} ou {5}." }
+    },
+    "combate": {
+      "impeto": { "titulo": "Ímpeto", "texto": "Cada unidade tem uma barra de {0} que enche em proporção à Velocidade; quem chega a 100% age. Empurrar ou atrasar a barra muda a ordem — a faixa \"Próximos\" mostra quem vem." },
+      "eter": { "titulo": "Éter", "texto": "{0} é o recurso do time, de 0 a {1}. O básico não gera; cada habilidade especial gera {2} e cada inimigo derrubado, {3}. Ele paga as versões aprimoradas das habilidades (nenhuma custa menos de {4}): marque \"Aprimorar\" antes de escolher. Só no manual." },
+      "luta": { "titulo": "A luta", "texto": "Até {0} monstros contra até {2} inimigos por onda, em até {1} ondas. Passar de {3} rodadas é derrota." },
+      "dano": { "titulo": "Dano", "texto": "Ataque × multiplicador da habilidade × {0} / ({0} + Defesa do alvo). Defesa {0} corta o dano pela metade." },
+      "critico": { "titulo": "Crítico", "texto": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo monstro começa com 15% de Crítico e 50% de Dano crítico." },
+      "resistencia": { "titulo": "Resistência e Precisão", "texto": "Todo efeito negativo pode ser barrado: a chance é a Resistência do alvo menos a Precisão de quem lança, nunca abaixo de {0}." },
+      "lider": { "titulo": "Líder", "texto": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio das runas." },
+      "automatico": { "titulo": "Automático e Resolver", "texto": "O automático escolhe sozinho e nunca gasta {0}. Fases e andares já vencidos ganham o botão Resolver, que simula a luta na hora." },
+      "elementos": "Elementos",
+      "elementos_texto": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence.",
+      "vence": "{0} vence {1}"
+    },
+    "atributos": {
+      "intro": "Os oito atributos de todo monstro. Cada um tem o seu Glifo: o do conjunto de runas que o aumenta."
+    },
+    "glifos": {
+      "intro": "Os Glifos são símbolos de runa, e cada um quer dizer uma coisa em todo o jogo — nas runas, nos efeitos e nos textos. Gebo (×) é atordoar: onde aparecer, é {0}.",
+      "conjunto": "Conjunto: {0}"
+    },
+    "efeitos": {
+      "intro": "Efeitos duram turnos de quem os recebe. Os negativos passam pela Resistência do alvo menos a Precisão de quem lança (mínimo de {0}); a Imunidade barra todos. Na luta, o botão Efeitos mostra o que está sobre cada unidade.",
+      "negativo": "negativo",
+      "positivo": "positivo"
+    },
+    "runas": {
+      "espacos": { "titulo": "Espaços", "texto": "Seis espaços em círculo. 1, 3 e 5 dão sempre Ataque, Defesa e Vida fixos; o 2 pode ter Velocidade, o 4 Crítico ou Dano crítico, o 6 Resistência ou Precisão, e os três podem ter Vida, Ataque ou Defesa, fixos ou em porcentagem sobre a base." },
+      "estrelas": { "titulo": "Estrelas e raridade", "texto": "De 1 a {0} estrelas: decidem o tamanho de todos os números. A cor é a raridade, quantos subatributos a runa tem: Normal 0, Mágica 1, Rara 2, Heroica 3, Lendária 4. Às vezes vem um atributo nativo, que nunca cresce." },
+      "melhora": { "titulo": "Melhora", "texto": "Essência melhora de +0 a +{0} (a mesma do nível e do Despertar), e a melhora nunca falha. Em +3, +6, +9 e +12 entra um subatributo novo (até {1}) ou um deles cresce; em +15 o principal dá o salto final." },
+      "conjuntos": { "titulo": "Conjuntos", "texto": "Duas ou quatro runas do mesmo conjunto dão o bônus dele. Com 6 espaços cabem um de 4 e um de 2, ou três de 2 (três iguais valem três vezes). Cada conjunto tem o seu Glifo." },
+      "afiar": { "titulo": "Pedra de Afiar", "texto": "Soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo." },
+      "gema": { "titulo": "Gema Encantada", "texto": "Troca um subatributo de uma runa +{0} pelo da gema. Só um subatributo por runa pode ser encantado." },
+      "onde": { "titulo": "Onde conseguir", "texto": "A Campanha solta runas de até {0} estrelas (sempre na primeira vitória, {1} de chance depois). As Masmorras soltam as de 5 e 6 estrelas e as pedras." },
+      "grimorio": { "titulo": "Tabelas", "texto": "Os números de cada estrela, os custos de melhora e as faixas das pedras estão no Grimório." }
+    }
+  },
+
+  "grimorio": {
+    "titulo": "Grimório",
+    "aba": {
+      "invocacoes": "Invocações",
+      "conjuntos": "Conjuntos",
+      "runas": "Tabelas de runa",
+      "pedras": "Pedras de Afiar",
+      "gemas": "Gemas Encantadas"
+    },
+    "nao_obtida": "não obtida",
+    "copias": "×{0}",
+    "ficha": "{0} · {1} · {2} · {3}",
+    "ver_desperto": "Ver desperta ({0})",
+    "atributos": "Atributos de base (sem runas, sem Ecos)",
+    "nivel": "Nível {0}",
+    "habilidades": "Habilidades",
+    "sem_lideranca": "Sem Liderança.",
+    "despertar": "Despertar",
+    "custo_despertar": "Custo: {0} Essência.",
+    "conjuntos_intro": "Os 16 conjuntos, o Glifo de cada um e a Masmorra que solta.",
+    "glifo_de": "Glifo {0} · {1}",
+    "onde": "Onde: {0}",
+    "so_campanha": "só na Campanha",
+    "principal": "Atributo principal",
+    "principal_intro": "Valor em +0 · +12 · +15, por estrela.",
+    "atributo": "Atributo",
+    "sub": "Subatributos",
+    "sub_intro": "Cada sorteio de subatributo (no drop e em +3, +6, +9 e +12), por estrela.",
+    "custo": "Custo de melhora",
+    "custo_intro": "Essência de +0 até o nível, por estrela. A melhora nunca falha.",
+    "melhora": "Melhora",
+    "ate": "Até +{0}",
+    "desfazer": "Desfazer",
+    "desfazer_valor": "{0}–{1}",
+    "pedras_intro": "Bônus da Pedra de Afiar por grau. Só Vida, Ataque, Defesa e Velocidade.",
+    "gemas_intro": "Valor que a Gema Encantada põe no lugar do subatributo, por grau. A runa precisa estar em +{0}.",
+    "pedras_onde": "Pedras de Afiar e Gemas vêm da Forja Rachada, nas Masmorras."
+  },
+
+  "batalha": {
+    "titulo_fase": "Fase {0} · {1}",
+    "titulo_andar": "{0} · Andar {1}",
+    "vitoria": "Vitória",
+    "derrota": "Derrota",
+    "primeira_vitoria": "Primeira vitória!",
+    "mana": "−{0} Mana",
+    "ganhos": "+{0} Essência",
+    "ouro": "+{0} Ouro",
+    "conta": "A conta subiu para o nível {0}: +{1} Ouro e a Mana encheu.",
+    "experiencia": "+{0} de experiência para cada monstro da equipe",
+    "subiu": "{0} subiu de nível!",
+    "runa": "Runa {0} · {1} {2}: {3}",
+    "pedra": "{0}: {1}",
+    "tempo": "O tempo acabou: {0} rodadas.",
+    "todos_cairam": "Todos os monstros caíram.",
+    "dica_derrota": "Suba o nível, equipe runas ou desperte monstros. No manual, o Éter paga aprimoramentos.",
+    "efeitos": "Efeitos",
+    "efeitos_dica": "Mostra os efeitos sobre cada aliado e inimigo. Clicar numa unidade também abre.",
+    "efeitos_unidade": "{0} ({1})",
+    "efeito_linha": "{0} · {1}{2}\n{3}",
+    "efeito_dica": "{0} ({1}): {2}",
+    "escudo_valor": " · {0} de escudo",
+    "sem_efeitos": "sem efeitos",
+    "aliado": "aliado",
+    "inimigo": "inimigo",
+    "automatico_ligado": "Automático: ligado",
+    "automatico_desligado": "Automático: desligado",
+    "automatico_dica": "No automático os monstros agem sozinhos e o Éter não é usado.",
+    "velocidade": "Velocidade {0}×",
+    "recuar": "Recuar",
+    "recuar_dica": "Sai da luta sem recompensa.",
+    "vez_de": "Vez de {0}:",
+    "aprimorar": "Aprimorar (Éter: {0})",
+    "aprimorar_dica": "Paga Éter para usar a versão aprimorada da habilidade escolhida.",
+    "escolha_alvo": "Escolha o alvo:",
+    "dica_eter_auto": "Automático não usa Éter. Desligue para aprimorar habilidades.",
+    "dica_eter_manual": "Habilidade especial e inimigo derrubado geram Éter; marque Aprimorar para gastá-lo.",
+    "eter": "Éter {0}/{1}",
+    "eter_dica": "Éter: recurso do time, de 0 a {0}. Vem das habilidades especiais e de inimigos derrubados; paga aprimoramentos no manual.",
+    "proximos": "Próximos:",
+    "unidade_dica": "{0} · Nv {1}",
+    "impeto_dica": "Ímpeto: age quando a barra enche.",
+    "renascendo": "renascendo…",
+    "caido": "caído",
+    "onda": "Onda {0}/{1}",
+    "onda_faixa": "Onda {0}",
+    "rodada": "Rodada {0}/{1}",
+    "usa": "{0}\n{1}",
+    "usa_aprimorada": "{0}\n{1} · aprimorada",
+    "turno_extra": "Turno extra!",
+    "contra_ataque": "Contra-ataque!",
+    "vida_max": "-{0} Vida máx.",
+    "errou": "Errou",
+    "egide": "Égide!",
+    "resistiu": "Resistiu",
+    "imune": "Imune",
+    "atordoado": "Atordoado",
+    "perde_turno": "{0}\nperde o turno",
+    "renasce": "Renasce!"
+  }
+}

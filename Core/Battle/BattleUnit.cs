@@ -21,12 +21,11 @@ namespace Sigilos.Core.Battle
 			string image,
 			Side side,
 			Element element,
-			Glyph? glyph,
 			int level,
 			bool awakened,
 			StatBlock stats,
 			SkillDefinition basic,
-			SkillDefinition? glyphSkill,
+			SkillDefinition? special,
 			PassiveDefinition? passive,
 			double skillPower,
 			RuneSetEffects runeEffects)
@@ -36,12 +35,11 @@ namespace Sigilos.Core.Battle
 			Image = image;
 			Side = side;
 			Element = element;
-			Glyph = glyph;
 			Level = level;
 			Awakened = awakened;
 			Stats = stats;
 			Basic = basic;
-			GlyphSkill = glyphSkill;
+			Special = special;
 			Passive = passive;
 			SkillPower = skillPower;
 			RuneEffects = runeEffects;
@@ -56,9 +54,6 @@ namespace Sigilos.Core.Battle
 		public Side Side { get; }
 		public Element Element { get; }
 
-		/// <summary>Só invocações têm Glifo; inimigos ficam nulos.</summary>
-		public Glyph? Glyph { get; }
-
 		public int Level { get; }
 		public bool Awakened { get; }
 
@@ -66,7 +61,7 @@ namespace Sigilos.Core.Battle
 		public StatBlock Stats { get; }
 
 		public SkillDefinition Basic { get; }
-		public SkillDefinition? GlyphSkill { get; }
+		public SkillDefinition? Special { get; }
 		public PassiveDefinition? Passive { get; }
 
 		/// <summary>O número da Assinatura, já melhorado se a invocação despertou.</summary>
@@ -90,12 +85,13 @@ namespace Sigilos.Core.Battle
 		/// <summary>De 0 a 100: a unidade age quando chega a 100.</summary>
 		public double Impeto { get; set; }
 
-		/// <summary>Turnos até a habilidade de Glifo voltar. 0 = pronta.</summary>
-		public int GlyphCooldown { get; set; }
+		/// <summary>Turnos até a habilidade especial voltar. 0 = pronta.</summary>
+		public int SpecialCooldown { get; set; }
 
 		public bool RebirthUsed { get; set; }
 
-		public bool ExtraTurnAvailable { get; set; }
+		/// <summary>O Violento deu um turno extra: o próximo turno desta unidade é ele.</summary>
+		public bool ExtraTurnPending { get; set; }
 
         /// <summary>Caída, mas renasce quando o Ímpeto dela encher (Assinatura da Fênix).</summary>
         public bool PendingRebirth { get; set; }
@@ -108,7 +104,7 @@ namespace Sigilos.Core.Battle
 		/// <summary>Está na barra de Ímpeto: viva, ou caída esperando renascer.</summary>
 		public bool CanTakeTurn => IsAlive || PendingRebirth;
 
-		public bool IsGlyphReady => GlyphSkill != null && GlyphCooldown == 0;
+		public bool IsSpecialReady => Special != null && SpecialCooldown == 0;
 
 		/// <summary>Velocidade de agora, com efeitos e Assinatura. A barra enche em proporção a ela.</summary>
 		public double TurnSpeed
@@ -139,7 +135,7 @@ namespace Sigilos.Core.Battle
 
 		public double Defense => Has(StatusKind.DefenseUp) ? Stats.Defense * (1 + BattleRules.DefenseUpBonus) : Stats.Defense;
 
-		public SkillDefinition Skill(SkillSlot slot) => slot == SkillSlot.Glyph && GlyphSkill != null ? GlyphSkill : Basic;
+		public SkillDefinition Skill(SkillSlot slot) => slot == SkillSlot.Special && Special != null ? Special : Basic;
 
 		public bool Has(StatusKind kind) => _statuses.Any(s => s.Kind == kind);
 

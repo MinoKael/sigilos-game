@@ -1,9 +1,8 @@
 {
   "id": "diabrete_trevas",
-  "name": "Diabrete de Selo de Trevas",
+  "name": "Diabrete de Trevas",
   "family": "diabrete",
   "element": "Dark",
-  "glyph": "Veil",
   "role": "Attacker",
   "awakening": {"name": "Negrume", "stat": "Accuracy"},
   "basic": {
@@ -18,7 +17,7 @@
       {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.7, "turns": 2}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Sumir no Selo",
     "cooldown": 4,
     "effects": [

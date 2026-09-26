@@ -2,7 +2,7 @@ namespace Sigilos.Core.Content
 {
 	/// <summary>
 	/// Uma família de invocações (Data/families.json). A família decide a raridade, o desenho e a
-	/// Assinatura; cada variante (Data/summons/*.json) decide elemento, Glifo, papel e habilidades.
+	/// Assinatura; cada variante (Data/summons/*.json) decide elemento, papel e habilidades.
 	/// Um desenho por família, recolorido nos 5 elementos, e um segundo para o Despertar (GDD, seção 5).
 	/// </summary>
 	public sealed record FamilyDefinition

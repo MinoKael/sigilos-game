@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sigilos.Core.Player;
 
 namespace Sigilos.Core.Progression
@@ -45,13 +46,25 @@ namespace Sigilos.Core.Progression
 			return gained;
 		}
 
+		/// <summary>Experiência de vitória para cada monstro da equipe. Devolve os ids de quem subiu de nível.</summary>
+		public static IReadOnlyList<int> GiveExperience(PlayerState player, IReadOnlyList<int> team, int amount)
+		{
+			var levelUps = new List<int>();
+			foreach (var id in team)
+			{
+				if (player.Monster(id) is { Stored: false } monster && AddExperience(monster, amount) > 0)
+					levelUps.Add(id);
+			}
+
+			return levelUps;
+		}
+
 		/// <summary>
 		/// Infunde Essência como experiência, até <paramref name="essence"/> e nunca além do nível 40
 		/// nem da Essência que o jogador tem. Devolve a Essência gasta.
 		/// </summary>
-		public static int Infuse(PlayerState player, string summonId, int essence)
+		public static int Infuse(PlayerState player, OwnedSummon summon, int essence)
 		{
-			var summon = player.Summon(summonId);
 			var spent = Math.Min(Math.Min(essence, player.Essence), MissingToMax(summon));
 			if (spent <= 0)
 				return 0;

@@ -1,3 +1,5 @@
+using Sigilos.Core.Content;
+
 namespace Sigilos.Core.Runes
 {
 	/// <summary>

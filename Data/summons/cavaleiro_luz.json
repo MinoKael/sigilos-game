@@ -1,9 +1,8 @@
 {
   "id": "cavaleiro_luz",
-  "name": "Cavaleiro Juramentado de Luz",
+  "name": "Cavaleiro de Luz",
   "family": "cavaleiro",
   "element": "Light",
-  "glyph": "Bond",
   "role": "Front",
   "leader": {"stat": "Defense", "value": 0.2},
   "awakening": {"name": "Dom Alvor", "stat": "Resistance"},
@@ -19,7 +18,7 @@
       {"kind": "Status", "target": "Target", "status": "Taunt"}
     ]
   },
-  "glyphSkill": {
+  "special": {
     "name": "Voto de Escudo",
     "cooldown": 4,
     "effects": [

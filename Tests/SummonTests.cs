@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Summoning;
 
@@ -15,7 +14,7 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
-			var results = SummonRitual.Perform(new Random(7), database, player, 1, Array.Empty<Glyph>());
+			var results = SummonRitual.Perform(new Random(7), database, player, 1);
 			Assert.Equal(5, results.Single().Summon.Rarity, "primeira invocação");
 		}
 
@@ -25,7 +24,7 @@ namespace Sigilos.Tests
 			var database = TestData.LoadReal();
 			var player = Player();
 			player.PullsSinceFiveStar = SummonRates.Pity - 1;
-			var summon = SummonRitual.Roll(new Random(1), database, player, Array.Empty<Glyph>());
+			var summon = SummonRitual.Roll(new Random(1), database, player);
 			Assert.Equal(5, summon.Rarity, "60ª invocação sem 5★");
 			Assert.Equal(0, player.PullsSinceFiveStar, "contador zera");
 		}
@@ -41,7 +40,7 @@ namespace Sigilos.Tests
 			for (var i = 0; i < pulls; i++)
 			{
 				player.PullsSinceFiveStar = 0;
-				counts[SummonRitual.Roll(random, database, player, Array.Empty<Glyph>()).Rarity]++;
+				counts[SummonRitual.Roll(random, database, player).Rarity]++;
 			}
 
 			Assert.Near(0.65, counts[3] / (double)pulls, "taxa de 3★", 0.02);
@@ -50,38 +49,36 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void DirectingWithOneGlyphGivesAboutHalf()
-		{
-			var database = TestData.LoadReal();
-			var player = Player();
-			var random = new Random(3);
-			const int pulls = 10_000;
-			var hits = 0;
-			for (var i = 0; i < pulls; i++)
-			{
-				player.PullsSinceFiveStar = 0;
-				if (SummonRitual.Roll(random, database, player, new[] { Glyph.Eye }).Glyph == Glyph.Eye)
-					hits++;
-			}
-
-			// Metade direcionada, mais o que o sorteio livre já daria de Olho.
-			Assert.True(hits / (double)pulls > 0.5, $"Olho em {hits} de {pulls}");
-		}
-
-		[Test]
-		private static void DuplicatesBecomeEchoesThenFragments()
+		private static void RepeatedSummonIsANewUnawakenedCopy()
 		{
 			var database = TestData.LoadReal();
 			var player = Player();
 			var summon = database.Summon("fenix_fogo");
 
-			Assert.Equal(SummonOutcome.New, SummonRitual.Receive(player, summon).Outcome, "primeira cópia");
-			for (var echo = 1; echo <= 5; echo++)
-				Assert.Equal(echo, SummonRitual.Receive(player, summon).Echoes, $"Eco {echo}");
+			var first = SummonRitual.Receive(player, summon);
+			first.Monster.Awakened = true;
+			first.Monster.Level = 40;
+
+			var second = SummonRitual.Receive(player, summon);
+			Assert.True(first.FirstCopy && !second.FirstCopy, "a primeira cópia é marcada");
+			Assert.True(second.Monster.Id != first.Monster.Id, "outra cópia, com id próprio");
+			Assert.False(second.Monster.Awakened, "a cópia nova não vem desperta");
+			Assert.Equal(1, second.Monster.Level, "a cópia nova vem no nível 1");
+			Assert.Equal(2, player.Monsters.Count, "duas cópias na conta");
+		}
+
+		[Test]
+		private static void FullCollectionSendsToTheChest()
+		{
+			var database = TestData.LoadReal();
+			var player = Player();
+			var summon = database.Summon("diabrete_fogo");
+			for (var i = 0; i < PlayerState.CollectionCapacity; i++)
+				SummonRitual.Receive(player, summon);
 
 			var extra = SummonRitual.Receive(player, summon);
-			Assert.Equal(SummonOutcome.Fragments, extra.Outcome, "sexta duplicata");
-			Assert.Equal(20, player.Fragments, "5★ vira 20 Fragmentos");
+			Assert.True(extra.Monster.Stored, "a coleção cheia manda para o Baú");
+			Assert.Equal(PlayerState.CollectionCapacity, player.Collection.Count(), "a coleção não passa do limite");
 		}
 
 		[Test]
@@ -89,22 +86,12 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = Player(scrolls: 9);
-			Assert.Equal(0, SummonRitual.Perform(new Random(1), database, player, 10, Array.Empty<Glyph>()).Count, "sem Pergaminhos");
+			Assert.Equal(0, SummonRitual.Perform(new Random(1), database, player, 10).Count, "sem Pergaminhos");
 			Assert.Equal(9, player.Scrolls, "nada gasto");
 
 			player.Scrolls = 10;
-			Assert.Equal(10, SummonRitual.Perform(new Random(1), database, player, 10, Array.Empty<Glyph>()).Count, "dez invocações");
+			Assert.Equal(10, SummonRitual.Perform(new Random(1), database, player, 10).Count, "dez invocações");
 			Assert.Equal(0, player.Scrolls, "10 gastos");
-		}
-
-		[Test]
-		private static void OnlyKnownGlyphsDirect()
-		{
-			var database = TestData.LoadReal();
-			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1));
-			var known = SummonRitual.KnownGlyphs(player, database);
-			Assert.True(known.Contains(Glyph.Shard) && known.Contains(Glyph.Bone) && known.Contains(Glyph.Eye), "Glifos do time inicial");
-			Assert.False(known.Contains(Glyph.Veil), "Véu ainda desconhecido");
 		}
 	}
 }

@@ -1,12 +1,20 @@
 path,commons_file,author,license
-Glyphs/wall.svg,Runic letter algiz.svg,ClaesWallin,Public domain
-Glyphs/eye.svg,Runic letter pertho.svg,ClaesWallin,Public domain
-Glyphs/door.svg,Runic letter dagaz.svg,ClaesWallin,Public domain
-Glyphs/bond.svg,Runic letter gebo.svg,ClaesWallin,Public domain
-Glyphs/shard.svg,Runic letter sowilo.svg,ClaesWallin,Public domain
-Glyphs/veil.svg,Runic letter laukaz.svg,ClaesWallin,Public domain
-Glyphs/bone.svg,Runic letter iwaz.svg,ClaesWallin,Public domain
-Glyphs/spiral.svg,Runic letter jeran.svg,ClaesWallin,Public domain
+Glyphs/algiz.svg,Runic letter algiz.svg,ClaesWallin,Public domain
+Glyphs/pertho.svg,Runic letter pertho.svg,ClaesWallin,Public domain
+Glyphs/dagaz.svg,Runic letter dagaz.svg,ClaesWallin,Public domain
+Glyphs/gebo.svg,Runic letter gebo.svg,ClaesWallin,Public domain
+Glyphs/sowilo.svg,Runic letter sowilo.svg,ClaesWallin,Public domain
+Glyphs/laukaz.svg,Runic letter laukaz.svg,ClaesWallin,Public domain
+Glyphs/iwaz.svg,Runic letter iwaz.svg,ClaesWallin,Public domain
+Glyphs/jeran.svg,Runic letter jeran.svg,ClaesWallin,Public domain
+Glyphs/uruz.svg,Runic letter uruz.svg,ClaesWallin,Public domain
+Glyphs/raido.svg,Runic letter raido.svg,Alatius,Public domain
+Glyphs/othalan.svg,Runic letter othalan.svg,ClaesWallin; Artem Karimov,Public domain
+Glyphs/kauna.svg,Runic letter kauna.svg,ClaesWallin,Public domain
+Glyphs/thurisaz.svg,Runic letter thurisaz.svg,ClaesWallin,Public domain
+Glyphs/tiwaz.svg,Runic letter tiwaz.svg,ClaesWallin,Public domain
+Glyphs/naudiz.svg,Runic letter naudiz.svg,ClaesWallin,Public domain
+Glyphs/haglaz.svg,Runic letter haglaz.svg,ClaesWallin; Sarang,Public domain
 Elements/fire.svg,Alchemical fire symbol.svg,Bryan Derksen,Public domain
 Elements/water.svg,Alchemical water symbol.svg,Bryan Derksen,Public domain
 Elements/wind.svg,Alchemical air symbol.svg,Bryan Derksen,Public domain
@@ -31,5 +39,19 @@ Icons/fragments.svg,Crystal-cluster - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Icons/compendium.svg,Spell-book - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
 Icons/summon.svg,Portal - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Icons/campaign.svg,Crossed-swords - Lorc - game-icons.svg,Lorc,CC BY 3.0
-Icons/dust.svg,Powder - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Icons/storage.svg,Circle-cage - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Creatures/rock_golem.svg,Rock-golem - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
+Creatures/wyvern.svg,Wyvern - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Creatures/crowned_skull.svg,Crowned-skull - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Creatures/kraken.svg,Kraken-tentacle - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
+Creatures/golem_head.svg,Golem-head - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
+Icons/chest.svg,Locked-chest - game-icons.svg,Lorc,CC BY 3.0
+Icons/team.svg,Meeple-group - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
+Icons/dungeon.svg,Dungeon-gate - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
+Icons/grimoire.svg,Book-aura - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Icons/grindstone.svg,Stone-block - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Icons/gem.svg,Cut-diamond - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Icons/search.svg,Magnifying-glass - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Icons/gold.svg,Two-coins - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
+Icons/mana.svg,Potion-ball - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Icons/shop.svg,Shop - Delapouite - game-icons.svg,Delapouite,CC BY 3.0

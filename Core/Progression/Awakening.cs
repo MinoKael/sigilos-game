@@ -35,16 +35,16 @@ namespace Sigilos.Core.Progression
 			_ => 0,
 		};
 
-		public static bool CanAwaken(PlayerState player, SummonDefinition summon) =>
-			player.Owns(summon.Id) && !player.Summon(summon.Id).Awakened && player.Essence >= Cost(summon.Rarity);
+		public static bool CanAwaken(PlayerState player, OwnedSummon monster, SummonDefinition summon) =>
+			!monster.Awakened && player.Essence >= Cost(summon.Rarity);
 
-		public static bool Awaken(PlayerState player, SummonDefinition summon)
+		public static bool Awaken(PlayerState player, OwnedSummon monster, SummonDefinition summon)
 		{
-			if (!CanAwaken(player, summon))
+			if (!CanAwaken(player, monster, summon))
 				return false;
 
 			player.Essence -= Cost(summon.Rarity);
-			player.Summon(summon.Id).Awakened = true;
+			monster.Awakened = true;
 			return true;
 		}
 

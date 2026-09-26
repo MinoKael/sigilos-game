@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.UI.Style;
+using static Sigilos.UI.Locale;
 using Side = Sigilos.Core.Battle.Side;
 
 namespace Sigilos.UI.Components
@@ -17,7 +18,7 @@ namespace Sigilos.UI.Components
 		public void Show(IReadOnlyList<BattleUnit> order)
 		{
 			Layout.Clear(this);
-			AddChild(new Label { Text = "Próximos:" });
+			AddChild(new Label { Text = T("batalha.proximos") });
 
 			foreach (var unit in order)
 			{

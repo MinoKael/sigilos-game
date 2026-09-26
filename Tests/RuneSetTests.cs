@@ -5,7 +5,7 @@ using Sigilos.Core.Runes;
 
 namespace Sigilos.Tests
 {
-	/// <summary>O que os conjuntos de runas fazem em combate, com os números de Summoners War.</summary>
+	/// <summary>O que os conjuntos de runas fazem em combate.</summary>
 	internal static class RuneSetTests
 	{
 		[Test]
@@ -21,30 +21,14 @@ namespace Sigilos.Tests
 			var events = session.Act(new UnitAction(SkillSlot.Basic, false, foe));
 			Assert.Near(550, vampire.Health, "drena 50% de 100");
 			Assert.True(events.OfType<ExtraTurn>().Any(), "100% de turno extra");
-			Assert.Equal(1, vampire.ExtraTurnStreak, "um turno extra seguido");
 			Assert.Equal(vampire, session.BeginTurn().Actor, "age de novo em seguida");
-		}
 
-		[Test]
-		private static void ViolentChanceShrinksOnEachExtraTurnInARow()
-		{
-			// Com chance-base de 100%, o segundo turno extra seguido tem 55% (100% × 0,55).
-			var second = 0;
-			const int Runs = 400;
-			for (var seed = 1; seed <= Runs; seed++)
-			{
-				var unit = TestData.Unit("violento", Side.Allies, speed: 300, runeEffects: TestData.Effects(extraTurn: 1));
-				var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
-				var session = TestData.Session(new[] { unit }, new[] { foe }, seed);
-				session.Start();
-				TestData.RunUntilTurnOf(session, unit);
-				session.Act(new UnitAction(SkillSlot.Basic, false, foe));
-				session.BeginTurn();
-				if (session.Act(new UnitAction(SkillSlot.Basic, false, foe)).OfType<ExtraTurn>().Any())
-					second++;
-			}
+			var extra = session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			Assert.False(extra.OfType<ExtraTurn>().Any(), "o turno extra não dá outro: um por turno");
 
-			Assert.Near(RuneSets.ExtraTurnDecay, second / (double)Runs, "segundo turno extra seguido", 0.08);
+			TestData.RunUntilTurnOf(session, vampire);
+			var next = session.Act(new UnitAction(SkillSlot.Basic, false, foe));
+			Assert.True(next.OfType<ExtraTurn>().Any(), "o turno normal seguinte sorteia de novo");
 		}
 
 		[Test]

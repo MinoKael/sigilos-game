@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Runes
 {
@@ -8,8 +9,8 @@ namespace Sigilos.Core.Runes
 	/// linha por estrela, de 1★ a 6★; porcentagens estão em pontos (8 = 8%).
 	///
 	/// A única regra diferente: a melhora nunca falha. Em troca, cada nível custa o que seria
-	/// cobrado <b>em média</b> contando as falhas (custo ÷ chance de sucesso), o que deixa o Pó de Sigilo
-	/// tão escasso quanto a sorte deixaria o Mana.
+	/// cobrado <b>em média</b> contando as falhas (custo ÷ chance de sucesso). A moeda é a Essência, a
+	/// mesma do nível e do Despertar: cada runa melhorada disputa com os monstros.
 	/// </summary>
 	public static class RuneRules
 	{
@@ -21,8 +22,8 @@ namespace Sigilos.Core.Runes
 		/// <summary>Chance de a runa sair com atributo nativo.</summary>
 		public const double InnateChance = 0.3;
 
-		/// <summary>Quanto Mana vale 1 Pó de Sigilo.</summary>
-		public const int ManaPerDust = 100;
+		/// <summary>Quanto da tabela de custo (<see cref="BaseCost"/>) vale 1 Essência.</summary>
+		public const int CostPerEssence = 10;
 
 		/// <summary>Chance de cada raridade no drop: quantos subatributos a runa traz.</summary>
 		private static readonly double[] RarityWeights = { 0.30, 0.30, 0.22, 0.13, 0.05 };
@@ -60,17 +61,23 @@ namespace Sigilos.Core.Runes
 			RuneStat.DefenseFlat or RuneStat.DefensePercent or
 			RuneStat.Speed;
 
-		public static RuneRarity RollRarity(Random random)
+		/// <summary>Sorteia a raridade pelos pesos de drop, só entre as de <paramref name="min"/> para cima.</summary>
+		public static RuneRarity RollRarity(Random random, RuneRarity min = RuneRarity.Normal)
 		{
-			var roll = random.NextDouble();
-			for (var i = 0; i < RarityWeights.Length; i++)
+			var first = (int)min;
+			var total = 0.0;
+			for (var i = first; i < RarityWeights.Length; i++)
+				total += RarityWeights[i];
+
+			var roll = random.NextDouble() * total;
+			for (var i = first; i < RarityWeights.Length; i++)
 			{
 				roll -= RarityWeights[i];
 				if (roll < 0)
 					return (RuneRarity)i;
 			}
 
-			return RuneRarity.Normal;
+			return (RuneRarity)(RarityWeights.Length - 1);
 		}
 
 		/// <summary>O principal: base da estrela mais o passo por nível, arredondado para baixo; +15 dá o salto final.</summary>
@@ -115,7 +122,7 @@ namespace Sigilos.Core.Runes
 			_ => 0.05,
 		};
 
-		/// <summary>Pó de Sigilo para ir do nível atual ao próximo.</summary>
+		/// <summary>Essência para ir do nível atual ao próximo.</summary>
 		public static int UpgradeCost(Rune rune) => UpgradeCost(rune.Grade, rune.Level);
 
 		public static int UpgradeCost(int grade, int level)
@@ -124,11 +131,11 @@ namespace Sigilos.Core.Runes
 				return 0;
 
 			var target = level + 1;
-			var mana = ManaCost[target - 1][GradeIndex(grade)];
-			return (int)Math.Ceiling(mana / SummonersWarChance(target) / ManaPerDust);
+			var cost = BaseCost[target - 1][GradeIndex(grade)];
+			return (int)Math.Ceiling(cost / SummonersWarChance(target) / CostPerEssence);
 		}
 
-		/// <summary>Pó de Sigilo para ir do nível atual até <paramref name="target"/>.</summary>
+		/// <summary>Essência para ir do nível atual até <paramref name="target"/>.</summary>
 		public static int UpgradeCost(Rune rune, int target)
 		{
 			var total = 0;
@@ -140,10 +147,10 @@ namespace Sigilos.Core.Runes
 		/// <summary>Próximo marco (+3, +6, +9, +12 ou +15) acima do nível atual.</summary>
 		public static int NextMilestone(int level) => Math.Min(MaxLevel, (level / 3 + 1) * 3);
 
-		/// <summary>Pó de Sigilo que a runa rende ao ser desfeita: pelas estrelas e pela raridade, nunca pela melhora.</summary>
+		/// <summary>Essência que a runa rende ao ser desfeita: pelas estrelas e pela raridade, nunca pela melhora.</summary>
 		public static int SellValue(Rune rune)
 		{
-			var byGrade = 3 << (GradeIndex(rune.Grade));
+			var byGrade = 30 << GradeIndex(rune.Grade);
 			return (int)Math.Round(byGrade * (1 + 0.25 * rune.Substats.Count));
 		}
 
@@ -179,8 +186,8 @@ namespace Sigilos.Core.Runes
 		private static readonly (int, int)[] CritDamageGem = { (3, 5), (4, 6), (5, 8), (7, 10) };
 		private static readonly (int, int)[] ResistanceGem = { (3, 6), (5, 8), (6, 9), (8, 11) };
 
-		/// <summary>Mana por tentativa, para chegar a +1 ... +15, de 1★ a 6★.</summary>
-		private static readonly int[][] ManaCost =
+		/// <summary>Custo por tentativa, para chegar a +1 ... +15, de 1★ a 6★ (÷ <see cref="CostPerEssence"/> = Essência).</summary>
+		private static readonly int[][] BaseCost =
 		{
 			new[] { 100, 150, 225, 330, 500, 750 },
 			new[] { 175, 300, 475, 680, 950, 1475 },

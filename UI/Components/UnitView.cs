@@ -4,6 +4,7 @@ using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.UI.Style;
+using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Components
 {
@@ -14,7 +15,7 @@ namespace Sigilos.UI.Components
 	/// </summary>
 	public partial class UnitView : PanelContainer
 	{
-		public static readonly Vector2 CardSize = new(150, 196);
+		public static readonly Vector2 CardSize = new(132, 172);
 
 		private readonly StyleBoxFlat _box;
 		private readonly ProgressBar _health;
@@ -30,7 +31,7 @@ namespace Sigilos.UI.Components
 			CustomMinimumSize = CardSize;
 			MouseFilter = MouseFilterEnum.Stop;
 			PivotOffset = CardSize / 2;
-			TooltipText = $"{unit.Name} · Nv {unit.Level}";
+			TooltipText = T("batalha.unidade_dica", unit.Name, unit.Level);
 
 			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, 6, 6);
 			AddThemeStyleboxOverride("panel", _box);
@@ -46,15 +47,13 @@ namespace Sigilos.UI.Components
 			if (unit.Awakened)
 				name.AddThemeColorOverride("font_color", Palette.Awakened);
 			top.AddChild(name);
-			if (unit.Glyph is { } glyph)
-				top.AddChild(Doodle.Icon(Art.Glyph(glyph), 16, Palette.TextFaded));
 			column.AddChild(top);
 
-			var portrait = new Control { CustomMinimumSize = new Vector2(0, 96), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
+			var portrait = new Control { CustomMinimumSize = new Vector2(0, 76), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
 			var art = new Doodle(Art.Creature(unit.Image), Palette.Of(unit.Element));
 			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			portrait.AddChild(art);
-			var level = new Label { Text = $"Nv {unit.Level}" };
+			var level = new Label { Text = T("carta.nivel", unit.Level) };
 			level.AddThemeFontSizeOverride("font_size", 12);
 			level.AddThemeColorOverride("font_outline_color", Palette.Background);
 			level.AddThemeConstantOverride("outline_size", 4);
@@ -74,7 +73,7 @@ namespace Sigilos.UI.Components
 			column.AddChild(_healthText);
 
 			_impeto = Bar(Palette.Gold, 5);
-			_impeto.TooltipText = "Ímpeto: age quando a barra enche.";
+			_impeto.TooltipText = T("batalha.impeto_dica");
 			column.AddChild(_impeto);
 
 			var bottom = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
@@ -102,14 +101,14 @@ namespace Sigilos.UI.Components
 			_shield.Value = shield;
 			_shield.Visible = shield > 0;
 
-			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}/{Unit.MaxHealth:0}" : Unit.PendingRebirth ? "renascendo…" : "caído";
+			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}/{Unit.MaxHealth:0}" : Unit.PendingRebirth ? T("batalha.renascendo") : T("batalha.caido");
 			_impeto.Value = Unit.Impeto;
 			_statuses.Text = string.Join(" ", Unit.Statuses
 				.Where(s => s.Kind != StatusKind.Shield)
 				.Select(s => Texts.Short(s.Kind))
 				.Distinct());
-			_statuses.TooltipText = string.Join("\n", Unit.Statuses.Select(s => $"{Texts.Name(s.Kind)} ({s.Turns}): {Texts.Explain(s.Kind)}"));
-			_cooldown.Text = Unit.GlyphSkill != null && Unit.GlyphCooldown > 0 ? $"⟳{Unit.GlyphCooldown}" : "";
+			_statuses.TooltipText = string.Join("\n", Unit.Statuses.Select(s => T("batalha.efeito_dica", Texts.Name(s.Kind), s.Turns, Texts.Plain(Texts.Explain(s.Kind)))));
+			_cooldown.Text = Unit.Special != null && Unit.SpecialCooldown > 0 ? $"⟳{Unit.SpecialCooldown}" : "";
 			Modulate = Unit.IsAlive ? Colors.White : new Color(1, 1, 1, 0.35f);
 		}
 

@@ -16,11 +16,11 @@ namespace Sigilos.Core.Battle
 		public const int RoundLimit = 30;
 
 		// Éter: recurso único do time, de 0 a 10, só para aprimorar habilidades no manual.
-		// Básico não gera Éter; Glifo e inimigo derrubado geram 1. Todo aprimoramento custa pelo menos
+		// Básico não gera Éter; habilidade especial e inimigo derrubado geram 1. Todo aprimoramento custa pelo menos
 		// MinEnhanceCost, mais do que um turno rende: não existe ciclo de usa-e-ganha.
 		public const int MaxEther = 10;
 		public const int BasicEtherGain = 0;
-		public const int GlyphEtherGain = 1;
+		public const int SpecialEtherGain = 1;
 		public const int KillEtherGain = 1;
 		public const int MinEnhanceCost = 2;
 

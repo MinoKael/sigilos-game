@@ -23,6 +23,6 @@ namespace Sigilos.Core.Content
 		public SkillDefinition Basic { get; init; } = new();
 
 		/// <summary>Opcional: habilidade forte com recarga.</summary>
-		public SkillDefinition? GlyphSkill { get; init; }
+		public SkillDefinition? Special { get; init; }
 	}
 }

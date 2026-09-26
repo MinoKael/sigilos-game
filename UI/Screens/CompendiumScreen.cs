@@ -3,25 +3,27 @@ using System.Linq;
 using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
+using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
+using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O Compêndio: o que são os Glifos e para que servem, a roda de elementos, cada efeito, como as
-	/// runas funcionam e as regras de combate. Todo número vem das regras do Core, não de texto escrito
-	/// à mão, então a explicação acompanha o balanceamento.
+	/// O Compêndio: as regras do jogo, em abas — como jogar, combate, atributos, Glifos, efeitos e
+	/// runas. Cada tópico é um cartão curto com o seu símbolo. Todo número vem das regras do Core, então
+	/// a explicação acompanha o balanceamento. O que existe no jogo (invocações, tabelas de runa, pedras)
+	/// fica no Grimório.
 	/// </summary>
 	public partial class CompendiumScreen : Control
 	{
-		private readonly GameDatabase _database;
+		private const float CardWidth = 560;
 
-		public CompendiumScreen(GameDatabase database)
+		public CompendiumScreen()
 		{
-			_database = database;
 		}
 
 		public event Action? BackRequested;
@@ -31,161 +33,157 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-
-			var header = new HBoxContainer();
-			header.AddChild(new Label { Text = "Compêndio", ThemeTypeVariation = GameTheme.Title, SizeFlagsHorizontal = SizeFlags.ExpandFill });
-			var back = new Button { Text = "Voltar ao Santuário" };
-			back.Pressed += () => BackRequested?.Invoke();
-			header.AddChild(back);
-			page.AddChild(header);
+			page.AddChild(Layout.Header(T("compendio.titulo"), null, T("geral.voltar_santuario"), () => BackRequested?.Invoke()));
 
 			var tabs = new TabContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
-			tabs.AddChild(Tab("Glifos", Glyphs));
-			tabs.AddChild(Tab("Elementos", Elements));
-			tabs.AddChild(Tab("Efeitos", Statuses));
-			tabs.AddChild(Tab("Runas", Runes));
-			tabs.AddChild(Tab("Combate", Combat));
 			page.AddChild(tabs);
+			Basics(Layout.Tab(tabs, T("compendio.aba.basico")));
+			Combat(Layout.Tab(tabs, T("compendio.aba.combate")));
+			Stats(Layout.Tab(tabs, T("compendio.aba.atributos")));
+			Glyphs(Layout.Tab(tabs, T("compendio.aba.glifos")));
+			Statuses(Layout.Tab(tabs, T("compendio.aba.efeitos")));
+			Runes(Layout.Tab(tabs, T("compendio.aba.runas")));
 		}
 
-		private static Control Tab(string name, Action<VBoxContainer> fill)
+		private static void Basics(VBoxContainer column)
 		{
-			var scroll = new ScrollContainer { Name = name, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
-			var column = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			column.AddThemeConstantOverride("separation", 10);
-			scroll.AddChild(column);
-			fill(column);
-			return scroll;
+			var grid = Cards(column);
+			Card(grid, "campaign", T("compendio.basico.campanha.titulo"), T("compendio.basico.campanha.texto", GameDatabase.MaxCampaignRuneGrade));
+			Card(grid, "dungeon", T("compendio.basico.masmorras.titulo"), T("compendio.basico.masmorras.texto"));
+			Card(grid, "mana", T("compendio.basico.mana.titulo"), T("compendio.basico.mana.texto", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
+			Card(grid, "gold", T("compendio.basico.ouro.titulo"), T("compendio.basico.ouro.texto", Account.LevelUpGold));
+			Card(grid, "summon", T("compendio.basico.invocacao.titulo"), T("compendio.basico.invocacao.texto"));
+			Card(grid, "storage", T("compendio.basico.monstros.titulo"), T("compendio.basico.monstros.texto", PlayerState.CollectionCapacity, RuneInventory.Capacity));
+			Card(grid, "team", T("compendio.basico.equipes.titulo"), T("compendio.basico.equipes.texto", PlayerState.TeamSize));
+			Card(grid, "essence", T("compendio.basico.nivel.titulo"), T("compendio.basico.nivel.texto", Leveling.MaxLevel));
+			Card(grid, "fragments", T("compendio.basico.ecos.titulo"), T("compendio.basico.ecos.texto", Growth.MaxEchoes, Texts.Percent(Growth.SkillPowerPerEcho), Texts.Percent(Growth.FullEchoStatBonus)));
+			Card(grid, "grimoire", T("compendio.basico.despertar.titulo"), T("compendio.basico.despertar.texto",
+				Texts.Percent(Awakening.HealthBonus), Texts.Percent(Awakening.AttackDefenseBonus),
+				Texts.AwakeningBonus(Stat.Speed), Texts.AwakeningBonus(Stat.Crit), Texts.AwakeningBonus(Stat.Resistance), Texts.AwakeningBonus(Stat.Accuracy)));
 		}
 
-		private void Glyphs(VBoxContainer column)
+		private static void Combat(VBoxContainer column)
 		{
-			Paragraph(column, "Tudo neste mundo foi escrito com oito Glifos. Cada invocação carrega um: ele diz o estilo das habilidades dela. " +
-				"Cada Glifo também empresta o desenho a dois conjuntos de runas, e a Invocação Ritual pode ser direcionada para os Glifos que você já conhece.");
+			var grid = Cards(column);
+			Card(grid, RuneSets.For(RuneSet.Nemesis).Glyph, T("compendio.combate.impeto.titulo"), T("compendio.combate.impeto.texto", Texts.Impeto));
+			Card(grid, "essence", T("compendio.combate.eter.titulo"), T("compendio.combate.eter.texto", Texts.Ether, BattleRules.MaxEther, BattleRules.SpecialEtherGain, BattleRules.KillEtherGain, BattleRules.MinEnhanceCost));
+			Card(grid, "campaign", T("compendio.combate.luta.titulo"), T("compendio.combate.luta.texto", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
+			Card(grid, Texts.GlyphOf(Stat.Defense), T("compendio.combate.dano.titulo"), T("compendio.combate.dano.texto", Math.Round(BattleRules.DefenseConstant)));
+			Card(grid, Texts.GlyphOf(Stat.Crit), T("compendio.combate.critico.titulo"), T("compendio.combate.critico.texto"));
+			Card(grid, Texts.GlyphOf(Stat.Resistance), T("compendio.combate.resistencia.titulo"), T("compendio.combate.resistencia.texto", Texts.Percent(BattleRules.MinResistChance)));
+			Card(grid, "team", T("compendio.combate.lider.titulo"), T("compendio.combate.lider.texto"));
+			Card(grid, "search", T("compendio.combate.automatico.titulo"), T("compendio.combate.automatico.texto", Texts.Ether));
 
-			foreach (var glyph in Enum.GetValues<Glyph>())
-			{
-				var owners = _database.Summons.Where(s => s.Glyph == glyph).Select(s => s.Name).ToList();
-				var row = new HBoxContainer();
-				row.AddThemeConstantOverride("separation", 14);
-				row.AddChild(Doodle.Icon(Art.Glyph(glyph), 56, Palette.Gold));
-
-				var text = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-				text.AddChild(new Label { Text = $"{Texts.Name(glyph)} · {Texts.School(glyph)}", ThemeTypeVariation = GameTheme.Heading });
-				text.AddChild(new Label { Text = Texts.Meaning(glyph), AutowrapMode = TextServer.AutowrapMode.WordSmart });
-				foreach (var set in RuneSets.Of(glyph))
-				{
-					text.AddChild(new Label
-					{
-						Text = $"Runas de {Texts.Name(set.Set)}: {Texts.Describe(set)}",
-						ThemeTypeVariation = GameTheme.Faded,
-						AutowrapMode = TextServer.AutowrapMode.WordSmart,
-					});
-				}
-				text.AddChild(new Label
-				{
-					Text = owners.Count == 0 ? "Nenhuma invocação ainda." : $"Invocações: {string.Join(", ", owners)}",
-					ThemeTypeVariation = GameTheme.Faded,
-					AutowrapMode = TextServer.AutowrapMode.WordSmart,
-				});
-				row.AddChild(text);
-				column.AddChild(row);
-			}
-		}
-
-		private static void Elements(VBoxContainer column)
-		{
-			Paragraph(column, $"Fogo vence Vento, Vento vence Água, Água vence Fogo. Luz e Trevas vencem uma à outra. " +
-				$"Com vantagem, o dano sobe {(BattleRules.AdvantageMultiplier - 1) * 100:0}%; com desvantagem, cai {(1 - BattleRules.DisadvantageMultiplier) * 100:0}%. " +
-				"O automático mira primeiro em quem ele vence.");
-
+			column.AddChild(new Label { Text = T("compendio.combate.elementos"), ThemeTypeVariation = GameTheme.Heading });
+			column.AddChild(Layout.Text(T("compendio.combate.elementos_texto", Texts.Percent(BattleRules.AdvantageMultiplier - 1), Texts.Percent(1 - BattleRules.DisadvantageMultiplier)), GameTheme.Faded));
+			var elements = new HFlowContainer();
+			elements.AddThemeConstantOverride("h_separation", 24);
 			foreach (var element in Enum.GetValues<Element>())
 			{
 				var beats = Enum.GetValues<Element>().Where(other => ElementChart.HasAdvantage(element, other)).Select(Texts.Name);
 				var row = new HBoxContainer();
-				row.AddThemeConstantOverride("separation", 14);
-				row.AddChild(Doodle.Icon(Art.Element(element), 40, Palette.Of(element)));
-				var name = new Label { Text = Texts.Name(element), CustomMinimumSize = new Vector2(120, 0), ThemeTypeVariation = GameTheme.Heading };
+				row.AddChild(Doodle.Icon(Art.Element(element), 32, Palette.Of(element)));
+				var name = new Label { Text = T("compendio.combate.vence", Texts.Name(element), string.Join(T("geral.e"), beats)) };
 				name.AddThemeColorOverride("font_color", Palette.Of(element));
 				row.AddChild(name);
-				row.AddChild(new Label { Text = $"vence {string.Join(" e ", beats)}" });
-				column.AddChild(row);
+				elements.AddChild(row);
 			}
+
+			column.AddChild(elements);
+		}
+
+		private static void Stats(VBoxContainer column)
+		{
+			column.AddChild(Layout.Text(T("compendio.atributos.intro"), GameTheme.Faded));
+			var grid = Cards(column);
+			foreach (var stat in Enum.GetValues<Stat>())
+				Card(grid, Texts.GlyphOf(stat), Texts.Name(stat), Texts.Explain(stat));
+		}
+
+		private static void Glyphs(VBoxContainer column)
+		{
+			column.AddChild(RichText.Label(T("compendio.glifos.intro", Texts.Term(StatusKind.Stun)), 1150, GameTheme.Faded));
+			var grid = new GridContainer { Columns = 4 };
+			grid.AddThemeConstantOverride("h_separation", 10);
+			grid.AddThemeConstantOverride("v_separation", 10);
+			foreach (var set in RuneSets.All)
+			{
+				var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(284, 0) };
+				var row = new HBoxContainer();
+				row.AddThemeConstantOverride("separation", 10);
+				row.AddChild(Doodle.Icon(Art.Glyph(set.Glyph), 56, Palette.Gold));
+				var text = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+				text.AddChild(new Label { Text = Texts.Name(set.Glyph), ThemeTypeVariation = GameTheme.Heading });
+				var meaning = new Label { Text = Texts.Meaning(set.Glyph) };
+				meaning.AddThemeColorOverride("font_color", Palette.Gold);
+				text.AddChild(meaning);
+				text.AddChild(new Label { Text = T("compendio.glifos.conjunto", Texts.Name(set.Set)), ThemeTypeVariation = GameTheme.Faded });
+				row.AddChild(text);
+				panel.AddChild(row);
+				grid.AddChild(panel);
+			}
+
+			column.AddChild(grid);
 		}
 
 		private static void Statuses(VBoxContainer column)
 		{
-			Paragraph(column, "Efeitos duram turnos de quem os recebe. Os negativos passam pela Resistência do alvo menos a Precisão de quem lança, " +
-				$"a chance de barrar nunca fica abaixo de {BattleRules.MinResistChance * 100:0}%. A Imunidade barra todos. " +
-				"No cartão de cada unidade aparecem pela sigla; passe o mouse para ver a duração.");
-
+			column.AddChild(Layout.Text(T("compendio.efeitos.intro", Texts.Percent(BattleRules.MinResistChance)), GameTheme.Faded));
+			var grid = Cards(column);
 			foreach (var status in Enum.GetValues<StatusKind>())
 			{
+				var tag = BattleRules.IsNegative(status) ? T("compendio.efeitos.negativo") : T("compendio.efeitos.positivo");
+				var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
 				var row = new HBoxContainer();
-				row.AddThemeConstantOverride("separation", 14);
-				var tag = new Label { Text = Texts.Short(status), CustomMinimumSize = new Vector2(56, 0) };
-				tag.AddThemeColorOverride("font_color", BattleRules.IsNegative(status) ? Palette.Negative : Palette.Positive);
-				row.AddChild(tag);
-				row.AddChild(new Label { Text = Texts.Name(status), CustomMinimumSize = new Vector2(150, 0) });
-				row.AddChild(new Label { Text = Texts.Explain(status), ThemeTypeVariation = GameTheme.Faded });
-				column.AddChild(row);
+				row.AddThemeConstantOverride("separation", 10);
+				var shortTag = new Label { Text = Texts.Short(status), CustomMinimumSize = new Vector2(52, 0), VerticalAlignment = VerticalAlignment.Center };
+				shortTag.AddThemeColorOverride("font_color", BattleRules.IsNegative(status) ? Palette.Negative : Palette.Positive);
+				row.AddChild(shortTag);
+				row.AddChild(RichText.Label($"{Texts.Term(status)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(status)}", CardWidth - 80));
+				panel.AddChild(row);
+				grid.AddChild(panel);
 			}
 		}
 
 		private static void Runes(VBoxContainer column)
 		{
-			Paragraph(column, "Cada invocação tem 6 espaços de runa em círculo. Os espaços 1, 3 e 5 dão sempre Ataque, " +
-				"Defesa e Vida fixos; o 2 pode ter Velocidade, o 4 Crítico ou Dano crítico, o 6 Resistência ou Precisão, e os três podem ter " +
-				"Vida, Ataque ou Defesa, fixos ou em porcentagem. Porcentagem é sempre sobre o atributo base.");
-			Paragraph(column, $"Estrelas (1 a {RuneRules.MaxGrade}) decidem o tamanho de todos os números. A cor é a raridade: Normal (branca) não tem " +
-				"subatributo, Mágica (verde) tem 1, Rara (azul) 2, Heroica (roxa) 3 e Lendária (laranja) 4. Às vezes a runa vem com um atributo " +
-				"nativo, que nunca cresce.");
-			Paragraph(column, $"Melhorar com Pó de Sigilo vai de +0 a +{RuneRules.MaxLevel}. Em +3, +6, +9 e +12 entra um subatributo novo (até " +
-				$"{RuneRules.MaxSubstats}) ou, com {RuneRules.MaxSubstats}, um deles cresce; em +15 o principal dá um salto. A melhora nunca falha" +
-				"e o Pó é escasso.");
-			Paragraph(column, $"Exemplo de custo: uma runa {Texts.Stars(5)} de +0 a +12 custa {Cost(5, 12)} Pó; uma {Texts.Stars(6)} de +0 a +15, {Cost(6, 15)}.");
-			Paragraph(column, $"Pedra de Afiar: soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra; uma pedra " +
-				$"nova troca o bônus antigo. Gema Encantada: troca um subatributo de uma runa +{RuneForge.EnchantLevel} por outro, e só um por runa. " +
-				"As duas saem das fases a partir da 10 e servem em qualquer conjunto.");
-			Paragraph(column, $"Runas saem das fases da Campanha: sempre na primeira vitória, com {Campaign.RepeatRuneChance * 100:0}% de chance depois. " +
-				"Fases mais altas dão runas com mais estrelas.");
-
-			column.AddChild(new Label { Text = "Conjuntos", ThemeTypeVariation = GameTheme.Heading });
-			Paragraph(column, "Com 6 espaços cabem um conjunto de 4 peças e um de 2, ou três de 2 (três iguais valem três vezes).");
-			foreach (var set in RuneSets.All)
-			{
-				var row = new HBoxContainer();
-				row.AddThemeConstantOverride("separation", 14);
-				row.AddChild(Doodle.Icon(Art.Glyph(set.Glyph), 32, Palette.Gold));
-				row.AddChild(new Label { Text = Texts.Name(set.Set), CustomMinimumSize = new Vector2(130, 0) });
-				row.AddChild(new Label { Text = Texts.Describe(set), AutowrapMode = TextServer.AutowrapMode.WordSmart, SizeFlagsHorizontal = SizeFlags.ExpandFill });
-				column.AddChild(row);
-			}
+			var grid = Cards(column);
+			Card(grid, "rune", T("compendio.runas.espacos.titulo"), T("compendio.runas.espacos.texto"));
+			Card(grid, "rune", T("compendio.runas.estrelas.titulo"), T("compendio.runas.estrelas.texto", RuneRules.MaxGrade));
+			Card(grid, "essence", T("compendio.runas.melhora.titulo"), T("compendio.runas.melhora.texto", RuneRules.MaxLevel, RuneRules.MaxSubstats));
+			Card(grid, RuneSets.For(RuneSet.Violent).Glyph, T("compendio.runas.conjuntos.titulo"), T("compendio.runas.conjuntos.texto"));
+			Card(grid, "grindstone", T("compendio.runas.afiar.titulo"), T("compendio.runas.afiar.texto"));
+			Card(grid, "gem", T("compendio.runas.gema.titulo"), T("compendio.runas.gema.texto", RuneForge.EnchantLevel));
+			Card(grid, "dungeon", T("compendio.runas.onde.titulo"), T("compendio.runas.onde.texto", GameDatabase.MaxCampaignRuneGrade, Texts.Percent(Campaign.RepeatRuneChance)));
+			Card(grid, "grimoire", T("compendio.runas.grimorio.titulo"), T("compendio.runas.grimorio.texto"));
 		}
 
-		private static int Cost(int grade, int level) =>
-			RuneRules.UpgradeCost(new Rune { Grade = grade }, level);
-
-		private static void Combat(VBoxContainer column)
+		private static GridContainer Cards(VBoxContainer column)
 		{
-			Paragraph(column, "Cada unidade tem uma barra de Ímpeto que enche em proporção à Velocidade; quem chega a 100% age. " +
-				"Empurrar ou atrasar o Ímpeto muda a ordem dos turnos — a barra \"Próximos\" mostra quem vem.");
-			Paragraph(column, $"Éter: recurso do time, de 0 a {BattleRules.MaxEther}. O básico não gera Éter; cada habilidade de Glifo gera " +
-				$"{BattleRules.GlyphEtherGain} e cada inimigo derrubado, {BattleRules.KillEtherGain}. Ele paga as versões aprimoradas das habilidades, " +
-				"marcando \"Aprimorar\" antes de escolher. Só no modo manual: o automático nunca gasta Éter.");
-			Paragraph(column, $"Uma luta tem até 3 ondas e acaba em derrota se passar de {BattleRules.RoundLimit} rodadas.");
-			Paragraph(column, $"Nível: de 1 a {Leveling.MaxLevel}. Vitórias dão experiência ao time; a Essência pode ser infundida como experiência na tela de Monstros.");
-			Paragraph(column, $"Despertar: paga Essência e a invocação ganha nome próprio, desenho novo, estrelas roxas, Assinatura melhorada, " +
-				$"+{Awakening.HealthBonus * 100:0}% de Vida, +{Awakening.AttackDefenseBonus * 100:0}% de Ataque e Defesa e um bônus: " +
-				$"{Texts.AwakeningBonus(Stat.Speed)}, {Texts.AwakeningBonus(Stat.Crit)}, {Texts.AwakeningBonus(Stat.Resistance)} ou {Texts.AwakeningBonus(Stat.Accuracy)}.");
-			Paragraph(column, "Líder: a primeira invocação do time aplica a Liderança dela a todos, se tiver uma. A porcentagem " +
-				"é sobre o atributo de base, não sobre o que veio das runas.");
-			Paragraph(column, $"Dano: Ataque × multiplicador da habilidade × {BattleRules.DefenseConstant:0} / ({BattleRules.DefenseConstant:0} + Defesa do alvo) — " +
-				$"a curva de Defesa: Defesa {BattleRules.DefenseConstant:0} corta o dano pela metade. Crítico multiplica por 1 + Dano crítico " +
-				"(50% de base). Toda invocação começa com 15% de Crítico, 50% de Dano crítico, 15% de Resistência e 0% de Precisão.");
+			var grid = new GridContainer { Columns = 2 };
+			grid.AddThemeConstantOverride("h_separation", 12);
+			grid.AddThemeConstantOverride("v_separation", 12);
+			column.AddChild(grid);
+			return grid;
 		}
 
-		private static void Paragraph(VBoxContainer column, string text) =>
-			column.AddChild(new Label { Text = text, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(1100, 0) });
+		private static void Card(GridContainer grid, string icon, string title, string text) => Card(grid, Art.Icon(icon), title, text);
+
+		private static void Card(GridContainer grid, Glyph glyph, string title, string text) => Card(grid, Art.Glyph(glyph), title, text);
+
+		/// <summary>Um tópico: símbolo à esquerda, título e texto rico.</summary>
+		private static void Card(GridContainer grid, Texture2D? icon, string title, string text)
+		{
+			var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
+			var row = new HBoxContainer();
+			row.AddThemeConstantOverride("separation", 12);
+			row.AddChild(Doodle.Icon(icon, 44, Palette.Gold));
+			var content = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+			content.AddChild(new Label { Text = title, ThemeTypeVariation = GameTheme.Heading });
+			content.AddChild(RichText.Label(text, CardWidth - 76));
+			row.AddChild(content);
+			panel.AddChild(row);
+			grid.AddChild(panel);
+		}
 	}
 }

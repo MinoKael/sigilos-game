@@ -27,9 +27,9 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void ResistanceHasAFloorOfFifteenPercent()
+		private static void ResistanceHasAFloor()
 		{
-			Assert.Near(0.15, BattleRules.ResistChance(new StatBlock(), new StatBlock { Accuracy = 0.5 }), "sem Resistência ainda barra 15%");
+			Assert.Near(BattleRules.MinResistChance, BattleRules.ResistChance(new StatBlock(), new StatBlock { Accuracy = 0.5 }), "sem Resistência ainda barra o mínimo");
 			Assert.Near(0.60, BattleRules.ResistChance(new StatBlock { Resistance = 0.85 }, new StatBlock { Accuracy = 0.25 }), "85% − 25%");
 			Assert.Near(0.90, BattleRules.ResistChance(new StatBlock { Resistance = 1.3 }, new StatBlock { Accuracy = 0.1 }), "Resistência para em 100%");
 		}

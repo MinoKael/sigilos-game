@@ -36,7 +36,7 @@ namespace Sigilos.Tests
 		{
 			// Sem isto volta o ciclo de usa-e-ganha: aprimorar com o Éter que o próprio turno rende.
 			var database = TestData.LoadReal();
-			var skills = database.Summons.SelectMany(s => new[] { s.Basic, s.GlyphSkill }).Where(s => s.CanEnhance);
+			var skills = database.Summons.SelectMany(s => new[] { s.Basic, s.Special }).Where(s => s.CanEnhance);
 			foreach (var skill in skills)
 				Assert.True(skill.EnhanceCost >= BattleRules.MinEnhanceCost, $"'{skill.Name}' custa {skill.EnhanceCost} Éter");
 		}
