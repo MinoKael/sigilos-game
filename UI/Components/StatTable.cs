@@ -7,8 +7,8 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// A ficha de atributos: Glifo e nome, valor de base e, em verde, o que as runas somam. Passar o
-	/// mouse num atributo explica o que ele faz.
+	/// A ficha de atributos: Glifo e nome, valor de base e, em verde, o que as runas somam. O que cada
+	/// atributo faz está no Compêndio.
 	/// </summary>
 	public partial class StatTable : GridContainer
 	{
@@ -28,7 +28,7 @@ namespace Sigilos.UI.Components
 				icon.TooltipText = Texts.Name(Texts.GlyphOf(stat));
 				icon.MouseFilter = MouseFilterEnum.Stop;
 				AddChild(icon);
-				AddChild(new Label { Text = Texts.Name(stat), TooltipText = Texts.Plain(Texts.Explain(stat)), MouseFilter = MouseFilterEnum.Stop });
+				AddChild(new Label { Text = Texts.Name(stat) });
 
 				var baseValue = new Label { Text = Texts.Value(stat, sheet.Base.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };
 				AddChild(baseValue);

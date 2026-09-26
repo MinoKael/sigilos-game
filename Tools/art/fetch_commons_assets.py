@@ -17,6 +17,8 @@ Uso (da raiz do repositório):
         (baixa pelo Chromium sem janela: quando o Wikimedia responde 429 a todo pedido do Python)
 
 O Python do Inkscape não tem certificados SSL: use o Python do python.org (`py`).
+
+Depois de baixar, gere os PNG que o jogo usa: `py Tools/art/render_png.py`.
 """
 
 from __future__ import annotations

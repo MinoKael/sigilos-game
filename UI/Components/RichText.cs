@@ -6,12 +6,13 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Texto com termos dourados e Glifos (<see cref="Texts.Term(string, Glyph?)"/>): BBCode do Godot mais a
-	/// marca [glyph=Nome], que vira o desenho do Glifo em dourado, do tamanho da letra.
+	/// Texto com termos dourados e símbolos (<see cref="Texts.Term(string, Glyph?)"/>): BBCode do Godot mais
+	/// as marcas [glyph=Nome] e [effect=Nome], que viram o Glifo ou o símbolo do efeito em dourado, do
+	/// tamanho da letra.
 	/// </summary>
 	public static class RichText
 	{
-		private static readonly Regex GlyphMark = new(@"\[glyph=(\w+)\]", RegexOptions.Compiled);
+		private static readonly Regex GlyphMark = new(@"\[(glyph|effect)=(\w+)\]", RegexOptions.Compiled);
 
 		/// <summary>Um rótulo de texto rico que cresce com o conteúdo e quebra linha.</summary>
 		public static RichTextLabel Label(string text, float width = 0, string? variation = null, int fontSize = 0)
@@ -34,7 +35,7 @@ namespace Sigilos.UI.Components
 			return label;
 		}
 
-		/// <summary>Troca o conteúdo: o BBCode vai inteiro; cada [glyph=Nome] vira imagem.</summary>
+		/// <summary>Troca o conteúdo: o BBCode vai inteiro; cada [glyph=Nome] e [effect=Nome] vira imagem.</summary>
 		public static void Set(RichTextLabel label, string text)
 		{
 			label.Clear();
@@ -43,7 +44,10 @@ namespace Sigilos.UI.Components
 			foreach (Match match in GlyphMark.Matches(text))
 			{
 				label.AppendText(text[last..match.Index]);
-				if (System.Enum.TryParse<Glyph>(match.Groups[1].Value, out var glyph) && Art.GlyphInk(glyph) is { } texture)
+				var texture = match.Groups[1].Value == "effect"
+					? System.Enum.TryParse<StatusKind>(match.Groups[2].Value, out var status) ? Art.EffectInk(status) : null
+					: System.Enum.TryParse<Glyph>(match.Groups[2].Value, out var glyph) ? Art.GlyphInk(glyph) : null;
+				if (texture != null)
 					label.AddImage(texture, size, size, Palette.Gold);
 				last = match.Index + match.Length;
 			}

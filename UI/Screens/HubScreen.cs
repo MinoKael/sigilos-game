@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
@@ -11,70 +12,81 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O Santuário: a tela de abertura de toda sessão (GDD, seção 11). Nível da conta, coleta da
-	/// ociosidade, Canalização Rápida, a equipe da Campanha e as portas para todas as outras telas.
+	/// O Santuário: a tela de abertura de toda sessão (GDD, seção 11), só de símbolos.
 	///
-	/// Só mostra e avisa: cada botão vira um evento, e quem muda o <see cref="PlayerState"/> e salva é
-	/// o GameRoot, que depois chama <see cref="Refresh"/>.
+	/// - No canto de cima, o retrato da conta (a Líder da Campanha) com o anel de experiência e o nível;
+	///   do outro lado, o cabeçalho de recursos.
+	/// - No centro, a constelação: o sigilo da canalização (coleta a ociosidade; o anel mostra o quanto
+	///   encheu), a canalização rápida presa nele e os atalhos em volta. A pena liga o modo de editar:
+	///   tocar numa estrela abre o carrossel de destinos.
+	/// - Embaixo, a engrenagem da Configuração à esquerda; Loja, Mapa e Bolsa à direita.
+	///
+	/// Quem ainda não invocou vê o atalho de invocar pulsar; quem não venceu a primeira fase, o da Campanha.
+	/// Só mostra e avisa: quem muda o <see cref="PlayerState"/> e salva é o GameRoot.
 	/// </summary>
 	public partial class HubScreen : Control
 	{
+		private const float StarSize = 76;
+
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly Label _account = new();
-		private readonly ProgressBar _accountBar = new() { ShowPercentage = false, CustomMinimumSize = new Vector2(0, 8) };
-		private readonly Label _idleTime = new();
-		private readonly Label _idleReward = new();
-		private readonly Button _collect = new() { Text = T("hub.collect") };
-		private readonly Button _quickChannel = new() { Text = T("hub.quick_channel") };
-		private readonly Label _hint = new() { HorizontalAlignment = HorizontalAlignment.Center };
-		private readonly HBoxContainer _team = new();
-		private readonly Button _campaign = Layout.IconButton("", Art.Icon("campaign"), 44);
+		private readonly Control _account = new() { Position = new Vector2(Layout.ScreenMargin, Layout.ScreenMargin) };
+		private readonly Constellation _constellation = new();
+		private readonly SigilButton _channel = new(Art.Icon("collect"), "", 128);
+		private readonly SigilButton _quickChannel = new(Art.Icon("quick_channel"), "", 46);
+		private readonly HBoxContainer _pending = Layout.Row(6, true);
+		private readonly SigilButton _edit = new(Art.Icon("edit"), "", 52, SigilShape.Square) { ToggleMode = true };
+		private List<Destination?> _shortcuts;
 
 		public HubScreen(GameDatabase database, PlayerState player)
 		{
 			_database = database;
 			_player = player;
+			_shortcuts = Destinations.Shortcuts(player).ToList();
 		}
 
-		public event Action? CampaignRequested;
-		public event Action? DungeonsRequested;
-		public event Action? SummonRequested;
-		public event Action? StorageRequested;
-		public event Action? TeamsRequested;
-		public event Action? RunesRequested;
-		public event Action? CompendiumRequested;
-		public event Action? GrimoireRequested;
-		public event Action? ShopRequested;
+		public event Action<Destination>? Requested;
+		public event Action? ConfigRequested;
 		public event Action? CollectRequested;
 		public event Action? QuickChannelRequested;
+
+		/// <summary>O jogador trocou um atalho: a lista inteira, vaga a vaga.</summary>
+		public event Action<IReadOnlyList<Destination?>>? ShortcutsChanged;
 
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(Layout.Background());
-			var page = Layout.Page(this);
+			AddChild(Layout.Background(_channel));
 
-			var header = new HBoxContainer();
-			header.AddChild(new Label { Text = T("hub.title"), ThemeTypeVariation = GameTheme.Title, SizeFlagsHorizontal = SizeFlags.ExpandFill });
-			header.AddChild(_currencies);
-			page.AddChild(header);
-			page.AddChild(new Label { Text = T("hub.subtitle"), ThemeTypeVariation = GameTheme.Faded });
+			_constellation.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			_constellation.OffsetTop = 110;
+			_constellation.OffsetBottom = -90;
+			AddChild(_constellation);
 
-			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
-			body.AddThemeConstantOverride("separation", 20);
-			page.AddChild(body);
-			body.AddChild(LeftColumn());
-			body.AddChild(RightColumn());
+			AddChild(_account);
 
-			page.AddChild(_hint);
+			_currencies.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
+			_currencies.GrowHorizontal = GrowDirection.Begin;
+			_currencies.OffsetRight = -Layout.ScreenMargin;
+			_currencies.OffsetTop = Layout.ScreenMargin;
+			AddChild(_currencies);
 
-			_collect.Pressed += () => CollectRequested?.Invoke();
+			var settings = Corner(LayoutPreset.BottomLeft, GrowDirection.End);
+			settings.AddChild(SigilButton.Of("config", T("destination.Config"), () => ConfigRequested?.Invoke(), 64, SigilShape.Square));
+			_edit.TooltipText = T("hub.edit_shortcuts");
+			_edit.Toggled += _ => RefreshConstellation();
+			settings.AddChild(_edit);
+
+			var doors = Corner(LayoutPreset.BottomRight, GrowDirection.Begin);
+			foreach (var destination in new[] { Destination.Shop, Destination.Map, Destination.Bag })
+				doors.AddChild(SigilButton.Of(Destinations.Icon(destination), Destinations.Name(destination), () => Requested?.Invoke(destination), 64, SigilShape.Square));
+
+			_channel.Pressed += () => CollectRequested?.Invoke();
 			_quickChannel.Pressed += () => QuickChannelRequested?.Invoke();
 
-			// A ociosidade anda com a tela aberta: o texto acompanha a cada segundo.
+			// A ociosidade anda com a tela aberta: o anel e as recompensas acompanham a cada segundo.
 			var timer = new Timer { WaitTime = 1, Autostart = true };
 			timer.Timeout += () => RefreshIdle(DateTime.Now);
 			AddChild(timer);
@@ -85,114 +97,128 @@ namespace Sigilos.UI.Screens
 		public void Refresh(DateTime now)
 		{
 			_currencies.Refresh(_player);
+			RefreshAccount();
+			RefreshConstellation();
 			RefreshIdle(now);
+		}
 
+		private void RefreshAccount()
+		{
+			Layout.Clear(_account);
 			var toNext = Account.ExperienceToNext(_player.AccountLevel);
 			var maxed = _player.AccountLevel >= Account.MaxLevel;
-			_account.Text = T(maxed ? "hub.account_max" : "hub.account", _player.AccountLevel, Mana.Max(_player));
-			_accountBar.MaxValue = toNext;
-			_accountBar.Value = maxed ? toNext : _player.AccountExperience;
-			_accountBar.TooltipText = maxed
-				? T("hub.account_max_tip", Account.MaxLevel)
-				: T("hub.account_tip", _player.AccountExperience, toNext, Account.LevelUpGold, Account.MaxLevel, Mana.BaseMax + Mana.MaxFromLevels);
+			var leader = Teams.Of(_player, Teams.Campaign).Select(_player.Monster).OfType<OwnedSummon>().FirstOrDefault();
+			var summon = leader != null && _database.HasSummon(leader.SummonId) ? _database.Summon(leader.SummonId) : null;
+			var portrait = summon != null ? Art.Creature(summon.ImageFor(leader!.Awakened)) : Art.Icon("avatar");
+			var ink = summon != null ? Palette.Of(summon.Element) : Palette.Gold;
+			var tooltip = maxed
+				? T("hub.account_max", _player.AccountLevel)
+				: T("hub.account", _player.AccountLevel, _player.AccountExperience, toNext);
+			_account.AddChild(new AccountSigil(portrait, ink, _player.AccountLevel, maxed ? 1 : _player.AccountExperience / (float)toNext, tooltip));
+		}
 
-			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
-			_campaign.Text = T("hub.campaign", next, _database.Stage(next).Name);
+		private void RefreshConstellation()
+		{
+			var editing = _edit.ButtonPressed;
+			var guide = Guide();
+			var stars = new List<Control?>();
+			for (var slot = 0; slot < Destinations.Slots; slot++)
+			{
+				var index = slot;
+				var destination = _shortcuts[slot];
+				if (destination == null && !editing)
+				{
+					stars.Add(null);
+					continue;
+				}
 
-			_hint.Text = _player.TotalPulls == 0
-				? T("hub.first_summon_tip")
-				: _player.HighestStage == 0
-					? T("hub.first_stage_tip")
-					: "";
+				var star = destination is { } d
+					? new SigilButton(Art.Icon(Destinations.Icon(d)), Destinations.Name(d), StarSize)
+					: new SigilButton(null, T("hub.empty_shortcut"), StarSize) { Letters = "+" };
+				star.Highlight = !editing && destination == guide;
+				if (editing)
+				{
+					star.Accent = Palette.Arcane;
+					star.Pressed += () => ChooseShortcut(index, star);
+				}
+				else if (destination is { } go)
+				{
+					star.Pressed += () => Requested?.Invoke(go);
+				}
 
-			Layout.Clear(_team);
-			foreach (var monster in Teams.Of(_player, Teams.Campaign).Select(_player.Monster).OfType<OwnedSummon>())
-				_team.AddChild(new CreatureCard(_database.Summon(monster.SummonId), monster, width: 100));
+				stars.Add(star);
+			}
+
+			// O sigilo do centro e o que fica preso nele saem da árvore junto com as estrelas: tira antes.
+			foreach (var node in new Control[] { _channel, _quickChannel, _pending })
+				node.GetParent()?.RemoveChild(node);
+			_constellation.Set(_channel, stars);
+			_constellation.Attach(_quickChannel, new Vector2(62, 58));
+			_constellation.Attach(_pending, new Vector2(0, 104));
+		}
+
+		/// <summary>O atalho que pulsa para guiar quem está começando; nulo depois disso.</summary>
+		private Destination? Guide() =>
+			_player.TotalPulls == 0 ? Destination.Summon
+			: _player.HighestStage == 0 ? Destination.Campaign
+			: null;
+
+		private void ChooseShortcut(int slot, Control near)
+		{
+			var options = Enum.GetValues<Destination>().Select(d => (Destination?)d).Append(null).ToList();
+			var items = options
+				.Select(d => d is { } destination
+					? new ArcItem(Art.Icon(Destinations.Icon(destination)), Destinations.Name(destination), Palette.Gold)
+					: new ArcItem(Art.Icon("cancel"), T("hub.empty_shortcut"), Palette.TextFaded))
+				.ToList();
+			var current = options.IndexOf(_shortcuts[slot]);
+			ArcPicker.Open(this, items, Math.Max(0, current), near.GetGlobalRect().GetCenter(), index =>
+			{
+				_shortcuts[slot] = options[index];
+				ShortcutsChanged?.Invoke(_shortcuts);
+				RefreshConstellation();
+			});
 		}
 
 		private void RefreshIdle(DateTime now)
 		{
 			var preview = Idle.Preview(_player, now);
-			var hours = TimeSpan.FromHours(Idle.PendingHours(_player, now));
-			_idleTime.Text = T("hub.channeling", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
-			_idleReward.Text = T("hub.reward", preview.Essence, preview.Gold, preview.Mana);
-			_collect.Disabled = preview.IsEmpty;
+			var pendingHours = Idle.PendingHours(_player, now);
+			var hours = TimeSpan.FromHours(pendingHours);
+			_constellation.Progress = (float)(pendingHours / Idle.CapHours);
+
+			_channel.Disabled = preview.IsEmpty;
+			_channel.Highlight = !preview.IsEmpty;
+			_channel.TooltipText = T("hub.channeling", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
+
 			_quickChannel.Disabled = !Idle.CanQuickChannel(_player, now);
-			_quickChannel.TooltipText = T("hub.quick_channel_tip", Idle.QuickChannelHours);
+			_quickChannel.TooltipText = T("hub.quick_channel", Idle.QuickChannelHours);
+
+			Layout.Clear(_pending);
+			if (preview.IsEmpty)
+				return;
+			_pending.AddChild(Layout.Chip("essence", Texts.Short(preview.Essence), T("currency.essence")));
+			if (preview.Gold > 0)
+				_pending.AddChild(Layout.Chip("gold", Texts.Short(preview.Gold), T("currency.gold")));
+			if (preview.Mana > 0)
+				_pending.AddChild(Layout.Chip("mana", Texts.Short(preview.Mana), T("currency.mana")));
 		}
 
-		private Control LeftColumn()
+		/// <summary>Uma fileira de sigilos presa num canto de baixo da tela.</summary>
+		private HBoxContainer Corner(LayoutPreset preset, GrowDirection grow)
 		{
-			var column = new VBoxContainer { CustomMinimumSize = new Vector2(440, 0) };
-			column.AddThemeConstantOverride("separation", 12);
-
-			var account = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel };
-			var accountColumn = new VBoxContainer();
-			_account.AddThemeFontOverride("font", GameTheme.Serif);
-			_account.AddThemeFontSizeOverride("font_size", 18);
-			accountColumn.AddChild(_account);
-			_accountBar.AddThemeStyleboxOverride("fill", GameTheme.Box(Palette.Gold, Palette.Gold, 0, 3, 0));
-			accountColumn.AddChild(_accountBar);
-			account.AddChild(accountColumn);
-			column.AddChild(account);
-
-			var (idlePanel, idle) = Layout.Section(T("hub.circles"));
-			idle.AddChild(Layout.Text(T("hub.circles_text", Mana.PerHour), GameTheme.Faded, 420));
-			idle.AddChild(_idleTime);
-			_idleReward.AddThemeFontOverride("font", GameTheme.Serif);
-			_idleReward.AddThemeFontSizeOverride("font_size", 18);
-			idle.AddChild(_idleReward);
-			var buttons = new HBoxContainer();
-			buttons.AddChild(_collect);
-			buttons.AddChild(_quickChannel);
-			idle.AddChild(buttons);
-			column.AddChild(idlePanel);
-
-			column.AddChild(BigButton("hub.monsters", "storage", () => StorageRequested?.Invoke()));
-			column.AddChild(BigButton("hub.teams", "team", () => TeamsRequested?.Invoke()));
-			column.AddChild(BigButton("hub.runes", "rune", () => RunesRequested?.Invoke()));
-			return column;
-		}
-
-		private Control RightColumn()
-		{
-			var column = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			column.AddThemeConstantOverride("separation", 12);
-
-			var (teamPanel, team) = Layout.Section(T("hub.campaign_team"));
-			_team.AddThemeConstantOverride("separation", 8);
-			team.AddChild(_team);
-			column.AddChild(teamPanel);
-
-			_campaign.CustomMinimumSize = new Vector2(0, 64);
-			_campaign.Pressed += () => CampaignRequested?.Invoke();
-			column.AddChild(_campaign);
-
-			column.AddChild(BigButton("hub.dungeons", "dungeon", () => DungeonsRequested?.Invoke()));
-
-			var shopping = new HBoxContainer();
-			shopping.AddThemeConstantOverride("separation", 12);
-			shopping.AddChild(BigButton("hub.summon", "summon", () => SummonRequested?.Invoke()));
-			shopping.AddChild(BigButton("hub.shop", "shop", () => ShopRequested?.Invoke()));
-			column.AddChild(shopping);
-
-			var books = new HBoxContainer();
-			books.AddThemeConstantOverride("separation", 12);
-			books.AddChild(BigButton("hub.compendium", "compendium", () => CompendiumRequested?.Invoke()));
-			books.AddChild(BigButton("hub.grimoire", "grimoire", () => GrimoireRequested?.Invoke()));
-			column.AddChild(books);
-			return column;
-		}
-
-		/// <summary>Botão grande com ícone; o texto é a chave, a dica é a chave + "_tip".</summary>
-		private static Button BigButton(string key, string icon, Action onPressed)
-		{
-			var button = Layout.IconButton(T(key), Art.Icon(icon), 36);
-			button.TooltipText = T($"{key}_tip");
-			button.CustomMinimumSize = new Vector2(0, 56);
-			button.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-			button.Pressed += onPressed;
-			return button;
+			var row = Layout.Row(12);
+			row.SetAnchorsAndOffsetsPreset(preset);
+			row.GrowHorizontal = grow;
+			row.GrowVertical = GrowDirection.Begin;
+			var margin = Layout.ScreenMargin;
+			if (grow == GrowDirection.End)
+				row.OffsetLeft = margin;
+			else
+				row.OffsetRight = -margin;
+			row.OffsetBottom = -margin;
+			AddChild(row);
+			return row;
 		}
 	}
 }

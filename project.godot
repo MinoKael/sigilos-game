@@ -28,8 +28,15 @@ window/stretch/aspect="expand"
 
 project/assembly_name="Sigilos"
 
+[importer_defaults]
+
+texture={
+"mipmaps/generate": true
+}
+
 [rendering]
 
+textures/canvas_textures/default_texture_filter=3
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.086, 0.078, 0.071, 1)

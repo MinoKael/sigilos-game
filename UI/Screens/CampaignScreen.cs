@@ -12,9 +12,10 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A região 1: as 20 fases, o detalhe da escolhida e os botões Lutar e Resolver, cada um com o custo
-	/// em Mana. Resolver só aparece em fase já vencida (GDD, seção 7) e simula na hora, sem tela de
-	/// batalha. Sem Mana, o motivo aparece embaixo, ao lado da Loja.
+	/// A região 1: à esquerda a trilha das 20 fases (<see cref="StagePath"/>); à direita a ficha da
+	/// escolhida — estrelas e nível dos inimigos, as ondas, o que ela rende, a equipe e os sigilos de
+	/// Lutar, Resolver e Batalha automática, cada um com o custo em Mana na plaquinha. Resolver e a
+	/// Batalha automática só aparecem em fase já vencida (GDD, seção 7).
 	/// </summary>
 	public partial class CampaignScreen : Control
 	{
@@ -22,9 +23,9 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly GridContainer _grid = new() { Columns = 5 };
+		private readonly CenterContainer _path = new() { SizeFlagsHorizontal = SizeFlags.ExpandFill };
 		private readonly VBoxContainer _detail = new();
-		private readonly Label _message = new();
+		private readonly Label _message = new() { HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private StageDefinition _selected;
 
 		public CampaignScreen(GameDatabase database, PlayerState player, int? selected = null)
@@ -51,26 +52,19 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
+			page.AddChild(Layout.Header(T("destination.Campaign"), "region", _currencies, () => BackRequested?.Invoke()).Header);
 
-			page.AddChild(Layout.Header(T("campaign.title"), _currencies, T("common.back_to_hub"), () => BackRequested?.Invoke()));
-			page.AddChild(new Label { Text = T("campaign.subtitle"), ThemeTypeVariation = GameTheme.Faded });
-
-			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
-			body.AddThemeConstantOverride("separation", 20);
+			var body = Layout.Row(20);
+			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
+			body.AddChild(_path);
 
-			_grid.AddThemeConstantOverride("h_separation", 10);
-			_grid.AddThemeConstantOverride("v_separation", 10);
-			body.AddChild(_grid);
-
-			_detail.AddThemeConstantOverride("separation", 8);
-			var (panel, content) = Layout.Section(T("campaign.stage"));
-			panel.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-			content.AddChild(_detail);
+			var panel = new PanelContainer { CustomMinimumSize = new Vector2(500, 0) };
+			_detail.AddThemeConstantOverride("separation", 12);
+			panel.AddChild(Layout.Scroll(_detail));
 			body.AddChild(panel);
 
 			_message.AddThemeColorOverride("font_color", Palette.Gold);
-			_message.HorizontalAlignment = HorizontalAlignment.Center;
 			page.AddChild(_message);
 
 			Refresh();
@@ -79,38 +73,25 @@ namespace Sigilos.UI.Screens
 		public void Refresh()
 		{
 			_currencies.Refresh(_player);
-			RefreshGrid();
+			RefreshPath();
 			RefreshDetail();
 		}
 
 		/// <summary>Resultado do Resolver, na faixa de baixo.</summary>
 		public void ShowMessage(string text) => _message.Text = text;
 
-		private void RefreshGrid()
+		private void RefreshPath()
 		{
-			Layout.Clear(_grid);
-
-			foreach (var stage in _database.Stages)
+			Layout.Clear(_path);
+			var unlocked = _database.Stages.Where(s => Campaign.IsUnlocked(_player, s.Number)).Select(s => s.Number).DefaultIfEmpty(1).Max();
+			var path = new StagePath(_database.Stages.Count, _player.HighestStage, unlocked, _selected.Number, number => $"{number} · {_database.Stage(number).Name}");
+			path.Chosen += number =>
 			{
-				var cleared = Campaign.IsCleared(_player, stage.Number);
-				var button = new Button
-				{
-					Text = cleared ? T("campaign.number_cleared", stage.Number) : stage.Number.ToString(),
-					CustomMinimumSize = new Vector2(92, 64),
-					Disabled = !Campaign.IsUnlocked(_player, stage.Number),
-					TooltipText = stage.Name,
-				};
-				if (stage == _selected)
-					button.AddThemeStyleboxOverride("normal", GameTheme.Box(Palette.Gold, Palette.Text, 3, 5, 8));
-				var captured = stage;
-				button.Pressed += () =>
-				{
-					_selected = captured;
-					_message.Text = "";
-					Refresh();
-				};
-				_grid.AddChild(button);
-			}
+				_selected = _database.Stage(number);
+				_message.Text = "";
+				Callable.From(Refresh).CallDeferred();
+			};
+			_path.AddChild(path);
 		}
 
 		private void RefreshDetail()
@@ -119,18 +100,29 @@ namespace Sigilos.UI.Screens
 
 			var stage = _selected;
 			var cleared = Campaign.IsCleared(_player, stage.Number);
-			_detail.AddChild(new Label { Text = T("campaign.stage_title", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading });
-			var levels = Teams.Of(_player, Teams.Campaign).Select(_player.Monster).OfType<OwnedSummon>().Select(m => T("common.stars_level", Texts.Stars(m.Stars), m.Level)).ToList();
-			_detail.AddChild(new Label { Text = T("campaign.levels", T("common.stars_level", Texts.Stars(stage.Stars), stage.Level), levels.Count == 0 ? "—" : string.Join(", ", levels)) });
+			var title = Layout.Row(10);
+			title.AddChild(new Label { Text = T("campaign.stage_title", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			if (cleared)
+			{
+				var done = Doodle.Icon(Art.Icon("confirm"), 24, Palette.Spirit);
+				done.TooltipText = T("campaign.cleared");
+				done.MouseFilter = MouseFilterEnum.Stop;
+				title.AddChild(done);
+			}
+
+			_detail.AddChild(title);
+			_detail.AddChild(Foes(stage.Stars, stage.Level));
 
 			for (var i = 0; i < stage.Waves.Count; i++)
 			{
-				var row = new HBoxContainer();
-				row.AddChild(new Label { Text = T("campaign.wave", i + 1), CustomMinimumSize = new Vector2(70, 0) });
+				var row = Layout.Row(8);
+				var wave = new Label { Text = Texts.Roman(i + 1), ThemeTypeVariation = GameTheme.Number, CustomMinimumSize = new Vector2(34, 0), TooltipText = T("campaign.wave", i + 1), MouseFilter = MouseFilterEnum.Stop };
+				wave.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.3f));
+				row.AddChild(wave);
 				foreach (var slot in stage.Waves[i])
 				{
 					var (name, image, element) = _database.Foe(slot);
-					var icon = Doodle.Icon(Art.Creature(image), 40, Palette.Of(element));
+					var icon = Doodle.Icon(Art.Creature(image), 44, Palette.Of(element));
 					icon.TooltipText = T("campaign.enemy_tip", name, Texts.Name(element));
 					icon.MouseFilter = MouseFilterEnum.Stop;
 					row.AddChild(icon);
@@ -139,50 +131,68 @@ namespace Sigilos.UI.Screens
 				_detail.AddChild(row);
 			}
 
-			var reward = cleared
-				? T("campaign.reward", stage.Essence, stage.Experience, Texts.Percent(Campaign.RepeatRuneChance), Texts.Stars(stage.RuneGrade))
-				: T("campaign.reward_first", Texts.Scrolls(stage.FirstClearScrolls), stage.Essence + stage.FirstClearEssence, stage.Experience, Texts.Stars(stage.RuneGrade));
-			_detail.AddChild(Layout.Text(reward, width: 400));
-
-			foreach (var line in stage.Lines)
-				_detail.AddChild(Layout.Text(T("campaign.line", line), GameTheme.Faded, 400));
-
-			var buttons = new HFlowContainer();
-			buttons.AddThemeConstantOverride("h_separation", 12);
-			buttons.AddThemeConstantOverride("v_separation", 8);
-			var problem = Campaign.Check(_player, stage);
-			var blocked = Teams.Of(_player, Teams.Campaign).Count == 0 || problem != EntryProblem.None;
-			var fight = new Button { Text = T("common.fight_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), Disabled = blocked };
-			fight.Pressed += () => FightRequested?.Invoke(stage);
-			buttons.AddChild(fight);
-			if (cleared)
+			_detail.AddChild(new HSeparator());
+			var rewards = Layout.Flow(8);
+			if (!cleared)
 			{
-				var resolve = new Button { Text = T("common.resolve_mana", stage.Mana), CustomMinimumSize = new Vector2(150, 52), TooltipText = T("common.resolve_tip"), Disabled = blocked };
-				resolve.Pressed += () => ResolveRequested?.Invoke(stage);
-				buttons.AddChild(resolve);
-				var repeat = new Button { Text = T("common.auto_battle", AutoBattle.RepeatRuns), CustomMinimumSize = new Vector2(150, 52), TooltipText = T("common.auto_battle_tip", AutoBattle.RepeatRuns), Disabled = blocked };
-				repeat.Pressed += () => RepeatRequested?.Invoke(stage);
-				buttons.AddChild(repeat);
+				var first = Doodle.Icon(Art.Icon("collect"), 26, Palette.Spirit);
+				first.TooltipText = T("campaign.first_clear");
+				first.MouseFilter = MouseFilterEnum.Stop;
+				rewards.AddChild(first);
+				rewards.AddChild(Layout.Chip("scroll", stage.FirstClearScrolls.ToString(), T("currency.scrolls_name")));
+				rewards.AddChild(Layout.Chip("essence", (stage.Essence + stage.FirstClearEssence).ToString(), T("currency.essence")));
+				rewards.AddChild(Layout.Chip("rune", Texts.Stars(stage.RuneGrade), T("campaign.rune_first", Texts.Stars(stage.RuneGrade))));
+			}
+			else
+			{
+				rewards.AddChild(Layout.Chip("essence", stage.Essence.ToString(), T("currency.essence")));
+				rewards.AddChild(Layout.Chip("rune", $"{Texts.Stars(stage.RuneGrade)} {Texts.Percent(Campaign.RepeatRuneChance)}", T("campaign.rune_chance", Texts.Percent(Campaign.RepeatRuneChance), Texts.Stars(stage.RuneGrade))));
 			}
 
-			var team = new Button { Text = T("common.team"), CustomMinimumSize = new Vector2(120, 52) };
-			team.Pressed += () => TeamRequested?.Invoke();
-			buttons.AddChild(team);
-			var shop = new Button { Text = T("common.shop"), CustomMinimumSize = new Vector2(120, 52), TooltipText = T("common.shop_tip") };
-			shop.Pressed += () => ShopRequested?.Invoke();
-			buttons.AddChild(shop);
-			_detail.AddChild(buttons);
+			rewards.AddChild(Layout.Chip("level_max", stage.Experience.ToString(), T("reward.experience")));
+			_detail.AddChild(rewards);
+
+			_detail.AddChild(new HSeparator());
+			_detail.AddChild(new TeamStrip(_database, _player, Teams.Campaign, () => TeamRequested?.Invoke()));
+
+			var problem = Campaign.Check(_player, stage);
+			var blocked = Teams.Of(_player, Teams.Campaign).Count == 0 || problem != EntryProblem.None;
+			var actions = Layout.Row(14);
+			var fight = SigilButton.Of("fight", T("common.fight", stage.Mana), () => FightRequested?.Invoke(stage), 84);
+			fight.Badge = stage.Mana.ToString();
+			fight.Disabled = blocked;
+			fight.Highlight = !blocked && !cleared;
+			actions.AddChild(fight);
+			if (cleared)
+			{
+				var resolve = SigilButton.Of("resolve", T("common.resolve", stage.Mana), () => ResolveRequested?.Invoke(stage), 68);
+				resolve.Badge = stage.Mana.ToString();
+				resolve.Disabled = blocked;
+				actions.AddChild(resolve);
+				var repeat = SigilButton.Of("repeat", T("common.auto_battle", AutoBattle.RepeatRuns), () => RepeatRequested?.Invoke(stage), 68);
+				repeat.Badge = $"×{AutoBattle.RepeatRuns}";
+				repeat.Disabled = blocked;
+				actions.AddChild(repeat);
+			}
+
+			actions.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			actions.AddChild(SigilButton.Of("shop", T("destination.Shop"), () => ShopRequested?.Invoke(), 52, SigilShape.Square));
+			_detail.AddChild(actions);
 
 			if (problem is EntryProblem.NoMana or EntryProblem.RunesFull)
 			{
-				var refusal = Layout.Text(Texts.Refusal(problem, stage.Mana), width: 400);
+				var refusal = Layout.Text(Texts.Refusal(problem, stage.Mana), width: 440);
 				refusal.AddThemeColorOverride("font_color", Palette.Negative);
 				_detail.AddChild(refusal);
 			}
+		}
 
-			var size = Teams.Of(_player, Teams.Campaign).Count;
-			if (size < PlayerState.TeamSize)
-				_detail.AddChild(new Label { Text = T("common.team_incomplete", size, PlayerState.TeamSize), ThemeTypeVariation = GameTheme.Faded });
+		/// <summary>Estrelas e nível dos inimigos, numa cápsula.</summary>
+		private static Control Foes(int stars, int level)
+		{
+			var row = Layout.Row(8);
+			row.AddChild(Layout.Chip("fight", T("common.stars_level", Texts.Stars(stars), level), T("campaign.foes")));
+			return row;
 		}
 	}
 }

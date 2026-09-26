@@ -13,10 +13,11 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O Compêndio: as regras do jogo, em abas — como jogar, combate, atributos, Glifos, efeitos e
-	/// runas. Cada tópico é um cartão curto com o seu símbolo. Todo número vem das regras do Core, então
-	/// a explicação acompanha o balanceamento. O que existe no jogo (invocações, tabelas de runa, pedras)
-	/// fica no Grimório.
+	/// O Compêndio: o único lugar do jogo com texto explicativo. As regras em abas de sigilo — como
+	/// jogar, combate, atributos, Glifos, efeitos e runas —, cada tópico um cartão curto com o seu
+	/// símbolo. As outras telas só mostram símbolos e números; o porquê está aqui. Todo número vem das
+	/// regras do Core, então a explicação acompanha o balanceamento. O que existe no jogo (invocações,
+	/// tabelas de runa, pedras) fica no Grimório.
 	/// </summary>
 	public partial class CompendiumScreen : Control
 	{
@@ -33,9 +34,10 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("compendium.title"), null, T("common.back_to_hub"), () => BackRequested?.Invoke()));
+			var (header, extra) = Layout.Header(T("destination.Compendium"), "compendium", null, () => BackRequested?.Invoke());
+			page.AddChild(header);
 
-			var tabs = new TabContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
+			var tabs = new TabContainer { SizeFlagsVertical = SizeFlags.ExpandFill, TabsVisible = false };
 			page.AddChild(tabs);
 			Basics(Layout.Tab(tabs, T("compendium.tab.basic")));
 			Combat(Layout.Tab(tabs, T("compendium.tab.combat")));
@@ -43,11 +45,22 @@ namespace Sigilos.UI.Screens
 			Glyphs(Layout.Tab(tabs, T("compendium.tab.glyphs")));
 			Statuses(Layout.Tab(tabs, T("compendium.tab.effects")));
 			Runes(Layout.Tab(tabs, T("compendium.tab.runes")));
+
+			var sigils = new SigilTabs(vertical: false, 48);
+			sigils.Add(Art.Icon("region"), T("compendium.tab.basic"));
+			sigils.Add(Art.Icon("fight"), T("compendium.tab.combat"));
+			sigils.Add(Art.Icon("stats"), T("compendium.tab.stats"));
+			sigils.Add(Art.Glyph(RuneSets.For(RuneSet.Violent).Glyph), T("compendium.tab.glyphs"));
+			sigils.Add(Art.Icon("effects"), T("compendium.tab.effects"));
+			sigils.Add(Art.Icon("rune"), T("compendium.tab.runes"));
+			sigils.Changed += index => tabs.CurrentTab = index;
+			extra.AddChild(sigils);
 		}
 
 		private static void Basics(VBoxContainer column)
 		{
 			var grid = Cards(column);
+			Card(grid, "collect", T("compendium.basic.sanctuary.title"), T("compendium.basic.sanctuary.text", Idle.CapHours, Idle.QuickChannelHours));
 			Card(grid, "campaign", T("compendium.basic.campaign.title"), T("compendium.basic.campaign.text", GameDatabase.MaxCampaignRuneGrade));
 			Card(grid, "dungeon", T("compendium.basic.dungeons.title"), T("compendium.basic.dungeons.text"));
 			Card(grid, "mana", T("compendium.basic.mana.title"), T("compendium.basic.mana.text", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
@@ -106,7 +119,7 @@ namespace Sigilos.UI.Screens
 
 		private static void Glyphs(VBoxContainer column)
 		{
-			column.AddChild(RichText.Label(T("compendium.glyphs.intro", Texts.Term(StatusKind.Stun)), 1150, GameTheme.Faded));
+			column.AddChild(RichText.Label(T("compendium.glyphs.intro"), 1150, GameTheme.Faded));
 			var grid = new GridContainer { Columns = 4 };
 			grid.AddThemeConstantOverride("h_separation", 10);
 			grid.AddThemeConstantOverride("v_separation", 10);
@@ -140,9 +153,7 @@ namespace Sigilos.UI.Screens
 				var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
 				var row = new HBoxContainer();
 				row.AddThemeConstantOverride("separation", 10);
-				var shortTag = new Label { Text = Texts.Short(status), CustomMinimumSize = new Vector2(52, 0), VerticalAlignment = VerticalAlignment.Center };
-				shortTag.AddThemeColorOverride("font_color", BattleRules.IsNegative(status) ? Palette.Negative : Palette.Positive);
-				row.AddChild(shortTag);
+				row.AddChild(Doodle.Icon(Art.Effect(status), 44, BattleRules.IsNegative(status) ? Palette.Negative : Palette.Positive));
 				row.AddChild(RichText.Label($"{Texts.Term(status)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(status)}", CardWidth - 80));
 				panel.AddChild(row);
 				grid.AddChild(panel);

@@ -10,8 +10,9 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A Loja: as ofertas de Data/shop.json em cartões, cada uma com o preço em Ouro. Comprar pede
-	/// confirmação; o GameRoot aplica a regra (Core/Progression/Shop) e chama <see cref="Refresh"/>.
+	/// A Loja: as ofertas de Data/shop.json em bancas de couro — o símbolo grande, a quantidade e o
+	/// sigilo de comprar com o preço em Ouro na plaquinha. Comprar pede confirmação; o GameRoot aplica a
+	/// regra (Core/Progression/Shop) e chama <see cref="Refresh"/>.
 	/// </summary>
 	public partial class ShopScreen : Control
 	{
@@ -19,7 +20,7 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HFlowContainer _offers = new() { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+		private readonly HFlowContainer _offers = Layout.Flow(24);
 		private readonly Label _message = new() { HorizontalAlignment = HorizontalAlignment.Center };
 
 		public ShopScreen(GameDatabase database, PlayerState player)
@@ -36,13 +37,10 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("shop.title"), _currencies, T("common.back"), () => BackRequested?.Invoke()));
-			page.AddChild(Layout.Text(T("shop.subtitle", Account.LevelUpGold), GameTheme.Faded));
+			page.AddChild(Layout.Header(T("destination.Shop"), "shop", _currencies, () => BackRequested?.Invoke()).Header);
 
-			_offers.AddThemeConstantOverride("h_separation", 16);
-			_offers.AddThemeConstantOverride("v_separation", 16);
-			var scroll = new ScrollContainer { SizeFlagsVertical = SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
-			scroll.AddChild(_offers);
+			_offers.Alignment = FlowContainer.AlignmentMode.Center;
+			var scroll = Layout.Scroll(_offers);
 			page.AddChild(scroll);
 
 			_message.AddThemeColorOverride("font_color", Palette.Gold);
@@ -62,42 +60,31 @@ namespace Sigilos.UI.Screens
 
 		private Control Card(ShopOffer offer)
 		{
-			var (panel, content) = Layout.Section(offer.Name);
-			panel.CustomMinimumSize = new Vector2(260, 0);
+			var panel = new PanelContainer { CustomMinimumSize = new Vector2(220, 0), TooltipText = offer.Name };
+			var content = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+			content.AddThemeConstantOverride("separation", 12);
+			panel.AddChild(content);
 
-			var icon = Doodle.Icon(Art.Icon(offer.Item == ShopItem.Mana ? "mana" : "scroll"), 72, Palette.Gold);
+			var icon = Doodle.Icon(Art.Icon(offer.Item == ShopItem.Mana ? "mana" : "scroll"), 88, Palette.Gold);
 			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
 			content.AddChild(icon);
 
-			var amount = new Label { Text = Texts.Amount(offer.Item, offer.Amount), HorizontalAlignment = HorizontalAlignment.Center };
-			amount.AddThemeFontOverride("font", GameTheme.Serif);
-			amount.AddThemeFontSizeOverride("font_size", 22);
+			var amount = new Label { Text = $"×{offer.Amount}", HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Number };
+			amount.AddThemeFontSizeOverride("font_size", 28);
+			amount.AddThemeColorOverride("font_color", Palette.Gold);
 			content.AddChild(amount);
-			content.AddChild(Layout.Text(T(offer.Item == ShopItem.Mana ? "shop.info_mana" : "shop.info_scrolls"), GameTheme.Faded, 236));
 
-			var buy = Layout.IconButton(T("shop.price", offer.Price), Art.Icon("gold"), 26);
-			buy.CustomMinimumSize = new Vector2(0, 48);
+			var buy = SigilButton.Of("gold", T("shop.buy", Texts.Amount(offer.Item, offer.Amount), offer.Price), () => SigilDialog.Ask(this,
+				T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
+				() => BuyRequested?.Invoke(offer)), 72);
+			buy.Badge = offer.Price.ToString();
 			buy.Disabled = !Shop.CanBuy(_player, offer);
-			buy.TooltipText = buy.Disabled ? T("shop.no_gold", offer.Price - _player.Gold) : "";
-			buy.Pressed += () => Confirm(offer);
-			content.AddChild(buy);
+			if (buy.Disabled)
+				buy.TooltipText = T("shop.no_gold", offer.Price - _player.Gold);
+			var row = Layout.Row(0, true);
+			row.AddChild(buy);
+			content.AddChild(row);
 			return panel;
-		}
-
-		private void Confirm(ShopOffer offer)
-		{
-			var dialog = new ConfirmationDialog
-			{
-				DialogText = T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
-				Title = T("common.confirm"),
-				OkButtonText = T("common.yes"),
-				CancelButtonText = T("common.no"),
-			};
-			dialog.Confirmed += () => BuyRequested?.Invoke(offer);
-			dialog.Confirmed += dialog.QueueFree;
-			dialog.Canceled += dialog.QueueFree;
-			AddChild(dialog);
-			dialog.PopupCentered();
 		}
 	}
 }

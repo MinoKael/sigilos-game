@@ -3,12 +3,14 @@ using Godot;
 namespace Sigilos.UI.Style
 {
 	/// <summary>
-	/// O tema da interface: painéis escuros com moldura dourada, botões de
-	/// bronze, fonte serifada nos títulos e fonte limpa nos números. As fontes são do sistema — nenhum
-	/// arquivo de fonte no projeto.
+	/// O tema da interface: painéis de couro com moldura de ouro (<see cref="Ornament.Panel"/>), pedra
+	/// entalhada nos fundos rebaixados, botões de madeira que brilham em azul arcano sob o mouse, barra
+	/// de rolagem que é só uma gema deslizando, caixinhas de marcar que são sigilos acesos e barras de
+	/// energia entalhadas. Nada de cara de página web: sem trilho de rolagem, sem borda reta de campo.
 	///
-	/// As telas pedem os papéis pelo nome de variação (<see cref="Title"/>, <see cref="Heading"/>...),
-	/// nunca por cor solta.
+	/// As fontes são do sistema — nenhum arquivo de fonte no projeto. As telas pedem os papéis pelo
+	/// nome de variação (<see cref="Title"/>, <see cref="Heading"/>...), nunca por cor solta. Os botões
+	/// de ícone (<see cref="Components.SigilButton"/>) se desenham sozinhos e não usam estes estilos.
 	/// </summary>
 	public static class GameTheme
 	{
@@ -18,10 +20,13 @@ namespace Sigilos.UI.Style
 		/// <summary>Cabeçalho de painel.</summary>
 		public const string Heading = "HeadingLabel";
 
-		/// <summary>Texto pequeno e apagado: dicas, descrições.</summary>
+		/// <summary>Texto pequeno e apagado: valores secundários.</summary>
 		public const string Faded = "FadedLabel";
 
-		/// <summary>Painel rebaixado dentro de outro painel (listas, barras).</summary>
+		/// <summary>Número em destaque (moedas, custos, níveis).</summary>
+		public const string Number = "NumberLabel";
+
+		/// <summary>Pedra entalhada dentro de um painel (listas, barras, cápsulas).</summary>
 		public const string InsetPanel = "InsetPanel";
 
 		public static readonly Font Serif = new SystemFont
@@ -38,12 +43,26 @@ namespace Sigilos.UI.Style
 		{
 			var theme = new Theme { DefaultFont = Sans, DefaultFontSize = 16 };
 
+			Labels(theme);
+			Panels(theme);
+			Buttons(theme);
+			Toggles(theme);
+			Scrollbars(theme);
+			Bars(theme);
+			Popups(theme);
+			return theme;
+		}
+
+		private static void Labels(Theme theme)
+		{
 			theme.SetColor("font_color", "Label", Palette.Text);
 
 			theme.SetTypeVariation(Title, "Label");
 			theme.SetFont("font", Title, Serif);
-			theme.SetFontSize("font_size", Title, 38);
+			theme.SetFontSize("font_size", Title, 34);
 			theme.SetColor("font_color", Title, Palette.Gold);
+			theme.SetColor("font_shadow_color", Title, new Color(0, 0, 0, 0.6f));
+			theme.SetConstant("shadow_offset_y", Title, 2);
 
 			theme.SetTypeVariation(Heading, "Label");
 			theme.SetFont("font", Heading, Serif);
@@ -54,65 +73,170 @@ namespace Sigilos.UI.Style
 			theme.SetFontSize("font_size", Faded, 13);
 			theme.SetColor("font_color", Faded, Palette.TextFaded);
 
-			theme.SetStylebox("panel", "PanelContainer", Box(Palette.Panel, Palette.GoldDark, 2, 6, 12));
-			theme.SetStylebox("panel", "Panel", Box(Palette.Panel, Palette.GoldDark, 2, 6, 0));
-			theme.SetTypeVariation(InsetPanel, "PanelContainer");
-			theme.SetStylebox("panel", InsetPanel, Box(Palette.Inset, Palette.Inset, 0, 6, 8));
+			theme.SetTypeVariation(Number, "Label");
+			theme.SetFont("font", Number, Serif);
+			theme.SetFontSize("font_size", Number, 18);
+			theme.SetColor("font_color", Number, Palette.Text);
+			theme.SetColor("font_outline_color", Number, Palette.Background);
+			theme.SetConstant("outline_size", Number, 4);
 
-			theme.SetStylebox("normal", "Button", Box(Palette.Button, Palette.Gold, 1, 5, 8));
-			theme.SetStylebox("hover", "Button", Box(Palette.ButtonHover, Palette.Gold, 2, 5, 8));
-			theme.SetStylebox("pressed", "Button", Box(Palette.Gold, Palette.Gold, 2, 5, 8));
-			theme.SetStylebox("hover_pressed", "Button", Box(Palette.Gold, Palette.Text, 2, 5, 8));
-			theme.SetStylebox("disabled", "Button", Box(Palette.Disabled, Palette.Disabled, 1, 5, 8));
+			theme.SetColor("default_color", "RichTextLabel", Palette.Text);
+
+			var line = new StyleBoxLine { Color = Palette.GoldDark, Thickness = 1, GrowBegin = -6, GrowEnd = -6 };
+			theme.SetStylebox("separator", "HSeparator", line);
+			theme.SetConstant("separation", "HSeparator", 10);
+		}
+
+		private static void Panels(Theme theme)
+		{
+			theme.SetStylebox("panel", "PanelContainer", Ornament.Panel(Palette.Panel, Palette.GoldDark));
+			theme.SetStylebox("panel", "Panel", Ornament.Panel(Palette.Panel, Palette.GoldDark, 0));
+			theme.SetTypeVariation(InsetPanel, "PanelContainer");
+			theme.SetStylebox("panel", InsetPanel, Carved(Palette.Inset, 8));
+		}
+
+		private static void Buttons(Theme theme)
+		{
+			theme.SetStylebox("normal", "Button", Wood(Palette.Button, Palette.GoldDark, false));
+			theme.SetStylebox("hover", "Button", Wood(Palette.ButtonHover, Palette.Gold, true));
+			theme.SetStylebox("pressed", "Button", Wood(Palette.Inset, Palette.Arcane, true));
+			theme.SetStylebox("hover_pressed", "Button", Wood(Palette.Inset, Palette.Arcane, true));
+			theme.SetStylebox("disabled", "Button", Wood(Palette.Disabled, Palette.Disabled.Lightened(0.1f), false));
 			theme.SetStylebox("focus", "Button", new StyleBoxEmpty());
 			theme.SetColor("font_color", "Button", Palette.Text);
 			theme.SetColor("font_hover_color", "Button", Palette.Text);
-			theme.SetColor("font_pressed_color", "Button", Palette.Background);
-			theme.SetColor("font_hover_pressed_color", "Button", Palette.Background);
+			theme.SetColor("font_pressed_color", "Button", Palette.Arcane);
+			theme.SetColor("font_hover_pressed_color", "Button", Palette.Arcane);
 			theme.SetColor("font_focus_color", "Button", Palette.Text);
-			theme.SetColor("font_disabled_color", "Button", Palette.TextFaded);
-			theme.SetColor("icon_normal_color", "Button", Palette.Text);
-			theme.SetColor("icon_hover_color", "Button", Palette.Text);
-			theme.SetColor("icon_pressed_color", "Button", Palette.Background);
-			theme.SetColor("icon_disabled_color", "Button", Palette.TextFaded);
+			theme.SetColor("font_disabled_color", "Button", Palette.TextFaded.Darkened(0.2f));
 			theme.SetFont("font", "Button", Serif);
 			theme.SetFontSize("font_size", "Button", 17);
 
-			// CheckBox herda de Button: sem estas caixas vazias, cada caixinha viraria um botão.
-			foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed", "disabled", "focus" })
-				theme.SetStylebox(state, "CheckBox", new StyleBoxEmpty());
-			theme.SetColor("font_color", "CheckBox", Palette.Text);
-			theme.SetColor("font_hover_color", "CheckBox", Palette.Text);
-			theme.SetColor("font_pressed_color", "CheckBox", Palette.Gold);
-			theme.SetColor("font_hover_pressed_color", "CheckBox", Palette.Gold);
+			// MenuButton e OptionButton herdam do Button, mas precisam das caixas próprias.
+			foreach (var type in new[] { "MenuButton", "OptionButton" })
+			{
+				theme.SetStylebox("normal", type, Wood(Palette.Button, Palette.GoldDark, false));
+				theme.SetStylebox("hover", type, Wood(Palette.ButtonHover, Palette.Gold, true));
+				theme.SetStylebox("pressed", type, Wood(Palette.Inset, Palette.Arcane, true));
+				theme.SetStylebox("disabled", type, Wood(Palette.Disabled, Palette.Disabled, false));
+				theme.SetStylebox("focus", type, new StyleBoxEmpty());
+			}
+		}
 
-			theme.SetStylebox("background", "ProgressBar", Box(Palette.Inset, Palette.Background, 1, 3, 0));
-			theme.SetStylebox("fill", "ProgressBar", Box(Palette.Health, Palette.Health, 0, 3, 0));
+		/// <summary>CheckBox e CheckButton viram sigilos que acendem: nada de caixinha ou chave de liga-desliga.</summary>
+		private static void Toggles(Theme theme)
+		{
+			foreach (var type in new[] { "CheckBox", "CheckButton" })
+			{
+				foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed", "disabled", "focus" })
+					theme.SetStylebox(state, type, new StyleBoxEmpty());
+				theme.SetIcon("checked", type, Ornament.Sigil(true, Palette.GoldDark, Palette.Arcane));
+				theme.SetIcon("unchecked", type, Ornament.Sigil(false, Palette.GoldDark, Palette.Arcane));
+				theme.SetIcon("checked_disabled", type, Ornament.Sigil(true, Palette.Disabled, Palette.TextFaded));
+				theme.SetIcon("unchecked_disabled", type, Ornament.Sigil(false, Palette.Disabled, Palette.TextFaded));
+				theme.SetColor("font_color", type, Palette.Text);
+				theme.SetColor("font_hover_color", type, Palette.Arcane);
+				theme.SetColor("font_pressed_color", type, Palette.Arcane);
+				theme.SetColor("font_hover_pressed_color", type, Palette.Arcane);
+			}
+		}
 
-			theme.SetStylebox("panel", "TabContainer", Box(Palette.Panel, Palette.GoldDark, 2, 6, 12));
-			theme.SetStylebox("tab_selected", "TabContainer", Box(Palette.Panel, Palette.Gold, 2, 5, 10));
-			theme.SetStylebox("tab_unselected", "TabContainer", Box(Palette.Inset, Palette.GoldDark, 1, 5, 10));
-			theme.SetStylebox("tab_hovered", "TabContainer", Box(Palette.PanelLight, Palette.Gold, 1, 5, 10));
+		/// <summary>Sem trilho: só a gema, meio apagada, que acende sob o mouse.</summary>
+		private static void Scrollbars(Theme theme)
+		{
+			foreach (var type in new[] { "VScrollBar", "HScrollBar" })
+			{
+				var track = new StyleBoxEmpty();
+				track.SetContentMarginAll(2);
+				theme.SetStylebox("scroll", type, track);
+				theme.SetStylebox("scroll_focus", type, track);
+				theme.SetStylebox("grabber", type, Ornament.Gem(Palette.GoldDark));
+				theme.SetStylebox("grabber_highlight", type, Ornament.Gem(Palette.Gold));
+				theme.SetStylebox("grabber_pressed", type, Ornament.Gem(Palette.Arcane));
+				foreach (var icon in new[] { "increment", "increment_highlight", "increment_pressed", "decrement", "decrement_highlight", "decrement_pressed" })
+					theme.SetIcon(icon, type, new PlaceholderTexture2D { Size = Vector2.Zero });
+			}
+
+			theme.SetStylebox("panel", "ScrollContainer", new StyleBoxEmpty());
+		}
+
+		/// <summary>Barras de energia entalhadas: sulco escuro na pedra e o brilho por dentro.</summary>
+		private static void Bars(Theme theme)
+		{
+			var groove = Carved(Palette.Inset, 0);
+			groove.SetCornerRadiusAll(4);
+			theme.SetStylebox("background", "ProgressBar", groove);
+			theme.SetStylebox("fill", "ProgressBar", Energy(Palette.Health));
+			theme.SetColor("font_color", "ProgressBar", Palette.Text);
+		}
+
+		private static void Popups(Theme theme)
+		{
+			theme.SetStylebox("panel", "TabContainer", Ornament.Panel(Palette.Panel, Palette.GoldDark, 12));
+			theme.SetStylebox("tab_selected", "TabContainer", Wood(Palette.Panel, Palette.Gold, true));
+			theme.SetStylebox("tab_unselected", "TabContainer", Wood(Palette.Inset, Palette.GoldDark, false));
+			theme.SetStylebox("tab_hovered", "TabContainer", Wood(Palette.PanelLight, Palette.Gold, true));
+			theme.SetStylebox("tabbar_background", "TabContainer", new StyleBoxEmpty());
 			theme.SetColor("font_selected_color", "TabContainer", Palette.Gold);
 			theme.SetColor("font_unselected_color", "TabContainer", Palette.TextFaded);
-			theme.SetColor("font_hovered_color", "TabContainer", Palette.Text);
+			theme.SetColor("font_hovered_color", "TabContainer", Palette.Arcane);
 			theme.SetFont("font", "TabContainer", Serif);
 			theme.SetFontSize("font_size", "TabContainer", 17);
 
-			theme.SetStylebox("normal", "OptionButton", Box(Palette.Button, Palette.Gold, 1, 5, 8));
-			theme.SetStylebox("panel", "PopupMenu", Box(Palette.Panel, Palette.Gold, 1, 4, 6));
+			theme.SetStylebox("panel", "PopupMenu", Ornament.Panel(Palette.Panel, Palette.Gold, 8));
+			theme.SetStylebox("hover", "PopupMenu", Box(Palette.PanelLight, Palette.Arcane, 1, 4, 4));
+			theme.SetColor("font_color", "PopupMenu", Palette.Text);
+			theme.SetColor("font_hover_color", "PopupMenu", Palette.Arcane);
 
-			theme.SetStylebox("panel", "TooltipPanel", Box(Palette.Inset, Palette.Gold, 1, 4, 8));
+			theme.SetStylebox("panel", "TooltipPanel", Carved(Palette.Inset.Lerp(Palette.Panel, 0.4f), 8, Palette.Gold));
 			theme.SetColor("font_color", "TooltipLabel", Palette.Text);
-			return theme;
+			theme.SetFontSize("font_size", "TooltipLabel", 14);
 		}
 
+		/// <summary>Caixa simples, para destaques pontuais.</summary>
 		public static StyleBoxFlat Box(Color background, Color border, int borderWidth, int radius, int margin)
 		{
-			var box = new StyleBoxFlat { BgColor = background, BorderColor = border };
+			var box = new StyleBoxFlat { BgColor = background, BorderColor = border, AntiAliasing = true };
 			box.SetBorderWidthAll(borderWidth);
 			box.SetCornerRadiusAll(radius);
 			box.SetContentMarginAll(margin);
+			return box;
+		}
+
+		/// <summary>Pedra entalhada: fundo escuro com sombra no alto (o sulco) e um filete de luz embaixo.</summary>
+		public static StyleBoxFlat Carved(Color background, int margin, Color? border = null)
+		{
+			var box = Box(background, border ?? background.Darkened(0.5f), 1, 8, margin);
+			box.BorderWidthTop = 2;
+			box.BorderColor = border ?? new Color(0, 0, 0, 0.55f);
+			box.ShadowColor = new Color(Palette.Gold, 0.06f);
+			box.ShadowSize = 1;
+			box.ShadowOffset = new Vector2(0, 1);
+			return box;
+		}
+
+		/// <summary>Madeira com borda de ouro; <paramref name="glow"/> acende a aura arcana (hover, apertado).</summary>
+		public static StyleBoxFlat Wood(Color background, Color border, bool glow)
+		{
+			var box = Box(background, border, 2, 7, 8);
+			box.BorderWidthBottom = 3;
+			box.ContentMarginLeft = box.ContentMarginRight = 14;
+			if (glow)
+			{
+				box.ShadowColor = new Color(Palette.Arcane, 0.28f);
+				box.ShadowSize = 6;
+			}
+
+			return box;
+		}
+
+		/// <summary>O brilho de dentro de uma barra de energia, na cor dada.</summary>
+		public static StyleBoxFlat Energy(Color color)
+		{
+			var box = Box(color, color.Lightened(0.35f), 0, 4, 0);
+			box.BorderWidthTop = 1;
+			box.ShadowColor = new Color(color, 0.35f);
+			box.ShadowSize = 3;
 			return box;
 		}
 	}

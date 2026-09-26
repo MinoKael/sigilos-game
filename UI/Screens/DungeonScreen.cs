@@ -13,8 +13,10 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// As Masmorras: à esquerda cada uma com o chefe e o que solta; à direita os andares da escolhida,
-	/// com a recompensa de cada um e os botões Lutar e Resolver. Cada vitória custa a Mana do andar.
+	/// As Masmorras: à esquerda um portal por Masmorra (o chefe, os Glifos do que solta e a barra dos
+	/// andares vencidos; fechada, com o cadeado); à direita os andares da escolhida — estrelas e nível,
+	/// o que solta, o Ouro da primeira vitória e os sigilos de Lutar, Resolver e Batalha automática.
+	/// Cada vitória custa a Mana do andar.
 	/// </summary>
 	public partial class DungeonScreen : Control
 	{
@@ -24,7 +26,7 @@ namespace Sigilos.UI.Screens
 		private readonly CurrencyBar _currencies = new();
 		private readonly VBoxContainer _list = new();
 		private readonly VBoxContainer _detail = new();
-		private readonly Label _message = new();
+		private readonly Label _message = new() { HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private DungeonDefinition _selected;
 
 		public DungeonScreen(GameDatabase database, PlayerState player, string? selected)
@@ -48,29 +50,24 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("dungeons.title"), _currencies, T("common.back_to_hub"), () => BackRequested?.Invoke()));
-			page.AddChild(new Label { Text = T("dungeons.subtitle"), ThemeTypeVariation = GameTheme.Faded });
+			page.AddChild(Layout.Header(T("destination.Dungeons"), "dungeon", _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
-			body.AddThemeConstantOverride("separation", 16);
+			var body = Layout.Row(16);
+			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
-			var listScroll = new ScrollContainer { CustomMinimumSize = new Vector2(420, 0), HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
-			_list.AddThemeConstantOverride("separation", 8);
-			_list.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-			listScroll.AddChild(_list);
+			_list.AddThemeConstantOverride("separation", 10);
+			var listScroll = Layout.Scroll(_list);
+			listScroll.CustomMinimumSize = new Vector2(300, 0);
+			listScroll.SizeFlagsHorizontal = SizeFlags.Fill;
 			body.AddChild(listScroll);
 
 			var panel = new PanelContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var detailScroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
-			_detail.AddThemeConstantOverride("separation", 8);
-			_detail.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-			detailScroll.AddChild(_detail);
-			panel.AddChild(detailScroll);
+			_detail.AddThemeConstantOverride("separation", 10);
+			panel.AddChild(Layout.Scroll(_detail));
 			body.AddChild(panel);
 
 			_message.AddThemeColorOverride("font_color", Palette.Gold);
-			_message.HorizontalAlignment = HorizontalAlignment.Center;
 			page.AddChild(_message);
 
 			Refresh();
@@ -91,50 +88,62 @@ namespace Sigilos.UI.Screens
 			foreach (var dungeon in _database.Dungeons)
 			{
 				var open = Dungeons.IsUnlocked(_player, dungeon);
-				var card = new PanelContainer { MouseFilter = MouseFilterEnum.Stop, MouseDefaultCursorShape = CursorShape.PointingHand };
-				card.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, dungeon == _selected ? Palette.Text : Palette.GoldDark, dungeon == _selected ? 3 : 2, 8, 8));
-				card.Modulate = open ? Colors.White : new Color(1, 1, 1, 0.55f);
+				var card = new Button
+				{
+					Flat = true,
+					ToggleMode = true,
+					ButtonPressed = dungeon == _selected,
+					FocusMode = FocusModeEnum.None,
+					CustomMinimumSize = new Vector2(280, 92),
+					TooltipText = open ? dungeon.Name : T("dungeons.locked", dungeon.Name, dungeon.UnlockStage),
+					MouseDefaultCursorShape = CursorShape.PointingHand,
+				};
+				var selected = dungeon == _selected;
+				card.AddThemeStyleboxOverride("normal", Ornament.Panel(Palette.Panel, selected ? Palette.Arcane : Palette.GoldDark, 8));
+				card.AddThemeStyleboxOverride("hover", Ornament.Panel(Palette.PanelLight, selected ? Palette.Arcane : Palette.Gold, 8));
+				card.AddThemeStyleboxOverride("pressed", Ornament.Panel(Palette.PanelLight, Palette.Arcane, 8));
+				card.AddThemeStyleboxOverride("hover_pressed", Ornament.Panel(Palette.PanelLight, Palette.Arcane, 8));
+				Juice.Attach(card, 1.02f, 0.98f);
 
-				var row = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
-				row.AddThemeConstantOverride("separation", 10);
-				row.AddChild(Doodle.Icon(Art.Creature(dungeon.Image), 64, Palette.Gold));
-				var text = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-				text.AddChild(new Label { Text = dungeon.Name, ThemeTypeVariation = GameTheme.Heading, MouseFilter = MouseFilterEnum.Ignore });
-				text.AddChild(new Label
+				var row = Layout.Row(10);
+				row.MouseFilter = MouseFilterEnum.Ignore;
+				row.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+				row.OffsetLeft = row.OffsetTop = 10;
+				row.OffsetRight = row.OffsetBottom = -10;
+				row.AddChild(Doodle.Icon(Art.Creature(dungeon.Image), 68, open ? Palette.Gold : Palette.TextFaded.Darkened(0.3f)));
+
+				var column = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
+				column.AddThemeConstantOverride("separation", 8);
+				var glyphs = Layout.Row(4);
+				glyphs.MouseFilter = MouseFilterEnum.Ignore;
+				if (dungeon.Kind == DungeonKind.Runes)
 				{
-					Text = open
-						? T("dungeons.progress", Texts.Name(dungeon.Kind), Dungeons.Cleared(_player, dungeon), dungeon.Floors.Count)
-						: T("dungeons.locked", dungeon.UnlockStage),
-					ThemeTypeVariation = GameTheme.Faded,
-					MouseFilter = MouseFilterEnum.Ignore,
-				});
-				var glyphs = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
-				foreach (var set in dungeon.Sets)
+					foreach (var set in dungeon.Sets)
+						glyphs.AddChild(Doodle.Icon(Art.Glyph(RuneSets.For(set).Glyph), 22, Palette.Gold));
+				}
+				else
 				{
-					var icon = Doodle.Icon(Art.Glyph(RuneSets.For(set).Glyph), 20, Palette.Gold);
-					icon.MouseFilter = MouseFilterEnum.Ignore;
-					glyphs.AddChild(icon);
+					glyphs.AddChild(Doodle.Icon(Art.Icon("grindstone"), 22, Palette.Gold));
+					glyphs.AddChild(Doodle.Icon(Art.Icon("gem"), 22, Palette.Gold));
 				}
 
-				if (dungeon.Kind == DungeonKind.Tools)
-				{
-					glyphs.AddChild(Doodle.Icon(Art.Icon("grindstone"), 20, Palette.Gold));
-					glyphs.AddChild(Doodle.Icon(Art.Icon("gem"), 20, Palette.Gold));
-				}
-
-				text.AddChild(glyphs);
-				row.AddChild(text);
+				column.AddChild(glyphs);
+				var bar = Layout.Energy(Palette.Arcane, 8);
+				bar.MaxValue = dungeon.Floors.Count;
+				bar.Value = Dungeons.Cleared(_player, dungeon);
+				bar.MouseFilter = MouseFilterEnum.Ignore;
+				column.AddChild(bar);
+				row.AddChild(column);
+				if (!open)
+					row.AddChild(Doodle.Icon(Art.Icon("lock"), 28, Palette.Gold));
 				card.AddChild(row);
 
 				var captured = dungeon;
-				card.GuiInput += input =>
+				card.Pressed += () =>
 				{
-					if (input is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-					{
-						_selected = captured;
-						_message.Text = "";
-						Refresh();
-					}
+					_selected = captured;
+					_message.Text = "";
+					Callable.From(Refresh).CallDeferred();
 				};
 				_list.AddChild(card);
 			}
@@ -144,39 +153,40 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_detail);
 			var dungeon = _selected;
-			_detail.AddChild(new Label { Text = dungeon.Name, ThemeTypeVariation = GameTheme.Title });
+			var title = Layout.Row(12);
+			title.AddChild(Doodle.Icon(Art.Creature(dungeon.Image), 48, Palette.Gold));
+			title.AddChild(new Label { Text = dungeon.Name, ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center });
+			title.AddChild(SigilButton.Of("shop", T("destination.Shop"), () => ShopRequested?.Invoke(dungeon), 48, SigilShape.Square));
+			_detail.AddChild(title);
 
+			var drops = Layout.Flow(8);
 			if (dungeon.Kind == DungeonKind.Runes)
 			{
-				_detail.AddChild(Layout.Text(T("dungeons.drops_runes"), GameTheme.Faded));
 				foreach (var set in dungeon.Sets)
-					_detail.AddChild(RichText.Label($"{Texts.Term(set)} · {Texts.Describe(RuneSets.For(set))}"));
+					drops.AddChild(Layout.Chip(Art.Glyph(RuneSets.For(set).Glyph), Texts.Name(set), Texts.Plain($"{Texts.Name(set)} · {Texts.Describe(RuneSets.For(set))}")));
 			}
 			else
 			{
-				_detail.AddChild(Layout.Text(T("dungeons.drops_tools"), GameTheme.Faded));
+				drops.AddChild(Layout.Chip("grindstone", "", T("dungeons.grindstones")));
+				drops.AddChild(Layout.Chip("gem", "", T("dungeons.gems")));
 			}
 
-			var team = Teams.Of(_player, dungeon.Id).Count;
-			var teamRow = new HBoxContainer();
-			teamRow.AddThemeConstantOverride("separation", 12);
-			teamRow.AddChild(new Label { Text = T("dungeons.team", team, PlayerState.TeamSize), SizeFlagsHorizontal = SizeFlags.ExpandFill });
-			var editTeam = new Button { Text = T("common.team") };
-			editTeam.Pressed += () => TeamRequested?.Invoke(dungeon);
-			teamRow.AddChild(editTeam);
-			var shop = new Button { Text = T("common.shop"), TooltipText = T("common.shop_tip") };
-			shop.Pressed += () => ShopRequested?.Invoke(dungeon);
-			teamRow.AddChild(shop);
-			_detail.AddChild(teamRow);
+			_detail.AddChild(drops);
+			_detail.AddChild(new TeamStrip(_database, _player, dungeon.Id, () => TeamRequested?.Invoke(dungeon)));
+			_detail.AddChild(new HSeparator());
 
 			if (!Dungeons.IsUnlocked(_player, dungeon))
 			{
-				_detail.AddChild(new Label { Text = T("dungeons.locked", dungeon.UnlockStage), ThemeTypeVariation = GameTheme.Heading });
+				var locked = Layout.Row(10, true);
+				locked.AddChild(Doodle.Icon(Art.Icon("lock"), 48, Palette.Gold));
+				locked.AddChild(Layout.Chip("region", dungeon.UnlockStage.ToString(), T("dungeons.locked", dungeon.Name, dungeon.UnlockStage)));
+				_detail.AddChild(locked);
 				return;
 			}
 
+			var noTeam = Teams.Of(_player, dungeon.Id).Count == 0;
 			for (var number = 1; number <= dungeon.Floors.Count; number++)
-				_detail.AddChild(FloorRow(dungeon, number, team == 0));
+				_detail.AddChild(FloorRow(dungeon, number, noTeam));
 		}
 
 		private Control FloorRow(DungeonDefinition dungeon, int number, bool noTeam)
@@ -185,49 +195,63 @@ namespace Sigilos.UI.Screens
 			var cleared = number <= Dungeons.Cleared(_player, dungeon);
 			var open = Dungeons.IsFloorUnlocked(_player, dungeon, number);
 
-			var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel };
-			var row = new HBoxContainer();
-			row.AddThemeConstantOverride("separation", 12);
+			var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, Modulate = open ? Colors.White : new Color(1, 1, 1, 0.5f) };
+			var row = Layout.Row(10);
 			panel.AddChild(row);
 
-			var text = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var title = new Label { Text = T(cleared ? "dungeons.floor_cleared" : "dungeons.floor", number, T("common.stars_level", Texts.Stars(floor.Stars), floor.Level)), ThemeTypeVariation = GameTheme.Heading };
-			text.AddChild(title);
-			var drop = dungeon.Kind == DungeonKind.Runes
-				? T("dungeons.drop_rune", floor.MinGrade == floor.MaxGrade ? Texts.Stars(floor.MinGrade) : $"{Texts.Stars(floor.MinGrade)}–{Texts.Stars(floor.MaxGrade)}", Texts.Name(floor.MinRarity))
-				: T("dungeons.drop_tool", floor.ToolCount, Texts.Name((RuneRarity)floor.ToolGrade));
-			text.AddChild(new Label { Text = drop });
-			var reward = T("dungeons.reward", floor.Essence, floor.Experience);
-			if (!cleared)
-				reward += T("dungeons.first_gold", floor.FirstClearGold);
-			text.AddChild(new Label { Text = reward, ThemeTypeVariation = GameTheme.Faded });
+			var badge = new Label { Text = number.ToString(), ThemeTypeVariation = GameTheme.Number, CustomMinimumSize = new Vector2(34, 0), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, TooltipText = T("dungeons.floor", number), MouseFilter = MouseFilterEnum.Stop };
+			badge.AddThemeFontSizeOverride("font_size", 26);
+			badge.AddThemeColorOverride("font_color", cleared ? Palette.Spirit : Palette.Gold);
+			row.AddChild(badge);
 
-			var problem = Dungeons.Check(_player, dungeon, number);
-			if (problem is EntryProblem.NoMana or EntryProblem.RunesFull)
+			var info = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
+			info.AddThemeConstantOverride("separation", 6);
+			var chips = Layout.Flow(6);
+			chips.AddChild(Layout.Chip("fight", T("common.stars_level", Texts.Stars(floor.Stars), floor.Level), T("campaign.foes")));
+			if (dungeon.Kind == DungeonKind.Runes)
 			{
-				var refusal = Layout.Text(Texts.Refusal(problem, floor.Mana), width: 360);
-				refusal.AddThemeColorOverride("font_color", Palette.Negative);
-				refusal.AddThemeFontSizeOverride("font_size", 13);
-				text.AddChild(refusal);
+				var grades = floor.MinGrade == floor.MaxGrade ? Texts.Stars(floor.MinGrade) : $"{Texts.Stars(floor.MinGrade)}–{Texts.Stars(floor.MaxGrade)}";
+				chips.AddChild(Layout.Chip("rune", grades, T("dungeons.drop_rune", grades, Texts.Name(floor.MinRarity)), Palette.Of(floor.MinRarity)));
+			}
+			else
+			{
+				chips.AddChild(Layout.Chip("grindstone", $"×{floor.ToolCount}", T("dungeons.drop_tool", floor.ToolCount, Texts.Name((RuneRarity)floor.ToolGrade)), Palette.Of((RuneRarity)floor.ToolGrade)));
 			}
 
-			row.AddChild(text);
+			chips.AddChild(Layout.Chip("essence", floor.Essence.ToString(), T("currency.essence")));
+			chips.AddChild(Layout.Chip("level_max", floor.Experience.ToString(), T("reward.experience")));
+			if (!cleared)
+				chips.AddChild(Layout.Chip("gold", floor.FirstClearGold.ToString(), T("dungeons.first_gold"), Palette.Spirit));
+			info.AddChild(chips);
+
+			var problem = Dungeons.Check(_player, dungeon, number);
+			if (open && problem is EntryProblem.NoMana or EntryProblem.RunesFull)
+			{
+				var refusal = Layout.Text(Texts.Refusal(problem, floor.Mana), width: 300);
+				refusal.AddThemeColorOverride("font_color", Palette.Negative);
+				refusal.AddThemeFontSizeOverride("font_size", 13);
+				info.AddChild(refusal);
+			}
+
+			row.AddChild(info);
 
 			var disabled = noTeam || problem != EntryProblem.None;
-			var fight = new Button { Text = T("common.fight_mana", floor.Mana), Disabled = disabled, CustomMinimumSize = new Vector2(130, 44) };
-			fight.Pressed += () => FightRequested?.Invoke(dungeon, number);
+			var fight = SigilButton.Of("fight", T("common.fight", floor.Mana), () => FightRequested?.Invoke(dungeon, number), 62);
+			fight.Badge = floor.Mana.ToString();
+			fight.Disabled = disabled;
 			row.AddChild(fight);
 			if (cleared)
 			{
-				var resolve = new Button { Text = T("common.resolve_mana", floor.Mana), Disabled = disabled, TooltipText = T("common.resolve_tip"), CustomMinimumSize = new Vector2(130, 44) };
-				resolve.Pressed += () => ResolveRequested?.Invoke(dungeon, number);
+				var resolve = SigilButton.Of("resolve", T("common.resolve", floor.Mana), () => ResolveRequested?.Invoke(dungeon, number), 56);
+				resolve.Badge = floor.Mana.ToString();
+				resolve.Disabled = disabled;
 				row.AddChild(resolve);
-				var repeat = new Button { Text = T("common.auto_battle", AutoBattle.RepeatRuns), Disabled = disabled, TooltipText = T("common.auto_battle_tip", AutoBattle.RepeatRuns), CustomMinimumSize = new Vector2(110, 44) };
-				repeat.Pressed += () => RepeatRequested?.Invoke(dungeon, number);
+				var repeat = SigilButton.Of("repeat", T("common.auto_battle", AutoBattle.RepeatRuns), () => RepeatRequested?.Invoke(dungeon, number), 56);
+				repeat.Badge = $"×{AutoBattle.RepeatRuns}";
+				repeat.Disabled = disabled;
 				row.AddChild(repeat);
 			}
 
-			panel.Modulate = open ? Colors.White : new Color(1, 1, 1, 0.5f);
 			return panel;
 		}
 	}

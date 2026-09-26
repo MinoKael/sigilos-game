@@ -7,11 +7,8 @@
 {
   "common": {
     "back": "Back",
-    "back_to_hub": "Back to Sanctuary",
     "resolve_tip": "Simulates the fight instantly, on auto.",
     "team": "Team",
-    "team_incomplete": "The team has {0} of {1} monsters.",
-    "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
     "continue": "Continue",
@@ -24,29 +21,25 @@
     "resolve_rune": "{0} rune {1}",
     "resolve_gold": "+{0} Gold",
     "resolve_account": "account at level {0} (+{1} Gold)",
-    "fight_mana": "Fight · {0} Mana",
-    "resolve_mana": "Resolve · {0} Mana",
-    "shop": "Shop",
-    "shop_tip": "Buy Mana and Scrolls with Gold.",
-    "auto_battle": "Auto ×{0}",
-    "auto_battle_tip": "Auto Battle: up to {0} fights in a row, each taking the time it would take on auto at 2×. Stops when Mana runs out or the rune inventory is full."
+    "auto_battle": "Auto Battle ×{0}",
+    "auto_battle_tip": "Auto Battle: up to {0} fights in a row, each taking the time it would take on auto at 2×. Stops when Mana runs out or the rune inventory is full.",
+    "close": "Close",
+    "fight": "Fight · {0} Mana",
+    "resolve": "Resolve · {0} Mana"
   },
 
   "auto": {
     "title": "Auto Battle · {0}",
-    "fight": "Current fight",
-    "run": "Fight {0} of {1}",
-    "time_left": "About {0} left",
+    "time_left": "Time left",
     "stop": "Stop",
     "stop_tip": "Stops now: the fight in progress gives nothing and costs nothing.",
     "stopped": "Stopped.",
     "done": "Done: {0} fights.",
-    "results": "Results",
-    "record": "Victories: {0} · Defeats: {1}",
-    "gains": "−{0} Mana · +{1} Essence · +{2} Gold · +{3} experience",
-    "level_ups": "Level-ups in the team: {0}",
-    "account": "Account at level {0}",
-    "runes": "Runes: {0}"
+    "level_ups": "Level-ups",
+    "account": "Account level",
+    "runes": "Runes",
+    "victories": "Victories",
+    "defeats": "Defeats"
   },
 
   "entry": {
@@ -68,13 +61,11 @@
     "scroll": "1 Scroll",
     "scrolls": "{0} Scrolls",
     "mana_of": "{0}/{1}",
-    "tip": {
-      "mana": "Mana: every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {0} per hour up to the maximum, which goes from {1} at account level 1 to {2} at level {3}. The Shop and account level-ups go past the maximum.",
-      "essence": "Essence: levels up and evolves monsters, pays for Awakening and upgrades runes.",
-      "gold": "Gold: the rare currency. Buys Mana and Scrolls at the Shop. Comes from channeling, from every account level and from the first victory on each Dungeon floor.",
-      "scrolls": "Mystic Scrolls: summon monsters.",
-      "fragments": "Fragments: come from released monsters and pay for evolution."
-    }
+    "mana": "Mana",
+    "essence": "Essence",
+    "gold": "Gold",
+    "scrolls_name": "Mystic Scrolls",
+    "fragments": "Fragments"
   },
 
   "element": {
@@ -126,7 +117,20 @@
     "CritDamage": "Crit Damage",
     "Resistance": "Resistance",
     "Accuracy": "Accuracy",
-    "percent": "{0}%"
+    "percent": "{0}%",
+    "short": {
+      "HealthFlat": "HP",
+      "HealthPercent": "HP%",
+      "AttackFlat": "ATK",
+      "AttackPercent": "ATK%",
+      "DefenseFlat": "DEF",
+      "DefensePercent": "DEF%",
+      "Speed": "SPD",
+      "Crit": "CRI",
+      "CritDamage": "CDM",
+      "Resistance": "RES",
+      "Accuracy": "ACC"
+    }
   },
 
   "set": {
@@ -239,72 +243,58 @@
   "effect": {
     "Shield": {
       "name": "Shield",
-      "short": "SHD",
       "info": "Absorbs damage up to the shield's value."
     },
     "Burn": {
       "name": "Burn",
-      "short": "BRN",
       "info": "Loses {0} of max HP at the start of each turn. Stacks up to {1}."
     },
     "Stun": {
       "name": "Stun",
-      "short": "STN",
       "info": "Loses its next turn."
     },
     "Taunt": {
       "name": "Taunt",
-      "short": "TNT",
       "info": "Can only target whoever taunted it."
     },
     "Hidden": {
       "name": "Hidden",
-      "short": "HID",
       "info": "Cannot be targeted by single-target attacks."
     },
     "Curse": {
       "name": "Curse",
-      "short": "CRS",
       "info": "Takes {0} more damage."
     },
     "Blind": {
       "name": "Blind",
-      "short": "BLD",
       "info": "Each hit has a {0} chance to miss."
     },
     "Ward": {
       "name": "Aegis",
-      "short": "AEG",
       "info": "Cancels the next hit taken."
     },
     "Foresight": {
       "name": "Foresight",
-      "short": "FRS",
       "info": "The next hit dealt is critical."
     },
     "Immunity": {
       "name": "Immunity",
-      "short": "IMM",
       "info": "No harmful effect lands."
     },
     "AttackUp": {
       "name": "Attack+",
-      "short": "ATK+",
       "info": "+{0} Attack."
     },
     "AttackDown": {
       "name": "Attack−",
-      "short": "ATK−",
       "info": "−{0} Attack."
     },
     "DefenseUp": {
       "name": "Defense+",
-      "short": "DEF+",
       "info": "+{0} Defense."
     },
     "SpeedUp": {
       "name": "Speed+",
-      "short": "SPD+",
       "info": "+{0} Speed."
     }
   },
@@ -340,7 +330,9 @@
       "Recovery": "Recovery +{0}",
       "EffectRate": "Effect rate +{0}",
       "Cooldown": "Cooldown −{0}"
-    }
+    },
+    "passive_name": "Passive · {0}",
+    "cooldown_tip": "Cooldown in turns"
   },
 
   "passive": {
@@ -368,159 +360,103 @@
   },
 
   "card": {
-    "tip": "{0}\n{1} · {2}",
-    "level": "Lv {0}"
+    "tip": "{0}\n{1} · {2}"
   },
 
   "rune": {
     "title": "{0} ({1})",
-    "empty": "empty",
     "ground": "{0} ({1} ground)",
     "tip": "{0} · {1} {2} +{3}\n{4}",
     "owner": "Equipped on {0}",
-    "owner_vault": "Equipped on {0} (Vault)"
+    "owner_vault": "Equipped on {0} (Vault)",
+    "empty_slot": "Slot {0}"
   },
 
   "hub": {
-    "title": "Sigilos",
-    "subtitle": "The Conjurer's Sanctuary · Plain of Menhirs",
-    "collect": "Collect",
-    "quick_channel": "Quick Channel",
+    "quick_channel": "Quick Channel ({0} h)",
     "quick_channel_tip": "Once a day: {0} hours of idle rewards right away.",
-    "channeling": "Channeling for {0}h{1} (max. {2} h)",
-    "reward": "+{0} Essence   +{1} Gold   +{2} Mana",
-    "circles": "Channeling Circles",
-    "circles_text": "While the game is closed, your circles keep channeling Essence, Gold and Mana ({0} per hour, up to the maximum).",
-    "account": "Account level {0} · Max Mana {1}",
+    "channeling": "Channeling · {0}h{1} of {2} h",
+    "account": "Account level {0} · {1}/{2} experience",
     "account_tip": "{0}/{1} experience. Every victory also gives experience to the account; each level gives {2} Gold, refills Mana and raises max Mana, up to {4} at level {3}.",
-    "account_max": "Account level {0} (max) · Max Mana {1}",
+    "account_max": "Account level {0} (max)",
     "account_max_tip": "The account reached level {0}, the maximum.",
-    "campaign": "Campaign · Stage {0}: {1}",
-    "first_summon_tip": "Your first summon is a guaranteed 5★. Open Summoning.",
-    "first_stage_tip": "New monsters join the Campaign team automatically. Win the first stage!",
-    "campaign_team": "Campaign team · the first one is the Leader",
-    "monsters": "Monsters",
-    "monsters_tip": "Collection, Vault, levels, evolution, Awakening, skill-ups and releasing.",
-    "teams": "Teams",
-    "teams_tip": "One team for the Campaign and one for each Dungeon.",
-    "runes": "Runes",
-    "runes_tip": "Rune inventory with search, Grindstones and Enchanted Gems.",
-    "dungeons": "Dungeons",
-    "dungeons_tip": "5 and 6 star runes and tools. Each victory costs Mana.",
-    "summon": "Summoning",
-    "summon_tip": "Spend Scrolls to summon monsters.",
-    "shop": "Shop",
-    "shop_tip": "Trade Gold for Mana and Scrolls.",
-    "compendium": "Compendium",
-    "compendium_tip": "The rules: combat, stats, Glyphs, effects and runes.",
-    "grimoire": "Grimoire",
-    "grimoire_tip": "Everything there is: summons, sets, rune tables, grindstones and gems."
+    "edit_shortcuts": "Edit shortcuts",
+    "empty_shortcut": "Empty"
   },
 
   "campaign": {
-    "title": "Plain of Menhirs",
-    "subtitle": "Region 1 · no battle rule: teaches the basics.",
-    "stage": "Stage",
     "stage_title": "{0}. {1}",
-    "number_cleared": "{0} ✓",
-    "levels": "Enemies {0} · team {1}",
-    "wave": "Wave {0}:",
+    "wave": "Wave {0}",
     "enemy_tip": "{0} ({1})",
-    "reward": "Victory: {0} Essence, {1} experience for the team and the account, and a {2} chance of a {3} rune.",
-    "reward_first": "First victory: {0}, {1} Essence, {2} experience for the team and the account, and a {3} rune.",
-    "line": "“{0}”"
+    "cleared": "Cleared",
+    "first_clear": "First victory",
+    "foes": "Enemies",
+    "rune_first": "A {0} rune, always",
+    "rune_chance": "{0} chance of a {1} rune"
   },
 
   "dungeons": {
-    "title": "Dungeons",
-    "subtitle": "5 and 6 star runes from specific sets, Grindstones and Gems. Each victory costs the floor's Mana; a defeat costs nothing.",
     "kind": {
       "Runes": "Runes",
       "Tools": "Tools"
     },
-    "progress": "{0} · {1} of {2} floors cleared",
-    "locked": "Opens after Campaign stage {0}.",
-    "drops_runes": "Drops 4 to 6 star runes, only from these sets:",
-    "drops_tools": "Drops Grindstones and Enchanted Gems, which work on any rune.",
-    "team": "This Dungeon's team: {0} of {1}",
-    "floor": "Floor {0} · enemies {1}",
-    "floor_cleared": "Floor {0} · enemies {1} ✓",
+    "locked": "{0}: opens after Campaign stage {1}",
+    "floor": "Floor {0}",
     "drop_rune": "{0} rune, at least {1}",
     "drop_tool": "{0} × {1} tool",
-    "reward": "+{0} Essence, +{1} experience",
-    "first_gold": " · 1st victory: +{0} Gold"
+    "first_gold": "Gold from the first victory",
+    "grindstones": "Grindstones",
+    "gems": "Enchanted Gems"
   },
 
   "summon": {
-    "title": "Summoning",
-    "ritual": "The ritual",
-    "rates": "Rates: 3★ {0} · 4★ {1} · 5★ {2}.\nLight and Dark have half the chance of the other variants.",
     "pity": "5★ guaranteed in {0} summons",
-    "copies": "Every summon is a new monster at its natural stars and level 1, even if you already have the same one. Duplicate copies raise skill levels or are released into Fragments in Monsters. With a full collection ({0}), the monster goes to the Vault.",
     "pull": "Summon {0} ({1})",
     "shop": "Buy Scrolls",
     "shop_tip": "The Shop trades Gold for Scrolls.",
     "new": "New!",
     "copy": "Copy",
-    "sent_to_vault": "→ Vault"
+    "sent_to_vault": "Sent to the Vault",
+    "rate": "Chance of {0}★"
   },
 
   "shop": {
-    "title": "Shop",
-    "subtitle": "Trade Gold for Mana and Scrolls. Gold comes from channeling, from every account level ({0} Gold) and from the first victory on each Dungeon floor.",
     "item": {
       "Mana": "{0} Mana",
       "Scrolls": "{0} Scrolls"
     },
-    "info_mana": "Mana for more fights. Can go past the maximum.",
-    "info_scrolls": "Mystic Scrolls for Summoning.",
-    "price": "{0} Gold",
     "no_gold": "{0} Gold short.",
     "confirm": "Buy {0} ({1}) for {2} Gold?",
-    "bought": "Bought: +{0}."
+    "bought": "Bought: +{0}.",
+    "buy": "Buy {0} for {1} Gold"
   },
 
   "monsters": {
-    "title": "Monsters",
-    "collection": "Collection {0}/{1}",
-    "vault": "Vault ({0})",
-    "in_team": "in a team",
-    "vault_empty": "The Vault is empty. Keep the monsters you don't use here: they don't take collection slots.",
-    "collection_empty": "No monsters yet. Perform a Summoning.",
-    "choose": "Choose a monster.",
-    "in_vault": "In the Vault: doesn't fight, but keeps its runes (they don't take inventory space).",
-    "no_team": "Not in any team.",
+    "collection": "Collection",
+    "vault": "Vault",
+    "vault_empty": "The Vault is empty.",
+    "collection_empty": "No monsters yet.",
+    "in_vault": "In the Vault",
     "teams": "In team: {0}",
-    "stats": "Stats · base and rune bonus",
-    "runes": "Runes",
-    "no_set": "No complete set.",
-    "skills": "Skills",
-    "skill_locked": "(unlocked by Awakening)",
+    "skill_locked": "Unlocked by Awakening",
     "leadership": "Leadership · +{0} {1} (on base) for the team, only as Leader",
-    "awakened": "Awakened · {0}",
-    "awaken": "Awakening",
-    "awakened_text": "Own name, new art and the Awakening bonus.",
-    "awaken_text": "Becomes {0}: +{1} HP, +{2} Attack and Defense, new art and {3}.",
-    "level": "Level {0} of {1}",
-    "natural_stars": "Natural stars: {0}. Every monster evolves up to 6★.",
-    "level_max": "Level {0} (max)",
+    "level": "Lv {0}/{1}",
+    "natural_stars": "Natural stars: {0}",
+    "level_max": "Max level",
     "experience": "Experience: {0}/{1}",
     "element_role": "{0} · {1}",
     "level_up": "+1 level ({0} Essence)",
     "level_up_tip": "Infuses Essence as experience: {0} experience per Essence.",
-    "max_level_button": "Max level ({0})",
-    "max_level_tip": "Infuses all the Essence it can, up to level {0}.",
-    "evolve": "Evolve to {0} ({1} Essence, {2} Fragments)",
+    "max_level_button": "Up to level {0} ({1} Essence)",
+    "evolve": "Evolve to {0}: {1} Essence, {2} Fragments · max level {3}",
     "evolve_tip": "Gains a star and goes back to level 1; the new max level is {0}.",
-    "awaken_button": "Awaken ({0} Essence)",
-    "awaken_tip": "Forever.",
+    "awaken_button": "Awaken into {0} ({1} Essence)",
     "runes_button": "Runes",
-    "runes_tip": "Equip, upgrade, grind and enchant runes.",
     "store": "Store in Vault",
     "store_tip": "Leaves every team and takes its runes along: they stop taking inventory space.",
     "take_from_vault": "Take out of Vault",
     "collection_full": "The collection is full.",
-    "fuse": "Skill-up copy ({0})",
+    "fuse": "Skill-up: fuse a copy ({0} copies, {1} levels left)",
     "fuse_full": "Every skill is at max level.",
     "fuse_tip": "Fuses another copy of the same variant: a random skill goes up one level ({0} levels left). The copy is gone.",
     "fuse_item": "{0} · Lv {1}{2}",
@@ -531,67 +467,54 @@
     "release_confirm": "Release {0} (Lv {1}) for {2} Fragments? This can't be undone.",
     "select": "Select",
     "select_tip": "Mark several monsters (on both tabs) to fuse into the monster on the sheet or release them all at once.",
-    "marked": "{0} marked",
+    "marked": "Marked",
     "mark_copies": "Mark copies of {0}",
     "mark_copies_tip": "Marks every other copy of the same variant, in the collection and in the Vault.",
     "unmark": "Unmark",
-    "fuse_marked": "Fuse into {0} ({1})",
+    "fuse_marked": "Fuse {1} copies into {0} ({2} skill levels left)",
     "fuse_marked_tip": "Each copy raises a random skill of the monster on the sheet, weakest copies first. {0} levels left.",
     "fuse_marked_invalid": "Mark only copies of {0} (not itself). {1} skill levels left.",
     "fuse_many_confirm": "Fuse {0} copies into {1}? Each raises a random skill ({2} levels left). The copies are gone; their runes go back to the inventory.",
     "release_marked": "Release {0} (+{1} Fragments)",
     "release_many_confirm": "Release {0} monsters for {1} Fragments? They are gone for good; their runes go back to the inventory.",
-    "valuable_warning": "Warning: the selection has an awakened, evolved, leveled, skilled-up, teamed or runed monster."
+    "valuable_warning": "Warning: the selection has an awakened, evolved, leveled, skilled-up, teamed or runed monster.",
+    "page": {
+      "stats": "Stats",
+      "runes": "Runes",
+      "skills": "Skills",
+      "awaken": "Awakening"
+    }
   },
 
   "teams": {
-    "title": "Teams",
     "campaign": "Campaign",
-    "capacity": "Team · {0} slots, the first one is the Leader",
-    "collection": "Collection · click to add to or remove from the team",
-    "content_tip": "{0} of {1} in the team",
-    "content_locked": "Dungeon still locked; the team can already be set up.",
+    "content_locked": "{0} (locked)",
     "leader": "Leader",
-    "take_out_tip": "Click to remove from the team.",
     "make_leader": "Make Leader",
-    "empty": "empty slot",
-    "leadership": "Leadership",
+    "empty": "Empty slot",
     "leadership_text": "{0}: +{1} {2} (on base) for the whole team.",
-    "no_leadership": "This team's Leader has no Leadership.",
-    "tip": "Each content has its own team; a monster can be in several.",
-    "on_team": "in the team"
+    "on_team": "In the team"
   },
 
   "runes": {
-    "title": "Runes",
     "no_monster": "— no monster —",
     "monster_item": "{0} · Lv {1}",
     "monster_item_vault": "{0} · Lv {1} · Vault",
-    "choose_monster": "Choose a monster above to equip runes on it.",
-    "active_sets": "Active sets",
-    "no_sets": "None. Gather 2 or 4 runes of the same set.",
-    "tab_runes": "Runes ({0}/{1})",
-    "tab_grindstones": "Grindstones ({0})",
-    "tab_gems": "Gems ({0})",
-    "found": "{0} runes",
+    "tab_runes": "Runes",
+    "tab_grindstones": "Grindstones",
+    "tab_gems": "Enchanted Gems",
+    "found": "Found",
     "select": "Select",
     "select_tip": "Mark several runes to dismantle at once. Equipped runes are left out.",
     "mark_all": "Mark all",
     "unmark": "Unmark",
     "sell_marked": "Dismantle {0} (+{1} Essence)",
-    "grindstones_info": "Grindstone: choose a rune and use \"Grind\" on an HP, Attack, Defense or Speed substat of the same type as the stone. A new stone replaces the old bonus.",
-    "gems_info": "Enchanted Gem: choose a +{0} rune and use \"Enchant\" on a substat to swap it for the gem's. Only one substat per rune.",
-    "no_tools": "None. The Cracked Forge, in the Dungeons, drops Grindstones and Gems.",
-    "rune": "Rune",
-    "info": "Choose a rune from the inventory or a slot on the circle.\n\nSlots 1, 3 and 5 always give flat Attack, Defense and HP. Slots 2, 4 and 6 vary: that is where Speed, Crit Rate, Crit Damage, Resistance, Accuracy and the percentages live.",
-    "set": "{0} set: {1}",
+    "no_tools": "None yet",
     "hint_changed": "{0} → {1} | {2}",
     "hint_new": "new: {0}",
-    "innate": "Innate: {0}",
+    "innate": "Innate: comes with the drop and never grows",
     "innate_tip": "Comes with the drop and never grows.",
     "enchanted_tip": "Enchanted by a Gem. Only one substat per rune can be enchanted.",
-    "milestones": "At +3, +6, +9 and +12 a new substat is added (up to 4) or, with 4, one of them grows. At +15 the main stat makes its final jump. Upgrades never fail.",
-    "maxed": "Fully upgraded.",
     "equipped_on": "Equipped on {0}.",
     "equipped_on_vault": "Equipped on {0}, in the Vault.",
     "inventory_full": "Rune inventory full ({0}): dismantle runes before removing this one.",
@@ -612,10 +535,17 @@
     "stars": "Stars",
     "rarity": "Rarity",
     "upgrade": "Upgrade",
-    "all": "{0}",
+    "all": "All",
     "at_least": "{0} or more",
-    "order_tip": "Order",
-    "order_item": "↓ {0}",
+    "where": "Where",
+    "place": {
+      "Inventory": "Loose",
+      "Collection": "On monsters",
+      "Storage": "In the Vault",
+      "All": "All"
+    },
+    "clear": "Clear",
+    "slot_n": "Slot {0}",
     "order": {
       "Grade": "stars",
       "Level": "upgrade",
@@ -624,18 +554,10 @@
       "Slot": "slot",
       "Newest": "newest"
     },
-    "where": "Where",
-    "place": {
-      "Inventory": "Loose",
-      "Collection": "On monsters",
-      "Storage": "In the Vault",
-      "All": "All"
-    },
-    "clear": "Clear"
+    "sort": "Order"
   },
 
   "compendium": {
-    "title": "Compendium",
     "tab": {
       "basic": "How to play",
       "combat": "Combat",
@@ -655,7 +577,8 @@
       "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
       "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star; the level goes back to 1 and the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
       "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a duplicate copy raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
-      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, new art, purple stars, +{3} HP and +{4} Attack and Defense, plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {5}, {6}, {7} or {8})." }
+      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, new art, purple stars, +{3} HP and +{4} Attack and Defense, plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {5}, {6}, {7} or {8})." },
+      "sanctuary": { "title": "Sanctuary and symbols", "text": "Every button is a symbol: hover it to see its name. In the center of the Sanctuary, the channeling circle gathers Essence, Gold and Mana while you are away, up to {0} hours; touch it to collect. Once a day, the hourglass channels {1} hours at once. The stars around it are your shortcuts: the quill lets you choose them. The Map leads to the Campaign and the Dungeons; the Bag holds monsters, runes, teams, Summoning and the books." }
     },
     "combat": {
       "impetus": { "title": "Impetus", "text": "Each unit has a {0} bar that fills in proportion to Speed; whoever reaches 100% acts. Pushing or delaying the bar changes the order — the \"Next\" strip shows who is coming." },
@@ -673,7 +596,7 @@
       "intro": "The eight stats of every monster. Each one has its Glyph: the one of the rune set that raises it."
     },
     "glyphs": {
-      "intro": "Glyphs are rune symbols, and each one means the same thing throughout the game — on runes, effects and texts. Gebo (×) is stun: wherever it shows up, it is {0}.",
+      "intro": "Glyphs are rune symbols: each rune set has one, and the stat it raises shares it (Tiwaz is Attack on the rune and on the stat sheet). Battle effects have symbols of their own, in the Effects tab.",
       "set": "Set: {0}"
     },
     "effects": {
@@ -694,7 +617,6 @@
   },
 
   "grimoire": {
-    "title": "Grimoire",
     "tab": {
       "summons": "Summons",
       "sets": "Sets",
@@ -703,34 +625,22 @@
       "gems": "Enchanted Gems"
     },
     "not_owned": "not owned",
-    "family": "{0} natural · evolves up to {1}★",
     "copies": "×{0}",
-    "sheet": "{0} · {1} · {2} · {3}",
     "view_awakened": "View awakened ({0})",
-    "stats": "Base stats (no runes)",
-    "level": "{0} Lv {1}",
-    "skills": "Skills",
-    "no_leadership": "No Leadership.",
-    "awaken": "Awakening",
-    "awaken_cost": "Cost: {0} Essence.",
-    "sets_intro": "The 16 sets, each one's Glyph and the Dungeon that drops it.",
+    "awaken": "Awakened form",
+    "awaken_cost": "Awakening: {0} Essence",
     "glyph_of": "Glyph {0} · {1}",
-    "where": "Where: {0}",
     "campaign_only": "Campaign only",
     "main": "Main stat",
     "main_intro": "Value at +0 · +12 · +15, per star.",
-    "stat": "Stat",
     "sub": "Substats",
     "sub_intro": "Each substat roll (on the drop and at +3, +6, +9 and +12), per star.",
     "cost": "Upgrade cost",
     "cost_intro": "Essence from +0 to the level, per star. Upgrades never fail.",
-    "upgrade": "Upgrade",
-    "up_to": "To +{0}",
     "sell": "Dismantle",
     "sell_value": "{0}–{1}",
     "grindstones_intro": "Grindstone bonus per grade. Only HP, Attack, Defense and Speed.",
-    "gems_intro": "Value the Enchanted Gem puts in place of the substat, per grade. The rune must be at +{0}.",
-    "tools_where": "Grindstones and Gems come from the Cracked Forge, in the Dungeons."
+    "gems_intro": "Value the Enchanted Gem puts in place of the substat, per grade. The rune must be at +{0}."
   },
 
   "battle": {
@@ -739,42 +649,24 @@
     "victory": "Victory",
     "defeat": "Defeat",
     "first_victory": "First victory!",
-    "mana": "−{0} Mana",
-    "gains": "+{0} Essence",
-    "gold": "+{0} Gold",
     "account": "The account reached level {0}: +{1} Gold and Mana refilled.",
-    "experience": "+{0} experience for each monster in the team",
-    "leveled_up": "{0} leveled up!",
-    "rune": "{0} rune · {1} {2}: {3}",
-    "tool": "{0}: {1}",
     "timeout": "Time ran out: {0} rounds.",
     "all_fell": "Every monster fell.",
     "defeat_tip": "Level up, evolve, equip runes or awaken monsters.",
     "effects": "Effects",
     "effects_tip": "Shows the effects on each ally and enemy. Clicking a unit opens it too.",
-    "effects_unit": "{0} ({1})",
-    "effect_line": "{0} · {1}{2}\n{3}",
-    "effect_tip": "{0} ({1}): {2}",
-    "shield_value": " · {0} shield",
-    "no_effects": "no effects",
-    "ally": "ally",
-    "enemy": "enemy",
+    "effect_tip": "{0} · {1}",
     "auto_on": "Auto: on",
     "auto_off": "Auto: off",
-    "auto_tip": "On auto the monsters act on their own, using the strongest ready skill.",
     "speed": "Speed {0}×",
     "retreat": "Retreat",
     "retreat_tip": "Leaves the fight with no reward.",
-    "turn_of": "{0}'s turn:",
-    "choose_target": "Choose the target:",
-    "next_up": "Next:",
+    "next_up": "Next up",
     "unit_tip": "{0} · Lv {1}",
-    "impetus_tip": "Impetus: acts when the bar fills.",
+    "impetus_tip": "Impetus",
     "reviving": "reviving…",
     "fallen": "fallen",
-    "wave": "Wave {0}/{1}",
     "wave_banner": "Wave {0}",
-    "round": "Round {0}/{1}",
     "uses": "{0}\n{1}",
     "extra_turn": "Extra turn!",
     "counterattack": "Counterattack!",
@@ -785,6 +677,37 @@
     "immune": "Immune",
     "stunned": "Stunned",
     "loses_turn": "{0}\nloses the turn",
-    "revives": "Revives!"
+    "revives": "Revives!",
+    "wave_tip": "Wave",
+    "round_tip": "Round",
+    "leveled_up_tip": "Leveled up"
+  },
+
+  "destination": {
+    "Campaign": "Campaign",
+    "Dungeons": "Dungeons",
+    "Summon": "Summoning",
+    "Monsters": "Monsters",
+    "Runes": "Runes",
+    "Teams": "Teams",
+    "Shop": "Shop",
+    "Compendium": "Compendium",
+    "Grimoire": "Grimoire",
+    "Map": "Map",
+    "Bag": "Bag",
+    "Config": "Settings"
+  },
+
+  "reward": {
+    "experience": "Experience"
+  },
+
+  "map": {
+    "locked": "Tower and Trials · coming later",
+    "campaign": "Campaign · next: {0}",
+    "stage": "{0}-{1}",
+    "campaign_progress": "{0} of {1} stages cleared",
+    "dungeons": "Dungeons · {0} of {1} open",
+    "dungeons_progress": "{0} of {1} floors cleared"
   }
 }

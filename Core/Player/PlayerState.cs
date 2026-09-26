@@ -74,6 +74,12 @@ namespace Sigilos.Core.Player
 		/// <summary>A última escolha de automático na tela de batalha: a próxima luta começa igual.</summary>
 		public bool AutoBattle { get; set; }
 
+		/// <summary>Os atalhos da constelação do Santuário, um por vaga ("" = vaga vazia); vazio = os de fábrica.</summary>
+		public List<string> Shortcuts { get; set; } = new();
+
+		/// <summary>O idioma escolhido na Configuração (Data/texts/{nome}.json); nulo = o padrão.</summary>
+		public string? Language { get; set; }
+
 		public DateTime LastIdleCollect { get; set; }
 		public DateTime LastQuickChannel { get; set; } = DateTime.MinValue;
 

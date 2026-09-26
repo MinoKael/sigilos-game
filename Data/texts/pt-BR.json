@@ -4,11 +4,8 @@
 {
   "common": {
     "back": "Voltar",
-    "back_to_hub": "Voltar ao Santuário",
     "resolve_tip": "Simula a luta na hora, no automático.",
     "team": "Equipe",
-    "team_incomplete": "A equipe tem {0} de {1} monstros.",
-    "confirm": "Confirmar",
     "yes": "Sim",
     "no": "Não",
     "continue": "Continuar",
@@ -21,29 +18,25 @@
     "resolve_rune": "runa de {0} {1}",
     "resolve_gold": "+{0} Ouro",
     "resolve_account": "conta no nível {0} (+{1} Ouro)",
-    "fight_mana": "Lutar · {0} Mana",
-    "resolve_mana": "Resolver · {0} Mana",
-    "shop": "Loja",
-    "shop_tip": "Compre Mana e Pergaminhos com Ouro.",
-    "auto_battle": "Auto ×{0}",
-    "auto_battle_tip": "Batalha automática: até {0} lutas seguidas, cada uma no tempo que levaria no automático em 2×. Para quando falta Mana ou o inventário de runas enche."
+    "auto_battle": "Batalha automática ×{0}",
+    "auto_battle_tip": "Batalha automática: até {0} lutas seguidas, cada uma no tempo que levaria no automático em 2×. Para quando falta Mana ou o inventário de runas enche.",
+    "close": "Fechar",
+    "fight": "Lutar · {0} Mana",
+    "resolve": "Resolver · {0} Mana"
   },
 
   "auto": {
     "title": "Batalha automática · {0}",
-    "fight": "Luta atual",
-    "run": "Luta {0} de {1}",
-    "time_left": "Faltam cerca de {0}",
+    "time_left": "Tempo restante",
     "stop": "Parar",
     "stop_tip": "Para agora: a luta em andamento não rende nem custa nada.",
     "stopped": "Parada.",
     "done": "Pronto: {0} lutas.",
-    "results": "Resultados",
-    "record": "Vitórias: {0} · Derrotas: {1}",
-    "gains": "−{0} Mana · +{1} Essência · +{2} Ouro · +{3} de experiência",
-    "level_ups": "Subidas de nível na equipe: {0}",
-    "account": "Conta no nível {0}",
-    "runes": "Runas: {0}"
+    "level_ups": "Subidas de nível",
+    "account": "Nível da conta",
+    "runes": "Runas",
+    "victories": "Vitórias",
+    "defeats": "Derrotas"
   },
 
   "entry": {
@@ -65,13 +58,11 @@
     "scroll": "1 Pergaminho",
     "scrolls": "{0} Pergaminhos",
     "mana_of": "{0}/{1}",
-    "tip": {
-      "mana": "Mana: toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {0} por hora até o máximo, que vai de {1} no nível 1 da conta a {2} no nível {3}. A Loja e a subida de nível da conta passam do máximo.",
-      "essence": "Essência: sobe o nível e evolui monstros, paga o Despertar e melhora runas.",
-      "gold": "Ouro: a moeda rara. Compra Mana e Pergaminhos na Loja. Vem da canalização, de cada nível da conta e da primeira vitória em cada andar de Masmorra.",
-      "scrolls": "Pergaminhos Místicos: invocam monstros.",
-      "fragments": "Fragmentos: vêm de monstros liberados e pagam a evolução."
-    }
+    "mana": "Mana",
+    "essence": "Essência",
+    "gold": "Ouro",
+    "scrolls_name": "Pergaminhos Místicos",
+    "fragments": "Fragmentos"
   },
 
   "element": {
@@ -123,7 +114,20 @@
     "CritDamage": "Dano crítico",
     "Resistance": "Resistência",
     "Accuracy": "Precisão",
-    "percent": "{0}%"
+    "percent": "{0}%",
+    "short": {
+      "HealthFlat": "VID",
+      "HealthPercent": "VID%",
+      "AttackFlat": "ATQ",
+      "AttackPercent": "ATQ%",
+      "DefenseFlat": "DEF",
+      "DefensePercent": "DEF%",
+      "Speed": "VEL",
+      "Crit": "CRI",
+      "CritDamage": "DCR",
+      "Resistance": "RES",
+      "Accuracy": "PRE"
+    }
   },
 
   "set": {
@@ -236,72 +240,58 @@
   "effect": {
     "Shield": {
       "name": "Escudo",
-      "short": "ESC",
       "info": "Absorve dano até o valor do escudo."
     },
     "Burn": {
       "name": "Queimadura",
-      "short": "QMD",
       "info": "Perde {0} da Vida máxima no começo de cada turno. Acumula até {1}."
     },
     "Stun": {
       "name": "Atordoamento",
-      "short": "ATD",
       "info": "Perde o próximo turno."
     },
     "Taunt": {
       "name": "Provocação",
-      "short": "PRV",
       "info": "Só pode mirar em quem provocou."
     },
     "Hidden": {
       "name": "Oculto",
-      "short": "OCL",
       "info": "Não pode ser alvo de ataques únicos."
     },
     "Curse": {
       "name": "Maldição",
-      "short": "MAL",
       "info": "Recebe {0} a mais de dano."
     },
     "Blind": {
       "name": "Cegueira",
-      "short": "CEG",
       "info": "Cada golpe tem {0} de chance de errar."
     },
     "Ward": {
       "name": "Égide",
-      "short": "ÉGI",
       "info": "Anula o próximo golpe recebido."
     },
     "Foresight": {
       "name": "Presságio",
-      "short": "PRS",
       "info": "O próximo golpe causado é crítico."
     },
     "Immunity": {
       "name": "Imunidade",
-      "short": "IMU",
       "info": "Nenhum efeito negativo pega."
     },
     "AttackUp": {
       "name": "Ataque+",
-      "short": "ATQ+",
       "info": "+{0} de Ataque."
     },
     "AttackDown": {
       "name": "Ataque−",
-      "short": "ATQ−",
       "info": "−{0} de Ataque."
     },
     "DefenseUp": {
       "name": "Defesa+",
-      "short": "DEF+",
       "info": "+{0} de Defesa."
     },
     "SpeedUp": {
       "name": "Velocidade+",
-      "short": "VEL+",
       "info": "+{0} de Velocidade."
     }
   },
@@ -337,7 +327,9 @@
       "Recovery": "Recuperação +{0}",
       "EffectRate": "Chance de efeito +{0}",
       "Cooldown": "Recarga −{0}"
-    }
+    },
+    "passive_name": "Passiva · {0}",
+    "cooldown_tip": "Recarga em turnos"
   },
 
   "passive": {
@@ -365,159 +357,103 @@
   },
 
   "card": {
-    "tip": "{0}\n{1} · {2}",
-    "level": "Nv {0}"
+    "tip": "{0}\n{1} · {2}"
   },
 
   "rune": {
     "title": "{0} ({1})",
-    "empty": "vazio",
     "ground": "{0} ({1} afiado)",
     "tip": "{0} · {1} {2} +{3}\n{4}",
     "owner": "Equipada em {0}",
-    "owner_vault": "Equipada em {0} (Baú)"
+    "owner_vault": "Equipada em {0} (Baú)",
+    "empty_slot": "Espaço {0}"
   },
 
   "hub": {
-    "title": "Sigilos",
-    "subtitle": "Santuário do Conjurador · Planície dos Menires",
-    "collect": "Coletar",
-    "quick_channel": "Canalização Rápida",
+    "quick_channel": "Canalização Rápida ({0} h)",
     "quick_channel_tip": "Uma vez por dia: {0} horas de ociosidade na hora.",
-    "channeling": "Canalizando há {0}h{1} (máx. {2} h)",
-    "reward": "+{0} Essência   +{1} Ouro   +{2} Mana",
-    "circles": "Círculos de canalização",
-    "circles_text": "Com o jogo fechado, seus círculos continuam canalizando Essência, Ouro e Mana ({0} por hora, até o máximo).",
-    "account": "Conta nível {0} · Mana máxima {1}",
+    "channeling": "Canalização · {0}h{1} de {2} h",
+    "account": "Conta nível {0} · {1}/{2} de experiência",
     "account_tip": "{0}/{1} de experiência. Toda vitória dá experiência também à conta; cada nível dá {2} Ouro, enche a Mana e aumenta a Mana máxima, até {4} no nível {3}.",
-    "account_max": "Conta nível {0} (máximo) · Mana máxima {1}",
+    "account_max": "Conta nível {0} (máximo)",
     "account_max_tip": "A conta chegou ao nível {0}, o máximo.",
-    "campaign": "Campanha · Fase {0}: {1}",
-    "first_summon_tip": "Sua primeira invocação é uma 5★ garantida. Abra a Invocação.",
-    "first_stage_tip": "Os monstros novos já entram na equipe da Campanha. Vença a primeira fase!",
-    "campaign_team": "Equipe da Campanha · a primeira é a Líder",
-    "monsters": "Monstros",
-    "monsters_tip": "Coleção, Baú, níveis, evolução, Despertar, habilidades e liberar.",
-    "teams": "Equipes",
-    "teams_tip": "Uma equipe para a Campanha e uma para cada Masmorra.",
-    "runes": "Runas",
-    "runes_tip": "Inventário de runas com busca, Pedras de Afiar e Gemas Encantadas.",
-    "dungeons": "Masmorras",
-    "dungeons_tip": "Runas de 5 e 6 estrelas e pedras. Cada vitória custa Mana.",
-    "summon": "Invocação",
-    "summon_tip": "Gaste Pergaminhos para invocar monstros.",
-    "shop": "Loja",
-    "shop_tip": "Troque Ouro por Mana e Pergaminhos.",
-    "compendium": "Compêndio",
-    "compendium_tip": "As regras: combate, atributos, Glifos, efeitos e runas.",
-    "grimoire": "Grimório",
-    "grimoire_tip": "Tudo o que existe: invocações, conjuntos, tabelas de runa, pedras e gemas."
+    "edit_shortcuts": "Editar atalhos",
+    "empty_shortcut": "Vazio"
   },
 
   "campaign": {
-    "title": "Planície dos Menires",
-    "subtitle": "Região 1 · sem regra de batalha: ensina o básico.",
-    "stage": "Fase",
     "stage_title": "{0}. {1}",
-    "number_cleared": "{0} ✓",
-    "levels": "Inimigos {0} · equipe {1}",
-    "wave": "Onda {0}:",
+    "wave": "Onda {0}",
     "enemy_tip": "{0} ({1})",
-    "reward": "Vitória: {0} Essência, {1} de experiência para a equipe e a conta e {2} de chance de runa {3}.",
-    "reward_first": "Primeira vitória: {0}, {1} Essência, {2} de experiência para a equipe e a conta e uma runa {3}.",
-    "line": "“{0}”"
+    "cleared": "Vencida",
+    "first_clear": "Primeira vitória",
+    "foes": "Inimigos",
+    "rune_first": "Uma runa {0}, sempre",
+    "rune_chance": "{0} de chance de uma runa {1}"
   },
 
   "dungeons": {
-    "title": "Masmorras",
-    "subtitle": "Runas de 5 e 6 estrelas de conjuntos certos, Pedras de Afiar e Gemas. Cada vitória custa a Mana do andar; a derrota não custa nada.",
     "kind": {
       "Runes": "Runas",
       "Tools": "Pedras"
     },
-    "progress": "{0} · {1} de {2} andares vencidos",
-    "locked": "Abre depois da fase {0} da Campanha.",
-    "drops_runes": "Solta runas de 4 a 6 estrelas, só destes conjuntos:",
-    "drops_tools": "Solta Pedras de Afiar e Gemas Encantadas, que servem em qualquer runa.",
-    "team": "Equipe desta Masmorra: {0} de {1}",
-    "floor": "Andar {0} · inimigos {1}",
-    "floor_cleared": "Andar {0} · inimigos {1} ✓",
+    "locked": "{0}: abre depois da fase {1} da Campanha",
+    "floor": "Andar {0}",
     "drop_rune": "Runa {0}, no mínimo {1}",
     "drop_tool": "{0} × pedra {1}",
-    "reward": "+{0} Essência, +{1} de experiência",
-    "first_gold": " · 1ª vitória: +{0} Ouro"
+    "first_gold": "Ouro da primeira vitória",
+    "grindstones": "Pedras de Afiar",
+    "gems": "Gemas Encantadas"
   },
 
   "summon": {
-    "title": "Invocação",
-    "ritual": "O ritual",
-    "rates": "Taxas: 3★ {0} · 4★ {1} · 5★ {2}.\nLuz e Trevas têm metade da chance das outras variantes.",
     "pity": "5★ garantida em {0} invocações",
-    "copies": "Cada invocação é um monstro novo, nas estrelas naturais e no nível 1, mesmo que você já tenha outro igual. Cópias repetidas sobem habilidades ou viram Fragmentos em Monstros. Com a coleção cheia ({0}), o monstro vai para o Baú.",
     "pull": "Invocar {0} ({1})",
     "shop": "Comprar Pergaminhos",
     "shop_tip": "A Loja troca Ouro por Pergaminhos.",
     "new": "Nova!",
     "copy": "Cópia",
-    "sent_to_vault": "→ Baú"
+    "sent_to_vault": "Mandado ao Baú",
+    "rate": "Chance de {0}★"
   },
 
   "shop": {
-    "title": "Loja",
-    "subtitle": "Troque Ouro por Mana e Pergaminhos. O Ouro vem da canalização, de cada nível da conta ({0} Ouro) e da primeira vitória em cada andar de Masmorra.",
     "item": {
       "Mana": "{0} Mana",
       "Scrolls": "{0} Pergaminhos"
     },
-    "info_mana": "Mana para mais lutas. Pode passar do máximo.",
-    "info_scrolls": "Pergaminhos Místicos para a Invocação.",
-    "price": "{0} Ouro",
     "no_gold": "Faltam {0} de Ouro.",
     "confirm": "Comprar {0} ({1}) por {2} Ouro?",
-    "bought": "Comprado: +{0}."
+    "bought": "Comprado: +{0}.",
+    "buy": "Comprar {0} por {1} Ouro"
   },
 
   "monsters": {
-    "title": "Monstros",
-    "collection": "Coleção {0}/{1}",
-    "vault": "Baú ({0})",
-    "in_team": "em equipe",
-    "vault_empty": "O Baú está vazio. Guarde aqui os monstros que você não usa: eles não ocupam vaga na coleção.",
-    "collection_empty": "Nenhum monstro ainda. Faça uma Invocação.",
-    "choose": "Escolha um monstro.",
-    "in_vault": "No Baú: não luta, mas guarda as runas (elas não ocupam o inventário).",
-    "no_team": "Fora de equipes.",
+    "collection": "Coleção",
+    "vault": "Baú",
+    "vault_empty": "O Baú está vazio.",
+    "collection_empty": "Nenhum monstro ainda.",
+    "in_vault": "No Baú",
     "teams": "Em equipe: {0}",
-    "stats": "Atributos · base e bônus das runas",
-    "runes": "Runas",
-    "no_set": "Nenhum conjunto completo.",
-    "skills": "Habilidades",
-    "skill_locked": "(liberada no Despertar)",
+    "skill_locked": "Liberada no Despertar",
     "leadership": "Liderança · +{0} de {1} (sobre a base) para a equipe, só como Líder",
-    "awakened": "Desperto · {0}",
-    "awaken": "Despertar",
-    "awakened_text": "Nome próprio, desenho novo e o bônus do Despertar.",
-    "awaken_text": "Vira {0}: +{1} de Vida, +{2} de Ataque e Defesa, desenho novo e {3}.",
-    "level": "Nível {0} de {1}",
-    "natural_stars": "Estrelas naturais: {0}. Todo monstro evolui até 6★.",
-    "level_max": "Nível {0} (máximo)",
+    "level": "Nv {0}/{1}",
+    "natural_stars": "Estrelas naturais: {0}",
+    "level_max": "Nível máximo",
     "experience": "Experiência: {0}/{1}",
     "element_role": "{0} · {1}",
     "level_up": "+1 nível ({0} Essência)",
     "level_up_tip": "Infunde Essência como experiência: {0} de experiência por Essência.",
-    "max_level_button": "Nível máximo ({0})",
-    "max_level_tip": "Infunde toda a Essência que der, até o nível {0}.",
-    "evolve": "Evoluir para {0} ({1} Essência, {2} Fragmentos)",
+    "max_level_button": "Até o nível {0} ({1} Essência)",
+    "evolve": "Evoluir para {0}: {1} Essência, {2} Fragmentos · nível máximo {3}",
     "evolve_tip": "Ganha uma estrela e volta ao nível 1; o nível máximo passa a {0}.",
-    "awaken_button": "Despertar ({0} Essência)",
-    "awaken_tip": "Para sempre.",
+    "awaken_button": "Despertar em {0} ({1} Essência)",
     "runes_button": "Runas",
-    "runes_tip": "Equipar, melhorar, afiar e encantar runas.",
     "store": "Guardar no Baú",
     "store_tip": "Sai de todas as equipes e leva as runas junto: elas deixam de ocupar o inventário.",
     "take_from_vault": "Tirar do Baú",
     "collection_full": "A coleção está cheia.",
-    "fuse": "Subir habilidade ({0})",
+    "fuse": "Subir habilidade: fundir uma cópia ({0} cópias, faltam {1} níveis)",
     "fuse_full": "Todas as habilidades no nível máximo.",
     "fuse_tip": "Funde outra cópia da mesma variante: uma habilidade sorteada sobe um nível (faltam {0}). A cópia some.",
     "fuse_item": "{0} · Nv {1}{2}",
@@ -528,67 +464,54 @@
     "release_confirm": "Liberar {0} (Nv {1}) por {2} Fragmentos? Não dá para desfazer.",
     "select": "Selecionar",
     "select_tip": "Marque vários monstros (nas duas abas) para fundir no monstro da ficha ou liberar de uma vez.",
-    "marked": "{0} marcados",
+    "marked": "Marcados",
     "mark_copies": "Marcar cópias de {0}",
     "mark_copies_tip": "Marca todas as outras cópias da mesma variante, na coleção e no Baú.",
     "unmark": "Desmarcar",
-    "fuse_marked": "Fundir em {0} ({1})",
+    "fuse_marked": "Fundir {1} cópias em {0} (faltam {2} níveis de habilidade)",
     "fuse_marked_tip": "Cada cópia sobe uma habilidade sorteada do monstro da ficha, as cópias mais fracas primeiro. Faltam {0} níveis.",
     "fuse_marked_invalid": "Marque só cópias de {0} (sem ele mesmo). Faltam {1} níveis de habilidade.",
     "fuse_many_confirm": "Fundir {0} cópias em {1}? Cada uma sobe uma habilidade sorteada (faltam {2} níveis). As cópias somem; as runas delas voltam ao inventário.",
     "release_marked": "Liberar {0} (+{1} Fragmentos)",
     "release_many_confirm": "Liberar {0} monstros por {1} Fragmentos? Eles somem para sempre; as runas voltam ao inventário.",
-    "valuable_warning": "Atenção: a seleção tem monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas."
+    "valuable_warning": "Atenção: a seleção tem monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas.",
+    "page": {
+      "stats": "Atributos",
+      "runes": "Runas",
+      "skills": "Habilidades",
+      "awaken": "Despertar"
+    }
   },
 
   "teams": {
-    "title": "Equipes",
     "campaign": "Campanha",
-    "capacity": "Equipe · {0} vagas, a primeira é a Líder",
-    "collection": "Coleção · clique para pôr ou tirar da equipe",
-    "content_tip": "{0} de {1} na equipe",
-    "content_locked": "Masmorra ainda fechada; a equipe já pode ser montada.",
+    "content_locked": "{0} (fechada)",
     "leader": "Líder",
-    "take_out_tip": "Clique para tirar da equipe.",
     "make_leader": "Tornar Líder",
-    "empty": "vaga",
-    "leadership": "Liderança",
+    "empty": "Vaga vazia",
     "leadership_text": "{0}: +{1} de {2} (sobre a base) para toda a equipe.",
-    "no_leadership": "A Líder desta equipe não tem Liderança.",
-    "tip": "Cada conteúdo tem a sua equipe; um monstro pode estar em várias.",
-    "on_team": "na equipe"
+    "on_team": "Na equipe"
   },
 
   "runes": {
-    "title": "Runas",
     "no_monster": "— nenhum monstro —",
     "monster_item": "{0} · Nv {1}",
     "monster_item_vault": "{0} · Nv {1} · Baú",
-    "choose_monster": "Escolha um monstro acima para equipar runas nele.",
-    "active_sets": "Conjuntos ativos",
-    "no_sets": "Nenhum. Junte 2 ou 4 runas do mesmo conjunto.",
-    "tab_runes": "Runas ({0}/{1})",
-    "tab_grindstones": "Pedras ({0})",
-    "tab_gems": "Gemas ({0})",
-    "found": "{0} runas",
+    "tab_runes": "Runas",
+    "tab_grindstones": "Pedras de Afiar",
+    "tab_gems": "Gemas Encantadas",
+    "found": "Encontradas",
     "select": "Selecionar",
     "select_tip": "Marque várias runas para desfazer de uma vez. Runas equipadas não entram.",
     "mark_all": "Marcar todas",
     "unmark": "Desmarcar",
     "sell_marked": "Desfazer {0} (+{1} Essência)",
-    "grindstones_info": "Pedra de Afiar: escolha uma runa e use \"Afiar\" num subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo.",
-    "gems_info": "Gema Encantada: escolha uma runa +{0} e use \"Encantar\" num subatributo para trocá-lo pelo da gema. Só um subatributo por runa.",
-    "no_tools": "Nenhuma. A Forja Rachada, nas Masmorras, solta Pedras de Afiar e Gemas.",
-    "rune": "Runa",
-    "info": "Escolha uma runa do inventário ou um espaço no círculo.\n\nEspaços 1, 3 e 5 dão sempre Ataque, Defesa e Vida fixos. Os espaços 2, 4 e 6 variam: é neles que moram Velocidade, Crítico, Dano crítico, Resistência, Precisão e as porcentagens.",
-    "set": "Conjunto {0}: {1}",
+    "no_tools": "Nenhuma ainda",
     "hint_changed": "{0} → {1} | {2}",
     "hint_new": "novo: {0}",
-    "innate": "Nativo: {0}",
+    "innate": "Nativo: vem no drop e nunca cresce",
     "innate_tip": "Vem no drop e nunca cresce.",
     "enchanted_tip": "Encantado por Gema. Só um subatributo por runa pode ser encantado.",
-    "milestones": "Em +3, +6, +9 e +12 entra um subatributo novo (até 4) ou, com 4, um deles cresce. Em +15 o principal dá o salto final. A melhora nunca falha.",
-    "maxed": "Melhora máxima.",
     "equipped_on": "Equipada em {0}.",
     "equipped_on_vault": "Equipada em {0}, no Baú.",
     "inventory_full": "Inventário de runas cheio ({0}): desfaça runas antes de tirar esta.",
@@ -609,10 +532,17 @@
     "stars": "Estrelas",
     "rarity": "Raridade",
     "upgrade": "Melhora",
-    "all": "{0}",
+    "all": "Todos",
     "at_least": "{0} ou mais",
-    "order_tip": "Ordem",
-    "order_item": "↓ {0}",
+    "where": "Onde",
+    "place": {
+      "Inventory": "Soltas",
+      "Collection": "Em monstros",
+      "Storage": "No Baú",
+      "All": "Todas"
+    },
+    "clear": "Limpar",
+    "slot_n": "Espaço {0}",
     "order": {
       "Grade": "estrelas",
       "Level": "melhora",
@@ -621,18 +551,10 @@
       "Slot": "espaço",
       "Newest": "mais nova"
     },
-    "where": "Onde",
-    "place": {
-      "Inventory": "Soltas",
-      "Collection": "Em monstros",
-      "Storage": "No Baú",
-      "All": "Todas"
-    },
-    "clear": "Limpar"
+    "sort": "Ordem"
   },
 
   "compendium": {
-    "title": "Compêndio",
     "tab": {
       "basic": "Como jogar",
       "combat": "Combate",
@@ -652,7 +574,8 @@
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela; o nível volta a 1 e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
       "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia repetida sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
-      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, desenho novo, estrelas roxas, +{3} de Vida e +{4} de Ataque e Defesa, e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {5}, {6}, {7} ou {8})." }
+      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, desenho novo, estrelas roxas, +{3} de Vida e +{4} de Ataque e Defesa, e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {5}, {6}, {7} ou {8})." },
+      "sanctuary": { "title": "Santuário e símbolos", "text": "Todo botão é um símbolo: passe o mouse para ver o nome. No centro do Santuário, o círculo de canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas; toque nele para coletar. Uma vez por dia, a ampulheta canaliza {1} horas de uma vez. As estrelas em volta são os seus atalhos: a pena deixa escolher quais. O Mapa leva à Campanha e às Masmorras; a Bolsa guarda monstros, runas, equipes, a Invocação e os livros." }
     },
     "combat": {
       "impetus": { "title": "Ímpeto", "text": "Cada unidade tem uma barra de {0} que enche em proporção à Velocidade; quem chega a 100% age. Empurrar ou atrasar a barra muda a ordem — a faixa \"Próximos\" mostra quem vem." },
@@ -670,7 +593,7 @@
       "intro": "Os oito atributos de todo monstro. Cada um tem o seu Glifo: o do conjunto de runas que o aumenta."
     },
     "glyphs": {
-      "intro": "Os Glifos são símbolos de runa, e cada um quer dizer uma coisa em todo o jogo — nas runas, nos efeitos e nos textos. Gebo (×) é atordoar: onde aparecer, é {0}.",
+      "intro": "Glifos são símbolos de runa: cada conjunto tem o seu, e o atributo que ele aumenta usa o mesmo (Tiwaz é Ataque, na runa e na ficha). Os efeitos de batalha têm símbolos próprios, na aba Efeitos.",
       "set": "Conjunto: {0}"
     },
     "effects": {
@@ -691,7 +614,6 @@
   },
 
   "grimoire": {
-    "title": "Grimório",
     "tab": {
       "summons": "Invocações",
       "sets": "Conjuntos",
@@ -700,34 +622,22 @@
       "gems": "Gemas Encantadas"
     },
     "not_owned": "não obtida",
-    "family": "{0} naturais · evolui até {1}★",
     "copies": "×{0}",
-    "sheet": "{0} · {1} · {2} · {3}",
     "view_awakened": "Ver desperta ({0})",
-    "stats": "Atributos de base (sem runas)",
-    "level": "{0} Nv {1}",
-    "skills": "Habilidades",
-    "no_leadership": "Sem Liderança.",
-    "awaken": "Despertar",
-    "awaken_cost": "Custo: {0} Essência.",
-    "sets_intro": "Os 16 conjuntos, o Glifo de cada um e a Masmorra que solta.",
+    "awaken": "Forma desperta",
+    "awaken_cost": "Despertar: {0} Essência",
     "glyph_of": "Glifo {0} · {1}",
-    "where": "Onde: {0}",
     "campaign_only": "só na Campanha",
     "main": "Atributo principal",
     "main_intro": "Valor em +0 · +12 · +15, por estrela.",
-    "stat": "Atributo",
     "sub": "Subatributos",
     "sub_intro": "Cada sorteio de subatributo (no drop e em +3, +6, +9 e +12), por estrela.",
     "cost": "Custo de melhora",
     "cost_intro": "Essência de +0 até o nível, por estrela. A melhora nunca falha.",
-    "upgrade": "Melhora",
-    "up_to": "Até +{0}",
     "sell": "Desfazer",
     "sell_value": "{0}–{1}",
     "grindstones_intro": "Bônus da Pedra de Afiar por grau. Só Vida, Ataque, Defesa e Velocidade.",
-    "gems_intro": "Valor que a Gema Encantada põe no lugar do subatributo, por grau. A runa precisa estar em +{0}.",
-    "tools_where": "Pedras de Afiar e Gemas vêm da Forja Rachada, nas Masmorras."
+    "gems_intro": "Valor que a Gema Encantada põe no lugar do subatributo, por grau. A runa precisa estar em +{0}."
   },
 
   "battle": {
@@ -736,42 +646,24 @@
     "victory": "Vitória",
     "defeat": "Derrota",
     "first_victory": "Primeira vitória!",
-    "mana": "−{0} Mana",
-    "gains": "+{0} Essência",
-    "gold": "+{0} Ouro",
     "account": "A conta subiu para o nível {0}: +{1} Ouro e a Mana encheu.",
-    "experience": "+{0} de experiência para cada monstro da equipe",
-    "leveled_up": "{0} subiu de nível!",
-    "rune": "Runa {0} · {1} {2}: {3}",
-    "tool": "{0}: {1}",
     "timeout": "O tempo acabou: {0} rodadas.",
     "all_fell": "Todos os monstros caíram.",
     "defeat_tip": "Suba o nível, evolua, equipe runas ou desperte monstros.",
     "effects": "Efeitos",
     "effects_tip": "Mostra os efeitos sobre cada aliado e inimigo. Clicar numa unidade também abre.",
-    "effects_unit": "{0} ({1})",
-    "effect_line": "{0} · {1}{2}\n{3}",
-    "effect_tip": "{0} ({1}): {2}",
-    "shield_value": " · {0} de escudo",
-    "no_effects": "sem efeitos",
-    "ally": "aliado",
-    "enemy": "inimigo",
+    "effect_tip": "{0} · {1}",
     "auto_on": "Automático: ligado",
     "auto_off": "Automático: desligado",
-    "auto_tip": "No automático os monstros agem sozinhos, usando a habilidade pronta mais forte.",
     "speed": "Velocidade {0}×",
     "retreat": "Recuar",
     "retreat_tip": "Sai da luta sem recompensa.",
-    "turn_of": "Vez de {0}:",
-    "choose_target": "Escolha o alvo:",
-    "next_up": "Próximos:",
+    "next_up": "Próximos",
     "unit_tip": "{0} · Nv {1}",
-    "impetus_tip": "Ímpeto: age quando a barra enche.",
+    "impetus_tip": "Ímpeto",
     "reviving": "renascendo…",
     "fallen": "caído",
-    "wave": "Onda {0}/{1}",
     "wave_banner": "Onda {0}",
-    "round": "Rodada {0}/{1}",
     "uses": "{0}\n{1}",
     "extra_turn": "Turno extra!",
     "counterattack": "Contra-ataque!",
@@ -782,6 +674,37 @@
     "immune": "Imune",
     "stunned": "Atordoado",
     "loses_turn": "{0}\nperde o turno",
-    "revives": "Renasce!"
+    "revives": "Renasce!",
+    "wave_tip": "Onda",
+    "round_tip": "Rodada",
+    "leveled_up_tip": "Subiram de nível"
+  },
+
+  "destination": {
+    "Campaign": "Campanha",
+    "Dungeons": "Masmorras",
+    "Summon": "Invocação",
+    "Monsters": "Monstros",
+    "Runes": "Runas",
+    "Teams": "Equipes",
+    "Shop": "Loja",
+    "Compendium": "Compêndio",
+    "Grimoire": "Grimório",
+    "Map": "Mapa",
+    "Bag": "Bolsa",
+    "Config": "Configuração"
+  },
+
+  "reward": {
+    "experience": "Experiência"
+  },
+
+  "map": {
+    "locked": "Torre e Provações · em breve",
+    "campaign": "Campanha · próxima: {0}",
+    "stage": "{0}-{1}",
+    "campaign_progress": "{0} de {1} fases vencidas",
+    "dungeons": "Masmorras · {0} de {1} abertas",
+    "dungeons_progress": "{0} de {1} andares vencidos"
   }
 }

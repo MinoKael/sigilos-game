@@ -8,7 +8,8 @@ Este repositório é o **MVP**: combate 5 contra 5 com Ímpeto e habilidades com
 e Passiva), gacha com garantia em que cada invocação é uma cópia nova, coleção com Baú, cópias fundidas
 sobem o nível de uma habilidade sorteada, uma equipe por conteúdo, ociosidade, estrelas e experiência
 pela tabela de Summoners War (Evolução até 6★ com Essência e Fragmentos), Despertar que dá habilidade
-nova (3★), habilidade mais forte (4★) ou atributo (5★), runas e atributos iguais aos de Summoners War (1 a 6
+nova (3★), habilidade mais forte (4★) ou atributo (5★), interface de símbolos (botões são sigilos, o nome
+vem na dica; texto explicativo só no Compêndio), runas e atributos iguais aos de Summoners War (1 a 6
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
 melhora nunca falha), 9 famílias de invocação (45 variantes; os inimigos comuns são essas invocações
 reforçadas), a região 1 (20 fases), cinco Masmorras, Batalha automática (30 lutas seguidas), Mana para
@@ -40,7 +41,8 @@ turno a turno.
 
 Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro save;
 `--language=nome` usa `Data/texts/nome.json` (padrão: `en`; `pt-BR` para português);
-`--screen=campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela direto.
+`--screen=map|bag|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela direto.
+O idioma também pode ser trocado no jogo, na engrenagem do Santuário (fica salvo).
 
 ## Textos e tradução
 
@@ -70,8 +72,17 @@ Detalhes, regras de dependência e onde mexer para cada tipo de mudança: [docs/
 ## Arte
 
 Toda imagem vem do Wikimedia Commons: os 16 Glifos (letras rúnicas do futhark antigo) e símbolos
-alquímicos (elementos) em domínio público, criaturas (normais e despertas) e ícones do game-icons.net (CC BY 3.0). Lista e autores em
+alquímicos (elementos) em domínio público, criaturas (normais e despertas), ícones e os símbolos dos
+efeitos de batalha do game-icons.net (CC BY 3.0). Lista e autores em
 [Assets/CREDITOS.md](Assets/CREDITOS.md). O shader `doodle` e parte dos SVGs vieram de Rabiscos&Runas.
+
+Os SVG são a fonte; o jogo usa PNG renderizados pelo Inkscape em 32, 64, 128, 256 e 512 px
+(`Assets/Rendered`), porque o SVG rasterizado pelo Godot e depois escalado fica serrilhado. Depois de
+baixar ou trocar um SVG:
+
+```bash
+py Tools/art/render_png.py
+```
 
 Para baixar de novo (o Python do Inkscape não tem certificados SSL, use `py`; se o Wikimedia
 responder 429, use o Chromium):

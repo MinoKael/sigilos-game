@@ -28,12 +28,14 @@ namespace Sigilos.UI
 		/// <summary>O que o atributo faz. {0} é a Defesa que corta o dano pela metade; {1}, a Resistência mínima.</summary>
 		public static string Explain(Stat stat) => T($"stat_info.{stat}", Math.Round(BattleRules.DefenseConstant), Percent(BattleRules.MinResistChance));
 		public static string Name(RuneStat stat) => T($"rune_stat.{stat}");
+
+		/// <summary>A sigla que cabe num sigilo: "HP%", "ATK", "SPD".</summary>
+		public static string Short(RuneStat stat) => T($"rune_stat.short.{stat}");
 		public static string Name(RuneSet set) => T($"set.{set}");
 		public static string Name(Glyph glyph) => T($"glyph.{glyph}.name");
 		public static string Meaning(Glyph glyph) => T($"glyph.{glyph}.meaning");
 		public static string Name(RuneRarity rarity) => T($"rarity.{rarity}");
 		public static string Name(StatusKind status) => T($"effect.{status}.name");
-		public static string Short(StatusKind status) => T($"effect.{status}.short");
 		public static string Name(DungeonKind kind) => T($"dungeons.kind.{kind}");
 		public static string Name(RuneSort sort) => T($"filter.order.{sort}");
 
@@ -102,7 +104,25 @@ namespace Sigilos.UI
 			return T("awaken.bonus", StatBlock.IsAbsolute(stat) ? string.Format(Culture, "+{0:0}", value) : $"+{Percent(value)}", Name(stat));
 		}
 
+		/// <summary>Só o valor do bônus de Despertar: "+15", "+25%".</summary>
+		public static string AwakeningAmount(Stat stat)
+		{
+			var value = Awakening.Bonus(stat);
+			return StatBlock.IsAbsolute(stat) ? string.Format(Culture, "+{0:0}", value) : $"+{Percent(value)}";
+		}
+
 		public static string Stars(int count) => new('★', count);
+
+		/// <summary>Número romano pequeno: ondas e habilidades (I, II, III).</summary>
+		public static string Roman(int number) => number switch
+		{
+			1 => "I",
+			2 => "II",
+			3 => "III",
+			4 => "IV",
+			5 => "V",
+			_ => number.ToString(Culture),
+		};
 
 		public static string Scrolls(int count) => count == 1 ? T("currency.scroll") : T("currency.scrolls", count);
 
@@ -110,29 +130,38 @@ namespace Sigilos.UI
 
 		public static string Percent(double fraction) => string.Format(Culture, "{0:0.#}%", fraction * 100);
 
+		/// <summary>Número curto para cápsula e plaquinha de sigilo: 12345 → 12.3k, 1500000 → 1.5M.</summary>
+		public static string Short(int value) => value switch
+		{
+			>= 1_000_000 => string.Format(Culture, "{0:0.#}M", value / 1_000_000.0),
+			>= 10_000 => string.Format(Culture, "{0:0.#}k", value / 1000.0),
+			_ => value.ToString(Culture),
+		};
+
 		// Termos e Glifos --------------------------------------------------------------------------
 
 		/// <summary>O Glifo que quer dizer este atributo: o do conjunto que o aumenta.</summary>
 		public static Glyph GlyphOf(Stat stat) => RuneSets.All.First(s => s.Stat == stat).Glyph;
 
-		/// <summary>O Glifo de um efeito, quando ele tem um (atordoar é Gebo, Defesa+ é Algiz...).</summary>
-		public static Glyph? GlyphOf(StatusKind status) => status switch
+		/// <summary>O Glifo de um atributo de runa: o do atributo que ele soma (fixo ou percentual).</summary>
+		public static Glyph GlyphOf(RuneStat stat) => GlyphOf(stat switch
 		{
-			StatusKind.Stun => RuneSets.For(RuneSet.Despair).Glyph,
-			StatusKind.Shield => RuneSets.For(RuneSet.Shield).Glyph,
-			StatusKind.Immunity => RuneSets.For(RuneSet.Will).Glyph,
-			StatusKind.AttackUp or StatusKind.AttackDown => GlyphOf(Stat.Attack),
-			StatusKind.DefenseUp => GlyphOf(Stat.Defense),
-			StatusKind.SpeedUp => GlyphOf(Stat.Speed),
-			StatusKind.Foresight => GlyphOf(Stat.Crit),
-			_ => null,
-		};
+			RuneStat.HealthFlat or RuneStat.HealthPercent => Stat.Health,
+			RuneStat.AttackFlat or RuneStat.AttackPercent => Stat.Attack,
+			RuneStat.DefenseFlat or RuneStat.DefensePercent => Stat.Defense,
+			RuneStat.Speed => Stat.Speed,
+			RuneStat.Crit => Stat.Crit,
+			RuneStat.CritDamage => Stat.CritDamage,
+			RuneStat.Resistance => Stat.Resistance,
+			_ => Stat.Accuracy,
+		});
 
 		/// <summary>Um termo único do jogo, em dourado, com o Glifo na frente quando tem.</summary>
 		public static string Term(string text, Glyph? glyph = null) =>
 			$"{(glyph is { } g ? $"[glyph={g}]" : "")}[color=#{Palette.Gold.ToHtml(false)}]{text}[/color]";
 
-		public static string Term(StatusKind status) => Term(Name(status), GlyphOf(status));
+		/// <summary>Um efeito de batalha em dourado, com o símbolo dele na frente ([effect=Nome]).</summary>
+		public static string Term(StatusKind status) => $"[effect={status}][color=#{Palette.Gold.ToHtml(false)}]{Name(status)}[/color]";
 
 		public static string Term(RuneSet set) => Term(Name(set), RuneSets.For(set).Glyph);
 
@@ -270,12 +299,12 @@ namespace Sigilos.UI
 				.Concat(Keys<Stat>("stat.{0}"))
 				.Concat(Keys<Stat>("stat_info.{0}"))
 				.Concat(Keys<RuneStat>("rune_stat.{0}"))
+				.Concat(Keys<RuneStat>("rune_stat.short.{0}"))
 				.Concat(Keys<RuneSet>("set.{0}"))
 				.Concat(Keys<Glyph>("glyph.{0}.name"))
 				.Concat(Keys<Glyph>("glyph.{0}.meaning"))
 				.Concat(Keys<RuneRarity>("rarity.{0}"))
 				.Concat(Keys<StatusKind>("effect.{0}.name"))
-				.Concat(Keys<StatusKind>("effect.{0}.short"))
 				.Concat(Keys<StatusKind>("effect.{0}.info"))
 				.Concat(Keys<TargetKind>("target.{0}"))
 				.Concat(Keys<PassiveKind>("passive.{0}"))

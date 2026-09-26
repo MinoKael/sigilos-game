@@ -21,9 +21,12 @@ namespace Sigilos.GameEntry
 	/// <b>As telas não o conhecem.</b> Cada uma recebe o que mostra e avisa por evento o que o jogador
 	/// escolheu; quem muda o <see cref="PlayerState"/> e salva é esta classe.
 	///
+	/// A navegação é por símbolos: o Santuário leva ao Mapa (Campanha, Masmorras), à Bolsa (monstros,
+	/// runas, equipes, invocar, livros), à Loja e aos atalhos; cada tela volta para onde veio.
+	///
 	/// Argumentos de desenvolvimento (depois de <c>--</c>): <c>--save=nome</c> usa outro arquivo de
-	/// save; <c>--language=nome</c> usa Data/texts/nome.json (padrão: en);
-	/// <c>--screen=campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto.
+	/// save; <c>--language=nome</c> usa Data/texts/nome.json (padrão: o da Configuração, ou en);
+	/// <c>--screen=map|bag|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto.
 	/// </summary>
 	public partial class GameRoot : Node
 	{
@@ -35,13 +38,23 @@ namespace Sigilos.GameEntry
 		private GameDatabase _database = null!;
 		private SaveStore _store = null!;
 		private PlayerState _player = null!;
+		private string _language = ContentLoader.BaseLanguage;
+
+		// Para onde cada tela de conteúdo volta: vale também depois de uma luta ou da Loja.
+		private Action _campaignBack = null!;
+		private Action _dungeonsBack = null!;
+		private Action _storageBack = null!;
+		private Action _summonBack = null!;
 
 		public override void _Ready()
 		{
-			ContentLoader.LoadTexts(Argument("--language=") ?? ContentLoader.BaseLanguage);
+			_campaignBack = _dungeonsBack = ShowMap;
+			_storageBack = _summonBack = ShowBag;
 			_database = ContentLoader.Load();
 			_store = new SaveStore(Argument("--save=") ?? DefaultSlot);
 			_player = _store.Load() ?? NewGame.Create(DateTime.Now, _random, _database);
+			_language = Argument("--language=") ?? _player.Language ?? ContentLoader.BaseLanguage;
+			ContentLoader.LoadTexts(_language);
 
 			_ui = new Control { Theme = GameTheme.Build() };
 			_ui.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
@@ -49,32 +62,38 @@ namespace Sigilos.GameEntry
 
 			switch (Argument("--screen="))
 			{
+				case "map":
+					ShowMap();
+					break;
+				case "bag":
+					ShowBag();
+					break;
 				case "campaign":
-					ShowCampaign();
+					Go(Destination.Campaign, ShowMap);
 					break;
 				case "dungeons":
-					ShowDungeons(null);
+					Go(Destination.Dungeons, ShowMap);
 					break;
 				case "summon":
-					ShowSummon();
+					Go(Destination.Summon, ShowBag);
 					break;
 				case "shop":
-					ShowShop(ShowHub);
+					Go(Destination.Shop, ShowHub);
 					break;
 				case "monsters":
-					ShowStorage(null);
+					Go(Destination.Monsters, ShowBag);
 					break;
 				case "teams":
-					ShowTeams(Teams.Campaign, ShowHub);
+					Go(Destination.Teams, ShowBag);
 					break;
 				case "runes":
-					ShowRunes(Teams.Of(_player, Teams.Campaign).FirstOrDefault(), ShowHub);
+					ShowRunes(Teams.Of(_player, Teams.Campaign).FirstOrDefault(), ShowBag);
 					break;
 				case "compendium":
-					ShowCompendium();
+					Go(Destination.Compendium, ShowBag);
 					break;
 				case "grimoire":
-					ShowGrimoire();
+					Go(Destination.Grimoire, ShowBag);
 					break;
 				case "battle":
 					FightStage(_database.Stage(Math.Min(_player.HighestStage + 1, _database.Stages.Count)));
@@ -96,27 +115,95 @@ namespace Sigilos.GameEntry
 		private void ShowHub()
 		{
 			var hub = new HubScreen(_database, _player);
-			hub.CampaignRequested += ShowCampaign;
-			hub.DungeonsRequested += () => ShowDungeons(null);
-			hub.SummonRequested += ShowSummon;
-			hub.StorageRequested += () => ShowStorage(null);
-			hub.TeamsRequested += () => ShowTeams(Teams.Campaign, ShowHub);
-			hub.RunesRequested += () => ShowRunes(null, ShowHub);
-			hub.CompendiumRequested += ShowCompendium;
-			hub.GrimoireRequested += ShowGrimoire;
-			hub.ShopRequested += () => ShowShop(ShowHub);
+			hub.Requested += destination => Go(destination, ShowHub);
+			hub.ConfigRequested += () => OpenConfig(hub);
+			hub.ShortcutsChanged += shortcuts => Change(() => _player.Shortcuts = Destinations.Save(shortcuts), () => { });
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
 			hub.QuickChannelRequested += () => Change(() => Idle.QuickChannel(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
 			Swap(hub);
 		}
 
-		private void ShowCampaign() => ShowCampaign(null, null);
+		private void ShowMap()
+		{
+			var map = new MapScreen(_database, _player);
+			map.BackRequested += ShowHub;
+			map.Requested += destination => Go(destination, ShowMap);
+			Swap(map);
+		}
+
+		private void ShowBag()
+		{
+			var bag = new BagScreen(_player);
+			bag.BackRequested += ShowHub;
+			bag.Requested += destination => Go(destination, ShowBag);
+			Swap(bag);
+		}
+
+		/// <summary>Abre um destino de navegação; <paramref name="back"/> é para onde ele volta.</summary>
+		private void Go(Destination destination, Action back)
+		{
+			switch (destination)
+			{
+				case Destination.Campaign:
+					_campaignBack = back;
+					ShowCampaign(null, null);
+					break;
+				case Destination.Dungeons:
+					_dungeonsBack = back;
+					ShowDungeons(null);
+					break;
+				case Destination.Summon:
+					_summonBack = back;
+					ShowSummon();
+					break;
+				case Destination.Monsters:
+					_storageBack = back;
+					ShowStorage(null);
+					break;
+				case Destination.Runes:
+					ShowRunes(null, back);
+					break;
+				case Destination.Teams:
+					ShowTeams(Teams.Campaign, back);
+					break;
+				case Destination.Shop:
+					ShowShop(back);
+					break;
+				case Destination.Compendium:
+					ShowCompendium(back);
+					break;
+				case Destination.Grimoire:
+					ShowGrimoire(back);
+					break;
+				case Destination.Map:
+					ShowMap();
+					break;
+				case Destination.Bag:
+					ShowBag();
+					break;
+			}
+		}
+
+		/// <summary>A Configuração por cima do Santuário: trocar de idioma salva a escolha e remonta a tela.</summary>
+		private void OpenConfig(Control over)
+		{
+			var config = new ConfigPanel(ContentLoader.Languages(), _language);
+			config.LanguageChosen += language =>
+			{
+				_language = language;
+				_player.Language = language;
+				Save();
+				ContentLoader.LoadTexts(language);
+				ShowHub();
+			};
+			over.AddChild(config);
+		}
 
 		/// <summary>A Campanha na fase <paramref name="selected"/> (nula: a próxima a vencer), com um aviso embaixo.</summary>
 		private void ShowCampaign(int? selected, string? message)
 		{
 			var campaign = new CampaignScreen(_database, _player, selected);
-			campaign.BackRequested += ShowHub;
+			campaign.BackRequested += () => _campaignBack();
 			campaign.FightRequested += FightStage;
 			campaign.TeamRequested += () => ShowTeams(Teams.Campaign, () => ShowCampaign(campaign.Selected, null));
 			campaign.ShopRequested += () => ShowShop(() => ShowCampaign(campaign.Selected, null));
@@ -141,7 +228,7 @@ namespace Sigilos.GameEntry
 		private void ShowDungeons(string? selected, string? message = null)
 		{
 			var dungeons = new DungeonScreen(_database, _player, selected);
-			dungeons.BackRequested += ShowHub;
+			dungeons.BackRequested += () => _dungeonsBack();
 			dungeons.FightRequested += FightFloor;
 			dungeons.TeamRequested += dungeon => ShowTeams(dungeon.Id, () => ShowDungeons(dungeon.Id));
 			dungeons.ShopRequested += dungeon => ShowShop(() => ShowDungeons(dungeon.Id));
@@ -166,7 +253,7 @@ namespace Sigilos.GameEntry
 		private void ShowSummon()
 		{
 			var summon = new SummonScreen(_database, _player);
-			summon.BackRequested += ShowHub;
+			summon.BackRequested += () => _summonBack();
 			summon.ShopRequested += () => ShowShop(ShowSummon);
 			summon.SummonRequested += count =>
 			{
@@ -184,7 +271,7 @@ namespace Sigilos.GameEntry
 		private void ShowStorage(int? selected)
 		{
 			var storage = new StorageScreen(_database, _player, selected);
-			storage.BackRequested += ShowHub;
+			storage.BackRequested += () => _storageBack();
 			storage.RunesRequested += id => ShowRunes(id, () => ShowStorage(id));
 			storage.InfuseRequested += (id, toMax) => Change(() =>
 			{
@@ -235,17 +322,17 @@ namespace Sigilos.GameEntry
 			Swap(runes);
 		}
 
-		private void ShowCompendium()
+		private void ShowCompendium(Action back)
 		{
 			var compendium = new CompendiumScreen();
-			compendium.BackRequested += ShowHub;
+			compendium.BackRequested += back;
 			Swap(compendium);
 		}
 
-		private void ShowGrimoire()
+		private void ShowGrimoire(Action back)
 		{
 			var grimoire = new GrimoireScreen(_database, _player);
-			grimoire.BackRequested += ShowHub;
+			grimoire.BackRequested += back;
 			Swap(grimoire);
 		}
 

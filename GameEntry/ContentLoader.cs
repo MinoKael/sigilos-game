@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
@@ -50,6 +52,18 @@ namespace Sigilos.GameEntry
 			Locale.Load(Read($"texts/{language}.json"), language);
 			foreach (var key in Texts.MissingEnumKeys())
 				GD.PushError($"Data/texts/{language}.json: falta a chave {key}");
+		}
+
+		/// <summary>Os idiomas que existem: um por arquivo em Data/texts, a base primeiro.</summary>
+		public static IReadOnlyList<string> Languages()
+		{
+			var names = DirAccess.GetFilesAt($"{DataFolder}/texts")
+				.Where(file => file.EndsWith(".json", StringComparison.Ordinal))
+				.Select(file => file[..^".json".Length])
+				.OrderBy(name => name != BaseLanguage)
+				.ThenBy(name => name, StringComparer.Ordinal)
+				.ToList();
+			return names.Count == 0 ? new[] { BaseLanguage } : names;
 		}
 
 		private static string Read(string file) => FileAccess.GetFileAsString($"{DataFolder}/{file}");

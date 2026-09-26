@@ -8,87 +8,96 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Cartão de monstro: moldura pelas estrelas naturais, estrelas de agora douradas (roxas depois do Despertar), nível
-	/// no canto, desenho na cor do elemento e nome. Usado na coleção, nas equipes e no resultado do
-	/// ritual. Clicável quando alguém assina <see cref="Pressed"/>.
+	/// Cartão de monstro, só símbolos: estrelas de agora no alto à esquerda (douradas, roxas depois do
+	/// Despertar), o elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à
+	/// direita. A moldura é pelas estrelas naturais (bronze, prata, ouro); o nome vem na dica. Um
+	/// símbolo pequeno embaixo à esquerda marca o que importa ali (Líder, na equipe, novo, no Baú).
+	///
+	/// Sob o mouse a moldura acende; escolhido, fica azul arcano; marcado para fundir ou liberar, ganha
+	/// o ✓ verde. Clicável quando alguém assina <see cref="Pressed"/>.
 	/// </summary>
 	public partial class CreatureCard : PanelContainer
 	{
 		private readonly StyleBoxFlat _box;
 		private readonly Color _frame;
-		private readonly Label _mark = new()
-		{
-			Text = "✓",
-			Visible = false,
-			MouseFilter = MouseFilterEnum.Ignore,
-			HorizontalAlignment = HorizontalAlignment.Center,
-			VerticalAlignment = VerticalAlignment.Center,
-		};
+		private readonly int _border;
+		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Visible = false };
+		private bool _selected;
+		private bool _marked;
 
-		/// <param name="monster">Nulo quando não é um monstro da conta (Grimório): mostra nível 1, sem Despertar.</param>
-		/// <param name="badge">Linha de baixo, no lugar dos Ecos: "Líder", "Nova!", "Baú".</param>
-		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, bool showName = false, string? badge = null, float width = 150, bool awakenedPreview = false)
+		/// <param name="monster">Nulo quando não é um monstro da conta (Grimório): nível 1, sem Despertar.</param>
+		/// <param name="marker">Símbolo de Assets/Icons embaixo à esquerda (crown, team, collect, chest).</param>
+		/// <param name="markerTip">O que o símbolo quer dizer, somado à dica do cartão.</param>
+		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, float width = 104, string? marker = null, string? markerTip = null, bool awakenedPreview = false)
 		{
 			Summon = summon;
 			Monster = monster;
 			var awakened = monster?.Awakened ?? awakenedPreview;
 			var name = summon.NameFor(awakened);
 
-			CustomMinimumSize = new Vector2(width, width * 1.3f);
+			CustomMinimumSize = new Vector2(width, width * 1.25f);
 			MouseFilter = MouseFilterEnum.Stop;
-			TooltipText = T("card.tip", name, Texts.Name(summon.Element), Texts.Name(summon.Role));
+			MouseDefaultCursorShape = CursorShape.PointingHand;
+			TooltipText = T("card.tip", name, Texts.Name(summon.Element), Texts.Name(summon.Role)) + (markerTip != null ? $"\n{markerTip}" : "");
 
 			_frame = Palette.Frame(summon.Rarity);
-			_box = GameTheme.Box(Palette.Inset, _frame, summon.Rarity >= 3 ? 3 : 2, 6, 6);
+			_border = summon.Rarity >= 3 ? 3 : 2;
+			_box = GameTheme.Box(Palette.Inset, _frame, _border, 8, 4);
+			_box.ShadowColor = new Color(0, 0, 0, 0.45f);
+			_box.ShadowSize = 3;
+			_box.ShadowOffset = new Vector2(0, 2);
 			AddThemeStyleboxOverride("panel", _box);
 
-			var column = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
-			column.AddThemeConstantOverride("separation", 2);
-			AddChild(column);
+			var layer = new Control { MouseFilter = MouseFilterEnum.Ignore };
+			AddChild(layer);
 
-			var top = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
-			top.AddChild(Doodle.Icon(Art.Element(summon.Element), 18, Palette.Of(summon.Element)));
-			var stars = new Label { Text = Texts.Stars(monster?.Stars ?? summon.Rarity), SizeFlagsHorizontal = SizeFlags.ExpandFill, HorizontalAlignment = HorizontalAlignment.Center };
-			stars.AddThemeColorOverride("font_color", Palette.Stars(awakened));
-			stars.AddThemeFontSizeOverride("font_size", 14);
-			top.AddChild(stars);
-			column.AddChild(top);
-
-			var portrait = new Control { SizeFlagsVertical = SizeFlags.Fill, CustomMinimumSize = new Vector2(0, width * 0.8f), MouseFilter = MouseFilterEnum.Ignore };
+			// O desenho cabe inteiro entre as estrelas e o nível, recortado no miolo arredondado do cartão.
+			var frame = new ArtMask(MaskShape.Rounded, 6);
+			frame.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			layer.AddChild(frame);
 			var art = new Doodle(Art.Creature(summon.ImageFor(awakened)), Palette.Of(summon.Element));
 			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			portrait.AddChild(art);
-			column.AddChild(portrait);
+			art.OffsetTop = width * 0.18f;
+			art.OffsetBottom = -width * 0.14f;
+			art.OffsetLeft = width * 0.05f;
+			art.OffsetRight = -width * 0.05f;
+			frame.AddChild(art);
 
-			if (showName)
+			var stars = new Label { Text = Texts.Stars(monster?.Stars ?? summon.Rarity), MouseFilter = MouseFilterEnum.Ignore };
+			stars.AddThemeColorOverride("font_color", Palette.Stars(awakened));
+			stars.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.12f), 10, 16));
+			stars.AddThemeColorOverride("font_outline_color", Palette.Background);
+			stars.AddThemeConstantOverride("outline_size", 3);
+			stars.Position = new Vector2(2, -2);
+			layer.AddChild(stars);
+
+			var element = Doodle.Icon(Art.Element(summon.Element), (int)(width * 0.17f), Palette.Of(summon.Element));
+			element.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
+			element.OffsetLeft = -width * 0.17f;
+			layer.AddChild(element);
+
+			var level = new Label { Text = (monster?.Level ?? 1).ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore, HorizontalAlignment = HorizontalAlignment.Right };
+			level.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.16f), 12, 22));
+			level.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomRight);
+			level.GrowHorizontal = GrowDirection.Begin;
+			level.GrowVertical = GrowDirection.Begin;
+			layer.AddChild(level);
+
+			if (marker != null)
 			{
-				var label = new Label
-				{
-					Text = name,
-					HorizontalAlignment = HorizontalAlignment.Center,
-					AutowrapMode = TextServer.AutowrapMode.WordSmart,
-					CustomMinimumSize = new Vector2(width - 16, 0),
-				};
-				label.AddThemeFontSizeOverride("font_size", 13);
-				if (awakened)
-					label.AddThemeColorOverride("font_color", Palette.Awakened);
-				column.AddChild(label);
+				var icon = Doodle.Icon(Art.Icon(marker), (int)(width * 0.2f), Palette.Gold);
+				icon.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
+				icon.OffsetTop = -width * 0.2f;
+				layer.AddChild(icon);
 			}
 
-			var footer = badge ?? "";
-			if (footer.Length > 0)
-				column.AddChild(new Label { Text = footer, ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center });
-            var level = new Label { Text = T("card.level", monster?.Level ?? 1), Position = new Vector2(2, 0) };
-            level.AddThemeFontSizeOverride("font_size", 12);
-            level.AddThemeColorOverride("font_outline_color", Palette.Background);
-            level.AddThemeConstantOverride("outline_size", 4);
-            column.AddChild(level);
-            
-			_mark.AddThemeColorOverride("font_color", Palette.Positive);
-			_mark.AddThemeColorOverride("font_outline_color", Palette.Background);
-			_mark.AddThemeConstantOverride("outline_size", 6);
-			_mark.AddThemeFontSizeOverride("font_size", 40);
-			AddChild(_mark);
+			_check.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
+			_check.OffsetLeft = _check.OffsetTop = -width * 0.25f;
+			_check.OffsetRight = _check.OffsetBottom = width * 0.25f;
+			layer.AddChild(_check);
+
+			MouseEntered += Restyle;
+			MouseExited += Restyle;
 		}
 
 		public event Action<CreatureCard>? Pressed;
@@ -96,24 +105,36 @@ namespace Sigilos.UI.Components
 		public SummonDefinition Summon { get; }
 		public OwnedSummon? Monster { get; }
 
-		/// <summary>Destaque de seleção: borda clara grossa.</summary>
+		/// <summary>Destaque de escolhido: moldura azul arcana com aura.</summary>
 		public void SetSelected(bool selected)
 		{
-			_box.BorderColor = selected ? Palette.Text : _frame;
-			_box.SetBorderWidthAll(selected ? 5 : Summon.Rarity >= 3 ? 3 : 2);
+			_selected = selected;
+			Restyle();
 		}
 
-		/// <summary>Marca para fundir ou liberar em massa: um ✓ por cima e fundo esverdeado.</summary>
+		/// <summary>Marcado para fundir ou liberar em massa: ✓ verde e fundo esverdeado.</summary>
 		public void SetMarked(bool marked)
 		{
-			_mark.Visible = marked;
-			_box.BgColor = marked ? Palette.Inset.Lerp(Palette.Positive, 0.2f) : Palette.Inset;
+			_marked = marked;
+			_check.Visible = marked;
+			Restyle();
 		}
 
 		public override void _GuiInput(InputEvent @event)
 		{
 			if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
 				Pressed?.Invoke(this);
+		}
+
+		private void Restyle()
+		{
+			var hover = IsInsideTree() && Pressed != null && GetGlobalRect().HasPoint(GetGlobalMousePosition());
+			_box.BorderColor = _selected ? Palette.Arcane : hover ? _frame.Lightened(0.35f) : _frame;
+			_box.SetBorderWidthAll(_selected ? _border + 1 : _border);
+			_box.BgColor = _marked ? Palette.Inset.Lerp(Palette.Spirit, 0.18f) : hover ? Palette.Inset.Lightened(0.06f) : Palette.Inset;
+			_box.ShadowColor = _selected ? new Color(Palette.Arcane, 0.4f) : hover ? new Color(Palette.Gold, 0.25f) : new Color(0, 0, 0, 0.45f);
+			_box.ShadowSize = _selected || hover ? 7 : 3;
+			_box.ShadowOffset = _selected || hover ? Vector2.Zero : new Vector2(0, 2);
 		}
 	}
 }

@@ -13,7 +13,8 @@ Data/*.json ──texto──▶ GameEntry ──▶ Core   (regras, sem Godot)
 - **UI/** recebe o que mostra no construtor e avisa por evento C# (`FightRequested`, `AwakenRequested`...).
   Nenhuma tela muda o `PlayerState` nem salva. Nenhuma tela tem texto escrito no código: tudo vem de
   `Data/texts/en.json` por chave (`Locale.T("runes.upgrade_to", ...)`); `UI/Texts.cs` só monta nomes
-  por enum e as descrições geradas das regras.
+  por enum e as descrições geradas das regras. A interface é de símbolos: botões são sigilos sem
+  texto (o nome é a dica), e texto explicativo só existe no Compêndio.
 - **GameEntry/** é a raiz de composição: o `GameRoot` assina os eventos das telas, chama as regras do
   Core, salva e troca de tela. É o único lugar que junta tudo.
 
@@ -48,7 +49,15 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
 | Nível da conta e Ouro por nível | `Core/Progression/Account.cs` |
 | Loja | ofertas em `Data/shop.json`; regra em `Core/Progression/Shop.cs` |
-| Qualquer texto da interface | `Data/texts/en.json` (a base) e a mesma chave em `Data/texts/pt-BR.json`, depois `py Tools/texts/check_texts.py` |
+| Qualquer texto da interface | `Data/texts/en.json` (a base) e a mesma chave em `Data/texts/pt-BR.json`, depois `py Tools/texts/check_texts.py`. Chave nova não pode ter o nome de um grupo que já existe (`filter.order` apagaria `filter.order.*`) |
+| Novo símbolo (ícone) | uma linha em `Tools/art/commons_assets.csv` (game-icons.net no Commons), `py Tools/art/fetch_commons_assets.py --chrome ...`, `py Tools/art/render_png.py` (os PNG) e `Art.Icon("nome")` |
+| Símbolo de um efeito de batalha | `Assets/Effects/<efeito>.svg` (o nome do `StatusKind` em minúsculas) + render; no texto rico, `Texts.Term(StatusKind)` põe o símbolo na frente |
+| Símbolo de uma habilidade | `Art.Skill` (o efeito que ela aplica, senão o Glifo do que ela faz) |
+| Tamanho da runa em miniatura | `RuneTile.Side` (quadrada; cada lugar passa a escala) |
+| Novo botão | `SigilButton.Of("ícone", T("dica"), ação, tamanho, forma)`: círculo navega, losango age, pedra quadrada é aba ou atalho; número pequeno vai em `Badge` |
+| Escolher entre opções | `SigilPicker` (um sigilo que abre o `ArcPicker`) ou `ArcCarousel` direto na tela; confirmação com `SigilDialog.Ask` |
+| Atalhos do Santuário, destinos da Bolsa e do Mapa | `UI/Screens/Destination.cs` (símbolo, nome, atalhos de fábrica) e `GameRoot.Go` (qual tela abre e para onde volta) |
+| Idiomas oferecidos na Configuração | um arquivo por idioma em `Data/texts`; `ContentLoader.Languages()` lista, `PlayerState.Language` guarda a escolha |
 | Traduzir | copie `Data/texts/en.json` com outro nome e rode com `-- --language=nome` |
 | Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simulate` |
 | Atributos por papel, estrelas e nível | `Data/roles.json` (valores de 6★ nível 40, escala de Summoners War), faixas por estrela em `Core/Progression/Growth.cs` |
@@ -66,8 +75,8 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Ociosidade | `Core/Progression/Idle.cs` |
 | Novo tipo de efeito | `Core/Content/EffectKind.cs` + um `case` em `Core/Battle/EffectResolver.cs` + a descrição em `UI/Texts.cs` e o texto em `Data/texts` |
 | Compêndio (regras) e Grimório (catálogo) | textos em `Data/texts` (`compendium.*`, `grimoire.*`); cartões em `UI/Screens/CompendiumScreen.cs` e `GrimoireScreen.cs` |
-| Cores, fontes | `UI/Style/Palette.cs`, `UI/Style/GameTheme.cs` |
-| Nova tela | `UI/Screens/` + o `Show...` correspondente em `GameEntry/GameRoot.cs` |
+| Cores, fontes, molduras, rolagem | `UI/Style/Palette.cs` (cores), `UI/Style/GameTheme.cs` (estilos por tipo de controle), `UI/Style/Ornament.cs` (texturas geradas: couro com moldura, gema da rolagem, sigilo de marcar), `Assets/Shaders/backdrop.gdshader` (o fundo) |
+| Nova tela | `UI/Screens/` + o `Show...` correspondente em `GameEntry/GameRoot.cs` e, se for destino de navegação, um valor em `Destination` |
 
 `GameDatabase.Validate()` confere referências e faixas dos dados; o teste `DataTests` falha se algo
 estiver quebrado (inclusive básica com recarga, ativa sem recarga ou duas Passivas), e o jogo mostra os
@@ -101,6 +110,24 @@ problemas no console ao abrir.
 - **O jogo é em inglês; o código fala português.** Ids, nomes em `Data/`, chaves e textos da interface
   (`Data/texts/en.json`), argumentos e o simulador são em inglês. `pt-BR.json` é uma tradução da
   interface, com as mesmas chaves. Comentários, mensagens dos testes e estes docs seguem em português.
+- **Símbolo primeiro, e desenhado em código.** Não há cena `.tscn` nem imagem de interface pronta:
+  o `Theme` sai de `GameTheme.Build()`, as molduras são texturas geradas uma vez por cor
+  (`Ornament`, viram `StyleBoxTexture` de 9 partes, com o miolo repetido para o grão não esticar) e os
+  sigilos se desenham em `_Draw` (`SigilButton`, `SigilRing`, `Constellation`, `EnergyRing`). Os
+  estados se leem pela luz: ouro sob o mouse, azul arcano ligado, verde espiritual chamando; o peso
+  (crescer sob o mouse, afundar ao apertar) é o `Juice`. Os desenhos do Commons são pretos e o
+  `Doodle` os pinta pelo shader, então um ícone serve em qualquer cor. O número de um sigilo fica
+  numa plaquinha escura com contorno, por cima da borda de baixo.
+- **PNG em vários tamanhos, escolhido pelo tamanho na tela.** Os SVG são só a fonte: o
+  `Tools/art/render_png.py` gera PNG de 32 a 512 px, importados com mipmaps. `Art` entrega o de 128 e
+  o `Doodle`, ao mudar de tamanho, troca pelo menor que cobre o tamanho na tela (com a escala da
+  janela) — a redução que sobra é pequena e suavizada. Todo desenho fica em "contain" (proporção
+  mantida, inteiro no espaço) e, dentro de um componente com forma, recortado nela pela `ArtMask`
+  (`ClipChildren`): o símbolo no sigilo, o retrato no medalhão, a criatura no cartão.
+- **O fundo segue o foco da tela.** O anel do `Backdrop` fica no centro da constelação, do portal de
+  invocar, do círculo da Bolsa ou dos portais do Mapa; nas outras telas, no meio.
+- **Camadas por cima vão no alto da árvore.** `ArcPicker`, `SigilDialog` e a Configuração se penduram
+  no controle mais alto (`Layout.Host`), que tem o tema; assim cobrem a tela inteira de qualquer botão.
 - **Texto fora do código.** As telas pedem texto por chave ao `Locale`; o que depende de regra
   (descrição de habilidade, conjunto, efeito) é montado em `Texts` a partir das mesmas regras que o
   combate usa, então a explicação nunca desatualiza. `Tools/texts/check_texts.py` confere as chaves
