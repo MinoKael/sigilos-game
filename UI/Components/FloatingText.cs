@@ -6,10 +6,14 @@ namespace Sigilos.UI.Components
 	/// <summary>Número que sobe e some sobre uma unidade: dano, cura, "Errou", nome de efeito.</summary>
 	public static class FloatingText
 	{
+		/// <summary>Numera os textos: vários sobem juntos do mesmo pai, e cada um precisa de nome próprio.</summary>
+		private static int _count;
+
 		public static void Spawn(Control parent, string text, Color color, float delay = 0, int size = 26)
 		{
 			var label = new Label
 			{
+				Name = $"Float{++_count}",
 				Text = text,
 				HorizontalAlignment = HorizontalAlignment.Center,
 				MouseFilter = Control.MouseFilterEnum.Ignore,

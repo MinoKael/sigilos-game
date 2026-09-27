@@ -27,6 +27,7 @@ namespace Sigilos.UI.Components
 		private readonly Doodle _icon;
 		private readonly Label _letters = new()
 		{
+			Name = "Letters",
 			HorizontalAlignment = HorizontalAlignment.Center,
 			VerticalAlignment = VerticalAlignment.Center,
 			MouseFilter = MouseFilterEnum.Ignore,
@@ -35,6 +36,7 @@ namespace Sigilos.UI.Components
 
 		private readonly Label _badge = new()
 		{
+			Name = "Badge",
 			HorizontalAlignment = HorizontalAlignment.Center,
 			VerticalAlignment = VerticalAlignment.Center,
 			MouseFilter = MouseFilterEnum.Ignore,
@@ -42,7 +44,7 @@ namespace Sigilos.UI.Components
 		};
 
 		/// <summary>A plaquinha escura com borda de ouro onde o número fica: destaca do fundo e do sigilo.</summary>
-		private readonly PanelContainer _plaque = new() { MouseFilter = MouseFilterEnum.Ignore, Visible = false };
+		private readonly PanelContainer _plaque = new() { Name = "Plaque", MouseFilter = MouseFilterEnum.Ignore, Visible = false };
 
 		private bool _highlight;
 		private Glyph? _rune;
@@ -65,13 +67,13 @@ namespace Sigilos.UI.Components
 				SigilShape.Circle => MaskShape.Circle,
 				SigilShape.Diamond => MaskShape.Diamond,
 				_ => MaskShape.Rounded,
-			}, Mathf.Max(6, size * 0.18f));
+			}, Mathf.Max(6, size * 0.18f)) { Name = "Mask" };
 			mask.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			mask.OffsetLeft = mask.OffsetTop = 6;
 			mask.OffsetRight = mask.OffsetBottom = -6;
 			AddChild(mask);
 
-			_icon = new Doodle(icon, _ink, boil: false);
+			_icon = new Doodle(icon, _ink, boil: false) { Name = "Icon" };
 			_icon.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			var inset = size * (shape == SigilShape.Diamond ? 0.26f : 0.2f) - 6;
 			_icon.OffsetLeft = _icon.OffsetTop = inset;
@@ -206,10 +208,10 @@ namespace Sigilos.UI.Components
 
 		public void SetIcon(Texture2D? icon) => _icon.SetArt(icon);
 
-		/// <summary>Botão pronto: símbolo de Assets/Icons, dica e ação.</summary>
+		/// <summary>Botão pronto: símbolo de Assets/Icons, dica e ação. O nó leva o nome do símbolo (<c>level_max</c> → <c>LevelMax</c>).</summary>
 		public static SigilButton Of(string icon, string tooltip, Action onPressed, float size = 56, SigilShape shape = SigilShape.Circle)
 		{
-			var button = new SigilButton(Art.Icon(icon), tooltip, size, shape);
+			var button = new SigilButton(Art.Icon(icon), tooltip, size, shape) { Name = Layout.NodeName(icon) };
 			button.Pressed += onPressed;
 			return button;
 		}

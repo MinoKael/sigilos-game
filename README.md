@@ -45,8 +45,8 @@ Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro 
 O idioma também pode ser trocado no jogo, na engrenagem do Santuário (fica salvo).
 
 Depuração visual da interface, com o jogo rodando: Ctrl+F1 contornos, Ctrl+F2 nomes, Ctrl+F3 valores
-ao vivo, Ctrl+F4 origem no código (a mesma tecla desliga). É o addon `addons/visual_debug`, que só
-liga em build de depuração; detalhes em [addons/visual_debug/README.md](addons/visual_debug/README.md).
+ao vivo, Ctrl+F4 origem no código (a mesma tecla desliga). É o addon `addons/visual_debugger`, que só
+liga em build de depuração. Nó sem nome aparece em cinza, e a barra do topo conta quantos há na tela.
 
 ## Textos e tradução
 
@@ -70,7 +70,7 @@ py Tools/texts/check_texts.py
 | `Assets/` | SVGs do Wikimedia Commons e o shader de traço | — |
 | `Tests/` | Console app: testes e simulador, compila `Core/` por link | Core |
 | `Tools/` | Scripts: baixar a arte do Commons, conferir os textos | — |
-| `addons/visual_debug/` | Overlay de depuração visual (Ctrl+F1 a Ctrl+F4), independente do jogo | nada |
+| `addons/visual_debugger/` | Overlay de depuração visual (Ctrl+F1 a Ctrl+F4), independente do jogo | nada |
 
 Detalhes, regras de dependência e onde mexer para cada tipo de mudança: [docs/ARQUITETURA.md](docs/ARQUITETURA.md).
 

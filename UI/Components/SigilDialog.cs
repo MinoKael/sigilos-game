@@ -16,25 +16,26 @@ namespace Sigilos.UI.Components
 		private SigilDialog(string text, Action onConfirmed)
 		{
 			_onConfirmed = onConfirmed;
+			Name = nameof(SigilDialog);
 			Color = new Color(0, 0, 0, 0.6f);
 			MouseFilter = MouseFilterEnum.Stop;
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
-			var center = new CenterContainer { MouseFilter = MouseFilterEnum.Ignore };
+			var center = new CenterContainer { Name = "Center", MouseFilter = MouseFilterEnum.Ignore };
 			center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(center);
 
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(420, 0) };
+			var panel = new PanelContainer { Name = "Panel", CustomMinimumSize = new Vector2(420, 0) };
 			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 22));
 			center.AddChild(panel);
 
-			var column = new VBoxContainer();
+			var column = new VBoxContainer { Name = "Content" };
 			column.AddThemeConstantOverride("separation", 18);
 			panel.AddChild(column);
-			var label = RichText.Label(text, 380);
+			var label = RichText.Label(text, 380).Named("Text");
 			column.AddChild(label);
 
-			var row = new HBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+			var row = new HBoxContainer { Name = "Actions", Alignment = BoxContainer.AlignmentMode.Center };
 			row.AddThemeConstantOverride("separation", 40);
 			row.AddChild(SigilButton.Of("confirm", T("common.yes"), Confirm, 60));
 			row.AddChild(SigilButton.Of("cancel", T("common.no"), QueueFree, 60));

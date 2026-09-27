@@ -23,9 +23,9 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly CenterContainer _path = new() { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-		private readonly VBoxContainer _detail = new();
-		private readonly Label _message = new() { HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+		private readonly CenterContainer _path = new() { Name = "Path", SizeFlagsHorizontal = SizeFlags.ExpandFill };
+		private readonly VBoxContainer _detail = new() { Name = "Detail" };
+		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private StageDefinition _selected;
 
 		public CampaignScreen(GameDatabase database, PlayerState player, int? selected = null)
@@ -52,12 +52,12 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Campaign"), "region", _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = Layout.Row(20);
+			var body = Layout.Row(20).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 			body.AddChild(_path);
 
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(500, 0) };
+			var panel = new PanelContainer { Name = "Stage", CustomMinimumSize = new Vector2(500, 0) };
 			_detail.AddThemeConstantOverride("separation", 12);
 			panel.AddChild(Layout.Scroll(_detail));
 			body.AddChild(panel);
@@ -89,7 +89,7 @@ namespace Sigilos.UI.Screens
 				_message.Text = "";
 				Callable.From(Refresh).CallDeferred();
 			};
-			_path.AddChild(path);
+			_path.AddChild(path.Named("Stages"));
 		}
 
 		private void RefreshDetail()
@@ -98,11 +98,11 @@ namespace Sigilos.UI.Screens
 
 			var stage = _selected;
 			var cleared = Campaign.IsCleared(_player, stage.Number);
-			var title = Layout.Row(10);
-			title.AddChild(new Label { Text = T("campaign.stage_title", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			var title = Layout.Row(10).Named("Header");
+			title.AddChild(new Label { Name = "Title", Text = T("campaign.stage_title", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			if (cleared)
 			{
-				var done = Doodle.Icon(Art.Icon("confirm"), 24, Palette.Spirit);
+				var done = Doodle.Icon(Art.Icon("confirm"), 24, Palette.Spirit).Named("Cleared");
 				done.TooltipText = T("campaign.cleared");
 				done.MouseFilter = MouseFilterEnum.Stop;
 				title.AddChild(done);
@@ -113,14 +113,14 @@ namespace Sigilos.UI.Screens
 
 			for (var i = 0; i < stage.Waves.Count; i++)
 			{
-				var row = Layout.Row(8);
-				var wave = new Label { Text = Texts.Roman(i + 1), ThemeTypeVariation = GameTheme.Number, CustomMinimumSize = new Vector2(34, 0), TooltipText = T("campaign.wave", i + 1), MouseFilter = MouseFilterEnum.Stop };
+				var row = Layout.Row(8).Named($"Wave{i + 1}");
+				var wave = new Label { Name = "Number", Text = Texts.Roman(i + 1), ThemeTypeVariation = GameTheme.Number, CustomMinimumSize = new Vector2(34, 0), TooltipText = T("campaign.wave", i + 1), MouseFilter = MouseFilterEnum.Stop };
 				wave.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.3f));
 				row.AddChild(wave);
-				foreach (var slot in stage.Waves[i])
+				for (var k = 0; k < stage.Waves[i].Count; k++)
 				{
-					var (name, image, element) = _database.Foe(slot);
-					var icon = Doodle.Icon(Art.Creature(image), 44, Palette.Of(element));
+					var (name, image, element) = _database.Foe(stage.Waves[i][k]);
+					var icon = Doodle.Icon(Art.Creature(image), 44, Palette.Of(element)).Named($"Foe{k + 1}");
 					icon.TooltipText = T("campaign.enemy_tip", name, Texts.Name(element));
 					icon.MouseFilter = MouseFilterEnum.Stop;
 					row.AddChild(icon);
@@ -129,11 +129,11 @@ namespace Sigilos.UI.Screens
 				_detail.AddChild(row);
 			}
 
-			_detail.AddChild(new HSeparator());
-			var rewards = Layout.Flow(8);
+			_detail.AddChild(new HSeparator { Name = "RewardsLine" });
+			var rewards = Layout.Flow(8).Named("Rewards");
 			if (!cleared)
 			{
-				var first = Doodle.Icon(Art.Icon("collect"), 26, Palette.Spirit);
+				var first = Doodle.Icon(Art.Icon("collect"), 26, Palette.Spirit).Named("FirstClear");
 				first.TooltipText = T("campaign.first_clear");
 				first.MouseFilter = MouseFilterEnum.Stop;
 				rewards.AddChild(first);
@@ -147,15 +147,15 @@ namespace Sigilos.UI.Screens
 				rewards.AddChild(Layout.Chip("rune", $"{Texts.Stars(stage.RuneGrade)} {Texts.Percent(Campaign.RepeatRuneChance)}", T("campaign.rune_chance", Texts.Percent(Campaign.RepeatRuneChance), Texts.Stars(stage.RuneGrade))));
 			}
 
-			rewards.AddChild(Layout.Chip("level_max", stage.Experience.ToString(), T("reward.experience")));
+			rewards.AddChild(Layout.Chip("level_max", stage.Experience.ToString(), T("reward.experience")).Named("Experience"));
 			_detail.AddChild(rewards);
 
-			_detail.AddChild(new HSeparator());
+			_detail.AddChild(new HSeparator { Name = "TeamLine" });
 			_detail.AddChild(new TeamStrip(_database, _player, Teams.Campaign, () => TeamRequested?.Invoke()));
 
 			var problem = Campaign.Check(_player, stage);
 			var blocked = Teams.Of(_player, Teams.Campaign).Count == 0 || problem != EntryProblem.None;
-			var actions = Layout.Row(14);
+			var actions = Layout.Row(14).Named("Actions");
 			var fight = SigilButton.Of("fight", T("common.fight", stage.Mana), () => FightRequested?.Invoke(stage), 84);
 			fight.Badge = stage.Mana.ToString();
 			fight.Disabled = blocked;
@@ -163,18 +163,18 @@ namespace Sigilos.UI.Screens
 			actions.AddChild(fight);
 			if (cleared)
 			{
-				var repeat = SigilButton.Of("repeat", T("common.auto_battle"), () => RunsPicker.Open(this, stage.Mana, runs => RepeatRequested?.Invoke(stage, runs)), 68);
+				var repeat = SigilButton.Of("repeat", T("common.auto_battle"), () => RunsPicker.Open(this, stage.Mana, runs => RepeatRequested?.Invoke(stage, runs)), 68).Named("AutoBattle");
 				repeat.Disabled = blocked;
 				actions.AddChild(repeat);
 			}
 
-			actions.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			actions.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			actions.AddChild(SigilButton.Of("shop", T("destination.Shop"), () => ShopRequested?.Invoke(), 52, SigilShape.Square));
 			_detail.AddChild(actions);
 
 			if (problem is EntryProblem.NoMana or EntryProblem.RunesFull)
 			{
-				var refusal = Layout.Text(Texts.Refusal(problem, stage.Mana), width: 440);
+				var refusal = Layout.Text(Texts.Refusal(problem, stage.Mana), width: 440).Named("Refusal");
 				refusal.AddThemeColorOverride("font_color", Palette.Negative);
 				_detail.AddChild(refusal);
 			}
@@ -183,8 +183,8 @@ namespace Sigilos.UI.Screens
 		/// <summary>Estrelas e nível dos inimigos, numa cápsula.</summary>
 		private static Control Foes(int stars, int level)
 		{
-			var row = Layout.Row(8);
-			row.AddChild(Layout.Chip("fight", T("common.stars_level", Texts.Stars(stars), level), T("campaign.foes")));
+			var row = Layout.Row(8).Named("Foes");
+			row.AddChild(Layout.Chip("fight", T("common.stars_level", Texts.Stars(stars), level), T("campaign.foes")).Named("Strength"));
 			return row;
 		}
 	}

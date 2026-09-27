@@ -12,20 +12,22 @@ namespace Sigilos.UI.Components
 	{
 		public TurnOrderBar()
 		{
+			Name = "TurnOrder";
 			AddThemeConstantOverride("separation", 6);
 		}
 
 		public void Show(IReadOnlyList<BattleUnit> order)
 		{
 			Layout.Clear(this);
-			var icon = Doodle.Icon(Art.Icon("speed"), 28, Palette.GoldDark.Lightened(0.3f));
+			var icon = Doodle.Icon(Art.Icon("speed"), 28, Palette.GoldDark.Lightened(0.3f)).Named("NextUp");
 			icon.TooltipText = T("battle.next_up");
 			icon.MouseFilter = MouseFilterEnum.Stop;
 			AddChild(icon);
 
-			foreach (var unit in order)
+			for (var i = 0; i < order.Count; i++)
 			{
-				var frame = new PanelContainer { TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
+				var unit = order[i];
+				var frame = new PanelContainer { Name = $"Turn{i + 1}", TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
 				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow, 2, 18, 2));
 				frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 34));
 				AddChild(frame);

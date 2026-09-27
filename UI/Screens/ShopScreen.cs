@@ -20,8 +20,8 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HFlowContainer _offers = Layout.Flow(24);
-		private readonly Label _message = new() { HorizontalAlignment = HorizontalAlignment.Center };
+		private readonly HFlowContainer _offers = Layout.Flow(24).Named("Offers");
+		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
 		public ShopScreen(GameDatabase database, PlayerState player)
 		{
@@ -52,8 +52,8 @@ namespace Sigilos.UI.Screens
 		{
 			_currencies.Refresh(_player);
 			Layout.Clear(_offers);
-			foreach (var offer in _database.Shop)
-				_offers.AddChild(Card(offer));
+			for (var i = 0; i < _database.Shop.Count; i++)
+				_offers.AddChild(Card(_database.Shop[i]).Named($"Offer{i + 1}"));
 		}
 
 		public void ShowMessage(string text) => _message.Text = text;
@@ -61,7 +61,7 @@ namespace Sigilos.UI.Screens
 		private Control Card(ShopOffer offer)
 		{
 			var panel = new PanelContainer { CustomMinimumSize = new Vector2(220, 0), TooltipText = offer.Name };
-			var content = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+			var content = new VBoxContainer { Name = "Content", Alignment = BoxContainer.AlignmentMode.Center };
 			content.AddThemeConstantOverride("separation", 12);
 			panel.AddChild(content);
 
@@ -69,19 +69,19 @@ namespace Sigilos.UI.Screens
 			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
 			content.AddChild(icon);
 
-			var amount = new Label { Text = $"×{offer.Amount}", HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Number };
+			var amount = new Label { Name = "Amount", Text = $"×{offer.Amount}", HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Number };
 			amount.AddThemeFontSizeOverride("font_size", 28);
 			amount.AddThemeColorOverride("font_color", Palette.Gold);
 			content.AddChild(amount);
 
 			var buy = SigilButton.Of("gold", T("shop.buy", Texts.Amount(offer.Item, offer.Amount), offer.Price), () => SigilDialog.Ask(this,
 				T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
-				() => BuyRequested?.Invoke(offer)), 72);
+				() => BuyRequested?.Invoke(offer)), 72).Named("Buy");
 			buy.Badge = offer.Price.ToString();
 			buy.Disabled = !Shop.CanBuy(_player, offer);
 			if (buy.Disabled)
 				buy.TooltipText = T("shop.no_gold", offer.Price - _player.Gold);
-			var row = Layout.Row(0, true);
+			var row = Layout.Row(0, true).Named("Actions");
 			row.AddChild(buy);
 			content.AddChild(row);
 			return panel;

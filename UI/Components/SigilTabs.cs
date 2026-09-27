@@ -27,11 +27,11 @@ namespace Sigilos.UI.Components
 
 		private new float Size { get; }
 
-		/// <summary>Uma aba nova com o símbolo, a dica e, se quiser, um número na plaquinha.</summary>
+		/// <summary>Uma aba nova com o símbolo, a dica e, se quiser, um número na plaquinha. O nó se chama <c>Tab0</c>, <c>Tab1</c>...; quem cria pode dar o nome do conteúdo.</summary>
 		public SigilButton Add(Texture2D? icon, string tooltip, string badge = "")
 		{
 			var index = _buttons.Count;
-			var button = new SigilButton(icon, tooltip, Size, SigilShape.Square) { ToggleMode = true, ButtonGroup = _group, Badge = badge };
+			var button = new SigilButton(icon, tooltip, Size, SigilShape.Square) { Name = $"Tab{index}", ToggleMode = true, ButtonGroup = _group, Badge = badge };
 			button.ButtonPressed = index == Selected;
 			button.Pressed += () =>
 			{

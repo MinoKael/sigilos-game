@@ -21,7 +21,7 @@ namespace Sigilos.UI.Components
 		private readonly StyleBoxFlat _box;
 		private readonly Color _frame;
 		private readonly int _border;
-		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Visible = false };
+		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private bool _selected;
 		private bool _marked;
 
@@ -48,14 +48,14 @@ namespace Sigilos.UI.Components
 			_box.ShadowOffset = new Vector2(0, 2);
 			AddThemeStyleboxOverride("panel", _box);
 
-			var layer = new Control { MouseFilter = MouseFilterEnum.Ignore };
+			var layer = new Control { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
 			AddChild(layer);
 
 			// O desenho cabe inteiro entre as estrelas e o nível, recortado no miolo arredondado do cartão.
-			var frame = new ArtMask(MaskShape.Rounded, 6);
+			var frame = new ArtMask(MaskShape.Rounded, 6) { Name = "Frame" };
 			frame.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			layer.AddChild(frame);
-			var art = new Doodle(Art.Creature(summon.ImageFor(awakened)), Palette.Of(summon.Element));
+			var art = new Doodle(Art.Creature(summon.ImageFor(awakened)), Palette.Of(summon.Element)) { Name = "Art" };
 			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			art.OffsetTop = width * 0.18f;
 			art.OffsetBottom = -width * 0.14f;
@@ -63,7 +63,7 @@ namespace Sigilos.UI.Components
 			art.OffsetRight = -width * 0.05f;
 			frame.AddChild(art);
 
-			var stars = new Label { Text = Texts.Stars(monster?.Stars ?? summon.Rarity), MouseFilter = MouseFilterEnum.Ignore };
+			var stars = new Label { Name = "Stars", Text = Texts.Stars(monster?.Stars ?? summon.Rarity), MouseFilter = MouseFilterEnum.Ignore };
 			stars.AddThemeColorOverride("font_color", Palette.Stars(awakened));
 			stars.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.12f), 10, 16));
 			stars.AddThemeColorOverride("font_outline_color", Palette.Background);
@@ -71,12 +71,12 @@ namespace Sigilos.UI.Components
 			stars.Position = new Vector2(2, -2);
 			layer.AddChild(stars);
 
-			var element = Doodle.Icon(Art.Element(summon.Element), (int)(width * 0.17f), Palette.Of(summon.Element));
+			var element = Doodle.Icon(Art.Element(summon.Element), (int)(width * 0.17f), Palette.Of(summon.Element)).Named("Element");
 			element.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
 			element.OffsetLeft = -width * 0.17f;
 			layer.AddChild(element);
 
-			var level = new Label { Text = (monster?.Level ?? 1).ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore, HorizontalAlignment = HorizontalAlignment.Right };
+			var level = new Label { Name = "Level", Text = (monster?.Level ?? 1).ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore, HorizontalAlignment = HorizontalAlignment.Right };
 			level.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.16f), 12, 22));
 			level.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomRight);
 			level.GrowHorizontal = GrowDirection.Begin;
@@ -85,7 +85,7 @@ namespace Sigilos.UI.Components
 
 			if (marker != null)
 			{
-				var icon = Doodle.Icon(Art.Icon(marker), (int)(width * 0.2f), Palette.Gold);
+				var icon = Doodle.Icon(Art.Icon(marker), (int)(width * 0.2f), Palette.Gold).Named("Marker");
 				icon.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
 				icon.OffsetTop = -width * 0.2f;
 				layer.AddChild(icon);

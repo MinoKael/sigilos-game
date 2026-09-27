@@ -47,12 +47,12 @@ namespace Sigilos.UI.Screens
 		private readonly HashSet<int> _marked = new();
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly Label _count = new() { ThemeTypeVariation = GameTheme.Number, VerticalAlignment = VerticalAlignment.Center };
-		private readonly HBoxContainer _headerTools = Layout.Row(8);
-		private readonly HBoxContainer _selection = Layout.Row(8);
-		private readonly GridContainer _roster = new() { Columns = 5 };
-		private readonly VBoxContainer _detail = new();
-		private readonly SigilTabs _pages = new(vertical: true, 60);
+		private readonly Label _count = new() { Name = "Count", ThemeTypeVariation = GameTheme.Number, VerticalAlignment = VerticalAlignment.Center };
+		private readonly HBoxContainer _headerTools = Layout.Row(8).Named("Tools");
+		private readonly HBoxContainer _selection = Layout.Row(8).Named("Selection");
+		private readonly GridContainer _roster = new() { Name = "Roster", Columns = 5 };
+		private readonly VBoxContainer _detail = new() { Name = "Detail" };
+		private readonly SigilTabs _pages = new(vertical: true, 60) { Name = "Pages" };
 
 		public StorageScreen(GameDatabase database, PlayerState player, int? selected)
 		{
@@ -84,16 +84,16 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			var (header, extra) = Layout.Header(T("destination.Monsters"), "storage", _currencies, () => BackRequested?.Invoke());
 			extra.AddChild(_count);
-			extra.AddChild(new Control { CustomMinimumSize = new Vector2(12, 0) });
+			extra.AddChild(new Control { Name = "Spacer", CustomMinimumSize = new Vector2(12, 0) });
 			extra.AddChild(_headerTools);
 			page.AddChild(header);
 
-			var body = Layout.Row(16);
+			var body = Layout.Row(16).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
-			var rosterPanel = new PanelContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var rosterColumn = new VBoxContainer();
+			var rosterPanel = new PanelContainer { Name = "Collection", SizeFlagsHorizontal = SizeFlags.ExpandFill };
+			var rosterColumn = new VBoxContainer { Name = "Column" };
 			rosterColumn.AddThemeConstantOverride("separation", 10);
 			rosterPanel.AddChild(rosterColumn);
 			rosterColumn.AddChild(_selection);
@@ -102,14 +102,14 @@ namespace Sigilos.UI.Screens
 			rosterColumn.AddChild(Layout.Scroll(_roster));
 			body.AddChild(rosterPanel);
 
-			var detailPanel = new PanelContainer { CustomMinimumSize = new Vector2(DetailWidth, 0) };
-			var detailRow = Layout.Row(10);
+			var detailPanel = new PanelContainer { Name = "Sheet", CustomMinimumSize = new Vector2(DetailWidth, 0) };
+			var detailRow = Layout.Row(10).Named("Row");
 			_detail.AddThemeConstantOverride("separation", 10);
 			detailRow.AddChild(Layout.Scroll(_detail));
-			_pages.Add(Art.Icon("stats"), T("monsters.page.stats"));
-			_pages.Add(Art.Icon("rune"), T("monsters.page.runes"));
-			_pages.Add(Art.Icon("skill"), T("monsters.page.skills"));
-			_pages.Add(Art.Icon("awaken"), T("monsters.page.awaken"));
+			_pages.Add(Art.Icon("stats"), T("monsters.page.stats")).Name = nameof(Page.Stats);
+			_pages.Add(Art.Icon("rune"), T("monsters.page.runes")).Name = nameof(Page.Runes);
+			_pages.Add(Art.Icon("skill"), T("monsters.page.skills")).Name = nameof(Page.Skills);
+			_pages.Add(Art.Icon("awaken"), T("monsters.page.awaken")).Name = nameof(Page.Awaken);
 			_pages.Changed += index =>
 			{
 				_page = (Page)index;
@@ -143,9 +143,9 @@ namespace Sigilos.UI.Screens
 		private void RefreshTools()
 		{
 			Layout.Clear(_headerTools);
-			var tabs = new SigilTabs(vertical: false, 48);
-			tabs.Add(Art.Icon("storage"), T("monsters.collection"));
-			tabs.Add(Art.Icon("chest"), T("monsters.vault"), _player.Storage.Count().ToString());
+			var tabs = new SigilTabs(vertical: false, 48) { Name = "Places" };
+			tabs.Add(Art.Icon("storage"), T("monsters.collection")).Name = "Collection";
+			tabs.Add(Art.Icon("chest"), T("monsters.vault"), _player.Storage.Count().ToString()).Name = "Vault";
 			tabs.Select(_showStorage ? 1 : 0);
 			tabs.Changed += index =>
 			{
@@ -154,7 +154,7 @@ namespace Sigilos.UI.Screens
 			};
 			_headerTools.AddChild(tabs);
 
-			var select = new SigilButton(Art.Icon("select"), T("monsters.select"), 48, SigilShape.Square) { ToggleMode = true, ButtonPressed = _selecting };
+			var select = new SigilButton(Art.Icon("select"), T("monsters.select"), 48, SigilShape.Square) { Name = "Select", ToggleMode = true, ButtonPressed = _selecting };
 			select.Toggled += on =>
 			{
 				_selecting = on;
@@ -173,7 +173,7 @@ namespace Sigilos.UI.Screens
 				return;
 
 			var marked = _marked.Select(_player.Monster).OfType<OwnedSummon>().ToList();
-			_selection.AddChild(Layout.Chip("select", marked.Count.ToString(), T("monsters.marked")));
+			_selection.AddChild(Layout.Chip("select", marked.Count.ToString(), T("monsters.marked")).Named("Marked"));
 
 			var target = _player.Monster(_selected ?? -1);
 			if (target != null)
@@ -184,22 +184,22 @@ namespace Sigilos.UI.Screens
 					foreach (var copy in _player.Monsters.Where(m => m.SummonId == target.SummonId && m.Id != target.Id))
 						_marked.Add(copy.Id);
 					Refresh();
-				}));
+				}).Named("MarkCopies"));
 			}
 
 			_selection.AddChild(Action("cancel", T("monsters.unmark"), marked.Count == 0, () =>
 			{
 				_marked.Clear();
 				Refresh();
-			}));
+			}).Named("Unmark"));
 
 			if (target != null)
-				_selection.AddChild(FuseMarked(target, marked));
+				_selection.AddChild(FuseMarked(target, marked).Named("FuseMarked"));
 
 			var fragments = marked.Sum(m => Fusion.FragmentsFor(_database.Summon(m.SummonId).Rarity));
 			var release = Action("release", T("monsters.release_marked", marked.Count, fragments), marked.Count == 0, () => SigilDialog.Ask(this,
 				T("monsters.release_many_confirm", marked.Count, fragments) + Warning(marked),
-				() => ReleaseRequested?.Invoke(marked.Select(m => m.Id).ToList())));
+				() => ReleaseRequested?.Invoke(marked.Select(m => m.Id).ToList()))).Named("ReleaseMarked");
 			release.Badge = marked.Count > 0 ? fragments.ToString() : "";
 			_selection.AddChild(release);
 		}
@@ -248,7 +248,7 @@ namespace Sigilos.UI.Screens
 				var teams = TeamIcons(monster.Id);
 				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, 104,
 					teams.Count > 0 ? "team" : null,
-					teams.Count > 0 ? T("monsters.teams", string.Join(", ", teams.Select(t => t.Name))) : null);
+					teams.Count > 0 ? T("monsters.teams", string.Join(", ", teams.Select(t => t.Name))) : null) { Name = $"Monster{monster.Id}" };
 				card.SetSelected(monster.Id == _selected);
 				card.SetMarked(_marked.Contains(monster.Id));
 				card.Pressed += c =>
@@ -271,7 +271,7 @@ namespace Sigilos.UI.Screens
 
 			if (monsters.Count == 0)
 			{
-				var empty = Doodle.Icon(Art.Icon(_showStorage ? "chest" : "summon"), 96, new Color(Palette.GoldDark, 0.5f));
+				var empty = Doodle.Icon(Art.Icon(_showStorage ? "chest" : "summon"), 96, new Color(Palette.GoldDark, 0.5f)).Named("Empty");
 				empty.TooltipText = T(_showStorage ? "monsters.vault_empty" : "monsters.collection_empty");
 				empty.MouseFilter = MouseFilterEnum.Stop;
 				_roster.AddChild(empty);
@@ -309,33 +309,35 @@ namespace Sigilos.UI.Screens
 		/// <summary>Retrato, nome, estrelas, nível e barra de experiência, elemento e papel: igual em toda aba.</summary>
 		private Control Identity(SummonDefinition summon, OwnedSummon monster)
 		{
-			var row = Layout.Row(14);
+			var row = Layout.Row(14).Named("Identity");
 
-			var frame = new PanelContainer { CustomMinimumSize = new Vector2(120, 120), TooltipText = T("monsters.natural_stars", summon.Rarity) };
+			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(120, 120), TooltipText = T("monsters.natural_stars", summon.Rarity) };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 3, 10, 8));
 			frame.AddChild(Doodle.Masked(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), MaskShape.Rounded, 6));
 			row.AddChild(frame);
 
-			var info = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			info.AddThemeConstantOverride("separation", 4);
-			var name = new Label { Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading };
+			var name = new Label { Name = "Name", Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading };
 			if (monster.Awakened)
 				name.AddThemeColorOverride("font_color", Palette.Awakened);
 			info.AddChild(name);
 
-			var line = Layout.Row(8);
-			var stars = new Label { Text = Texts.Stars(monster.Stars) };
+			var line = Layout.Row(8).Named("Line");
+			var stars = new Label { Name = "Stars", Text = Texts.Stars(monster.Stars) };
 			stars.AddThemeColorOverride("font_color", Palette.Stars(monster.Awakened));
 			stars.AddThemeFontSizeOverride("font_size", 18);
 			line.AddChild(stars);
-			var element = Doodle.Icon(Art.Element(summon.Element), 22, Palette.Of(summon.Element));
+			var element = Doodle.Icon(Art.Element(summon.Element), 22, Palette.Of(summon.Element)).Named("Element");
 			element.TooltipText = T("monsters.element_role", Texts.Name(summon.Element), Texts.Name(summon.Role));
 			element.MouseFilter = MouseFilterEnum.Stop;
 			line.AddChild(element);
-			line.AddChild(new Label { Text = Texts.Name(summon.Role), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
-			foreach (var (icon, teamName) in TeamIcons(monster.Id))
+			line.AddChild(new Label { Name = "Role", Text = Texts.Name(summon.Role), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+			var teams = TeamIcons(monster.Id);
+			for (var i = 0; i < teams.Count; i++)
 			{
-				var team = Doodle.Icon(Art.Icon(icon), 20, Palette.Gold);
+				var (icon, teamName) = teams[i];
+				var team = Doodle.Icon(Art.Icon(icon), 20, Palette.Gold).Named($"Team{i + 1}");
 				team.TooltipText = teamName;
 				team.MouseFilter = MouseFilterEnum.Stop;
 				line.AddChild(team);
@@ -343,7 +345,7 @@ namespace Sigilos.UI.Screens
 
 			if (monster.Stored)
 			{
-				var vault = Doodle.Icon(Art.Icon("chest"), 20, Palette.TextFaded);
+				var vault = Doodle.Icon(Art.Icon("chest"), 20, Palette.TextFaded).Named("Vault");
 				vault.TooltipText = T("monsters.in_vault");
 				vault.MouseFilter = MouseFilterEnum.Stop;
 				line.AddChild(vault);
@@ -352,10 +354,10 @@ namespace Sigilos.UI.Screens
 			info.AddChild(line);
 
 			var max = Leveling.MaxLevel(monster);
-			var level = Layout.Row(8);
-			var levelText = new Label { Text = T("monsters.level", monster.Level, max), ThemeTypeVariation = GameTheme.Number };
+			var level = Layout.Row(8).Named("Level");
+			var levelText = new Label { Name = "Text", Text = T("monsters.level", monster.Level, max), ThemeTypeVariation = GameTheme.Number };
 			level.AddChild(levelText);
-			var bar = Layout.Energy(Palette.Gold, 10);
+			var bar = Layout.Energy(Palette.Gold, 10).Named("Experience");
 			bar.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			bar.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			bar.MaxValue = Math.Max(1, Leveling.ExperienceToNext(monster));
@@ -370,15 +372,15 @@ namespace Sigilos.UI.Screens
 		private void StatsPage(SummonDefinition summon, OwnedSummon monster)
 		{
 			var id = monster.Id;
-			var actions = Layout.Flow(10);
+			var actions = Layout.Flow(10).Named("Actions");
 
 			if (!Leveling.IsMaxLevel(monster))
 			{
 				var (next, full) = Leveling.InfuseCosts(monster);
-				var one = Action("essence", T("monsters.level_up", next), _player.Essence < next, () => InfuseRequested?.Invoke(id, false));
+				var one = Action("essence", T("monsters.level_up", next), _player.Essence < next, () => InfuseRequested?.Invoke(id, false)).Named("LevelUp");
 				one.Badge = "+1";
 				actions.AddChild(one);
-				var all = Action("level_max", T("monsters.max_level_button", Leveling.MaxLevel(monster), full), _player.Essence <= 0, () => InfuseRequested?.Invoke(id, true));
+				var all = Action("level_max", T("monsters.max_level_button", Leveling.MaxLevel(monster), full), _player.Essence <= 0, () => InfuseRequested?.Invoke(id, true)).Named("LevelMax");
 				all.Badge = Texts.Short(full);
 				actions.AddChild(all);
 			}
@@ -394,7 +396,7 @@ namespace Sigilos.UI.Screens
 
 			if (!monster.Stored)
 			{
-				actions.AddChild(Action("chest", T("monsters.store"), false, () => StoreRequested?.Invoke(id)));
+				actions.AddChild(Action("chest", T("monsters.store"), false, () => StoreRequested?.Invoke(id)).Named("Store"));
 			}
 			else
 			{
@@ -405,14 +407,14 @@ namespace Sigilos.UI.Screens
 			var fragments = Fusion.FragmentsFor(summon.Rarity);
 			var release = Action("release", T("monsters.release", fragments), false, () => SigilDialog.Ask(this,
 				T("monsters.release_confirm", summon.NameFor(monster.Awakened), monster.Level, fragments),
-				() => ReleaseRequested?.Invoke(new[] { id })));
+				() => ReleaseRequested?.Invoke(new[] { id }))).Named("Release");
 			release.Badge = fragments.ToString();
 			actions.AddChild(release);
 			_detail.AddChild(actions);
 
-			_detail.AddChild(new HSeparator());
+			_detail.AddChild(new HSeparator { Name = "StatsLine" });
 			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Stars, monster.Level, monster.Awakened, _player.RunesOn(monster.Id));
-			var table = new StatTable();
+			var table = new StatTable { Name = "Stats" };
 			table.Show(sheet);
 			_detail.AddChild(table);
 		}
@@ -422,24 +424,26 @@ namespace Sigilos.UI.Screens
 			var runes = _player.RunesOn(monster.Id);
 			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Stars, monster.Level, monster.Awakened, runes);
 
-			var ring = new SigilRing(340) { Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
+			var ring = new SigilRing(340) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
 			var tiles = new List<Control>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
-				var tile = new RuneTile(runes.FirstOrDefault(r => r.Slot == slot), slot, 1.25f);
+				var tile = new RuneTile(runes.FirstOrDefault(r => r.Slot == slot), slot, 1.25f) { Name = $"Slot{slot}" };
 				tile.Pressed += _ => RunesRequested?.Invoke(monster.Id);
 				tiles.Add(tile);
 			}
 
-			var open = SigilButton.Of("rune", T("monsters.runes_button"), () => RunesRequested?.Invoke(monster.Id), 76);
+			var open = SigilButton.Of("rune", T("monsters.runes_button"), () => RunesRequested?.Invoke(monster.Id), 76).Named("OpenRunes");
 			ring.Set(open, tiles);
 			_detail.AddChild(ring);
 
-			foreach (var set in sheet.Runes.ActiveSets)
+			// Conjunto de 2 peças pode estar ativo mais de uma vez: a posição deixa o nome único.
+			for (var i = 0; i < sheet.Runes.ActiveSets.Count; i++)
 			{
-				var row = Layout.Row(8);
-				row.AddChild(new RuneGlyph(RuneSets.For(set.Set).Glyph, 24, Palette.Gold));
-				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", 440));
+				var set = sheet.Runes.ActiveSets[i];
+				var row = Layout.Row(8).Named($"{set.Set}{i + 1}");
+				row.AddChild(new RuneGlyph(RuneSets.For(set.Set).Glyph, 24, Palette.Gold) { Name = "Glyph" });
+				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", 440).Named("Effect"));
 				_detail.AddChild(row);
 			}
 		}
@@ -450,52 +454,55 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < skills.Count; i++)
 			{
 				var locked = !monster.Awakened && i >= summon.Skills.Count;
-				_detail.AddChild(SkillRow.Build(skills[i], monster.SkillLevel(i), monster.Awakened, locked));
+				_detail.AddChild(SkillRow.Build(skills[i], monster.SkillLevel(i), monster.Awakened, locked).Named($"Skill{i + 1}"));
 			}
 
 			if (summon.Leader is { } leader)
 			{
-				var row = Layout.Row(10);
-				row.AddChild(Doodle.Icon(Art.Icon("leader"), 32, Palette.Gold));
-				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 440));
+				var row = Layout.Row(10).Named("Leader");
+				row.AddChild(Doodle.Icon(Art.Icon("leader"), 32, Palette.Gold).Named("Icon"));
+				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 440).Named("Text"));
 				_detail.AddChild(row);
 			}
 
-			_detail.AddChild(new HSeparator());
-			var actions = Layout.Row(10);
-			actions.AddChild(FuseMenu(summon, monster));
+			_detail.AddChild(new HSeparator { Name = "ActionsLine" });
+			var actions = Layout.Row(10).Named("Actions");
+			actions.AddChild(FuseMenu(summon, monster).Named("Fuse"));
 			_detail.AddChild(actions);
 		}
 
 		private void AwakenPage(SummonDefinition summon, OwnedSummon monster)
 		{
-			var forms = Layout.Row(18, true);
-			forms.AddChild(Form(summon, false, !monster.Awakened));
-			forms.AddChild(Doodle.Icon(Art.Icon("awaken"), 40, monster.Awakened ? Palette.Awakened : Palette.GoldDark));
-			forms.AddChild(Form(summon, true, monster.Awakened));
+			var forms = Layout.Row(18, true).Named("Forms");
+			forms.AddChild(Form(summon, false, !monster.Awakened).Named("Normal"));
+			forms.AddChild(Doodle.Icon(Art.Icon("awaken"), 40, monster.Awakened ? Palette.Awakened : Palette.GoldDark).Named("Arrow"));
+			forms.AddChild(Form(summon, true, monster.Awakened).Named("Awakened"));
 			_detail.AddChild(forms);
 
-			var name = new Label { Text = summon.Awakening.Name, ThemeTypeVariation = GameTheme.Heading, HorizontalAlignment = HorizontalAlignment.Center };
+			var name = new Label { Name = "AwakenedName", Text = summon.Awakening.Name, ThemeTypeVariation = GameTheme.Heading, HorizontalAlignment = HorizontalAlignment.Center };
 			name.AddThemeColorOverride("font_color", Palette.Awakened);
 			_detail.AddChild(name);
 
-			var gains = Layout.Row(8, true);
-			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Health), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)));
-			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Attack), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)));
-			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Defense), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)));
+			var gains = Layout.Row(8, true).Named("Gains");
+			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Health), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)).Named(nameof(Stat.Health)));
+			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Attack), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)).Named(nameof(Stat.Attack)));
+			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Defense), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)).Named(nameof(Stat.Defense)));
 			if (summon.Awakening.Stat is { } stat)
-				gains.AddChild(Layout.Chip(Texts.GlyphOf(stat), Texts.AwakeningAmount(stat), Texts.Name(stat)));
+				gains.AddChild(Layout.Chip(Texts.GlyphOf(stat), Texts.AwakeningAmount(stat), Texts.Name(stat)).Named($"Bonus{stat}"));
 			_detail.AddChild(gains);
 
 			if (summon.Awakening.Skill is { } skill)
-				_detail.AddChild(SkillRow.Build(skill, monster.SkillLevel(summon.Skills.Count), true, !monster.Awakened));
+				_detail.AddChild(SkillRow.Build(skill, monster.SkillLevel(summon.Skills.Count), true, !monster.Awakened).Named("NewSkill"));
 			foreach (var improved in summon.Skills.Where(s => s.ChangesOnAwakening))
-				_detail.AddChild(SkillRow.Build(improved, monster.SkillLevel(summon.Skills.ToList().IndexOf(improved)), true, !monster.Awakened));
+			{
+				var index = summon.Skills.ToList().IndexOf(improved);
+				_detail.AddChild(SkillRow.Build(improved, monster.SkillLevel(index), true, !monster.Awakened).Named($"Improved{index + 1}"));
+			}
 
 			if (monster.Awakened)
 				return;
 
-			var row = Layout.Row(0, true);
+			var row = Layout.Row(0, true).Named("Actions");
 			var cost = Awakening.Cost(summon.Rarity);
 			var awaken = Action("awaken", T("monsters.awaken_button", summon.Awakening.Name, cost), !Awakening.CanAwaken(_player, monster, summon), () => AwakenRequested?.Invoke(monster.Id), 76);
 			awaken.Badge = Texts.Short(cost);

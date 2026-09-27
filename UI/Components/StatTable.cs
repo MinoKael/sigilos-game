@@ -24,17 +24,18 @@ namespace Sigilos.UI.Components
 			Layout.Clear(this);
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
-				var icon = new RuneGlyph(Texts.GlyphOf(stat), 18, Palette.Gold);
+				// Quatro células por atributo, com o nome dele na frente: HpGlyph, HpName, HpBase, HpBonus.
+				var icon = new RuneGlyph(Texts.GlyphOf(stat), 18, Palette.Gold) { Name = $"{stat}Glyph" };
 				icon.TooltipText = Texts.Name(Texts.GlyphOf(stat));
 				icon.MouseFilter = MouseFilterEnum.Stop;
 				AddChild(icon);
-				AddChild(new Label { Text = Texts.Name(stat) });
+				AddChild(new Label { Name = $"{stat}Name", Text = Texts.Name(stat) });
 
-				var baseValue = new Label { Text = Texts.Value(stat, sheet.Base.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };
+				var baseValue = new Label { Name = $"{stat}Base", Text = Texts.Value(stat, sheet.Base.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };
 				AddChild(baseValue);
 
 				var bonus = sheet.Runes.Stats.Get(stat);
-				var bonusLabel = new Label { Text = bonus > 0.0005 ? $"+{Texts.Value(stat, bonus)}" : "", CustomMinimumSize = new Vector2(64, 0) };
+				var bonusLabel = new Label { Name = $"{stat}Bonus", Text = bonus > 0.0005 ? $"+{Texts.Value(stat, bonus)}" : "", CustomMinimumSize = new Vector2(64, 0) };
 				bonusLabel.AddThemeColorOverride("font_color", Palette.Positive);
 				AddChild(bonusLabel);
 			}

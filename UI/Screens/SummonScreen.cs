@@ -26,12 +26,12 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly SigilButton _single = new(Art.Icon("summon"), "", 104);
-		private readonly SigilButton _ten = new(Art.Icon("summon"), "", 104);
-		private readonly EnergyRing _pity = new(Palette.Awakened, 7) { CustomMinimumSize = new Vector2(PortalSize, PortalSize) };
-		private readonly Label _pityCount = new() { ThemeTypeVariation = GameTheme.Number, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Stop };
-		private readonly Control _stage = new() { SizeFlagsVertical = SizeFlags.ExpandFill, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-		private readonly GridContainer _results = new() { Columns = 5 };
+		private readonly SigilButton _single = new(Art.Icon("summon"), "", 104) { Name = "Single" };
+		private readonly SigilButton _ten = new(Art.Icon("summon"), "", 104) { Name = "Ten" };
+		private readonly EnergyRing _pity = new(Palette.Awakened, 7) { Name = "Pity", CustomMinimumSize = new Vector2(PortalSize, PortalSize) };
+		private readonly Label _pityCount = new() { Name = "PityCount", ThemeTypeVariation = GameTheme.Number, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Stop };
+		private readonly Control _stage = new() { Name = "Stage", SizeFlagsVertical = SizeFlags.ExpandFill, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+		private readonly GridContainer _results = new() { Name = "Results", Columns = 5 };
 		private Doodle? _sigil;
 		private Control? _idle;
 
@@ -54,26 +54,26 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Summon"), "summon", _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = Layout.Row(28);
+			var body = Layout.Row(28).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
-			var column = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center, CustomMinimumSize = new Vector2(150, 0) };
+			var column = new VBoxContainer { Name = "Pulls", Alignment = BoxContainer.AlignmentMode.Center, CustomMinimumSize = new Vector2(150, 0) };
 			column.AddThemeConstantOverride("separation", 26);
 			_single.Letters = "×1";
 			_ten.Letters = "×10";
 			_single.Pressed += () => SummonRequested?.Invoke(1);
 			_ten.Pressed += () => SummonRequested?.Invoke(10);
-			column.AddChild(Centered(_single));
-			column.AddChild(Centered(_ten));
-			column.AddChild(Centered(SigilButton.Of("shop", T("summon.shop"), () => ShopRequested?.Invoke(), 60, SigilShape.Square)));
+			column.AddChild(Centered("SingleRow", _single));
+			column.AddChild(Centered("TenRow", _ten));
+			column.AddChild(Centered("ShopRow", SigilButton.Of("shop", T("summon.shop"), () => ShopRequested?.Invoke(), 60, SigilShape.Square)));
 
-			var rates = new VBoxContainer();
+			var rates = new VBoxContainer { Name = "Rates" };
 			rates.AddThemeConstantOverride("separation", 4);
 			var threeStar = 1 - SummonRates.FiveStar - SummonRates.FourStar;
 			foreach (var (stars, chance) in new[] { (3, threeStar), (4, SummonRates.FourStar), (5, SummonRates.FiveStar) })
 			{
-				var rate = new Label { Text = $"{Texts.Stars(stars)}  {Texts.Percent(chance)}", HorizontalAlignment = HorizontalAlignment.Center, TooltipText = T("summon.rate", stars), MouseFilter = MouseFilterEnum.Stop };
+				var rate = new Label { Name = $"Rate{stars}", Text = $"{Texts.Stars(stars)}  {Texts.Percent(chance)}", HorizontalAlignment = HorizontalAlignment.Center, TooltipText = T("summon.rate", stars), MouseFilter = MouseFilterEnum.Stop };
 				rate.AddThemeColorOverride("font_color", Palette.Frame(stars));
 				rate.AddThemeFontSizeOverride("font_size", 13);
 				rates.AddChild(rate);
@@ -89,10 +89,10 @@ namespace Sigilos.UI.Screens
 			_stage.Resized += Center;
 
 			// O portal em repouso, dentro do anel da garantia: some quando o primeiro ritual começa.
-			var idle = new Control { MouseFilter = MouseFilterEnum.Ignore, Size = new Vector2(PortalSize, PortalSize) };
+			var idle = new Control { Name = "Idle", MouseFilter = MouseFilterEnum.Ignore, Size = new Vector2(PortalSize, PortalSize) };
 			_pity.Size = new Vector2(PortalSize, PortalSize);
 			idle.AddChild(_pity);
-			var portal = new Control { Position = new Vector2(PortalSize * 0.16f, PortalSize * 0.16f), Size = new Vector2(PortalSize * 0.68f, PortalSize * 0.68f), MouseFilter = MouseFilterEnum.Ignore };
+			var portal = new Control { Name = "Portal", Position = new Vector2(PortalSize * 0.16f, PortalSize * 0.16f), Size = new Vector2(PortalSize * 0.68f, PortalSize * 0.68f), MouseFilter = MouseFilterEnum.Ignore };
 			portal.AddChild(Doodle.Masked(Art.Icon("summon"), Palette.GoldDark, MaskShape.Circle, inset: 12));
 			idle.AddChild(portal);
 			_pityCount.AddThemeFontSizeOverride("font_size", 30);
@@ -127,8 +127,9 @@ namespace Sigilos.UI.Screens
 			if (_idle != null)
 				_idle.Visible = false;
 
-			_sigil?.QueueFree();
-			_sigil = new Doodle(Art.Icon("summon"), Palette.Gold) { CustomMinimumSize = new Vector2(240, 240), Size = new Vector2(240, 240) };
+			if (_sigil != null)
+				Layout.Discard(_sigil);
+			_sigil = new Doodle(Art.Icon("summon"), Palette.Gold) { Name = "Ritual", CustomMinimumSize = new Vector2(240, 240), Size = new Vector2(240, 240) };
 			_stage.AddChild(_sigil);
 			_sigil.Position = (_stage.Size - _sigil.Size) / 2;
 			_sigil.PivotOffset = _sigil.Size / 2;
@@ -155,7 +156,7 @@ namespace Sigilos.UI.Screens
 				var (marker, tip) = result.Monster.Stored ? ("chest", T("summon.sent_to_vault"))
 					: result.FirstCopy ? ("collect", T("summon.new"))
 					: ("copies", T("summon.copy"));
-				var card = new CreatureCard(result.Summon, result.Monster, 130, marker, tip) { Modulate = new Color(1, 1, 1, 0) };
+				var card = new CreatureCard(result.Summon, result.Monster, 130, marker, tip) { Name = $"Result{i + 1}", Modulate = new Color(1, 1, 1, 0) };
 				_results.AddChild(card);
 				card.CreateTween().TweenProperty(card, "modulate:a", 1f, 0.25).SetDelay(0.08 * i);
 			}
@@ -182,9 +183,9 @@ namespace Sigilos.UI.Screens
 			button.Highlight = _player.TotalPulls == 0 && !button.Disabled;
 		}
 
-		private static Control Centered(Control control)
+		private static Control Centered(string name, Control control)
 		{
-			var box = new CenterContainer();
+			var box = new CenterContainer { Name = name };
 			box.AddChild(control);
 			return box;
 		}

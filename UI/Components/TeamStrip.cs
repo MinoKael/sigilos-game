@@ -18,11 +18,12 @@ namespace Sigilos.UI.Components
 
 		public TeamStrip(GameDatabase database, PlayerState player, string content, Action onEdit)
 		{
+			Name = "Team";
 			AddThemeConstantOverride("separation", 6);
 			var team = Teams.Of(player, content).Select(player.Monster).OfType<OwnedSummon>().Where(m => database.HasSummon(m.SummonId)).ToList();
 			for (var i = 0; i < PlayerState.TeamSize; i++)
 			{
-				var slot = new PanelContainer { CustomMinimumSize = new Vector2(Medal, Medal), MouseFilter = MouseFilterEnum.Stop };
+				var slot = new PanelContainer { Name = $"Slot{i + 1}", CustomMinimumSize = new Vector2(Medal, Medal), MouseFilter = MouseFilterEnum.Stop };
 				var box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 1, (int)(Medal / 2), 3);
 				if (i < team.Count)
 				{
@@ -43,7 +44,7 @@ namespace Sigilos.UI.Components
 				AddChild(slot);
 			}
 
-			var edit = SigilButton.Of("team", T("common.team"), onEdit, 48, SigilShape.Square);
+			var edit = SigilButton.Of("team", T("common.team"), onEdit, 48, SigilShape.Square).Named("Edit");
 			edit.Highlight = team.Count == 0;
 			AddChild(edit);
 		}

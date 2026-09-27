@@ -43,13 +43,17 @@ namespace Sigilos.UI.Components
 			Refine();
 		}
 
-		/// <summary>Ícone pequeno de tamanho fixo, parado, para rótulos e botões.</summary>
+		/// <summary>Ícone pequeno de tamanho fixo, parado, para rótulos e botões. O nó leva o nome do desenho (<c>Lock</c>).</summary>
 		public static Doodle Icon(Texture2D? texture, int size, Color? ink = null) =>
-			new(texture, ink ?? Palette.Text, boil: false) { CustomMinimumSize = new Vector2(size, size) };
+			new(texture, ink ?? Palette.Text, boil: false)
+			{
+				Name = Art.NameOf(texture) is { } name ? Layout.NodeName(name) : "Icon",
+				CustomMinimumSize = new Vector2(size, size),
+			};
 
-		/// <summary>O desenho recortado numa forma (círculo, losango, cartão), com folga até a borda.</summary>
+		/// <summary>O desenho (<c>Art</c>) recortado numa forma (círculo, losango, cartão), com folga até a borda.</summary>
 		public static ArtMask Masked(Texture2D? texture, Color ink, MaskShape shape, float radius = 8, float inset = 0, bool boil = true) =>
-			ArtMask.Of(new Doodle(texture, ink, boil), shape, radius, inset);
+			ArtMask.Of(new Doodle(texture, ink, boil) { Name = "Art" }, shape, radius, inset);
 
 		public override void _Ready() => Refine();
 

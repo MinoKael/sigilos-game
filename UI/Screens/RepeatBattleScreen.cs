@@ -29,12 +29,12 @@ namespace Sigilos.UI.Screens
 		private readonly int _runs;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly EnergyRing _ring = new(Palette.Arcane, 8) { CustomMinimumSize = new Vector2(RingSize, RingSize) };
-		private readonly Label _count = new() { ThemeTypeVariation = GameTheme.Number, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-		private readonly Label _status = new() { AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(360, 0) };
-		private readonly HBoxContainer _time = Layout.Row(8);
-		private readonly HFlowContainer _totals = Layout.Flow(8);
-		private readonly HFlowContainer _runes = Layout.Flow(8);
+		private readonly EnergyRing _ring = new(Palette.Arcane, 8) { Name = "Ring", CustomMinimumSize = new Vector2(RingSize, RingSize) };
+		private readonly Label _count = new() { Name = "Count", ThemeTypeVariation = GameTheme.Number, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+		private readonly Label _status = new() { Name = "Status", AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(360, 0) };
+		private readonly HBoxContainer _time = Layout.Row(8).Named("Time");
+		private readonly HFlowContainer _totals = Layout.Flow(8).Named("Totals");
+		private readonly HFlowContainer _runes = Layout.Flow(8).Named("Runes");
 		private readonly SigilButton _stop;
 
 		private bool _running;
@@ -59,7 +59,7 @@ namespace Sigilos.UI.Screens
 			_player = player;
 			_title = title;
 			_runs = runs;
-			_stop = SigilButton.Of("cancel", T("auto.stop"), () => Finish(T("auto.stopped")), 60);
+			_stop = SigilButton.Of("cancel", T("auto.stop"), () => Finish(T("auto.stopped")), 60).Named("Stop");
 		}
 
 		/// <summary>A luta em andamento acabou de passar na tela: o GameRoot aplica o resultado e chama a próxima.</summary>
@@ -78,10 +78,10 @@ namespace Sigilos.UI.Screens
 				BackRequested?.Invoke();
 			}).Header);
 
-			var runPanel = new PanelContainer();
-			var run = Layout.Row(28);
+			var runPanel = new PanelContainer { Name = "Run" };
+			var run = Layout.Row(28).Named("Row");
 			runPanel.AddChild(run);
-			var ring = new Control { CustomMinimumSize = new Vector2(RingSize, RingSize) };
+			var ring = new Control { Name = "Progress", CustomMinimumSize = new Vector2(RingSize, RingSize) };
 			_ring.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			ring.AddChild(_ring);
 			_count.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -89,7 +89,7 @@ namespace Sigilos.UI.Screens
 			ring.AddChild(_count);
 			run.AddChild(ring);
 
-			var side = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center };
+			var side = new VBoxContainer { Name = "Side", Alignment = BoxContainer.AlignmentMode.Center };
 			side.AddThemeConstantOverride("separation", 14);
 			side.AddChild(_time);
 			_status.AddThemeFontOverride("font", GameTheme.Serif);
@@ -99,8 +99,8 @@ namespace Sigilos.UI.Screens
 			run.AddChild(side);
 			page.AddChild(runPanel);
 
-			var resultPanel = new PanelContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
-			var results = new VBoxContainer();
+			var resultPanel = new PanelContainer { Name = "Results", SizeFlagsVertical = SizeFlags.ExpandFill };
+			var results = new VBoxContainer { Name = "Content" };
 			results.AddThemeConstantOverride("separation", 12);
 			results.AddChild(_totals);
 			results.AddChild(Layout.Scroll(_runes));
@@ -134,7 +134,7 @@ namespace Sigilos.UI.Screens
 			_accountLevels += reward.AccountLevels;
 			_accountLevel = accountLevel;
 			if (reward.Rune is { } rune)
-				_runes.AddChild(new RuneTile(rune, rune.Slot, 1.3f) { MouseFilter = MouseFilterEnum.Pass });
+				_runes.AddChild(new RuneTile(rune, rune.Slot, 1.3f) { Name = $"Rune{rune.Id}", MouseFilter = MouseFilterEnum.Pass });
 			_tools.AddRange(reward.Tools);
 			RefreshTotals();
 		}
@@ -166,7 +166,7 @@ namespace Sigilos.UI.Screens
 			var average = _durations.Count == 0 ? _duration : _durations.Average();
 			var left = Math.Max(0, _duration - _elapsed) + average * (_runs - _number);
 			Layout.Clear(_time);
-			_time.AddChild(Layout.Chip("resolve", TimeSpan.FromSeconds(left).ToString(@"m\:ss"), T("auto.time_left")));
+			_time.AddChild(Layout.Chip("resolve", TimeSpan.FromSeconds(left).ToString(@"m\:ss"), T("auto.time_left")).Named("TimeLeft"));
 			if (_elapsed < _duration)
 				return;
 
@@ -179,20 +179,21 @@ namespace Sigilos.UI.Screens
 		{
 			_currencies.Refresh(_player);
 			Layout.Clear(_totals);
-			_totals.AddChild(Layout.Chip("confirm", _victories.ToString(), T("auto.victories"), Palette.Spirit));
-			_totals.AddChild(Layout.Chip("cancel", _defeats.ToString(), T("auto.defeats"), Palette.Negative));
+			_totals.AddChild(Layout.Chip("confirm", _victories.ToString(), T("auto.victories"), Palette.Spirit).Named("Victories"));
+			_totals.AddChild(Layout.Chip("cancel", _defeats.ToString(), T("auto.defeats"), Palette.Negative).Named("Defeats"));
 			_totals.AddChild(Layout.Chip("mana", $"−{_mana}", T("currency.mana")));
 			_totals.AddChild(Layout.Chip("essence", $"+{_essence}", T("currency.essence")));
 			if (_gold > 0)
 				_totals.AddChild(Layout.Chip("gold", $"+{_gold}", T("currency.gold")));
-			_totals.AddChild(Layout.Chip("level_max", $"+{_experience}", T("reward.experience")));
+			_totals.AddChild(Layout.Chip("level_max", $"+{_experience}", T("reward.experience")).Named("Experience"));
 			if (_levelUps > 0)
-				_totals.AddChild(Layout.Chip("stats", _levelUps.ToString(), T("auto.level_ups")));
+				_totals.AddChild(Layout.Chip("stats", _levelUps.ToString(), T("auto.level_ups")).Named("LevelUps"));
 			if (_accountLevels > 0)
-				_totals.AddChild(Layout.Chip("avatar", _accountLevel.ToString(), T("auto.account"), Palette.Arcane));
-			_totals.AddChild(Layout.Chip("rune", _runes.GetChildCount().ToString(), T("auto.runes")));
+				_totals.AddChild(Layout.Chip("avatar", _accountLevel.ToString(), T("auto.account"), Palette.Arcane).Named("AccountLevel"));
+			_totals.AddChild(Layout.Chip("rune", _runes.GetChildCount().ToString(), T("auto.runes")).Named("Runes"));
 			foreach (var group in _tools.GroupBy(t => t))
-				_totals.AddChild(Layout.Chip(group.Key.Kind == Core.Runes.RuneToolKind.Grindstone ? "grindstone" : "gem", $"×{group.Count()}", $"{Texts.Name(group.Key)} ({Texts.Range(group.Key)})", Palette.Of(group.Key.Grade)));
+				_totals.AddChild(Layout.Chip(group.Key.Kind == Core.Runes.RuneToolKind.Grindstone ? "grindstone" : "gem", $"×{group.Count()}", $"{Texts.Name(group.Key)} ({Texts.Range(group.Key)})", Palette.Of(group.Key.Grade))
+					.Named($"{group.Key.Kind}{group.Key.Stat}{group.Key.Grade}"));
 		}
 	}
 }

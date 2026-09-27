@@ -50,8 +50,8 @@ namespace Sigilos.UI.Components
 			{
 				var index = i;
 				var item = items[i];
-				var holder = new Control { Size = new Vector2(itemSize, itemSize), PivotOffset = new Vector2(itemSize, itemSize) / 2, MouseFilter = MouseFilterEnum.Ignore };
-				var button = new SigilButton(item.Icon, item.Tooltip, itemSize) { Ink = item.Ink, Accent = item.Accent };
+				var holder = new Control { Name = $"Item{i}", Size = new Vector2(itemSize, itemSize), PivotOffset = new Vector2(itemSize, itemSize) / 2, MouseFilter = MouseFilterEnum.Ignore };
+				var button = new SigilButton(item.Icon, item.Tooltip, itemSize) { Name = "Sigil", Ink = item.Ink, Accent = item.Accent };
 				if (item.Rune is { } glyph)
 					button.Rune = glyph;
 				else if (item.Letters.Length > 0)
@@ -63,9 +63,9 @@ namespace Sigilos.UI.Components
 				_holders.Add(holder);
 			}
 
-			var previous = new SigilButton(null, "", itemSize * 0.55f) { Letters = "‹" };
+			var previous = new SigilButton(null, "", itemSize * 0.55f) { Name = "Previous", Letters = "‹" };
 			previous.Pressed += () => Select(SelectedIndex - 1);
-			var next = new SigilButton(null, "", itemSize * 0.55f) { Letters = "›" };
+			var next = new SigilButton(null, "", itemSize * 0.55f) { Name = "Next", Letters = "›" };
 			next.Pressed += () => Select(SelectedIndex + 1);
 			Previous = previous;
 			Next = next;
@@ -195,11 +195,12 @@ namespace Sigilos.UI.Components
 	{
 		private ArcPicker(IReadOnlyList<ArcItem> items, int selected, Vector2 near, Action<int> chosen)
 		{
+			Name = nameof(ArcPicker);
 			Color = new Color(0, 0, 0, 0.55f);
 			MouseFilter = MouseFilterEnum.Stop;
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
-			var carousel = new ArcCarousel(items, selected, 60, 280) { ChooseOnClick = true };
+			var carousel = new ArcCarousel(items, selected, 60, 280) { Name = "Carousel", ChooseOnClick = true };
 			carousel.Chosen += index =>
 			{
 				QueueFree();

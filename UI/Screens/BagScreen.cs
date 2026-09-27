@@ -33,13 +33,13 @@ namespace Sigilos.UI.Screens
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			var ring = new SigilRing(540) { Spread = 0.74f };
+			var ring = new SigilRing(540) { Name = "Ring", Spread = 0.74f };
 			AddChild(Layout.Background(ring));
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Bag"), "bag", _currencies, () => BackRequested?.Invoke()).Header);
 			_currencies.Refresh(_player);
 
-			var center = new CenterContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
+			var center = new CenterContainer { Name = "Center", SizeFlagsVertical = SizeFlags.ExpandFill };
 			center.AddChild(ring);
 			page.AddChild(center);
 
@@ -49,6 +49,6 @@ namespace Sigilos.UI.Screens
 		}
 
 		private SigilButton Sigil(Destination destination, float size, SigilShape shape) =>
-			SigilButton.Of(Destinations.Icon(destination), Destinations.Name(destination), () => Requested?.Invoke(destination), size, shape);
+			SigilButton.Of(Destinations.Icon(destination), Destinations.Name(destination), () => Requested?.Invoke(destination), size, shape).Named(destination.ToString());
 	}
 }

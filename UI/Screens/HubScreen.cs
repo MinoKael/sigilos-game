@@ -32,11 +32,11 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly Control _account = new() { Position = new Vector2(Layout.ScreenMargin, Layout.ScreenMargin) };
-		private readonly Constellation _constellation = new();
-		private readonly SigilButton _channel = new(Art.Icon("collect"), "", 128);
-		private readonly HBoxContainer _pending = Layout.Row(6, true);
-		private readonly SigilButton _edit = new(Art.Icon("edit"), "", 52, SigilShape.Square) { ToggleMode = true };
+		private readonly Control _account = new() { Name = "Account", Position = new Vector2(Layout.ScreenMargin, Layout.ScreenMargin) };
+		private readonly Constellation _constellation = new() { Name = "Constellation" };
+		private readonly SigilButton _channel = new(Art.Icon("collect"), "", 128) { Name = "Channel" };
+		private readonly HBoxContainer _pending = Layout.Row(6, true).Named("Pending");
+		private readonly SigilButton _edit = new(Art.Icon("edit"), "", 52, SigilShape.Square) { Name = "EditShortcuts", ToggleMode = true };
 		private List<Destination?> _shortcuts;
 
 		public HubScreen(GameDatabase database, PlayerState player)
@@ -71,20 +71,20 @@ namespace Sigilos.UI.Screens
 			_currencies.OffsetTop = Layout.ScreenMargin;
 			AddChild(_currencies);
 
-			var settings = Corner(LayoutPreset.BottomLeft, GrowDirection.End);
+			var settings = Corner("Settings", LayoutPreset.BottomLeft, GrowDirection.End);
 			settings.AddChild(SigilButton.Of("config", T("destination.Config"), () => ConfigRequested?.Invoke(), 64, SigilShape.Square));
 			_edit.TooltipText = T("hub.edit_shortcuts");
 			_edit.Toggled += _ => RefreshConstellation();
 			settings.AddChild(_edit);
 
-			var doors = Corner(LayoutPreset.BottomRight, GrowDirection.Begin);
+			var doors = Corner("Doors", LayoutPreset.BottomRight, GrowDirection.Begin);
 			foreach (var destination in new[] { Destination.Shop, Destination.Map, Destination.Bag })
-				doors.AddChild(SigilButton.Of(Destinations.Icon(destination), Destinations.Name(destination), () => Requested?.Invoke(destination), 64, SigilShape.Square));
+				doors.AddChild(SigilButton.Of(Destinations.Icon(destination), Destinations.Name(destination), () => Requested?.Invoke(destination), 64, SigilShape.Square).Named(destination.ToString()));
 
 			_channel.Pressed += () => CollectRequested?.Invoke();
 
 			// A ociosidade anda com a tela aberta: o anel e as recompensas acompanham a cada segundo.
-			var timer = new Timer { WaitTime = 1, Autostart = true };
+			var timer = new Timer { Name = "IdleTimer", WaitTime = 1, Autostart = true };
 			timer.Timeout += () => RefreshIdle(DateTime.Now);
 			AddChild(timer);
 
@@ -111,7 +111,7 @@ namespace Sigilos.UI.Screens
 			var tooltip = maxed
 				? T("hub.account_max", _player.AccountLevel)
 				: T("hub.account", _player.AccountLevel, _player.AccountExperience, toNext);
-			_account.AddChild(new AccountSigil(portrait, ink, _player.AccountLevel, maxed ? 1 : _player.AccountExperience / (float)toNext, tooltip));
+			_account.AddChild(new AccountSigil(portrait, ink, _player.AccountLevel, maxed ? 1 : _player.AccountExperience / (float)toNext, tooltip) { Name = "Sigil" });
 		}
 
 		private void RefreshConstellation()
@@ -132,6 +132,7 @@ namespace Sigilos.UI.Screens
 				var star = destination is { } d
 					? new SigilButton(Art.Icon(Destinations.Icon(d)), Destinations.Name(d), StarSize)
 					: new SigilButton(null, T("hub.empty_shortcut"), StarSize) { Letters = "+" };
+				star.Name = $"Star{slot + 1}";
 				star.Highlight = !editing && destination == guide;
 				if (editing)
 				{
@@ -198,10 +199,10 @@ namespace Sigilos.UI.Screens
 				_pending.AddChild(Layout.Chip("mana", Texts.Short(preview.Mana), T("currency.mana")));
 		}
 
-		/// <summary>Uma fileira de sigilos presa num canto de baixo da tela.</summary>
-		private HBoxContainer Corner(LayoutPreset preset, GrowDirection grow)
+		/// <summary>Uma fileira de sigilos, de nome <paramref name="name"/>, presa num canto de baixo da tela.</summary>
+		private HBoxContainer Corner(string name, LayoutPreset preset, GrowDirection grow)
 		{
-			var row = Layout.Row(12);
+			var row = Layout.Row(12).Named(name);
 			row.SetAnchorsAndOffsetsPreset(preset);
 			row.GrowHorizontal = grow;
 			row.GrowVertical = GrowDirection.Begin;

@@ -31,6 +31,7 @@ namespace Sigilos.UI.Components
 				var stage = number;
 				var node = new SigilButton(null, tooltip(number), number == count ? Node + 12 : Node)
 				{
+					Name = $"Stage{number}",
 					Letters = number.ToString(),
 					ToggleMode = true,
 					ButtonPressed = number == selected,

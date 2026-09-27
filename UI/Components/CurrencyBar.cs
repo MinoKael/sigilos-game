@@ -21,12 +21,13 @@ namespace Sigilos.UI.Components
 
 		public CurrencyBar()
 		{
+			Name = "Currencies";
 			AddThemeConstantOverride("separation", 6);
-			Add("mana", _mana, T("currency.mana"));
-			Add("essence", _essence, T("currency.essence"));
-			Add("gold", _gold, T("currency.gold"));
-			Add("scroll", _scrolls, T("currency.scrolls"));
-			Add("fragments", _fragments, T("currency.fragments"));
+			Add("Mana", "mana", _mana, T("currency.mana"));
+			Add("Essence", "essence", _essence, T("currency.essence"));
+			Add("Gold", "gold", _gold, T("currency.gold"));
+			Add("Scrolls", "scroll", _scrolls, T("currency.scrolls"));
+			Add("Fragments", "fragments", _fragments, T("currency.fragments"));
 		}
 
 		public void Refresh(PlayerState player)
@@ -38,18 +39,20 @@ namespace Sigilos.UI.Components
 			_fragments.Text = Texts.Short(player.Fragments);
 		}
 
-		private void Add(string icon, Label label, string tooltip)
+		/// <summary>A cápsula de uma moeda: <paramref name="name"/> é o nome do nó (<c>Mana</c>), com <c>Row</c>, <c>Icon</c> e <c>Value</c> dentro.</summary>
+		private void Add(string name, string icon, Label label, string tooltip)
 		{
-			var capsule = new PanelContainer { TooltipText = tooltip, MouseFilter = MouseFilterEnum.Stop };
+			var capsule = new PanelContainer { Name = name, TooltipText = tooltip, MouseFilter = MouseFilterEnum.Stop };
 			var box = GameTheme.Carved(Palette.Inset, 4);
 			box.SetCornerRadiusAll(16);
 			box.ContentMarginLeft = 6;
 			box.ContentMarginRight = 12;
 			capsule.AddThemeStyleboxOverride("panel", box);
 
-			var row = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+			var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore };
 			row.AddThemeConstantOverride("separation", 6);
-			row.AddChild(Doodle.Icon(Art.Icon(icon), 24, Palette.Gold));
+			row.AddChild(Doodle.Icon(Art.Icon(icon), 24, Palette.Gold).Named("Icon"));
+			label.Name = "Value";
 			label.MouseFilter = MouseFilterEnum.Ignore;
 			label.ThemeTypeVariation = GameTheme.Number;
 			label.AddThemeFontSizeOverride("font_size", 16);

@@ -33,7 +33,7 @@ namespace Sigilos.UI.Components
 		/// <summary>Põe <paramref name="content"/> dentro de uma máscara que ocupa o pai inteiro, com <paramref name="inset"/> de folga até a borda.</summary>
 		public static ArtMask Of(Control content, MaskShape shape, float radius = 8, float inset = 0)
 		{
-			var mask = new ArtMask(shape, radius);
+			var mask = new ArtMask(shape, radius) { Name = "Mask" };
 			mask.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			mask.OffsetLeft = mask.OffsetTop = inset;
 			mask.OffsetRight = mask.OffsetBottom = -inset;

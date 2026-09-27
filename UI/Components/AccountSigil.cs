@@ -15,6 +15,7 @@ namespace Sigilos.UI.Components
 		private readonly float _progress;
 		private readonly Label _level = new()
 		{
+			Name = "Level",
 			HorizontalAlignment = HorizontalAlignment.Center,
 			VerticalAlignment = VerticalAlignment.Center,
 			ThemeTypeVariation = GameTheme.Number,
@@ -30,7 +31,7 @@ namespace Sigilos.UI.Components
 			MouseFilter = MouseFilterEnum.Stop;
 
 			// O retrato recortado no círculo interno do medalhão.
-			var holder = new Control { MouseFilter = MouseFilterEnum.Ignore, Position = new Vector2(16, 16), Size = new Vector2(Diameter - 18, Diameter - 18) };
+			var holder = new Control { Name = "Portrait", MouseFilter = MouseFilterEnum.Ignore, Position = new Vector2(16, 16), Size = new Vector2(Diameter - 18, Diameter - 18) };
 			holder.AddChild(Doodle.Masked(portrait, ink, MaskShape.Circle, inset: 0));
 			AddChild(holder);
 

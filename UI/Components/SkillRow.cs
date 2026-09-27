@@ -14,9 +14,10 @@ namespace Sigilos.UI.Components
 	{
 		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400)
 		{
-			var row = Layout.Row(12);
+			var row = Layout.Row(12).Named("Skill");
 			var icon = new SigilButton(null, "", 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
 			{
+				Name = "Symbol",
 				MouseFilter = Control.MouseFilterEnum.Ignore,
 				Disabled = locked,
 				SizeFlagsVertical = Control.SizeFlags.ShrinkBegin,
@@ -24,20 +25,21 @@ namespace Sigilos.UI.Components
 			icon.SetSymbol(Art.Skill(skill));
 			row.AddChild(icon);
 
-			var column = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			var column = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			column.AddThemeConstantOverride("separation", 2);
-			var title = Layout.Row(8);
-			var name = new Label { Text = skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name };
+			var title = Layout.Row(8).Named("Title");
+			var name = new Label { Name = "Name", Text = skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name };
 			name.AddThemeFontOverride("font", GameTheme.Serif);
 			name.AddThemeFontSizeOverride("font_size", 17);
 			name.AddThemeColorOverride("font_color", locked ? Palette.TextFaded : Palette.Gold);
 			title.AddChild(name);
 			if (!skill.IsPassive && skill.Cooldown > 0)
-				title.AddChild(new Label { Text = $"⟳{skill.At(level, awakened).Cooldown}", ThemeTypeVariation = GameTheme.Faded, TooltipText = T("skill.cooldown_tip"), MouseFilter = Control.MouseFilterEnum.Stop });
+				title.AddChild(new Label { Name = "Cooldown", Text = $"⟳{skill.At(level, awakened).Cooldown}", ThemeTypeVariation = GameTheme.Faded, TooltipText = T("skill.cooldown_tip"), MouseFilter = Control.MouseFilterEnum.Stop });
 			if (skill.MaxLevel > 1)
 			{
 				var pips = new Label
 				{
+					Name = "Level",
 					Text = new string('◆', level) + new string('◇', skill.MaxLevel - level),
 					TooltipText = Texts.Plain(Texts.LevelUps(skill, 1)),
 					MouseFilter = Control.MouseFilterEnum.Stop,
@@ -49,14 +51,14 @@ namespace Sigilos.UI.Components
 
 			if (locked)
 			{
-				var eye = Doodle.Icon(Art.Icon("awaken"), 18, Palette.Awakened);
+				var eye = Doodle.Icon(Art.Icon("awaken"), 18, Palette.Awakened).Named("Locked");
 				eye.TooltipText = T("monsters.skill_locked");
 				eye.MouseFilter = Control.MouseFilterEnum.Stop;
 				title.AddChild(eye);
 			}
 
 			column.AddChild(title);
-			column.AddChild(RichText.Label(Texts.Describe(skill, awakened), width, GameTheme.Faded, 14));
+			column.AddChild(RichText.Label(Texts.Describe(skill, awakened), width, GameTheme.Faded, 14).Named("Description"));
 			row.AddChild(column);
 			return row;
 		}

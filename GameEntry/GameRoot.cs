@@ -8,6 +8,7 @@ using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Summoning;
 using Sigilos.UI;
+using Sigilos.UI.Components;
 using Sigilos.UI.Screens;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -56,7 +57,7 @@ namespace Sigilos.GameEntry
 			_language = Argument("--language=") ?? _player.Language ?? ContentLoader.BaseLanguage;
 			ContentLoader.LoadTexts(_language);
 
-			_ui = new Control { Theme = GameTheme.Build() };
+			_ui = new Control { Name = "UI", Theme = GameTheme.Build() };
 			_ui.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 			AddChild(_ui);
 
@@ -471,10 +472,13 @@ namespace Sigilos.GameEntry
 
 		private void Save() => _store.Save(_player);
 
+		/// <summary>Troca a tela. A nova leva o nome da classe (<c>RuneScreen</c>): é a raiz do caminho de todo nó dela.</summary>
 		private void Swap(Control screen)
 		{
-			_screen?.QueueFree();
+			if (_screen != null)
+				Layout.Discard(_screen);
 			_screen = screen;
+			screen.Name = screen.GetType().Name;
 			_ui.AddChild(screen);
 		}
 

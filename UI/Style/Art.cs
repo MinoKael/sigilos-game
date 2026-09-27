@@ -86,6 +86,10 @@ namespace Sigilos.UI.Style
 		/// <summary>Ícones de Assets/Icons: scroll, essence, gold, summon, config, map, bag, fight...</summary>
 		public static Texture2D? Icon(string name) => Load("Icons", name);
 
+		/// <summary>O nome do desenho (<c>lock</c>, <c>fire_golem</c>), para o nó que o mostra; null se a imagem não veio daqui.</summary>
+		public static string? NameOf(Texture2D? texture) =>
+			texture != null && texture.HasMeta(Source) ? texture.GetMeta(Source).AsString().GetFile() : null;
+
 		/// <summary>
 		/// A mesma imagem no tamanho renderizado que melhor cobre <paramref name="pixels"/> na tela (o menor
 		/// que não precisa ampliar). Imagem que não veio daqui volta como está.

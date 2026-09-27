@@ -40,7 +40,7 @@ namespace Sigilos.UI.Components
 		public void Set(Control center, IReadOnlyList<Control?> satellites)
 		{
 			foreach (var child in GetChildren())
-				child.QueueFree();
+				Layout.Discard(child);
 
 			_center = center;
 			AddChild(center);

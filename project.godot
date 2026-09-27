@@ -34,7 +34,7 @@ project/assembly_name="Sigilos"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/visual_debug/plugin.cfg", "res://addons/visual_debugger/plugin.cfg")
+enabled=PackedStringArray("res://addons/visual_debugger/plugin.cfg")
 
 [importer_defaults]
 

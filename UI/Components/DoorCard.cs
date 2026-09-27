@@ -25,17 +25,17 @@ namespace Sigilos.UI.Components
 			MouseDefaultCursorShape = locked ? CursorShape.Arrow : CursorShape.PointingHand;
 			Juice.Attach(this, 1.03f, 0.97f);
 
-			var column = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
+			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
 			column.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			column.OffsetLeft = column.OffsetTop = 18;
 			column.OffsetRight = column.OffsetBottom = -18;
 			column.AddThemeConstantOverride("separation", 14);
 			AddChild(column);
 
-			var art = new Control { CustomMinimumSize = new Vector2(0, size.X * 0.62f), MouseFilter = MouseFilterEnum.Ignore };
+			var art = new Control { Name = "Art", CustomMinimumSize = new Vector2(0, size.X * 0.62f), MouseFilter = MouseFilterEnum.Ignore };
 			art.AddChild(Doodle.Masked(icon, locked ? Palette.TextFaded.Darkened(0.3f) : ink, MaskShape.Rounded, 10));
 			column.AddChild(art);
-			Footer = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+			Footer = new VBoxContainer { Name = "Footer", MouseFilter = MouseFilterEnum.Ignore };
 			Footer.AddThemeConstantOverride("separation", 8);
 			column.AddChild(Footer);
 

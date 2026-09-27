@@ -35,17 +35,17 @@ namespace Sigilos.UI.Screens
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			var row = Layout.Row(36, true);
+			var row = Layout.Row(36, true).Named("Doors");
 			AddChild(Layout.Background(row));
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Map"), "map", _currencies, () => BackRequested?.Invoke()).Header);
 			_currencies.Refresh(_player);
 
-			var center = new CenterContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
+			var center = new CenterContainer { Name = "Center", SizeFlagsVertical = SizeFlags.ExpandFill };
 			center.AddChild(row);
 			page.AddChild(center);
 
-			row.AddChild(new DoorCard(Art.Icon("tower"), Palette.Gold, T("map.locked"), true, DoorSize));
+			row.AddChild(new DoorCard(Art.Icon("tower"), Palette.Gold, T("map.locked"), true, DoorSize) { Name = "Tower" });
 			row.AddChild(Campaign());
 			row.AddChild(Dungeons());
 		}
@@ -54,7 +54,7 @@ namespace Sigilos.UI.Screens
 		{
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
 			var stage = _database.Stage(next);
-			var door = new DoorCard(Art.Icon("region"), Palette.Gold, T("map.campaign", stage.Name), false, DoorSize);
+			var door = new DoorCard(Art.Icon("region"), Palette.Gold, T("map.campaign", stage.Name), false, DoorSize) { Name = "Campaign" };
 			door.Footer.AddChild(Caption(T("map.stage", 1, next)));
 			door.Footer.AddChild(Progress(_player.HighestStage, _database.Stages.Count, T("map.campaign_progress", _player.HighestStage, _database.Stages.Count)));
 			door.Pressed += () => Requested?.Invoke(Destination.Campaign);
@@ -67,7 +67,7 @@ namespace Sigilos.UI.Screens
 			var shown = open.LastOrDefault() ?? _database.Dungeons[0];
 			var cleared = _database.Dungeons.Sum(d => Core.Progression.Dungeons.Cleared(_player, d));
 			var total = _database.Dungeons.Sum(d => d.Floors.Count);
-			var door = new DoorCard(Art.Creature(shown.Image), Palette.Gold, T("map.dungeons", open.Count, _database.Dungeons.Count), false, DoorSize);
+			var door = new DoorCard(Art.Creature(shown.Image), Palette.Gold, T("map.dungeons", open.Count, _database.Dungeons.Count), false, DoorSize) { Name = "Dungeons" };
 			door.Footer.AddChild(Caption($"{open.Count}/{_database.Dungeons.Count}"));
 			door.Footer.AddChild(Progress(cleared, total, T("map.dungeons_progress", cleared, total)));
 			door.Pressed += () => Requested?.Invoke(Destination.Dungeons);
@@ -76,7 +76,7 @@ namespace Sigilos.UI.Screens
 
 		private static Label Caption(string text)
 		{
-			var label = new Label { Text = text, HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
+			var label = new Label { Name = "Caption", Text = text, HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
 			label.AddThemeFontSizeOverride("font_size", 28);
 			label.AddThemeColorOverride("font_color", Palette.Gold);
 			return label;
@@ -84,7 +84,7 @@ namespace Sigilos.UI.Screens
 
 		private static ProgressBar Progress(int value, int max, string tooltip)
 		{
-			var bar = Layout.Energy(Palette.Arcane, 10);
+			var bar = Layout.Energy(Palette.Arcane, 10).Named("Progress");
 			bar.MaxValue = Math.Max(1, max);
 			bar.Value = value;
 			bar.TooltipText = tooltip;

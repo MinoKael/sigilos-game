@@ -31,20 +31,20 @@ namespace Sigilos.UI.Screens
 		private readonly string _title;
 		private readonly Dictionary<BattleUnit, UnitView> _views = new();
 
-		private readonly GridContainer _allies = new() { Columns = 3 };
-		private readonly GridContainer _enemies = new() { Columns = 3 };
-		private readonly HBoxContainer _counters = Layout.Row(8);
+		private readonly GridContainer _allies = new() { Name = "Allies", Columns = 3 };
+		private readonly GridContainer _enemies = new() { Name = "Enemies", Columns = 3 };
+		private readonly HBoxContainer _counters = Layout.Row(8).Named("Counters");
 		private string _wave = "";
 		private string _round = "";
-		private readonly Label _banner = new();
-		private readonly HBoxContainer _actor = Layout.Row(10);
-		private readonly HBoxContainer _actions = Layout.Row(14);
-		private readonly SigilButton _autoButton = new(Art.Icon("auto"), "", 52, SigilShape.Square) { ToggleMode = true };
-		private readonly SigilButton _speedButton = new(Art.Icon("speed"), "", 52, SigilShape.Square);
-		private readonly SigilButton _effectsButton = new(Art.Icon("effects"), "", 52, SigilShape.Square) { ToggleMode = true };
+		private readonly Label _banner = new() { Name = "Banner" };
+		private readonly HBoxContainer _actor = Layout.Row(10).Named("Actor");
+		private readonly HBoxContainer _actions = Layout.Row(14).Named("Skills");
+		private readonly SigilButton _autoButton = new(Art.Icon("auto"), "", 52, SigilShape.Square) { Name = "Auto", ToggleMode = true };
+		private readonly SigilButton _speedButton = new(Art.Icon("speed"), "", 52, SigilShape.Square) { Name = "Speed" };
+		private readonly SigilButton _effectsButton = new(Art.Icon("effects"), "", 52, SigilShape.Square) { Name = "Effects", ToggleMode = true };
 		private readonly TurnOrderBar _order = new();
-		private readonly PanelContainer _effects = new() { Visible = false };
-		private readonly VBoxContainer _effectsList = new();
+		private readonly PanelContainer _effects = new() { Name = "EffectsPanel", Visible = false };
+		private readonly VBoxContainer _effectsList = new() { Name = "Units" };
 
 		private bool _auto;
 		private int _speedIndex;
@@ -98,70 +98,73 @@ namespace Sigilos.UI.Screens
 		/// </summary>
 		public void ShowResult(bool victory, VictoryReward? reward, IReadOnlyList<string> levelUps, int accountLevel)
 		{
-			var overlay = new ColorRect { Color = new Color(0, 0, 0, 0.6f) };
+			var overlay = new ColorRect { Name = "Result", Color = new Color(0, 0, 0, 0.6f) };
 			overlay.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(overlay);
 
-			var center = new CenterContainer();
+			var center = new CenterContainer { Name = "Center" };
 			center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			overlay.AddChild(center);
 
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(460, 0) };
+			var panel = new PanelContainer { Name = "Panel", CustomMinimumSize = new Vector2(460, 0) };
 			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, victory ? Palette.Gold : Palette.Negative.Darkened(0.3f), 24));
 			center.AddChild(panel);
-			var content = new VBoxContainer();
+			var content = new VBoxContainer { Name = "Content" };
 			content.AddThemeConstantOverride("separation", 16);
 			panel.AddChild(content);
 
-			var title = new Label { Text = victory ? T("battle.victory") : T("battle.defeat"), ThemeTypeVariation = GameTheme.Title, HorizontalAlignment = HorizontalAlignment.Center };
+			var title = new Label { Name = "Title", Text = victory ? T("battle.victory") : T("battle.defeat"), ThemeTypeVariation = GameTheme.Title, HorizontalAlignment = HorizontalAlignment.Center };
 			if (!victory)
 				title.AddThemeColorOverride("font_color", Palette.Negative);
 			content.AddChild(title);
 
-			var chips = Layout.Flow(8);
+			var chips = Layout.Flow(8).Named("Rewards");
 			chips.Alignment = FlowContainer.AlignmentMode.Center;
 			if (reward != null)
 			{
 				if (reward.FirstClear)
-					chips.AddChild(Layout.Chip("collect", "", T("battle.first_victory"), Palette.Spirit));
+					chips.AddChild(Layout.Chip("collect", "", T("battle.first_victory"), Palette.Spirit).Named("FirstVictory"));
 				chips.AddChild(Layout.Chip("mana", $"−{reward.Mana}", T("currency.mana")));
 				if (reward.Scrolls > 0)
 					chips.AddChild(Layout.Chip("scroll", $"+{reward.Scrolls}", T("currency.scrolls_name")));
 				if (reward.Gold > 0)
 					chips.AddChild(Layout.Chip("gold", $"+{reward.Gold}", T("currency.gold")));
 				chips.AddChild(Layout.Chip("essence", $"+{reward.Essence}", T("currency.essence")));
-				chips.AddChild(Layout.Chip("level_max", $"+{reward.Experience}", T("reward.experience")));
+				chips.AddChild(Layout.Chip("level_max", $"+{reward.Experience}", T("reward.experience")).Named("Experience"));
 				if (reward.AccountLevels > 0)
-					chips.AddChild(Layout.Chip("avatar", accountLevel.ToString(), T("battle.account", accountLevel, reward.AccountLevels * Account.LevelUpGold), Palette.Arcane));
-				foreach (var tool in reward.Tools)
-					chips.AddChild(Layout.Chip(tool.Kind == Core.Runes.RuneToolKind.Grindstone ? "grindstone" : "gem", "", $"{Texts.Name(tool)} ({Texts.Range(tool)})", Palette.Of(tool.Grade)));
+					chips.AddChild(Layout.Chip("avatar", accountLevel.ToString(), T("battle.account", accountLevel, reward.AccountLevels * Account.LevelUpGold), Palette.Arcane).Named("AccountLevel"));
+				for (var i = 0; i < reward.Tools.Count; i++)
+				{
+					var tool = reward.Tools[i];
+					chips.AddChild(Layout.Chip(tool.Kind == Core.Runes.RuneToolKind.Grindstone ? "grindstone" : "gem", "", $"{Texts.Name(tool)} ({Texts.Range(tool)})", Palette.Of(tool.Grade)).Named($"Tool{i + 1}"));
+				}
 			}
 			else
 			{
 				var reason = _session.Round > BattleRules.RoundLimit ? T("battle.timeout", BattleRules.RoundLimit) : T("battle.all_fell");
-				chips.AddChild(Layout.Chip(_session.Round > BattleRules.RoundLimit ? "resolve" : "retreat", "", reason, Palette.Negative));
+				chips.AddChild(Layout.Chip(_session.Round > BattleRules.RoundLimit ? "resolve" : "retreat", "", reason, Palette.Negative).Named("Reason"));
 			}
 
 			content.AddChild(chips);
 
 			if (reward?.Rune is { } rune)
 			{
-				var runeRow = Layout.Row(0, true);
-				runeRow.AddChild(new RuneTile(rune, rune.Slot, 1.4f) { MouseFilter = MouseFilterEnum.Pass });
+				var runeRow = Layout.Row(0, true).Named("Rune");
+				runeRow.AddChild(new RuneTile(rune, rune.Slot, 1.4f) { Name = "Tile", MouseFilter = MouseFilterEnum.Pass });
 				content.AddChild(runeRow);
 			}
 
 			if (levelUps.Count > 0)
 			{
-				var ups = Layout.Row(6, true);
-				var arrow = Doodle.Icon(Art.Icon("level_max"), 24, Palette.Spirit);
+				var ups = Layout.Row(6, true).Named("LevelUps");
+				var arrow = Doodle.Icon(Art.Icon("level_max"), 24, Palette.Spirit).Named("Icon");
 				ups.AddChild(arrow);
-				ups.AddChild(new Label { Text = string.Join(", ", levelUps), ThemeTypeVariation = GameTheme.Faded, TooltipText = T("battle.leveled_up_tip"), MouseFilter = MouseFilterEnum.Stop });
+				ups.AddChild(new Label { Name = "Names", Text = string.Join(", ", levelUps), ThemeTypeVariation = GameTheme.Faded, TooltipText = T("battle.leveled_up_tip"), MouseFilter = MouseFilterEnum.Stop });
 				content.AddChild(ups);
 			}
 
-			var row = Layout.Row(0, true);
-			row.AddChild(SigilButton.Of("confirm", T("common.continue"), Close, 64));
+			var row = Layout.Row(0, true).Named("Actions");
+			row.AddChild(SigilButton.Of("confirm", T("common.continue"), Close, 64).Named("Continue"));
 			content.AddChild(row);
 		}
 
@@ -169,17 +172,17 @@ namespace Sigilos.UI.Screens
 
 		private Control TopBar()
 		{
-			var bar = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel };
-			var row = Layout.Row(14);
+			var bar = new PanelContainer { Name = "TopBar", ThemeTypeVariation = GameTheme.InsetPanel };
+			var row = Layout.Row(14).Named("Row");
 			bar.AddChild(row);
 
-			var title = new Label { Text = _title, VerticalAlignment = VerticalAlignment.Center };
+			var title = new Label { Name = "Title", Text = _title, VerticalAlignment = VerticalAlignment.Center };
 			title.AddThemeFontOverride("font", GameTheme.Serif);
 			title.AddThemeFontSizeOverride("font_size", 20);
 			title.AddThemeColorOverride("font_color", Palette.Gold);
 			row.AddChild(title);
 			row.AddChild(_counters);
-			row.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			row.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
 
 			_effectsButton.TooltipText = T("battle.effects");
 			_effectsButton.Toggled += on =>
@@ -212,21 +215,21 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_counters);
 			if (_wave.Length > 0)
-				_counters.AddChild(Layout.Chip("fight", _wave, T("battle.wave_tip")));
+				_counters.AddChild(Layout.Chip("fight", _wave, T("battle.wave_tip")).Named("Wave"));
 			if (_round.Length > 0)
-				_counters.AddChild(Layout.Chip("resolve", _round, T("battle.round_tip")));
+				_counters.AddChild(Layout.Chip("resolve", _round, T("battle.round_tip")).Named("Round"));
 		}
 
 		private Control Field()
 		{
-			var field = Layout.Row(12);
+			var field = Layout.Row(12).Named("Field");
 			field.SizeFlagsVertical = SizeFlags.ExpandFill;
 
 			_allies.AddThemeConstantOverride("h_separation", 10);
 			_allies.AddThemeConstantOverride("v_separation", 10);
 			_allies.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-			foreach (var ally in _session.Allies)
-				_allies.AddChild(ViewFor(ally));
+			for (var i = 0; i < _session.Allies.Count; i++)
+				_allies.AddChild(ViewFor(_session.Allies[i], $"Ally{i + 1}"));
 			field.AddChild(_allies);
 
 			_banner.HorizontalAlignment = HorizontalAlignment.Center;
@@ -247,7 +250,7 @@ namespace Sigilos.UI.Screens
 
 		private Control BottomBar()
 		{
-			var bottom = Layout.Row(16);
+			var bottom = Layout.Row(16).Named("BottomBar");
 			bottom.CustomMinimumSize = new Vector2(0, 80);
 			bottom.AddChild(_actor);
 			bottom.AddChild(_actions);
@@ -268,11 +271,11 @@ namespace Sigilos.UI.Screens
 			_effects.OffsetTop = 140;
 			_effects.OffsetBottom = -120;
 
-			var column = new VBoxContainer();
-			var header = Layout.Row(8);
-			header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold));
-			header.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill });
-			header.AddChild(SigilButton.Of("cancel", T("common.close"), () => _effectsButton.ButtonPressed = false, 40));
+			var column = new VBoxContainer { Name = "Column" };
+			var header = Layout.Row(8).Named("Header");
+			header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold).Named("Icon"));
+			header.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			header.AddChild(SigilButton.Of("cancel", T("common.close"), () => _effectsButton.ButtonPressed = false, 40).Named("Close"));
 			column.AddChild(header);
 			_effectsList.AddThemeConstantOverride("separation", 8);
 			column.AddChild(Layout.Scroll(_effectsList));
@@ -287,23 +290,25 @@ namespace Sigilos.UI.Screens
 
 			Layout.Clear(_effectsList);
 			var units = _session.Allies.Concat(_session.Enemies).Where(u => u.IsAlive).OrderByDescending(u => u == _focused).ToList();
-			foreach (var unit in units)
+			for (var i = 0; i < units.Count; i++)
 			{
-				var row = Layout.Row(8);
-				var frame = new PanelContainer { TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
+				var unit = units[i];
+				var row = Layout.Row(8).Named($"Unit{i + 1}");
+				var frame = new PanelContainer { Name = "Portrait", TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
 				var ring = unit == _focused ? Palette.Gold : unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow;
 				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, ring, 2, 18, 2));
 				frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 32));
 				row.AddChild(frame);
 
-				var statuses = Layout.Flow(6);
+				var statuses = Layout.Flow(6).Named("Statuses");
 				statuses.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-				foreach (var status in unit.Statuses)
+				for (var k = 0; k < unit.Statuses.Count; k++)
 				{
+					var status = unit.Statuses[k];
 					var ink = BattleRules.IsNegative(status.Kind) ? Palette.Negative : Palette.Positive;
 					var value = status.Kind == Core.Content.StatusKind.Shield ? $" {Math.Round(status.Value)}" : "";
 					var tip = T("battle.effect_tip", Texts.Name(status.Kind), Texts.Turns(status.Turns));
-					statuses.AddChild(Layout.Chip(Art.Effect(status.Kind), $"{status.Turns}{value}", tip, ink));
+					statuses.AddChild(Layout.Chip(Art.Effect(status.Kind), $"{status.Turns}{value}", tip, ink).Named($"{status.Kind}{k + 1}"));
 				}
 
 				row.AddChild(statuses);
@@ -311,9 +316,10 @@ namespace Sigilos.UI.Screens
 			}
 		}
 
-		private UnitView ViewFor(BattleUnit unit)
+		/// <summary>O cartão de <paramref name="unit"/>, de nome <paramref name="name"/> (<c>Ally2</c>, <c>Enemy1</c>).</summary>
+		private UnitView ViewFor(BattleUnit unit, string name)
 		{
-			var view = new UnitView(unit);
+			var view = new UnitView(unit) { Name = name };
 			view.Pressed += v =>
 			{
 				if (_pickTarget != null)
@@ -369,7 +375,7 @@ namespace Sigilos.UI.Screens
 			}
 
 			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally));
-			var medal = new PanelContainer { TooltipText = ally.Name, MouseFilter = MouseFilterEnum.Stop };
+			var medal = new PanelContainer { Name = "Portrait", TooltipText = ally.Name, MouseFilter = MouseFilterEnum.Stop };
 			medal.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Gold, 2, 30, 4));
 			medal.AddChild(Layout.Medal(Art.Creature(ally.Image), Palette.Of(ally.Element), 52));
 			_actor.AddChild(medal);
@@ -381,6 +387,7 @@ namespace Sigilos.UI.Screens
 				var ready = ally.IsReady(index);
 				var button = new SigilButton(null, $"{skill.Name}\n{Texts.Plain(Texts.Describe(skill))}", 66)
 				{
+					Name = $"Skill{index + 1}",
 					Disabled = !ready,
 					Badge = ready ? Texts.Roman(index + 1) : $"⟳{ally.Cooldown(index)}",
 				};
@@ -475,8 +482,9 @@ namespace Sigilos.UI.Screens
 					foreach (var old in _views.Keys.Where(u => u.Side == Side.Enemies).ToList())
 						_views.Remove(old);
 					Layout.Clear(_enemies);
+					var number = 0;
 					foreach (var enemy in wave.Enemies)
-						_enemies.AddChild(ViewFor(enemy));
+						_enemies.AddChild(ViewFor(enemy, $"Enemy{++number}"));
 					_wave = $"{wave.Wave}/{wave.WaveCount}";
 					RefreshCounters();
 					_banner.Text = T("battle.wave_banner", wave.Wave);

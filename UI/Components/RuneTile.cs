@@ -25,8 +25,8 @@ namespace Sigilos.UI.Components
 
 		private readonly StyleBoxFlat _box;
 		private readonly Color _color;
-		private readonly Control _layer = new() { MouseFilter = MouseFilterEnum.Ignore };
-		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Visible = false };
+		private readonly Control _layer = new() { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
+		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly float _scale;
 		private readonly int _stars;
 		private bool _selected;
@@ -49,7 +49,7 @@ namespace Sigilos.UI.Components
 
 			if (rune == null)
 			{
-				var number = Small(slot.ToString(), new Color(Palette.GoldDark, 0.8f), 22);
+				var number = Small(slot.ToString(), new Color(Palette.GoldDark, 0.8f), 22).Named("Slot");
 				number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				number.HorizontalAlignment = HorizontalAlignment.Center;
 				number.VerticalAlignment = VerticalAlignment.Center;
@@ -59,13 +59,13 @@ namespace Sigilos.UI.Components
 			else
 			{
 				// O Glifo ocupa o miolo, um pouco abaixo do centro para deixar a fileira de cima livre.
-				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(40 * scale), _color, outline: true);
+				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(40 * scale), _color, outline: true) { Name = "Glyph" };
 				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				glyph.OffsetTop = 6 * scale;
 				glyph.OffsetRight = -6 * scale;
 				_layer.AddChild(glyph);
-				Corner(Small(slot.ToString(), Palette.Text, 12), LayoutPreset.TopLeft);
-				Corner(Small($"+{rune.Level}", Palette.Text, 12), LayoutPreset.BottomRight);
+				Corner(Small(slot.ToString(), Palette.Text, 12).Named("Slot"), LayoutPreset.TopLeft);
+				Corner(Small($"+{rune.Level}", Palette.Text, 12).Named("Level"), LayoutPreset.BottomRight);
 				TooltipText = T("rune.tip", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), rune.Level, Texts.Format(rune.Main, rune.MainValue));
 			}
 
@@ -93,7 +93,7 @@ namespace Sigilos.UI.Components
 		public void SetOwner(Texture2D? creature, Color ink, bool stored, string name)
 		{
 			var size = 18 * _scale;
-			var holder = new Control { MouseFilter = MouseFilterEnum.Ignore };
+			var holder = new Control { Name = "Owner", MouseFilter = MouseFilterEnum.Ignore };
 			holder.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
 			holder.OffsetLeft = 2 * _scale;
 			holder.OffsetRight = holder.OffsetLeft + size;

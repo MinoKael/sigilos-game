@@ -23,8 +23,8 @@ namespace Sigilos.UI.Components
 		private readonly ProgressBar _shield;
 		private readonly ProgressBar _impeto;
 		private readonly Label _healthText;
-		private readonly HBoxContainer _statuses = new() { MouseFilter = MouseFilterEnum.Stop, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-		private readonly Label _cooldown = new() { ThemeTypeVariation = GameTheme.Faded };
+		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Stop, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+		private readonly Label _cooldown = new() { Name = "Cooldowns", ThemeTypeVariation = GameTheme.Faded };
 		private bool _active;
 		private bool _targetable;
 
@@ -39,43 +39,43 @@ namespace Sigilos.UI.Components
 			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, 10, 6);
 			AddThemeStyleboxOverride("panel", _box);
 
-			var column = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore };
 			column.AddThemeConstantOverride("separation", 3);
 			AddChild(column);
 
-			var top = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
-			top.AddChild(Doodle.Icon(Art.Element(unit.Element), 18, Palette.Of(unit.Element)));
-			top.AddChild(new Control { SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
-			var level = new Label { Text = unit.Level.ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
+			var top = new HBoxContainer { Name = "Top", MouseFilter = MouseFilterEnum.Ignore };
+			top.AddChild(Doodle.Icon(Art.Element(unit.Element), 18, Palette.Of(unit.Element)).Named("Element"));
+			top.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
+			var level = new Label { Name = "Level", Text = unit.Level.ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
 			level.AddThemeFontSizeOverride("font_size", 14);
 			if (unit.Awakened)
 				level.AddThemeColorOverride("font_color", Palette.Awakened);
 			top.AddChild(level);
 			column.AddChild(top);
 
-			var art = new Control { CustomMinimumSize = new Vector2(0, 70), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
+			var art = new Control { Name = "Art", CustomMinimumSize = new Vector2(0, 70), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
 			art.AddChild(Doodle.Masked(Art.Creature(unit.Image), Palette.Of(unit.Element), MaskShape.Rounded, 6));
 			column.AddChild(art);
 
-			var bars = new Control { CustomMinimumSize = new Vector2(0, 12), MouseFilter = MouseFilterEnum.Ignore };
-			_health = Bar(Palette.Health, 12);
-			_shield = Bar(Palette.Shield, 5);
+			var bars = new Control { Name = "Bars", CustomMinimumSize = new Vector2(0, 12), MouseFilter = MouseFilterEnum.Ignore };
+			_health = Bar(Palette.Health, 12).Named("Health");
+			_shield = Bar(Palette.Shield, 5).Named("Shield");
 			_health.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			_shield.SetAnchorsAndOffsetsPreset(LayoutPreset.TopWide);
 			bars.AddChild(_health);
 			bars.AddChild(_shield);
 			column.AddChild(bars);
 
-			_healthText = new Label { HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Faded, MouseFilter = MouseFilterEnum.Ignore };
+			_healthText = new Label { Name = "HealthText", HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Faded, MouseFilter = MouseFilterEnum.Ignore };
 			_healthText.AddThemeFontSizeOverride("font_size", 12);
 			column.AddChild(_healthText);
 
-			_impeto = Bar(Palette.Arcane, 5);
+			_impeto = Bar(Palette.Arcane, 5).Named("Impetus");
 			_impeto.TooltipText = T("battle.impetus_tip");
 			_impeto.MouseFilter = MouseFilterEnum.Stop;
 			column.AddChild(_impeto);
 
-			var bottom = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(0, 18) };
+			var bottom = new HBoxContainer { Name = "Bottom", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(0, 18) };
 			_statuses.AddThemeConstantOverride("separation", 2);
 			bottom.AddChild(_statuses);
 			bottom.AddChild(_cooldown);
