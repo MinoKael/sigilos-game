@@ -7,17 +7,19 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma runa em miniatura, quadrada: o Glifo do conjunto na cor da raridade, recortado na pedra; o
-	/// espaço no canto de cima, as estrelas no outro canto e a melhora embaixo, em números pequenos com
-	/// contorno. O nome e os atributos vêm na dica. Sem runa, só o número do espaço, apagado.
+	/// Uma runa em miniatura, quadrada de cantos redondos: o espaço no canto de cima à esquerda, as
+	/// estrelas ao lado dele, o Glifo do conjunto grande no meio (na fonte das runas, na cor da
+	/// raridade) e a melhora no canto de baixo à direita. O nome e os atributos vêm na dica. Sem runa,
+	/// só o número do espaço, apagado.
 	///
 	/// Sob o mouse a moldura acende; escolhida, fica azul arcano; marcada para desfazer, ganha o ✓ verde.
-	/// Na lista, a runa equipada mostra no canto o desenho de quem a usa (apagado se ele está no Baú).
+	/// Na lista, a runa equipada mostra no canto de baixo à esquerda o medalhão de quem a usa (apagado se
+	/// ele está no Baú).
 	/// </summary>
 	public partial class RuneTile : PanelContainer
 	{
 		/// <summary>O lado da pedra, em px, na escala 1.</summary>
-		public const float Side = 48;
+		public const float Side = 60;
 
 		public static readonly Vector2 TileSize = new(Side, Side);
 
@@ -26,6 +28,7 @@ namespace Sigilos.UI.Components
 		private readonly Control _layer = new() { MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Visible = false };
 		private readonly float _scale;
+		private readonly int _stars;
 		private bool _selected;
 		private bool _marked;
 
@@ -34,18 +37,19 @@ namespace Sigilos.UI.Components
 			Rune = rune;
 			Slot = slot;
 			_scale = scale;
+			_stars = rune?.Grade ?? 0;
 			CustomMinimumSize = TileSize * scale;
 			MouseFilter = MouseFilterEnum.Stop;
 			MouseDefaultCursorShape = CursorShape.PointingHand;
 
 			_color = rune == null ? Palette.GoldDark : Palette.Of(rune.Rarity);
-			_box = GameTheme.Box(Palette.Inset, _color, rune == null ? 1 : 2, (int)(7 * scale), 0);
+			_box = GameTheme.Box(Palette.Inset, _color, rune == null ? 1 : 2, (int)(9 * scale), 0);
 			AddThemeStyleboxOverride("panel", _box);
 			AddChild(_layer);
 
 			if (rune == null)
 			{
-				var number = Small(slot.ToString(), new Color(Palette.GoldDark, 0.8f), 18);
+				var number = Small(slot.ToString(), new Color(Palette.GoldDark, 0.8f), 22);
 				number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				number.HorizontalAlignment = HorizontalAlignment.Center;
 				number.VerticalAlignment = VerticalAlignment.Center;
@@ -54,17 +58,20 @@ namespace Sigilos.UI.Components
 			}
 			else
 			{
-				var set = RuneSets.For(rune.Set);
-				_layer.AddChild(Doodle.Masked(Art.Glyph(set.Glyph), _color, MaskShape.Rounded, 5 * scale, 7 * scale, boil: false));
-				Corner(Small(slot.ToString(), Palette.TextFaded, 9), LayoutPreset.TopLeft);
-				Corner(Small($"{rune.Grade}★", Palette.Gold, 9), LayoutPreset.TopRight);
-				Corner(Small($"+{rune.Level}", Palette.Text, 10), LayoutPreset.BottomRight);
+				// O Glifo ocupa o miolo, um pouco abaixo do centro para deixar a fileira de cima livre.
+				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(40 * scale), _color, outline: true);
+				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+				glyph.OffsetTop = 6 * scale;
+				glyph.OffsetRight = -6 * scale;
+				_layer.AddChild(glyph);
+				Corner(Small(slot.ToString(), Palette.Text, 12), LayoutPreset.TopLeft);
+				Corner(Small($"+{rune.Level}", Palette.Text, 12), LayoutPreset.BottomRight);
 				TooltipText = T("rune.tip", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), rune.Level, Texts.Format(rune.Main, rune.MainValue));
 			}
 
 			_check.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			_check.OffsetLeft = _check.OffsetTop = 8 * scale;
-			_check.OffsetRight = _check.OffsetBottom = -8 * scale;
+			_check.OffsetLeft = _check.OffsetTop = 10 * scale;
+			_check.OffsetRight = _check.OffsetBottom = -10 * scale;
 			_layer.AddChild(_check);
 
 			MouseEntered += Restyle;
@@ -82,18 +89,17 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		/// <summary>Quem usa a runa: o desenho do monstro, num medalhão no canto de baixo (apagado se ele está no Baú).</summary>
+		/// <summary>Quem usa a runa: o medalhão do monstro no canto de baixo à esquerda (apagado se ele está no Baú).</summary>
 		public void SetOwner(Texture2D? creature, Color ink, bool stored, string name)
 		{
-			var size = 16 * _scale;
-			var medal = Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false);
+			var size = 18 * _scale;
 			var holder = new Control { MouseFilter = MouseFilterEnum.Ignore };
 			holder.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
-			holder.OffsetTop = -size - 1;
-			holder.OffsetRight = size + 1;
-			holder.OffsetLeft = 1;
-			holder.OffsetBottom = -1;
-			holder.AddChild(medal);
+			holder.OffsetLeft = 2 * _scale;
+			holder.OffsetRight = holder.OffsetLeft + size;
+			holder.OffsetBottom = -2 * _scale;
+			holder.OffsetTop = holder.OffsetBottom - size;
+			holder.AddChild(Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false));
 			_layer.AddChild(holder);
 			TooltipText += "\n" + T(stored ? "rune.owner_vault" : "rune.owner", name);
 		}
@@ -112,6 +118,37 @@ namespace Sigilos.UI.Components
 				Pressed?.Invoke(this);
 		}
 
+		/// <summary>As estrelas da runa, em fileira no alto, ao lado do número do espaço.</summary>
+		public override void _Draw()
+		{
+			if (_stars == 0)
+				return;
+
+			var radius = 3.4f * _scale;
+			var step = radius * 2.05f;
+			var y = 8 * _scale;
+			var right = Size.X - 6 * _scale;
+			for (var i = 0; i < _stars; i++)
+			{
+				var center = new Vector2(right - i * step - radius, y);
+				DrawColoredPolygon(Star(center, radius + 1.2f), new Color(0, 0, 0, 0.85f));
+				DrawColoredPolygon(Star(center, radius), Palette.Gold);
+			}
+		}
+
+		private static Vector2[] Star(Vector2 center, float radius)
+		{
+			var points = new Vector2[10];
+			for (var i = 0; i < 10; i++)
+			{
+				var angle = -Mathf.Pi / 2 + i * Mathf.Pi / 5;
+				var r = i % 2 == 0 ? radius : radius * 0.45f;
+				points[i] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * r;
+			}
+
+			return points;
+		}
+
 		private void Restyle()
 		{
 			var hover = IsInsideTree() && GetGlobalRect().HasPoint(GetGlobalMousePosition());
@@ -127,11 +164,15 @@ namespace Sigilos.UI.Components
 		private void Corner(Label label, LayoutPreset corner)
 		{
 			label.SetAnchorsAndOffsetsPreset(corner);
-			label.GrowHorizontal = corner is LayoutPreset.TopRight or LayoutPreset.BottomRight ? GrowDirection.Begin : GrowDirection.End;
-			label.GrowVertical = corner is LayoutPreset.BottomLeft or LayoutPreset.BottomRight ? GrowDirection.Begin : GrowDirection.End;
-			var pad = 2 * _scale;
-			label.OffsetLeft += corner is LayoutPreset.TopLeft or LayoutPreset.BottomLeft ? pad : -pad;
-			label.OffsetRight += corner is LayoutPreset.TopLeft or LayoutPreset.BottomLeft ? pad : -pad;
+			var right = corner is LayoutPreset.TopRight or LayoutPreset.BottomRight;
+			var bottom = corner is LayoutPreset.BottomLeft or LayoutPreset.BottomRight;
+			label.GrowHorizontal = right ? GrowDirection.Begin : GrowDirection.End;
+			label.GrowVertical = bottom ? GrowDirection.Begin : GrowDirection.End;
+			var pad = 4 * _scale;
+			label.OffsetLeft += right ? -pad : pad;
+			label.OffsetRight += right ? -pad : pad;
+			label.OffsetTop += bottom ? -1 * _scale : 0;
+			label.OffsetBottom += bottom ? -1 * _scale : 0;
 			_layer.AddChild(label);
 		}
 
@@ -140,8 +181,8 @@ namespace Sigilos.UI.Components
 			var label = new Label { Text = text, MouseFilter = MouseFilterEnum.Ignore };
 			label.AddThemeFontSizeOverride("font_size", (int)(size * _scale));
 			label.AddThemeColorOverride("font_color", color);
-			label.AddThemeColorOverride("font_outline_color", Colors.Black);
-			label.AddThemeConstantOverride("outline_size", 4);
+			label.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.9f));
+			label.AddThemeConstantOverride("outline_size", 2);
 			label.AddThemeConstantOverride("line_spacing", -4);
 			return label;
 		}

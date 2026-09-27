@@ -18,6 +18,8 @@ Sep 23, 2026 · @Mikael
 
 > **Oitava revisão de 26/09/2026: interface de símbolos, a partir de um croqui.** A interface virou fantasia medieval aconchegante de runas e sigilos: couro envelhecido nos painéis, pedra entalhada nos fundos, ouro fosco nas molduras e o brilho das runas (azul arcano sob o mouse e no que está ligado, verde espiritual no que pede atenção). Nada de cara de página web: a rolagem é uma gema sem trilho, as caixas de marcar são sigilos que acendem, as listas suspensas viraram carrosséis de sigilos em arco e as barras são de energia entalhada. Os botões são símbolos, sem texto (o nome aparece ao passar o mouse), e texto explicativo só existe no Compêndio. O Santuário segue o croqui: retrato da conta com o nível no canto, recursos no alto, uma constelação de atalhos personalizável no centro (o sigilo do meio é a canalização), a engrenagem da Configuração embaixo à esquerda e Loja, Mapa e Bolsa embaixo à direita. O Mapa tem três portais (Torre e Provações ainda fechados, Campanha, Masmorras); a Bolsa é um círculo de conjuração com monstros, runas, equipes, os dois livros e o portal de invocar no centro; a ficha de Monstros ganhou abas em pé (Atributos, Runas, Habilidades, Despertar).
 
+> **Nona revisão de 27/09/2026: fontes, runas e menos botões.** A fonte do jogo é a SFC Wezards, e os Glifos passaram a ser escritos na fonte rúnica Kehdrai (nítidos em qualquer tamanho). A runa em miniatura é uma pedra quadrada de cantos redondos, com o espaço e as estrelas no alto e a melhora embaixo. O Resolver saiu: a Batalha automática pergunta quantas lutas seguidas (30 de início, até 100). A Canalização Rápida saiu. Os efeitos de batalha têm símbolos próprios, e toda arte é PNG renderizado do SVG, recortado no formato do componente.
+
 ## 1. Visão geral
 
 **Sigilos** (título provisório) é um gacha de fantasia para um jogador, offline e sem dinheiro de verdade (a Loja só troca Ouro ganho jogando): você coleciona criaturas, grava sigilos nelas e comanda batalhas por turnos em que as magias são montadas símbolo por símbolo.
@@ -91,7 +93,7 @@ A arte de personagem é rabiscada por escolha visual e de produção: é o que p
 | Inimigos | Criaturas clássicas de RPG, como slime, goblin, lobo, bandido, troll, dragão, etc. Todos seriam as criaturas de 1 ou 2 estrelas da pool de invocações. |
 | Glifos e runas | Os 16 Glifos são símbolos de runa (futhark antigo, domínio público), um por conjunto; aparecem dourados nos textos ao lado do termo que querem dizer |
 | Raridade | 1, 2, 3, 4 ou 5 estrelas. Mas do 3 pra frente com moldura de bronze, prata ou ouro. Estrelas douradas; roxas depois do Despertar |
-| Interface | Base de Summoners War, em clima aconchegante: couro e pedra com moldura de ouro fosco, fonte serifada nos títulos e nos números. Símbolo primeiro: botões são sigilos sem texto, com o nome na dica; o brilho arcano marca o que está sob o mouse ou ligado, o verde espiritual o que pede atenção. Texto explicativo só no Compêndio |
+| Interface | Base de Summoners War, em clima aconchegante: couro e pedra com moldura de ouro fosco, a fonte SFC Wezards em tudo e os Glifos na fonte rúnica Kehdrai. Símbolo primeiro: botões são sigilos sem texto, com o nome na dica; o brilho arcano marca o que está sob o mouse ou ligado, o verde espiritual o que pede atenção. Texto explicativo só no Compêndio |
 | Som | Pedra, papel e sussurros de conjuração; música orquestral de biblioteca livre |
 
 **Paleta.** Uma cor forte por elemento (vermelho Fogo, azul Água, verde Vento, dourado Luz, violeta Trevas) sobre fundos neutros de pergaminho e pedra. O elemento se lê antes do desenho.
@@ -165,7 +167,7 @@ Você vence ao derrotar todas as ondas. Perde se a equipe inteira cair ou se 30 
 
 Toda luta pode ser automática: usa a habilidade pronta de maior número (a mais forte) e mira com vantagem elemental e, no empate, no mais ferido. No manual, o jogador escolhe a ordem das recargas e o alvo.
 
-Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham o botão Resolver, que simula na hora.
+Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham a Batalha automática: o jogador escolhe quantas lutas seguidas (30 de início), e cada uma leva o tempo que levaria no automático em 2×.
 
 ## 8. Invocações
 
@@ -304,13 +306,13 @@ flowchart LR
   F -- horas depois --> A
 ```
 
-**Ociosidade.** Com o jogo fechado, seus círculos de invocação continuam canalizando, como as construções da ilha em Summoners War. Acumulam Essência, Ouro e Mana (a Mana só até o máximo); a taxa de Essência e Ouro cresce com a fase mais alta vencida, e o acúmulo para em 12 horas. Uma vez por dia, a Canalização Rápida entrega 2 horas de recompensa na hora.
+**Ociosidade.** Com o jogo fechado, seus círculos de invocação continuam canalizando, como as construções da ilha em Summoners War. Acumulam Essência, Ouro e Mana (a Mana só até o máximo); a taxa de Essência e Ouro cresce com a fase mais alta vencida, e o acúmulo para em 12 horas.
 
 | Modo | Inspiração | Controle | Para que serve | Entra em |
 | --- | --- | --- | --- | --- |
 | Campanha: 3 regiões de 20 fases | AFK | Automático | Aumenta a ociosidade e o teto de nível | MVP (região 1) |
-| Masmorras de Runas: Golem Rúnico, Ninho da Serpe, Cripta do Rei Ossudo, Santuário Afogado | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Resolver | 5 andares; cada uma solta runas de 4 a 6 estrelas de 4 conjuntos | MVP |
-| Forja Rachada | Fenda de Summoners War | Automático ou Resolver | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
+| Masmorras de Runas: Golem Rúnico, Ninho da Serpe, Cripta do Rei Ossudo, Santuário Afogado | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Batalha automática | 5 andares; cada uma solta runas de 4 a 6 estrelas de 4 conjuntos | MVP |
+| Forja Rachada | Fenda de Summoners War | Automático ou Batalha automática | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
 | Torre dos Círculos: 60 andares com regras fixas | Torre de Summoners War e Abismo de Epic Seven | Manual | Pergaminhos, Ouro, Essência, desafio de montagem | v0.5 |
 | Provações: uma luta fixa por família | Despertar de Summoners War | Manual | Libera o Despertar | v0.5 |
 | Portais Secretos: surgem ao vencer Masmorras e ficam até você usar | Masmorras secretas de Summoners War | Automático | Três vitórias no mesmo portal dão uma invocação daquela família | v1.0 |

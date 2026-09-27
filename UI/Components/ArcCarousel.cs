@@ -6,7 +6,7 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>Uma opção do carrossel: símbolo (ou letras, quando não há símbolo), dica e cor.</summary>
-	public sealed record ArcItem(Texture2D? Icon, string Tooltip, Color Ink, string Letters = "", Color? Accent = null);
+	public sealed record ArcItem(Texture2D? Icon, string Tooltip, Color Ink, string Letters = "", Color? Accent = null, Core.Content.Glyph? Rune = null);
 
 	/// <summary>
 	/// O seletor do jogo, no lugar da lista suspensa: as opções são sigilos num arco entalhado, a
@@ -52,7 +52,9 @@ namespace Sigilos.UI.Components
 				var item = items[i];
 				var holder = new Control { Size = new Vector2(itemSize, itemSize), PivotOffset = new Vector2(itemSize, itemSize) / 2, MouseFilter = MouseFilterEnum.Ignore };
 				var button = new SigilButton(item.Icon, item.Tooltip, itemSize) { Ink = item.Ink, Accent = item.Accent };
-				if (item.Letters.Length > 0)
+				if (item.Rune is { } glyph)
+					button.Rune = glyph;
+				else if (item.Letters.Length > 0)
 					button.Letters = item.Letters;
 				button.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				button.Pressed += () => Click(index);

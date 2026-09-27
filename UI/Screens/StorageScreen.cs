@@ -438,7 +438,7 @@ namespace Sigilos.UI.Screens
 			foreach (var set in sheet.Runes.ActiveSets)
 			{
 				var row = Layout.Row(8);
-				row.AddChild(Doodle.Icon(Art.Glyph(RuneSets.For(set.Set).Glyph), 24, Palette.Gold));
+				row.AddChild(new RuneGlyph(RuneSets.For(set.Set).Glyph, 24, Palette.Gold));
 				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", 440));
 				_detail.AddChild(row);
 			}
@@ -480,11 +480,11 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(name);
 
 			var gains = Layout.Row(8, true);
-			gains.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(Stat.Health)), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)));
-			gains.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(Stat.Attack)), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)));
-			gains.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(Stat.Defense)), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)));
+			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Health), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)));
+			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Attack), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)));
+			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Defense), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)));
 			if (summon.Awakening.Stat is { } stat)
-				gains.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(stat)), Texts.AwakeningAmount(stat), Texts.Name(stat)));
+				gains.AddChild(Layout.Chip(Texts.GlyphOf(stat), Texts.AwakeningAmount(stat), Texts.Name(stat)));
 			_detail.AddChild(gains);
 
 			if (summon.Awakening.Skill is { } skill)

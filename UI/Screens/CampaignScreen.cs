@@ -14,8 +14,8 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// A região 1: à esquerda a trilha das 20 fases (<see cref="StagePath"/>); à direita a ficha da
 	/// escolhida — estrelas e nível dos inimigos, as ondas, o que ela rende, a equipe e os sigilos de
-	/// Lutar, Resolver e Batalha automática, cada um com o custo em Mana na plaquinha. Resolver e a
-	/// Batalha automática só aparecem em fase já vencida (GDD, seção 7).
+	/// Lutar e Batalha automática, com o custo em Mana na plaquinha. A Batalha automática (quantas lutas
+	/// seguidas o jogador escolher, <see cref="RunsPicker"/>) só aparece em fase já vencida (GDD, seção 7).
 	/// </summary>
 	public partial class CampaignScreen : Control
 	{
@@ -36,10 +36,8 @@ namespace Sigilos.UI.Screens
 		}
 
 		public event Action<StageDefinition>? FightRequested;
-		public event Action<StageDefinition>? ResolveRequested;
-
-		/// <summary>A Batalha automática: várias lutas seguidas da fase, cada uma no tempo que levaria na tela.</summary>
-		public event Action<StageDefinition>? RepeatRequested;
+		/// <summary>A Batalha automática: quantas lutas seguidas da fase, cada uma no tempo que levaria na tela.</summary>
+		public event Action<StageDefinition, int>? RepeatRequested;
 		public event Action? TeamRequested;
 		public event Action? ShopRequested;
 		public event Action? BackRequested;
@@ -77,7 +75,7 @@ namespace Sigilos.UI.Screens
 			RefreshDetail();
 		}
 
-		/// <summary>Resultado do Resolver, na faixa de baixo.</summary>
+		/// <summary>Um aviso na faixa de baixo (o motivo de não poder lutar).</summary>
 		public void ShowMessage(string text) => _message.Text = text;
 
 		private void RefreshPath()
@@ -165,12 +163,7 @@ namespace Sigilos.UI.Screens
 			actions.AddChild(fight);
 			if (cleared)
 			{
-				var resolve = SigilButton.Of("resolve", T("common.resolve", stage.Mana), () => ResolveRequested?.Invoke(stage), 68);
-				resolve.Badge = stage.Mana.ToString();
-				resolve.Disabled = blocked;
-				actions.AddChild(resolve);
-				var repeat = SigilButton.Of("repeat", T("common.auto_battle", AutoBattle.RepeatRuns), () => RepeatRequested?.Invoke(stage), 68);
-				repeat.Badge = $"×{AutoBattle.RepeatRuns}";
+				var repeat = SigilButton.Of("repeat", T("common.auto_battle"), () => RunsPicker.Open(this, stage.Mana, runs => RepeatRequested?.Invoke(stage, runs)), 68);
 				repeat.Disabled = blocked;
 				actions.AddChild(repeat);
 			}

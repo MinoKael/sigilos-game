@@ -17,7 +17,7 @@ namespace Sigilos.UI.Screens
 	/// - No canto de cima, o retrato da conta (a Líder da Campanha) com o anel de experiência e o nível;
 	///   do outro lado, o cabeçalho de recursos.
 	/// - No centro, a constelação: o sigilo da canalização (coleta a ociosidade; o anel mostra o quanto
-	///   encheu), a canalização rápida presa nele e os atalhos em volta. A pena liga o modo de editar:
+	///   encheu), as recompensas presas nele e os atalhos em volta. A pena liga o modo de editar:
 	///   tocar numa estrela abre o carrossel de destinos.
 	/// - Embaixo, a engrenagem da Configuração à esquerda; Loja, Mapa e Bolsa à direita.
 	///
@@ -35,7 +35,6 @@ namespace Sigilos.UI.Screens
 		private readonly Control _account = new() { Position = new Vector2(Layout.ScreenMargin, Layout.ScreenMargin) };
 		private readonly Constellation _constellation = new();
 		private readonly SigilButton _channel = new(Art.Icon("collect"), "", 128);
-		private readonly SigilButton _quickChannel = new(Art.Icon("quick_channel"), "", 46);
 		private readonly HBoxContainer _pending = Layout.Row(6, true);
 		private readonly SigilButton _edit = new(Art.Icon("edit"), "", 52, SigilShape.Square) { ToggleMode = true };
 		private List<Destination?> _shortcuts;
@@ -50,7 +49,6 @@ namespace Sigilos.UI.Screens
 		public event Action<Destination>? Requested;
 		public event Action? ConfigRequested;
 		public event Action? CollectRequested;
-		public event Action? QuickChannelRequested;
 
 		/// <summary>O jogador trocou um atalho: a lista inteira, vaga a vaga.</summary>
 		public event Action<IReadOnlyList<Destination?>>? ShortcutsChanged;
@@ -84,7 +82,6 @@ namespace Sigilos.UI.Screens
 				doors.AddChild(SigilButton.Of(Destinations.Icon(destination), Destinations.Name(destination), () => Requested?.Invoke(destination), 64, SigilShape.Square));
 
 			_channel.Pressed += () => CollectRequested?.Invoke();
-			_quickChannel.Pressed += () => QuickChannelRequested?.Invoke();
 
 			// A ociosidade anda com a tela aberta: o anel e as recompensas acompanham a cada segundo.
 			var timer = new Timer { WaitTime = 1, Autostart = true };
@@ -150,10 +147,9 @@ namespace Sigilos.UI.Screens
 			}
 
 			// O sigilo do centro e o que fica preso nele saem da árvore junto com as estrelas: tira antes.
-			foreach (var node in new Control[] { _channel, _quickChannel, _pending })
+			foreach (var node in new Control[] { _channel, _pending })
 				node.GetParent()?.RemoveChild(node);
 			_constellation.Set(_channel, stars);
-			_constellation.Attach(_quickChannel, new Vector2(62, 58));
 			_constellation.Attach(_pending, new Vector2(0, 104));
 		}
 
@@ -191,8 +187,6 @@ namespace Sigilos.UI.Screens
 			_channel.Highlight = !preview.IsEmpty;
 			_channel.TooltipText = T("hub.channeling", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
 
-			_quickChannel.Disabled = !Idle.CanQuickChannel(_player, now);
-			_quickChannel.TooltipText = T("hub.quick_channel", Idle.QuickChannelHours);
 
 			Layout.Clear(_pending);
 			if (preview.IsEmpty)

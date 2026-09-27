@@ -44,11 +44,19 @@ namespace Sigilos.UI.Components
 			foreach (Match match in GlyphMark.Matches(text))
 			{
 				label.AppendText(text[last..match.Index]);
-				var texture = match.Groups[1].Value == "effect"
-					? System.Enum.TryParse<StatusKind>(match.Groups[2].Value, out var status) ? Art.EffectInk(status) : null
-					: System.Enum.TryParse<Glyph>(match.Groups[2].Value, out var glyph) ? Art.GlyphInk(glyph) : null;
-				if (texture != null)
+				if (match.Groups[1].Value == "glyph" && System.Enum.TryParse<Glyph>(match.Groups[2].Value, out var glyph))
+				{
+					label.PushFont(GameTheme.Runes, size);
+					label.PushColor(Palette.Gold);
+					label.AddText(Texts.Rune(glyph));
+					label.Pop();
+					label.Pop();
+				}
+				else if (System.Enum.TryParse<StatusKind>(match.Groups[2].Value, out var status) && Art.EffectInk(status) is { } texture)
+				{
 					label.AddImage(texture, size, size, Palette.Gold);
+				}
+
 				last = match.Index + match.Length;
 			}
 

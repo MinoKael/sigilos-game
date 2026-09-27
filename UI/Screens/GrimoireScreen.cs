@@ -218,7 +218,7 @@ namespace Sigilos.UI.Screens
 			var high = SummonStats.For(roleBase, summon, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars), _awakened, Array.Empty<Rune>()).Base;
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
-				table.AddChild(Doodle.Icon(Art.Glyph(Texts.GlyphOf(stat)), 18, Palette.Gold));
+				table.AddChild(new RuneGlyph(Texts.GlyphOf(stat), 18, Palette.Gold));
 				Cell(table, Texts.Name(stat));
 				Cell(table, Texts.Value(stat, low.Get(stat)));
 				Cell(table, Texts.Value(stat, high.Get(stat)));
@@ -242,11 +242,11 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(new HSeparator());
 			var awaken = Layout.Flow(8);
 			awaken.AddChild(Layout.Chip("awaken", summon.Awakening.Name, T("grimoire.awaken"), Palette.Awakened));
-			awaken.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(Stat.Health)), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)));
-			awaken.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(Stat.Attack)), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)));
-			awaken.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(Stat.Defense)), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)));
+			awaken.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Health), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)));
+			awaken.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Attack), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)));
+			awaken.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Defense), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)));
 			if (summon.Awakening.Stat is { } bonus)
-				awaken.AddChild(Layout.Chip(Art.Glyph(Texts.GlyphOf(bonus)), Texts.AwakeningAmount(bonus), Texts.Name(bonus)));
+				awaken.AddChild(Layout.Chip(Texts.GlyphOf(bonus), Texts.AwakeningAmount(bonus), Texts.Name(bonus)));
 			awaken.AddChild(Layout.Chip("essence", Texts.Short(Awakening.Cost(summon.Rarity)), T("grimoire.awaken_cost", Awakening.Cost(summon.Rarity))));
 			_sheet.AddChild(awaken);
 		}
@@ -259,7 +259,7 @@ namespace Sigilos.UI.Screens
 			{
 				var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel };
 				var row = Layout.Row(12);
-				var glyph = Doodle.Icon(Art.Glyph(set.Glyph), 44, Palette.Gold);
+				var glyph = new RuneGlyph(set.Glyph, 44, Palette.Gold);
 				glyph.TooltipText = T("grimoire.glyph_of", Texts.Name(set.Glyph), Texts.Meaning(set.Glyph));
 				glyph.MouseFilter = MouseFilterEnum.Stop;
 				row.AddChild(glyph);

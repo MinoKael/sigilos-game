@@ -8,9 +8,11 @@ namespace Sigilos.UI.Style
 	/// de rolagem que é só uma gema deslizando, caixinhas de marcar que são sigilos acesos e barras de
 	/// energia entalhadas. Nada de cara de página web: sem trilho de rolagem, sem borda reta de campo.
 	///
-	/// As fontes são do sistema — nenhum arquivo de fonte no projeto. As telas pedem os papéis pelo
-	/// nome de variação (<see cref="Title"/>, <see cref="Heading"/>...), nunca por cor solta. Os botões
-	/// de ícone (<see cref="Components.SigilButton"/>) se desenham sozinhos e não usam estes estilos.
+	/// A fonte do jogo inteiro é a SFC Wezards (Assets/Fonts), com uma fonte do sistema de reserva para
+	/// o que ela não desenha (★, ×, ⟳...). As runas usam a Kehdrai (<see cref="Runes"/>), que troca letra
+	/// por runa: os Glifos são texto, nítidos em qualquer tamanho. As telas pedem os papéis pelo nome de
+	/// variação (<see cref="Title"/>, <see cref="Heading"/>...), nunca por cor solta. Os botões de ícone
+	/// (<see cref="Components.SigilButton"/>) se desenham sozinhos e não usam estes estilos.
 	/// </summary>
 	public static class GameTheme
 	{
@@ -29,15 +31,23 @@ namespace Sigilos.UI.Style
 		/// <summary>Pedra entalhada dentro de um painel (listas, barras, cápsulas).</summary>
 		public const string InsetPanel = "InsetPanel";
 
-		public static readonly Font Serif = new SystemFont
-		{
-			FontNames = new[] { "Georgia", "Palatino Linotype", "Book Antiqua", "Times New Roman", "serif" },
-		};
+		/// <summary>A fonte do jogo: títulos, números e texto.</summary>
+		public static readonly Font Serif = Game();
 
-		public static readonly Font Sans = new SystemFont
+		/// <summary>A mesma fonte do jogo (o nome fica para quem pede "a fonte do texto").</summary>
+		public static readonly Font Sans = Serif;
+
+		/// <summary>A fonte das runas: cada Glifo é uma letra (<see cref="Texts.Rune"/>).</summary>
+		public static readonly Font Runes = GD.Load<Font>("res://Assets/Fonts/Kehdrai.ttf");
+
+		/// <summary>A Wezards com a reserva do sistema para os símbolos que ela não tem.</summary>
+		private static Font Game()
 		{
-			FontNames = new[] { "Segoe UI", "Noto Sans", "Helvetica", "Arial", "sans-serif" },
-		};
+			var font = GD.Load<FontFile>("res://Assets/Fonts/Chewy.ttf");
+			var reserve = new SystemFont { FontNames = new[] { "Georgia", "Segoe UI Symbol", "Segoe UI", "Arial" } };
+			font.Fallbacks = new Godot.Collections.Array<Font> { reserve };
+			return font;
+		}
 
 		public static Theme Build()
 		{
@@ -168,6 +178,20 @@ namespace Sigilos.UI.Style
 			theme.SetStylebox("background", "ProgressBar", groove);
 			theme.SetStylebox("fill", "ProgressBar", Energy(Palette.Health));
 			theme.SetColor("font_color", "ProgressBar", Palette.Text);
+
+			// O controle deslizante é a mesma barra entalhada, com a energia até a gema.
+			var track = Carved(Palette.Inset, 0);
+			track.SetCornerRadiusAll(6);
+			track.ContentMarginTop = track.ContentMarginBottom = 6;
+			var energy = Energy(Palette.Arcane);
+			energy.SetCornerRadiusAll(6);
+			energy.ContentMarginTop = energy.ContentMarginBottom = 6;
+			theme.SetStylebox("slider", "HSlider", track);
+			theme.SetStylebox("grabber_area", "HSlider", energy);
+			theme.SetStylebox("grabber_area_highlight", "HSlider", Energy(Palette.Arcane.Lightened(0.2f)));
+			theme.SetIcon("grabber", "HSlider", Ornament.GemIcon(Palette.Gold));
+			theme.SetIcon("grabber_highlight", "HSlider", Ornament.GemIcon(Palette.Arcane));
+			theme.SetIcon("grabber_disabled", "HSlider", Ornament.GemIcon(Palette.Disabled));
 		}
 
 		private static void Popups(Theme theme)

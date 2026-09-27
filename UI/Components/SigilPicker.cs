@@ -38,8 +38,17 @@ namespace Sigilos.UI.Components
 		private new void Show()
 		{
 			var item = _options[_index].Item;
-			SetIcon(item.Icon);
-			Letters = item.Icon == null ? item.Letters : "";
+			if (item.Rune is { } glyph)
+			{
+				Rune = glyph;
+			}
+			else
+			{
+				Rune = null;
+				SetIcon(item.Icon);
+				Letters = item.Icon == null ? item.Letters : "";
+			}
+
 			Ink = item.Ink;
 			Accent = item.Accent;
 			TooltipText = $"{Title}: {item.Tooltip}";

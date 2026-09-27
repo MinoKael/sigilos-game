@@ -35,19 +35,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void QuickChannelOncePerDay()
-		{
-			var player = NewPlayer();
-			var essence = player.Essence;
-
-			var first = Idle.QuickChannel(player, Start);
-			Assert.Near(Idle.QuickChannelHours, first.Hours, "horas da Canalização Rápida");
-			Assert.True(player.Essence > essence, "entregou Essência");
-			Assert.True(Idle.QuickChannel(player, Start.AddHours(3)).IsEmpty, "segunda vez no mesmo dia");
-			Assert.False(Idle.QuickChannel(player, Start.AddDays(1)).IsEmpty, "no dia seguinte volta");
-		}
-
-		[Test]
 		private static void ExperienceFollowsTheStarTable()
 		{
 			Assert.Equal(662, Leveling.ExperienceToNext(3, 1), "3★ nível 1 da tabela");

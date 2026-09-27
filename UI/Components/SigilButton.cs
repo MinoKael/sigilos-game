@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using Sigilos.Core.Content;
 using Sigilos.UI.Style;
 
 namespace Sigilos.UI.Components
@@ -44,6 +45,7 @@ namespace Sigilos.UI.Components
 		private readonly PanelContainer _plaque = new() { MouseFilter = MouseFilterEnum.Ignore, Visible = false };
 
 		private bool _highlight;
+		private Glyph? _rune;
 		private float _time;
 		private Color _ink = Palette.Gold;
 		private Color? _accent;
@@ -63,7 +65,7 @@ namespace Sigilos.UI.Components
 				SigilShape.Circle => MaskShape.Circle,
 				SigilShape.Diamond => MaskShape.Diamond,
 				_ => MaskShape.Rounded,
-			}, 3);
+			}, Mathf.Max(6, size * 0.18f));
 			mask.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			mask.OffsetLeft = mask.OffsetTop = 6;
 			mask.OffsetRight = mask.OffsetBottom = -6;
@@ -93,7 +95,7 @@ namespace Sigilos.UI.Components
 			_badge.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(size * 0.24f), 11, 16));
 			_badge.AddThemeColorOverride("font_color", Palette.Text);
 			_badge.AddThemeColorOverride("font_outline_color", Colors.Black);
-			_badge.AddThemeConstantOverride("outline_size", 5);
+			_badge.AddThemeConstantOverride("outline_size", 3);
 			_plaque.AddChild(_badge);
 			AddChild(_plaque);
 
@@ -144,10 +146,50 @@ namespace Sigilos.UI.Components
 			get => _letters.Text;
 			set
 			{
+				_letters.AddThemeFontOverride("font", GameTheme.Serif);
+				_letters.AddThemeFontSizeOverride("font_size", (int)(CustomMinimumSize.Y * 0.34f));
 				_letters.Text = value;
 				_letters.Visible = value.Length > 0;
 				_icon.Visible = value.Length == 0;
 			}
+		}
+
+		/// <summary>Tamanho das letras, quando o padrão (um terço do sigilo) fica pequeno.</summary>
+		public void SetLetterSize(int pixels) => _letters.AddThemeFontSizeOverride("font_size", pixels);
+
+		/// <summary>Um Glifo no lugar do símbolo, escrito na fonte das runas.</summary>
+		public Glyph? Rune
+		{
+			get => _rune;
+			set
+			{
+				_rune = value;
+				if (value is not { } glyph)
+				{
+					Letters = "";
+					return;
+				}
+
+				_letters.AddThemeFontOverride("font", GameTheme.Runes);
+				_letters.AddThemeFontSizeOverride("font_size", (int)(CustomMinimumSize.Y * 0.46f));
+				_letters.Text = Texts.Rune(glyph);
+				_letters.Visible = true;
+				_icon.Visible = false;
+			}
+		}
+
+		/// <summary>O símbolo de uma coisa do jogo: um desenho ou um Glifo.</summary>
+		public void SetSymbol(Symbol symbol)
+		{
+			if (symbol.Rune is { } glyph)
+			{
+				Rune = glyph;
+				return;
+			}
+
+			_rune = null;
+			Letters = "";
+			SetIcon(symbol.Icon);
 		}
 
 		/// <summary>Pulsa em verde espiritual até o jogador tocar.</summary>
@@ -238,7 +280,7 @@ namespace Sigilos.UI.Components
 					DrawColoredPolygon(Diamond(center, radius), fill);
 					break;
 				default:
-					DrawRect(Square(center, radius), fill);
+					DrawStyleBox(Rounded(fill, new Color(0, 0, 0, 0), 0), Square(center, radius));
 					break;
 			}
 		}
@@ -255,9 +297,18 @@ namespace Sigilos.UI.Components
 					DrawPolyline(new[] { points[0], points[1], points[2], points[3], points[0] }, color, width, true);
 					break;
 				default:
-					DrawRect(Square(center, radius), color, false, width);
+					DrawStyleBox(Rounded(new Color(0, 0, 0, 0), color, width), Square(center, radius));
 					break;
 			}
+		}
+
+		/// <summary>A pedra de cantos redondos: o raio acompanha o tamanho do sigilo.</summary>
+		private StyleBoxFlat Rounded(Color fill, Color border, float width)
+		{
+			var box = new StyleBoxFlat { BgColor = fill, BorderColor = border, AntiAliasing = true, DrawCenter = fill.A > 0 };
+			box.SetBorderWidthAll((int)Mathf.Ceil(width));
+			box.SetCornerRadiusAll((int)Mathf.Max(8, Mathf.Min(Size.X, Size.Y) * 0.22f));
+			return box;
 		}
 
 		private static Vector2[] Diamond(Vector2 center, float radius) => new[]

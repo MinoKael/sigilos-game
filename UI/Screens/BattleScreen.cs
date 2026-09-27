@@ -379,11 +379,12 @@ namespace Sigilos.UI.Screens
 				var index = i;
 				var skill = ally.Skill(index);
 				var ready = ally.IsReady(index);
-				var button = new SigilButton(Art.Skill(skill), $"{skill.Name}\n{Texts.Plain(Texts.Describe(skill))}", 66)
+				var button = new SigilButton(null, $"{skill.Name}\n{Texts.Plain(Texts.Describe(skill))}", 66)
 				{
 					Disabled = !ready,
 					Badge = ready ? Texts.Roman(index + 1) : $"⟳{ally.Cooldown(index)}",
 				};
+				button.SetSymbol(Art.Skill(skill));
 				button.Pressed += () =>
 				{
 					if (skill.NeedsTarget)

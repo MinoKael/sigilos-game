@@ -68,7 +68,9 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Runas: tabelas, custos, espaços | `Core/Runes/RuneRules.cs` (uma tabela por atributo, de 1★ a 6★) |
 | Conjuntos de runas | `Core/Runes/RuneSets.cs`; o efeito em combate em `Core/Battle/EffectResolver.cs` ou `BattleSession.cs` |
 | Pedras (Afiar, Gema) | `Core/Runes/RuneForge.cs` (regras), `Core/Runes/RuneRules.cs` (faixas), grau por andar em `Data/dungeons.json` |
-| Glifo de um conjunto, de um atributo ou de um efeito | `Core/Runes/RuneSets.cs` (conjunto → Glifo); atributo e efeito → Glifo em `UI/Texts.cs` (`GlyphOf`) |
+| Glifo de um conjunto ou de um atributo | `Core/Runes/RuneSets.cs` (conjunto → Glifo); atributo → Glifo em `UI/Texts.cs` (`GlyphOf`); a letra que desenha cada Glifo na fonte das runas em `Texts.Rune`; na tela, `RuneGlyph` |
+| Fontes | `Assets/Fonts`: a SFC Wezards é a do jogo (com reserva do sistema para ★ × ⟳), a Kehdrai a das runas; carregadas em `GameTheme` |
+| Batalha automática (quantas lutas) | o padrão e o máximo em `Core/Battle/AutoBattle.cs` (`RepeatRuns`, `MaxRuns`); a escolha é o `RunsPicker` |
 | Coleção, Baú, equipes | `Core/Player/Roster.cs`, `Core/Player/Teams.cs`, `PlayerState.CollectionCapacity`/`TeamSize` |
 | Vagas do inventário de runas | `RuneInventory.Capacity` (runas equipadas, inclusive em monstro do Baú, não contam) |
 | Taxas do gacha | `Core/Summoning/SummonRates.cs` |
@@ -96,7 +98,7 @@ problemas no console ao abrir.
 - **Efeitos são dados + `switch`, não uma classe por efeito.** Seis tipos cabem num arquivo legível;
   uma hierarquia de estratégias só pagaria o custo quando houver regra que o `switch` não comporte.
 - **Eventos em vez de callbacks.** O combate devolve `BattleEvent` e não sabe que existe tela; a mesma
-  luta roda animada (`BattleScreen`) ou instantânea (`AutoBattle`, botão Resolver e simulador).
+  luta roda animada (`BattleScreen`) ou instantânea (`AutoBattle`: Batalha automática e simulador).
 - **Uma fonte da verdade por dado.** A runa guarda em qual monstro está (`Rune.EquippedOn`, o id da
   cópia); o monstro não guarda lista de runas. A equipe guarda ids de monstro; o monstro não sabe em
   que equipe está. O valor do principal, a raridade e o total de cada subatributo não são salvos
@@ -105,7 +107,7 @@ problemas no console ao abrir.
   `SummonId`. Por isso duas cópias iguais podem ter estrelas, nível, níveis de habilidade, Despertar,
   runas e equipes diferentes.
 - **Uma batalha, vários conteúdos.** Fase e andar de Masmorra viram um `Encounter` (estrelas, nível,
-  ondas, força); a mesma `BattleFactory`, a mesma tela e o mesmo Resolver servem aos dois. O que muda é a
+  ondas, força); a mesma `BattleFactory`, a mesma tela e a mesma Batalha automática servem aos dois. O que muda é a
   equipe (por conteúdo) e a recompensa (`Campaign` ou `Dungeons`, as duas devolvem `VictoryReward`).
 - **O jogo é em inglês; o código fala português.** Ids, nomes em `Data/`, chaves e textos da interface
   (`Data/texts/en.json`), argumentos e o simulador são em inglês. `pt-BR.json` é uma tradução da

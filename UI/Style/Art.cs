@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 using Sigilos.Core.Content;
+using Sigilos.Core.Runes;
 
 namespace Sigilos.UI.Style
 {
@@ -11,6 +12,12 @@ namespace Sigilos.UI.Style
 	/// (<see cref="Sized"/>) — assim nada fica serrilhado nem pesado. Sem o PNG, cai para o SVG; sem os
 	/// dois, devolve nulo e a tela mostra só a cor — o jogo roda mesmo antes de baixar a arte.
 	/// </summary>
+	/// <summary>O símbolo de uma coisa do jogo: um desenho (ícone, efeito) ou um Glifo escrito na fonte das runas.</summary>
+	public readonly record struct Symbol(Texture2D? Icon, Glyph? Rune = null)
+	{
+		public static Symbol Of(Glyph glyph) => new(null, glyph);
+	}
+
 	public static class Art
 	{
 		/// <summary>Os tamanhos renderizados, em px no lado maior.</summary>
@@ -24,9 +31,6 @@ namespace Sigilos.UI.Style
 
 		public static Texture2D? Creature(string image) => Load("Creatures", image);
 
-		/// <summary>O símbolo de runa do Glifo, em Assets/Glyphs com o nome da runa.</summary>
-		public static Texture2D? Glyph(Glyph glyph) => Load("Glyphs", glyph.ToString().ToLowerInvariant());
-
 		public static Texture2D? Element(Element element) => Load("Elements", element.ToString().ToLowerInvariant());
 
 		/// <summary>O símbolo de um efeito de batalha (Assets/Effects): Queimadura, Atordoar, Ataque+...</summary>
@@ -36,27 +40,27 @@ namespace Sigilos.UI.Style
 		/// O símbolo de uma habilidade: o do efeito que mais a define (o que ela aplica, o escudo), senão o
 		/// Glifo do que ela faz (cura, Ímpeto, dreno, dano). A Passiva usa o símbolo do que ela faz.
 		/// </summary>
-		public static Texture2D? Skill(SkillDefinition skill)
+		public static Symbol Skill(SkillDefinition skill)
 		{
 			if (skill.Passive is { } passive)
 			{
 				return passive.Kind switch
 				{
-					PassiveKind.SpeedWhenLowest => Effect(StatusKind.SpeedUp),
-					PassiveKind.ShieldOnDeath => Effect(StatusKind.Shield),
-					PassiveKind.DamageReduction => Effect(StatusKind.DefenseUp),
-					PassiveKind.BurnOnHit => Effect(StatusKind.Burn),
-					PassiveKind.RebirthOnce => Glyph(Core.Runes.RuneSets.For(RuneSet.Rage).Glyph),
-					PassiveKind.ImpetoAtWaveStart => Glyph(Core.Runes.RuneSets.For(RuneSet.Nemesis).Glyph),
-					PassiveKind.RegenEachTurn => Glyph(Texts.GlyphOf(Stat.Health)),
-					_ => Glyph(Core.Runes.RuneSets.For(RuneSet.Revenge).Glyph),
+					PassiveKind.SpeedWhenLowest => new Symbol(Effect(StatusKind.SpeedUp)),
+					PassiveKind.ShieldOnDeath => new Symbol(Effect(StatusKind.Shield)),
+					PassiveKind.DamageReduction => new Symbol(Effect(StatusKind.DefenseUp)),
+					PassiveKind.BurnOnHit => new Symbol(Effect(StatusKind.Burn)),
+					PassiveKind.RebirthOnce => Symbol.Of(RuneSets.For(RuneSet.Rage).Glyph),
+					PassiveKind.ImpetoAtWaveStart => Symbol.Of(RuneSets.For(RuneSet.Nemesis).Glyph),
+					PassiveKind.RegenEachTurn => Symbol.Of(Texts.GlyphOf(Stat.Health)),
+					_ => Symbol.Of(RuneSets.For(RuneSet.Revenge).Glyph),
 				};
 			}
 
 			foreach (var effect in skill.Effects)
 			{
 				if (effect.Kind == EffectKind.Status)
-					return Effect(effect.Status);
+					return new Symbol(Effect(effect.Status));
 			}
 
 			foreach (var effect in skill.Effects)
@@ -64,19 +68,19 @@ namespace Sigilos.UI.Style
 				switch (effect.Kind)
 				{
 					case EffectKind.Shield:
-						return Effect(StatusKind.Shield);
+						return new Symbol(Effect(StatusKind.Shield));
 					case EffectKind.Heal:
-						return Glyph(Texts.GlyphOf(Stat.Health));
+						return Symbol.Of(Texts.GlyphOf(Stat.Health));
 					case EffectKind.Impeto:
-						return Glyph(Core.Runes.RuneSets.For(RuneSet.Nemesis).Glyph);
+						return Symbol.Of(RuneSets.For(RuneSet.Nemesis).Glyph);
 					case EffectKind.Cleanse:
-						return Effect(StatusKind.Immunity);
+						return new Symbol(Effect(StatusKind.Immunity));
 					case EffectKind.Damage when effect.Drain > 0:
-						return Glyph(Core.Runes.RuneSets.For(RuneSet.Vampire).Glyph);
+						return Symbol.Of(RuneSets.For(RuneSet.Vampire).Glyph);
 				}
 			}
 
-			return Glyph(Texts.GlyphOf(Stat.Attack));
+			return Symbol.Of(Texts.GlyphOf(Stat.Attack));
 		}
 
 		/// <summary>Ícones de Assets/Icons: scroll, essence, gold, summon, config, map, bag, fight...</summary>
@@ -105,9 +109,6 @@ namespace Sigilos.UI.Style
 
 			return Load(key[..slash], key[(slash + 1)..], wanted) ?? texture;
 		}
-
-		/// <summary>O Glifo em branco, para tingir no texto rico (<see cref="Ink"/>).</summary>
-		public static Texture2D? GlyphInk(Glyph glyph) => Ink("Glyphs", glyph.ToString().ToLowerInvariant());
 
 		/// <summary>O símbolo do efeito em branco, para tingir no texto rico (<see cref="Ink"/>).</summary>
 		public static Texture2D? EffectInk(StatusKind status) => Ink("Effects", status.ToString().ToLowerInvariant());

@@ -78,7 +78,6 @@ pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.
 | `Icons/bag.svg` | [Knapsack - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Knapsack_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/back.svg` | [Return-arrow - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Return-arrow_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/resolve.svg` | [Hourglass - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Hourglass_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
-| `Icons/quick_channel.svg` | [Sands-of-time - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Sands-of-time_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/repeat.svg` | [Cycle - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Cycle_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/auto.svg` | [Clockwork - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Clockwork_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/speed.svg` | [Speedometer - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Speedometer_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |

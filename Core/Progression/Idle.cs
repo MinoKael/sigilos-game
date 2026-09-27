@@ -7,7 +7,7 @@ namespace Sigilos.Core.Progression
 	/// Ociosidade (GDD, seção 11): com o jogo fechado, os círculos de invocação continuam canalizando
 	/// Essência, Ouro e Mana. Essência e Ouro crescem com a fase mais alta vencida; a Mana enche
 	/// <see cref="Mana.PerHour"/> por hora até o máximo, e o que passaria dele se perde. O acúmulo para
-	/// em 12 horas. Uma vez por dia, a Canalização Rápida entrega 2 horas na hora.
+	/// em 12 horas.
 	///
 	/// O relógio entra como parâmetro (<c>now</c>): os testes escolhem a hora sem mexer no sistema.
 	/// A fração que não fecha uma unidade fica guardada para a próxima coleta.
@@ -15,7 +15,6 @@ namespace Sigilos.Core.Progression
 	public static class Idle
 	{
 		public const double CapHours = 12;
-		public const double QuickChannelHours = 2;
 
 		public static double EssencePerHour(int highestStage) => 120 + 27 * highestStage;
 		public static double GoldPerHour(int highestStage) => 2 + 0.1 * highestStage;
@@ -36,18 +35,6 @@ namespace Sigilos.Core.Progression
 			var reward = Reward(player, PendingHours(player, now), commit: true);
 			player.LastIdleCollect = now;
 			return reward;
-		}
-
-		public static bool CanQuickChannel(PlayerState player, DateTime now) => player.LastQuickChannel.Date < now.Date;
-
-		/// <summary>2 horas de recompensa na hora, uma vez por dia. Não mexe no relógio da ociosidade.</summary>
-		public static IdleReward QuickChannel(PlayerState player, DateTime now)
-		{
-			if (!CanQuickChannel(player, now))
-				return new IdleReward(0, 0, 0, 0);
-
-			player.LastQuickChannel = now;
-			return Reward(player, QuickChannelHours, commit: true);
 		}
 
 		private static IdleReward Reward(PlayerState player, double hours, bool commit)

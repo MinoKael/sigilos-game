@@ -7,25 +7,16 @@
 {
   "common": {
     "back": "Back",
-    "resolve_tip": "Simulates the fight instantly, on auto.",
     "team": "Team",
     "yes": "Yes",
     "no": "No",
     "continue": "Continue",
     "and": " and ",
-    "stage": "stage {0}",
-    "floor": "{0}, floor {1}",
     "stars_level": "Lv {1} {0}",
-    "resolve_defeat": "Defeat at {0} (round {1}).",
-    "resolve_victory": "Victory at {0}: −{1} Mana, +{2} Essence, +{3} experience{4}.",
-    "resolve_rune": "{0} rune {1}",
-    "resolve_gold": "+{0} Gold",
-    "resolve_account": "account at level {0} (+{1} Gold)",
-    "auto_battle": "Auto Battle ×{0}",
+    "auto_battle": "Auto Battle",
     "auto_battle_tip": "Auto Battle: up to {0} fights in a row, each taking the time it would take on auto at 2×. Stops when Mana runs out or the rune inventory is full.",
     "close": "Close",
-    "fight": "Fight · {0} Mana",
-    "resolve": "Resolve · {0} Mana"
+    "fight": "Fight · {0} Mana"
   },
 
   "auto": {
@@ -39,7 +30,12 @@
     "account": "Account level",
     "runes": "Runes",
     "victories": "Victories",
-    "defeats": "Defeats"
+    "defeats": "Defeats",
+    "runs": "Fights in a row",
+    "fewer": "One fewer",
+    "more": "One more",
+    "start": "Start",
+    "mana_needed": "Mana if every fight is a victory: {0}"
   },
 
   "entry": {
@@ -373,8 +369,6 @@
   },
 
   "hub": {
-    "quick_channel": "Quick Channel ({0} h)",
-    "quick_channel_tip": "Once a day: {0} hours of idle rewards right away.",
     "channeling": "Channeling · {0}h{1} of {2} h",
     "account": "Account level {0} · {1}/{2} experience",
     "account_tip": "{0}/{1} experience. Every victory also gives experience to the account; each level gives {2} Gold, refills Mana and raises max Mana, up to {4} at level {3}.",
@@ -578,7 +572,7 @@
       "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star; the level goes back to 1 and the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
       "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a duplicate copy raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
       "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, new art, purple stars, +{3} HP and +{4} Attack and Defense, plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {5}, {6}, {7} or {8})." },
-      "sanctuary": { "title": "Sanctuary and symbols", "text": "Every button is a symbol: hover it to see its name. In the center of the Sanctuary, the channeling circle gathers Essence, Gold and Mana while you are away, up to {0} hours; touch it to collect. Once a day, the hourglass channels {1} hours at once. The stars around it are your shortcuts: the quill lets you choose them. The Map leads to the Campaign and the Dungeons; the Bag holds monsters, runes, teams, Summoning and the books." }
+      "sanctuary": { "title": "Sanctuary and symbols", "text": "Every button is a symbol: hover it to see its name. In the center of the Sanctuary, the channeling circle gathers Essence, Gold and Mana while you are away, up to {0} hours; touch it to collect. The stars around it are your shortcuts: the quill lets you choose them. The Map leads to the Campaign and the Dungeons; the Bag holds monsters, runes, teams, Summoning and the books." }
     },
     "combat": {
       "impetus": { "title": "Impetus", "text": "Each unit has a {0} bar that fills in proportion to Speed; whoever reaches 100% acts. Pushing or delaying the bar changes the order — the \"Next\" strip shows who is coming." },
@@ -587,7 +581,7 @@
       "crit": { "title": "Critical hits", "text": "A critical hit multiplies damage by 1 + Crit Damage. Every monster starts with 15% Crit Rate and 50% Crit Damage." },
       "resistance": { "title": "Resistance and Accuracy", "text": "Every harmful effect can be blocked: the chance is the target's Resistance minus the caster's Accuracy, never below {0}." },
       "leader": { "title": "Leader", "text": "The first one in the team applies its Leadership to everyone. The percentage is on the base stat, never on what came from runes." },
-      "auto": { "title": "Auto and Resolve", "text": "Auto uses the strongest ready skill on its own. Stages and floors already cleared get Resolve, which simulates the fight instantly, and Auto ×{0}, which runs {0} fights in a row." },
+      "auto": { "title": "Auto and Resolve", "text": "Auto uses the strongest ready skill on its own. Stages and floors already cleared get Auto Battle: you choose how many fights in a row ({0} to start), each taking the time it would take on auto at 2×. It stops when Mana runs out or the rune inventory is full." },
       "elements": "Elements",
       "elements_text": "With advantage, damage goes up {0}; with disadvantage, it goes down {1}. Auto targets whoever it beats first.",
       "wins": "{0} beats {1}"

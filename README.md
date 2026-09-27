@@ -76,6 +76,9 @@ alquímicos (elementos) em domínio público, criaturas (normais e despertas), �
 efeitos de batalha do game-icons.net (CC BY 3.0). Lista e autores em
 [Assets/CREDITOS.md](Assets/CREDITOS.md). O shader `doodle` e parte dos SVGs vieram de Rabiscos&Runas.
 
+Fontes em `Assets/Fonts`: SFC Wezards (a do jogo) e Kehdrai, de Neale Davidson (as runas); cada uma
+com a sua licença.
+
 Os SVG são a fonte; o jogo usa PNG renderizados pelo Inkscape em 32, 64, 128, 256 e 512 px
 (`Assets/Rendered`), porque o SVG rasterizado pelo Godot e depois escalado fica serrilhado. Depois de
 baixar ou trocar um SVG:

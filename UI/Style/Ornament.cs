@@ -120,6 +120,33 @@ namespace Sigilos.UI.Style
 			return ImageTexture.CreateFromImage(image);
 		});
 
+		/// <summary>A gema lapidada que corre na barra de energia do controle deslizante (losango com facetas).</summary>
+		public static Texture2D GemIcon(Color color) => Cached($"gemicon{color.ToHtml()}", () =>
+		{
+			const int size = 26;
+			var image = Image.CreateEmpty(size, size, false, Image.Format.Rgba8);
+			var center = size / 2f;
+			for (var y = 0; y < size; y++)
+			{
+				for (var x = 0; x < size; x++)
+				{
+					var dx = x + 0.5f - center;
+					var dy = y + 0.5f - center;
+					var distance = Math.Abs(dx) + Math.Abs(dy);
+					if (distance > center - 1)
+						continue;
+					// Quatro facetas: a de cima à esquerda mais clara, a de baixo à direita mais escura.
+					var facet = dx < 0 && dy < 0 ? color.Lightened(0.35f)
+						: dx >= 0 && dy >= 0 ? color.Darkened(0.35f)
+						: color;
+					var edge = distance > center - 3 ? Colors.Black.Lerp(facet, 0.35f) : facet;
+					image.SetPixel(x, y, edge);
+				}
+			}
+
+			return ImageTexture.CreateFromImage(image);
+		});
+
 		/// <summary>O sigilo de marcar: aceso (brilho e ponto no meio) ou apagado (só o anel).</summary>
 		public static Texture2D Sigil(bool lit, Color ring, Color glow) => Cached($"sigil{lit}{ring.ToHtml()}{glow.ToHtml()}", () =>
 		{

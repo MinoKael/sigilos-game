@@ -113,6 +113,27 @@ namespace Sigilos.UI
 
 		public static string Stars(int count) => new('★', count);
 
+		/// <summary>A letra que desenha o Glifo na fonte das runas (<see cref="Style.GameTheme.Runes"/>).</summary>
+		public static string Rune(Glyph glyph) => glyph switch
+		{
+			Glyph.Uruz => "U",
+			Glyph.Raido => "R",
+			Glyph.Algiz => "Z",
+			Glyph.Othalan => "O",
+			Glyph.Kauna => "K",
+			Glyph.Pertho => "P",
+			Glyph.Jeran => "J",
+			Glyph.Thurisaz => "Þ",
+			Glyph.Gebo => "G",
+			Glyph.Dagaz => "D",
+			Glyph.Sowilo => "S",
+			Glyph.Tiwaz => "T",
+			Glyph.Iwaz => "Y",
+			Glyph.Naudiz => "N",
+			Glyph.Laukaz => "L",
+			_ => "H",
+		};
+
 		/// <summary>Número romano pequeno: ondas e habilidades (I, II, III).</summary>
 		public static string Roman(int number) => number switch
 		{

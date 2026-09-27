@@ -75,7 +75,19 @@ namespace Sigilos.UI.Components
 		/// <summary>Cápsula de símbolo e número: recompensa, custo, contagem. O nome vai na dica.</summary>
 		public static PanelContainer Chip(string icon, string value, string tooltip, Color? ink = null) => Chip(Art.Icon(icon), value, tooltip, ink);
 
-		/// <summary>Cápsula com qualquer símbolo (Glifo, desenho de criatura).</summary>
+		/// <summary>Cápsula com um Glifo, escrito na fonte das runas.</summary>
+		public static PanelContainer Chip(Core.Content.Glyph glyph, string value, string tooltip, Color? ink = null)
+		{
+			var chip = Chip((Texture2D?)null, value, tooltip, ink);
+			var row = (HBoxContainer)chip.GetChild(0);
+			row.GetChild(0).QueueFree();
+			var rune = new RuneGlyph(glyph, 20, ink ?? Palette.Gold);
+			row.AddChild(rune);
+			row.MoveChild(rune, 0);
+			return chip;
+		}
+
+		/// <summary>Cápsula com qualquer desenho (efeito, criatura).</summary>
 		public static PanelContainer Chip(Texture2D? icon, string value, string tooltip, Color? ink = null)
 		{
 			var capsule = new PanelContainer { TooltipText = tooltip, MouseFilter = Control.MouseFilterEnum.Stop };

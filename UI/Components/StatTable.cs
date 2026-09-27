@@ -16,7 +16,7 @@ namespace Sigilos.UI.Components
 		{
 			Columns = 4;
 			AddThemeConstantOverride("h_separation", 12);
-			AddThemeConstantOverride("v_separation", 2);
+			AddThemeConstantOverride("v_separation", 0);
 		}
 
 		public void Show(StatSheet sheet)
@@ -24,7 +24,7 @@ namespace Sigilos.UI.Components
 			Layout.Clear(this);
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
-				var icon = Doodle.Icon(Art.Glyph(Texts.GlyphOf(stat)), 18, Palette.Gold);
+				var icon = new RuneGlyph(Texts.GlyphOf(stat), 18, Palette.Gold);
 				icon.TooltipText = Texts.Name(Texts.GlyphOf(stat));
 				icon.MouseFilter = MouseFilterEnum.Stop;
 				AddChild(icon);

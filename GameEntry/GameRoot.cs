@@ -119,7 +119,6 @@ namespace Sigilos.GameEntry
 			hub.ConfigRequested += () => OpenConfig(hub);
 			hub.ShortcutsChanged += shortcuts => Change(() => _player.Shortcuts = Destinations.Save(shortcuts), () => { });
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
-			hub.QuickChannelRequested += () => Change(() => Idle.QuickChannel(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
 			Swap(hub);
 		}
 
@@ -207,12 +206,8 @@ namespace Sigilos.GameEntry
 			campaign.FightRequested += FightStage;
 			campaign.TeamRequested += () => ShowTeams(Teams.Campaign, () => ShowCampaign(campaign.Selected, null));
 			campaign.ShopRequested += () => ShowShop(() => ShowCampaign(campaign.Selected, null));
-			campaign.ResolveRequested += stage =>
-			{
-				campaign.ShowMessage(ResolveStage(stage));
-				campaign.Refresh();
-			};
-			campaign.RepeatRequested += stage => RepeatBattle(
+			campaign.RepeatRequested += (stage, runs) => RepeatBattle(
+				runs,
 				T("battle.title_stage", stage.Number, stage.Name),
 				() => Campaign.Check(_player, stage),
 				stage.Mana,
@@ -232,12 +227,8 @@ namespace Sigilos.GameEntry
 			dungeons.FightRequested += FightFloor;
 			dungeons.TeamRequested += dungeon => ShowTeams(dungeon.Id, () => ShowDungeons(dungeon.Id));
 			dungeons.ShopRequested += dungeon => ShowShop(() => ShowDungeons(dungeon.Id));
-			dungeons.ResolveRequested += (dungeon, floor) =>
-			{
-				dungeons.ShowMessage(ResolveFloor(dungeon, floor));
-				dungeons.Refresh();
-			};
-			dungeons.RepeatRequested += (dungeon, floor) => RepeatBattle(
+			dungeons.RepeatRequested += (dungeon, floor, runs) => RepeatBattle(
+				runs,
 				T("battle.title_floor", dungeon.Name, floor),
 				() => Dungeons.Check(_player, dungeon, floor),
 				dungeon.Floor(floor).Mana,
@@ -404,62 +395,23 @@ namespace Sigilos.GameEntry
 			Swap(battle);
 		}
 
-		/// <summary>O botão Resolver: a luta inteira no automático, sem tela. Como na luta, só a vitória cobra Mana.</summary>
-		private string ResolveStage(StageDefinition stage)
-		{
-			var problem = Campaign.Check(_player, stage);
-			return problem != EntryProblem.None
-				? Texts.Refusal(problem, stage.Mana)
-				: Resolve(stage.Encounter, Teams.Campaign, T("common.stage", stage.Number), () => Campaign.ApplyVictory(_random, _player, stage));
-		}
-
-		private string ResolveFloor(DungeonDefinition dungeon, int floor)
-		{
-			var problem = Dungeons.Check(_player, dungeon, floor);
-			return problem != EntryProblem.None
-				? Texts.Refusal(problem, dungeon.Floor(floor).Mana)
-				: Resolve(dungeon.Floor(floor).Encounter, dungeon.Id, T("common.floor", dungeon.Name, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor));
-		}
-
-		private string Resolve(Encounter encounter, string content, string where, Func<VictoryReward> victoryReward)
-		{
-			var session = BattleFactory.Create(_database, PlayerTeam.Build(_player, _database, content), encounter, _random.Next());
-			if (!AutoBattle.Run(session))
-			{
-				Save();
-				return T("common.resolve_defeat", where, Math.Min(session.Round, BattleRules.RoundLimit));
-			}
-
-			var reward = victoryReward();
-			Save();
-			var drops = new List<string>();
-			if (reward.Gold > 0)
-				drops.Add(T("common.resolve_gold", reward.Gold));
-			if (reward.Rune is { } rune)
-				drops.Add(T("common.resolve_rune", Texts.Name(rune.Set), Texts.Stars(rune.Grade)));
-			drops.AddRange(reward.Tools.Select(Texts.Name));
-			if (reward.AccountLevels > 0)
-				drops.Add(T("common.resolve_account", _player.AccountLevel, reward.AccountLevels * Account.LevelUpGold));
-			return T("common.resolve_victory", where, reward.Mana, reward.Essence, reward.Experience, drops.Count == 0 ? "" : ", " + string.Join(", ", drops));
-		}
-
 		/// <summary>
-		/// A Batalha automática: até <see cref="AutoBattle.RepeatRuns"/> lutas resolvidas uma atrás da
+		/// A Batalha automática: até <paramref name="runs"/> lutas (o jogador escolhe) resolvidas uma atrás da
 		/// outra. Cada luta é resolvida na hora, mas a recompensa só entra depois do tempo que ela levaria
 		/// na tela (<see cref="BattlePace.AutoBattleFactor"/>). Para quando falta Mana ou vaga de runa.
 		/// </summary>
-		private void RepeatBattle(string title, Func<EntryProblem> check, int mana, Encounter encounter, string content, Func<VictoryReward> victoryReward, Action back)
+		private void RepeatBattle(int runs, string title, Func<EntryProblem> check, int mana, Encounter encounter, string content, Func<VictoryReward> victoryReward, Action back)
 		{
 			if (NeedsTeam(content, back))
 				return;
 
-			var screen = new RepeatBattleScreen(_player, title, AutoBattle.RepeatRuns);
+			var screen = new RepeatBattleScreen(_player, title, runs);
 			var number = 0;
 			var victory = false;
 
 			void Next()
 			{
-				if (number >= AutoBattle.RepeatRuns)
+				if (number >= runs)
 				{
 					screen.Finish(T("auto.done", number));
 					return;

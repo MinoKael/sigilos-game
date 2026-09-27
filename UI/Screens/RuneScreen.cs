@@ -144,20 +144,26 @@ namespace Sigilos.UI.Screens
 				items.Add(new ArcItem(Art.Creature(summon.ImageFor(candidate.Awakened)), name, Palette.Of(summon.Element), Accent: Palette.Frame(summon.Rarity)));
 			}
 
-			var picker = new ArcCarousel(items, Monster == null ? 0 : monsters.FindIndex(m => m.Id == _monsterId) + 1, 50, 250, 5) { SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
+			// O círculo sobe para dentro do arco do carrossel: as pontas do arco descem pelos lados, onde
+			// o círculo ainda é estreito, e a ficha inteira cabe embaixo sem rolagem.
+			var stage = new Control { CustomMinimumSize = new Vector2(0, RingTop + RingSize), MouseFilter = MouseFilterEnum.Ignore };
+			_left.AddChild(stage);
+
+			var ring = new SigilRing(RingSize) { Spread = 0.72f };
+			Place(stage, ring, new Vector2(RingSize, RingSize), RingTop);
+
+			var picker = new ArcCarousel(items, Monster == null ? 0 : monsters.FindIndex(m => m.Id == _monsterId) + 1, 50, 250, 5);
 			picker.Selected += index =>
 			{
 				_monsterId = index == 0 ? null : monsters[index - 1].Id;
 				Callable.From(Refresh).CallDeferred();
 			};
-			_left.AddChild(picker);
-
-			var ring = new SigilRing(300) { Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
+			Place(stage, picker, picker.CustomMinimumSize, 0);
 			var tiles = new List<Control>();
 			var equipped = Monster is { } holder ? _player.RunesOn(holder.Id) : Array.Empty<Rune>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
-				var tile = new RuneTile(equipped.FirstOrDefault(r => r.Slot == slot), slot, 1.15f);
+				var tile = new RuneTile(equipped.FirstOrDefault(r => r.Slot == slot), slot, 1.05f);
 				tile.SetSelected(tile.Rune != null ? tile.Rune.Id == _selectedRune : slot == _slotFilter);
 				tile.Pressed += t =>
 				{
@@ -174,31 +180,41 @@ namespace Sigilos.UI.Screens
 			if (Monster is { } monster)
 			{
 				var summon = _database.Summon(monster.SummonId);
-				center = Layout.Medal(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), 96);
+				center = Layout.Medal(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), 88);
 			}
 
 			ring.Set(center, tiles);
-			_left.AddChild(ring);
 
 			if (Monster is not { } chosen)
 				return;
 
 			var chosenSummon = _database.Summon(chosen.SummonId);
 			var sheet = SummonStats.For(_database.Roles[chosenSummon.Role], chosenSummon, chosen.Stars, chosen.Level, chosen.Awakened, _player.RunesOn(chosen.Id));
-			var summary = new VBoxContainer();
-			summary.AddThemeConstantOverride("separation", 4);
-			foreach (var set in sheet.Runes.ActiveSets)
+			if (sheet.Runes.ActiveSets.Count > 0)
 			{
-				var row = Layout.Row(6);
-				row.AddChild(Doodle.Icon(Art.Glyph(RuneSets.For(set.Set).Glyph), 20, Palette.Gold));
-				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", 320, GameTheme.Faded, 13));
-				summary.AddChild(row);
+				var sets = Layout.Flow(6);
+				foreach (var set in sheet.Runes.ActiveSets)
+					sets.AddChild(Layout.Chip(RuneSets.For(set.Set).Glyph, Texts.Name(set.Set), Texts.Plain($"{Texts.Name(set.Set)}: {Texts.Describe(set)}")));
+				_left.AddChild(sets);
 			}
 
 			var table = new StatTable();
 			table.Show(sheet);
-			summary.AddChild(table);
-			_left.AddChild(Layout.Scroll(summary));
+			_left.AddChild(table);
+		}
+
+		private const float RingSize = 280;
+		private const float RingTop = 56;
+
+		/// <summary>Põe um controle centrado na largura de <paramref name="stage"/>, a <paramref name="top"/> px do alto.</summary>
+		private static void Place(Control stage, Control control, Vector2 size, float top)
+		{
+			control.SetAnchorsPreset(LayoutPreset.CenterTop);
+			control.OffsetLeft = -size.X / 2;
+			control.OffsetRight = size.X / 2;
+			control.OffsetTop = top;
+			control.OffsetBottom = top + size.Y;
+			stage.AddChild(control);
 		}
 
 		// Abas do meio ------------------------------------------------------------------------------
@@ -236,9 +252,7 @@ namespace Sigilos.UI.Screens
 			if (_selecting)
 				_middle.AddChild(SelectionBar(runes));
 
-			var grid = new GridContainer { Columns = 8 };
-			grid.AddThemeConstantOverride("h_separation", 8);
-			grid.AddThemeConstantOverride("v_separation", 8);
+			var grid = Layout.Flow(8);
 			foreach (var rune in runes)
 			{
 				var tile = new RuneTile(rune, rune.Slot);
@@ -279,7 +293,7 @@ namespace Sigilos.UI.Screens
 			ArcItem All(string icon) => new(Art.Icon(icon), T("filter.all"), Palette.TextFaded);
 			ArcItem AllLetters(string letters) => new(null, T("filter.all"), Palette.TextFaded, letters);
 
-			flow.AddChild(Picker(T("filter.set"), Enum.GetValues<RuneSet>().Select(s => (new ArcItem(Art.Glyph(RuneSets.For(s).Glyph), Texts.Name(s), Palette.Gold), (int)s)), All("rune"), _filter.Set is { } set ? (int)set : -1,
+			flow.AddChild(Picker(T("filter.set"), Enum.GetValues<RuneSet>().Select(s => (new ArcItem(null, Texts.Name(s), Palette.Gold, Rune: RuneSets.For(s).Glyph), (int)s)), All("rune"), _filter.Set is { } set ? (int)set : -1,
 				value => _filter = _filter with { Set = value < 0 ? null : (RuneSet)value }));
 			flow.AddChild(Picker(T("filter.slot"), Enumerable.Range(1, RuneRules.Slots).Select(s => (Letters(s.ToString(), T("filter.slot_n", s)), s)), AllLetters("#"), _filter.Slot ?? -1,
 				value =>
@@ -417,7 +431,7 @@ namespace Sigilos.UI.Screens
 			{
 				var row = Layout.Row(10);
 				row.AddChild(Doodle.Icon(Art.Icon(kind == RuneToolKind.Grindstone ? "grindstone" : "gem"), 30, Palette.Of(group.Key.Grade)));
-				row.AddChild(Doodle.Icon(Art.Glyph(Texts.GlyphOf(group.Key.Stat)), 22, Palette.Gold));
+				row.AddChild(new RuneGlyph(Texts.GlyphOf(group.Key.Stat), 22, Palette.Gold));
 				var name = new Label { Text = Texts.Label(group.Key.Stat), SizeFlagsHorizontal = SizeFlags.ExpandFill, TooltipText = Texts.Name(group.Key), MouseFilter = MouseFilterEnum.Stop };
 				name.AddThemeColorOverride("font_color", Palette.Of(group.Key.Grade));
 				row.AddChild(name);
@@ -554,7 +568,7 @@ namespace Sigilos.UI.Screens
 		{
 			var substat = rune.Substats[index];
 			var row = Layout.Row(6);
-			row.AddChild(Doodle.Icon(Art.Glyph(Texts.GlyphOf(substat.Stat)), 18, Palette.GoldDark.Lightened(0.3f)));
+			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, Palette.GoldDark.Lightened(0.3f)));
 			var label = new Label { Text = Texts.Format(substat), SizeFlagsHorizontal = SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center };
 			if (substat.Enchanted)
 			{

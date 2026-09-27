@@ -15,12 +15,13 @@ namespace Sigilos.UI.Components
 		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400)
 		{
 			var row = Layout.Row(12);
-			var icon = new SigilButton(Art.Skill(skill), "", 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
+			var icon = new SigilButton(null, "", 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
 			{
 				MouseFilter = Control.MouseFilterEnum.Ignore,
 				Disabled = locked,
 				SizeFlagsVertical = Control.SizeFlags.ShrinkBegin,
 			};
+			icon.SetSymbol(Art.Skill(skill));
 			row.AddChild(icon);
 
 			var column = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };

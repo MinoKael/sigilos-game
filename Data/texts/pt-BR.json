@@ -4,25 +4,16 @@
 {
   "common": {
     "back": "Voltar",
-    "resolve_tip": "Simula a luta na hora, no automático.",
     "team": "Equipe",
     "yes": "Sim",
     "no": "Não",
     "continue": "Continuar",
     "and": " e ",
-    "stage": "fase {0}",
-    "floor": "{0}, andar {1}",
     "stars_level": "Nv {1} {0}",
-    "resolve_defeat": "Derrota na {0} (rodada {1}).",
-    "resolve_victory": "Vitória na {0}: −{1} Mana, +{2} Essência, +{3} de experiência{4}.",
-    "resolve_rune": "runa de {0} {1}",
-    "resolve_gold": "+{0} Ouro",
-    "resolve_account": "conta no nível {0} (+{1} Ouro)",
-    "auto_battle": "Batalha automática ×{0}",
+    "auto_battle": "Batalha automática",
     "auto_battle_tip": "Batalha automática: até {0} lutas seguidas, cada uma no tempo que levaria no automático em 2×. Para quando falta Mana ou o inventário de runas enche.",
     "close": "Fechar",
-    "fight": "Lutar · {0} Mana",
-    "resolve": "Resolver · {0} Mana"
+    "fight": "Lutar · {0} Mana"
   },
 
   "auto": {
@@ -36,7 +27,12 @@
     "account": "Nível da conta",
     "runes": "Runas",
     "victories": "Vitórias",
-    "defeats": "Derrotas"
+    "defeats": "Derrotas",
+    "runs": "Lutas seguidas",
+    "fewer": "Uma a menos",
+    "more": "Uma a mais",
+    "start": "Começar",
+    "mana_needed": "Mana se todas forem vitórias: {0}"
   },
 
   "entry": {
@@ -370,8 +366,6 @@
   },
 
   "hub": {
-    "quick_channel": "Canalização Rápida ({0} h)",
-    "quick_channel_tip": "Uma vez por dia: {0} horas de ociosidade na hora.",
     "channeling": "Canalização · {0}h{1} de {2} h",
     "account": "Conta nível {0} · {1}/{2} de experiência",
     "account_tip": "{0}/{1} de experiência. Toda vitória dá experiência também à conta; cada nível dá {2} Ouro, enche a Mana e aumenta a Mana máxima, até {4} no nível {3}.",
@@ -575,7 +569,7 @@
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela; o nível volta a 1 e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
       "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia repetida sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
       "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, desenho novo, estrelas roxas, +{3} de Vida e +{4} de Ataque e Defesa, e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {5}, {6}, {7} ou {8})." },
-      "sanctuary": { "title": "Santuário e símbolos", "text": "Todo botão é um símbolo: passe o mouse para ver o nome. No centro do Santuário, o círculo de canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas; toque nele para coletar. Uma vez por dia, a ampulheta canaliza {1} horas de uma vez. As estrelas em volta são os seus atalhos: a pena deixa escolher quais. O Mapa leva à Campanha e às Masmorras; a Bolsa guarda monstros, runas, equipes, a Invocação e os livros." }
+      "sanctuary": { "title": "Santuário e símbolos", "text": "Todo botão é um símbolo: passe o mouse para ver o nome. No centro do Santuário, o círculo de canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas; toque nele para coletar. As estrelas em volta são os seus atalhos: a pena deixa escolher quais. O Mapa leva à Campanha e às Masmorras; a Bolsa guarda monstros, runas, equipes, a Invocação e os livros." }
     },
     "combat": {
       "impetus": { "title": "Ímpeto", "text": "Cada unidade tem uma barra de {0} que enche em proporção à Velocidade; quem chega a 100% age. Empurrar ou atrasar a barra muda a ordem — a faixa \"Próximos\" mostra quem vem." },
@@ -584,7 +578,7 @@
       "crit": { "title": "Crítico", "text": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo monstro começa com 15% de Crítico e 50% de Dano crítico." },
       "resistance": { "title": "Resistência e Precisão", "text": "Todo efeito negativo pode ser barrado: a chance é a Resistência do alvo menos a Precisão de quem lança, nunca abaixo de {0}." },
       "leader": { "title": "Líder", "text": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio das runas." },
-      "auto": { "title": "Automático e Resolver", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham o Resolver, que simula a luta na hora, e o Auto ×{0}, que faz {0} lutas seguidas." },
+      "auto": { "title": "Automático e Resolver", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 2×. Para quando a Mana acaba ou o inventário de runas enche." },
       "elements": "Elementos",
       "elements_text": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence.",
       "wins": "{0} vence {1}"

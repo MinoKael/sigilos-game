@@ -50,7 +50,7 @@ namespace Sigilos.UI.Screens
 			sigils.Add(Art.Icon("region"), T("compendium.tab.basic"));
 			sigils.Add(Art.Icon("fight"), T("compendium.tab.combat"));
 			sigils.Add(Art.Icon("stats"), T("compendium.tab.stats"));
-			sigils.Add(Art.Glyph(RuneSets.For(RuneSet.Violent).Glyph), T("compendium.tab.glyphs"));
+			sigils.Add(null, T("compendium.tab.glyphs")).Rune = RuneSets.For(RuneSet.Violent).Glyph;
 			sigils.Add(Art.Icon("effects"), T("compendium.tab.effects"));
 			sigils.Add(Art.Icon("rune"), T("compendium.tab.runes"));
 			sigils.Changed += index => tabs.CurrentTab = index;
@@ -60,7 +60,7 @@ namespace Sigilos.UI.Screens
 		private static void Basics(VBoxContainer column)
 		{
 			var grid = Cards(column);
-			Card(grid, "collect", T("compendium.basic.sanctuary.title"), T("compendium.basic.sanctuary.text", Idle.CapHours, Idle.QuickChannelHours));
+			Card(grid, "collect", T("compendium.basic.sanctuary.title"), T("compendium.basic.sanctuary.text", Idle.CapHours));
 			Card(grid, "campaign", T("compendium.basic.campaign.title"), T("compendium.basic.campaign.text", GameDatabase.MaxCampaignRuneGrade));
 			Card(grid, "dungeon", T("compendium.basic.dungeons.title"), T("compendium.basic.dungeons.text"));
 			Card(grid, "mana", T("compendium.basic.mana.title"), T("compendium.basic.mana.text", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
@@ -128,7 +128,7 @@ namespace Sigilos.UI.Screens
 				var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(284, 0) };
 				var row = new HBoxContainer();
 				row.AddThemeConstantOverride("separation", 10);
-				row.AddChild(Doodle.Icon(Art.Glyph(set.Glyph), 56, Palette.Gold));
+				row.AddChild(new RuneGlyph(set.Glyph, 56, Palette.Gold));
 				var text = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
 				text.AddChild(new Label { Text = Texts.Name(set.Glyph), ThemeTypeVariation = GameTheme.Heading });
 				var meaning = new Label { Text = Texts.Meaning(set.Glyph) };
@@ -182,17 +182,17 @@ namespace Sigilos.UI.Screens
 			return grid;
 		}
 
-		private static void Card(GridContainer grid, string icon, string title, string text) => Card(grid, Art.Icon(icon), title, text);
+		private static void Card(GridContainer grid, string icon, string title, string text) => Card(grid, Doodle.Icon(Art.Icon(icon), 44, Palette.Gold), title, text);
 
-		private static void Card(GridContainer grid, Glyph glyph, string title, string text) => Card(grid, Art.Glyph(glyph), title, text);
+		private static void Card(GridContainer grid, Glyph glyph, string title, string text) => Card(grid, new RuneGlyph(glyph, 44, Palette.Gold), title, text);
 
 		/// <summary>Um tópico: símbolo à esquerda, título e texto rico.</summary>
-		private static void Card(GridContainer grid, Texture2D? icon, string title, string text)
+		private static void Card(GridContainer grid, Control icon, string title, string text)
 		{
 			var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
 			var row = new HBoxContainer();
 			row.AddThemeConstantOverride("separation", 12);
-			row.AddChild(Doodle.Icon(icon, 44, Palette.Gold));
+			row.AddChild(icon);
 			var content = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			content.AddChild(new Label { Text = title, ThemeTypeVariation = GameTheme.Heading });
 			content.AddChild(RichText.Label(text, CardWidth - 76));

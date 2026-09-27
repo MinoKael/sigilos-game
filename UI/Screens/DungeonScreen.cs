@@ -15,7 +15,7 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// As Masmorras: à esquerda um portal por Masmorra (o chefe, os Glifos do que solta e a barra dos
 	/// andares vencidos; fechada, com o cadeado); à direita os andares da escolhida — estrelas e nível,
-	/// o que solta, o Ouro da primeira vitória e os sigilos de Lutar, Resolver e Batalha automática.
+	/// o que solta, o Ouro da primeira vitória e os sigilos de Lutar e Batalha automática.
 	/// Cada vitória custa a Mana do andar.
 	/// </summary>
 	public partial class DungeonScreen : Control
@@ -37,10 +37,8 @@ namespace Sigilos.UI.Screens
 		}
 
 		public event Action<DungeonDefinition, int>? FightRequested;
-		public event Action<DungeonDefinition, int>? ResolveRequested;
-
-		/// <summary>A Batalha automática do andar.</summary>
-		public event Action<DungeonDefinition, int>? RepeatRequested;
+		/// <summary>A Batalha automática do andar: Masmorra, andar e quantas lutas seguidas.</summary>
+		public event Action<DungeonDefinition, int, int>? RepeatRequested;
 		public event Action<DungeonDefinition>? TeamRequested;
 		public event Action<DungeonDefinition>? ShopRequested;
 		public event Action? BackRequested;
@@ -119,7 +117,7 @@ namespace Sigilos.UI.Screens
 				if (dungeon.Kind == DungeonKind.Runes)
 				{
 					foreach (var set in dungeon.Sets)
-						glyphs.AddChild(Doodle.Icon(Art.Glyph(RuneSets.For(set).Glyph), 22, Palette.Gold));
+						glyphs.AddChild(new RuneGlyph(RuneSets.For(set).Glyph, 22, Palette.Gold));
 				}
 				else
 				{
@@ -163,7 +161,7 @@ namespace Sigilos.UI.Screens
 			if (dungeon.Kind == DungeonKind.Runes)
 			{
 				foreach (var set in dungeon.Sets)
-					drops.AddChild(Layout.Chip(Art.Glyph(RuneSets.For(set).Glyph), Texts.Name(set), Texts.Plain($"{Texts.Name(set)} · {Texts.Describe(RuneSets.For(set))}")));
+					drops.AddChild(Layout.Chip(RuneSets.For(set).Glyph, Texts.Name(set), Texts.Plain($"{Texts.Name(set)} · {Texts.Describe(RuneSets.For(set))}")));
 			}
 			else
 			{
@@ -242,12 +240,7 @@ namespace Sigilos.UI.Screens
 			row.AddChild(fight);
 			if (cleared)
 			{
-				var resolve = SigilButton.Of("resolve", T("common.resolve", floor.Mana), () => ResolveRequested?.Invoke(dungeon, number), 56);
-				resolve.Badge = floor.Mana.ToString();
-				resolve.Disabled = disabled;
-				row.AddChild(resolve);
-				var repeat = SigilButton.Of("repeat", T("common.auto_battle", AutoBattle.RepeatRuns), () => RepeatRequested?.Invoke(dungeon, number), 56);
-				repeat.Badge = $"×{AutoBattle.RepeatRuns}";
+				var repeat = SigilButton.Of("repeat", T("common.auto_battle"), () => RunsPicker.Open(this, floor.Mana, runs => RepeatRequested?.Invoke(dungeon, number, runs)), 56);
 				repeat.Disabled = disabled;
 				row.AddChild(repeat);
 			}

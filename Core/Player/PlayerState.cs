@@ -81,7 +81,6 @@ namespace Sigilos.Core.Player
 		public string? Language { get; set; }
 
 		public DateTime LastIdleCollect { get; set; }
-		public DateTime LastQuickChannel { get; set; } = DateTime.MinValue;
 
 		/// <summary>Frações que a ociosidade ainda não fechou numa unidade.</summary>
 		public double IdleEssenceCarry { get; set; }
