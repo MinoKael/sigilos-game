@@ -17,6 +17,10 @@ run/main_scene="res://Scenes/GameRoot.tscn"
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 config/icon="uid://ceqfgwhm13jxe"
 
+[autoload]
+
+VisualDebug="*uid://2vi54lcl7hw5"
+
 [display]
 
 window/size/viewport_width=1280
@@ -27,6 +31,10 @@ window/stretch/aspect="expand"
 [dotnet]
 
 project/assembly_name="Sigilos"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/visual_debug/plugin.cfg", "res://addons/visual_debugger/plugin.cfg")
 
 [importer_defaults]
 

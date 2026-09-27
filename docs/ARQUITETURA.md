@@ -79,6 +79,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Compêndio (regras) e Grimório (catálogo) | textos em `Data/texts` (`compendium.*`, `grimoire.*`); cartões em `UI/Screens/CompendiumScreen.cs` e `GrimoireScreen.cs` |
 | Cores, fontes, molduras, rolagem | `UI/Style/Palette.cs` (cores), `UI/Style/GameTheme.cs` (estilos por tipo de controle), `UI/Style/Ornament.cs` (texturas geradas: couro com moldura, gema da rolagem, sigilo de marcar), `Assets/Shaders/backdrop.gdshader` (o fundo) |
 | Nova tela | `UI/Screens/` + o `Show...` correspondente em `GameEntry/GameRoot.cs` e, se for destino de navegação, um valor em `Destination` |
+| Ver contornos, nomes, valores e origem dos nós com o jogo rodando | Ctrl+F1 a Ctrl+F4: o addon `addons/visual_debug` (autoload `VisualDebug`, não conhece o jogo), opções em `visual_debug/*` nas Configurações do Projeto |
 
 `GameDatabase.Validate()` confere referências e faixas dos dados; o teste `DataTests` falha se algo
 estiver quebrado (inclusive básica com recarga, ativa sem recarga ou duas Passivas), e o jogo mostra os

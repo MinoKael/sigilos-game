@@ -44,6 +44,10 @@ Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro 
 `--screen=map|bag|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela direto.
 O idioma também pode ser trocado no jogo, na engrenagem do Santuário (fica salvo).
 
+Depuração visual da interface, com o jogo rodando: Ctrl+F1 contornos, Ctrl+F2 nomes, Ctrl+F3 valores
+ao vivo, Ctrl+F4 origem no código (a mesma tecla desliga). É o addon `addons/visual_debug`, que só
+liga em build de depuração; detalhes em [addons/visual_debug/README.md](addons/visual_debug/README.md).
+
 ## Textos e tradução
 
 Todo texto da interface está em `Data/texts/en.json`, a base, por chave. Para traduzir, copie o
@@ -66,6 +70,7 @@ py Tools/texts/check_texts.py
 | `Assets/` | SVGs do Wikimedia Commons e o shader de traço | — |
 | `Tests/` | Console app: testes e simulador, compila `Core/` por link | Core |
 | `Tools/` | Scripts: baixar a arte do Commons, conferir os textos | — |
+| `addons/visual_debug/` | Overlay de depuração visual (Ctrl+F1 a Ctrl+F4), independente do jogo | nada |
 
 Detalhes, regras de dependência e onde mexer para cada tipo de mudança: [docs/ARQUITETURA.md](docs/ARQUITETURA.md).
 
