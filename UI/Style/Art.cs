@@ -114,6 +114,9 @@ namespace Sigilos.UI.Style
 			return Load(key[..slash], key[(slash + 1)..], wanted) ?? texture;
 		}
 
+		/// <summary>O ícone em branco, para tingir ao desenhar direto num <c>_Draw</c> (<see cref="Ink"/>).</summary>
+		public static Texture2D? IconInk(string name) => Ink("Icons", name);
+
 		/// <summary>O símbolo do efeito em branco, para tingir no texto rico (<see cref="Ink"/>).</summary>
 		public static Texture2D? EffectInk(StatusKind status) => Ink("Effects", status.ToString().ToLowerInvariant());
 

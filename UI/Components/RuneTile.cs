@@ -118,35 +118,25 @@ namespace Sigilos.UI.Components
 				Pressed?.Invoke(this);
 		}
 
-		/// <summary>As estrelas da runa, em fileira no alto, ao lado do número do espaço.</summary>
+		/// <summary>
+		/// As estrelas da runa, em fileira no alto, ao lado do número do espaço: o desenho da estrela (o PNG
+		/// renderizado, em branco para tingir) em ouro, sobre a mesma estrela em preto, um pouco maior.
+		/// </summary>
 		public override void _Draw()
 		{
-			if (_stars == 0)
+			if (_stars == 0 || Art.IconInk("star") is not { } star)
 				return;
 
-			var radius = 3.4f * _scale;
-			var step = radius * 2.05f;
-			var y = 8 * _scale;
-			var right = Size.X - 6 * _scale;
+			var size = 9 * _scale;
+			var step = size * 0.92f;
+			var top = 3.5f * _scale;
+			var right = Size.X - 5 * _scale;
 			for (var i = 0; i < _stars; i++)
 			{
-				var center = new Vector2(right - i * step - radius, y);
-				DrawColoredPolygon(Star(center, radius + 1.2f), new Color(0, 0, 0, 0.85f));
-				DrawColoredPolygon(Star(center, radius), Palette.Gold);
+				var rect = new Rect2(right - (i + 1) * step, top, size, size);
+				DrawTextureRect(star, rect.Grow(1.2f), false, new Color(0, 0, 0, 0.85f));
+				DrawTextureRect(star, rect, false, Palette.Gold);
 			}
-		}
-
-		private static Vector2[] Star(Vector2 center, float radius)
-		{
-			var points = new Vector2[10];
-			for (var i = 0; i < 10; i++)
-			{
-				var angle = -Mathf.Pi / 2 + i * Mathf.Pi / 5;
-				var r = i % 2 == 0 ? radius : radius * 0.45f;
-				points[i] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * r;
-			}
-
-			return points;
 		}
 
 		private void Restyle()

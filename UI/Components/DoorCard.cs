@@ -23,7 +23,7 @@ namespace Sigilos.UI.Components
 			Disabled = locked;
 			CustomMinimumSize = size;
 			MouseDefaultCursorShape = locked ? CursorShape.Arrow : CursorShape.PointingHand;
-			Juice.Attach(this, 1.03f, 0.97f);
+			Juice.Attach(this, 0.97f);
 
 			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
 			column.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);

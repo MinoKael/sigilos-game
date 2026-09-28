@@ -18,7 +18,7 @@ namespace Sigilos.UI.Components
 	/// mouse); o único texto é a <see cref="Badge"/>, um número pequeno (custo, quantidade).
 	///
 	/// Os estados se leem pela luz, não pela cor de fundo: sob o mouse a moldura vira ouro e ganha a
-	/// aura arcana, e o botão cresce um pouco; apertado, afunda; ligado (<see cref="BaseButton.ToggleMode"/>)
+	/// aura arcana (sem crescer); apertado, afunda; ligado (<see cref="BaseButton.ToggleMode"/>)
 	/// fica aceso em azul — é o substituto da caixinha de marcar —; desligado, apaga. <see cref="Highlight"/>
 	/// pulsa em verde para chamar o jogador (o que coletar, por onde começar).
 	/// </summary>
@@ -101,7 +101,7 @@ namespace Sigilos.UI.Components
 			_plaque.AddChild(_badge);
 			AddChild(_plaque);
 
-			Juice.Attach(this, 1.08f, 0.93f);
+			Juice.Attach(this, 0.93f);
 			Toggled += _ => RefreshInk();
 			MouseEntered += RefreshInk;
 			MouseExited += RefreshInk;

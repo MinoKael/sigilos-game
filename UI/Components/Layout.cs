@@ -35,7 +35,7 @@ namespace Sigilos.UI.Components
 		/// O fundo de pedra quente com a luz de vela e o anel de sigilo, centrado na tela ou no centro de
 		/// <paramref name="focus"/> (o que a tela tem no meio: a constelação, o portal, o círculo).
 		/// </summary>
-		public static Backdrop Background(Control? focus = null) => new(focus) { Name = "Backdrop" };
+		public static Backdrop Background(Control? focus = null, bool ring = true) => new(focus, ring) { Name = "Backdrop" };
 
 		/// <summary>Põe a margem da tela em <paramref name="screen"/> e devolve a coluna principal.</summary>
 		public static VBoxContainer Page(Control screen)

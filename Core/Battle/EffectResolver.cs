@@ -39,28 +39,39 @@ namespace Sigilos.Core.Battle
 				if (effect.OnKill && !hit.Killed)
 					continue;
 
-				foreach (var target in Targeting.Resolve(effect.Target, caster, main, allies, opponents))
+				// Dano vai em rodadas: cada golpe acerta todos os alvos antes do próximo, então um golpe em
+				// área com 2 golpes é "todos, depois todos" (e a tela mostra cada rodada de uma vez).
+				if (effect.Kind == EffectKind.Damage)
 				{
-					switch (effect.Kind)
+					var targets = Targeting.Resolve(effect.Target, caster, main, allies, opponents).ToList();
+					for (var round = 0; round < effect.Hits; round++)
 					{
-						case EffectKind.Damage:
-							Damage(caster, target, effect, hit);
-							break;
-						case EffectKind.Heal:
-							Heal(target, effect.Power * target.MaxHealth);
-							break;
-						case EffectKind.Shield:
-							GiveShield(target, effect.Power * caster.MaxHealth, effect.Turns);
-							break;
-						case EffectKind.Status:
-							ApplyStatus(caster, target, effect.Status, effect.Chance, effect.Turns);
-							break;
-						case EffectKind.Impeto:
-							PushImpeto(caster, target, effect);
-							break;
-						case EffectKind.Cleanse:
-							Cleanse(target);
-							break;
+						foreach (var target in targets.Where(t => t.IsAlive))
+							Strike(caster, target, effect, hit);
+					}
+				}
+				else
+				{
+					foreach (var target in Targeting.Resolve(effect.Target, caster, main, allies, opponents))
+					{
+						switch (effect.Kind)
+						{
+							case EffectKind.Heal:
+								Heal(target, effect.Power * target.MaxHealth);
+								break;
+							case EffectKind.Shield:
+								GiveShield(target, effect.Power * caster.MaxHealth, effect.Turns);
+								break;
+							case EffectKind.Status:
+								ApplyStatus(caster, target, effect.Status, effect.Chance, effect.Turns);
+								break;
+							case EffectKind.Impeto:
+								PushImpeto(caster, target, effect);
+								break;
+							case EffectKind.Cleanse:
+								Cleanse(target);
+								break;
+						}
 					}
 				}
 
@@ -99,54 +110,52 @@ namespace Sigilos.Core.Battle
 		/// <summary>Um efeito positivo que a unidade recebe sem sorteio (Imunidade da Vontade).</summary>
 		public void GiveStatus(BattleUnit target, StatusKind status, int turns) => ApplyStatus(target, target, status, 1, turns);
 
-		private void Damage(BattleUnit caster, BattleUnit target, EffectDefinition effect, Hit hit)
+		/// <summary>Um golpe num alvo: o erro da Cegueira, a Égide, o crítico, o escudo, o dreno, a queda e o que o golpe dispara.</summary>
+		private void Strike(BattleUnit caster, BattleUnit target, EffectDefinition effect, Hit hit)
 		{
 			var element = ElementChart.Multiplier(caster.Element, target.Element);
 
-			for (var i = 0; i < effect.Hits && target.IsAlive; i++)
+			if (caster.Has(StatusKind.Blind) && _session.Random.NextDouble() < BattleRules.BlindMissChance)
 			{
-				if (caster.Has(StatusKind.Blind) && _session.Random.NextDouble() < BattleRules.BlindMissChance)
-				{
-					_session.Emit(new Missed(target));
-					continue;
-				}
-
-				if (target.Find(StatusKind.Ward) is { } ward)
-				{
-					target.RemoveStatus(ward);
-					_session.Emit(new Warded(target));
-					continue;
-				}
-
-				var crit = caster.Has(StatusKind.Foresight) || _session.Random.NextDouble() < caster.Stats.Crit;
-				var amount = DamageFormula.Compute(caster, target, effect.Power * hit.Scale, effect.IgnoreDefense, crit);
-				var absorbed = Absorb(target, amount);
-				var dealt = amount - absorbed;
-				target.Health = Math.Max(0, target.Health - dealt);
-				hit.Dealt[target] = hit.Dealt.GetValueOrDefault(target) + dealt;
-				_session.Emit(new Damaged(target, (int)dealt, (int)absorbed, crit, element));
-
-				var drain = effect.Drain + caster.RuneEffects.Drain;
-				if (drain > 0)
-					Heal(caster, drain * amount);
-
-				if (!target.IsAlive)
-				{
-					hit.Killed = true;
-					_session.KnockOut(target);
-					return;
-				}
-
-				Nemesis(target, dealt);
-
-				// Desespero: um sorteio por alvo a cada habilidade, que só a Imunidade barra.
-				if (caster.RuneEffects.StunChance > 0 && hit.DespairRolled.Add(target))
-					ApplyStatus(caster, target, StatusKind.Stun, caster.RuneEffects.StunChance, 1, resistible: false);
-
-				// Passiva dos Dragões: um sorteio de Queimadura por alvo a cada habilidade.
-				if (caster.Passive?.Kind == PassiveKind.BurnOnHit && hit.BurnRolled.Add(target))
-					ApplyStatus(caster, target, StatusKind.Burn, caster.PassiveValue, BattleRules.BurnOnHitTurns);
+				_session.Emit(new Missed(target));
+				return;
 			}
+
+			if (target.Find(StatusKind.Ward) is { } ward)
+			{
+				target.RemoveStatus(ward);
+				_session.Emit(new Warded(target));
+				return;
+			}
+
+			var crit = caster.Has(StatusKind.Foresight) || _session.Random.NextDouble() < caster.Stats.Crit;
+			var amount = DamageFormula.Compute(caster, target, effect.Power * hit.Scale, effect.IgnoreDefense, crit);
+			var absorbed = Absorb(target, amount);
+			var dealt = amount - absorbed;
+			target.Health = Math.Max(0, target.Health - dealt);
+			hit.Dealt[target] = hit.Dealt.GetValueOrDefault(target) + dealt;
+			_session.Emit(new Damaged(target, (int)dealt, (int)absorbed, crit, element));
+
+			var drain = effect.Drain + caster.RuneEffects.Drain;
+			if (drain > 0)
+				Heal(caster, drain * amount);
+
+			if (!target.IsAlive)
+			{
+				hit.Killed = true;
+				_session.KnockOut(target);
+				return;
+			}
+
+			Nemesis(target, dealt);
+
+			// Desespero: um sorteio por alvo a cada habilidade, que só a Imunidade barra.
+			if (caster.RuneEffects.StunChance > 0 && hit.DespairRolled.Add(target))
+				ApplyStatus(caster, target, StatusKind.Stun, caster.RuneEffects.StunChance, 1, resistible: false);
+
+			// Passiva dos Dragões: um sorteio de Queimadura por alvo a cada habilidade.
+			if (caster.Passive?.Kind == PassiveKind.BurnOnHit && hit.BurnRolled.Add(target))
+				ApplyStatus(caster, target, StatusKind.Burn, caster.PassiveValue, BattleRules.BurnOnHitTurns);
 		}
 
 		/// <summary>Nêmesis: Ímpeto a cada 7% da Vida máxima perdida neste golpe.</summary>

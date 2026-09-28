@@ -69,6 +69,9 @@ namespace Sigilos.UI.Screens
 		/// <summary>A unidade cujo efeito o painel destaca (toque numa unidade fora da escolha de alvo).</summary>
 		private BattleUnit? _focused;
 
+		/// <summary>Quem está fora do lugar, na frente do alvo: dá o tranco a cada golpe até voltar.</summary>
+		private UnitView? _striker;
+
 		public BattleScreen(BattleSession session, string title, bool auto)
 		{
 			_session = session;
@@ -90,7 +93,7 @@ namespace Sigilos.UI.Screens
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(Layout.Background(_arena));
+			AddChild(Layout.Background(_arena, ring: false));
 
 			// O campo ocupa a tela toda, menos a faixa da ordem de turno à esquerda.
 			_arena.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -315,60 +318,88 @@ namespace Sigilos.UI.Screens
 			return control;
 		}
 
-		/// <summary>O painel de Efeitos: por cima do centro do campo, com o que está sobre cada unidade viva.</summary>
-		private Control EffectsPanel()
-		{
-			_effects.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 14));
-			// No meio do círculo, no vão entre aliados e inimigos.
-			OnArenaMiddle(_effects, new Vector2(380, 320));
+        /// <summary>O painel de Efeitos: por cima do centro do campo, com o que está sobre cada unidade viva.</summary>
+        private PanelContainer EffectsPanel()
+        {
+            _effects.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 14));
 
-			var column = new VBoxContainer { Name = "Column" };
-			var header = Layout.Row(8).Named("Header");
-			header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold).Named("Icon"));
-			header.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
-			header.AddChild(SigilButton.Of("cancel", T("common.close"), () => _effectsButton.ButtonPressed = false, 40).Named("Close"));
-			column.AddChild(header);
-			_effectsList.AddThemeConstantOverride("separation", 8);
-			column.AddChild(Layout.Scroll(_effectsList));
-			_effects.AddChild(column);
-			return _effects;
-		}
+            OnArenaMiddle(_effects, new Vector2(640, 320));
+            _effects.ZIndex = 21;
 
-		private void RefreshEffects()
-		{
-			if (!_effects.Visible)
-				return;
+            var column = new VBoxContainer { Name = "Column" };
+            var header = Layout.Row(8).Named("Header");
+            header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold).Named("Icon"));
+            header.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
+            header.AddChild(SigilButton.Of("cancel", T("common.close"), () => _effectsButton.ButtonPressed = false, 40).Named("Close"));
+            column.AddChild(header);
 
-			Layout.Clear(_effectsList);
-			var units = _session.Allies.Concat(_session.Enemies).Where(u => u.IsAlive).OrderByDescending(u => u == _focused).ToList();
-			for (var i = 0; i < units.Count; i++)
-			{
-				var unit = units[i];
-				var row = Layout.Row(8).Named($"Unit{i + 1}");
-				var frame = new PanelContainer { Name = "Portrait", TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
-				var ring = unit == _focused ? Palette.Gold : unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow;
-				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, ring, 2, 18, 2));
-				frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 32));
-				row.AddChild(frame);
+            _effectsList.AddThemeConstantOverride("separation", 8);
+            column.AddChild(Layout.Scroll(_effectsList));
+            _effects.AddChild(column);
 
-				var statuses = Layout.Flow(6).Named("Statuses");
-				statuses.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-				for (var k = 0; k < unit.Statuses.Count; k++)
-				{
-					var status = unit.Statuses[k];
-					var ink = BattleRules.IsNegative(status.Kind) ? Palette.Negative : Palette.Positive;
-					var value = status.Kind == Core.Content.StatusKind.Shield ? $" {Math.Round(status.Value)}" : "";
-					var tip = T("battle.effect_tip", Texts.Name(status.Kind), Texts.Turns(status.Turns));
-					statuses.AddChild(Layout.Chip(Art.Effect(status.Kind), $"{status.Turns}{value}", tip, ink).Named($"{status.Kind}{k + 1}"));
-				}
+            return _effects;
+        }
 
-				row.AddChild(statuses);
-				_effectsList.AddChild(row);
-			}
-		}
+        private void RefreshEffects()
+        {
+            if (!_effects.Visible)
+                return;
 
-		/// <summary>O cartão de <paramref name="unit"/>, de nome <paramref name="name"/> (<c>Ally2</c>, <c>Enemy1</c>).</summary>
-		private UnitView ViewFor(BattleUnit unit, string name)
+            Layout.Clear(_effectsList);
+
+            var columnsContainer = new HBoxContainer { Name = "Columns", SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            columnsContainer.AddThemeConstantOverride("separation", 16);
+
+            var alliesColumn = new VBoxContainer { Name = "AlliesColumn", SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            alliesColumn.AddThemeConstantOverride("separation", 8);
+
+            var enemiesColumn = new VBoxContainer { Name = "EnemiesColumn", SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            enemiesColumn.AddThemeConstantOverride("separation", 8);
+
+            columnsContainer.AddChild(alliesColumn);
+            columnsContainer.AddChild(enemiesColumn);
+            _effectsList.AddChild(columnsContainer);
+
+            var teams = new[]
+            {
+				new { Members = _session.Allies, Column = alliesColumn },
+				new { Members = _session.Enemies, Column = enemiesColumn }
+			};
+
+            foreach (var team in teams)
+            {
+                var units = team.Members.Where(u => u.IsAlive).OrderByDescending(u => u == _focused).ToList();
+                for (var i = 0; i < units.Count; i++)
+                {
+                    var unit = units[i];
+                    var row = Layout.Row(8).Named($"Unit{i + 1}");
+                    var frame = new PanelContainer { Name = "Portrait", TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
+                    var ring = unit == _focused ? Palette.Gold : unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow;
+
+                    frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, ring, 2, 18, 2));
+                    frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 32));
+                    row.AddChild(frame);
+
+                    var statuses = Layout.Flow(6).Named("Statuses");
+                    statuses.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+
+                    for (var k = 0; k < unit.Statuses.Count; k++)
+                    {
+                        var status = unit.Statuses[k];
+                        var ink = BattleRules.IsNegative(status.Kind) ? Palette.Negative : Palette.Positive;
+                        var value = status.Kind == Core.Content.StatusKind.Shield ? $" • {Math.Round(status.Value)}" : "";
+                        var tip = T("battle.effect_tip", Texts.Name(status.Kind), Texts.Turns(status.Turns));
+                        statuses.AddChild(Layout.Chip(Art.Effect(status.Kind), $"{status.Turns}{value}", tip, ink).Named($"{status.Kind}{k + 1}"));
+                    }
+
+                    row.AddChild(statuses);
+                    team.Column.AddChild(row);
+                }
+            }
+        }
+
+        /// <summary>O cartão de <paramref name="unit"/>, de nome <paramref name="name"/> (<c>Ally2</c>, <c>Enemy1</c>).</summary>
+        private UnitView ViewFor(BattleUnit unit, string name)
 		{
 			var view = new UnitView(unit) { Name = name };
 			view.Pressed += v =>
@@ -503,21 +534,50 @@ namespace Sigilos.UI.Screens
 
 		// Animação dos eventos ----------------------------------------------------------------------
 
+		/// <summary>
+		/// Toca os eventos em momentos (<see cref="BattlePace.Beats"/>): quem ataca corre até o alvo, cada golpe
+		/// mostra de uma vez os acertos que caem juntos (com o tranco de quem bate e o respingo em cada alvo),
+		/// e no fim da ação ele volta ao lugar. A espera entre momentos para com a pausa.
+		/// </summary>
 		private async Task Play(IReadOnlyList<BattleEvent> events)
 		{
-			foreach (var battleEvent in events)
+			foreach (var beat in BattlePace.Beats(events))
 			{
 				if (_closed || !IsInsideTree())
 					return;
 
-				Show(battleEvent);
-				var seconds = BattlePace.Seconds(battleEvent);
+				var seconds = beat.Seconds / Speed;
+				switch (beat.Kind)
+				{
+					case BeatKind.Approach when beat.Actor != null && _views.TryGetValue(beat.Actor, out var actor):
+						_striker = actor;
+						_arena.Approach(actor, (beat.Targets ?? Array.Empty<BattleUnit>()).Where(_views.ContainsKey).Select(unit => (Control)_views[unit]).ToList(), seconds);
+						break;
+					case BeatKind.Return when beat.Actor != null && _views.TryGetValue(beat.Actor, out var returning):
+						_arena.Return(returning, seconds);
+						_striker = null;
+						break;
+					case BeatKind.Volley when _striker != null && beat.Events.Select(HitTarget).FirstOrDefault(unit => unit != null) is { } first && _views.TryGetValue(first, out var struck):
+						_arena.Bump(_striker, struck, seconds);
+						break;
+				}
+
+				foreach (var battleEvent in beat.Events)
+					Show(battleEvent);
 				if (seconds > 0)
-					await ToSignal(GetTree().CreateTimer(seconds / Speed, processAlways: false), SceneTreeTimer.SignalName.Timeout);
+					await ToSignal(GetTree().CreateTimer(seconds, processAlways: false), SceneTreeTimer.SignalName.Timeout);
 			}
 
 			RefreshEffects();
 		}
+
+		private static BattleUnit? HitTarget(BattleEvent battleEvent) => battleEvent switch
+		{
+			Damaged damaged => damaged.Target,
+			Missed missed => missed.Target,
+			Warded warded => warded.Target,
+			_ => null,
+		};
 
 		/// <summary>Aplica um evento na tela. Quanto esperar depois é do <see cref="BattlePace"/>.</summary>
 		private void Show(BattleEvent battleEvent)
@@ -548,16 +608,14 @@ namespace Sigilos.UI.Screens
 				case SkillUsed used:
 					_banner.Text = T("battle.uses", used.Actor.Name, used.Skill.Name);
 					_banner.AddThemeColorOverride("font_color", Palette.Text);
-					_arena.Strike(_views[used.Actor], Speed);
 					return;
 
 				case ExtraTurn extra:
-					_views[extra.Unit].Float(T("battle.extra_turn"), Palette.Gold);
+					_views[extra.Unit].Float(T("battle.extra_turn"), Palette.Gold, 14);
 					return;
 
 				case Counterattack counter:
-					_views[counter.Unit].Float(T("battle.counterattack"), Palette.Gold);
-					_arena.Strike(_views[counter.Unit], Speed);
+					_views[counter.Unit].Float(T("battle.counterattack"), Palette.Gold, 14);
 					return;
 
 				case MaxHealthReduced reduced:
@@ -568,21 +626,24 @@ namespace Sigilos.UI.Screens
 				case Damaged damaged:
 					var hit = _views[damaged.Target];
 					hit.Shake(Speed);
-					hit.Float(damaged.Crit ? $"-{damaged.Amount}!" : $"-{damaged.Amount}", damaged.Crit ? Palette.Gold : Palette.Damage);
+					_arena.Splash(hit, damaged.Crit ? Palette.Gold : Palette.Damage, BattlePace.Hit / Speed, damaged.Crit);
+					hit.Float(damaged.Crit ? $"-{damaged.Amount}!" : $"-{damaged.Amount}", damaged.Crit ? Palette.Gold : Palette.Damage, damaged.Crit ? 18 : 16);
 					hit.Refresh();
 					return;
 
 				case Missed missed:
+					_arena.Splash(_views[missed.Target], Palette.TextFaded, BattlePace.Hit / Speed);
 					_views[missed.Target].Float(T("battle.missed"), Palette.TextFaded);
 					return;
 
 				case Warded warded:
+					_arena.Splash(_views[warded.Target], Palette.Shield, BattlePace.Hit / Speed);
 					_views[warded.Target].Float(T("battle.aegis"), Palette.Shield);
 					_views[warded.Target].Refresh();
 					return;
 
 				case Healed healed:
-					_views[healed.Target].Float($"+{healed.Amount}", Palette.Heal);
+					_views[healed.Target].Float($"+{healed.Amount}", Palette.Heal, 14);
 					_views[healed.Target].Refresh();
 					return;
 
@@ -617,7 +678,7 @@ namespace Sigilos.UI.Screens
 					return;
 
 				case Revived revived:
-					_views[revived.Unit].Float(T("battle.revives"), Palette.Gold);
+					_views[revived.Unit].Float(T("battle.revives"), Palette.Gold, 14);
 					_views[revived.Unit].Refresh();
 					return;
 

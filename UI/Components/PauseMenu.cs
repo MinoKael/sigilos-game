@@ -18,7 +18,8 @@ namespace Sigilos.UI.Components
 			ProcessMode = ProcessModeEnum.Always;
 			Color = new Color(0, 0, 0, 0.6f);
 			MouseFilter = MouseFilterEnum.Stop;
-			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+            ZIndex = 99;
+            SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
 			var center = new CenterContainer { Name = "Center", MouseFilter = MouseFilterEnum.Ignore };
 			center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -33,7 +34,6 @@ namespace Sigilos.UI.Components
 			panel.AddChild(column);
 
 			var title = Layout.Row(12, true).Named("Header");
-			title.AddChild(Doodle.Icon(Art.Icon("pause"), 40, Palette.Gold));
 			title.AddChild(new Label { Name = "Title", Text = T("battle.paused"), ThemeTypeVariation = GameTheme.Title });
 			column.AddChild(title);
 

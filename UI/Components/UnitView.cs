@@ -140,7 +140,8 @@ namespace Sigilos.UI.Components
 			tween.TweenProperty(this, "rotation_degrees", 0f, 0.04 / speed);
 		}
 
-		public void Float(string text, Color color) => FloatingText.Spawn(this, text, color);
+		/// <summary>Um texto que sobe do cartão: o dano maior, os efeitos no tamanho padrão.</summary>
+		public void Float(string text, Color color, int size = FloatingText.SmallSize) => FloatingText.Spawn(this, text, color, size);
 
 		public override void _GuiInput(InputEvent @event)
 		{

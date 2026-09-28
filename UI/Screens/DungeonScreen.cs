@@ -102,7 +102,7 @@ namespace Sigilos.UI.Screens
 				card.AddThemeStyleboxOverride("hover", Ornament.Panel(Palette.PanelLight, selected ? Palette.Arcane : Palette.Gold, 8));
 				card.AddThemeStyleboxOverride("pressed", Ornament.Panel(Palette.PanelLight, Palette.Arcane, 8));
 				card.AddThemeStyleboxOverride("hover_pressed", Ornament.Panel(Palette.PanelLight, Palette.Arcane, 8));
-				Juice.Attach(card, 1.02f, 0.98f);
+				Juice.Attach(card, 0.98f);
 
 				var row = Layout.Row(10).Named("Row");
 				row.MouseFilter = MouseFilterEnum.Ignore;

@@ -154,14 +154,20 @@ namespace Sigilos.UI.Screens
 			};
 			_headerTools.AddChild(tabs);
 
-			var select = new SigilButton(Art.Icon("select"), T("monsters.select"), 48, SigilShape.Square) { Name = "Select", ToggleMode = true, ButtonPressed = _selecting };
+			_headerTools.AddChild(SelectToggle(48));
+		}
+
+		/// <summary>O sigilo que liga e desliga a seleção em massa: no cabeçalho e, de atalho, na aba de habilidades.</summary>
+		private SigilButton SelectToggle(float size)
+		{
+			var select = new SigilButton(Art.Icon("select"), T("monsters.select"), size, SigilShape.Square) { Name = "Select", ToggleMode = true, ButtonPressed = _selecting };
 			select.Toggled += on =>
 			{
 				_selecting = on;
 				_marked.Clear();
 				Callable.From(Refresh).CallDeferred();
 			};
-			_headerTools.AddChild(select);
+			return select;
 		}
 
 		/// <summary>A barra da seleção em massa: marcar cópias, desmarcar, fundir no monstro da ficha, liberar.</summary>
@@ -468,6 +474,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(new HSeparator { Name = "ActionsLine" });
 			var actions = Layout.Row(10).Named("Actions");
 			actions.AddChild(FuseMenu(summon, monster).Named("Fuse"));
+			actions.AddChild(SelectToggle(64));
 			_detail.AddChild(actions);
 		}
 

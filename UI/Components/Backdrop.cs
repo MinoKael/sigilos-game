@@ -16,7 +16,8 @@ namespace Sigilos.UI.Components
 		private readonly ShaderMaterial _material;
 		private Vector2 _center = new(-1, -1);
 
-		public Backdrop(Control? focus)
+		/// <param name="ring">Com o anel de sigilo girando; a batalha tira, porque o chão dela já é o oval.</param>
+		public Backdrop(Control? focus, bool ring = true)
 		{
 			_focus = focus;
 			_shader ??= GD.Load<Shader>("res://Assets/Shaders/backdrop.gdshader");
@@ -24,6 +25,7 @@ namespace Sigilos.UI.Components
 			_material.SetShaderParameter("edge_color", Palette.Background);
 			_material.SetShaderParameter("glow_color", Palette.BackgroundGlow);
 			_material.SetShaderParameter("rune_color", Palette.Gold);
+			_material.SetShaderParameter("ring_strength", ring ? 1f : 0f);
 			Material = _material;
 			Color = Palette.Background;
 			MouseFilter = MouseFilterEnum.Ignore;

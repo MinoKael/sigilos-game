@@ -44,7 +44,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Reforço dos inimigos-invocação | `BattleFactory.FoeScale` (por estrelas naturais) e `scale` do andar |
 | Nova Passiva | `Core/Content/PassiveKind.cs` + o gancho (dano em `DamageFormula`, turno e onda em `BattleSession`, golpe em `EffectResolver`) + texto em `Data/texts` (`passive.*`) |
 | Ritmo da luta na tela e da Batalha automática | `UI/BattlePace.cs`; quantas lutas em `AutoBattle.RepeatRuns` |
-| Campo de batalha (onde ficam as unidades, o oval, o avanço de quem age) | `UI/Components/BattleArena.cs` (os arcos de cada lado em graus, `Slots`); o cartão da unidade em `UnitView`; os cantos e a pausa em `BattleScreen` e `PauseMenu` (a pausa é `SceneTree.Paused`, e a espera entre eventos usa timer que para junto) |
+| Campo de batalha (onde ficam as unidades, o oval, a corrida até o alvo, o respingo) | `UI/Components/BattleArena.cs` (os arcos de cada lado em graus, `Slots`, a corrida e a volta), `ImpactLayer` (o respingo), o ritmo em `UI/BattlePace.cs` (`Approach`, `Hit`, `Return`); o cartão da unidade em `UnitView`; os cantos e a pausa em `BattleScreen` e `PauseMenu` (a pausa é `SceneTree.Paused`, e a espera entre eventos usa timer que para junto) |
 | Nova Masmorra ou andar | `Data/dungeons.json` (andares, conjuntos, drop, `mana`, `firstClearGold`, `scale` de força); regras em `Core/Progression/Dungeons.cs` |
 | Custo em Mana de fase | `Data/stages.json` (`mana`) |
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
@@ -146,7 +146,8 @@ problemas no console ao abrir.
   não existe como invocação (os chefes) mora em `Data/enemies.json`. Assim cada criatura nova serve aos
   dois lados.
 - **A Batalha automática espera o tempo da tela.** As lutas são resolvidas na hora (`AutoBattle.Run`
-  guarda os eventos), mas a recompensa só entra depois de `BattlePace.Seconds(eventos, 2×)`: a mesma
+  guarda os eventos), mas a recompensa só entra depois de `BattlePace.Seconds(eventos, 2×)`, que soma os
+  momentos de `BattlePace.Beats` (corrida, golpes que caem juntos, volta): a mesma
   conta que a tela de batalha usa para esperar entre eventos.
 - **Habilidade é uma lista, não slots fixos.** Cada variante tem a básica, as ativas com recarga e
   talvez uma Passiva (`SkillDefinition.Passive`). O nível e o Despertar não mudam o dado: a batalha pede

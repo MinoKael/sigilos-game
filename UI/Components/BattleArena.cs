@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Sigilos.UI.Style;
 
@@ -6,8 +7,12 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// O campo da luta: um círculo de conjuração oval no chão, com os aliados no arco de baixo à esquerda
-	/// e os inimigos no arco de cima à direita, frente a frente pela diagonal. Quem age avança para o
-	/// centro, e uma seta risca o chão até o outro lado (<see cref="Strike"/>).
+	/// e os inimigos no arco de cima à direita, frente a frente pela diagonal.
+	///
+	/// Quem ataca corre até o alvo e para na frente dele (<see cref="Approach"/>), dá um tranco a cada golpe
+	/// (<see cref="Bump"/>) e volta ao seu lugar (<see cref="Return"/>), como em Summoners War; num golpe em
+	/// área corre até o meio do grupo. Cada alvo atingido ganha um respingo (<see cref="Splash"/>), todos
+	/// juntos quando o golpe é em área.
 	///
 	/// As unidades são filhas diretas, em posição absoluta. <see cref="Arrange"/> as recoloca a cada
 	/// mudança de tamanho: o espaço entre vizinhas é medido ao longo da elipse, e o grupo fica centrado no
@@ -29,13 +34,13 @@ namespace Sigilos.UI.Components
 		private readonly List<Control> _allies = new();
 		private readonly List<Control> _enemies = new();
 		private readonly Dictionary<Control, Vector2> _homes = new();
-		private Vector2 _arrowFrom;
-		private Vector2 _arrowTo;
-		private float _arrow;
+		private readonly ImpactLayer _impacts = new() { Name = "Impacts" };
 
 		public BattleArena()
 		{
 			MouseFilter = MouseFilterEnum.Ignore;
+			_impacts.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			AddChild(_impacts);
 			Resized += Arrange;
 		}
 
@@ -50,34 +55,64 @@ namespace Sigilos.UI.Components
 		public void SetEnemies(IReadOnlyList<Control> enemies) => Replace(_enemies, enemies);
 
 		/// <summary>
-		/// Quem age avança um terço do caminho até o centro enquanto a seta risca o chão até o outro lado,
-		/// e volta ao seu lugar. <paramref name="speed"/> é o multiplicador de velocidade da luta.
+		/// Corre até os alvos em <paramref name="seconds"/>: para na frente de um só, do lado de onde veio, ou
+		/// na frente do meio do grupo num golpe em área. Sem alvo (cura, reforço), dá um passo para o centro.
 		/// </summary>
-		public void Strike(Control unit, float speed)
+		public void Approach(Control actor, IReadOnlyList<Control> targets, double seconds)
 		{
-			if (!_homes.TryGetValue(unit, out var home))
+			if (!_homes.ContainsKey(actor))
 				return;
 
-			var middle = Middle;
-			var center = home + unit.Size / 2;
-			var step = (middle - center) * 0.35f;
-			var other = Point(_allies.Contains(unit) ? (EnemyFrom + EnemyTo) / 2 : (AllyFrom + AllyTo) / 2);
-			_arrowFrom = center + step;
-			_arrowTo = other + (middle - other) * 0.3f;
-
-			unit.ZIndex = 5;
-			var tween = CreateTween();
-			tween.TweenProperty(unit, "position", home + step, 0.14 / speed).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
-			tween.Parallel().TweenMethod(Callable.From<float>(SetArrow), 0f, 1f, 0.14 / speed);
-			tween.TweenInterval(0.16 / speed);
-			tween.TweenProperty(unit, "position", home, 0.2 / speed);
-			tween.Parallel().TweenMethod(Callable.From<float>(SetArrow), 1f, 0f, 0.3 / speed);
-			tween.TweenCallback(Callable.From(() =>
+			var from = CenterOf(actor);
+			Vector2 destination;
+			if (targets.Count == 0)
 			{
-				if (IsInstanceValid(unit))
-					unit.ZIndex = 0;
-			}));
+				destination = from + (Middle - from).Normalized() * 40;
+			}
+			else
+			{
+				var spot = targets.Aggregate(Vector2.Zero, (sum, target) => sum + CenterOf(target)) / targets.Count;
+				var direction = (from - spot).Normalized();
+				// Encosta no alvo sem cobrir o cartão: anda até os dois retângulos se tocarem (um pouco
+				// antes, no meio de um grupo, para não pisar em ninguém).
+				var reach = Mathf.Min(
+					Mathf.Abs(direction.X) > 0.01f ? actor.Size.X / Mathf.Abs(direction.X) : float.MaxValue,
+					Mathf.Abs(direction.Y) > 0.01f ? actor.Size.Y / Mathf.Abs(direction.Y) : float.MaxValue);
+				destination = spot + direction * (reach * (targets.Count == 1 ? 1f : 1.35f) + 6);
+			}
+
+			actor.ZIndex = 5;
+			var tween = actor.CreateTween();
+			tween.TweenProperty(actor, "position", destination - actor.Size / 2, seconds * 0.9).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 		}
+
+		/// <summary>O tranco de um golpe: um passo curto na direção do alvo e de volta.</summary>
+		public void Bump(Control actor, Control target, double seconds)
+		{
+			var direction = (CenterOf(target) - CenterOf(actor)).Normalized();
+			var start = actor.Position;
+			var tween = actor.CreateTween();
+			tween.TweenProperty(actor, "position", start + direction * 16, seconds * 0.35).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+			tween.TweenProperty(actor, "position", start, seconds * 0.4).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+		}
+
+		/// <summary>Volta ao seu lugar no arco em <paramref name="seconds"/>.</summary>
+		public void Return(Control actor, double seconds)
+		{
+			if (!_homes.TryGetValue(actor, out var home))
+				return;
+
+			var tween = actor.CreateTween();
+			tween.TweenProperty(actor, "position", home, seconds * 0.9).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+			tween.TweenCallback(Callable.From(() => actor.ZIndex = 0));
+		}
+
+		/// <summary>
+		/// O respingo de um golpe no meio de <paramref name="target"/>, que some em <paramref name="seconds"/>
+		/// (o tempo do golpe na velocidade da luta); <paramref name="strong"/> num crítico.
+		/// </summary>
+		public void Splash(Control target, Color color, double seconds, bool strong = false) =>
+			_impacts.Splash(CenterOf(target), color, target.Size.X * (strong ? 0.75f : 0.55f), (float)seconds);
 
 		public override void _Draw()
 		{
@@ -98,21 +133,12 @@ namespace Sigilos.UI.Components
 				DrawLine(middle + direction * (radii - new Vector2(15, 15)), middle + direction * (radii - new Vector2(15 - length, 15 - length)), new Color(Palette.Gold, 0.45f), 1.2f, true);
 			}
 
-			// A diagonal do confronto, de um grupo ao outro, e o círculo do centro onde quem age pisa.
+			// A diagonal do confronto, de um grupo ao outro, e o círculo do centro.
 			DrawLine(Point((AllyFrom + AllyTo) / 2), Point((EnemyFrom + EnemyTo) / 2), new Color(Palette.Gold, 0.14f), 1.5f, true);
 			DrawArc(middle, radii.Y * 0.28f, 0, Mathf.Tau, 64, new Color(Palette.Gold, 0.22f), 1.2f, true);
-
-			if (_arrow <= 0)
-				return;
-
-			var ink = new Color(Palette.Arcane, 0.85f * _arrow);
-			var tip = _arrowFrom.Lerp(_arrowTo, _arrow);
-			var forward = (_arrowTo - _arrowFrom).Normalized();
-			var side = new Vector2(-forward.Y, forward.X);
-			DrawLine(_arrowFrom, tip, new Color(Palette.Arcane, 0.2f * _arrow), 10, true);
-			DrawLine(_arrowFrom, tip, ink, 3, true);
-			DrawColoredPolygon(new[] { tip + forward * 14, tip - forward * 6 + side * 9, tip - forward * 6 - side * 9 }, ink);
 		}
+
+		private static Vector2 CenterOf(Control control) => control.Position + control.Size / 2;
 
 		private void Replace(List<Control> group, IReadOnlyList<Control> units)
 		{
@@ -193,12 +219,6 @@ namespace Sigilos.UI.Components
 			}
 
 			return points;
-		}
-
-		private void SetArrow(float amount)
-		{
-			_arrow = amount;
-			QueueRedraw();
 		}
 	}
 }
