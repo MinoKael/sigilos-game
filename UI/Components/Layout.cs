@@ -106,18 +106,18 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Cápsula de símbolo e número: recompensa, custo, contagem. O nome vai na dica; o nó leva o nome do símbolo (<c>Essence</c>).</summary>
-		public static PanelContainer Chip(string icon, string value, string tooltip, Color? ink = null) => Chip(Art.Icon(icon), value, tooltip, ink);
+		public static PanelContainer Chip(string icon, string value, string tooltip, Color? ink = null, Vector2 labelMinimumSize = default) => Chip(Art.Icon(icon), value, tooltip, ink, labelMinimumSize);
 
 		/// <summary>Cápsula com um Glifo, escrito na fonte das runas; o nó leva o nome do Glifo.</summary>
-		public static PanelContainer Chip(Core.Content.Glyph glyph, string value, string tooltip, Color? ink = null) =>
-			Capsule(glyph.ToString(), new RuneGlyph(glyph, 20, ink ?? Palette.Gold) { Name = "Glyph" }, value, tooltip);
+		public static PanelContainer Chip(Core.Content.Glyph glyph, string value, string tooltip, Color? ink = null, Vector2 labelMinimumSize = default) =>
+			Capsule(glyph.ToString(), new RuneGlyph(glyph, 20, ink ?? Palette.Gold) { Name = "Glyph" }, value, tooltip, labelMinimumSize);
 
 		/// <summary>Cápsula com qualquer desenho (efeito, criatura); o nó leva o nome do desenho.</summary>
-		public static PanelContainer Chip(Texture2D? icon, string value, string tooltip, Color? ink = null) =>
-			Capsule(Art.NameOf(icon) is { } name ? NodeName(name) : "Chip", Medal(icon, ink ?? Palette.Gold, 22).Named("Icon"), value, tooltip);
+		public static PanelContainer Chip(Texture2D? icon, string value, string tooltip, Color? ink = null, Vector2 labelMinimumSize = default) =>
+			Capsule(Art.NameOf(icon) is { } name ? NodeName(name) : "Chip", Medal(icon, ink ?? Palette.Gold, 22).Named("Icon"), value, tooltip, labelMinimumSize);
 
 		/// <summary>A cápsula: o símbolo e o número (<c>Value</c>) numa fileira (<c>Row</c>).</summary>
-		private static PanelContainer Capsule(string name, Control icon, string value, string tooltip)
+		private static PanelContainer Capsule(string name, Control icon, string value, string tooltip, Vector2 labelMinimumSize)
 		{
 			var capsule = new PanelContainer { Name = name, TooltipText = tooltip, MouseFilter = Control.MouseFilterEnum.Stop };
 			var box = GameTheme.Carved(Palette.Inset, 3);
@@ -130,6 +130,8 @@ namespace Sigilos.UI.Components
 			row.AddChild(icon);
 			var label = new Label { Name = "Value", Text = value, ThemeTypeVariation = GameTheme.Number, MouseFilter = Control.MouseFilterEnum.Ignore };
 			label.AddThemeFontSizeOverride("font_size", 15);
+			label.CustomMinimumSize = labelMinimumSize;
+			label.HorizontalAlignment = HorizontalAlignment.Right;
 			row.AddChild(label);
 			capsule.AddChild(row);
 			return capsule;

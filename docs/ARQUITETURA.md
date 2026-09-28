@@ -44,6 +44,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Reforço dos inimigos-invocação | `BattleFactory.FoeScale` (por estrelas naturais) e `scale` do andar |
 | Nova Passiva | `Core/Content/PassiveKind.cs` + o gancho (dano em `DamageFormula`, turno e onda em `BattleSession`, golpe em `EffectResolver`) + texto em `Data/texts` (`passive.*`) |
 | Ritmo da luta na tela e da Batalha automática | `UI/BattlePace.cs`; quantas lutas em `AutoBattle.RepeatRuns` |
+| Campo de batalha (onde ficam as unidades, o oval, o avanço de quem age) | `UI/Components/BattleArena.cs` (os arcos de cada lado em graus, `Slots`); o cartão da unidade em `UnitView`; os cantos e a pausa em `BattleScreen` e `PauseMenu` (a pausa é `SceneTree.Paused`, e a espera entre eventos usa timer que para junto) |
 | Nova Masmorra ou andar | `Data/dungeons.json` (andares, conjuntos, drop, `mana`, `firstClearGold`, `scale` de força); regras em `Core/Progression/Dungeons.cs` |
 | Custo em Mana de fase | `Data/stages.json` (`mana`) |
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
@@ -157,7 +158,7 @@ problemas no console ao abrir.
   volta ao nível 1, como lá.
 - **Confere na entrada, cobra na vitória.** `Campaign.Check` e `Dungeons.Check` devolvem um
   `EntryProblem` (fechado, sem Mana, inventário de runas cheio) sem mudar nada; a Mana só sai no
-  `ApplyVictory`, então a derrota (ou o Recuar) não custa nada.
+  `ApplyVictory`, então a derrota (ou sair e recomeçar pela pausa) não custa nada.
 
 ## Simplificações do MVP em relação ao GDD
 

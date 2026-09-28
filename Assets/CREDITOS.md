@@ -118,3 +118,5 @@ pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.
 | `Effects/attackdown.svg` | [Sword-break - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Sword-break_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/defenseup.svg` | [Checked-shield - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Checked-shield_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/speedup.svg` | [Wingfoot - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Wingfoot_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/pause.svg` | [Pause-button - Guard13007 - game-icons.svg](https://commons.wikimedia.org/wiki/File:Pause-button_-_Guard13007_-_game-icons.svg) | Guard13007 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/play.svg` | [Play-button - Guard13007 - game-icons.svg](https://commons.wikimedia.org/wiki/File:Play-button_-_Guard13007_-_game-icons.svg) | Guard13007 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |

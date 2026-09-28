@@ -105,9 +105,8 @@ namespace Sigilos.UI.Screens
 			var toNext = Account.ExperienceToNext(_player.AccountLevel);
 			var maxed = _player.AccountLevel >= Account.MaxLevel;
 			var leader = Teams.Of(_player, Teams.Campaign).Select(_player.Monster).OfType<OwnedSummon>().FirstOrDefault();
-			var summon = leader != null && _database.HasSummon(leader.SummonId) ? _database.Summon(leader.SummonId) : null;
-			var portrait = summon != null ? Art.Creature(summon.ImageFor(leader!.Awakened)) : Art.Icon("avatar");
-			var ink = summon != null ? Palette.Of(summon.Element) : Palette.Gold;
+			var portrait = Art.Icon("avatar");
+			var ink = Palette.Gold;
 			var tooltip = maxed
 				? T("hub.account_max", _player.AccountLevel)
 				: T("hub.account", _player.AccountLevel, _player.AccountExperience, toNext);
@@ -184,19 +183,15 @@ namespace Sigilos.UI.Screens
 			var hours = TimeSpan.FromHours(pendingHours);
 			_constellation.Progress = (float)(pendingHours / Idle.CapHours);
 
-			_channel.Disabled = preview.IsEmpty;
 			_channel.Highlight = !preview.IsEmpty;
 			_channel.TooltipText = T("hub.channeling", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
 
 
 			Layout.Clear(_pending);
-			if (preview.IsEmpty)
-				return;
-			_pending.AddChild(Layout.Chip("essence", Texts.Short(preview.Essence), T("currency.essence")));
-			if (preview.Gold > 0)
-				_pending.AddChild(Layout.Chip("gold", Texts.Short(preview.Gold), T("currency.gold")));
-			if (preview.Mana > 0)
-				_pending.AddChild(Layout.Chip("mana", Texts.Short(preview.Mana), T("currency.mana")));
+
+			_pending.AddChild(Layout.Chip("essence", Texts.Short(preview.Essence), T("currency.essence"), labelMinimumSize: new Vector2(34, 20)));
+			_pending.AddChild(Layout.Chip("gold", Texts.Short(preview.Gold), T("currency.gold"), labelMinimumSize: new Vector2(20, 20)));
+			_pending.AddChild(Layout.Chip("mana", Texts.Short(preview.Mana), T("currency.mana"), labelMinimumSize: new Vector2(22, 20)));
 		}
 
 		/// <summary>Uma fileira de sigilos, de nome <paramref name="name"/>, presa num canto de baixo da tela.</summary>

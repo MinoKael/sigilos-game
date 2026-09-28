@@ -7,8 +7,8 @@ using Side = Sigilos.Core.Battle.Side;
 
 namespace Sigilos.UI.Components
 {
-	/// <summary>Os próximos a agir, da esquerda para a direita, depois do símbolo de velocidade. Moldura verde: aliado; vermelha: inimigo.</summary>
-	public partial class TurnOrderBar : HBoxContainer
+	/// <summary>Os próximos a agir, de cima para baixo, depois do símbolo de velocidade. Moldura verde: aliado; vermelha: inimigo.</summary>
+	public partial class TurnOrderBar : VBoxContainer
 	{
 		public TurnOrderBar()
 		{

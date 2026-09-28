@@ -62,10 +62,10 @@ namespace Sigilos.UI.Components
 				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(40 * scale), _color, outline: true) { Name = "Glyph" };
 				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				glyph.OffsetTop = 6 * scale;
-				glyph.OffsetRight = -6 * scale;
+				//glyph.OffsetRight = -6 * scale;
 				_layer.AddChild(glyph);
 				Corner(Small(slot.ToString(), Palette.Text, 12).Named("Slot"), LayoutPreset.TopLeft);
-				Corner(Small($"+{rune.Level}", Palette.Text, 12).Named("Level"), LayoutPreset.BottomRight);
+				Corner(Small($"+{rune.Level}", Palette.Text, 12, HorizontalAlignment.Right).Named("Level"), LayoutPreset.BottomRight);
 				TooltipText = T("rune.tip", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), rune.Level, Texts.Format(rune.Main, rune.MainValue));
 			}
 
@@ -176,7 +176,7 @@ namespace Sigilos.UI.Components
 			_layer.AddChild(label);
 		}
 
-		private Label Small(string text, Color color, int size)
+		private Label Small(string text, Color color, int size, HorizontalAlignment? horizontalAlignment = null, VerticalAlignment? verticalAlignment = null)
 		{
 			var label = new Label { Text = text, MouseFilter = MouseFilterEnum.Ignore };
 			label.AddThemeFontSizeOverride("font_size", (int)(size * _scale));
@@ -184,6 +184,8 @@ namespace Sigilos.UI.Components
 			label.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.9f));
 			label.AddThemeConstantOverride("outline_size", 2);
 			label.AddThemeConstantOverride("line_spacing", -4);
+			label.HorizontalAlignment = horizontalAlignment ?? HorizontalAlignment.Center;
+			label.VerticalAlignment = verticalAlignment ?? VerticalAlignment.Center;
 			return label;
 		}
 	}

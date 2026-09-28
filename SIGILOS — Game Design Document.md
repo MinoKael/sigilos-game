@@ -18,6 +18,8 @@ Sep 23, 2026 · @Mikael
 
 > **Oitava revisão de 26/09/2026: interface de símbolos, a partir de um croqui.** A interface virou fantasia medieval aconchegante de runas e sigilos: couro envelhecido nos painéis, pedra entalhada nos fundos, ouro fosco nas molduras e o brilho das runas (azul arcano sob o mouse e no que está ligado, verde espiritual no que pede atenção). Nada de cara de página web: a rolagem é uma gema sem trilho, as caixas de marcar são sigilos que acendem, as listas suspensas viraram carrosséis de sigilos em arco e as barras são de energia entalhada. Os botões são símbolos, sem texto (o nome aparece ao passar o mouse), e texto explicativo só existe no Compêndio. O Santuário segue o croqui: retrato da conta com o nível no canto, recursos no alto, uma constelação de atalhos personalizável no centro (o sigilo do meio é a canalização), a engrenagem da Configuração embaixo à esquerda e Loja, Mapa e Bolsa embaixo à direita. O Mapa tem três portais (Torre e Provações ainda fechados, Campanha, Masmorras); a Bolsa é um círculo de conjuração com monstros, runas, equipes, os dois livros e o portal de invocar no centro; a ficha de Monstros ganhou abas em pé (Atributos, Runas, Habilidades, Despertar).
 
+> **Décima revisão de 27/09/2026: o campo de batalha.** A luta acontece num círculo de conjuração oval: os aliados no arco de baixo à esquerda, os inimigos no de cima à direita, e quem age avança para o centro enquanto uma seta risca o chão até o outro lado. A ordem de turno fica em pé à esquerda, as habilidades embaixo à direita, e a pausa no canto de cima oferece continuar, recomeçar a luta e sair. Na ficha da runa, o que ela ganhou desde que a tela abriu aparece em verde ao lado do valor.
+
 > **Nona revisão de 27/09/2026: fontes, runas e menos botões.** A fonte do jogo é a SFC Wezards, e os Glifos passaram a ser escritos na fonte rúnica Kehdrai (nítidos em qualquer tamanho). A runa em miniatura é uma pedra quadrada de cantos redondos, com o espaço e as estrelas no alto e a melhora embaixo. O Resolver saiu: a Batalha automática pergunta quantas lutas seguidas (30 de início, até 100). A Canalização Rápida saiu. Os efeitos de batalha têm símbolos próprios, e toda arte é PNG renderizado do SVG, recortado no formato do componente.
 
 ## 1. Visão geral
@@ -136,6 +138,8 @@ Batalha por turnos sem tabuleiro, como em Summoners War: até 5 monstros contra 
 ### Montagem do time
 
 Uma equipe de até 5 monstros por conteúdo: uma para a Campanha e uma para cada Masmorra (tela de Equipes). A primeira é a Líder e aplica sua Liderança ao time, se tiver uma. Cada fase tem até 3 ondas, como as masmorras de Summoners War. Na luta, o botão Efeitos mostra o que está sobre cada aliado e inimigo.
+
+O campo é um círculo de conjuração oval visto de cima: os aliados no arco de baixo à esquerda, os inimigos no de cima à direita, frente a frente pela diagonal, e o que acontece escrito no meio. Quem age avança para o centro e volta. Em volta ficam só sigilos: o nome da luta, a onda e a rodada no canto de cima à esquerda, com a ordem de turno em pé logo abaixo; o automático, a velocidade e os Efeitos embaixo à esquerda; as habilidades embaixo à direita. A pausa, no canto de cima à direita (ou Esc), para tudo e oferece continuar, recomeçar a luta do começo e sair. Recomeçar e sair não custam nada: a Mana só sai na vitória.
 
 ### Turno
 

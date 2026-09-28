@@ -9,22 +9,22 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma unidade em campo, só símbolos: elemento e nível no alto, o desenho, as barras de energia de
-	/// Vida (com o escudo por cima) e de Ímpeto, e embaixo os efeitos como Glifos e as recargas. O nome
-	/// vem na dica. Lê o estado do <see cref="BattleUnit"/> em <see cref="Refresh"/> e faz as animações
-	/// de interpolação do GDD (avançar, recuar, tremer) — nunca quadro a quadro.
+	/// Uma unidade em campo, quase quadrada e só de símbolos: o desenho, com o elemento e o nível nos
+	/// cantos de cima e os efeitos e as recargas nos de baixo; embaixo dele a barra de Vida (o escudo por
+	/// cima, o número dentro) e a de Ímpeto. O nome vem na dica. Lê o estado do <see cref="BattleUnit"/>
+	/// em <see cref="Refresh"/>; o avanço de quem age é da <see cref="BattleArena"/>, o tremor daqui.
 	/// </summary>
 	public partial class UnitView : PanelContainer
 	{
-		public static readonly Vector2 CardSize = new(128, 160);
+		public static readonly Vector2 CardSize = new(100, 116);
 
 		private readonly StyleBoxFlat _box;
 		private readonly ProgressBar _health;
 		private readonly ProgressBar _shield;
 		private readonly ProgressBar _impeto;
 		private readonly Label _healthText;
-		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Stop, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-		private readonly Label _cooldown = new() { Name = "Cooldowns", ThemeTypeVariation = GameTheme.Faded };
+		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Stop };
+		private readonly Label _cooldown = new() { Name = "Cooldowns", MouseFilter = MouseFilterEnum.Ignore };
 		private bool _active;
 		private bool _targetable;
 
@@ -36,50 +36,45 @@ namespace Sigilos.UI.Components
 			PivotOffset = CardSize / 2;
 			TooltipText = T("battle.unit_tip", unit.Name, unit.Level);
 
-			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, 10, 6);
+			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, 10, 5);
 			AddThemeStyleboxOverride("panel", _box);
 
 			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore };
 			column.AddThemeConstantOverride("separation", 3);
 			AddChild(column);
 
-			var top = new HBoxContainer { Name = "Top", MouseFilter = MouseFilterEnum.Ignore };
-			top.AddChild(Doodle.Icon(Art.Element(unit.Element), 18, Palette.Of(unit.Element)).Named("Element"));
-			top.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
-			var level = new Label { Name = "Level", Text = unit.Level.ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
-			level.AddThemeFontSizeOverride("font_size", 14);
+			// O desenho, com as quatro marcas nos cantos por cima dele.
+			var art = new Control { Name = "Art", SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
+			art.AddChild(Doodle.Masked(Art.Creature(unit.Image), Palette.Of(unit.Element), MaskShape.Rounded, 6));
+			var element = Doodle.Icon(Art.Element(unit.Element), 16, Palette.Of(unit.Element)).Named("Element");
+			element.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
+			art.AddChild(element);
+			var level = Corner(new Label { Name = "Level", Text = unit.Level.ToString(), ThemeTypeVariation = GameTheme.Number }, LayoutPreset.TopRight, 13);
 			if (unit.Awakened)
 				level.AddThemeColorOverride("font_color", Palette.Awakened);
-			top.AddChild(level);
-			column.AddChild(top);
-
-			var art = new Control { Name = "Art", CustomMinimumSize = new Vector2(0, 70), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
-			art.AddChild(Doodle.Masked(Art.Creature(unit.Image), Palette.Of(unit.Element), MaskShape.Rounded, 6));
+			art.AddChild(level);
+			_statuses.AddThemeConstantOverride("separation", 1);
+			_statuses.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
+			_statuses.GrowVertical = GrowDirection.Begin;
+			art.AddChild(_statuses);
+			art.AddChild(Corner(_cooldown, LayoutPreset.BottomRight, 11));
 			column.AddChild(art);
 
 			var bars = new Control { Name = "Bars", CustomMinimumSize = new Vector2(0, 12), MouseFilter = MouseFilterEnum.Ignore };
 			_health = Bar(Palette.Health, 12).Named("Health");
-			_shield = Bar(Palette.Shield, 5).Named("Shield");
+			_shield = Bar(Palette.Shield, 4).Named("Shield");
 			_health.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			_shield.SetAnchorsAndOffsetsPreset(LayoutPreset.TopWide);
 			bars.AddChild(_health);
 			bars.AddChild(_shield);
+			_healthText = Corner(new Label { Name = "HealthText", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }, LayoutPreset.FullRect, 10);
+			bars.AddChild(_healthText);
 			column.AddChild(bars);
 
-			_healthText = new Label { Name = "HealthText", HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Faded, MouseFilter = MouseFilterEnum.Ignore };
-			_healthText.AddThemeFontSizeOverride("font_size", 12);
-			column.AddChild(_healthText);
-
-			_impeto = Bar(Palette.Arcane, 5).Named("Impetus");
+			_impeto = Bar(Palette.Arcane, 4).Named("Impetus");
 			_impeto.TooltipText = T("battle.impetus_tip");
 			_impeto.MouseFilter = MouseFilterEnum.Stop;
 			column.AddChild(_impeto);
-
-			var bottom = new HBoxContainer { Name = "Bottom", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(0, 18) };
-			_statuses.AddThemeConstantOverride("separation", 2);
-			bottom.AddChild(_statuses);
-			bottom.AddChild(_cooldown);
-			column.AddChild(bottom);
 
 			MouseEntered += Restyle;
 			MouseExited += Restyle;
@@ -108,7 +103,7 @@ namespace Sigilos.UI.Components
 			foreach (var kind in Unit.Statuses.Where(s => s.Kind != StatusKind.Shield).Select(s => s.Kind).Distinct())
 			{
 				var ink = BattleRules.IsNegative(kind) ? Palette.Negative : Palette.Positive;
-				_statuses.AddChild(Doodle.Icon(Art.Effect(kind), 17, ink));
+				_statuses.AddChild(Doodle.Icon(Art.Effect(kind), 14, ink));
 			}
 
 			_statuses.TooltipText = string.Join("\n", Unit.Statuses.Select(s => T("battle.effect_tip", Texts.Name(s.Kind), Texts.Turns(s.Turns))));
@@ -131,14 +126,6 @@ namespace Sigilos.UI.Components
 			_targetable = targetable;
 			MouseDefaultCursorShape = targetable ? CursorShape.PointingHand : CursorShape.Arrow;
 			Restyle();
-		}
-
-		/// <summary>Avança na direção do inimigo e volta.</summary>
-		public void Lunge(float direction, float speed)
-		{
-			var tween = CreateTween();
-			tween.TweenProperty(this, "position:x", Position.X + 24 * direction, 0.12 / speed);
-			tween.TweenProperty(this, "position:x", Position.X, 0.18 / speed);
 		}
 
 		public void Shake(float speed)
@@ -170,6 +157,21 @@ namespace Sigilos.UI.Components
 			_box.BgColor = _targetable ? Palette.Inset.Lerp(Palette.Arcane, hover ? 0.2f : 0.08f) : Palette.Inset;
 			_box.ShadowColor = _targetable ? new Color(Palette.Arcane, 0.45f) : _active ? new Color(Palette.Gold, 0.4f) : new Color(0, 0, 0, 0);
 			_box.ShadowSize = _active || _targetable ? 8 : 0;
+		}
+
+		/// <summary>Um rótulo pequeno, contornado para ler sobre o desenho, preso num canto (ou no retângulo todo).</summary>
+		private static Label Corner(Label label, LayoutPreset preset, int size)
+		{
+			label.MouseFilter = MouseFilterEnum.Ignore;
+			label.AddThemeFontSizeOverride("font_size", size);
+			label.AddThemeColorOverride("font_outline_color", Palette.Background);
+			label.AddThemeConstantOverride("outline_size", 4);
+			label.SetAnchorsAndOffsetsPreset(preset);
+			if (preset is LayoutPreset.TopRight or LayoutPreset.BottomRight)
+				label.GrowHorizontal = GrowDirection.Begin;
+			if (preset is LayoutPreset.BottomRight)
+				label.GrowVertical = GrowDirection.Begin;
+			return label;
 		}
 
 		private static ProgressBar Bar(Color fill, int height)

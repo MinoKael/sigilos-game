@@ -504,8 +504,7 @@
     "unmark": "Unmark",
     "sell_marked": "Dismantle {0} (+{1} Essence)",
     "no_tools": "None yet",
-    "hint_changed": "{0} → {1} | {2}",
-    "hint_new": "new: {0}",
+    "new": "new",
     "innate": "Innate: comes with the drop and never grows",
     "innate_tip": "Comes with the drop and never grows.",
     "enchanted_tip": "Enchanted by a Gem. Only one substat per rune can be enchanted.",
@@ -674,7 +673,11 @@
     "revives": "Revives!",
     "wave_tip": "Wave",
     "round_tip": "Round",
-    "leveled_up_tip": "Leveled up"
+    "leveled_up_tip": "Leveled up",
+    "pause": "Pause",
+    "paused": "Paused",
+    "continue": "Continue",
+    "restart": "Restart the fight"
   },
 
   "destination": {

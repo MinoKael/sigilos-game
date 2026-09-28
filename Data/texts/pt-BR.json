@@ -501,8 +501,7 @@
     "unmark": "Desmarcar",
     "sell_marked": "Desfazer {0} (+{1} Essência)",
     "no_tools": "Nenhuma ainda",
-    "hint_changed": "{0} → {1} | {2}",
-    "hint_new": "novo: {0}",
+    "new": "novo",
     "innate": "Nativo: vem no drop e nunca cresce",
     "innate_tip": "Vem no drop e nunca cresce.",
     "enchanted_tip": "Encantado por Gema. Só um subatributo por runa pode ser encantado.",
@@ -671,7 +670,11 @@
     "revives": "Renasce!",
     "wave_tip": "Onda",
     "round_tip": "Rodada",
-    "leveled_up_tip": "Subiram de nível"
+    "leveled_up_tip": "Subiram de nível",
+    "pause": "Pausar",
+    "paused": "Pausa",
+    "continue": "Continuar",
+    "restart": "Recomeçar a luta"
   },
 
   "destination": {

@@ -22,7 +22,7 @@ namespace Sigilos.Core.Progression
 			BaseMax + MaxFromLevels * (Math.Clamp(player.AccountLevel, 1, Account.MaxLevel) - 1) / (Account.MaxLevel - 1);
 
 		/// <summary>Quanto a canalização ainda pode pôr: nada com a Mana no máximo ou acima.</summary>
-		public static int Room(PlayerState player) => Math.Max(0, Max(player) - player.Mana);
+		public static int Room(PlayerState player) => Math.Max(0, Max(player));
 
 		/// <summary>Enche até o máximo, sem tirar o que já passou dele.</summary>
 		public static void Refill(PlayerState player) => player.Mana = Math.Max(player.Mana, Max(player));

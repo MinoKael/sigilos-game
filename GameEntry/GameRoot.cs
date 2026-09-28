@@ -393,6 +393,12 @@ namespace Sigilos.GameEntry
 				Save();
 				back();
 			};
+			battle.RestartRequested += auto =>
+			{
+				// A Mana só sai na vitória: recomeçar é abrir a mesma luta de novo, com outra semente.
+				_player.AutoBattle = auto;
+				Fight(title, encounter, content, victoryReward, back);
+			};
 			Swap(battle);
 		}
 

@@ -19,15 +19,17 @@ namespace Sigilos.UI.Screens
 	/// seleção em massa desfaz de uma vez), as Pedras de Afiar e as Gemas Encantadas. À direita a runa
 	/// escolhida, com os sigilos de equipar, tirar, melhorar, afiar, encantar e desfazer.
 	///
-	/// O que a runa ganhou desde que a tela abriu fica em verde — subatributo novo, ou "8% → 15% | +7%".
-	/// Sair da tela apaga o destaque; o histórico de verdade fica na runa (<see cref="RuneSubstat.Rolls"/>).
+	/// O que a runa ganhou desde que a tela abriu aparece em verde ao lado do valor: o quanto subiu
+	/// ("HP +1215 +945", "Speed +9 +4"), ou o subatributo novo inteiro em verde, com "new". Sair da tela
+	/// apaga o destaque; o histórico de verdade fica na runa (<see cref="RuneSubstat.Rolls"/>). Os sigilos
+	/// de ação ficam presos embaixo da ficha, fora da rolagem.
 	///
 	/// Os nós, pelo nome (<c>Page/Content/Body/...</c>): <c>Left/Column</c> tem <c>Stage</c> (o <c>Ring</c>
 	/// com <c>Monster</c> e <c>Slot1</c>..<c>Slot6</c>, e o carrossel <c>Monsters</c>), <c>Sets</c> e
 	/// <c>Stats</c>; <c>Middle/Column</c> tem <c>TabRow/Tabs</c> e <c>List</c> (<c>Filters</c>, <c>Selection</c>
 	/// e <c>Scroll/Grid</c> com <c>Rune&lt;id&gt;</c>, ou <c>Scroll/Tools</c> com <c>Tool&lt;n&gt;</c>);
-	/// <c>Right/Scroll/Detail</c> tem a ficha da runa (<c>Head</c>, <c>SetEffect</c>, <c>Main</c>,
-	/// <c>Substat1</c>.., <c>Holder</c>, <c>Actions</c>).
+	/// <c>Right/Column</c> tem a ficha da runa em <c>Scroll/Detail</c> (<c>Head</c>, <c>SetEffect</c>,
+	/// <c>Main</c>, <c>Substat1</c>.., <c>Holder</c>) e, embaixo, <c>ActionsLine</c> e <c>Actions</c>.
 	/// </summary>
 	public partial class RuneScreen : Control
 	{
@@ -60,6 +62,8 @@ namespace Sigilos.UI.Screens
 		private readonly HBoxContainer _tabs = Layout.Row(8).Named("TabRow");
 		private readonly VBoxContainer _middle = new() { Name = "List", SizeFlagsVertical = SizeFlags.ExpandFill };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
+		private readonly HSeparator _actionsLine = new() { Name = "ActionsLine" };
+		private readonly HFlowContainer _actions = Layout.Flow(10).Named("Actions");
 
 		public RuneScreen(GameDatabase database, PlayerState player, int? monsterId)
 		{
@@ -114,8 +118,13 @@ namespace Sigilos.UI.Screens
 			body.AddChild(middle);
 
 			var right = new PanelContainer { Name = "Right", CustomMinimumSize = new Vector2(340, 0) };
+			var rightColumn = new VBoxContainer { Name = "Column" };
+			rightColumn.AddThemeConstantOverride("separation", 8);
 			_detail.AddThemeConstantOverride("separation", 8);
-			right.AddChild(Layout.Scroll(_detail));
+			rightColumn.AddChild(Layout.Scroll(_detail));
+			rightColumn.AddChild(_actionsLine);
+			rightColumn.AddChild(_actions);
+			right.AddChild(rightColumn);
 			body.AddChild(right);
 
 			Refresh();
@@ -460,7 +469,9 @@ namespace Sigilos.UI.Screens
 		private void RefreshDetail()
 		{
 			Layout.Clear(_detail);
+			Layout.Clear(_actions);
 			var rune = _player.Runes.FirstOrDefault(r => r.Id == _selectedRune);
+			_actionsLine.Visible = _actions.Visible = rune != null;
 			if (rune == null)
 			{
 				var center = new CenterContainer { Name = "Empty", CustomMinimumSize = new Vector2(0, 300) };
@@ -487,15 +498,14 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(head);
 			_detail.AddChild(RichText.Label(Texts.Describe(RuneSets.For(rune.Set)), 300, GameTheme.Faded, 13).Named("SetEffect"));
 
-			var main = new Label { Name = "Main", Text = Texts.Format(rune.Main, rune.MainValue) };
-			main.AddThemeFontOverride("font", GameTheme.Serif);
-			main.AddThemeFontSizeOverride("font_size", 20);
-			_detail.AddChild(main);
+			var main = Layout.Row(10).Named("Main");
+			var mainValue = new Label { Name = "Value", Text = Texts.Format(rune.Main, rune.MainValue) };
+			mainValue.AddThemeFontOverride("font", GameTheme.Serif);
+			mainValue.AddThemeFontSizeOverride("font_size", 20);
+			main.AddChild(mainValue);
 			if (rune.Level > opened)
-			{
-				var before = RuneRules.MainValue(rune.Main, rune.Grade, opened);
-				Hint("MainGain", T("runes.hint_changed", Texts.Amount(rune.Main, before), Texts.Amount(rune.Main, rune.MainValue), Texts.Amount(rune.Main, rune.MainValue - before)));
-			}
+				main.AddChild(Gain("Gain", Texts.Amount(rune.Main, rune.MainValue - RuneRules.MainValue(rune.Main, rune.Grade, opened)), 20));
+			_detail.AddChild(main);
 
 			if (rune.Innate is { } innate)
 			{
@@ -506,15 +516,7 @@ namespace Sigilos.UI.Screens
 
 			_detail.AddChild(new HSeparator { Name = "SubstatsLine" });
 			for (var i = 0; i < rune.Substats.Count; i++)
-			{
-				_detail.AddChild(SubstatRow(rune, i).Named($"Substat{i + 1}"));
-				var substat = rune.Substats[i];
-				var gained = substat.Rolls.Where(r => r.Level > opened).Sum(r => r.Amount);
-				if (substat.Rolls.Count > 0 && substat.Rolls[0].Level > opened)
-					Hint($"Substat{i + 1}New", T("runes.hint_new", Texts.Format(substat.Stat, substat.Value)));
-				else if (gained > 0)
-					Hint($"Substat{i + 1}Gain", T("runes.hint_changed", Texts.Amount(substat.Stat, substat.Value - gained), Texts.Amount(substat.Stat, substat.Value), Texts.Amount(substat.Stat, gained)));
-			}
+				_detail.AddChild(SubstatRow(rune, i, opened).Named($"Substat{i + 1}"));
 
 			if (rune.EquippedOn is { } owner && owner != _monsterId && _player.Monster(owner) is { } holder)
 			{
@@ -529,23 +531,21 @@ namespace Sigilos.UI.Screens
 				_detail.AddChild(row);
 			}
 
-			_detail.AddChild(new HSeparator { Name = "ActionsLine" });
-			var actions = Layout.Flow(10).Named("Actions");
 			var full = RuneInventory.IsFull(_player);
 			var fullTip = full ? T("runes.inventory_full", RuneInventory.Capacity) : T("runes.remove");
 			if (rune.EquippedOn != null && rune.EquippedOn == _monsterId)
-				actions.AddChild(Act("Unequip", "cancel", fullTip, full, () => UnequipRequested?.Invoke(rune.Id)));
+				_actions.AddChild(Act("Unequip", "cancel", fullTip, full, () => UnequipRequested?.Invoke(rune.Id)));
 			else if (Monster is { } monster)
-				actions.AddChild(Act("Equip", "confirm", T("runes.equip_on", _database.Summon(monster.SummonId).NameFor(monster.Awakened)), false, () => EquipRequested?.Invoke(rune.Id, monster.Id)));
+				_actions.AddChild(Act("Equip", "confirm", T("runes.equip_on", _database.Summon(monster.SummonId).NameFor(monster.Awakened)), false, () => EquipRequested?.Invoke(rune.Id, monster.Id)));
 			else if (rune.EquippedOn != null)
-				actions.AddChild(Act("Unequip", "cancel", fullTip, full, () => UnequipRequested?.Invoke(rune.Id)));
+				_actions.AddChild(Act("Unequip", "cancel", fullTip, full, () => UnequipRequested?.Invoke(rune.Id)));
 
 			if (rune.Level < RuneRules.MaxLevel)
 			{
 				var next = RuneRules.UpgradeCost(rune);
 				var up = Act("Upgrade", "essence", T("runes.upgrade_to", rune.Level + 1, next), _player.Essence < next, () => UpgradeRequested?.Invoke(rune.Id, rune.Level + 1));
 				up.Badge = $"+{rune.Level + 1}";
-				actions.AddChild(up);
+				_actions.AddChild(up);
 
 				var milestone = RuneRules.NextMilestone(rune.Level);
 				if (milestone > rune.Level + 1)
@@ -553,7 +553,7 @@ namespace Sigilos.UI.Screens
 					var total = RuneRules.UpgradeCost(rune, milestone);
 					var jump = Act("UpgradeToMilestone", "level_max", T("runes.upgrade_milestone", milestone, total), _player.Essence < total, () => UpgradeRequested?.Invoke(rune.Id, milestone));
 					jump.Badge = $"+{milestone}";
-					actions.AddChild(jump);
+					_actions.AddChild(jump);
 				}
 			}
 
@@ -561,28 +561,37 @@ namespace Sigilos.UI.Screens
 			{
 				var sell = Act("Sell", "dismantle", T("runes.sell", RuneRules.SellValue(rune)), false, () => SellRequested?.Invoke(rune.Id));
 				sell.Badge = RuneRules.SellValue(rune).ToString();
-				actions.AddChild(sell);
+				_actions.AddChild(sell);
+			}
+		}
+
+		/// <summary>O que a runa ganhou desde que a tela abriu, em verde, ao lado do valor.</summary>
+		private static Label Gain(string name, string text, int size = 0)
+		{
+			var label = new Label { Name = name, Text = text, VerticalAlignment = VerticalAlignment.Center };
+			label.AddThemeColorOverride("font_color", Palette.Positive);
+			if (size > 0)
+			{
+				label.AddThemeFontOverride("font", GameTheme.Serif);
+				label.AddThemeFontSizeOverride("font_size", size);
 			}
 
-			_detail.AddChild(actions);
+			return label;
 		}
 
-		/// <summary>O que a runa ganhou desde que a tela abriu, em verde; <paramref name="name"/> diz de quê (<c>MainGain</c>, <c>Substat2New</c>).</summary>
-		private void Hint(string name, string text)
-		{
-			var label = new Label { Name = name, Text = text };
-			label.AddThemeColorOverride("font_color", Palette.Positive);
-			label.AddThemeFontSizeOverride("font_size", 13);
-			_detail.AddChild(label);
-		}
-
-		/// <summary>Um subatributo com os sigilos das pedras que servem nele.</summary>
-		private Control SubstatRow(Rune rune, int index)
+		/// <summary>
+		/// Um subatributo com os sigilos das pedras que servem nele. O que mudou desde <paramref name="opened"/>
+		/// (o nível da runa quando a tela abriu) fica em verde: a linha inteira com "new" se ele nasceu
+		/// depois, ou o quanto subiu ao lado do valor.
+		/// </summary>
+		private Control SubstatRow(Rune rune, int index, int opened)
 		{
 			var substat = rune.Substats[index];
 			var row = Layout.Row(6);
-			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, Palette.GoldDark.Lightened(0.3f)) { Name = "Glyph" });
-			var label = new Label { Name = "Value", Text = Texts.Format(substat), SizeFlagsHorizontal = SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center };
+			var isNew = substat.Rolls.Count > 0 && substat.Rolls[0].Level > opened;
+			var gained = substat.Rolls.Where(r => r.Level > opened).Sum(r => r.Amount);
+			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Glyph" });
+			var label = new Label { Name = "Value", Text = Texts.Format(substat), VerticalAlignment = VerticalAlignment.Center };
 			if (substat.Enchanted)
 			{
 				label.Text += " ◆";
@@ -591,6 +600,17 @@ namespace Sigilos.UI.Screens
 			}
 
 			row.AddChild(label);
+			if (isNew)
+			{
+				label.AddThemeColorOverride("font_color", Palette.Positive);
+				row.AddChild(Gain("New", T("runes.new")));
+			}
+			else if (gained > 0)
+			{
+				row.AddChild(Gain("Gain", Texts.Amount(substat.Stat, gained)));
+			}
+
+			row.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
 
 			var grindstones = Usable(t => RuneForge.CanGrind(rune, index, t));
 			if (grindstones.Count > 0)

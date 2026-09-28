@@ -20,9 +20,12 @@ namespace Sigilos.UI.Screens
 	/// 3. na vez de um aliado, espera o toque do jogador (manual) ou pergunta ao
 	///    <see cref="AutoPilot"/> (automático). O automático pode ser ligado e desligado no meio.
 	///
-	/// Tudo é sigilo: no alto, a onda e a rodada em cápsulas e os sigilos de Efeitos, automático,
-	/// velocidade e Recuar; embaixo, o retrato de quem age e um sigilo por habilidade (o Glifo dela, a
-	/// recarga na plaquinha). O painel de Efeitos mostra o que está sobre cada unidade. No fim avisa
+	/// O campo é a <see cref="BattleArena"/>: o círculo oval com os aliados embaixo à esquerda e os
+	/// inimigos em cima à direita, e o que acontece escrito no meio dele. Em volta, tudo sigilo: no canto
+	/// de cima à esquerda o nome da luta, a onda e a rodada, e embaixo, em pé, quem age a seguir; no de
+	/// cima à direita a pausa (<see cref="PauseMenu"/>: continuar, recomeçar, sair); embaixo à esquerda o
+	/// automático, a velocidade e os Efeitos; embaixo à direita um sigilo por habilidade (o Glifo dela, o
+	/// número ou a recarga na plaquinha). O painel de Efeitos abre no centro do círculo. No fim avisa
 	/// <see cref="Finished"/>; o GameRoot aplica a recompensa e chama <see cref="ShowResult"/>.
 	/// </summary>
 	public partial class BattleScreen : Control
@@ -31,23 +34,30 @@ namespace Sigilos.UI.Screens
 		private readonly string _title;
 		private readonly Dictionary<BattleUnit, UnitView> _views = new();
 
-		private readonly GridContainer _allies = new() { Name = "Allies", Columns = 3 };
-		private readonly GridContainer _enemies = new() { Name = "Enemies", Columns = 3 };
+		/// <summary>Quantos próximos a ordem de turno mostra.</summary>
+		private const int TurnsShown = 6;
+
+		/// <summary>A faixa da ordem de turno, à esquerda do campo.</summary>
+		private const float ArenaLeft = 96;
+
+		/// <summary>Onde o centro do oval fica na altura da tela (o mesmo da <see cref="BattleArena"/>).</summary>
+		private const float ArenaMiddle = 0.52f;
+
+		private readonly BattleArena _arena = new() { Name = "Arena" };
 		private readonly HBoxContainer _counters = Layout.Row(8).Named("Counters");
 		private string _wave = "";
 		private string _round = "";
 		private readonly Label _banner = new() { Name = "Banner" };
-		private readonly HBoxContainer _actor = Layout.Row(10).Named("Actor");
-		private readonly HBoxContainer _actions = Layout.Row(14).Named("Skills");
+		private readonly HBoxContainer _actions = Layout.Row(12).Named("Skills");
 		private readonly SigilButton _autoButton = new(Art.Icon("auto"), "", 52, SigilShape.Square) { Name = "Auto", ToggleMode = true };
-		private readonly SigilButton _speedButton = new(Art.Icon("speed"), "", 52, SigilShape.Square) { Name = "Speed" };
+		private readonly SigilButton _speedButton = new(null, "", 52, SigilShape.Square) { Name = "Speed" };
 		private readonly SigilButton _effectsButton = new(Art.Icon("effects"), "", 52, SigilShape.Square) { Name = "Effects", ToggleMode = true };
 		private readonly TurnOrderBar _order = new();
 		private readonly PanelContainer _effects = new() { Name = "EffectsPanel", Visible = false };
 		private readonly VBoxContainer _effectsList = new() { Name = "Units" };
 
 		private bool _auto;
-		private int _speedIndex;
+		private int _speedIndex = 1;
 		private bool _closed;
 
 		/// <summary>Decide no automático a vez que está esperando o jogador; nulo quando ninguém espera.</summary>
@@ -72,21 +82,35 @@ namespace Sigilos.UI.Screens
 		/// <summary>O jogador saiu da tela (depois do resultado ou recuando). O valor é a preferência de automático.</summary>
 		public event Action<bool>? Closed;
 
+		/// <summary>O jogador pediu a mesma luta de novo, do começo (no menu de pausa). O valor é a preferência de automático.</summary>
+		public event Action<bool>? RestartRequested;
+
 		private float Speed => BattlePace.Speeds[_speedIndex].Factor;
 
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(Layout.Background());
-			var page = Layout.Page(this);
+			AddChild(Layout.Background(_arena));
 
-			page.AddChild(TopBar());
-			page.AddChild(_order);
-			page.AddChild(Field());
-			page.AddChild(BottomBar());
+			// O campo ocupa a tela toda, menos a faixa da ordem de turno à esquerda.
+			_arena.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			_arena.OffsetLeft = ArenaLeft;
+			_arena.OffsetRight = -Layout.ScreenMargin;
+			_arena.OffsetTop = 16;
+			_arena.OffsetBottom = -16;
+			AddChild(_arena);
+			_arena.SetAllies(_session.Allies.Select((ally, i) => (Control)ViewFor(ally, $"Ally{i + 1}")).ToList());
+
+			AddChild(Header());
+			AddChild(Banner());
+			AddChild(Pin(_order, LayoutPreset.TopLeft));
+			_order.OffsetTop = _order.OffsetBottom = 104;
+			AddChild(Pin(SigilButton.Of("pause", T("battle.pause"), OpenPause, 52, SigilShape.Square), LayoutPreset.TopRight));
+			AddChild(Pin(Controls(), LayoutPreset.BottomLeft));
+			AddChild(Pin(_actions, LayoutPreset.BottomRight));
 			AddChild(EffectsPanel());
 			RefreshAuto();
-			_order.Show(_session.PredictOrder(8));
+			_order.Show(_session.PredictOrder(TurnsShown));
 
 			Run();
 		}
@@ -170,19 +194,55 @@ namespace Sigilos.UI.Screens
 
 		public override void _ExitTree() => _closed = true;
 
-		private Control TopBar()
+		public override void _UnhandledKeyInput(InputEvent @event)
 		{
-			var bar = new PanelContainer { Name = "TopBar", ThemeTypeVariation = GameTheme.InsetPanel };
-			var row = Layout.Row(14).Named("Row");
-			bar.AddChild(row);
+			if (!@event.IsActionPressed("ui_cancel"))
+				return;
+			GetViewport().SetInputAsHandled();
+			OpenPause();
+		}
 
+		/// <summary>O canto de cima à esquerda: o nome da luta, a onda e a rodada.</summary>
+		private Control Header()
+		{
+			var header = Layout.Row(12).Named("Header");
 			var title = new Label { Name = "Title", Text = _title, VerticalAlignment = VerticalAlignment.Center };
 			title.AddThemeFontOverride("font", GameTheme.Serif);
 			title.AddThemeFontSizeOverride("font_size", 20);
 			title.AddThemeColorOverride("font_color", Palette.Gold);
-			row.AddChild(title);
-			row.AddChild(_counters);
-			row.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			header.AddChild(title);
+			header.AddChild(_counters);
+			return Pin(header, LayoutPreset.TopLeft);
+		}
+
+		/// <summary>O que acontece (a onda, quem usa o quê), escrito no meio do círculo.</summary>
+		private Control Banner()
+		{
+			_banner.HorizontalAlignment = HorizontalAlignment.Center;
+			_banner.VerticalAlignment = VerticalAlignment.Center;
+			_banner.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			_banner.MouseFilter = MouseFilterEnum.Ignore;
+			_banner.AddThemeFontOverride("font", GameTheme.Serif);
+			_banner.AddThemeFontSizeOverride("font_size", 22);
+			_banner.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.7f));
+			return OnArenaMiddle(_banner, new Vector2(300, 80));
+		}
+
+		/// <summary>O canto de baixo à esquerda: automático, velocidade (o número no sigilo) e Efeitos.</summary>
+		private Control Controls()
+		{
+			var row = Layout.Row(10).Named("Controls");
+			_autoButton.ButtonPressed = _auto;
+			_autoButton.Toggled += SetAuto;
+			row.AddChild(_autoButton);
+
+			ShowSpeed();
+			_speedButton.Pressed += () =>
+			{
+				_speedIndex = (_speedIndex + 1) % BattlePace.Speeds.Count;
+				ShowSpeed();
+			};
+			row.AddChild(_speedButton);
 
 			_effectsButton.TooltipText = T("battle.effects");
 			_effectsButton.Toggled += on =>
@@ -191,23 +251,7 @@ namespace Sigilos.UI.Screens
 				RefreshEffects();
 			};
 			row.AddChild(_effectsButton);
-
-			_autoButton.ButtonPressed = _auto;
-			_autoButton.Toggled += SetAuto;
-			row.AddChild(_autoButton);
-
-			_speedButton.Badge = $"{BattlePace.Speeds[0].Label}×";
-			_speedButton.TooltipText = T("battle.speed", BattlePace.Speeds[0].Label);
-			_speedButton.Pressed += () =>
-			{
-				_speedIndex = (_speedIndex + 1) % BattlePace.Speeds.Count;
-				_speedButton.Badge = $"{BattlePace.Speeds[_speedIndex].Label}×";
-				_speedButton.TooltipText = T("battle.speed", BattlePace.Speeds[_speedIndex].Label);
-			};
-			row.AddChild(_speedButton);
-
-			row.AddChild(SigilButton.Of("retreat", T("battle.retreat"), Close, 52, SigilShape.Square));
-			return bar;
+			return row;
 		}
 
 		/// <summary>A onda e a rodada, em cápsulas.</summary>
@@ -220,56 +264,63 @@ namespace Sigilos.UI.Screens
 				_counters.AddChild(Layout.Chip("resolve", _round, T("battle.round_tip")).Named("Round"));
 		}
 
-		private Control Field()
+		private void ShowSpeed()
 		{
-			var field = Layout.Row(12).Named("Field");
-			field.SizeFlagsVertical = SizeFlags.ExpandFill;
-
-			_allies.AddThemeConstantOverride("h_separation", 10);
-			_allies.AddThemeConstantOverride("v_separation", 10);
-			_allies.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-			for (var i = 0; i < _session.Allies.Count; i++)
-				_allies.AddChild(ViewFor(_session.Allies[i], $"Ally{i + 1}"));
-			field.AddChild(_allies);
-
-			_banner.HorizontalAlignment = HorizontalAlignment.Center;
-			_banner.VerticalAlignment = VerticalAlignment.Center;
-			_banner.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-			_banner.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-			_banner.AddThemeFontOverride("font", GameTheme.Serif);
-			_banner.AddThemeFontSizeOverride("font_size", 22);
-			_banner.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.7f));
-			field.AddChild(_banner);
-
-			_enemies.AddThemeConstantOverride("h_separation", 10);
-			_enemies.AddThemeConstantOverride("v_separation", 10);
-			_enemies.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-			field.AddChild(_enemies);
-			return field;
+			var label = BattlePace.Speeds[_speedIndex].Label;
+			_speedButton.Letters = $"{label}×";
+			_speedButton.TooltipText = T("battle.speed", label);
 		}
 
-		private Control BottomBar()
+		/// <summary>Pausa a luta e abre o menu: continuar, recomeçar do começo ou sair.</summary>
+		private void OpenPause()
 		{
-			var bottom = Layout.Row(16).Named("BottomBar");
-			bottom.CustomMinimumSize = new Vector2(0, 80);
-			bottom.AddChild(_actor);
-			bottom.AddChild(_actions);
-			return bottom;
+			if (_closed)
+				return;
+			PauseMenu.Open(this, Restart, Close);
+		}
+
+		private void Restart()
+		{
+			if (_closed)
+				return;
+			_closed = true;
+			RestartRequested?.Invoke(_auto);
+		}
+
+		/// <summary>Prende um controle num canto da tela, a <see cref="Layout.ScreenMargin"/> das bordas, crescendo para dentro.</summary>
+		private static Control Pin(Control control, LayoutPreset corner)
+		{
+			var margin = Layout.ScreenMargin;
+			var right = corner is LayoutPreset.TopRight or LayoutPreset.BottomRight;
+			var bottom = corner is LayoutPreset.BottomLeft or LayoutPreset.BottomRight;
+			control.SetAnchorsAndOffsetsPreset(corner);
+			control.GrowHorizontal = right ? GrowDirection.Begin : GrowDirection.End;
+			control.GrowVertical = bottom ? GrowDirection.Begin : GrowDirection.End;
+			control.OffsetLeft = control.OffsetRight = right ? -margin : margin;
+			control.OffsetTop = control.OffsetBottom = bottom ? -margin : margin;
+			return control;
+		}
+
+		/// <summary>Centra um controle de tamanho <paramref name="size"/> no meio do círculo da arena.</summary>
+		private static Control OnArenaMiddle(Control control, Vector2 size)
+		{
+			// O campo começa depois da faixa da esquerda e acaba na margem da direita: o meio dele fica deslocado.
+			var shift = (ArenaLeft - Layout.ScreenMargin) / 2;
+			control.AnchorLeft = control.AnchorRight = 0.5f;
+			control.AnchorTop = control.AnchorBottom = ArenaMiddle;
+			control.OffsetLeft = shift - size.X / 2;
+			control.OffsetRight = shift + size.X / 2;
+			control.OffsetTop = -size.Y / 2;
+			control.OffsetBottom = size.Y / 2;
+			return control;
 		}
 
 		/// <summary>O painel de Efeitos: por cima do centro do campo, com o que está sobre cada unidade viva.</summary>
 		private Control EffectsPanel()
 		{
 			_effects.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 14));
-			// No vão entre aliados e inimigos: o painel não cobre nenhum dos dois lados.
-			_effects.AnchorLeft = 0.5f;
-			_effects.AnchorRight = 0.5f;
-			_effects.AnchorTop = 0;
-			_effects.AnchorBottom = 1;
-			_effects.OffsetLeft = -190;
-			_effects.OffsetRight = 190;
-			_effects.OffsetTop = 140;
-			_effects.OffsetBottom = -120;
+			// No meio do círculo, no vão entre aliados e inimigos.
+			OnArenaMiddle(_effects, new Vector2(380, 320));
 
 			var column = new VBoxContainer { Name = "Column" };
 			var header = Layout.Row(8).Named("Header");
@@ -375,17 +426,13 @@ namespace Sigilos.UI.Screens
 			}
 
 			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally));
-			var medal = new PanelContainer { Name = "Portrait", TooltipText = ally.Name, MouseFilter = MouseFilterEnum.Stop };
-			medal.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Gold, 2, 30, 4));
-			medal.AddChild(Layout.Medal(Art.Creature(ally.Image), Palette.Of(ally.Element), 52));
-			_actor.AddChild(medal);
 
 			for (var i = 0; i < ally.Skills.Count; i++)
 			{
 				var index = i;
 				var skill = ally.Skill(index);
 				var ready = ally.IsReady(index);
-				var button = new SigilButton(null, $"{skill.Name}\n{Texts.Plain(Texts.Describe(skill))}", 66)
+				var button = new SigilButton(null, $"{skill.Name}\n{Texts.Plain(Texts.Describe(skill))}", 66, SigilShape.Square)
 				{
 					Name = $"Skill{index + 1}",
 					Disabled = !ready,
@@ -430,7 +477,6 @@ namespace Sigilos.UI.Screens
 			_pickTarget = null;
 			foreach (var view in _views.Values)
 				view.SetTargetable(false);
-			Layout.Clear(_actor);
 			Layout.Clear(_actions);
 		}
 
@@ -467,7 +513,7 @@ namespace Sigilos.UI.Screens
 				Show(battleEvent);
 				var seconds = BattlePace.Seconds(battleEvent);
 				if (seconds > 0)
-					await ToSignal(GetTree().CreateTimer(seconds / Speed), SceneTreeTimer.SignalName.Timeout);
+					await ToSignal(GetTree().CreateTimer(seconds / Speed, processAlways: false), SceneTreeTimer.SignalName.Timeout);
 			}
 
 			RefreshEffects();
@@ -481,10 +527,7 @@ namespace Sigilos.UI.Screens
 				case WaveStarted wave:
 					foreach (var old in _views.Keys.Where(u => u.Side == Side.Enemies).ToList())
 						_views.Remove(old);
-					Layout.Clear(_enemies);
-					var number = 0;
-					foreach (var enemy in wave.Enemies)
-						_enemies.AddChild(ViewFor(enemy, $"Enemy{++number}"));
+					_arena.SetEnemies(wave.Enemies.Select((enemy, i) => (Control)ViewFor(enemy, $"Enemy{i + 1}")).ToList());
 					_wave = $"{wave.Wave}/{wave.WaveCount}";
 					RefreshCounters();
 					_banner.Text = T("battle.wave_banner", wave.Wave);
@@ -499,13 +542,13 @@ namespace Sigilos.UI.Screens
 
 					_round = $"{Math.Min(turn.Round, BattleRules.RoundLimit)}/{BattleRules.RoundLimit}";
 					RefreshCounters();
-					_order.Show(_session.PredictOrder(8));
+					_order.Show(_session.PredictOrder(TurnsShown));
 					return;
 
 				case SkillUsed used:
 					_banner.Text = T("battle.uses", used.Actor.Name, used.Skill.Name);
 					_banner.AddThemeColorOverride("font_color", Palette.Text);
-					_views[used.Actor].Lunge(used.Actor.Side == Side.Allies ? 1 : -1, Speed);
+					_arena.Strike(_views[used.Actor], Speed);
 					return;
 
 				case ExtraTurn extra:
@@ -514,7 +557,7 @@ namespace Sigilos.UI.Screens
 
 				case Counterattack counter:
 					_views[counter.Unit].Float(T("battle.counterattack"), Palette.Gold);
-					_views[counter.Unit].Lunge(counter.Unit.Side == Side.Allies ? 1 : -1, Speed);
+					_arena.Strike(_views[counter.Unit], Speed);
 					return;
 
 				case MaxHealthReduced reduced:

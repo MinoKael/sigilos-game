@@ -136,8 +136,9 @@ namespace Sigilos.UI.Components
 			{
 				if (child is Control control && control.HasMeta("offset"))
 				{
-					control.Size = control.GetCombinedMinimumSize();
-					control.Position = middle + control.GetMeta("offset").AsVector2() - control.Size / 2;
+					var offset = control.GetMeta("offset").AsVector2();
+					var size = new Vector2(85, 14);
+					control.Position = middle - size / 4 + offset - size;
 				}
 			}
 
