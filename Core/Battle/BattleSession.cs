@@ -1,8 +1,9 @@
+using Sigilos.Core.Content;
+using Sigilos.Core.Player;
+using Sigilos.Core.Runes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sigilos.Core.Content;
-using Sigilos.Core.Runes;
 
 namespace Sigilos.Core.Battle
 {
@@ -298,14 +299,13 @@ namespace Sigilos.Core.Battle
 
         private void BombTick(BattleUnit unit)
         {
-			foreach (var _ in unit.Statuses.Where(s => s.Kind == StatusKind.Bomb).ToList())
+			foreach (var status in unit.Statuses.Where(s => s.Kind == StatusKind.Bomb).ToList())
 			{
-                // Descobrir como pegar o valor de ataque do causador desse efeito e multiplicar pelo BattleRules.BombDamageMultiplier, ignorando a defesa do alvo
-                // a bomba só explode, quando acaba os turnos de efeito
-                //var amount = Math.Max(1, Math.Round(unit.Attack * BattleRules.BombDamageMultiplier));
-                //unit.Health = Math.Max(0, unit.Health - amount);
-                //Emit(new Damaged(unit, (int)amount, 0, false, 1));
-                if (!unit.IsAlive)
+                // Ainda é preciso validar, o dano de bomba nao deve ter influencia de bonus elemental, nem critico e ignora 100% de defesa, mas não ignora escudo e bonus de dano como Curse somam.
+				var amount = DamageFormula.Compute(status?.Source, unit, status?.Source?.Attack ?? 0 * BattleRules.BombDamageMultiplier, BattleRules.IgnoreDefense, false);
+                unit.Health = Math.Max(0, unit.Health - amount);
+				Emit(new Damaged(unit, (int)amount, 0, false, 1));
+				if (!unit.IsAlive)
 				{
 					KnockOut(unit);
 					return;
