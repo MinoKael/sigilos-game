@@ -110,8 +110,22 @@ namespace Sigilos.Core.Battle
 				return new TurnStart(unit, false, Flush());
 			}
 
-			// Passiva dos Trolls: recupera Vida no começo do turno, mesmo atordoado.
-			if (unit.Passive?.Kind == PassiveKind.RegenEachTurn)
+            PoisonTick(unit);
+            if (!unit.IsAlive)
+            {
+                CheckOutcome();
+                return new TurnStart(unit, false, Flush());
+            }
+
+            BombTick(unit);
+            if (!unit.IsAlive)
+            {
+                CheckOutcome();
+                return new TurnStart(unit, false, Flush());
+            }
+
+            // Passiva dos Trolls: recupera Vida no começo do turno, mesmo atordoado.
+            if (unit.Passive?.Kind == PassiveKind.RegenEachTurn)
 				_effects.Heal(unit, unit.PassiveValue * unit.MaxHealth);
 
 			if (unit.Has(StatusKind.Stun))
@@ -266,8 +280,39 @@ namespace Sigilos.Core.Battle
 				}
 			}
 		}
+        private void PoisonTick(BattleUnit unit)
+        {
+            foreach (var _ in unit.Statuses.Where(s => s.Kind == StatusKind.Poison).ToList())
+            {
+                var amount = Math.Max(1, Math.Round(unit.MaxHealth * BattleRules.PoisonFraction));
+                unit.Health = Math.Max(0, unit.Health - amount);
+                Emit(new Damaged(unit, (int)amount, 0, false, 1));
+                if (!unit.IsAlive)
+                {
+                    KnockOut(unit);
+                    return;
+                }
+            }
+        }
 
-		private void FinishTurn(BattleUnit unit)
+
+        private void BombTick(BattleUnit unit)
+        {
+			foreach (var _ in unit.Statuses.Where(s => s.Kind == StatusKind.Bomb).ToList())
+			{
+                // Descobrir como pegar o valor de ataque do causador desse efeito e multiplicar pelo BattleRules.BombDamageMultiplier, ignorando a defesa do alvo
+                // a bomba só explode, quando acaba os turnos de efeito
+                //var amount = Math.Max(1, Math.Round(unit.Attack * BattleRules.BombDamageMultiplier));
+                //unit.Health = Math.Max(0, unit.Health - amount);
+                //Emit(new Damaged(unit, (int)amount, 0, false, 1));
+                if (!unit.IsAlive)
+				{
+					KnockOut(unit);
+					return;
+				}
+			}
+		}
+        private void FinishTurn(BattleUnit unit)
 		{
 			if (unit.IsAlive)
 			{

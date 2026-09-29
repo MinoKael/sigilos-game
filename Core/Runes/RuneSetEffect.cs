@@ -24,9 +24,9 @@ namespace Sigilos.Core.Runes
 		Counter,
 
 		/// <summary>Nêmesis: Ímpeto a cada 7% da Vida máxima perdida num golpe.</summary>
-		Nemesis,
+		Bane,
 
 		/// <summary>Destruição: o dano causado reduz a Vida máxima do alvo.</summary>
-		Destroy,
+		Oblivion,
 	}
 }

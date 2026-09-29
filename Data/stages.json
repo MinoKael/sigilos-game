@@ -167,7 +167,7 @@
     "waves": [
       [{"summon": "goblin_fire"}, {"summon": "goblin_water"}, {"summon": "wolf_wind"}],
       [{"summon": "bandit_wind"}, {"summon": "wolf_fire"}],
-      [{"summon": "troll_wind"}, {"summon": "goblin_water"}, {"summon": "goblin_fire"}]
+      [{"summon": "goblin_water"}, {"summon": "troll_wind"}, {"summon": "goblin_fire"}]
     ]
   },
   {
@@ -336,7 +336,7 @@
     "waves": [
       [{"summon": "bandit_fire"}, {"summon": "bandit_water"}, {"summon": "wolf_wind"}],
       [{"summon": "troll_water"}, {"summon": "wolf_fire"}],
-      [{"enemy": "chain_master", "element": "Dark"}, {"summon": "bandit_wind"}, {"summon": "bandit_fire"}]
+      [{"summon": "bandit_wind"}, {"enemy": "chain_master", "element": "Dark"}, {"summon": "bandit_fire"}]
     ]
   }
 ]

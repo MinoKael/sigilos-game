@@ -82,7 +82,7 @@ namespace Sigilos.Core.Battle
 				}
 			}
 
-			Destroy(caster, hit);
+			Oblivion(caster, hit);
 			if (!counter)
 				Counterattacks(caster, hit);
 		}
@@ -121,10 +121,10 @@ namespace Sigilos.Core.Battle
 				return;
 			}
 
-			if (target.Find(StatusKind.Ward) is { } ward)
+			if (target.Find(StatusKind.Aegis) is { } aegis)
 			{
-				target.RemoveStatus(ward);
-				_session.Emit(new Warded(target));
+				target.RemoveStatus(aegis);
+				_session.Emit(new Protected(target));
 				return;
 			}
 
@@ -147,7 +147,7 @@ namespace Sigilos.Core.Battle
 				return;
 			}
 
-			Nemesis(target, dealt);
+			Bane(target, dealt);
 
 			// Desespero: um sorteio por alvo a cada habilidade, que só a Imunidade barra.
 			if (caster.RuneEffects.StunChance > 0 && hit.DespairRolled.Add(target))
@@ -159,17 +159,17 @@ namespace Sigilos.Core.Battle
 		}
 
 		/// <summary>Nêmesis: Ímpeto a cada 7% da Vida máxima perdida neste golpe.</summary>
-		private void Nemesis(BattleUnit target, double dealt)
+		private void Bane(BattleUnit target, double dealt)
 		{
-			if (target.RuneEffects.NemesisGauge <= 0 || dealt <= 0)
+			if (target.RuneEffects.BaneGauge <= 0 || dealt <= 0)
 				return;
 
-			var steps = Math.Floor(dealt / (RuneSets.NemesisStep * target.MaxHealth));
+			var steps = Math.Floor(dealt / (RuneSets.BaneStep * target.MaxHealth));
 			if (steps > 0)
-				GainImpeto(target, steps * target.RuneEffects.NemesisGauge * BattleRules.FullImpeto);
+				GainImpeto(target, steps * target.RuneEffects.BaneGauge * BattleRules.FullImpeto);
 		}
 		/// <summary>Destruição: 30% do dano de cada alvo vira Vida máxima perdida, até o teto por habilidade e o limite total.</summary>
-		private void Destroy(BattleUnit caster, Hit hit)
+		private void Oblivion(BattleUnit caster, Hit hit)
 		{
 			if (caster.RuneEffects.DestroyCap <= 0)
 				return;
@@ -259,8 +259,10 @@ namespace Sigilos.Core.Battle
 			var existing = target.Find(status);
 			if (status == StatusKind.Burn && target.Count(StatusKind.Burn) < BattleRules.MaxBurnStacks)
 				existing = null;
+            if (status == StatusKind.Poison && target.Count(StatusKind.Poison) < BattleRules.MaxPoisonStacks)
+                existing = null;
 
-			if (existing == null)
+            if (existing == null)
 			{
 				target.AddStatus(new StatusEffect(status, turns, 0, source) { Fresh = IsActing(target) });
 			}

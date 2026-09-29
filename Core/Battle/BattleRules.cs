@@ -11,9 +11,9 @@ namespace Sigilos.Core.Battle
 	{
 		public const double FullImpeto = 100;
 
-		/// <summary>Perde quem não vencer em 30 rodadas. Uma rodada é o tempo que Velocidade 100 leva
+		/// <summary>Perde quem não vencer em 99 rodadas. Uma rodada é o tempo que Velocidade 100 leva
 		/// para encher a barra.</summary>
-		public const int RoundLimit = 30;
+		public const int RoundLimit = 99;
 
 		/// <summary>
 		/// Dano: D = ATQ × M × K / (K + DEF). É a curva de defesa, 1000 / (1140 + 3,5 × DEF),
@@ -28,13 +28,18 @@ namespace Sigilos.Core.Battle
 		public const double MinResistChance = 0.05;
 
 		public const double BurnFraction = 0.05;
-		public const int MaxBurnStacks = 3;
-		public const double CurseBonus = 0.25;
+		public const double PoisonFraction = 0.03;
+        public const int MaxBurnStacks = 0;
+		public const int MaxPoisonStacks = 7;
+        public const double CurseBonus = 0.25;
 		public const double BlindMissChance = 0.5;
 		public const double AttackUpBonus = 0.5;
 		public const double AttackDownPenalty = 0.5;
 		public const double DefenseUpBonus = 0.7;
-		public const double SpeedUpBonus = 0.3;
+		public const double DefenseDownPenalty = 0.7;
+		public const double IgnoreDefense = 1.0;
+        public const double SpeedUpBonus = 0.3;
+		public const double BombDamageMultiplier = 2.5;
 
 		/// <summary>Duração do escudo que a Passiva dos Cavaleiros dá ao cair.</summary>
 		public const int DeathShieldTurns = 2;
@@ -52,11 +57,14 @@ namespace Sigilos.Core.Battle
 			StatusKind.Taunt or
 			StatusKind.Curse or
 			StatusKind.Blind or
-			StatusKind.AttackDown;
+			StatusKind.AttackDown or
+			StatusKind.DefenseBreak or
+			StatusKind.Bomb or
+			StatusKind.Poison;
 
 		/// <summary>
 		/// Chance de barrar um efeito negativo: Resistência do alvo (até 100%) menos a
-		/// Precisão de quem lança, nunca abaixo de 15%.
+		/// Precisão de quem lança, nunca abaixo de 5%.
 		/// </summary>
 		public static double ResistChance(StatBlock target, StatBlock caster) =>
 			Math.Max(MinResistChance, Math.Min(1, target.Resistance) - caster.Accuracy);

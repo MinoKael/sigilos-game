@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4q7p1vk6twbw"
-path="res://.godot/imported/ward.svg-9b26e15e7515542e48442c340d1c83de.ctex"
+uid="uid://bp1xi4rwdyxty"
+path="res://.godot/imported/bomb_32.png-11a187115e3bbf3575aecb8f65f8c029.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Effects/ward.svg"
-dest_files=["res://.godot/imported/ward.svg-9b26e15e7515542e48442c340d1c83de.ctex"]
+source_file="res://Assets/Rendered/Effects/bomb_32.png"
+dest_files=["res://.godot/imported/bomb_32.png-11a187115e3bbf3575aecb8f65f8c029.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

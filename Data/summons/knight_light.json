@@ -33,7 +33,7 @@
       "awakenedEffects": [
         {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "turns": 2},
         {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3},
-        {"kind": "Status", "target": "Self", "status": "Ward"}
+        {"kind": "Status", "target": "Self", "status": "Aegis"}
       ]
     },
     {

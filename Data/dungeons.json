@@ -10,7 +10,7 @@
     "kind": "Runes",
     "image": "rock_golem",
     "unlockStage": 6,
-    "sets": ["Energy", "Guard", "Swift", "Blade"],
+    "sets": ["Vigor", "Ward", "Haste", "Strike"],
     "floors": [
       {"stars": 4, "level": 25, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
@@ -99,7 +99,7 @@
     "kind": "Runes",
     "image": "wyvern",
     "unlockStage": 10,
-    "sets": ["Violent", "Focus", "Endure", "Shield"],
+    "sets": ["Frenzy", "Finesse", "Sustain", "Bulwark"],
     "floors": [
       {"stars": 4, "level": 25, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
@@ -144,7 +144,7 @@
     "kind": "Runes",
     "image": "crowned_skull",
     "unlockStage": 13,
-    "sets": ["Vampire", "Destroy", "Nemesis", "Will"],
+    "sets": ["Siphon", "Oblivion", "Bane", "Tenacity"],
     "floors": [
       {"stars": 4, "level": 25, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [
@@ -189,7 +189,7 @@
     "kind": "Runes",
     "image": "kraken",
     "unlockStage": 16,
-    "sets": ["Rage", "Fatal", "Despair", "Revenge"],
+    "sets": ["Wrath", "Lethal", "Torment", "Counter"],
     "floors": [
       {"stars": 4, "level": 25, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "minGrade": 4, "maxGrade": 5, "minRarity": "Magic",
         "waves": [

@@ -24,7 +24,7 @@ namespace Sigilos.Core.Battle
 	public sealed record Missed(BattleUnit Target) : BattleEvent;
 
 	/// <summary>A Égide anulou o golpe.</summary>
-	public sealed record Warded(BattleUnit Target) : BattleEvent;
+	public sealed record Protected(BattleUnit Target) : BattleEvent;
 
 	public sealed record Healed(BattleUnit Target, int Amount) : BattleEvent;
 
@@ -43,13 +43,13 @@ namespace Sigilos.Core.Battle
 	/// <summary>A unidade perdeu o turno atordoada.</summary>
 	public sealed record TurnSkipped(BattleUnit Unit) : BattleEvent;
 
-	/// <summary>O conjunto Violento deu mais um turno.</summary>
+	/// <summary>O conjunto deu mais um turno.</summary>
 	public sealed record ExtraTurn(BattleUnit Unit) : BattleEvent;
 
-	/// <summary>O conjunto Vingança contra-ataca com o básico.</summary>
+	/// <summary>O conjunto contra-ataca com o básico.</summary>
 	public sealed record Counterattack(BattleUnit Unit) : BattleEvent;
 
-	/// <summary>O conjunto Destruição tirou Vida máxima do alvo.</summary>
+	/// <summary>O conjunto tirou Vida máxima do alvo.</summary>
 	public sealed record MaxHealthReduced(BattleUnit Target, int Amount) : BattleEvent;
 
 	public sealed record Died(BattleUnit Unit) : BattleEvent;

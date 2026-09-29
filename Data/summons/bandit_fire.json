@@ -27,14 +27,13 @@
     },
     {
       "name": "Oil Flask",
-      "cooldown": 4,
+      "cooldown": 6,
       "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
-        {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.4, "turns": 2}
+        {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.4, "turns": 1}
       ],
       "levels": [
-        {"kind": "Damage", "value": 0.1},
-        {"kind": "Damage", "value": 0.1},
+        {"kind": "EffectRate", "value": 0.1},
+        {"kind": "Cooldown", "value": 1},
         {"kind": "Cooldown", "value": 1}
       ]
     }

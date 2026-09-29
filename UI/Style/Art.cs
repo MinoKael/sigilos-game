@@ -50,10 +50,10 @@ namespace Sigilos.UI.Style
 					PassiveKind.ShieldOnDeath => new Symbol(Effect(StatusKind.Shield)),
 					PassiveKind.DamageReduction => new Symbol(Effect(StatusKind.DefenseUp)),
 					PassiveKind.BurnOnHit => new Symbol(Effect(StatusKind.Burn)),
-					PassiveKind.RebirthOnce => Symbol.Of(RuneSets.For(RuneSet.Rage).Glyph),
-					PassiveKind.ImpetoAtWaveStart => Symbol.Of(RuneSets.For(RuneSet.Nemesis).Glyph),
+					PassiveKind.RebirthOnce => Symbol.Of(RuneSets.For(RuneSet.Wrath).Glyph),
+					PassiveKind.ImpetoAtWaveStart => Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph),
 					PassiveKind.RegenEachTurn => Symbol.Of(Texts.GlyphOf(Stat.Health)),
-					_ => Symbol.Of(RuneSets.For(RuneSet.Revenge).Glyph),
+					_ => Symbol.Of(RuneSets.For(RuneSet.Counter).Glyph),
 				};
 			}
 
@@ -72,11 +72,11 @@ namespace Sigilos.UI.Style
 					case EffectKind.Heal:
 						return Symbol.Of(Texts.GlyphOf(Stat.Health));
 					case EffectKind.Impeto:
-						return Symbol.Of(RuneSets.For(RuneSet.Nemesis).Glyph);
+						return Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph);
 					case EffectKind.Cleanse:
 						return new Symbol(Effect(StatusKind.Immunity));
 					case EffectKind.Damage when effect.Drain > 0:
-						return Symbol.Of(RuneSets.For(RuneSet.Vampire).Glyph);
+						return Symbol.Of(RuneSets.For(RuneSet.Siphon).Glyph);
 				}
 			}
 

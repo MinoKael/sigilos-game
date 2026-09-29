@@ -127,22 +127,22 @@
   },
 
   "set": {
-    "Energy": "Energia",
-    "Swift": "Rapidez",
-    "Guard": "Guarda",
-    "Shield": "Escudo",
-    "Focus": "Foco",
-    "Blade": "Lâmina",
-    "Violent": "Violência",
-    "Revenge": "Vingança",
-    "Despair": "Desespero",
-    "Will": "Vontade",
-    "Rage": "Fúria",
-    "Fatal": "Fatal",
-    "Endure": "Perseverança",
-    "Nemesis": "Nêmesis",
-    "Vampire": "Vampiro",
-    "Destroy": "Destruição"
+    "Vigor": "Vigor",
+    "Haste": "Pressa",
+    "Ward": "Vigia",
+    "Bulwark": "Baluarte",
+    "Finesse": "Sutileza",
+    "Strike": "Agredir",
+    "Frenzy": "Frenesi",
+    "Counter": "Contragolpe",
+    "Torment": "Tormento",
+    "Tenacity": "Tenacidade",
+    "Wrath": "Fúria",
+    "Lethal": "Letal",
+    "Sustain": "Amparo",
+    "Bane": "Perdição",
+    "Siphon": "Sifão",
+    "Oblivion": "Oblívio"
   },
 
   "set_effect": {
@@ -154,8 +154,8 @@
     "AllyShield": "no começo de cada onda, todos os aliados ganham {0} de {1} da Vida de base do dono por {2} turnos",
     "Immunity": "{0} por {1} no começo de cada onda",
     "Counter": "{0} de chance de contra-atacar com o básico ({1} do dano) ao ser atingido",
-    "Nemesis": "+{0} de {1} a cada {2} da Vida máxima perdida num golpe",
-    "Destroy": "{0} do dano causado tira Vida máxima do alvo (até {1} por habilidade, {2} no total)"
+    "Bane": "+{0} de {1} a cada {2} da Vida máxima perdida num golpe",
+    "Oblivion": "{0} do dano causado tira Vida máxima do alvo (até {1} por habilidade, {2} no total)"
   },
 
   "glyph": {
@@ -262,7 +262,7 @@
       "name": "Cegueira",
       "info": "Cada golpe tem {0} de chance de errar."
     },
-    "Ward": {
+    "Aegis": {
       "name": "Égide",
       "info": "Anula o próximo golpe recebido."
     },

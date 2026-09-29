@@ -527,7 +527,7 @@ namespace Sigilos.UI.Screens
 		{
 			Damaged damaged => damaged.Target,
 			Missed missed => missed.Target,
-			Warded warded => warded.Target,
+			Protected _protected => _protected.Target,
 			_ => null,
 		};
 
@@ -588,10 +588,10 @@ namespace Sigilos.UI.Screens
 					_views[missed.Target].Float(T("battle.missed"), Palette.TextFaded);
 					return;
 
-				case Warded warded:
-					_arena.Splash(_views[warded.Target], Palette.Shield, BattlePace.Hit / Speed);
-					_views[warded.Target].Float(T("battle.aegis"), Palette.Shield);
-					_views[warded.Target].Refresh();
+				case Protected _protected:
+					_arena.Splash(_views[_protected.Target], Palette.Shield, BattlePace.Hit / Speed);
+					_views[_protected.Target].Float(T("battle.aegis"), Palette.Shield);
+					_views[_protected.Target].Refresh();
 					return;
 
 				case Healed healed:

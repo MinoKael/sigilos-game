@@ -130,22 +130,22 @@
   },
 
   "set": {
-    "Energy": "Energy",
-    "Swift": "Swift",
-    "Guard": "Guard",
-    "Shield": "Shield",
-    "Focus": "Focus",
-    "Blade": "Blade",
-    "Violent": "Violent",
-    "Revenge": "Revenge",
-    "Despair": "Despair",
-    "Will": "Will",
-    "Rage": "Rage",
-    "Fatal": "Fatal",
-    "Endure": "Endure",
-    "Nemesis": "Nemesis",
-    "Vampire": "Vampire",
-    "Destroy": "Destroy"
+    "Vigor": "Vigor",
+    "Haste": "Haste",
+    "Ward": "Ward",
+    "Bulwark": "Bulwark",
+    "Finesse": "Finesse",
+    "Strike": "Strike",
+    "Frenzy": "Frenzy",
+    "Counter": "Counter",
+    "Torment": "Torment",
+    "Tenacity": "Tenacity",
+    "Wrath": "Wrath",
+    "Lethal": "Lethal",
+    "Sustain": "Sustain",
+    "Bane": "Bane",
+    "Siphon": "Siphon",
+    "Oblivion": "Oblivion"
   },
 
   "set_effect": {
@@ -157,8 +157,8 @@
     "AllyShield": "at the start of each wave, every ally gets a {0} worth {1} of the wearer's base HP for {2} turns",
     "Immunity": "{0} for {1} at the start of each wave",
     "Counter": "{0} chance to counterattack with the basic skill ({1} damage) when hit",
-    "Nemesis": "+{0} {1} for every {2} of max HP lost in a single hit",
-    "Destroy": "{0} of the damage dealt removes the target's max HP (up to {1} per skill, {2} in total)"
+    "Bane": "+{0} {1} for every {2} of max HP lost in a single hit",
+    "Oblivion": "{0} of the damage dealt removes the target's max HP (up to {1} per skill, {2} in total)"
   },
 
   "glyph": {
@@ -243,7 +243,7 @@
     },
     "Burn": {
       "name": "Burn",
-      "info": "Loses {0} of max HP at the start of each turn. Stacks up to {1}."
+      "info": "Loses {0} of max HP at the start of each turn. Cannot stack."
     },
     "Stun": {
       "name": "Stun",
@@ -265,7 +265,7 @@
       "name": "Blind",
       "info": "Each hit has a {0} chance to miss."
     },
-    "Ward": {
+    "Aegis": {
       "name": "Aegis",
       "info": "Cancels the next hit taken."
     },
@@ -292,6 +292,18 @@
     "SpeedUp": {
       "name": "Speed+",
       "info": "+{0} Speed."
+    },
+    "DefenseBreak": {
+      "name": "Defense-",
+      "info": "-{0} Defense."
+    },
+    "Bomb": {
+      "name": "Bomb",
+      "info": "Wait 1 turn, then damage multiplies attack by {0} ignoring defense."
+    },
+    "Poison": {
+      "name": "Poison",
+      "info": "Loses {0} of max HP at the start of each turn. Stacks up to {1}."
     }
   },
 

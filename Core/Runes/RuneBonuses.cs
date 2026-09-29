@@ -56,10 +56,10 @@ namespace Sigilos.Core.Runes
 						case RuneSetEffect.Counter:
 							counter += set.Value;
 							break;
-						case RuneSetEffect.Nemesis:
+						case RuneSetEffect.Bane:
 							nemesis += set.Value;
 							break;
-						case RuneSetEffect.Destroy:
+						case RuneSetEffect.Oblivion:
 							destroy += set.Value;
 							break;
 					}

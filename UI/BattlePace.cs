@@ -122,7 +122,7 @@ namespace Sigilos.UI
 		{
 			Damaged damaged => damaged.Target,
 			Missed missed => missed.Target,
-			Warded warded => warded.Target,
+			Protected _protected => _protected.Target,
 			_ => null,
 		};
 

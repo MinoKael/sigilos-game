@@ -54,7 +54,10 @@ namespace Sigilos.UI
 			StatusKind.AttackDown => T("effect.AttackDown.info", Percent(BattleRules.AttackDownPenalty)),
 			StatusKind.DefenseUp => T("effect.DefenseUp.info", Percent(BattleRules.DefenseUpBonus)),
 			StatusKind.SpeedUp => T("effect.SpeedUp.info", Percent(BattleRules.SpeedUpBonus)),
-			_ => T($"effect.{status}.info"),
+			StatusKind.DefenseBreak => T("effect.DefenseBreak.info", Percent(BattleRules.DefenseDownPenalty)),
+			StatusKind.Bomb => T("effect.Bomb.info", Percent(BattleRules.BombDamageMultiplier)),
+            StatusKind.Poison => T("effect.Poison.info", Percent(BattleRules.PoisonFraction), BattleRules.MaxPoisonStacks),
+            _ => T($"effect.{status}.info"),
 		};
 
 		/// <summary>"Ataque" e "Ataque%": separa o fixo do percentual.</summary>
@@ -186,7 +189,7 @@ namespace Sigilos.UI
 
 		public static string Term(RuneSet set) => Term(Name(set), RuneSets.For(set).Glyph);
 
-		public static string Impeto => Term(T("term.impetus"), RuneSets.For(RuneSet.Nemesis).Glyph);
+		public static string Impeto => Term(T("term.impetus"), RuneSets.For(RuneSet.Bane).Glyph);
 
 
 		/// <summary>Tira BBCode e Glifos: para dica de mouse, que é texto puro.</summary>
@@ -206,8 +209,8 @@ namespace Sigilos.UI
 				RuneSetEffect.AllyShield => T("set_effect.AllyShield", Term(StatusKind.Shield), value, RuneSets.ShieldTurns),
 				RuneSetEffect.Immunity => T("set_effect.Immunity", Term(StatusKind.Immunity), Turns((int)set.Value)),
 				RuneSetEffect.Counter => T("set_effect.Counter", value, Percent(RuneSets.CounterDamage)),
-				RuneSetEffect.Nemesis => T("set_effect.Nemesis", value, Impeto, Percent(RuneSets.NemesisStep)),
-				RuneSetEffect.Destroy => T("set_effect.Destroy", Percent(RuneSets.DestroyShare), value, Percent(RuneSets.DestroyLimit)),
+				RuneSetEffect.Bane => T("set_effect.Bane", value, Impeto, Percent(RuneSets.BaneStep)),
+				RuneSetEffect.Oblivion => T("set_effect.Oblivion", Percent(RuneSets.DestroyShare), value, Percent(RuneSets.DestroyLimit)),
 				_ => T("set_effect.Stat", value, Name(set.Stat ?? Stat.Health)),
 			};
 			return T("set_effect.pieces", set.Pieces, bonus);

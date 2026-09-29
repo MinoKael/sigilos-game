@@ -52,7 +52,7 @@ namespace Sigilos.UI.Screens
 			sigils.Add(Art.Icon("stats"), T("compendium.tab.stats")).Name = "Stats";
 			var glyphs = sigils.Add(null, T("compendium.tab.glyphs"));
 			glyphs.Name = "Glyphs";
-			glyphs.Rune = RuneSets.For(RuneSet.Violent).Glyph;
+			glyphs.Rune = RuneSets.For(RuneSet.Frenzy).Glyph;
 			sigils.Add(Art.Icon("effects"), T("compendium.tab.effects")).Name = "Effects";
 			sigils.Add(Art.Icon("rune"), T("compendium.tab.runes")).Name = "Runes";
 			sigils.Changed += index => tabs.CurrentTab = index;
@@ -85,7 +85,7 @@ namespace Sigilos.UI.Screens
 		private static void Combat(VBoxContainer column)
 		{
 			var grid = Cards(column);
-			Card(grid, "Impetus", RuneSets.For(RuneSet.Nemesis).Glyph, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
+			Card(grid, "Impetus", RuneSets.For(RuneSet.Bane).Glyph, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
 			Card(grid, "Fight", "campaign", T("compendium.combat.fight.title"), T("compendium.combat.fight.text", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
 			Card(grid, "Damage", Texts.GlyphOf(Stat.Defense), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
 			Card(grid, "Crit", Texts.GlyphOf(Stat.Crit), T("compendium.combat.crit.title"), T("compendium.combat.crit.text"));
@@ -168,7 +168,7 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Slots", "rune", T("compendium.runes.slots.title"), T("compendium.runes.slots.text"));
 			Card(grid, "Stars", "rune", T("compendium.runes.stars.title"), T("compendium.runes.stars.text", RuneRules.MaxGrade));
 			Card(grid, "Upgrade", "essence", T("compendium.runes.upgrade.title"), T("compendium.runes.upgrade.text", RuneRules.MaxLevel, RuneRules.MaxSubstats));
-			Card(grid, "Sets", RuneSets.For(RuneSet.Violent).Glyph, T("compendium.runes.sets.title"), T("compendium.runes.sets.text"));
+			Card(grid, "Sets", RuneSets.For(RuneSet.Frenzy).Glyph, T("compendium.runes.sets.title"), T("compendium.runes.sets.text"));
 			Card(grid, "Grind", "grindstone", T("compendium.runes.grind.title"), T("compendium.runes.grind.text"));
 			Card(grid, "Gem", "gem", T("compendium.runes.gem.title"), T("compendium.runes.gem.text", RuneForge.EnchantLevel));
 			Card(grid, "Where", "dungeon", T("compendium.runes.where.title"), T("compendium.runes.where.text", GameDatabase.MaxCampaignRuneGrade, Texts.Percent(Campaign.RepeatRuneChance)));

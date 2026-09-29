@@ -7,7 +7,7 @@ namespace Sigilos.Core.Content
 		/// <summary>Absorve dano até o valor guardado.</summary>
 		Shield,
 
-		/// <summary>Perde uma fração da Vida no começo de cada turno. Acumula.</summary>
+		/// <summary>Perde uma fração da Vida no começo de cada turno. Não acumula.</summary>
 		Burn,
 
 		/// <summary>Perde o próximo turno.</summary>
@@ -25,18 +25,25 @@ namespace Sigilos.Core.Content
 		/// <summary>Cada golpe tem chance de errar.</summary>
 		Blind,
 
-		/// <summary>Anula o próximo golpe recebido.</summary>
-		Ward,
+        /// <summary>Anula o próximo golpe recebido.</summary>
+        Aegis,
 
 		/// <summary>O próximo golpe causado é crítico.</summary>
 		Foresight,
 
-		/// <summary>Nenhum efeito negativo pega (conjunto Vontade).</summary>
+		/// <summary>Nenhum efeito negativo pega (conjunto Tenacity).</summary>
 		Immunity,
 
 		AttackUp,
 		AttackDown,
 		DefenseUp,
 		SpeedUp,
+        /// <summary>Diminui a defesa em 70%.</summary>
+        DefenseBreak,
+        /// <summary>Depois de 1 turno, recebe dano ignorando defesa.</summary>
+        Bomb,
+        /// <summary>Perde uma fração da Vida no começo de cada turno. Acumula.</summary>
+        Poison,
+
 	}
 }

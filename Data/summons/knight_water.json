@@ -34,7 +34,7 @@
       "awakenedEffects": [
         {"kind": "Shield", "target": "AllAllies", "power": 0.3, "turns": 2},
         {"kind": "Cleanse", "target": "AllAllies"},
-        {"kind": "Status", "target": "LowestAlly", "status": "Ward"}
+        {"kind": "Status", "target": "LowestAlly", "status": "Aegis"}
       ]
     },
     {

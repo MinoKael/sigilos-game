@@ -5,21 +5,21 @@ namespace Sigilos.Core.Content
 	/// </summary>
 	public enum RuneSet
 	{
-		Energy,
-		Swift,
-		Guard,
-		Shield,
-		Focus,
-		Blade,
-		Violent,
-		Revenge,
-		Despair,
-		Will,
-		Rage,
-		Fatal,
-		Endure,
-		Nemesis,
-		Vampire,
-		Destroy,
-	}
+        Vigor,		// Equivalente a Energy
+        Haste,		// Equivalente a Swift
+        Ward,		// Equivalente a Guard
+        Bulwark,    // Equivalente a Shield
+        Finesse,	// Equivalente a Focus
+        Strike,     // Equivalente a Blade
+        Frenzy,     // Equivalente a Violent
+        Counter,	// Equivalente a Revenge
+        Torment,    // Equivalente a Despair
+        Tenacity,   // Equivalente a Will
+        Wrath,      // Equivalente a Rage
+        Lethal,     // Equivalente a Fatal
+        Sustain,	// Equivalente a Endure
+        Bane,		// Equivalente a Bane
+        Siphon,     // Equivalente a Vampire
+        Oblivion,	// Equivalente a Oblivion
+    }
 }
