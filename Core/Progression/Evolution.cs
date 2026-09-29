@@ -37,8 +37,8 @@ namespace Sigilos.Core.Progression
 			player.Essence -= essence;
 			player.Fragments -= fragments;
 			monster.Stars++;
-			monster.Level = 1;
-			monster.Experience = 0;
+			//monster.Level = 1;
+			//monster.Experience = 0;
 			return true;
 		}
 	}

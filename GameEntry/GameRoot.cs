@@ -345,7 +345,7 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, () => Campaign.ApplyVictory(_random, _player, stage), Back);
+			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage), Back);
 		}
 
 		private void FightFloor(DungeonDefinition dungeon, int floor)
@@ -361,7 +361,7 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("battle.title_floor", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back);
+			Fight(T("battle.title_floor", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, Records.FloorKey(dungeon.Id, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back);
 		}
 
 		/// <summary>Sem ninguém na equipe do conteúdo, abre a tela de Equipes em vez da luta.</summary>
@@ -374,8 +374,12 @@ namespace Sigilos.GameEntry
 			return true;
 		}
 
-		/// <summary>A luta na tela: a vitória cobra a Mana e entrega a recompensa; volta para <paramref name="back"/>.</summary>
-		private void Fight(string title, Encounter encounter, string content, Func<VictoryReward> victoryReward, Action back)
+		/// <summary>
+		/// A luta na tela: a vitória cobra a Mana, entrega a recompensa e grava o tempo no recorde
+		/// <paramref name="record"/>; o resultado mostra a experiência de cada monstro subindo do ponto em que
+		/// estava. Volta para <paramref name="back"/>.
+		/// </summary>
+		private void Fight(string title, Encounter encounter, string content, string record, Func<VictoryReward> victoryReward, Action back)
 		{
 			Save();
 			var team = PlayerTeam.Build(_player, _database, content);
@@ -383,9 +387,22 @@ namespace Sigilos.GameEntry
 			var battle = new BattleScreen(session, title, _player.AutoBattle);
 			battle.Finished += victory =>
 			{
+				var before = Teams.Of(_player, content)
+					.Select(_player.Monster)
+					.OfType<OwnedSummon>()
+					.Where(m => !m.Stored && _database.HasSummon(m.SummonId))
+					.Select(m => (Monster: m, m.Level, m.Experience))
+					.ToList();
 				var reward = victory ? victoryReward() : null;
+				var newBest = victory && Records.Submit(_player, record, battle.Elapsed);
 				Save();
-				battle.ShowResult(victory, reward, reward == null ? Array.Empty<string>() : Names(reward.LevelUps), _player.AccountLevel);
+				var team = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
+				battle.ShowResult(new BattleOutcome(victory, reward, team, _player.AccountLevel, Records.Best(_player, record), newBest));
+			};
+			battle.RuneSellRequested += rune =>
+			{
+				RuneInventory.Sell(_player, rune);
+				Save();
 			};
 			battle.Closed += auto =>
 			{
@@ -397,7 +414,7 @@ namespace Sigilos.GameEntry
 			{
 				// A Mana só sai na vitória: recomeçar é abrir a mesma luta de novo, com outra semente.
 				_player.AutoBattle = auto;
-				Fight(title, encounter, content, victoryReward, back);
+				Fight(title, encounter, content, record, victoryReward, back);
 			};
 			Swap(battle);
 		}
@@ -468,13 +485,17 @@ namespace Sigilos.GameEntry
 			refresh();
 		}
 
-		private IReadOnlyList<string> Names(IEnumerable<int> monsterIds) => monsterIds
-			.Select(_player.Monster)
-			.OfType<OwnedSummon>()
-			.Select(m => _database.Summon(m.SummonId).NameFor(m.Awakened))
-			.ToList();
-
 		private Core.Runes.Rune Rune(int id) => _player.Runes.First(r => r.Id == id);
+
+		/// <summary>Um monstro no resultado da luta: o retrato e a barra de experiência do antes até agora.</summary>
+		private ResultMonster ResultOf(OwnedSummon monster, int level, int experience)
+		{
+			var summon = _database.Summon(monster.SummonId);
+			return new ResultMonster(summon.NameFor(monster.Awakened), Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), ResultMonster.StepsOf(monster, level, experience))
+			{
+				MaxLevel = Leveling.IsMaxLevel(monster),
+			};
+		}
 
 		private void Save() => _store.Save(_player);
 

@@ -184,25 +184,41 @@ namespace Sigilos.Tests
 			Assert.Equal(monster.Id, Teams.Of(loaded, Teams.Campaign).Single(), "a equipe da Campanha fica");
 			Assert.Equal(player.LastIdleCollect, loaded.LastIdleCollect, "relógio da ociosidade");
 			Assert.Equal(player.Tools[0], loaded.Tools.Single(), "pedra guardada");
+			Assert.Equal(player.BestTimes.Count, loaded.BestTimes.Count, "melhores tempos");
 
 			Assert.True(PlayerSave.FromJson("{ \"Scrolls\": 3 }") == null, "save sem versão é recusado");
 		}
 
 		[Test]
-		private static void IdleRefillsManaUpToTheMax()
+		private static void BestTimeKeepsTheFastestVictory()
 		{
 			var player = NewPlayer();
-			Assert.Equal(Mana.Max(player), player.Mana, "a conta começa com a Mana cheia");
-			Assert.Equal(NewGame.StartingMana, Mana.Max(player), "e a cheia do nível 1 é a do NewGame");
-
-			player.Mana = 0;
-			Assert.Equal((int)(Mana.PerHour * 2), Idle.Collect(player, Start.AddHours(2)).Mana, "12 por hora");
-			Idle.Collect(player, Start.AddHours(2 + Idle.CapHours));
-			Assert.Equal(Mana.Max(player), player.Mana, "para no máximo");
-
-			player.Mana = Mana.Max(player) + 40;
-			Assert.Equal(0, Idle.Collect(player, Start.AddHours(4 + Idle.CapHours)).Mana, "acima do máximo não recarrega");
-			Assert.Equal(Mana.Max(player) + 40, player.Mana, "mas não tira o que passou");
+			var key = Records.StageKey(3);
+			Assert.True(Records.Best(player, key) == null, "sem vitória, sem recorde");
+			Assert.True(Records.Submit(player, key, 62), "a primeira vitória é o recorde");
+			Assert.True(!Records.Submit(player, key, 70), "mais lenta não grava");
+			Assert.Equal(62.0, Records.Best(player, key)!.Value, "fica a mais rápida");
+			Assert.True(Records.Submit(player, key, 46), "mais rápida grava");
+			Assert.Equal(46.0, Records.Best(player, key)!.Value, "o novo recorde");
+			Assert.True(Records.Best(player, Records.FloorKey("golem", 3)) == null, "cada luta tem o seu");
 		}
-	}
+
+		[Test]
+        private static void IdleRefillsManaUpToTheDoubleMax()
+        {
+            var player = NewPlayer();
+            Assert.Equal(Mana.Max(player), player.Mana, "a conta começa com a Mana cheia");
+            Assert.Equal(NewGame.StartingMana, Mana.Max(player), "e a cheia do nível 1 é a do NewGame");
+
+            player.Mana = 0;
+            Assert.Equal((int)(Mana.PerHour * 2), Idle.Collect(player, Start.AddHours(2)).Mana, "12 por hora");
+
+            Idle.Collect(player, Start.AddHours(2 + (Idle.CapHours * 2)));
+            Assert.Equal(Mana.Max(player) * 2, player.Mana, "para no dobro do máximo");
+
+            player.Mana = (Mana.Max(player) * 2) + 40;
+            Assert.Equal(0, Idle.Collect(player, Start.AddHours(4 + (Idle.CapHours * 2))).Mana, "acima do dobro do máximo não recarrega");
+            Assert.Equal((Mana.Max(player) * 2) + 40, player.Mana, "mas não tira o que passou");
+        }
+    }
 }

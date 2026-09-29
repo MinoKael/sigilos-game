@@ -55,6 +55,8 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Símbolo de um efeito de batalha | `Assets/Effects/<efeito>.svg` (o nome do `StatusKind` em minúsculas) + render; no texto rico, `Texts.Term(StatusKind)` põe o símbolo na frente |
 | Símbolo de uma habilidade | `Art.Skill` (o efeito que ela aplica, senão o Glifo do que ela faz) |
 | Tamanho da runa em miniatura | `RuneTile.Side` (quadrada; cada lugar passa a escala) |
+| Como uma runa aparece (a ficha) | `UI/Components/RuneCard.cs`: a mesma em todo lugar (tela de Runas, vitória, Batalha automática e a dica de todo `RuneTile`); por cima da tela, `RunePopup` |
+| Resultado da luta (vitória e derrota) | `UI/Screens/BattleResultPanel.cs` (a barra de experiência de cada monstro em `ResultMonster.StepsOf`); o melhor tempo de cada fase e andar em `Core/Progression/Records.cs`, guardado em `PlayerState.BestTimes` |
 | Novo botão | `SigilButton.Of("ícone", T("dica"), ação, tamanho, forma)`: círculo navega, losango age, pedra quadrada é aba ou atalho; número pequeno vai em `Badge` |
 | Escolher entre opções | `SigilPicker` (um sigilo que abre o `ArcPicker`) ou `ArcCarousel` direto na tela; confirmação com `SigilDialog.Ask` |
 | Atalhos do Santuário, destinos da Bolsa e do Mapa | `UI/Screens/Destination.cs` (símbolo, nome, atalhos de fábrica) e `GameRoot.Go` (qual tela abre e para onde volta) |

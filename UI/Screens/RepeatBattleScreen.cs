@@ -11,10 +11,10 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A Batalha automática: o Resolver repetido, luta após luta, mas cada luta demora o que levaria na
-	/// tela no automático (<see cref="BattlePace"/>). Um anel de energia enche com a luta em andamento
-	/// (o número dela no meio); ao lado, o tempo que falta e o sigilo de parar; embaixo, em cápsulas,
-	/// tudo o que já rendeu e as runas que caíram.
+	/// A Batalha automática: várias lutas seguidas, e cada luta demora o que levaria na tela no automático
+	/// (<see cref="BattlePace"/>). Um anel de energia enche com a luta em andamento (o número dela no
+	/// meio); ao lado, o tempo que falta e o sigilo de parar; embaixo, em cápsulas, tudo o que já rendeu e
+	/// as runas que caíram (tocar numa abre a <see cref="RuneCard"/> dela).
 	///
 	/// Quem resolve as lutas e aplica as recompensas é o GameRoot: ele chama <see cref="BeginRun"/> com
 	/// a duração, a tela espera e avisa <see cref="RunFinished"/>. Parar ou sair no meio de uma luta
@@ -134,7 +134,12 @@ namespace Sigilos.UI.Screens
 			_accountLevels += reward.AccountLevels;
 			_accountLevel = accountLevel;
 			if (reward.Rune is { } rune)
-				_runes.AddChild(new RuneTile(rune, rune.Slot, 1.3f) { Name = $"Rune{rune.Id}", MouseFilter = MouseFilterEnum.Pass });
+			{
+				// Tocar na runa abre a ficha dela por cima da tela, sem parar a batalha.
+				var tile = new RuneTile(rune, rune.Slot, 1.3f) { Name = $"Rune{rune.Id}", MouseFilter = MouseFilterEnum.Pass };
+				tile.Pressed += t => RunePopup.Open(Layout.Host(this), t.Rune!);
+				_runes.AddChild(tile);
+			}
 			_tools.AddRange(reward.Tools);
 			RefreshTotals();
 		}

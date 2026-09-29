@@ -167,6 +167,10 @@ Como em Summoners War: a primeira habilidade é a básica, sempre pronta; as out
 
 Você vence ao derrotar todas as ondas. Perde se a equipe inteira cair ou se 30 rodadas passarem.
 
+O resultado cobre o campo, como em Summoners War: "Vitória" ou "Derrota" grande no alto; no canto, o tempo da luta e o melhor tempo dela (cada fase e cada andar guardam o seu, e o recorde batido acende); no meio, a faixa com o que a luta rendeu; embaixo, a equipe inteira, cada monstro com a barra de experiência subindo nível a nível, ou "nível máximo". A runa que caiu abre antes, na ficha de runa, com Vender (vira Essência na hora) e Pegar; as barras sobem quando ela sai da frente.
+
+A ficha de runa é uma só no jogo todo: o título na cor da raridade e a plaquinha dela, a runa com o atributo principal grande e o inato, os subatributos e o bônus do conjunto em verde. Ela aparece na tela de Runas, na vitória, ao tocar numa runa ganha na Batalha automática e como dica de qualquer runa em miniatura.
+
 ### Automático e manual
 
 Toda luta pode ser automática: usa a habilidade pronta de maior número (a mais forte) e mira com vantagem elemental e, no empate, no mais ferido. No manual, o jogador escolhe a ordem das recargas e o alvo.

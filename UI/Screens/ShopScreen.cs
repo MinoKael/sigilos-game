@@ -20,7 +20,7 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HFlowContainer _offers = Layout.Flow(24).Named("Offers");
+		private readonly HBoxContainer _offers = Layout.Row(24).Named("Offers");
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
 		public ShopScreen(GameDatabase database, PlayerState player)
@@ -32,23 +32,27 @@ namespace Sigilos.UI.Screens
 		public event Action<ShopOffer>? BuyRequested;
 		public event Action? BackRequested;
 
-		public override void _Ready()
-		{
-			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(Layout.Background());
-			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Shop"), "shop", _currencies, () => BackRequested?.Invoke()).Header);
+        public override void _Ready()
+        {
+            SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+            AddChild(Layout.Background());
+            var page = Layout.Page(this);
+            page.AddChild(Layout.Header(T("destination.Shop"), "shop", _currencies, () => BackRequested?.Invoke()).Header);
 
-			_offers.Alignment = FlowContainer.AlignmentMode.Center;
-			var scroll = Layout.Scroll(_offers);
-			page.AddChild(scroll);
+            _offers.Alignment = BoxContainer.AlignmentMode.Center;
+            var scroll = Layout.Scroll(_offers);
+            scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Auto;
+            scroll.VerticalScrollMode = ScrollContainer.ScrollMode.Disabled;
+            _offers.SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter;
 
-			_message.AddThemeColorOverride("font_color", Palette.Gold);
-			page.AddChild(_message);
-			Refresh();
-		}
+            page.AddChild(scroll);
 
-		public void Refresh()
+            _message.AddThemeColorOverride("font_color", Palette.Gold);
+            page.AddChild(_message);
+            Refresh();
+        }
+
+        public void Refresh()
 		{
 			_currencies.Refresh(_player);
 			Layout.Clear(_offers);
@@ -58,9 +62,9 @@ namespace Sigilos.UI.Screens
 
 		public void ShowMessage(string text) => _message.Text = text;
 
-		private Control Card(ShopOffer offer)
+		private PanelContainer Card(ShopOffer offer)
 		{
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(220, 0), TooltipText = offer.Name };
+			var panel = new PanelContainer { CustomMinimumSize = new Vector2(250, 300), TooltipText = offer.Name };
 			var content = new VBoxContainer { Name = "Content", Alignment = BoxContainer.AlignmentMode.Center };
 			content.AddThemeConstantOverride("separation", 12);
 			panel.AddChild(content);

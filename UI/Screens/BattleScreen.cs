@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Progression;
+using Sigilos.Core.Runes;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -26,7 +27,8 @@ namespace Sigilos.UI.Screens
 	/// cima à direita a pausa (<see cref="PauseMenu"/>: continuar, recomeçar, sair); embaixo à esquerda o
 	/// automático, a velocidade e os Efeitos; embaixo à direita um sigilo por habilidade (o Glifo dela, o
 	/// número ou a recarga na plaquinha). O painel de Efeitos abre no centro do círculo. No fim avisa
-	/// <see cref="Finished"/>; o GameRoot aplica a recompensa e chama <see cref="ShowResult"/>.
+	/// <see cref="Finished"/>; o GameRoot aplica a recompensa, grava o melhor tempo e chama
+	/// <see cref="ShowResult"/>, que mostra o <see cref="BattleResultPanel"/>.
 	/// </summary>
 	public partial class BattleScreen : Control
 	{
@@ -59,6 +61,7 @@ namespace Sigilos.UI.Screens
 		private bool _auto;
 		private int _speedIndex = 1;
 		private bool _closed;
+		private bool _finished;
 
 		/// <summary>Decide no automático a vez que está esperando o jogador; nulo quando ninguém espera.</summary>
 		private Action? _decideAutomatically;
@@ -84,6 +87,9 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>O jogador saiu da tela (depois do resultado ou recuando). O valor é a preferência de automático.</summary>
 		public event Action<bool>? Closed;
+
+		/// <summary>O jogador vendeu a runa que caiu, no resultado.</summary>
+		public event Action<Rune>? RuneSellRequested;
 
 		/// <summary>O jogador pediu a mesma luta de novo, do começo (no menu de pausa). O valor é a preferência de automático.</summary>
 		public event Action<bool>? RestartRequested;
@@ -118,81 +124,26 @@ namespace Sigilos.UI.Screens
 			Run();
 		}
 
+		/// <summary>O tempo da luta na tela até o fim dela, sem a pausa (o <c>_Process</c> para junto).</summary>
+		public double Elapsed { get; private set; }
+
 		/// <summary>
-		/// Mostra vitória ou derrota e o que a luta rendeu, em cápsulas. <paramref name="reward"/> é nulo
-		/// na derrota; <paramref name="levelUps"/> são os nomes de quem subiu de nível;
-		/// <paramref name="accountLevel"/> é o nível da conta depois da luta.
+		/// Abre o resultado (<see cref="BattleResultPanel"/>) por cima do campo, com o tempo desta luta. O
+		/// motivo da derrota (tempo esgotado ou todos caídos) vem da própria luta.
 		/// </summary>
-		public void ShowResult(bool victory, VictoryReward? reward, IReadOnlyList<string> levelUps, int accountLevel)
+		public void ShowResult(BattleOutcome outcome)
 		{
-			var overlay = new ColorRect { Name = "Result", Color = new Color(0, 0, 0, 0.6f) };
-			overlay.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(overlay);
+			(string Icon, string Text)? defeat = outcome.Victory ? null
+				: _session.Round > BattleRules.RoundLimit ? ("resolve", T("battle.timeout", BattleRules.RoundLimit))
+				: ("retreat", T("battle.all_fell"));
+			_banner.Text = "";
+			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, rune => RuneSellRequested?.Invoke(rune)));
+		}
 
-			var center = new CenterContainer { Name = "Center" };
-			center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			overlay.AddChild(center);
-
-			var panel = new PanelContainer { Name = "Panel", CustomMinimumSize = new Vector2(460, 0) };
-			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, victory ? Palette.Gold : Palette.Negative.Darkened(0.3f), 24));
-			center.AddChild(panel);
-			var content = new VBoxContainer { Name = "Content" };
-			content.AddThemeConstantOverride("separation", 16);
-			panel.AddChild(content);
-
-			var title = new Label { Name = "Title", Text = victory ? T("battle.victory") : T("battle.defeat"), ThemeTypeVariation = GameTheme.Title, HorizontalAlignment = HorizontalAlignment.Center };
-			if (!victory)
-				title.AddThemeColorOverride("font_color", Palette.Negative);
-			content.AddChild(title);
-
-			var chips = Layout.Flow(8).Named("Rewards");
-			chips.Alignment = FlowContainer.AlignmentMode.Center;
-			if (reward != null)
-			{
-				if (reward.FirstClear)
-					chips.AddChild(Layout.Chip("collect", "", T("battle.first_victory"), Palette.Spirit).Named("FirstVictory"));
-				chips.AddChild(Layout.Chip("mana", $"−{reward.Mana}", T("currency.mana")));
-				if (reward.Scrolls > 0)
-					chips.AddChild(Layout.Chip("scroll", $"+{reward.Scrolls}", T("currency.scrolls_name")));
-				if (reward.Gold > 0)
-					chips.AddChild(Layout.Chip("gold", $"+{reward.Gold}", T("currency.gold")));
-				chips.AddChild(Layout.Chip("essence", $"+{reward.Essence}", T("currency.essence")));
-				chips.AddChild(Layout.Chip("level_max", $"+{reward.Experience}", T("reward.experience")).Named("Experience"));
-				if (reward.AccountLevels > 0)
-					chips.AddChild(Layout.Chip("avatar", accountLevel.ToString(), T("battle.account", accountLevel, reward.AccountLevels * Account.LevelUpGold), Palette.Arcane).Named("AccountLevel"));
-				for (var i = 0; i < reward.Tools.Count; i++)
-				{
-					var tool = reward.Tools[i];
-					chips.AddChild(Layout.Chip(tool.Kind == Core.Runes.RuneToolKind.Grindstone ? "grindstone" : "gem", "", $"{Texts.Name(tool)} ({Texts.Range(tool)})", Palette.Of(tool.Grade)).Named($"Tool{i + 1}"));
-				}
-			}
-			else
-			{
-				var reason = _session.Round > BattleRules.RoundLimit ? T("battle.timeout", BattleRules.RoundLimit) : T("battle.all_fell");
-				chips.AddChild(Layout.Chip(_session.Round > BattleRules.RoundLimit ? "resolve" : "retreat", "", reason, Palette.Negative).Named("Reason"));
-			}
-
-			content.AddChild(chips);
-
-			if (reward?.Rune is { } rune)
-			{
-				var runeRow = Layout.Row(0, true).Named("Rune");
-				runeRow.AddChild(new RuneTile(rune, rune.Slot, 1.4f) { Name = "Tile", MouseFilter = MouseFilterEnum.Pass });
-				content.AddChild(runeRow);
-			}
-
-			if (levelUps.Count > 0)
-			{
-				var ups = Layout.Row(6, true).Named("LevelUps");
-				var arrow = Doodle.Icon(Art.Icon("level_max"), 24, Palette.Spirit).Named("Icon");
-				ups.AddChild(arrow);
-				ups.AddChild(new Label { Name = "Names", Text = string.Join(", ", levelUps), ThemeTypeVariation = GameTheme.Faded, TooltipText = T("battle.leveled_up_tip"), MouseFilter = MouseFilterEnum.Stop });
-				content.AddChild(ups);
-			}
-
-			var row = Layout.Row(0, true).Named("Actions");
-			row.AddChild(SigilButton.Of("confirm", T("common.continue"), Close, 64).Named("Continue"));
-			content.AddChild(row);
+		public override void _Process(double delta)
+		{
+			if (!_finished)
+				Elapsed += delta;
 		}
 
 		public override void _ExitTree() => _closed = true;
@@ -438,6 +389,7 @@ namespace Sigilos.UI.Screens
 				await Play(_session.Act(action));
 			}
 
+			_finished = true;
 			if (!_closed)
 				Finished?.Invoke(_session.Victory == true);
 		}

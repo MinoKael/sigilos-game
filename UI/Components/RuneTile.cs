@@ -7,7 +7,7 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma runa em miniatura, quadrada de cantos redondos: o espaço no canto de cima à esquerda, as
+	/// Uma runa em miniatura, quadrada de cantos redondos (a dica é a <see cref="RuneCard"/> dela): o espaço no canto de cima à esquerda, as
 	/// estrelas ao lado dele, o Glifo do conjunto grande no meio (na fonte das runas, na cor da
 	/// raridade) e a melhora no canto de baixo à direita. O nome e os atributos vêm na dica. Sem runa,
 	/// só o número do espaço, apagado.
@@ -31,6 +31,7 @@ namespace Sigilos.UI.Components
 		private readonly int _stars;
 		private bool _selected;
 		private bool _marked;
+		private string? _owner;
 
 		public RuneTile(Rune? rune, int slot, float scale = 1)
 		{
@@ -54,7 +55,6 @@ namespace Sigilos.UI.Components
 				number.HorizontalAlignment = HorizontalAlignment.Center;
 				number.VerticalAlignment = VerticalAlignment.Center;
 				_layer.AddChild(number);
-				TooltipText = T("rune.empty_slot", slot);
 			}
 			else
 			{
@@ -62,11 +62,9 @@ namespace Sigilos.UI.Components
 				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(40 * scale), _color, outline: true) { Name = "Glyph" };
 				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				glyph.OffsetTop = 6 * scale;
-				//glyph.OffsetRight = -6 * scale;
 				_layer.AddChild(glyph);
-				Corner(Small(slot.ToString(), Palette.Text, 12).Named("Slot"), LayoutPreset.TopLeft);
-				Corner(Small($"+{rune.Level}", Palette.Text, 12, HorizontalAlignment.Right).Named("Level"), LayoutPreset.BottomRight);
-				TooltipText = T("rune.tip", Texts.Title(rune), Texts.Name(rune.Rarity), Texts.Stars(rune.Grade), rune.Level, Texts.Format(rune.Main, rune.MainValue));
+				Corner(Small(slot.ToString(), Palette.Text, 12).Named("Slot"), LayoutPreset.BottomLeft);
+				Corner(Small($"{(rune.Level > 0 ? $"+{rune.Level}" : "")}", Palette.Text, 12, HorizontalAlignment.Right).Named("Level"), LayoutPreset.BottomRight);
 			}
 
 			_check.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -101,7 +99,8 @@ namespace Sigilos.UI.Components
 			holder.OffsetTop = holder.OffsetBottom - size;
 			holder.AddChild(Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false));
 			_layer.AddChild(holder);
-			TooltipText += "\n" + T(stored ? "rune.owner_vault" : "rune.owner", name);
+			_owner = T(stored ? "rune.owner_vault" : "rune.owner", name);
+			TooltipText += "\n" + _owner;
 		}
 
 		/// <summary>Marca para desfazer em massa.</summary>
@@ -111,6 +110,9 @@ namespace Sigilos.UI.Components
 			_check.Visible = marked;
 			Restyle();
 		}
+
+		/// <summary>A dica de uma runa é a ficha dela (<see cref="RuneCard"/>); a de um espaço vazio, o texto.</summary>
+		//public override GodotObject _MakeCustomTooltip(string forText) => Rune == null ? null! : new RuneCard(Rune, note: _owner);
 
 		public override void _GuiInput(InputEvent @event)
 		{
@@ -130,10 +132,10 @@ namespace Sigilos.UI.Components
 			var size = 9 * _scale;
 			var step = size * 0.92f;
 			var top = 3.5f * _scale;
-			var right = Size.X - 5 * _scale;
+			var left = 5 * _scale;
 			for (var i = 0; i < _stars; i++)
 			{
-				var rect = new Rect2(right - (i + 1) * step, top, size, size);
+				var rect = new Rect2(left + i * step, top, size, size);
 				DrawTextureRect(star, rect.Grow(1.2f), false, new Color(0, 0, 0, 0.85f));
 				DrawTextureRect(star, rect, false, Palette.Gold);
 			}
@@ -161,8 +163,8 @@ namespace Sigilos.UI.Components
 			var pad = 4 * _scale;
 			label.OffsetLeft += right ? -pad : pad;
 			label.OffsetRight += right ? -pad : pad;
-			label.OffsetTop += bottom ? -1 * _scale : 0;
-			label.OffsetBottom += bottom ? -1 * _scale : 0;
+			label.OffsetTop += bottom ? -pad : pad;
+			label.OffsetBottom += bottom ? pad : -pad;
 			_layer.AddChild(label);
 		}
 
@@ -173,7 +175,7 @@ namespace Sigilos.UI.Components
 			label.AddThemeColorOverride("font_color", color);
 			label.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.9f));
 			label.AddThemeConstantOverride("outline_size", 2);
-			label.AddThemeConstantOverride("line_spacing", -4);
+			label.AddThemeConstantOverride("line_spacing", -8);
 			label.HorizontalAlignment = horizontalAlignment ?? HorizontalAlignment.Center;
 			label.VerticalAlignment = verticalAlignment ?? VerticalAlignment.Center;
 			return label;

@@ -28,8 +28,8 @@ namespace Sigilos.UI.Screens
 	/// com <c>Monster</c> e <c>Slot1</c>..<c>Slot6</c>, e o carrossel <c>Monsters</c>), <c>Sets</c> e
 	/// <c>Stats</c>; <c>Middle/Column</c> tem <c>TabRow/Tabs</c> e <c>List</c> (<c>Filters</c>, <c>Selection</c>
 	/// e <c>Scroll/Grid</c> com <c>Rune&lt;id&gt;</c>, ou <c>Scroll/Tools</c> com <c>Tool&lt;n&gt;</c>);
-	/// <c>Right/Column</c> tem a ficha da runa em <c>Scroll/Detail</c> (<c>Head</c>, <c>SetEffect</c>,
-	/// <c>Main</c>, <c>Substat1</c>.., <c>Holder</c>) e, embaixo, <c>ActionsLine</c> e <c>Actions</c>.
+	/// <c>Right/Column</c> tem a ficha da runa em <c>Scroll/Detail</c> (a <see cref="RuneCard"/>, com as
+	/// pedras na linha de cada subatributo, e <c>Holder</c>) e, embaixo, <c>ActionsLine</c> e <c>Actions</c>.
 	/// </summary>
 	public partial class RuneScreen : Control
 	{
@@ -224,7 +224,7 @@ namespace Sigilos.UI.Screens
 		}
 
 		private const float RingSize = 280;
-		private const float RingTop = 56;
+		private const float RingTop = 76;
 
 		/// <summary>Põe um controle centrado na largura de <paramref name="stage"/>, a <paramref name="top"/> px do alto.</summary>
 		private static void Place(Control stage, Control control, Vector2 size, float top)
@@ -484,39 +484,7 @@ namespace Sigilos.UI.Screens
 			if (!_levelWhenOpened.ContainsKey(rune.Id))
 				_levelWhenOpened[rune.Id] = rune.Level;
 
-			var color = Palette.Of(rune.Rarity);
-			var head = Layout.Row(10).Named("Head");
-			head.AddChild(new RuneTile(rune, rune.Slot, 1.4f) { Name = "Tile", MouseFilter = MouseFilterEnum.Ignore });
-			var titles = new VBoxContainer { Name = "Titles", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var title = new Label { Name = "Title", Text = Texts.Title(rune), ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart };
-			title.AddThemeColorOverride("font_color", color);
-			titles.AddChild(title);
-			var grade = new Label { Name = "Grade", Text = $"{Texts.Stars(rune.Grade)}  +{rune.Level}", TooltipText = Texts.Name(rune.Rarity), MouseFilter = MouseFilterEnum.Stop };
-			grade.AddThemeColorOverride("font_color", color);
-			titles.AddChild(grade);
-			head.AddChild(titles);
-			_detail.AddChild(head);
-			_detail.AddChild(RichText.Label(Texts.Describe(RuneSets.For(rune.Set)), 300, GameTheme.Faded, 13).Named("SetEffect"));
-
-			var main = Layout.Row(10).Named("Main");
-			var mainValue = new Label { Name = "Value", Text = Texts.Format(rune.Main, rune.MainValue) };
-			mainValue.AddThemeFontOverride("font", GameTheme.Serif);
-			mainValue.AddThemeFontSizeOverride("font_size", 20);
-			main.AddChild(mainValue);
-			if (rune.Level > opened)
-				main.AddChild(Gain("Gain", Texts.Amount(rune.Main, rune.MainValue - RuneRules.MainValue(rune.Main, rune.Grade, opened)), 20));
-			_detail.AddChild(main);
-
-			if (rune.Innate is { } innate)
-			{
-				var label = new Label { Name = "Innate", Text = Texts.Format(innate), TooltipText = T("runes.innate"), MouseFilter = MouseFilterEnum.Stop };
-				label.AddThemeColorOverride("font_color", Palette.Gold);
-				_detail.AddChild(label);
-			}
-
-			_detail.AddChild(new HSeparator { Name = "SubstatsLine" });
-			for (var i = 0; i < rune.Substats.Count; i++)
-				_detail.AddChild(SubstatRow(rune, i, opened).Named($"Substat{i + 1}"));
+			_detail.AddChild(new RuneCard(rune, 300, opened, index => SubstatTools(rune, index)));
 
 			if (rune.EquippedOn is { } owner && owner != _monsterId && _player.Monster(owner) is { } holder)
 			{
@@ -565,62 +533,16 @@ namespace Sigilos.UI.Screens
 			}
 		}
 
-		/// <summary>O que a runa ganhou desde que a tela abriu, em verde, ao lado do valor.</summary>
-		private static Label Gain(string name, string text, int size = 0)
+		/// <summary>Os sigilos das pedras que servem num subatributo, no fim da linha dele na ficha.</summary>
+		private IEnumerable<Control> SubstatTools(Rune rune, int index)
 		{
-			var label = new Label { Name = name, Text = text, VerticalAlignment = VerticalAlignment.Center };
-			label.AddThemeColorOverride("font_color", Palette.Positive);
-			if (size > 0)
-			{
-				label.AddThemeFontOverride("font", GameTheme.Serif);
-				label.AddThemeFontSizeOverride("font_size", size);
-			}
-
-			return label;
-		}
-
-		/// <summary>
-		/// Um subatributo com os sigilos das pedras que servem nele. O que mudou desde <paramref name="opened"/>
-		/// (o nível da runa quando a tela abriu) fica em verde: a linha inteira com "new" se ele nasceu
-		/// depois, ou o quanto subiu ao lado do valor.
-		/// </summary>
-		private Control SubstatRow(Rune rune, int index, int opened)
-		{
-			var substat = rune.Substats[index];
-			var row = Layout.Row(6);
-			var isNew = substat.Rolls.Count > 0 && substat.Rolls[0].Level > opened;
-			var gained = substat.Rolls.Where(r => r.Level > opened).Sum(r => r.Amount);
-			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Glyph" });
-			var label = new Label { Name = "Value", Text = Texts.Format(substat), VerticalAlignment = VerticalAlignment.Center };
-			if (substat.Enchanted)
-			{
-				label.Text += " ◆";
-				label.TooltipText = T("runes.enchanted_tip");
-				label.MouseFilter = MouseFilterEnum.Stop;
-			}
-
-			row.AddChild(label);
-			if (isNew)
-			{
-				label.AddThemeColorOverride("font_color", Palette.Positive);
-				row.AddChild(Gain("New", T("runes.new")));
-			}
-			else if (gained > 0)
-			{
-				row.AddChild(Gain("Gain", Texts.Amount(substat.Stat, gained)));
-			}
-
-			row.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
-
 			var grindstones = Usable(t => RuneForge.CanGrind(rune, index, t));
 			if (grindstones.Count > 0)
-				row.AddChild(ToolMenu("grindstone", T("runes.grind"), grindstones, tool => GrindRequested?.Invoke(rune.Id, index, tool)).Named("Grind"));
+				yield return ToolMenu("grindstone", T("runes.grind"), grindstones, tool => GrindRequested?.Invoke(rune.Id, index, tool)).Named("Grind");
 
 			var gems = Usable(t => RuneForge.CanEnchant(rune, index, t));
 			if (gems.Count > 0)
-				row.AddChild(ToolMenu("gem", T("runes.enchant"), gems, tool => EnchantRequested?.Invoke(rune.Id, index, tool)).Named("Enchant"));
-
-			return row;
+				yield return ToolMenu("gem", T("runes.enchant"), gems, tool => EnchantRequested?.Invoke(rune.Id, index, tool)).Named("Enchant");
 		}
 
 		/// <summary>Pedras diferentes que servem, uma de cada.</summary>

@@ -14,7 +14,7 @@ namespace Sigilos.UI.Components
 	{
 		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400)
 		{
-			var row = Layout.Row(12).Named("Skill");
+			var row = Layout.Row(10).Named("Skill");
 			var icon = new SigilButton(null, "", 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
 			{
 				Name = "Symbol",

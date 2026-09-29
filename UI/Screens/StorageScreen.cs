@@ -467,7 +467,7 @@ namespace Sigilos.UI.Screens
 			{
 				var row = Layout.Row(10).Named("Leader");
 				row.AddChild(Doodle.Icon(Art.Icon("leader"), 32, Palette.Gold).Named("Icon"));
-				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 440).Named("Text"));
+				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 420).Named("Text"));
 				_detail.AddChild(row);
 			}
 

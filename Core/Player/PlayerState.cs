@@ -88,6 +88,9 @@ namespace Sigilos.Core.Player
 		public double IdleGoldCarry { get; set; }
 		public double IdleManaCarry { get; set; }
 
+		/// <summary>O melhor tempo de cada luta vencida, em segundos (<see cref="Progression.Records"/>).</summary>
+		public Dictionary<string, double> BestTimes { get; set; } = new();
+
 		/// <summary>Tem alguma cópia da variante (na coleção ou no Baú).</summary>
 		public bool Owns(string summonId) => Monsters.Any(m => m.SummonId == summonId);
 
