@@ -29,7 +29,7 @@ namespace Sigilos.Core.Runes
 		public static readonly IReadOnlyList<RuneSetDefinition> All = new[]
 		{
 			new RuneSetDefinition(RuneSet.Vigor,	Glyph.Uruz,		2, Stat.Health,		0.15, RuneSetEffect.None),
-			new RuneSetDefinition(RuneSet.Haste,	Glyph.Raido,	4, Stat.Speed,		0.25, RuneSetEffect.None),
+			new RuneSetDefinition(RuneSet.Haste,	Glyph.Sowilo,	4, Stat.Speed,		0.25, RuneSetEffect.None),
 			new RuneSetDefinition(RuneSet.Ward,		Glyph.Algiz,	2, Stat.Defense,	0.15, RuneSetEffect.None),
 			new RuneSetDefinition(RuneSet.Bulwark,	Glyph.Othalan,	2, null,			0.15, RuneSetEffect.AllyShield),
 			new RuneSetDefinition(RuneSet.Finesse,	Glyph.Kauna,	2, Stat.Accuracy,	0.20, RuneSetEffect.None),
@@ -38,7 +38,7 @@ namespace Sigilos.Core.Runes
 			new RuneSetDefinition(RuneSet.Counter,	Glyph.Thurisaz, 2, null,			0.15, RuneSetEffect.Counter),
 			new RuneSetDefinition(RuneSet.Torment,	Glyph.Gebo,		4, null,			0.25, RuneSetEffect.Stun),
 			new RuneSetDefinition(RuneSet.Tenacity,	Glyph.Dagaz,	2, null,			1,	  RuneSetEffect.Immunity),
-			new RuneSetDefinition(RuneSet.Wrath,	Glyph.Sowilo,	4, Stat.CritDamage, 0.40, RuneSetEffect.None),
+			new RuneSetDefinition(RuneSet.Wrath,	Glyph.Raido,	4, Stat.CritDamage, 0.40, RuneSetEffect.None),
 			new RuneSetDefinition(RuneSet.Lethal,	Glyph.Tiwaz,	4, Stat.Attack,		0.35, RuneSetEffect.None),
 			new RuneSetDefinition(RuneSet.Sustain,	Glyph.Iwaz,		2, Stat.Resistance, 0.20, RuneSetEffect.None),
 			new RuneSetDefinition(RuneSet.Bane,		Glyph.Naudiz,	2, null,			0.04, RuneSetEffect.Bane),
