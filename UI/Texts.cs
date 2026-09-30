@@ -107,11 +107,28 @@ namespace Sigilos.UI
 			return T("awaken.bonus", StatBlock.IsAbsolute(stat) ? string.Format(Culture, "+{0:0}", value) : $"+{Percent(value)}", Name(stat));
 		}
 
-		/// <summary>Só o valor do bônus de Despertar: "+15", "+25%".</summary>
-		public static string AwakeningAmount(Stat stat)
+		/// <summary>
+		/// O que o Despertar muda nos atributos desta variante, um item por atributo que muda. Vida,
+		/// Ataque e Defesa em porcentagem (vale em qualquer estrela e nível); Velocidade em número;
+		/// Crítico, Resistência e Precisão em pontos. O bônus de atributo da variante já vem somado.
+		/// </summary>
+		public static IEnumerable<(Stat Stat, string Text)> AwakeningStats(SummonDefinition summon)
 		{
-			var value = Awakening.Bonus(stat);
-			return StatBlock.IsAbsolute(stat) ? string.Format(Culture, "+{0:0}", value) : $"+{Percent(value)}";
+			var after = Awakening.Apply(summon.AwakenedStats, summon.Awakening);
+			foreach (var stat in Enum.GetValues<Stat>())
+			{
+				var from = summon.Stats.Get(stat);
+				var gain = after.Get(stat) - from;
+				if (Math.Abs(gain) < 1e-9)
+					continue;
+
+				var sign = gain > 0 ? "+" : "−";
+				var amount = Math.Abs(gain);
+				var text = stat == Stat.Speed ? string.Format(Culture, "{0:0}", amount)
+					: StatBlock.IsAbsolute(stat) ? Percent(from > 0 ? amount / from : 0)
+					: Percent(amount);
+				yield return (stat, sign + text);
+			}
 		}
 
 		public static string Stars(int count) => new('★', count);

@@ -1,18 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Battle.Effects;
+using Sigilos.Core.Battle.Statuses;
 using Sigilos.Core.Content;
-using Sigilos.Core.Runes;
 
 namespace Sigilos.Core.Battle
 {
 	/// <summary>
-	/// Faz cada <see cref="EffectDefinition"/> acontecer: dano, cura, escudo, efeitos, Ímpeto. Aplica
-	/// também o que os conjuntos de runas fazem a cada habilidade: Vampiro e Nêmesis a cada golpe;
-	/// Desespero uma vez por alvo; Destruição e Vingança no fim da habilidade.
+	/// Faz as coisas acontecerem na luta. Tem duas partes:
 	///
-	/// Quem escolhe <b>quando</b> resolver é o <see cref="BattleSession"/>; esta classe só resolve e
-	/// avisa a sessão do que aconteceu (eventos, quedas, Éter).
+	/// - A ordem de uma habilidade (<see cref="Resolve"/>) e de um golpe (<see cref="Land"/>). Nenhuma
+	///   das duas conhece um efeito, um status ou uma Passiva em particular: cada efeito da habilidade
+	///   vai para a estratégia do tipo dele (Effects/SkillEffects), e a cada passo as regras em vigor nas
+	///   unidades são avisadas (<see cref="UnitBehavior"/>).
+	/// - As ações que as estratégias usam: ferir, curar, dar escudo, pôr e tirar efeito, mexer no Ímpeto,
+	///   derrubar, contra-atacar. Toda ação avisa a sessão do que aconteceu (<see cref="BattleEvent"/>).
+	///
+	/// Quem decide <b>quando</b> é o <see cref="BattleSession"/>; esta classe só resolve.
 	/// </summary>
 	internal sealed class EffectResolver
 	{
@@ -23,199 +28,131 @@ namespace Sigilos.Core.Battle
 			_session = session;
 		}
 
-		/// <param name="counter">Contra-ataque da Vingança: dano reduzido e não provoca outro contra-ataque.</param>
+		/// <summary>O sorteio da luta: a mesma semente dá a mesma luta.</summary>
+		public Random Random => _session.Random;
+
+		/// <summary>O turno de agora é um turno extra.</summary>
+		public bool IsExtraTurn => _session.IsExtraTurn;
+
+		public void Emit(BattleEvent battleEvent) => _session.Emit(battleEvent);
+
+		// Habilidade e golpe --------------------------------------------------------------------------
+
+		/// <summary>
+		/// Uma habilidade: os efeitos na ordem da lista, cada um pela estratégia do tipo dele; depois, o
+		/// que a habilidade inteira dispara em quem lançou e em quem apanhou.
+		/// </summary>
+		/// <param name="counter">É um contra-ataque: dano reduzido e não provoca outro contra-ataque.</param>
 		public void Resolve(BattleUnit caster, IReadOnlyList<EffectDefinition> effects, BattleUnit? chosen, bool counter = false)
 		{
 			var allies = _session.SideOf(caster.Side);
 			var opponents = _session.SideOf(caster.Side == Side.Allies ? Side.Enemies : Side.Allies);
-
-			// O alvo é escolhido uma vez para a habilidade inteira: se ele cai no primeiro golpe, a
-			// Queimadura que vinha depois não pula para outro inimigo.
-			var main = Targeting.PickMain(caster, chosen, opponents);
-			var hit = new Hit(counter ? RuneSets.CounterDamage : 1);
+			var cast = new Cast(this, caster, Targeting.PickMain(caster, chosen, opponents), allies, opponents, counter);
 
 			foreach (var effect in effects)
 			{
-				if (effect.OnKill && !hit.Killed)
+				if (effect.OnKill && !cast.Killed)
 					continue;
 
-				// Dano vai em rodadas: cada golpe acerta todos os alvos antes do próximo, então um golpe em
-				// área com 2 golpes é "todos, depois todos" (e a tela mostra cada rodada de uma vez).
-				if (effect.Kind == EffectKind.Damage)
-				{
-					var targets = Targeting.Resolve(effect.Target, caster, main, allies, opponents).ToList();
-					for (var round = 0; round < effect.Hits; round++)
-					{
-						foreach (var target in targets.Where(t => t.IsAlive))
-							Strike(caster, target, effect, hit);
-					}
-				}
-				else
-				{
-					foreach (var target in Targeting.Resolve(effect.Target, caster, main, allies, opponents))
-					{
-						switch (effect.Kind)
-						{
-							case EffectKind.Heal:
-								Heal(target, effect.Power * target.MaxHealth);
-								break;
-							case EffectKind.Shield:
-								GiveShield(target, effect.Power * caster.MaxHealth, effect.Turns);
-								break;
-							case EffectKind.Status:
-								ApplyStatus(caster, target, effect.Status, effect.Chance, effect.Turns);
-								break;
-							case EffectKind.Impeto:
-								PushImpeto(caster, target, effect);
-								break;
-							case EffectKind.Cleanse:
-								Cleanse(target);
-								break;
-						}
-					}
-				}
-
-				if (effect.Kind == EffectKind.Damage && caster.Find(StatusKind.Foresight) is { } foresight)
-				{
-					caster.RemoveStatus(foresight);
-					_session.Emit(new StatusRemoved(caster, StatusKind.Foresight));
-				}
+				SkillEffects.Of(effect.Kind).Apply(cast, effect);
+				foreach (var rule in caster.Rules())
+					rule.Behavior.AfterEffect(rule, cast, effect);
 			}
 
-			Oblivion(caster, hit);
-			if (!counter)
-				Counterattacks(caster, hit);
+			foreach (var rule in caster.Rules())
+				rule.Behavior.AfterSkill(rule, cast);
+
+			if (counter)
+				return;
+
+			foreach (var target in cast.Dealt.Keys.ToList())
+			{
+				foreach (var rule in target.Rules())
+					rule.Behavior.AfterStruck(rule, cast);
+			}
 		}
 
-		/// <summary>Escudos não somam: fica o maior valor e a maior duração.</summary>
-		public void GiveShield(BattleUnit target, double value, int turns)
+		/// <summary>
+		/// Um golpe, na ordem: quem ataca pode errar; quem apanha pode anular; o crítico; o dano; o
+		/// escudo; o dreno; a queda; e, se o alvo ficou de pé, o que o golpe dispara nos dois.
+		/// </summary>
+		public void Land(Strike strike)
 		{
-			if (!target.IsAlive || value <= 0)
-				return;
+			var attacker = strike.Attacker;
+			var target = strike.Target;
 
-			var shield = target.Find(StatusKind.Shield);
-			if (shield == null)
+			foreach (var rule in attacker.Rules())
 			{
-				target.AddStatus(new StatusEffect(StatusKind.Shield, turns, value) { Fresh = IsActing(target) });
-			}
-			else
-			{
-				shield.Value = Math.Max(shield.Value, value);
-				shield.Turns = Math.Max(shield.Turns, turns);
-			}
-
-			_session.Emit(new StatusApplied(target, StatusKind.Shield, turns));
-		}
-
-		/// <summary>Um efeito positivo que a unidade recebe sem sorteio (Imunidade da Vontade).</summary>
-		public void GiveStatus(BattleUnit target, StatusKind status, int turns) => ApplyStatus(target, target, status, 1, turns);
-
-		/// <summary>Um golpe num alvo: o erro da Cegueira, a Égide, o crítico, o escudo, o dreno, a queda e o que o golpe dispara.</summary>
-		private void Strike(BattleUnit caster, BattleUnit target, EffectDefinition effect, Hit hit)
-		{
-			var element = ElementChart.Multiplier(caster.Element, target.Element);
-
-			if (caster.Has(StatusKind.Blind) && _session.Random.NextDouble() < BattleRules.BlindMissChance)
-			{
-				_session.Emit(new Missed(target));
-				return;
+				rule.Behavior.OnAttack(rule, strike);
+				if (strike.Missed)
+				{
+					Emit(new Missed(target));
+					return;
+				}
 			}
 
-			if (target.Find(StatusKind.Aegis) is { } aegis)
+			foreach (var rule in target.Rules())
 			{
-				target.RemoveStatus(aegis);
-				_session.Emit(new Protected(target));
-				return;
+				rule.Behavior.OnDefend(rule, strike);
+				if (strike.Blocked)
+				{
+					Emit(new Protected(target));
+					return;
+				}
 			}
 
-			var crit = caster.Has(StatusKind.Foresight) || _session.Random.NextDouble() < caster.Stats.Crit;
-			var amount = DamageFormula.Compute(caster, target, effect.Power * hit.Scale, effect.IgnoreDefense, crit);
-			var absorbed = Absorb(target, amount);
-			var dealt = amount - absorbed;
+			var crit = strike.Crit ?? Random.NextDouble() < attacker.Stats.Crit;
+			strike.Crit = crit;
+			strike.Amount = DamageFormula.Compute(attacker, target, strike.Power, strike.IgnoreDefense, crit);
+			strike.Absorbed = Absorb(target, strike.Amount);
+
+			var dealt = strike.Dealt;
 			target.Health = Math.Max(0, target.Health - dealt);
-			hit.Dealt[target] = hit.Dealt.GetValueOrDefault(target) + dealt;
-			_session.Emit(new Damaged(target, (int)dealt, (int)absorbed, crit, element));
+			strike.Cast.Dealt[target] = strike.Cast.Dealt.GetValueOrDefault(target) + dealt;
+			Emit(new Damaged(target, (int)dealt, (int)strike.Absorbed, crit, ElementChart.Multiplier(attacker.Element, target.Element)));
 
-			var drain = effect.Drain + caster.RuneEffects.Drain;
-			if (drain > 0)
-				Heal(caster, drain * amount);
+			if (strike.Drain > 0)
+				Heal(attacker, strike.Drain * strike.Amount);
 
 			if (!target.IsAlive)
 			{
-				hit.Killed = true;
-				_session.KnockOut(target);
+				strike.Cast.Killed = true;
+				KnockOut(target);
 				return;
 			}
 
-			Bane(target, dealt);
-
-			// Desespero: um sorteio por alvo a cada habilidade, que só a Imunidade barra.
-			if (caster.RuneEffects.StunChance > 0 && hit.DespairRolled.Add(target))
-				ApplyStatus(caster, target, StatusKind.Stun, caster.RuneEffects.StunChance, 1, resistible: false);
-
-			// Passiva dos Dragões: um sorteio de Queimadura por alvo a cada habilidade.
-			if (caster.Passive?.Kind == PassiveKind.BurnOnHit && hit.BurnRolled.Add(target))
-				ApplyStatus(caster, target, StatusKind.Burn, caster.PassiveValue, BattleRules.BurnOnHitTurns);
+			foreach (var rule in target.Rules())
+				rule.Behavior.AfterHurt(rule, strike);
+			foreach (var rule in attacker.Rules())
+				rule.Behavior.AfterHit(rule, strike);
 		}
 
-		/// <summary>Nêmesis: Ímpeto a cada 7% da Vida máxima perdida neste golpe.</summary>
-		private void Bane(BattleUnit target, double dealt)
+		/// <summary>O contra-ataque: a básica de <paramref name="unit"/> em quem a atingiu.</summary>
+		public void Counterattack(BattleUnit unit, BattleUnit attacker)
 		{
-			if (target.RuneEffects.BaneGauge <= 0 || dealt <= 0)
+			Emit(new Counterattack(unit));
+			Resolve(unit, unit.Skill(0).Effects, attacker, counter: true);
+		}
+
+		// Vida ----------------------------------------------------------------------------------------
+
+		/// <summary>
+		/// Dano que não é golpe (Queimadura, Veneno, Bomba): não passa por Defesa, elemento nem crítico e
+		/// não dispara o que um golpe dispara. Com <paramref name="shielded"/>, o escudo absorve antes.
+		/// </summary>
+		public void Wound(BattleUnit target, double amount, bool shielded = false)
+		{
+			if (!target.IsAlive)
 				return;
 
-			var steps = Math.Floor(dealt / (RuneSets.BaneStep * target.MaxHealth));
-			if (steps > 0)
-				GainImpeto(target, steps * target.RuneEffects.BaneGauge * BattleRules.FullImpeto);
-		}
-		/// <summary>Destruição: 30% do dano de cada alvo vira Vida máxima perdida, até o teto por habilidade e o limite total.</summary>
-		private void Oblivion(BattleUnit caster, Hit hit)
-		{
-			if (caster.RuneEffects.DestroyCap <= 0)
-				return;
+			amount = Math.Max(1, Math.Round(amount));
+			var absorbed = shielded ? Absorb(target, amount) : 0;
+			var dealt = amount - absorbed;
+			target.Health = Math.Max(0, target.Health - dealt);
+			Emit(new Damaged(target, (int)dealt, (int)absorbed, false, 1));
 
-			foreach (var (target, dealt) in hit.Dealt)
-			{
-				if (!target.IsAlive)
-					continue;
-
-				var room = RuneSets.DestroyLimit * target.Stats.Health - target.HealthDestroyed;
-				var amount = Math.Round(Math.Min(Math.Min(RuneSets.DestroyShare * dealt, caster.RuneEffects.DestroyCap * target.Stats.Health), room));
-				if (amount <= 0)
-					continue;
-
-				target.HealthDestroyed += amount;
-				target.Health = Math.Min(target.Health, target.MaxHealth);
-				_session.Emit(new MaxHealthReduced(target, (int)amount));
-			}
-		}
-
-		/// <summary>Vingança: cada alvo atingido que sobreviveu pode revidar com o básico, a 75% do dano.</summary>
-		private void Counterattacks(BattleUnit attacker, Hit hit)
-		{
-			foreach (var target in hit.Dealt.Keys.ToList())
-			{
-				if (!attacker.IsAlive || !target.IsAlive || target.Side == attacker.Side || target.Has(StatusKind.Stun))
-					continue;
-				if (target.RuneEffects.CounterChance <= 0 || _session.Random.NextDouble() >= target.RuneEffects.CounterChance)
-					continue;
-
-				_session.Emit(new Counterattack(target));
-				Resolve(target, target.Skill(0).Effects, attacker, counter: true);
-			}
-		}
-
-		private static double Absorb(BattleUnit target, double amount)
-		{
-			var shield = target.Find(StatusKind.Shield);
-			if (shield == null)
-				return 0;
-
-			var absorbed = Math.Min(shield.Value, amount);
-			shield.Value -= absorbed;
-			if (shield.Value <= 0)
-				target.RemoveStatus(shield);
-			return absorbed;
+			if (!target.IsAlive)
+				KnockOut(target);
 		}
 
 		public void Heal(BattleUnit target, double amount)
@@ -228,106 +165,140 @@ namespace Sigilos.Core.Battle
 				return;
 
 			target.Health += healed;
-			_session.Emit(new Healed(target, (int)healed));
+			Emit(new Healed(target, (int)healed));
 		}
 
-		private void ApplyStatus(BattleUnit caster, BattleUnit target, StatusKind status, double chance, int turns, bool resistible = true)
+		/// <summary>Uma unidade caiu: perde o Ímpeto e os efeitos, e as regras dela são avisadas.</summary>
+		public void KnockOut(BattleUnit unit)
+		{
+			// As regras de antes da queda: os efeitos saem agora, mas ainda podem reagir a ela.
+			var rules = unit.Rules().ToList();
+			unit.Health = 0;
+			unit.Impeto = 0;
+			unit.ClearStatuses();
+			Emit(new Died(unit));
+
+			foreach (var rule in rules)
+				rule.Behavior.OnDeath(rule, this);
+		}
+
+		/// <summary>A unidade caída que estava para voltar (<see cref="BattleUnit.RevivalHealth"/>) volta agora.</summary>
+		public void Revive(BattleUnit unit)
+		{
+			unit.Health = Math.Round(unit.MaxHealth * unit.RevivalHealth);
+			unit.RevivalHealth = 0;
+			Emit(new Revived(unit));
+		}
+
+		// Efeitos de status ---------------------------------------------------------------------------
+
+		/// <summary>
+		/// Tenta pôr um efeito: sorteia a chance e, se o efeito é negativo e vem do outro lado, passa pela
+		/// Imunidade e pela Resistência do alvo (<paramref name="resistible"/> falso pula a Resistência).
+		/// </summary>
+		public void ApplyStatus(BattleUnit caster, BattleUnit target, StatusKind status, double chance, int turns, bool resistible = true)
 		{
 			if (!target.IsAlive)
 				return;
 
-			var roll = _session.Random.NextDouble();
-			if (roll >= chance)
+			if (Random.NextDouble() >= chance)
 				return;
 
-			if (BattleRules.IsNegative(status) && target.Side != caster.Side)
+			if (StatusBehaviors.Of(status).Harmful && target.Side != caster.Side)
 			{
-				if (target.Has(StatusKind.Immunity))
+				if (target.Any(behavior => behavior.BlocksHarmful))
 				{
-					_session.Emit(new Immune(target));
+					Emit(new Immune(target));
 					return;
 				}
 
-				if (resistible && _session.Random.NextDouble() < BattleRules.ResistChance(target.Stats, caster.Stats))
+				if (resistible && Random.NextDouble() < BattleRules.ResistChance(target.Stats, caster.Stats))
 				{
-					_session.Emit(new Resisted(target));
+					Emit(new Resisted(target));
 					return;
 				}
 			}
 
-			var source = status == StatusKind.Taunt ? caster : null;
-			var existing = target.Find(status);
-			if (status == StatusKind.Burn && target.Count(StatusKind.Burn) < BattleRules.MaxBurnStacks)
-				existing = null;
-            if (status == StatusKind.Poison && target.Count(StatusKind.Poison) < BattleRules.MaxPoisonStacks)
-                existing = null;
+			Attach(caster, target, status, turns, 0);
+		}
 
-            if (existing == null)
+		/// <summary>Um efeito positivo que a unidade recebe de si mesma (a Imunidade do conjunto Tenacidade).</summary>
+		public void GiveStatus(BattleUnit target, StatusKind status, int turns) => ApplyStatus(target, target, status, 1, turns);
+
+		/// <summary>Escudos não somam: fica o maior valor e a maior duração.</summary>
+		public void GiveShield(BattleUnit target, double value, int turns)
+		{
+			if (!target.IsAlive || value <= 0)
+				return;
+
+			Attach(null, target, StatusKind.Shield, turns, value);
+		}
+
+		/// <summary>Tira uma regra do dono; se é efeito de status, a tela é avisada.</summary>
+		public void Remove(UnitRule rule)
+		{
+			var owner = rule.Owner;
+			owner.Remove(rule);
+			if (rule is StatusEffect status)
+				Emit(new StatusRemoved(owner, status.Kind));
+		}
+
+		/// <summary>Remove um efeito negativo do alvo: o mais antigo.</summary>
+		public void Cleanse(BattleUnit target)
+		{
+			var harmful = target.Statuses.FirstOrDefault(s => StatusBehaviors.Of(s.Kind).Harmful);
+			if (harmful != null)
+				Remove(harmful);
+		}
+
+		/// <summary>
+		/// Põe o efeito, sem sorteio. Se o alvo já tem todas as cópias que cabem
+		/// (<see cref="StatusBehavior.MaxStacks"/>), renova a primeira: fica a maior duração e o maior valor.
+		/// </summary>
+		private void Attach(BattleUnit? source, BattleUnit target, StatusKind status, int turns, double value)
+		{
+			var existing = target.Count(status) < StatusBehaviors.Of(status).MaxStacks ? null : target.Find(status);
+			if (existing == null)
 			{
-				target.AddStatus(new StatusEffect(status, turns, 0, source) { Fresh = IsActing(target) });
+				target.AddStatus(new StatusEffect(status, turns, value, source) { Fresh = IsActing(target) });
 			}
 			else
 			{
 				existing.Turns = Math.Max(existing.Turns, turns);
+				existing.Value = Math.Max(existing.Value, value);
 				existing.Source = source ?? existing.Source;
 			}
 
-			_session.Emit(new StatusApplied(target, status, turns));
+			Emit(new StatusApplied(target, status, turns));
 		}
 
-		private void PushImpeto(BattleUnit caster, BattleUnit target, EffectDefinition effect)
+		/// <summary>O que as regras do alvo seguram deste dano (o escudo).</summary>
+		private static double Absorb(BattleUnit target, double amount)
 		{
-			if (!target.IsAlive)
-				return;
-
-			// Atrasar inimigo passa pela Resistência, como qualquer efeito negativo (a Imunidade não barra).
-			if (effect.Power < 0 && target.Side != caster.Side)
-			{
-				if (_session.Random.NextDouble() >= effect.Chance || _session.Random.NextDouble() < BattleRules.ResistChance(target.Stats, caster.Stats))
-				{
-					_session.Emit(new Resisted(target));
-					return;
-				}
-			}
-
-			GainImpeto(target, effect.Power);
+			double absorbed = 0;
+			foreach (var rule in target.Rules())
+				absorbed += rule.Behavior.Absorb(rule, amount - absorbed);
+			return absorbed;
 		}
+
+		private bool IsActing(BattleUnit unit) => ReferenceEquals(_session.Current, unit);
+
+		// Ímpeto e turno ------------------------------------------------------------------------------
 
 		public void GainImpeto(BattleUnit target, double amount)
 		{
 			var before = target.Impeto;
 			target.Impeto = Math.Clamp(target.Impeto + amount, 0, BattleRules.FullImpeto);
 			if (target.Impeto != before)
-				_session.Emit(new ImpetoChanged(target, target.Impeto - before));
+				Emit(new ImpetoChanged(target, target.Impeto - before));
 		}
 
-		private void Cleanse(BattleUnit target)
+		/// <summary>A unidade age de novo em seguida.</summary>
+		public void GrantExtraTurn(BattleUnit unit)
 		{
-			var negative = target.Statuses.FirstOrDefault(s => BattleRules.IsNegative(s.Kind));
-			if (negative == null)
-				return;
-
-			target.RemoveStatus(negative);
-			_session.Emit(new StatusRemoved(target, negative.Kind));
-		}
-
-		private bool IsActing(BattleUnit unit) => ReferenceEquals(_session.Current, unit);
-
-		/// <summary>O que uma habilidade fez até agora: dano por alvo, quedas e sorteios do Desespero e dos Dragões.</summary>
-		private sealed class Hit
-		{
-			public Hit(double scale)
-			{
-				Scale = scale;
-			}
-
-			/// <summary>Multiplica o dano: 0,75 no contra-ataque da Vingança.</summary>
-			public double Scale { get; }
-
-			public bool Killed { get; set; }
-			public Dictionary<BattleUnit, double> Dealt { get; } = new();
-			public HashSet<BattleUnit> DespairRolled { get; } = new();
-			public HashSet<BattleUnit> BurnRolled { get; } = new();
+			unit.ExtraTurnPending = true;
+			unit.Impeto = BattleRules.FullImpeto;
+			Emit(new ExtraTurn(unit));
 		}
 	}
 }

@@ -1,0 +1,240 @@
+{
+  "family_id": "slime",
+  "base_name": "Slime",
+  "name": "Slimes",
+  "star_grade": 3,
+  "image": "slime",
+  "awakened_image": "slime_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "slime_fire",
+      "name": "Fire Slime",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Magmire",
+        "skill": {
+          "name": "Gelatinous Body",
+          "passive": {"kind": "DamageReduction", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Scalding Glob",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Eruption",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "slime_water",
+      "name": "Water Slime",
+      "element": "Water",
+      "role": "HP",
+      "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+      "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
+      "awakening": {
+        "name": "Brine",
+        "skill": {
+          "name": "Ooze Fortress",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Ooze Ball",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.15},
+            {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.15, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Engulf",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "slime_wind",
+      "name": "Wind Slime",
+      "element": "Wind",
+      "role": "Defense",
+      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "awakening": {
+        "name": "Froth",
+        "skill": {
+          "name": "Gelatinous Body",
+          "passive": {"kind": "DamageReduction", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Sticky Splash",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Impeto", "target": "Target", "power": -15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Glue Burst",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "slime_light",
+      "name": "Light Slime",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Gleamgel",
+        "skill": {
+          "name": "Radiant Gel",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.25},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Soothing Ooze",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Mending Gel",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.15}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "slime_dark",
+      "name": "Dark Slime",
+      "element": "Dark",
+      "role": "Defense",
+      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "awakening": {
+        "name": "Tarrow",
+        "skill": {
+          "name": "Gelatinous Body",
+          "passive": {"kind": "DamageReduction", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Tar Grip",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Black Mire",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.35, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

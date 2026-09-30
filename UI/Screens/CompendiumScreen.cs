@@ -78,7 +78,6 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Skills", "fragments", T("compendium.basic.skills.title"), T("compendium.basic.skills.text"));
 			Card(grid, "Awaken", "grimoire", T("compendium.basic.awaken.title"), T("compendium.basic.awaken.text",
 				Awakening.Cost(3), Awakening.Cost(4), Awakening.Cost(5),
-				Texts.Percent(Awakening.HealthBonus), Texts.Percent(Awakening.AttackDefenseBonus),
 				Texts.AwakeningBonus(Stat.Speed), Texts.AwakeningBonus(Stat.Crit), Texts.AwakeningBonus(Stat.Resistance), Texts.AwakeningBonus(Stat.Accuracy)));
 		}
 

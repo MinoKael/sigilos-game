@@ -4,15 +4,18 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// Como os atributos de base crescem com estrelas e nível. Os valores de Data/roles.json são os de
-	/// uma 5★ natural em 6★ nível 40, sem Despertar e sem runas.
+	/// Como os atributos de base crescem com estrelas e nível. Os atributos de cada variante em
+	/// Data/summons ("stats" e "awakened_stats") são os do 6★ nível 40, sem runas: aqui eles encolhem
+	/// para as estrelas e o nível de agora.
 	///
 	/// - Estrelas: todo monstro nasce nas estrelas naturais e evolui até 6★ (<see cref="Evolution"/>).
 	///   Cada estrela tem o seu nível máximo (15, 20, 25, 30, 35 e 40) e a sua faixa de atributos, em
 	///   fração do 6★ nível 40: 3★ vai de 22% a 40%, 4★ de 32% a 54%, 5★ de 43% a 74% e 6★ de 59% a
-	///   100%. Evoluir volta ao nível 1, com atributos um pouco menores que no máximo da estrela
-	///   anterior. Dentro da estrela, o crescimento é em linha reta. Velocidade não muda.
-	/// - Estrelas naturais: no 6★ nível 40, as 5★ naturais usam 100% dos valores, as 4★ 92% e as 3★ 85%.
+	///   100%. Dentro da estrela, o crescimento é em linha reta. Evoluir mantém o nível, então o
+	///   monstro passa para a faixa da estrela nova no mesmo nível e os atributos sobem na hora (um
+	///   3★ no 25 tem 40%; evoluído, o 4★ no 25 tem 50%). Velocidade não muda.
+	/// - Estrelas naturais: não entram aqui. Quem nasce com mais estrelas já tem atributos maiores no
+	///   arquivo, porque o orçamento dele é maior (Core/Content/StatModel.cs).
 	/// </summary>
 	public static class Growth
 	{
@@ -42,24 +45,15 @@ namespace Sigilos.Core.Progression
 			return start + (end - start) * (clampedLevel - 1) / (max - 1);
 		}
 
-		public static double RarityFactor(int naturalStars) => naturalStars switch
+		/// <summary>Os atributos do 6★ nível 40 (<paramref name="full"/>) nas estrelas e no nível de agora.</summary>
+		public static StatBlock Stats(StatBlock full, int stars, int level)
 		{
-			>= 5 => 1.00,
-			4 => 0.92,
-			3 => 0.85,
-			2 => 0.78,
-			_ => 0.70,
-		};
-
-		/// <summary>Atributos de base: papel escalado pelas estrelas naturais, pelas estrelas de agora e pelo nível.</summary>
-		public static StatBlock Stats(StatBlock roleBase, int naturalStars, int stars, int level)
-		{
-			var factor = RarityFactor(naturalStars) * Fraction(stars, level);
-			return roleBase with
+			var factor = Fraction(stars, level);
+			return full with
 			{
-				Health = Math.Round(roleBase.Health * factor),
-				Attack = Math.Round(roleBase.Attack * factor),
-				Defense = Math.Round(roleBase.Defense * factor),
+				Health = Math.Round(full.Health * factor),
+				Attack = Math.Round(full.Attack * factor),
+				Defense = Math.Round(full.Defense * factor),
 			};
 		}
 	}

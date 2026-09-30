@@ -12,9 +12,9 @@ namespace Sigilos.Core.Battle
 	/// (<see cref="SummonStats"/>), mais a Liderança da primeira, as habilidades no nível de cada uma, e
 	/// as ondas de inimigos nas estrelas e no nível do encontro.
 	///
-	/// Inimigo que é invocação usa a mesma variante que o jogador invoca, com as habilidades no nível 1,
-	/// sem runas e sem Despertar: por isso Vida e Ataque vêm multiplicados (<see cref="FoeScale"/>), e
-	/// depois pela força do encontro.
+	/// Inimigo que é invocação usa a mesma variante que o jogador invoca — os mesmos atributos do
+	/// arquivo —, com as habilidades no nível 1, sem runas e sem Despertar: por isso Vida e Ataque vêm
+	/// multiplicados (<see cref="FoeScale"/>), e depois pela força do encontro.
 	/// </summary>
 	public static class BattleFactory
 	{
@@ -29,7 +29,7 @@ namespace Sigilos.Core.Battle
 		public static BattleSession Create(GameDatabase database, BattleTeam team, Encounter encounter, int seed)
 		{
 			var leader = team.Members.FirstOrDefault()?.Summon.Leader;
-			var allies = team.Members.Select(member => Ally(database, member, leader)).ToList();
+			var allies = team.Members.Select(member => Ally(member, leader)).ToList();
 			foreach (var ally in allies)
 				ally.Team = allies;
 
@@ -47,10 +47,10 @@ namespace Sigilos.Core.Battle
 			return (prepared.Where(s => !s.IsPassive).ToList(), prepared.FirstOrDefault(s => s.IsPassive)?.Passive);
 		}
 
-		private static BattleUnit Ally(GameDatabase database, TeamMember member, LeaderDefinition? leader)
+		private static BattleUnit Ally(TeamMember member, LeaderDefinition? leader)
 		{
 			var summon = member.Summon;
-			var sheet = SummonStats.For(database.Roles[summon.Role], summon, member.Stars, member.Level, member.Awakened, member.Runes.ToList());
+			var sheet = SummonStats.For(summon, member.Stars, member.Level, member.Awakened, member.Runes.ToList());
 
 			// A Liderança da primeira invocação vale para o time inteiro, sobre a base (não sobre as runas).
 			var stats = sheet.TotalWith(leader);
@@ -73,7 +73,7 @@ namespace Sigilos.Core.Battle
 		private static IReadOnlyList<BattleUnit> Wave(GameDatabase database, IReadOnlyList<StageEnemy> slots, Encounter encounter)
 		{
 			var units = slots
-				.Select(slot => slot.Summon is { } id ? SummonFoe(database, database.Summon(id), encounter) : EnemyFoe(database, slot, encounter))
+				.Select(slot => slot.Summon is { } id ? SummonFoe(database.Summon(id), encounter) : EnemyFoe(database.Enemy(slot.Enemy!), slot.Element, encounter))
 				.ToList();
 
 			foreach (var unit in units)
@@ -81,9 +81,9 @@ namespace Sigilos.Core.Battle
 			return units;
 		}
 
-		private static BattleUnit SummonFoe(GameDatabase database, SummonDefinition summon, Encounter encounter)
+		private static BattleUnit SummonFoe(SummonDefinition summon, Encounter encounter)
 		{
-			var stats = Growth.Stats(database.Roles[summon.Role], summon.Rarity, encounter.Stars, encounter.Level);
+			var stats = Growth.Stats(summon.Stats, encounter.Stars, encounter.Level);
 			var (health, attack) = FoeScale(summon.Rarity);
 			stats = stats with { Health = stats.Health * health * encounter.Scale, Attack = stats.Attack * attack * encounter.Scale };
 			var (actives, passive) = Prepare(summon.Skills, System.Array.Empty<int>(), false);
@@ -101,10 +101,9 @@ namespace Sigilos.Core.Battle
 				RuneSetEffects.None);
 		}
 
-		private static BattleUnit EnemyFoe(GameDatabase database, StageEnemy slot, Encounter encounter)
+		private static BattleUnit EnemyFoe(EnemyDefinition enemy, Element element, Encounter encounter)
 		{
-			var enemy = database.Enemy(slot.Enemy!);
-			var stats = Growth.Stats(database.Roles[enemy.Role], enemy.Rarity, encounter.Stars, encounter.Level);
+			var stats = Growth.Stats(enemy.Stats, encounter.Stars, encounter.Level);
 			stats = stats with { Health = stats.Health * enemy.HealthScale * encounter.Scale, Attack = stats.Attack * enemy.AttackScale * encounter.Scale };
 			var (actives, passive) = Prepare(enemy.Skills, System.Array.Empty<int>(), false);
 			return new BattleUnit(
@@ -112,7 +111,7 @@ namespace Sigilos.Core.Battle
 				enemy.Name,
 				enemy.Image,
 				Side.Enemies,
-				slot.Element,
+				element,
 				encounter.Level,
 				false,
 				stats,

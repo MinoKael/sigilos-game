@@ -1,4 +1,7 @@
+using System;
+using System.Linq;
 using Sigilos.Core.Battle;
+using Sigilos.Core.Battle.Passives;
 using Sigilos.Core.Content;
 
 namespace Sigilos.Tests
@@ -83,7 +86,7 @@ namespace Sigilos.Tests
 			var foe = TestData.Unit("inimigo", Side.Enemies);
 			var session = TestData.Session(new[] { hero }, new[] { foe });
 			session.Start();
-			Give(foe, foe, StatusKind.Ward);
+			Give(foe, foe, StatusKind.Aegis);
 
 			TestData.RunUntilTurnOf(session, hero);
 			session.Act(new UnitAction(0, foe));
@@ -92,6 +95,83 @@ namespace Sigilos.Tests
 			TestData.RunUntilTurnOf(session, hero);
 			session.Act(new UnitAction(0, foe));
 			Assert.Near(900, foe.Health, "segundo golpe passa");
+		}
+
+		[Test]
+		private static void DefenseBreakCutsDefense()
+		{
+			var hero = TestData.Unit("herói", Side.Allies, element: Element.Light);
+			var foe = TestData.Unit("inimigo", Side.Enemies, defense: BattleRules.DefenseConstant, element: Element.Light);
+			Assert.Near(50, DamageFormula.Compute(hero, foe, 1, 0, false), "com a Defesa inteira");
+
+			Give(hero, foe, StatusKind.DefenseBreak, 2);
+			Assert.Near(BattleRules.DefenseConstant * (1 - BattleRules.DefenseDownPenalty), foe.Defense, "a Defesa cai", 1e-9);
+			Assert.Near(77, DamageFormula.Compute(hero, foe, 1, 0, false), "e o mesmo golpe tira mais");
+			Assert.True(BattleRules.IsNegative(StatusKind.DefenseBreak), "é efeito negativo");
+		}
+
+		[Test]
+		private static void PoisonStacksAndBurnDoesNot()
+		{
+			var hero = TestData.Unit("herói", Side.Allies, speed: 50, attack: 1);
+			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 300, health: 1000, attack: 1);
+			var session = TestData.Session(new[] { hero }, new[] { foe });
+			session.Start();
+
+			var resolver = new EffectResolver(session);
+			for (var i = 0; i < BattleRules.MaxPoisonStacks + 2; i++)
+				resolver.ApplyStatus(hero, foe, StatusKind.Poison, 1, 2, resistible: false);
+			for (var i = 0; i < 3; i++)
+				resolver.ApplyStatus(hero, foe, StatusKind.Burn, 1, 2, resistible: false);
+			Assert.Equal(BattleRules.MaxPoisonStacks, foe.Count(StatusKind.Poison), "o Veneno acumula até o limite");
+			Assert.Equal(1, foe.Count(StatusKind.Burn), "a Queimadura não acumula");
+
+			var turn = session.BeginTurn();
+			Assert.Equal(foe, turn.Actor, "o inimigo é o mais rápido");
+			var poison = BattleRules.MaxPoisonStacks * Math.Round(1000 * BattleRules.PoisonFraction);
+			var burn = Math.Round(1000 * BattleRules.BurnFraction);
+			Assert.Near(1000 - poison - burn, foe.Health, "cada cópia tira a sua fração no começo do turno");
+		}
+
+		[Test]
+		private static void BombExplodesOnTheNextTurnIgnoringDefense()
+		{
+			var hero = TestData.Unit("herói", Side.Allies, attack: 100);
+			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 300, health: 10_000, attack: 1, defense: BattleRules.DefenseConstant);
+			var session = TestData.Session(new[] { hero }, new[] { foe });
+			session.Start();
+			foe.AddStatus(new StatusEffect(StatusKind.Bomb, 1, 0, hero));
+			new EffectResolver(session).GiveShield(foe, 100, 3);
+
+			var turn = session.BeginTurn();
+			Assert.Equal(foe, turn.Actor, "o inimigo é o mais rápido");
+			var blast = turn.Events.OfType<Damaged>().Single();
+			Assert.Equal(150, blast.Amount, "250% do Ataque de quem pôs, sem Defesa, menos o escudo");
+			Assert.Equal(100, blast.Absorbed, "o escudo absorve a explosão");
+			Assert.False(blast.Crit, "a explosão nunca é crítica");
+			Assert.Near(9850, foe.Health, "a Vida depois da explosão");
+			Assert.False(foe.Has(StatusKind.Bomb), "a bomba some ao explodir");
+			Assert.True(turn.NeedsDecision, "e o alvo ainda age");
+		}
+
+		[Test]
+		private static void BombWaitsItsCountdownAndCurseMakesItWorse()
+		{
+			var hero = TestData.Unit("herói", Side.Allies, attack: 100);
+			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 300, health: 10_000, attack: 1);
+			var session = TestData.Session(new[] { hero }, new[] { foe });
+			session.Start();
+			foe.AddStatus(new StatusEffect(StatusKind.Bomb, 2, 0, hero));
+			foe.AddStatus(new StatusEffect(StatusKind.Curse, 5));
+
+			var first = session.BeginTurn();
+			Assert.Equal(foe, first.Actor, "o inimigo é o mais rápido");
+			Assert.Near(10_000, foe.Health, "com 2 turnos, o primeiro passa em branco");
+			session.Act(new UnitAction(0, hero));
+
+			var second = session.BeginTurn();
+			Assert.Equal(foe, second.Actor, "Velocidade 300 age de novo antes do herói");
+			Assert.Near(10_000 - Math.Round(250 * (1 + BattleRules.CurseBonus)), foe.Health, "explode no segundo, e a Maldição aumenta");
 		}
 
 		[Test]
@@ -135,7 +215,7 @@ namespace Sigilos.Tests
 
 			TestData.RunUntilTurnOf(session, foe);
 			session.Act(new UnitAction(0, phoenix));
-			Assert.True(phoenix.PendingRebirth, "caída, esperando renascer");
+			Assert.True(phoenix.Reviving, "caída, esperando renascer");
 
 			while (!phoenix.IsAlive && !session.IsOver)
 			{
@@ -145,7 +225,7 @@ namespace Sigilos.Tests
 			}
 
 			Assert.Near(400, phoenix.Health, "renasce com 40% da Vida");
-			Assert.True(phoenix.RebirthUsed, "renascimento gasto");
+			Assert.False(phoenix.Rules().Any(rule => rule.Behavior is RebirthOncePassive), "renascimento gasto");
 		}
 	}
 }

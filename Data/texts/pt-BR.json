@@ -240,7 +240,7 @@
     },
     "Burn": {
       "name": "Queimadura",
-      "info": "Perde {0} da Vida máxima no começo de cada turno. Acumula até {1}."
+      "info": "Perde {0} da Vida máxima no começo de cada turno. Não acumula."
     },
     "Stun": {
       "name": "Atordoamento",
@@ -289,6 +289,18 @@
     "SpeedUp": {
       "name": "Velocidade+",
       "info": "+{0} de Velocidade."
+    },
+    "DefenseBreak": {
+      "name": "Defesa−",
+      "info": "−{0} de Defesa."
+    },
+    "Bomb": {
+      "name": "Bomba",
+      "info": "Explode no começo do último turno dela, com {0} do Ataque de quem pôs. A explosão ignora a Defesa e nunca é crítica; o escudo absorve."
+    },
+    "Poison": {
+      "name": "Veneno",
+      "info": "Perde {0} da Vida máxima no começo de cada turno. Acumula até {1}."
     }
   },
 
@@ -439,8 +451,8 @@
     "level_up": "+1 nível ({0} Essência)",
     "level_up_tip": "Infunde Essência como experiência: {0} de experiência por Essência.",
     "max_level_button": "Até o nível {0} ({1} Essência)",
-    "evolve": "Evoluir para {0}: {1} Essência, {2} Fragmentos · nível máximo {3}",
-    "evolve_tip": "Ganha uma estrela e volta ao nível 1; o nível máximo passa a {0}.",
+    "evolve": "Evoluir para {0}: {1} Essência, {2} Fragmentos · mantém o nível, nível máximo {3}",
+    "evolve_tip": "Ganha uma estrela e mantém o nível; o nível máximo passa a {0}.",
     "awaken_button": "Despertar em {0} ({1} Essência)",
     "runes_button": "Runas",
     "store": "Guardar no Baú",
@@ -565,9 +577,9 @@
       "monsters": { "title": "Monstros e Baú", "text": "A coleção tem {0} vagas; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas." },
       "teams": { "title": "Equipes", "text": "Uma equipe de até {0} monstros para a Campanha e uma para cada Masmorra. A primeira é a Líder." },
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
-      "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela; o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
+      "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela: o monstro mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
       "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia repetida sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
-      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, desenho novo, estrelas roxas, +{3} de Vida e +{4} de Ataque e Defesa, e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {5}, {6}, {7} ou {8})." },
+      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, desenho novo, estrelas roxas e mais Vida, Ataque e Defesa (cada monstro tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
       "sanctuary": { "title": "Santuário e símbolos", "text": "Todo botão é um símbolo: passe o mouse para ver o nome. No centro do Santuário, o círculo de canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas; toque nele para coletar. As estrelas em volta são os seus atalhos: a pena deixa escolher quais. O Mapa leva à Campanha e às Masmorras; a Bolsa guarda monstros, runas, equipes, a Invocação e os livros." }
     },
     "combat": {

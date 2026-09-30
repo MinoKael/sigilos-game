@@ -11,19 +11,19 @@ namespace Sigilos.Core.Runes
 	/// </summary>
 	public static class RuneSets
 	{
-		/// <summary>Turnos do escudo do conjunto Escudo.</summary>
+		/// <summary>Turnos do escudo do conjunto Baluarte.</summary>
 		public const int ShieldTurns = 3;
 
-		/// <summary>Vingança: o contra-ataque causa esta fração do dano do básico.</summary>
+		/// <summary>Contragolpe: o contra-ataque causa esta fração do dano do básico.</summary>
 		public const double CounterDamage = 0.75;
 
-		/// <summary>Nêmesis: a cada tanta fração da Vida máxima perdida num golpe, o Ímpeto sobe.</summary>
+		/// <summary>Perdição: a cada tanta fração da Vida máxima perdida num golpe, o Ímpeto sobe.</summary>
 		public const double BaneStep = 0.07;
 
-		/// <summary>Destruição: fração do dano causado que vira Vida máxima perdida pelo alvo.</summary>
+		/// <summary>Oblívio: fração do dano causado que vira Vida máxima perdida pelo alvo.</summary>
 		public const double DestroyShare = 0.30;
 
-		/// <summary>Destruição: a Vida máxima do alvo nunca cai mais do que isto no total.</summary>
+		/// <summary>Oblívio: a Vida máxima do alvo nunca cai mais do que isto no total.</summary>
 		public const double DestroyLimit = 0.60;
 
 		public static readonly IReadOnlyList<RuneSetDefinition> All = new[]

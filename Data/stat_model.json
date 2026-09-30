@@ -1,0 +1,56 @@
+// The stat model: how the stats of every summon are calculated (docs/summon_family_stat_formula_spec.md).
+// Every summon of the same natural stars spends the same budget of BVP (Base Value Points), and its
+// role decides where:
+//   BVP = HP / hp_weight + ATK + DEF + SPD × spd_weight
+// "stat_budget" is the budget per natural stars; "awakened_stat_budget" is the budget after the
+// Awakening (its own budget, not a multiplier). "role_profiles" gives, per natural stars and role, the
+// shares of the budget left after Speed (HP, Attack and Defense; they are normalized) and the base
+// Speed. "element_bias" multiplies those shares and adds Speed per element: it moves stats around and
+// never adds any. "awakening_spd" is the Speed the Awakening adds. "base_stats" are the four stats
+// outside the budget, equal for every monster: they don't grow with level.
+// These are balance knobs. Change them here or in the "Modelo" tab of docs/summon_family_builder.html;
+// then open the project folder in the builder and use "Recalcular todas". The stats stored in
+// Data/summons/*_family.json and Data/enemies.json are final numbers at 6★ level 40: the game does not
+// calculate them, it only checks them against this file (Core/Content/StatModel.cs).
+{
+  "hp_weight": 15,
+  "spd_weight": 3,
+  "tolerance": 1,
+  "awakening_spd": 1,
+  "stat_budget": {"2": 1785, "3": 1944, "4": 2115, "5": 2277},
+  "awakened_stat_budget": {"2": 1953, "3": 2118, "4": 2286, "5": 2447},
+  "role_profiles": {
+    "2": {
+      "Attack": {"hp": 0.296, "atk": 0.415, "def": 0.296, "spd": 110},
+      "Defense": {"hp": 0.326, "atk": 0.304, "def": 0.37, "spd": 98},
+      "HP": {"hp": 0.356, "atk": 0.304, "def": 0.33, "spd": 100},
+      "Support": {"hp": 0.326, "atk": 0.311, "def": 0.365, "spd": 98}
+    },
+    "3": {
+      "Attack": {"hp": 0.32, "atk": 0.383, "def": 0.293, "spd": 101},
+      "Defense": {"hp": 0.347, "atk": 0.293, "def": 0.36, "spd": 98},
+      "HP": {"hp": 0.373, "atk": 0.307, "def": 0.32, "spd": 99},
+      "Support": {"hp": 0.353, "atk": 0.32, "def": 0.327, "spd": 102.5}
+    },
+    "4": {
+      "Attack": {"hp": 0.327, "atk": 0.382, "def": 0.297, "spd": 102},
+      "Defense": {"hp": 0.327, "atk": 0.309, "def": 0.358, "spd": 95},
+      "HP": {"hp": 0.376, "atk": 0.324, "def": 0.303, "spd": 99},
+      "Support": {"hp": 0.352, "atk": 0.315, "def": 0.327, "spd": 102}
+    },
+    "5": {
+      "Attack": {"hp": 0.322, "atk": 0.383, "def": 0.294, "spd": 100},
+      "Defense": {"hp": 0.328, "atk": 0.306, "def": 0.372, "spd": 100},
+      "HP": {"hp": 0.372, "atk": 0.328, "def": 0.303, "spd": 100},
+      "Support": {"hp": 0.349, "atk": 0.328, "def": 0.328, "spd": 100}
+    }
+  },
+  "element_bias": {
+    "Fire": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Water": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Wind": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Light": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Dark": {"hp": 1, "atk": 1, "def": 1, "spd": 0}
+  },
+  "base_stats": {"crit": 0.15, "crit_damage": 0.5, "resistance": 0.05, "accuracy": 0}
+}

@@ -4,8 +4,10 @@ namespace Sigilos.Core.Progression
 {
 	/// <summary>
 	/// Evoluir (GDD, seção 10): as estrelas naturais são só o começo, e todo monstro chega a 6★. No
-	/// nível máximo das estrelas de agora, paga Essência e Fragmentos, ganha uma estrela e volta ao
-	/// nível 1, com nível máximo 5 acima (<see cref="Growth.MaxLevel"/>).
+	/// nível máximo das estrelas de agora, paga Essência e Fragmentos e ganha uma estrela. O nível
+	/// fica: o monstro continua de onde estava, agora na faixa de atributos da estrela nova (os
+	/// atributos sobem na hora, <see cref="Growth.Fraction"/>) e com 5 níveis a mais pela frente
+	/// (<see cref="Growth.MaxLevel"/>).
 	/// </summary>
 	public static class Evolution
 	{
@@ -37,8 +39,6 @@ namespace Sigilos.Core.Progression
 			player.Essence -= essence;
 			player.Fragments -= fragments;
 			monster.Stars++;
-			//monster.Level = 1;
-			//monster.Experience = 0;
 			return true;
 		}
 	}

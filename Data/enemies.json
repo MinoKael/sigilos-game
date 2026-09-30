@@ -1,6 +1,9 @@
 // Unique creatures (GDD, section 5): the bosses, which don't exist as summons. Every other enemy of
 // the stages and Dungeons is a summon of Data/summons with buffed stats (Core/Battle/BattleFactory.cs).
 // Each enemy's element is chosen in the stage (Data/stages.json).
+// "stats" are the stats at 6★ level 40 that Data/stat_model.json gives to the boss's "rarity" (natural
+// stars) and "role", with no bias. Don't edit them by hand: docs/summon_family_builder.html rewrites
+// them ("Recalcular todas"), and the game checks them against the model.
 // "healthScale" and "attackScale" multiply HP and Attack: enemies have no runes or enhancements, and
 // bosses get more HP.
 [
@@ -9,6 +12,7 @@
     "name": "The Chain Master",
     "role": "Defense",
     "rarity": 3,
+    "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
     "healthScale": 5.6, "attackScale": 1.6,
     "image": "chain_master",
     "skills": [
@@ -27,6 +31,7 @@
     "name": "Runic Golem",
     "role": "HP",
     "rarity": 3,
+    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "rock_golem",
     "skills": [
@@ -45,6 +50,7 @@
     "name": "Elder Wyvern",
     "role": "Attack",
     "rarity": 3,
+    "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
     "healthScale": 5.4, "attackScale": 1.45,
     "image": "wyvern",
     "skills": [
@@ -63,6 +69,7 @@
     "name": "Bone King",
     "role": "Defense",
     "rarity": 3,
+    "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
     "healthScale": 6.8, "attackScale": 1.6,
     "image": "crowned_skull",
     "skills": [
@@ -80,6 +87,7 @@
     "name": "Drowned Guardian",
     "role": "Support",
     "rarity": 3,
+    "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
     "healthScale": 6.4, "attackScale": 1.55,
     "image": "kraken",
     "skills": [
@@ -98,6 +106,7 @@
     "name": "Forge Guardian",
     "role": "HP",
     "rarity": 3,
+    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "golem_head",
     "skills": [

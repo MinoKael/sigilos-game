@@ -1,0 +1,232 @@
+{
+  "family_id": "imp",
+  "base_name": "Imp",
+  "name": "Seal Imps",
+  "star_grade": 3,
+  "image": "imp",
+  "awakened_image": "imp_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "imp_fire",
+      "name": "Fire Imp",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Cinder",
+        "skill": {
+          "name": "Coward's Flight",
+          "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
+        }
+      },
+      "skills": [
+        {
+          "name": "Spark",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.93, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Broken Seal",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 6.3},
+            {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "imp_water",
+      "name": "Water Imp",
+      "element": "Water",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Gulp",
+        "skill": {
+          "name": "Deep Thirst",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 7.7, "drain": 0.8},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Frost Nip",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Seal's Thirst",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.25, "drain": 0.5}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "imp_wind",
+      "name": "Wind Imp",
+      "element": "Wind",
+      "role": "Defense",
+      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "awakening": {
+        "name": "Eddy",
+        "skill": {
+          "name": "Coward's Flight",
+          "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
+        }
+      },
+      "skills": [
+        {
+          "name": "Spin",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Whirlwind",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "imp_light",
+      "name": "Light Imp",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Glint",
+        "skill": {
+          "name": "Radiant Omen",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 45},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Flash",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Impeto", "target": "Target", "power": -15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Foresee",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "imp_dark",
+      "name": "Dark Imp",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Murk",
+        "skill": {
+          "name": "Coward's Flight",
+          "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
+        }
+      },
+      "skills": [
+        {
+          "name": "Shadow Strike",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Vanish into the Seal",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Hidden"},
+            {"kind": "Impeto", "target": "Self", "power": 30}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

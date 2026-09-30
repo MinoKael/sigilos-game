@@ -17,15 +17,15 @@ namespace Sigilos.GameEntry
 
 		public static GameDatabase Load()
 		{
-			var summons = DirAccess.GetFilesAt($"{DataFolder}/summons")
+			// Um arquivo por família, com as variantes dela dentro.
+			var families = DirAccess.GetFilesAt($"{DataFolder}/summons")
 				.Where(file => file.EndsWith(".json"))
 				.OrderBy(file => file)
 				.Select(file => Read($"summons/{file}"));
 
 			var database = GameDatabase.FromJson(
-				roles: Read("roles.json"),
-				families: Read("families.json"),
-				summons: summons,
+				statModel: Read("stat_model.json"),
+				families: families,
 				enemies: Read("enemies.json"),
 				stages: Read("stages.json"),
 				dungeons: Read("dungeons.json"),

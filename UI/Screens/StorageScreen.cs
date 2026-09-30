@@ -419,7 +419,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(actions);
 
 			_detail.AddChild(new HSeparator { Name = "StatsLine" });
-			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Stars, monster.Level, monster.Awakened, _player.RunesOn(monster.Id));
+			var sheet = SummonStats.For(summon, monster.Stars, monster.Level, monster.Awakened, _player.RunesOn(monster.Id));
 			var table = new StatTable { Name = "Stats" };
 			table.Show(sheet);
 			_detail.AddChild(table);
@@ -428,7 +428,7 @@ namespace Sigilos.UI.Screens
 		private void RunesPage(SummonDefinition summon, OwnedSummon monster)
 		{
 			var runes = _player.RunesOn(monster.Id);
-			var sheet = SummonStats.For(_database.Roles[summon.Role], summon, monster.Stars, monster.Level, monster.Awakened, runes);
+			var sheet = SummonStats.For(summon, monster.Stars, monster.Level, monster.Awakened, runes);
 
 			var ring = new SigilRing(340) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
 			var tiles = new List<Control>();
@@ -491,11 +491,8 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(name);
 
 			var gains = Layout.Row(8, true).Named("Gains");
-			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Health), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)).Named(nameof(Stat.Health)));
-			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Attack), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)).Named(nameof(Stat.Attack)));
-			gains.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Defense), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)).Named(nameof(Stat.Defense)));
-			if (summon.Awakening.Stat is { } stat)
-				gains.AddChild(Layout.Chip(Texts.GlyphOf(stat), Texts.AwakeningAmount(stat), Texts.Name(stat)).Named($"Bonus{stat}"));
+			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
+				gains.AddChild(Layout.Chip(Texts.GlyphOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
 			_detail.AddChild(gains);
 
 			if (summon.Awakening.Skill is { } skill)

@@ -69,7 +69,7 @@ namespace Sigilos.Tests
 		private static void PowerUpNeverFailsAndAddsSubstatsUntilFour()
 		{
 			var random = new Random(3);
-			var rune = Rune(RuneSet.Swift, 2, RuneStat.Speed);
+			var rune = Rune(RuneSet.Haste, 2, RuneStat.Speed);
 			Assert.Equal(RuneRarity.Normal, rune.Rarity, "sem subatributo é Normal");
 
 			for (var level = 1; level <= RuneRules.MaxLevel; level++)
@@ -90,7 +90,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void LegendaryRuneGrowsAnExistingSubstat()
 		{
-			var rune = Rune(RuneSet.Violent, 2, RuneStat.Speed, 6, 2,
+			var rune = Rune(RuneSet.Frenzy, 2, RuneStat.Speed, 6, 2,
 				Sub(RuneStat.Crit, 0.05), Sub(RuneStat.AttackPercent, 0.05), Sub(RuneStat.HealthPercent, 0.05), Sub(RuneStat.Accuracy, 0.05));
 			RuneForge.RaiseLevel(new Random(1), rune);
 			Assert.Equal(4, rune.Substats.Count, "continua com 4");
@@ -104,11 +104,11 @@ namespace Sigilos.Tests
 			Assert.Equal(32700, RuneRules.UpgradeCost(6, 14), "6★ +14→+15: 16350 da tabela com 5% de chance");
 
 			// A tabela de custo médio dá 894.206 para uma 6★ de +0 a +15: 89.421 de Essência.
-			var full = RuneRules.UpgradeCost(Rune(RuneSet.Energy, 1, RuneStat.AttackFlat), RuneRules.MaxLevel);
+			var full = RuneRules.UpgradeCost(Rune(RuneSet.Vigor, 1, RuneStat.AttackFlat), RuneRules.MaxLevel);
 			Assert.True(full >= 89421 && full <= 89421 + RuneRules.MaxLevel, $"6★ +0→+15 custa {full}");
 
 			var player = new PlayerState();
-			var rune = Rune(RuneSet.Energy, 1, RuneStat.AttackFlat, grade: 3);
+			var rune = Rune(RuneSet.Vigor, 1, RuneStat.AttackFlat, grade: 3);
 			player.Essence = RuneRules.UpgradeCost(rune, 6) - 1;
 			Assert.False(RuneInventory.Upgrade(new Random(1), player, rune, 6), "sem Essência para o caminho todo não melhora");
 			Assert.Equal(0, rune.Level, "nada mudou");
@@ -126,12 +126,12 @@ namespace Sigilos.Tests
 			var baseStats = new StatBlock { Health = 1001, Attack = 100, Defense = 100, Speed = 100 };
 			var runes = new List<Rune>
 			{
-				Rune(RuneSet.Energy, 2, RuneStat.HealthPercent, level: 15),
-				Rune(RuneSet.Energy, 4, RuneStat.AttackPercent, level: 15),
-				Rune(RuneSet.Swift, 1, RuneStat.AttackFlat, level: 15),
-				Rune(RuneSet.Swift, 3, RuneStat.DefenseFlat, level: 15),
-				Rune(RuneSet.Swift, 5, RuneStat.HealthFlat, level: 15),
-				Rune(RuneSet.Swift, 6, RuneStat.Accuracy, level: 15),
+				Rune(RuneSet.Vigor, 2, RuneStat.HealthPercent, level: 15),
+				Rune(RuneSet.Vigor, 4, RuneStat.AttackPercent, level: 15),
+				Rune(RuneSet.Haste, 1, RuneStat.AttackFlat, level: 15),
+				Rune(RuneSet.Haste, 3, RuneStat.DefenseFlat, level: 15),
+				Rune(RuneSet.Haste, 5, RuneStat.HealthFlat, level: 15),
+				Rune(RuneSet.Haste, 6, RuneStat.Accuracy, level: 15),
 			};
 
 			var bonus = RuneBonuses.Compute(baseStats, runes);
@@ -146,7 +146,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void ThreeTwoPieceSetsCountThreeTimes()
 		{
-			var runes = Enumerable.Range(1, 6).Select(slot => Rune(RuneSet.Guard, slot, RuneRules.MainOptions(slot)[0], grade: 1)).ToList();
+			var runes = Enumerable.Range(1, 6).Select(slot => Rune(RuneSet.Ward, slot, RuneRules.MainOptions(slot)[0], grade: 1)).ToList();
 			var bonus = RuneBonuses.Compute(new StatBlock { Defense = 1000 }, runes);
 			Assert.Equal(3, bonus.ActiveSets.Count, "três Guardas");
 			Assert.True(bonus.Stats.Defense >= 450, "+45% de Defesa dos conjuntos");
@@ -157,8 +157,8 @@ namespace Sigilos.Tests
 		{
 			var player = TestData.PlayerWith("imp_fire", "imp_water");
 			var (a, b) = (player.Monsters[0].Id, player.Monsters[1].Id);
-			var small = Rune(RuneSet.Energy, 2, RuneStat.Speed, grade: 3);
-			var big = Rune(RuneSet.Swift, 2, RuneStat.Speed, grade: 5);
+			var small = Rune(RuneSet.Vigor, 2, RuneStat.Speed, grade: 3);
+			var big = Rune(RuneSet.Haste, 2, RuneStat.Speed, grade: 5);
 			player.Runes.AddRange(new[] { small, big });
 
 			Assert.True(RuneInventory.Equip(player, small, a), "espaço vazio");
@@ -193,7 +193,7 @@ namespace Sigilos.Tests
 		private static void RuneKeepsTheHistoryOfEveryRoll()
 		{
 			var random = new Random(8);
-			var rune = Rune(RuneSet.Fatal, 2, RuneStat.Speed, 6, 0, Sub(RuneStat.AttackPercent, 0.05));
+			var rune = Rune(RuneSet.Lethal, 2, RuneStat.Speed, 6, 0, Sub(RuneStat.AttackPercent, 0.05));
 			for (var level = 1; level <= 12; level++)
 				RuneForge.RaiseLevel(random, rune);
 
@@ -209,14 +209,14 @@ namespace Sigilos.Tests
 		{
 			var runes = new List<Rune>
 			{
-				Rune(RuneSet.Violent, 2, RuneStat.Speed, 6, 12, Sub(RuneStat.Crit, 0.05)),
-				Rune(RuneSet.Violent, 4, RuneStat.CritDamage, 5, 3, Sub(RuneStat.Speed, 5)),
-				Rune(RuneSet.Energy, 2, RuneStat.HealthPercent, 6, 0, Sub(RuneStat.Speed, 4), Sub(RuneStat.Crit, 0.04)),
+				Rune(RuneSet.Frenzy, 2, RuneStat.Speed, 6, 12, Sub(RuneStat.Crit, 0.05)),
+				Rune(RuneSet.Frenzy, 4, RuneStat.CritDamage, 5, 3, Sub(RuneStat.Speed, 5)),
+				Rune(RuneSet.Vigor, 2, RuneStat.HealthPercent, 6, 0, Sub(RuneStat.Speed, 4), Sub(RuneStat.Crit, 0.04)),
 			};
 			for (var i = 0; i < runes.Count; i++)
 				runes[i].Id = i + 1;
 
-			var violent = new RuneFilter { Set = RuneSet.Violent }.Apply(runes).Select(r => r.Id);
+			var violent = new RuneFilter { Set = RuneSet.Frenzy }.Apply(runes).Select(r => r.Id);
 			Assert.Equal("1,2", string.Join(",", violent), "conjunto, mais estrelas primeiro");
 
 			var speedAndCrit = new RuneFilter { Substats = new[] { RuneStat.Speed, RuneStat.Crit } }.Apply(runes).Select(r => r.Id);
@@ -232,7 +232,7 @@ namespace Sigilos.Tests
 		private static void GrindstoneRaisesOnlyItsStatAndReplacesTheOldBonus()
 		{
 			var random = new Random(2);
-			var rune = Rune(RuneSet.Fatal, 2, RuneStat.Speed, substats: new[] { Sub(RuneStat.AttackPercent, 0.05), Sub(RuneStat.Crit, 0.05) });
+			var rune = Rune(RuneSet.Lethal, 2, RuneStat.Speed, substats: new[] { Sub(RuneStat.AttackPercent, 0.05), Sub(RuneStat.Crit, 0.05) });
 			var hero = new RuneTool(RuneToolKind.Grindstone, RuneStat.AttackPercent, RuneRarity.Hero);
 
 			Assert.False(RuneForge.CanGrind(rune, 1, hero), "pedra de Ataque% não serve no Crítico");
@@ -257,7 +257,7 @@ namespace Sigilos.Tests
 		private static void GemNeedsPlusTwelveAndOnlyOneSubstatPerRune()
 		{
 			var random = new Random(4);
-			var rune = Rune(RuneSet.Violent, 1, RuneStat.AttackFlat, 6, 11,
+			var rune = Rune(RuneSet.Frenzy, 1, RuneStat.AttackFlat, 6, 11,
 				Sub(RuneStat.HealthFlat, 300), Sub(RuneStat.Crit, 0.05), Sub(RuneStat.Speed, 5), Sub(RuneStat.Resistance, 0.05));
 			var gem = new RuneTool(RuneToolKind.Gem, RuneStat.CritDamage, RuneRarity.Legendary);
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Battle.Passives;
+using Sigilos.Core.Battle.Sets;
 using Sigilos.Core.Content;
 using Sigilos.Core.Runes;
 
@@ -8,12 +10,17 @@ namespace Sigilos.Core.Battle
 {
 	/// <summary>
 	/// Uma invocação ou inimigo em campo. Guarda o estado que muda durante a luta (Vida, Ímpeto,
-	/// efeitos, recarga) e calcula os atributos de agora a partir dos efeitos ativos.
+	/// efeitos, recarga) e as regras em vigor nela: os efeitos de status, os conjuntos de runas e a
+	/// Passiva (<see cref="Rules"/>). Os atributos de agora saem da ficha passada por essas regras.
 	/// Quem decide o que acontece com ela é o <see cref="BattleSession"/>.
 	/// </summary>
 	public sealed class BattleUnit
 	{
 		private readonly List<StatusEffect> _statuses = new();
+
+		/// <summary>As regras que valem a luta inteira: os conjuntos de runas e, por último, a Passiva.</summary>
+		private readonly List<UnitRule> _innate = new();
+
 		private readonly int[] _cooldowns;
 
 		public BattleUnit(
@@ -42,6 +49,12 @@ namespace Sigilos.Core.Battle
 			Passive = passive;
 			RuneEffects = runeEffects;
 			Health = stats.Health;
+
+			_innate.AddRange(SetBehaviors.RulesFor(runeEffects));
+			if (passive != null)
+				_innate.Add(new UnitRule(PassiveBehaviors.Of(passive.Kind), PassiveValue));
+			foreach (var rule in _innate)
+				rule.Owner = this;
 		}
 
 		/// <summary>Id da invocação ou do inimigo em Data/.</summary>
@@ -67,12 +80,12 @@ namespace Sigilos.Core.Battle
 		/// <summary>O número da Passiva, já melhorado se a invocação despertou.</summary>
 		public double PassiveValue => Passive?.ValueFor(Awakened) ?? 0;
 
-		/// <summary>O que os conjuntos de runas fazem em combate (Vampiro, Desespero, Violento...).</summary>
+		/// <summary>O que os conjuntos de runas completos fazem em combate, já somado.</summary>
 		public RuneSetEffects RuneEffects { get; }
 
 		public double Health { get; set; }
 
-		/// <summary>Vida máxima que o conjunto Destruição de um inimigo já tirou.</summary>
+		/// <summary>Vida máxima que o conjunto Oblívio de um inimigo já tirou.</summary>
 		public double HealthDestroyed { get; set; }
 
 		public double MaxHealth => Stats.Health - HealthDestroyed;
@@ -94,50 +107,40 @@ namespace Sigilos.Core.Battle
 		/// <summary>A básica está sempre pronta; as outras, fora da recarga.</summary>
 		public bool IsReady(int index) => index >= 0 && index < Skills.Count && Cooldown(index) == 0;
 
-		public bool RebirthUsed { get; set; }
-
-		/// <summary>O Violento deu um turno extra: o próximo turno desta unidade é ele.</summary>
+		/// <summary>Ganhou um turno extra: o próximo turno desta unidade é ele.</summary>
 		public bool ExtraTurnPending { get; set; }
 
-        /// <summary>Caída, mas renasce quando o Ímpeto dela encher (Passiva da Fênix).</summary>
-        public bool PendingRebirth { get; set; }
+		/// <summary>Com que fração da Vida máxima a unidade caída volta quando o Ímpeto dela encher. 0: não volta.</summary>
+		public double RevivalHealth { get; internal set; }
+
+		/// <summary>Caída, mas volta no próximo turno dela.</summary>
+		public bool Reviving => !IsAlive && RevivalHealth > 0;
 
 		/// <summary>O próprio time (inclui ela mesma). Ligado pelo <see cref="BattleFactory"/>.</summary>
 		public IReadOnlyList<BattleUnit> Team { get; internal set; } = Array.Empty<BattleUnit>();
 
 		public IReadOnlyList<StatusEffect> Statuses => _statuses;
 
-		/// <summary>Está na barra de Ímpeto: viva, ou caída esperando renascer.</summary>
-		public bool CanTakeTurn => IsAlive || PendingRebirth;
+		/// <summary>Está na barra de Ímpeto: viva, ou caída esperando voltar.</summary>
+		public bool CanTakeTurn => IsAlive || Reviving;
 
-		/// <summary>Velocidade de agora, com efeitos e Passiva. A barra enche em proporção a ela.</summary>
-		public double TurnSpeed
+		/// <summary>Velocidade de agora. A barra enche em proporção a ela.</summary>
+		public double TurnSpeed => Math.Max(1, Current(Stat.Speed));
+
+		public double Attack => Current(Stat.Attack);
+
+		public double Defense => Current(Stat.Defense);
+
+		/// <summary>O atributo de agora: o da ficha, passado por cada regra em vigor (Ataque+, Quebra de Defesa...).</summary>
+		public double Current(Stat stat)
 		{
-			get
-			{
-				var speed = Stats.Speed;
-				if (Has(StatusKind.SpeedUp))
-					speed *= 1 + BattleRules.SpeedUpBonus;
-				if (Passive?.Kind == PassiveKind.SpeedWhenLowest && IsLowestInTeam())
-					speed *= 1 + PassiveValue;
-				return Math.Max(1, speed);
-			}
+			var value = Stats.Get(stat);
+			foreach (var status in _statuses)
+				value = status.Behavior.Modify(status, stat, value);
+			foreach (var rule in _innate)
+				value = rule.Behavior.Modify(rule, stat, value);
+			return value;
 		}
-
-		public double Attack
-		{
-			get
-			{
-				var attack = Stats.Attack;
-				if (Has(StatusKind.AttackUp))
-					attack *= 1 + BattleRules.AttackUpBonus;
-				if (Has(StatusKind.AttackDown))
-					attack *= 1 - BattleRules.AttackDownPenalty;
-				return attack;
-			}
-		}
-
-		public double Defense => Has(StatusKind.DefenseUp) ? Stats.Defense * (1 + BattleRules.DefenseUpBonus) : Stats.Defense;
 
 		public SkillDefinition Skill(int index) => Skills[index >= 0 && index < Skills.Count ? index : 0];
 
@@ -157,9 +160,85 @@ namespace Sigilos.Core.Battle
 
 		public int Count(StatusKind kind) => _statuses.Count(s => s.Kind == kind);
 
-		internal void AddStatus(StatusEffect status) => _statuses.Add(status);
+		// Regras --------------------------------------------------------------------------------------
 
-		internal void RemoveStatus(StatusEffect status) => _statuses.Remove(status);
+		/// <summary>
+		/// As regras em vigor, na ordem em que são avisadas: os efeitos de status como chegaram, depois os
+		/// conjuntos de runas e a Passiva. Percorre uma cópia, porque uma regra pode tirar outra (ou a si
+		/// mesma) no meio de um momento da luta; a que saiu antes da vez dela não é avisada.
+		/// </summary>
+		internal IEnumerable<UnitRule> Rules()
+		{
+			var rules = new List<UnitRule>(_statuses.Count + _innate.Count);
+			rules.AddRange(_statuses);
+			rules.AddRange(_innate);
+
+			foreach (var rule in rules)
+			{
+				if (Holds(rule))
+					yield return rule;
+			}
+		}
+
+		/// <summary>A regra ainda está na unidade.</summary>
+		internal bool Holds(UnitRule rule) => rule is StatusEffect status ? _statuses.Contains(status) : _innate.Contains(rule);
+
+		/// <summary>Alguma regra em vigor tem esta característica (perde o turno, está oculta...).</summary>
+		internal bool Any(Func<UnitBehavior, bool> trait)
+		{
+			foreach (var status in _statuses)
+			{
+				if (trait(status.Behavior))
+					return true;
+			}
+
+			foreach (var rule in _innate)
+			{
+				if (trait(rule.Behavior))
+					return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>A regra desta estratégia que vale a luta inteira (conjunto de runas ou Passiva), se a unidade tem.</summary>
+		internal UnitRule? Innate(UnitBehavior behavior) => _innate.FirstOrDefault(rule => rule.Behavior == behavior);
+
+		/// <summary>Quanto as regras da unidade multiplicam o dano que ela recebe.</summary>
+		internal double DamageTaken()
+		{
+			double factor = 1;
+			foreach (var status in _statuses)
+				factor *= status.Behavior.DamageTaken(status);
+			foreach (var rule in _innate)
+				factor *= rule.Behavior.DamageTaken(rule);
+			return factor;
+		}
+
+		/// <summary>Quanto as regras da unidade multiplicam o dano dos golpes dela em <paramref name="target"/>.</summary>
+		internal double DamageDealt(BattleUnit target)
+		{
+			double factor = 1;
+			foreach (var status in _statuses)
+				factor *= status.Behavior.DamageDealt(status, target);
+			foreach (var rule in _innate)
+				factor *= rule.Behavior.DamageDealt(rule, target);
+			return factor;
+		}
+
+		internal void AddStatus(StatusEffect status)
+		{
+			status.Owner = this;
+			_statuses.Add(status);
+		}
+
+		internal void Remove(UnitRule rule)
+		{
+			if (rule is StatusEffect status)
+				_statuses.Remove(status);
+			else
+				_innate.Remove(rule);
+		}
 
 		internal void ClearStatuses() => _statuses.Clear();
 
@@ -177,17 +256,10 @@ namespace Sigilos.Core.Battle
 					status.Turns--;
 			}
 
-			var expired = _statuses.Where(s => s.Turns <= 0 || (s.Kind == StatusKind.Shield && s.Value <= 0)).ToList();
+			var expired = _statuses.Where(s => s.Turns <= 0).ToList();
 			foreach (var status in expired)
 				_statuses.Remove(status);
 			return expired;
-		}
-
-		/// <summary>Estritamente a menos Vida: empate (todos cheios no começo da luta) não conta.</summary>
-		private bool IsLowestInTeam()
-		{
-			var others = Team.Where(u => u.IsAlive && u != this).ToList();
-			return others.Count > 0 && others.All(u => u.HealthFraction > HealthFraction);
 		}
 	}
 }

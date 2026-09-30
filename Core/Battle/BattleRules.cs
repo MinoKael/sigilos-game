@@ -1,4 +1,5 @@
 using System;
+using Sigilos.Core.Battle.Statuses;
 using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Battle
@@ -50,17 +51,11 @@ namespace Sigilos.Core.Battle
 		/// <summary>Duração da Queimadura que a Passiva dos Dragões põe.</summary>
 		public const int BurnOnHitTurns = 2;
 
-		/// <summary>Efeitos negativos: a Resistência do alvo pode barrar, a Imunidade barra sempre e a Purificação remove.</summary>
-		public static bool IsNegative(StatusKind status) => status is
-			StatusKind.Burn or
-			StatusKind.Stun or
-			StatusKind.Taunt or
-			StatusKind.Curse or
-			StatusKind.Blind or
-			StatusKind.AttackDown or
-			StatusKind.DefenseBreak or
-			StatusKind.Bomb or
-			StatusKind.Poison;
+		/// <summary>
+		/// Efeitos negativos: a Resistência do alvo pode barrar, a Imunidade barra sempre e a Purificação
+		/// remove. Quem diz é a estratégia de cada efeito (Statuses/StatusBehaviors).
+		/// </summary>
+		public static bool IsNegative(StatusKind status) => StatusBehaviors.Of(status).Harmful;
 
 		/// <summary>
 		/// Chance de barrar um efeito negativo: Resistência do alvo (até 100%) menos a

@@ -13,13 +13,15 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void EveryFamilyHasFiveElements()
+		private static void EveryFamilyHasUpToOneVariantPerElement()
 		{
 			var database = TestData.LoadReal();
+			Assert.True(database.Families.Count > 0, "Data/summons tem famílias");
 			foreach (var family in database.Families)
 			{
-				var elements = database.Summons.Where(s => s.FamilyId == family.Id).Select(s => s.Element).Distinct().Count();
-				Assert.Equal(5, elements, $"elementos da família {family.Id}");
+				var elements = database.Summons.Where(s => s.FamilyId == family.Id).Select(s => s.Element).ToList();
+				Assert.True(elements.Count is >= 1 and <= 5, $"família {family.Id}: de 1 a 5 variantes");
+				Assert.Equal(elements.Count, elements.Distinct().Count(), $"família {family.Id}: uma variante por elemento");
 			}
 		}
 

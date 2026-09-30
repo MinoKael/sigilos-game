@@ -205,7 +205,7 @@ namespace Sigilos.UI.Screens
 				return;
 
 			var chosenSummon = _database.Summon(chosen.SummonId);
-			var sheet = SummonStats.For(_database.Roles[chosenSummon.Role], chosenSummon, chosen.Stars, chosen.Level, chosen.Awakened, _player.RunesOn(chosen.Id));
+			var sheet = SummonStats.For(chosenSummon, chosen.Stars, chosen.Level, chosen.Awakened, _player.RunesOn(chosen.Id));
 			if (sheet.Runes.ActiveSets.Count > 0)
 			{
 				var sets = Layout.Flow(6).Named("Sets");

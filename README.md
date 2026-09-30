@@ -37,7 +37,8 @@ dotnet run --project Tests -- --fight=10
 
 `--simulate` roda cada fase e cada andar de Masmorra 40 vezes no automático e mostra vitórias,
 rodadas e vida que sobra: é a ferramenta de balanceamento. `--fight=N` imprime uma luta da fase N
-turno a turno.
+turno a turno. `--digest` resume mais de mil lutas de semente fixa, uma por linha: rode antes e depois
+de mexer no código do combate para conferir que nenhuma luta mudou.
 
 Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro save;
 `--language=nome` usa `Data/texts/nome.json` (padrão: `en`; `pt-BR` para português);
@@ -47,6 +48,16 @@ O idioma também pode ser trocado no jogo, na engrenagem do Santuário (fica sal
 Depuração visual da interface, com o jogo rodando: Ctrl+F1 contornos, Ctrl+F2 nomes, Ctrl+F3 valores
 ao vivo, Ctrl+F4 origem no código (a mesma tecla desliga). É o addon `addons/visual_debugger`, que só
 liga em build de depuração. Nó sem nome aparece em cinza, e a barra do topo conta quantos há na tela.
+
+## Invocações novas
+
+Abra [docs/summon_family_builder.html](docs/summon_family_builder.html) no Chrome ou no Edge e clique
+em "Abrir pasta do projeto". O construtor edita uma família (até 5 variantes, uma por elemento), calcula
+os atributos pelo modelo de BVP e salva `Data/summons/<familia>_family.json`. Os parâmetros do modelo
+(orçamento por estrelas, perfis de papel, pesos, vieses) são editáveis na aba Modelo e moram em
+`Data/stat_model.json`; depois de mudar, "Recalcular todas" refaz os atributos do jogo inteiro. O jogo
+não calcula atributo: lê o número pronto e confere contra o modelo (os testes acusam o que não bate).
+A fórmula está em [docs/summon_family_stat_formula_spec.md](docs/summon_family_stat_formula_spec.md).
 
 ## Textos e tradução
 
@@ -64,7 +75,7 @@ py Tools/texts/check_texts.py
 | Pasta | O que tem | Depende de |
 | --- | --- | --- |
 | `Core/` | Regras do jogo em C# puro, sem Godot | nada |
-| `Data/` | Conteúdo em JSON: papéis, famílias, invocações, inimigos, fases, Masmorras e os textos da interface | — |
+| `Data/` | Conteúdo em JSON: o modelo de atributos, as famílias de invocação (um arquivo por família), chefes, fases, Masmorras e os textos da interface | — |
 | `UI/` | Telas e componentes Godot. Mostram e avisam por evento | Core |
 | `GameEntry/` | Nó raiz: carrega dados e save, troca telas, aplica regras | Core, UI |
 | `Assets/` | SVGs do Wikimedia Commons e o shader de traço | — |

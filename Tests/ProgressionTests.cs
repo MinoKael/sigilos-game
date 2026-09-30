@@ -81,14 +81,43 @@ namespace Sigilos.Tests
 			player.Fragments = fragments;
 			Assert.True(Evolution.Evolve(player, monster), "evolui");
 			Assert.Equal(4, monster.Stars, "ganha uma estrela");
-			Assert.Equal(1, monster.Level, "volta ao nível 1");
+			Assert.Equal(25, monster.Level, "mantém o nível");
+			Assert.Equal(0, monster.Experience, "e começa o nível seguinte do zero");
 			Assert.Equal(30, Leveling.MaxLevel(monster), "o máximo sobe para 30");
+			Assert.True(Growth.Fraction(4, 25) > Growth.Fraction(3, 25), "no mesmo nível, a estrela nova tem mais atributos");
+			Assert.False(Evolution.IsReady(monster), "só evolui de novo no nível 30");
+			Assert.True(Leveling.ExperienceToNext(monster) > 0, "e volta a ganhar experiência");
 			Assert.Equal(1_000_000 - essence, player.Essence, "paga a Essência");
 			Assert.Equal(0, player.Fragments, "e os Fragmentos");
 
 			monster.Stars = 6;
 			monster.Level = 40;
 			Assert.False(Evolution.IsReady(monster), "6★ é o máximo");
+		}
+
+		[Test]
+		private static void EvolvedMonstersOnlyClimbTheNewLevels()
+		{
+			// Do 3★ nível 1 ao 6★ nível 40: a estrela natural inteira e, de cada evolução, só os 5 níveis novos.
+			var player = NewPlayer();
+			var monster = Roster.Add(player, TestData.Summon("imp_fire"));
+			player.Essence = 1_000_000;
+			player.Fragments = 1_000;
+
+			var experience = 0;
+			do
+			{
+				var missing = Leveling.MissingToMax(monster);
+				experience += missing;
+				Leveling.AddExperience(monster, missing);
+				Assert.True(Leveling.IsMaxLevel(monster), $"{monster.Stars}★ chega ao nível máximo");
+			}
+			while (Evolution.Evolve(player, monster));
+
+			Assert.Equal(6, monster.Stars, "evolui até 6★");
+			Assert.Equal(40, monster.Level, "e chega ao nível 40");
+			Assert.Equal(858_795, experience, "a experiência de um 3★ natural até o 6★ nível 40");
+			Assert.True(experience < Leveling.TotalFor(6), "menos do que um 6★ levaria do nível 1 ao 40");
 		}
 
 		[Test]
@@ -106,15 +135,17 @@ namespace Sigilos.Tests
 			Assert.False(Awakening.Awaken(player, monster, summon), "sem Essência não desperta");
 
 			player.Essence = Awakening.Cost(summon.Rarity);
-			var before = SummonStats.For(database.Roles[summon.Role], summon, 5, 10, false, Array.Empty<Core.Runes.Rune>()).Total;
+			var before = SummonStats.For(summon, 5, 10, false, Array.Empty<Core.Runes.Rune>()).Total;
 			Assert.True(Awakening.Awaken(player, monster, summon), "desperta");
 			Assert.True(monster.Awakened, "marcado como desperto");
 			Assert.False(Awakening.Awaken(player, monster, summon), "desperta uma vez só");
 
-			var after = SummonStats.For(database.Roles[summon.Role], summon, 5, 10, true, Array.Empty<Core.Runes.Rune>()).Total;
+			var after = SummonStats.For(summon, 5, 10, true, Array.Empty<Core.Runes.Rune>()).Total;
 			var stat = summon.Awakening.Stat!.Value;
-			Assert.Near(Math.Round(before.Health * (1 + Awakening.HealthBonus)), after.Health, "+20% de Vida");
-			Assert.Near(Math.Round(before.Attack * (1 + Awakening.AttackDefenseBonus)), after.Attack, "+7% de Ataque");
+			var fraction = Growth.Fraction(5, 10);
+			Assert.Near(Math.Round(summon.AwakenedStats.Health * fraction), after.Health, "a Vida desperta é a do arquivo, no nível de agora");
+			Assert.Near(Math.Round(summon.AwakenedStats.Attack * fraction), after.Attack, "o Ataque também");
+			Assert.True(after.Health > before.Health && after.Attack > before.Attack && after.Defense > before.Defense, "desperto, Vida, Ataque e Defesa sobem");
 			Assert.Near(before.Get(stat) + Awakening.Bonus(stat), after.Get(stat), "o bônus da variante", 1e-9);
 			Assert.Equal(summon.Awakening.Name, summon.NameFor(true), "nome próprio");
 		}
@@ -147,20 +178,26 @@ namespace Sigilos.Tests
 		{
 			Assert.Near(0.221, Growth.Fraction(3, 1), "3★ no nível 1");
 			Assert.Near(0.398, Growth.Fraction(3, 25), "3★ no nível 25");
-			Assert.Near(0.318, Growth.Fraction(4, 1), "evoluir volta abaixo do máximo anterior");
+			Assert.Near(0.318, Growth.Fraction(4, 1), "4★ no nível 1: abaixo do máximo do 3★");
+			Assert.Near(0.318 + (0.541 - 0.318) * 24 / 29, Growth.Fraction(4, 25), "4★ no nível 25: onde fica quem acabou de evoluir", 1e-9);
 			Assert.Near(0.433, Growth.Fraction(5, 1), "5★ no nível 1");
 			Assert.Near(1.0, Growth.Fraction(6, 40), "6★ no nível 40");
 			Assert.Equal(25, Growth.MaxLevel(3), "3★ vai até o 25");
 			Assert.Equal(40, Growth.MaxLevel(6), "6★ vai até o 40");
-			Assert.Near(0.85, Growth.RarityFactor(3), "3★ natural no 6★ nível 40");
 
-			var roles = TestData.LoadReal().Roles;
-			foreach (var role in roles.Values)
+			// Os quatro atributos fora do orçamento são iguais para todo monstro: vêm do modelo.
+			var database = TestData.Database;
+			foreach (var summon in database.Summons)
 			{
-				Assert.Near(0.15, role.Crit, "Crítico de base 15%");
-				Assert.Near(0.5, role.CritDamage, "Dano crítico de base 50%");
-				Assert.Near(0, role.Accuracy, "Precisão de base 0%");
+				Assert.Near(0.15, summon.Stats.Crit, $"{summon.Id}: Crítico de base 15%");
+				Assert.Near(0.5, summon.Stats.CritDamage, $"{summon.Id}: Dano crítico de base 50%");
+				Assert.Near(0, summon.AwakenedStats.Accuracy, $"{summon.Id}: Precisão de base 0%");
 			}
+
+			var phoenix = database.Summon("phoenix_fire");
+			var top = Growth.Stats(phoenix.Stats, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars));
+			Assert.Near(phoenix.Stats.Health, top.Health, "no 6★ nível 40, os atributos são os do arquivo");
+			Assert.Near(phoenix.Stats.Speed, Growth.Stats(phoenix.Stats, 5, 1).Speed, "a Velocidade não muda com o nível");
 		}
 
 		[Test]

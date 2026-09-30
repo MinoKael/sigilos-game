@@ -1,0 +1,232 @@
+{
+  "family_id": "wolf",
+  "base_name": "Wolf",
+  "name": "Wolves",
+  "star_grade": 3,
+  "image": "wolf",
+  "awakened_image": "wolf_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "wolf_fire",
+      "name": "Fire Wolf",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Cinderfang",
+        "skill": {
+          "name": "Hunter's Instinct",
+          "passive": {"kind": "BonusVsWounded", "value": 0.4}
+        }
+      },
+      "skills": [
+        {
+          "name": "Ember Bite",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Blazing Rush",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "wolf_water",
+      "name": "Water Wolf",
+      "element": "Water",
+      "role": "HP",
+      "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+      "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
+      "awakening": {
+        "name": "Frostmane",
+        "skill": {
+          "name": "Iron Pack",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Cold Bite",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Pack Guard",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "wolf_wind",
+      "name": "Wind Wolf",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Gustpaw",
+        "skill": {
+          "name": "Hunter's Instinct",
+          "passive": {"kind": "BonusVsWounded", "value": 0.4}
+        }
+      },
+      "skills": [
+        {
+          "name": "Bite",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Howl",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 25}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "wolf_light",
+      "name": "Light Wolf",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Moonfur",
+        "skill": {
+          "name": "Full Moon",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.25},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Radiant Bite",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Moon Howl",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.15},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "wolf_dark",
+      "name": "Dark Wolf",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Nightmaw",
+        "skill": {
+          "name": "Hunter's Instinct",
+          "passive": {"kind": "BonusVsWounded", "value": 0.4}
+        }
+      },
+      "skills": [
+        {
+          "name": "Shadow Bite",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Hunt",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

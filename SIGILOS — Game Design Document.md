@@ -14,11 +14,13 @@ Sep 23, 2026 · @Mikael
 
 > **Sexta revisão de 25/09/2026: inimigos são invocações.** Limo, Goblin, Lobo e Bandido viraram famílias de invocação 3★, o Troll 4★ e o Dragão 5★, cada uma com 5 elementos e Assinatura própria (Corpo Gelatinoso reduz dano; Golpe Baixo bate mais em quem tem efeito negativo; Instinto de Caça bate mais em quem está abaixo da metade da Vida; Emboscada começa cada onda com Ímpeto; Regeneração cura no começo do turno; Fogo de Dragão queima quem acerta). Os inimigos comuns de fases e Masmorras são essas invocações com Vida e Ataque reforçados pela raridade e pela dificuldade do encontro; só os chefes continuam como criaturas únicas. O Grimório agrupa as invocações por família, com os elementos no detalhe. Entrou a **Batalha automática**: até 30 lutas seguidas, como o Resolver, mas cada luta leva o tempo que levaria no automático em 2×. A tela de batalha ficou com duas velocidades, 1× e 2× (o 2× corre três vezes mais rápido). O Éter passou a aprimorar só a habilidade especial: o básico não tem versão aprimorada.
 
-> **Sétima revisão de 26/09/2026: habilidades, estrelas e experiência de Summoners War.** Sem PvP, o Éter não era estratégia: saiu do jogo. A antiga versão aprimorada virou o que o Despertar libera, e o que o Despertar dá segue as estrelas naturais, como lá: as 3★ ganham uma habilidade nova (uma Passiva ou uma ativa), as 4★ uma habilidade mais forte (e algumas uma terceira ativa), as 5★ quase não mudam (só o atributo). O Despertar custa 25 000 de Essência nas 3★, 50 000 nas 4★ e 75 000 nas 5★. A Assinatura virou **Passiva**, e nem todo monstro tem uma: alguns têm uma terceira habilidade ativa no lugar. Os Ecos saíram: cada habilidade tem níveis (mais dano, mais cura, mais chance de efeito ou menos recarga), e fundir uma cópia sobe o nível de uma habilidade sorteada. Toda invocação nasce nas estrelas naturais e **evolui** até 6★ com Essência e Fragmentos quando chega ao nível máximo da estrela (10 + 5 por estrela: 25 no 3★, 40 no 6★), voltando ao nível 1, como lá. A experiência de cada nível é a tabela de Summoners War por estrela, e a experiência de fases e Masmorras segue a escala de lá (de 110 na fase 1 a 2400 no andar 5), com a Essência valendo 10 de experiência. Fases e andares têm estrelas e nível: a Campanha vai de 3★ nível 1 a 5★ nível 30, e as Masmorras de 4★ nível 25 a 6★ nível 35.
+> **Sétima revisão de 26/09/2026: habilidades, estrelas e experiência de Summoners War.** Sem PvP, o Éter não era estratégia: saiu do jogo. A antiga versão aprimorada virou o que o Despertar libera, e o que o Despertar dá segue as estrelas naturais, como lá: as 3★ ganham uma habilidade nova (uma Passiva ou uma ativa), as 4★ uma habilidade mais forte (e algumas uma terceira ativa), as 5★ quase não mudam (só o atributo). O Despertar custa 25 000 de Essência nas 3★, 50 000 nas 4★ e 75 000 nas 5★. A Assinatura virou **Passiva**, e nem todo monstro tem uma: alguns têm uma terceira habilidade ativa no lugar. Os Ecos saíram: cada habilidade tem níveis (mais dano, mais cura, mais chance de efeito ou menos recarga), e fundir uma cópia sobe o nível de uma habilidade sorteada. Toda invocação nasce nas estrelas naturais e **evolui** até 6★ com Essência e Fragmentos quando chega ao nível máximo da estrela (10 + 5 por estrela: 25 no 3★, 40 no 6★), voltando ao nível 1, como lá (desde a décima primeira revisão, o nível fica). A experiência de cada nível é a tabela de Summoners War por estrela, e a experiência de fases e Masmorras segue a escala de lá (de 110 na fase 1 a 2400 no andar 5), com a Essência valendo 10 de experiência. Fases e andares têm estrelas e nível: a Campanha vai de 3★ nível 1 a 5★ nível 30, e as Masmorras de 4★ nível 25 a 6★ nível 35.
 
 > **Oitava revisão de 26/09/2026: interface de símbolos, a partir de um croqui.** A interface virou fantasia medieval aconchegante de runas e sigilos: couro envelhecido nos painéis, pedra entalhada nos fundos, ouro fosco nas molduras e o brilho das runas (azul arcano sob o mouse e no que está ligado, verde espiritual no que pede atenção). Nada de cara de página web: a rolagem é uma gema sem trilho, as caixas de marcar são sigilos que acendem, as listas suspensas viraram carrosséis de sigilos em arco e as barras são de energia entalhada. Os botões são símbolos, sem texto (o nome aparece ao passar o mouse), e texto explicativo só existe no Compêndio. O Santuário segue o croqui: retrato da conta com o nível no canto, recursos no alto, uma constelação de atalhos personalizável no centro (o sigilo do meio é a canalização), a engrenagem da Configuração embaixo à esquerda e Loja, Mapa e Bolsa embaixo à direita. O Mapa tem três portais (Torre e Provações ainda fechados, Campanha, Masmorras); a Bolsa é um círculo de conjuração com monstros, runas, equipes, os dois livros e o portal de invocar no centro; a ficha de Monstros ganhou abas em pé (Atributos, Runas, Habilidades, Despertar).
 
 > **Décima revisão de 27/09/2026: o campo de batalha.** A luta acontece num círculo de conjuração oval: os aliados no arco de baixo à esquerda, os inimigos no de cima à direita, e quem ataca corre até o alvo, golpeia e volta, como em Summoners War; cada alvo atingido espirra, todos de uma vez num golpe em área. A ordem de turno fica em pé à esquerda, as habilidades embaixo à direita, e a pausa no canto de cima oferece continuar, recomeçar a luta e sair. Na ficha da runa, o que ela ganhou desde que a tela abriu aparece em verde ao lado do valor.
+
+> **Décima primeira revisão de 30/09/2026: atributos por orçamento.** Os atributos das invocações deixaram de sair de uma tabela por papel: todo monstro das mesmas estrelas naturais gasta o mesmo orçamento de BVP (pontos de valor de base: Vida ÷ 15 + Ataque + Defesa + Velocidade × 3), e o papel (Vida, Ataque, Defesa ou Suporte) decide onde. Elemento, família e variante só deslocam a distribuição; o Despertar tem o orçamento dele. Cada família virou um arquivo só, com as variantes e os atributos já calculados, feito no construtor de famílias. Entraram três efeitos: Veneno (acumula), Bomba (explode depois da contagem, ignorando a Defesa) e Quebra de Defesa. Evoluir deixou de voltar ao nível 1: o monstro mantém o nível e os atributos sobem na hora.
 
 > **Nona revisão de 27/09/2026: fontes, runas e menos botões.** A fonte do jogo é a SFC Wezards, e os Glifos passaram a ser escritos na fonte rúnica Kehdrai (nítidos em qualquer tamanho). A runa em miniatura é uma pedra quadrada de cantos redondos, com o espaço e as estrelas no alto e a melhora embaixo. O Resolver saiu: a Batalha automática pergunta quantas lutas seguidas (30 de início, até 100). A Canalização Rápida saiu. Os efeitos de batalha têm símbolos próprios, e toda arte é PNG renderizado do SVG, recortado no formato do componente.
 
@@ -185,9 +187,9 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 
 | Campo | Conteúdo |
 | --- | --- |
-| Identidade | Família, elemento e papel (Frente, Atacante, Suporte ou Controle) |
+| Identidade | Família, elemento e papel (Vida, Ataque, Defesa ou Suporte): o papel decide como o orçamento de atributos é repartido |
 | Raridade | 3, 4 ou 5 estrelas naturais, definida pela família; toda invocação evolui até 6★ |
-| Atributos | Os de Summoners War: Vida, Ataque, Defesa, Velocidade, Crítico, Dano crítico, Resistência e Precisão (chance de aplicar efeitos) |
+| Atributos | Os de Summoners War: Vida, Ataque, Defesa, Velocidade, Crítico, Dano crítico, Resistência e Precisão (chance de aplicar efeitos). Os quatro primeiros saem do orçamento das estrelas naturais (seção 15); os outros quatro são iguais para todos |
 | Básica | Habilidade sempre disponível |
 | Ativas | Uma ou duas com recarga de 3 a 5 turnos |
 | Passiva | Nem todos têm: alguns têm uma terceira ativa no lugar; famílias de 4 e 5 estrelas também têm Liderança |
@@ -258,10 +260,10 @@ Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e
 | --- | --- | --- |
 | Estrelas e nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 10 de experiência); no nível máximo, Evolução com Essência e Fragmentos | Das estrelas naturais até 6★; nível máximo 10 + 5 por estrela (25 no 3★, 40 no 6★); Vida, Ataque e Defesa pela faixa de Summoners War de cada estrela |
 | Níveis de habilidade | Fundir cópias da mesma variante | Cada cópia sobe uma habilidade sorteada: mais dano, cura, chance de efeito ou menos recarga |
-| Despertar | Essência pelas estrelas naturais: 25 000 (3★), 50 000 (4★), 75 000 (5★) | Nome próprio, desenho novo, estrelas roxas, +20% de Vida, +7% de Ataque e Defesa e, pelas estrelas naturais, uma habilidade nova (3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
+| Despertar | Essência pelas estrelas naturais: 25 000 (3★), 50 000 (4★), 75 000 (5★) | Nome próprio, desenho novo, estrelas roxas, Vida, Ataque e Defesa maiores (os do orçamento desperto: cerca de 8% a 10% a mais) e +1 de Velocidade e, pelas estrelas naturais, uma habilidade nova (3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
 | Runas | Campanha (até 4★) e Masmorras (4★ a 6★, conjuntos certos), melhoradas com Essência; Pedras de Afiar e Gemas da Forja | Atributos, conjuntos e o ajuste fino de Velocidade |
 
-**Estrelas e nível, como em Summoners War.** Cada invocação nasce nas estrelas naturais, no nível 1, e sobe até o máximo da estrela (25 no 3★, 30 no 4★, 35 no 5★, 40 no 6★), com a experiência de cada nível da tabela de Summoners War. No máximo, a Evolução gasta Essência e Fragmentos (2 000 e 5 no 1★ até 100 000 e 80 no 5★), dá uma estrela e volta ao nível 1. Os atributos de base do apêndice são os de 6★ nível 40; cada estrela tem a faixa de lá (3★: de 22% a 40% do máximo; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%), e 3★ e 4★ naturais chegam a 85% e 92% desses valores no 6★ nível 40. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
+**Estrelas e nível, como em Summoners War.** Cada invocação nasce nas estrelas naturais, no nível 1, e sobe até o máximo da estrela (25 no 3★, 30 no 4★, 35 no 5★, 40 no 6★), com a experiência de cada nível da tabela de Summoners War. No máximo, a Evolução gasta Essência e Fragmentos (2 000 e 5 no 1★ até 100 000 e 80 no 5★), dá uma estrela e mantém o nível: diferente de Summoners War, o monstro não volta ao 1. Ele continua no nível em que estava, agora na faixa da estrela nova (um 3★ no 25 tem 40% dos atributos do máximo; evoluído, o 4★ no 25 tem 50%), e só faltam os 5 níveis novos. Os atributos de base do apêndice são os de 6★ nível 40; cada estrela tem a faixa de lá (3★: de 22% a 40% do máximo; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Quem nasce com menos estrelas chega ao 6★ nível 40 com menos: o orçamento de uma 3★ natural é 85% do de uma 5★, e o de uma 4★, 93%. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
 
 **Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), um segundo desenho, estrelas roxas no lugar das douradas, atributos maiores e o que as estrelas naturais pedem: habilidade nova, habilidade mais forte ou atributo. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
 
@@ -367,7 +369,7 @@ Cada fase termina num jogo que você já consegue jogar; se o projeto parar em q
 | Peça | Escolha |
 | --- | --- |
 | Motor | Godot 4: gratuito, bom em 2D, exporta para PC, Android e web |
-| Conteúdo | Invocações, páginas e fases em arquivos de dados. Uma variante nova é um arquivo, sem desenho novo |
+| Conteúdo | Invocações e fases em arquivos de dados. Uma família é um arquivo com as variantes dela, feito no construtor de famílias; uma variante nova é um item nesse arquivo, sem desenho novo |
 | Simulação | Combate separado da tela e determinístico (semente fixa). Permite rodar milhares de lutas sem gráficos para balancear |
 | Arte da 1.0 | 16 desenhos de criatura (8 famílias e seus Despertares) e 11 ícones de símbolo |
 | Save | Arquivo local, sem conta nem servidor |
@@ -429,18 +431,55 @@ t = \frac{100 - I}{VEL}
 
 I é o Ímpeto atual em porcentagem; a unidade com o menor t age primeiro. Empurrar o Ímpeto em 20% soma 20 a I, na hora.
 
-### Atributos de base em 6★ nível 40 (5★ natural, sem Despertar)
+### Atributos de base: o orçamento de BVP
 
-| Papel | Vida | Ataque | Defesa | Velocidade |
-| --- | --- | --- | --- | --- |
-| Frente | 11100 | 620 | 700 | 98 |
-| Atacante | 9300 | 900 | 500 | 103 |
-| Suporte | 10400 | 660 | 640 | 107 |
-| Controle | 9900 | 760 | 580 | 102 |
+Os atributos de uma invocação não são escolhidos um a um: saem de um orçamento. Todo monstro das mesmas estrelas naturais tem o mesmo total de BVP (pontos de valor de base), medido assim:
 
-É a escala de Summoners War: a Fênix de Fogo de lá tem, em 6★ nível 40, 9225 de Vida, 834 de Ataque e 527 de Defesa. Todos os papéis começam com Crítico 15%, Dano crítico 50%, Resistência 5% e Precisão 0%, como quase todo monstro de lá; esses quatro não crescem com o nível.
+```latex
+BVP = \frac{Vida}{15} + Ataque + Defesa + Velocidade \times 3
+```
 
-Invocações de 4★ naturais usam 92% desses valores e as de 3★, 85%. Velocidade é fixa desde o nível 1; os outros atributos seguem a faixa de Summoners War de cada estrela, em linha reta do nível 1 ao máximo dela (3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
+15 de Vida valem 1 de Ataque ou de Defesa, e 1 de Velocidade vale 3: Velocidade é cara de propósito, e ninguém ganha poder de graça subindo ela. Os números vêm das medianas de Summoners War (planilha em docs/allstats.xlsx) e são parâmetros de balanceamento, todos em Data/stat_model.json.
 
-Os inimigos comuns são invocações (3★ a 5★ naturais), nas estrelas e no nível do encontro, com Vida e Ataque multiplicados pelas estrelas naturais e pela força do encontro; os chefes têm multiplicadores próprios (Data/enemies.json). Nenhum inimigo usa runas nem Despertar, e as habilidades ficam no nível 1.
+| Estrelas naturais | Orçamento | Orçamento desperto |
+| --- | --- | --- |
+| 2★ | 1785 | 1953 |
+| 3★ | 1944 | 2118 |
+| 4★ | 2115 | 2286 |
+| 5★ | 2277 | 2447 |
+
+A conta de uma variante, sempre na mesma ordem:
+
+1. **Estrelas naturais** dão o orçamento.
+2. **O papel** dá a Velocidade de base e as fatias do que sobra (o orçamento menos Velocidade × 3) para Vida, Ataque e Defesa. Numa 5★: Ataque 32,2% / 38,3% / 29,4%; Defesa 32,8% / 30,6% / 37,2%; Vida 37,2% / 32,8% / 30,3%; Suporte 34,9% / 32,8% / 32,8%.
+3. **Os vieses** (do elemento, da família e da variante) multiplicam as fatias e podem somar Velocidade. As fatias são normalizadas depois: o viés desloca atributo de um lugar para outro e nunca cria BVP.
+4. **Arredonda**, com a Vida em múltiplos de 15, e fecha o orçamento.
+5. **O Despertar** refaz a conta com o orçamento desperto e +1 de Velocidade. Não é um multiplicador.
+
+O papel não dá mais poder, só escolhe onde ele vai; o elemento e a família também não. A diferença entre dois monstros das mesmas estrelas tem de vir das habilidades, da Passiva, da Liderança e do Despertar. Hoje o viés dos cinco elementos é neutro.
+
+Os atributos que a conta dá, em 6★ nível 40:
+
+| Estrelas | Papel | Vida | Ataque | Defesa | Velocidade | Desperto |
+| --- | --- | --- | --- | --- | --- | --- |
+| 3★ | Ataque | 7905 | 631 | 483 | 101 | 8730 / 697 / 533 / 102 |
+| 3★ | Defesa | 8595 | 483 | 594 | 98 | 9480 / 534 / 655 / 99 |
+| 3★ | Vida | 9210 | 506 | 527 | 99 | 10170 / 558 / 582 / 100 |
+| 3★ | Suporte | 8655 | 523 | 535 | 103 | 9570 / 578 / 590 / 104 |
+| 4★ | Ataque | 8820 | 687 | 534 | 102 | 9645 / 751 / 583 / 103 |
+| 4★ | Defesa | 9030 | 569 | 659 | 95 | 9855 / 621 / 720 / 96 |
+| 4★ | Vida | 10230 | 587 | 549 | 99 | 11175 / 642 / 599 / 100 |
+| 4★ | Suporte | 9615 | 573 | 595 | 102 | 10500 / 627 / 650 / 103 |
+| 5★ | Ataque | 9555 | 758 | 582 | 100 | 10365 / 822 / 631 / 101 |
+| 5★ | Defesa | 9675 | 601 | 731 | 100 | 10485 / 652 / 793 / 101 |
+| 5★ | Vida | 10995 | 647 | 597 | 100 | 11925 / 701 / 648 / 101 |
+| 5★ | Suporte | 10305 | 645 | 645 | 100 | 11175 / 700 / 699 / 101 |
+
+Todos começam com Crítico 15%, Dano crítico 50%, Resistência 5% e Precisão 0%, como quase todo monstro de Summoners War; esses quatro ficam fora do orçamento e não crescem com o nível. O bônus de atributo do Despertar das 5★ (+15 de Velocidade, +15% de Crítico, +25% de Resistência ou de Precisão) também fica fora: soma por cima dos atributos despertos.
+
+Os números de cada variante ficam gravados no arquivo da família (Data/summons), já calculados; quem calcula é o construtor de famílias (docs/summon_family_builder.html), e o jogo só confere. Mudar um parâmetro do modelo é recalcular todas as famílias pelo construtor e rodar o simulador.
+
+Velocidade é fixa desde o nível 1; os outros atributos seguem a faixa de Summoners War de cada estrela, em linha reta do nível 1 ao máximo dela (3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
+
+Os inimigos comuns são invocações (3★ a 5★ naturais), nas estrelas e no nível do encontro, com Vida e Ataque multiplicados pelas estrelas naturais e pela força do encontro; os chefes têm os atributos do papel e das estrelas deles, pelo mesmo modelo, e multiplicadores próprios (Data/enemies.json). Nenhum inimigo usa runas nem Despertar, e as habilidades ficam no nível 1.
 

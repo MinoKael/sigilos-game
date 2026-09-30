@@ -30,37 +30,49 @@ namespace Sigilos.Core.Content
 		private readonly Dictionary<string, EnemyDefinition> _enemiesById;
 
 		public GameDatabase(
-			IReadOnlyDictionary<Role, StatBlock> roles,
+			StatModel statModel,
 			IReadOnlyList<FamilyDefinition> families,
-			IReadOnlyList<SummonDefinition> summons,
 			IReadOnlyList<EnemyDefinition> enemies,
 			IReadOnlyList<StageDefinition> stages,
 			IReadOnlyList<DungeonDefinition> dungeons,
 			IReadOnlyList<ShopOffer> shop)
 		{
-			Roles = roles;
+			StatModel = statModel;
 			Families = families;
-			Summons = summons;
 			Enemies = enemies;
 			Stages = stages.OrderBy(s => s.Number).ToList();
 			Dungeons = dungeons;
 			Shop = shop;
 
-			var familiesById = families.ToDictionary(f => f.Id);
-			foreach (var summon in summons)
+			// As variantes saem dos arquivos das famílias, na ordem dos elementos. O arquivo só traz Vida,
+			// Ataque, Defesa e Velocidade: os outros quatro atributos são os de base do modelo.
+			var summons = new List<SummonDefinition>();
+			foreach (var family in families)
 			{
-				if (familiesById.TryGetValue(summon.FamilyId, out var family))
+				foreach (var summon in family.Variations.Values.OrderBy(s => s.Element))
+				{
 					summon.Family = family;
+					summon.Stats = statModel.Complete(summon.Stats);
+					summon.AwakenedStats = statModel.Complete(summon.AwakenedStats);
+					summons.Add(summon);
+				}
 			}
 
-			_summonsById = summons.ToDictionary(s => s.Id);
-			_enemiesById = enemies.ToDictionary(e => e.Id);
+			foreach (var enemy in enemies)
+				enemy.Stats = statModel.Complete(enemy.Stats);
+
+			Summons = summons;
+			_summonsById = summons.GroupBy(s => s.Id).ToDictionary(g => g.Key, g => g.First());
+			_enemiesById = enemies.GroupBy(e => e.Id).ToDictionary(g => g.Key, g => g.First());
 		}
 
-		/// <summary>Atributos de base por papel, no nível 40, com 5 estrelas e sem Despertar.</summary>
-		public IReadOnlyDictionary<Role, StatBlock> Roles { get; }
+		/// <summary>Os parâmetros com que os atributos de Data/summons foram calculados.</summary>
+		public StatModel StatModel { get; }
 
+		/// <summary>Uma por arquivo de Data/summons.</summary>
 		public IReadOnlyList<FamilyDefinition> Families { get; }
+
+		/// <summary>Todas as variantes de todas as famílias.</summary>
 		public IReadOnlyList<SummonDefinition> Summons { get; }
 		public IReadOnlyList<EnemyDefinition> Enemies { get; }
 
@@ -92,19 +104,18 @@ namespace Sigilos.Core.Content
 			return (enemy.Name, enemy.Image, slot.Element);
 		}
 
+		/// <param name="families">O texto de cada arquivo de Data/summons, um por família.</param>
 		public static GameDatabase FromJson(
-			string roles,
-			string families,
-			IEnumerable<string> summons,
+			string statModel,
+			IEnumerable<string> families,
 			string enemies,
 			string stages,
 			string dungeons,
 			string shop)
 		{
 			return new GameDatabase(
-				Parse<Dictionary<Role, StatBlock>>(roles, "roles.json"),
-				Parse<List<FamilyDefinition>>(families, "families.json"),
-				summons.Select(text => Parse<SummonDefinition>(text, "summons/*.json")).ToList(),
+				Parse<StatModel>(statModel, "stat_model.json"),
+				families.Select(text => Parse<FamilyDefinition>(text, "summons/*.json")).ToList(),
 				Parse<List<EnemyDefinition>>(enemies, "enemies.json"),
 				Parse<List<StageDefinition>>(stages, "stages.json"),
 				Parse<List<DungeonDefinition>>(dungeons, "dungeons.json"),
@@ -127,24 +138,31 @@ namespace Sigilos.Core.Content
 		/// <summary>Erros de dados: referência quebrada, número fora da faixa. Vazio quando está tudo certo.</summary>
 		public IEnumerable<string> Validate()
 		{
-			foreach (var role in Enum.GetValues<Role>())
-			{
-				if (!Roles.ContainsKey(role))
-					yield return $"roles.json: falta o papel {role}.";
-			}
+			foreach (var problem in StatModel.Validate())
+				yield return problem;
 
 			foreach (var family in Families)
 			{
-				if (family.Rarity is < 1 or > 5)
-					yield return $"Família {family.Id}: raridade {family.Rarity} fora de 1 a 5.";
+				if (StatModel.Budget(family.Rarity, false) == null)
+					yield return $"Família {family.Id}: {family.Rarity}★ não tem orçamento em stat_model.json.";
 				if (family.Image.Length == 0 || family.AwakenedImage.Length == 0)
 					yield return $"Família {family.Id}: falta a imagem normal ou a do Despertar.";
+				if (family.Variations.Count == 0)
+					yield return $"Família {family.Id}: sem variantes.";
+				foreach (var (key, summon) in family.Variations)
+				{
+					if (!string.Equals(key, summon.Element.ToString(), StringComparison.OrdinalIgnoreCase))
+						yield return $"Família {family.Id}: a variante \"{key}\" é do elemento {summon.Element}.";
+				}
 			}
+
+			foreach (var id in Families.Select(f => f.Id).Concat(Summons.Select(s => s.Id)).GroupBy(id => id).Where(g => g.Count() > 1).Select(g => g.Key))
+				yield return $"Invocações: o id '{id}' aparece mais de uma vez.";
 
 			foreach (var summon in Summons)
 			{
-				if (Families.All(f => f.Id != summon.FamilyId))
-					yield return $"Invocação {summon.Id}: família '{summon.FamilyId}' não existe.";
+				foreach (var problem in ValidateStats(summon))
+					yield return $"Invocação {summon.Id}: {problem}";
 				if (summon.Awakening.Name.Length == 0)
 					yield return $"Invocação {summon.Id}: sem nome de Despertar.";
 				if (summon.Awakening.Stat is { } stat && stat is not (Stat.Speed or Stat.Crit or Stat.Resistance or Stat.Accuracy))
@@ -159,6 +177,10 @@ namespace Sigilos.Core.Content
 
 			foreach (var enemy in Enemies)
 			{
+				if (StatModel.Budget(enemy.Rarity, false) == null)
+					yield return $"Inimigo {enemy.Id}: {enemy.Rarity}★ não tem orçamento em stat_model.json.";
+				else if (Mismatch(enemy.Stats, StatModel.Compute(enemy.Rarity, enemy.Role, false)) is { } mismatch)
+					yield return $"Inimigo {enemy.Id}: \"stats\" {mismatch}";
 				foreach (var problem in ValidateSkills(enemy.Skills))
 					yield return $"Inimigo {enemy.Id}: {problem}";
 			}
@@ -227,6 +249,41 @@ namespace Sigilos.Core.Content
 						yield return $"inimigo '{slot.Enemy}' não existe.";
 				}
 			}
+		}
+
+		/// <summary>
+		/// Os atributos guardados têm de ser os que o modelo dá à variante (o jogo não recalcula: confere)
+		/// e fechar o orçamento das estrelas dela.
+		/// </summary>
+		private IEnumerable<string> ValidateStats(SummonDefinition summon)
+		{
+			if (StatModel.Budget(summon.Rarity, false) == null || !StatModel.Roles.TryGetValue(summon.Rarity, out var roles) || !roles.ContainsKey(summon.Role))
+				yield break;
+
+			foreach (var awakened in new[] { false, true })
+			{
+				var field = awakened ? "awakened_stats" : "stats";
+				var stats = summon.StatsFor(awakened);
+				if (Mismatch(stats, StatModel.Compute(summon, awakened)) is { } mismatch)
+					yield return $"\"{field}\" {mismatch}";
+
+				var budget = StatModel.Budget(summon.Rarity, awakened) ?? 0;
+				var bvp = StatModel.Bvp(stats);
+				if (stats.Health < 0 || stats.Attack < 0 || stats.Defense < 0 || stats.Speed <= 0)
+					yield return $"\"{field}\" com atributo negativo ou sem Velocidade.";
+				else if (Math.Abs(bvp - budget) > StatModel.Tolerance + 1e-9)
+					yield return $"\"{field}\" vale {bvp:0.#} BVP, fora do orçamento de {budget:0.#} (tolerância {StatModel.Tolerance:0.#}).";
+			}
+		}
+
+		/// <summary>Nulo quando os quatro atributos do modelo batem; senão, o que era esperado.</summary>
+		private static string? Mismatch(StatBlock stored, StatBlock expected)
+		{
+			static string Text(StatBlock s) => $"{s.Health:0}/{s.Attack:0}/{s.Defense:0}/{s.Speed:0}";
+
+			return stored.Health == expected.Health && stored.Attack == expected.Attack && stored.Defense == expected.Defense && stored.Speed == expected.Speed
+				? null
+				: $"está {Text(stored)} (Vida/Ataque/Defesa/Velocidade) e o modelo dá {Text(expected)}: abra docs/summon_family_builder.html, carregue a pasta do projeto e use \"Recalcular todas\".";
 		}
 
 		/// <summary>Estrelas de 1 a 6, nível até o máximo delas (15 no 1★, +5 por estrela).</summary>

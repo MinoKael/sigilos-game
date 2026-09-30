@@ -1,19 +1,35 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Sigilos.Core.Content
 {
 	/// <summary>
 	/// Os oito atributos de uma unidade. Vida, Ataque, Defesa e Velocidade são números absolutos;
 	/// Crítico, Dano crítico, Resistência e Precisão são frações (0,15 = 15%).
+	///
+	/// Em Data/ os quatro primeiros têm o nome curto do modelo de atributos ("hp", "atk", "def", "spd":
+	/// Data/summons e Data/enemies.json); os outros quatro são iguais para todo mundo e vêm de
+	/// Data/stat_model.json ("base_stats").
 	/// </summary>
 	public sealed record StatBlock
 	{
+		[JsonPropertyName("hp")]
 		public double Health { get; init; }
+
+		[JsonPropertyName("atk")]
 		public double Attack { get; init; }
+
+		[JsonPropertyName("def")]
 		public double Defense { get; init; }
+
+		[JsonPropertyName("spd")]
 		public double Speed { get; init; }
+
 		public double Crit { get; init; }
+
+		[JsonPropertyName("crit_damage")]
 		public double CritDamage { get; init; }
+
 		public double Resistance { get; init; }
 		public double Accuracy { get; init; }
 

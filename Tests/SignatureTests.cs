@@ -98,7 +98,7 @@ namespace Sigilos.Tests
 			session.Start();
 
 			var foe = session.Enemies.Single();
-			var basis = Core.Progression.Growth.Stats(database.Roles[troll.Role], troll.Rarity, 4, 20);
+			var basis = Core.Progression.Growth.Stats(troll.Stats, 4, 20);
 			var (health, attack) = BattleFactory.FoeScale(troll.Rarity);
 			Assert.Equal(troll.Name, foe.Name, "a mesma variante que o jogador invoca");
 			Assert.Equal(troll.Element, foe.Element, "o elemento vem da variante");

@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Battle;
+using Sigilos.Core.Battle.Effects;
+using Sigilos.Core.Battle.Passives;
+using Sigilos.Core.Battle.Statuses;
 using Sigilos.Core.Content;
 using Sigilos.Core.Runes;
 
@@ -69,6 +74,52 @@ namespace Sigilos.Tests
 			Assert.Near(2, skill.At(1, false).Effects.Single().Power, "sem despertar");
 			Assert.Near(5, skill.At(1, true).Effects.Single().Power, "desperta, a lista troca");
 			Assert.True(skill.ChangesOnAwakening, "muda no Despertar");
+		}
+
+		[Test]
+		private static void ASkillMixesPlainHitsWithOneThatIgnoresDefense()
+		{
+			// "Quatro golpes: três comuns e o último ignorando a Defesa" são dois efeitos de dano em
+			// Data/, um depois do outro. Nenhum código novo.
+			var flurry = TestData.Strike with
+			{
+				Effects = new[]
+				{
+					new EffectDefinition { Kind = EffectKind.Damage, Power = 1, Hits = 3 },
+					new EffectDefinition { Kind = EffectKind.Damage, Power = 1, IgnoreDefense = 1 },
+				},
+			};
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, element: Element.Light, basic: flurry);
+			var foe = TestData.Unit("inimigo", Side.Enemies, health: 10_000, defense: BattleRules.DefenseConstant, element: Element.Light);
+			var session = TestData.Session(new[] { hero }, new[] { foe });
+			session.Start();
+
+			TestData.RunUntilTurnOf(session, hero);
+			var hits = session.Act(new UnitAction(0, foe)).OfType<Damaged>().Select(d => d.Amount).ToList();
+			Assert.Equal("50, 50, 50, 100", string.Join(", ", hits), "três golpes pela metade (a Defesa corta) e o último cheio");
+		}
+
+		[Test]
+		private static void EveryKindHasItsStrategy()
+		{
+			foreach (var kind in Enum.GetValues<EffectKind>())
+				Assert.True(Has(() => SkillEffects.Of(kind)), $"falta a estratégia do efeito {kind} em Core/Battle/Effects/SkillEffects.cs");
+			foreach (var kind in Enum.GetValues<StatusKind>())
+				Assert.True(Has(() => StatusBehaviors.Of(kind)), $"falta a estratégia do status {kind} em Core/Battle/Statuses/StatusBehaviors.cs");
+			foreach (var kind in Enum.GetValues<PassiveKind>())
+				Assert.True(Has(() => PassiveBehaviors.Of(kind)), $"falta a estratégia da Passiva {kind} em Core/Battle/Passives/PassiveBehaviors.cs");
+
+			static bool Has(Func<object> find)
+			{
+				try
+				{
+					return find() != null;
+				}
+				catch (KeyNotFoundException)
+				{
+					return false;
+				}
+			}
 		}
 
 		[Test]

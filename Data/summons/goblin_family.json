@@ -1,0 +1,234 @@
+{
+  "family_id": "goblin",
+  "base_name": "Goblin",
+  "name": "Goblins",
+  "star_grade": 3,
+  "image": "goblin",
+  "awakened_image": "goblin_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "goblin_fire",
+      "name": "Fire Goblin",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Grizzle",
+        "skill": {
+          "name": "Cheap Shot",
+          "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+        }
+      },
+      "skills": [
+        {
+          "name": "Torch Stab",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.9, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Firebomb",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.25},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "goblin_water",
+      "name": "Water Goblin",
+      "element": "Water",
+      "role": "Defense",
+      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "awakening": {
+        "name": "Snivvel",
+        "skill": {
+          "name": "Drowning Snare",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.9},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.7}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Net Throw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Impeto", "target": "Target", "power": -20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Soaking Trap",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "goblin_wind",
+      "name": "Wind Goblin",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Zipp",
+        "skill": {
+          "name": "Cheap Shot",
+          "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+        }
+      },
+      "skills": [
+        {
+          "name": "Quick Stab",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Knife Flurry",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.4, "hits": 4}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "goblin_light",
+      "name": "Light Goblin",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Glimmik",
+        "skill": {
+          "name": "Golden Charm",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Shiny Distraction",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Lucky Charm",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "goblin_dark",
+      "name": "Dark Goblin",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Skulk",
+        "skill": {
+          "name": "Cheap Shot",
+          "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+        }
+      },
+      "skills": [
+        {
+          "name": "Backstab",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5, "ignoreDefense": 0.2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Poisoned Blade",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.9},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.6, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

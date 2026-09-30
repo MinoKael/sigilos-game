@@ -215,9 +215,8 @@ namespace Sigilos.UI.Screens
 			Cell(table, "", true);
 			Cell(table, T("common.stars_level", Texts.Stars(summon.Rarity), 1), true);
 			Cell(table, T("common.stars_level", Texts.Stars(Growth.MaxStars), Growth.MaxLevel(Growth.MaxStars)), true);
-			var roleBase = _database.Roles[summon.Role];
-			var low = SummonStats.For(roleBase, summon, summon.Rarity, 1, _awakened, Array.Empty<Rune>()).Base;
-			var high = SummonStats.For(roleBase, summon, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars), _awakened, Array.Empty<Rune>()).Base;
+			var low = SummonStats.For(summon, summon.Rarity, 1, _awakened, Array.Empty<Rune>()).Base;
+			var high = SummonStats.For(summon, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars), _awakened, Array.Empty<Rune>()).Base;
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
 				table.AddChild(new RuneGlyph(Texts.GlyphOf(stat), 18, Palette.Gold) { Name = Layout.NextCell(table) });
@@ -244,11 +243,8 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(new HSeparator { Name = "AwakeningLine" });
 			var awaken = Layout.Flow(8).Named("Awakening");
 			awaken.AddChild(Layout.Chip("awaken", summon.Awakening.Name, T("grimoire.awaken"), Palette.Awakened).Named("Name"));
-			awaken.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Health), $"+{Texts.Percent(Awakening.HealthBonus)}", Texts.Name(Stat.Health)).Named(nameof(Stat.Health)));
-			awaken.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Attack), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Attack)).Named(nameof(Stat.Attack)));
-			awaken.AddChild(Layout.Chip(Texts.GlyphOf(Stat.Defense), $"+{Texts.Percent(Awakening.AttackDefenseBonus)}", Texts.Name(Stat.Defense)).Named(nameof(Stat.Defense)));
-			if (summon.Awakening.Stat is { } bonus)
-				awaken.AddChild(Layout.Chip(Texts.GlyphOf(bonus), Texts.AwakeningAmount(bonus), Texts.Name(bonus)).Named($"Bonus{bonus}"));
+			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
+				awaken.AddChild(Layout.Chip(Texts.GlyphOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
 			awaken.AddChild(Layout.Chip("essence", Texts.Short(Awakening.Cost(summon.Rarity)), T("grimoire.awaken_cost", Awakening.Cost(summon.Rarity))).Named("Cost"));
 			_sheet.AddChild(awaken);
 		}

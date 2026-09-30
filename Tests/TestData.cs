@@ -21,9 +21,8 @@ namespace Sigilos.Tests
 			string Read(string file) => File.ReadAllText(Path.Combine(data, file));
 
 			return GameDatabase.FromJson(
-				roles: Read("roles.json"),
-				families: Read("families.json"),
-				summons: Directory.GetFiles(Path.Combine(data, "summons"), "*.json").OrderBy(f => f).Select(File.ReadAllText),
+				statModel: Read("stat_model.json"),
+				families: Directory.GetFiles(Path.Combine(data, "summons"), "*.json").OrderBy(f => f).Select(File.ReadAllText),
 				enemies: Read("enemies.json"),
 				stages: Read("stages.json"),
 				dungeons: Read("dungeons.json"),

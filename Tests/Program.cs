@@ -19,6 +19,7 @@ namespace Sigilos.Tests
 	///   dotnet run --project Tests -- --only=Summon só os testes com "Summon" no nome
 	///   dotnet run --project Tests -- --simulate    relatório de balanceamento da campanha
 	///   dotnet run --project Tests -- --fight=10    uma luta da fase 10, turno a turno
+	///   dotnet run --project Tests -- --digest      impressão digital do combate, para refatorar sem mudar a regra
 	/// </summary>
 	internal static class Program
 	{
@@ -30,6 +31,13 @@ namespace Sigilos.Tests
 			if (args.Contains("--simulate"))
 			{
 				CampaignReport.Print(TestData.LoadReal());
+				return 0;
+			}
+
+			var digest = args.FirstOrDefault(a => a.StartsWith("--digest", StringComparison.Ordinal));
+			if (digest != null)
+			{
+				BattleDigest.Print(TestData.LoadReal(), digest.Contains('=') ? digest[(digest.IndexOf('=') + 1)..] : null);
 				return 0;
 			}
 

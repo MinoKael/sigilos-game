@@ -1,0 +1,238 @@
+{
+  "family_id": "phoenix",
+  "base_name": "Phoenix",
+  "name": "Phoenixes",
+  "star_grade": 5,
+  "image": "phoenix",
+  "awakened_image": "phoenix_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "phoenix_fire",
+      "name": "Fire Phoenix",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Attack", "value": 0.18},
+      "awakening": {"name": "Ignara", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Spiral Flame",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Crimson Flight",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllEnemies", "status": "Burn"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "From the Ashes",
+          "passive": {"kind": "RebirthOnce", "value": 0.4}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "phoenix_water",
+      "name": "Water Phoenix",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.2},
+      "awakening": {"name": "Nereia", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Dew",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Renewing Rain",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Tide of Renewal",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "phoenix_wind",
+      "name": "Wind Phoenix",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.15},
+      "awakening": {"name": "Zephyra", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Ember Dive",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Impeto", "target": "Target", "power": -20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Feather Storm",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Hurricane of Feathers",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.85},
+            {"kind": "Impeto", "target": "AllAllies", "power": 35},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "phoenix_light",
+      "name": "Light Phoenix",
+      "element": "Light",
+      "role": "Defense",
+      "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
+      "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
+      "leader": {"stat": "Crit", "value": 0.15},
+      "awakening": {"name": "Solaria", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Aurora",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Solar Crown",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "From the Ashes",
+          "passive": {"kind": "RebirthOnce", "value": 0.4}
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "phoenix_dark",
+      "name": "Dark Phoenix",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "CritDamage", "value": 0.3},
+      "awakening": {"name": "Nycteria", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Veiled Claw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Eclipse",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 7.7},
+            {"kind": "Status", "target": "Self", "status": "Hidden"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "From the Ashes",
+          "passive": {"kind": "RebirthOnce", "value": 0.4}
+        }
+      ]
+    }
+  }
+}

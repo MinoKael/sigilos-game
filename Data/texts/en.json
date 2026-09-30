@@ -294,12 +294,12 @@
       "info": "+{0} Speed."
     },
     "DefenseBreak": {
-      "name": "Defense-",
-      "info": "-{0} Defense."
+      "name": "Defense−",
+      "info": "−{0} Defense."
     },
     "Bomb": {
       "name": "Bomb",
-      "info": "Wait 1 turn, then damage multiplies attack by {0} ignoring defense."
+      "info": "Explodes at the start of its last turn for {0} of the Attack of whoever planted it. The blast ignores Defense and is never critical; shields absorb it."
     },
     "Poison": {
       "name": "Poison",
@@ -454,8 +454,8 @@
     "level_up": "+1 level ({0} Essence)",
     "level_up_tip": "Infuses Essence as experience: {0} experience per Essence.",
     "max_level_button": "Up to level {0} ({1} Essence)",
-    "evolve": "Evolve to {0}: {1} Essence, {2} Fragments · max level {3}",
-    "evolve_tip": "Gains a star and goes back to level 1; the new max level is {0}.",
+    "evolve": "Evolve to {0}: {1} Essence, {2} Fragments · keeps its level, max level {3}",
+    "evolve_tip": "Gains a star and keeps its level; the new max level is {0}.",
     "awaken_button": "Awaken into {0} ({1} Essence)",
     "runes_button": "Runes",
     "store": "Store in Vault",
@@ -580,9 +580,9 @@
       "monsters": { "title": "Monsters and Vault", "text": "The collection has {0} slots; the Vault keeps whatever goes past that, with no limit. A monster in the Vault doesn't fight, but keeps its runes: they don't take any of the {1} slots of the rune inventory." },
       "teams": { "title": "Teams", "text": "A team of up to {0} monsters for the Campaign and one for each Dungeon. The first one is the Leader." },
       "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
-      "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star; the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
+      "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star: the monster keeps its level, its stats jump to the new star's and the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
       "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a duplicate copy raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
-      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, new art, purple stars, +{3} HP and +{4} Attack and Defense, plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {5}, {6}, {7} or {8})." },
+      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, new art, purple stars and higher HP, Attack and Defense (each monster has its own awakened stats: see the Grimoire), plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {3}, {4}, {5} or {6})." },
       "sanctuary": { "title": "Sanctuary and symbols", "text": "Every button is a symbol: hover it to see its name. In the center of the Sanctuary, the channeling circle gathers Essence, Gold and Mana while you are away, up to {0} hours; touch it to collect. The stars around it are your shortcuts: the quill lets you choose them. The Map leads to the Campaign and the Dungeons; the Bag holds monsters, runes, teams, Summoning and the books." }
     },
     "combat": {

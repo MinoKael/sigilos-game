@@ -8,8 +8,8 @@ namespace Sigilos.Core.Battle
 	/// <summary>
 	/// Quem pode ser escolhido e quem cada <see cref="TargetKind"/> atinge.
 	///
-	/// - Provocado só mira em quem provocou, enquanto essa unidade estiver viva.
-	/// - Oculto não pode ser alvo único, a não ser que todos os candidatos estejam Ocultos.
+	/// - Quem tem uma regra que obriga o alvo (Provocação) só mira nessa unidade, enquanto ela estiver viva.
+	/// - Quem está oculto não pode ser alvo único, a não ser que todos os candidatos estejam ocultos.
 	/// </summary>
 	public static class Targeting
 	{
@@ -18,11 +18,13 @@ namespace Sigilos.Core.Battle
 		{
 			var alive = opponents.Where(u => u.IsAlive).ToList();
 
-			var taunter = caster.Find(StatusKind.Taunt)?.Source;
-			if (taunter != null && alive.Contains(taunter))
-				return new[] { taunter };
+			foreach (var rule in caster.Rules())
+			{
+				if (rule.Behavior.ForcedTarget(rule) is { } forced && alive.Contains(forced))
+					return new[] { forced };
+			}
 
-			var visible = alive.Where(u => !u.Has(StatusKind.Hidden)).ToList();
+			var visible = alive.Where(u => !u.Any(behavior => behavior.HidesOwner)).ToList();
 			return visible.Count > 0 ? visible : alive;
 		}
 

@@ -1,6 +1,3 @@
-using Sigilos.Core.Content;
-using Sigilos.Core.Player;
-using Sigilos.Core.Runes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +8,10 @@ namespace Sigilos.Core.Battle
 	/// Uma luta do começo ao fim: barra de Ímpeto, recargas, ondas, vitória e derrota (GDD, seção 7).
 	/// Não sabe que existe tela nem quem decide: a cada turno devolve quem age, recebe a decisão
 	/// (do jogador ou do <see cref="AutoPilot"/>) e devolve a lista de <see cref="BattleEvent"/>.
+	///
+	/// Também não sabe o que cada efeito, Passiva ou conjunto de runas faz: nos momentos da luta ela
+	/// avisa as regras em vigor em cada unidade (<see cref="UnitBehavior"/>), e o que acontece dentro de
+	/// uma habilidade é do <see cref="EffectResolver"/>.
 	///
 	/// Determinística: com a mesma semente e as mesmas decisões, a mesma luta. É isso que deixa o
 	/// simulador rodar milhares de lutas sem gráfico para balancear.
@@ -29,9 +30,6 @@ namespace Sigilos.Core.Battle
 		private readonly EffectResolver _effects;
 		private readonly List<BattleEvent> _pending = new();
 		private int _waveIndex;
-
-		/// <summary>O turno atual é o extra do Violento.</summary>
-		private bool _extraTurn;
 
 		public BattleSession(IReadOnlyList<BattleUnit> allies, IReadOnlyList<IReadOnlyList<BattleUnit>> waves, int seed)
 		{
@@ -68,6 +66,9 @@ namespace Sigilos.Core.Battle
 
 		internal Random Random { get; }
 
+		/// <summary>O turno atual é um turno extra: ele não dá outro.</summary>
+		internal bool IsExtraTurn { get; private set; }
+
 		public IReadOnlyList<BattleEvent> Start()
 		{
 			StartWave();
@@ -91,45 +92,29 @@ namespace Sigilos.Core.Battle
 
 			Emit(new TurnStarted(unit, Round));
 
-			// O turno extra do Violento é gasto aqui, mesmo que a unidade não chegue a agir (atordoada).
-			_extraTurn = unit.ExtraTurnPending;
+			// O turno extra é gasto aqui, mesmo que a unidade não chegue a agir (atordoada).
+			IsExtraTurn = unit.ExtraTurnPending;
 			unit.ExtraTurnPending = false;
 
-			if (unit.PendingRebirth)
+			if (unit.Reviving)
 			{
-				unit.PendingRebirth = false;
-				unit.Health = Math.Round(unit.MaxHealth * unit.PassiveValue);
-				Emit(new Revived(unit));
+				_effects.Revive(unit);
 				FinishTurn(unit);
 				return new TurnStart(unit, false, Flush());
 			}
 
-			BurnTick(unit);
-			if (!unit.IsAlive)
+			// Queimadura, Veneno, Bomba, regeneração: tudo o que acontece no começo do turno, mesmo atordoado.
+			foreach (var rule in unit.Rules())
 			{
-				CheckOutcome();
-				return new TurnStart(unit, false, Flush());
+				rule.Behavior.OnTurnStart(rule, _effects);
+				if (!unit.IsAlive)
+				{
+					CheckOutcome();
+					return new TurnStart(unit, false, Flush());
+				}
 			}
 
-            PoisonTick(unit);
-            if (!unit.IsAlive)
-            {
-                CheckOutcome();
-                return new TurnStart(unit, false, Flush());
-            }
-
-            BombTick(unit);
-            if (!unit.IsAlive)
-            {
-                CheckOutcome();
-                return new TurnStart(unit, false, Flush());
-            }
-
-            // Passiva dos Trolls: recupera Vida no começo do turno, mesmo atordoado.
-            if (unit.Passive?.Kind == PassiveKind.RegenEachTurn)
-				_effects.Heal(unit, unit.PassiveValue * unit.MaxHealth);
-
-			if (unit.Has(StatusKind.Stun))
+			if (unit.Any(behavior => behavior.SkipsTurn))
 			{
 				Emit(new TurnSkipped(unit));
 				FinishTurn(unit);
@@ -155,13 +140,8 @@ namespace Sigilos.Core.Battle
 			_effects.Resolve(unit, skill.Effects, action.Target);
 			unit.SetCooldown(index, skill.Cooldown);
 
-			// Conjunto Violento: chance de agir de novo. O turno extra não sorteia outro: um por turno.
-			if (unit.IsAlive && !_extraTurn && unit.RuneEffects.ExtraTurnChance > 0 && Random.NextDouble() < unit.RuneEffects.ExtraTurnChance)
-			{
-				unit.ExtraTurnPending = true;
-				unit.Impeto = BattleRules.FullImpeto;
-				Emit(new ExtraTurn(unit));
-			}
+			foreach (var rule in unit.Rules())
+				rule.Behavior.AfterAction(rule, _effects);
 
 			FinishTurn(unit);
 			return Flush();
@@ -190,28 +170,6 @@ namespace Sigilos.Core.Battle
 		internal IReadOnlyList<BattleUnit> SideOf(Side side) => side == Side.Allies ? _allies : Enemies;
 
 		internal void Emit(BattleEvent battleEvent) => _pending.Add(battleEvent);
-
-		/// <summary>Uma unidade caiu: Passivas de queda.</summary>
-		internal void KnockOut(BattleUnit unit)
-		{
-			unit.Health = 0;
-			unit.Impeto = 0;
-			unit.ClearStatuses();
-			Emit(new Died(unit));
-
-			switch (unit.Passive)
-			{
-				case { Kind: PassiveKind.ShieldOnDeath }:
-					foreach (var ally in unit.Team.Where(u => u.IsAlive))
-						_effects.GiveShield(ally, unit.PassiveValue * unit.MaxHealth, BattleRules.DeathShieldTurns);
-					break;
-
-				case { Kind: PassiveKind.RebirthOnce } when !unit.RebirthUsed:
-					unit.RebirthUsed = true;
-					unit.PendingRebirth = true;
-					break;
-			}
-		}
 
 		/// <summary>Em empate age primeiro quem vem antes: aliados, depois inimigos.</summary>
 		private IEnumerable<BattleUnit> TurnTakers() => _allies.Concat(Enemies).Where(u => u.CanTakeTurn);
@@ -245,74 +203,21 @@ namespace Sigilos.Core.Battle
 		}
 
 		/// <summary>
-		/// Começo de cada onda: os conjuntos Vontade (Imunidade) e Escudo (um escudo para cada aliado,
-		/// somando os donos do conjunto) valem de novo.
+		/// Começo de cada onda: as regras de quem está vivo são avisadas, aliados primeiro. É aqui que os
+		/// conjuntos Tenacidade e Baluarte e a Passiva dos Bandidos valem de novo.
 		/// </summary>
 		private void StartWave()
 		{
 			Emit(new WaveStarted(Wave, WaveCount, Enemies));
 
-			var living = _allies.Where(u => u.IsAlive).ToList();
-			var shield = living.Sum(u => u.RuneEffects.AllyShield);
-			foreach (var ally in living)
+			foreach (var unit in _allies.Where(u => u.IsAlive).Concat(Enemies).ToList())
 			{
-				if (ally.RuneEffects.ImmunityTurns > 0)
-					_effects.GiveStatus(ally, StatusKind.Immunity, ally.RuneEffects.ImmunityTurns);
-				if (shield > 0)
-					_effects.GiveShield(ally, shield, RuneSets.ShieldTurns);
-			}
-
-			// Passiva dos Bandidos: dos dois lados, cada onda começa com pelo menos esse Ímpeto.
-			foreach (var unit in living.Concat(Enemies).Where(u => u.Passive?.Kind == PassiveKind.ImpetoAtWaveStart))
-				_effects.GainImpeto(unit, Math.Max(0, unit.PassiveValue * BattleRules.FullImpeto - unit.Impeto));
-		}
-
-		private void BurnTick(BattleUnit unit)
-		{
-			foreach (var _ in unit.Statuses.Where(s => s.Kind == StatusKind.Burn).ToList())
-			{
-				var amount = Math.Max(1, Math.Round(unit.MaxHealth * BattleRules.BurnFraction));
-				unit.Health = Math.Max(0, unit.Health - amount);
-				Emit(new Damaged(unit, (int)amount, 0, false, 1));
-				if (!unit.IsAlive)
-				{
-					KnockOut(unit);
-					return;
-				}
+				foreach (var rule in unit.Rules())
+					rule.Behavior.OnWaveStart(rule, _effects);
 			}
 		}
-        private void PoisonTick(BattleUnit unit)
-        {
-            foreach (var _ in unit.Statuses.Where(s => s.Kind == StatusKind.Poison).ToList())
-            {
-                var amount = Math.Max(1, Math.Round(unit.MaxHealth * BattleRules.PoisonFraction));
-                unit.Health = Math.Max(0, unit.Health - amount);
-                Emit(new Damaged(unit, (int)amount, 0, false, 1));
-                if (!unit.IsAlive)
-                {
-                    KnockOut(unit);
-                    return;
-                }
-            }
-        }
 
-
-        private void BombTick(BattleUnit unit)
-        {
-			foreach (var status in unit.Statuses.Where(s => s.Kind == StatusKind.Bomb).ToList())
-			{
-                // Ainda é preciso validar, o dano de bomba nao deve ter influencia de bonus elemental, nem critico e ignora 100% de defesa, mas não ignora escudo e bonus de dano como Curse somam.
-				var amount = DamageFormula.Compute(status?.Source, unit, status?.Source?.Attack ?? 0 * BattleRules.BombDamageMultiplier, BattleRules.IgnoreDefense, false);
-                unit.Health = Math.Max(0, unit.Health - amount);
-				Emit(new Damaged(unit, (int)amount, 0, false, 1));
-				if (!unit.IsAlive)
-				{
-					KnockOut(unit);
-					return;
-				}
-			}
-		}
-        private void FinishTurn(BattleUnit unit)
+		private void FinishTurn(BattleUnit unit)
 		{
 			if (unit.IsAlive)
 			{

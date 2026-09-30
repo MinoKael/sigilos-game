@@ -96,7 +96,7 @@ namespace Sigilos.UI.Components
 			_shield.Value = shield;
 			_shield.Visible = shield > 0;
 
-			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}" : Unit.PendingRebirth ? T("battle.reviving") : T("battle.fallen");
+			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}" : Unit.Reviving ? T("battle.reviving") : T("battle.fallen");
 			_impeto.Value = Unit.Impeto;
 
 			Layout.Clear(_statuses);

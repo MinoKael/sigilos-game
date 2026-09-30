@@ -1,0 +1,1883 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Summon Family Builder</title>
+<!--
+  Construtor de famílias de invocações do Sigilos.
+
+  O que ele faz: edita uma família (até 5 variantes, uma por elemento), calcula os atributos de cada
+  variante pelo modelo de BVP e grava o arquivo que o jogo lê: Data/summons/<familia>_family.json.
+  Os parâmetros do modelo (orçamentos, perfis de papel, pesos, vieses) são editáveis na aba "Modelo"
+  e moram em Data/stat_model.json. A fórmula está explicada em summon_family_stat_formula_spec.md.
+
+  Como usar: abra este arquivo no Chrome ou no Edge e clique em "Abrir pasta do projeto" (a pasta que
+  tem o project.godot). Ele lê o modelo, as famílias e os nomes válidos de efeitos direto do projeto e
+  salva no lugar. Em outro navegador, use Importar e Baixar.
+
+  O jogo não calcula atributo: só confere os números guardados contra o modelo
+  (Core/Content/StatModel.cs). A conta do bloco "core" abaixo tem de ser igual à de lá.
+-->
+<style>
+:root{
+  --bg:#0b1020;--panel:#121a2e;--panel2:#18223b;--line:#2b395c;--text:#e9eefc;
+  --muted:#9eabc7;--accent:#7c9cff;--accent2:#52d6b0;--danger:#ff7676;--warn:#f0c060;--input:#0f1628;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0b1020,#0d1426 45%,#0a1020);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+.app{max-width:1560px;margin:0 auto;padding:24px}
+header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:18px}
+h1{font-size:28px;margin:0 0 5px}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:14px;margin:0 0 8px}
+p{margin:5px 0;color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 12px;border-radius:9px}
+.btn:hover:not(:disabled){border-color:#5872b6}
+.btn.primary{background:#3452a6;border-color:#5872b6}
+.btn.good{background:#155b4d;border-color:#2b937e}
+.btn.warn{background:#5a4a1a;border-color:#947a27}
+.btn.small{padding:5px 9px;font-size:12px;border-radius:7px}
+.grid{display:grid;grid-template-columns:400px 1fr;gap:16px}
+.panel{background:rgba(18,26,46,.94);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 12px 32px rgba(0,0,0,.18)}
+.section{margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--input);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:9px;
+}
+.field textarea{resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.5;white-space:pre;overflow:auto}
+.field input:focus,.field select:focus,.field textarea:focus,table.edit input:focus{outline:none;border-color:var(--accent)}
+.field.bad textarea,.field.bad input{border-color:var(--danger)}
+.full{grid-column:1/-1}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tab{border:1px solid var(--line);background:var(--input);color:var(--muted);padding:8px 10px;border-radius:8px}
+.tab.active{background:#23345f;color:#fff;border-color:#5c77bc}
+.tab.off{opacity:.55;text-decoration:line-through}
+.tab .count{display:inline-block;min-width:18px;margin-left:6px;padding:0 5px;border-radius:999px;font-size:11px;text-align:center;background:#243150;color:#cdd7ef}
+.tab .count.error{background:#6b2323;color:#ffd9d9}
+.tab .count.warn{background:#5a4a1a;color:#ffe9b0}
+.tabcontent{display:none}
+.tabcontent.active{display:block}
+.statbox{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.metric{background:var(--input);border:1px solid var(--line);border-radius:9px;padding:10px}
+.metric .k{font-size:11px;color:var(--muted)}
+.metric .v{font-size:20px;font-weight:700;margin-top:2px}
+.metric .s{font-size:11px;color:#7ea0ff}
+.formula{background:#0a1121;border:1px solid #243150;border-left:3px solid var(--accent);padding:12px;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:9px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+th{color:#b7c3dd;background:#0f172a;font-size:12px;position:sticky;top:0}
+td{font-variant-numeric:tabular-nums}
+table.edit td{padding:4px 6px}
+table.edit input{width:86px;background:var(--input);border:1px solid var(--line);border-radius:6px;color:var(--text);padding:5px 7px;text-align:right}
+.note{font-size:12px;color:var(--muted)}
+.skills{display:grid;gap:10px;margin-top:12px}
+.skill-card{background:#0e1629;border:1px solid var(--line);border-radius:10px;padding:12px}
+.skill-card.awakening{border-color:#6d4fb3}
+.skill-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.skill-head h3{margin:0}
+.skill-grid{display:grid;grid-template-columns:1.3fr .7fr 1fr;gap:8px 10px}
+.skill-grid .wide{grid-column:span 2}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.chip{border:1px solid var(--line);background:var(--input);color:#cdd7ef;padding:2px 8px;border-radius:999px;font-size:11px}
+.chip:hover{border-color:#5872b6;color:#fff}
+.json-preview{background:#070c17;border:1px solid var(--line);border-radius:10px;min-height:560px;max-height:75vh;overflow:auto}
+.json-preview pre{margin:0;padding:14px;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.badge{display:inline-flex;align-items:center;padding:3px 7px;border:1px solid var(--line);border-radius:999px;color:#cdd7ef;font-size:11px;white-space:nowrap}
+.badge.ok{border-color:#2b937e;color:#8fe8cf}
+.badge.bad{border-color:#a34848;color:#ffb3b3}
+.badge.warn{border-color:#947a27;color:#ffe09a}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.small{font-size:12px}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.list{display:grid;gap:4px;max-height:300px;overflow:auto;margin:8px 0}
+.list button{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--text);padding:6px 8px;border-radius:8px}
+.list button:hover{background:var(--input)}
+.list button.active{background:#23345f;border-color:#5c77bc}
+.issues{display:grid;gap:6px}
+.issue{border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:8px;padding:7px 10px;background:#0e1629}
+.issue.error{border-left-color:var(--danger)}
+.issue .where{color:#b7c3dd;font-size:11px}
+.ok{color:var(--accent2)}
+.bad{color:var(--danger)}
+.hint{background:#0e1629;border:1px dashed var(--line);border-radius:8px;padding:10px;margin-top:10px}
+.hint code{color:#cdd7ef}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.toast{position:fixed;right:20px;bottom:20px;max-width:460px;background:#1b2a4d;border:1px solid #5c77bc;border-radius:10px;padding:12px 14px;box-shadow:0 12px 32px rgba(0,0,0,.4);display:none;white-space:pre-wrap}
+.toast.show{display:block}
+@media(max-width:1150px){.grid,.two{grid-template-columns:1fr}.json-preview{min-height:400px}}
+@media(max-width:720px){.form-grid,.three,.four,.skill-grid,.statbox{grid-template-columns:1fr}.skill-grid .wide{grid-column:auto}header{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <h1>Summon Family Builder</h1>
+    <p>Uma família, até 5 variantes, atributos pelo modelo de BVP e o JSON pronto para <code>Data/summons</code>.</p>
+  </div>
+  <div class="toolbar">
+    <button class="btn primary" data-action="open-project" title="A pasta que tem o project.godot. Precisa do Chrome ou do Edge.">Abrir pasta do projeto</button>
+    <button class="btn" data-action="import-family">Importar JSON</button>
+    <button class="btn good" data-action="export-family">Baixar JSON</button>
+    <button class="btn" data-action="copy-json" id="copyBtn">Copiar JSON</button>
+    <input id="familyInput" type="file" accept=".json,application/json" hidden>
+    <input id="modelInput" type="file" accept=".json,application/json" hidden>
+  </div>
+</header>
+
+<div class="grid">
+  <aside>
+    <div class="panel section" id="projectPanel"></div>
+    <div class="panel section" id="familyPanel"></div>
+    <div class="panel" id="modelSummary"></div>
+  </aside>
+
+  <main>
+    <div class="panel">
+      <div class="tabs" id="mainTabs"></div>
+
+      <section class="tabcontent" id="tab-variations">
+        <div class="two">
+          <div>
+            <h2>Variações</h2>
+            <div class="tabs" id="elementTabs"></div>
+            <div id="variationEditor"></div>
+          </div>
+          <div>
+            <h2>Resultado da família</h2>
+            <div id="familySummary"></div>
+            <hr>
+            <h3>Como o atributo sai</h3>
+            <div class="formula">1) Estrelas naturais → orçamento de BVP
+2) Papel → fatias de HP / ATK / DEF e SPD de base
+3) SPD reserva SPD × peso do orçamento
+4) Viés de elemento, de família e da variante mexem nas fatias
+5) As fatias são normalizadas: o viés nunca cria BVP
+6) Arredonda e fecha o orçamento; o Despertar refaz a conta com o orçamento desperto</div>
+          </div>
+        </div>
+        <div id="skillsSection"></div>
+      </section>
+
+      <section class="tabcontent" id="tab-model"></section>
+      <section class="tabcontent" id="tab-formula"></section>
+      <section class="tabcontent" id="tab-issues"></section>
+
+      <section class="tabcontent" id="tab-preview">
+        <div class="toolbar" style="margin-bottom:10px" id="previewBadges"></div>
+        <div class="json-preview"><pre id="jsonPreview"></pre></div>
+      </section>
+    </div>
+  </main>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- O modelo de fábrica: igual a Data/stat_model.json. Com a pasta do projeto aberta, vale o do projeto. -->
+<script type="application/json" id="default-model">
+{
+  "hp_weight": 15,
+  "spd_weight": 3,
+  "tolerance": 1,
+  "awakening_spd": 1,
+  "stat_budget": {"2": 1785, "3": 1944, "4": 2115, "5": 2277},
+  "awakened_stat_budget": {"2": 1953, "3": 2118, "4": 2286, "5": 2447},
+  "role_profiles": {
+    "2": {
+      "Attack": {"hp": 0.296, "atk": 0.415, "def": 0.296, "spd": 110},
+      "Defense": {"hp": 0.326, "atk": 0.304, "def": 0.37, "spd": 98},
+      "HP": {"hp": 0.356, "atk": 0.304, "def": 0.33, "spd": 100},
+      "Support": {"hp": 0.326, "atk": 0.311, "def": 0.365, "spd": 98}
+    },
+    "3": {
+      "Attack": {"hp": 0.32, "atk": 0.383, "def": 0.293, "spd": 101},
+      "Defense": {"hp": 0.347, "atk": 0.293, "def": 0.36, "spd": 98},
+      "HP": {"hp": 0.373, "atk": 0.307, "def": 0.32, "spd": 99},
+      "Support": {"hp": 0.353, "atk": 0.32, "def": 0.327, "spd": 102.5}
+    },
+    "4": {
+      "Attack": {"hp": 0.327, "atk": 0.382, "def": 0.297, "spd": 102},
+      "Defense": {"hp": 0.327, "atk": 0.309, "def": 0.358, "spd": 95},
+      "HP": {"hp": 0.376, "atk": 0.324, "def": 0.303, "spd": 99},
+      "Support": {"hp": 0.352, "atk": 0.315, "def": 0.327, "spd": 102}
+    },
+    "5": {
+      "Attack": {"hp": 0.322, "atk": 0.383, "def": 0.294, "spd": 100},
+      "Defense": {"hp": 0.328, "atk": 0.306, "def": 0.372, "spd": 100},
+      "HP": {"hp": 0.372, "atk": 0.328, "def": 0.303, "spd": 100},
+      "Support": {"hp": 0.349, "atk": 0.328, "def": 0.328, "spd": 100}
+    }
+  },
+  "element_bias": {
+    "Fire": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Water": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Wind": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Light": {"hp": 1, "atk": 1, "def": 1, "spd": 0},
+    "Dark": {"hp": 1, "atk": 1, "def": 1, "spd": 0}
+  },
+  "base_stats": {"crit": 0.15, "crit_damage": 0.5, "resistance": 0.05, "accuracy": 0}
+}
+</script>
+
+<!-- Os nomes que o jogo aceita. Com a pasta do projeto aberta, vêm dos enums de Core/Content. -->
+<script type="application/json" id="default-enums">
+{
+  "roles": ["HP", "Attack", "Defense", "Support"],
+  "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
+  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse"],
+  "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies"],
+  "statuses": ["Shield", "Burn", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "Poison"],
+  "passives": ["SpeedWhenLowest", "ShieldOnDeath", "RebirthOnce", "DamageReduction", "BonusVsDebuffed", "BonusVsWounded", "ImpetoAtWaveStart", "RegenEachTurn", "BurnOnHit"],
+  "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"]
+}
+</script>
+
+<!-- A família que abre de exemplo: os Dragões de Data/summons (nulo: uma família em branco). -->
+<script type="application/json" id="sample-family">
+{
+  "family_id": "dragon",
+  "base_name": "Dragon",
+  "name": "Dragons",
+  "star_grade": 5,
+  "image": "dragon",
+  "awakened_image": "dragon_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "dragon_fire",
+      "name": "Fire Dragon",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Attack", "value": 0.18},
+      "awakening": {"name": "Pyrrhax", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Claw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Breath",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Dragonfire",
+          "passive": {"kind": "BurnOnHit", "value": 0.2}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "dragon_water",
+      "name": "Water Dragon",
+      "element": "Water",
+      "role": "Defense",
+      "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
+      "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.2},
+      "awakening": {"name": "Maelstra", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Tidal Claw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Impeto", "target": "Target", "power": -20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Deluge",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Maelstrom",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 4.55},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.5},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "dragon_wind",
+      "name": "Wind Dragon",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.15},
+      "awakening": {"name": "Zephyrax", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Gust Claw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Cyclone",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Tempest",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 4.9},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -50},
+            {"kind": "Status", "target": "Self", "status": "SpeedUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "dragon_light",
+      "name": "Light Dragon",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Defense", "value": 0.25},
+      "awakening": {"name": "Aurelion", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Radiant Claw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Holy Breath",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Dragonfire",
+          "passive": {"kind": "BurnOnHit", "value": 0.2}
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "dragon_dark",
+      "name": "Dark Dragon",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "CritDamage", "value": 0.3},
+      "awakening": {"name": "Umbrax", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Shadow Claw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.2, "drain": 0.25}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Void Breath",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Dragonfire",
+          "passive": {"kind": "BurnOnHit", "value": 0.2}
+        }
+      ]
+    }
+  }
+}
+</script>
+
+<script id="core">
+/*
+ * Núcleo, sem tela: o modelo de atributos, o formato do arquivo de família e as conferências.
+ * A conta de computeStats é a mesma de Core/Content/StatModel.cs, operação por operação.
+ */
+const Core = (() => {
+  "use strict";
+
+  const ELEMENTS = ["Fire", "Water", "Wind", "Light", "Dark"];
+  const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill"];
+  const FAMILY_KEYS = ["family_id", "base_name", "name", "star_grade", "image", "awakened_image", "family_bias", "variations"];
+  const VARIATION_KEYS = ["variation_id", "name", "element", "role", "stats", "awakened_stats", "bias", "awakening_spd", "leader", "awakening", "skills"];
+  const SKILL_KEYS = ["name", "cooldown", "effects", "levels", "awakenedEffects", "passive"];
+  const NEUTRAL = Object.freeze({hp: 1, atk: 1, def: 1, spd: 0});
+
+  /** Meio para cima. Igual ao Round de StatModel.cs. */
+  const round = x => Math.floor(x + 0.5);
+  const num = (value, fallback = 0) => {
+    if (value === null || value === undefined || (typeof value === "string" && value.trim() === "")) return fallback;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const isBlank = value => value === null || value === undefined || String(value).trim() === "";
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const isPlain = value => value !== null && typeof value === "object" && !Array.isArray(value);
+  const keyOf = element => element.toLowerCase();
+
+  // JSON com comentários ------------------------------------------------------------------------
+
+  /** Tira comentários // e vírgulas sobrando, como o jogo aceita nos arquivos de Data/. */
+  function stripJsonc(text) {
+    let out = "", inString = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inString) {
+        out += c;
+        if (c === "\\") out += text[++i] ?? "";
+        else if (c === '"') inString = false;
+      } else if (c === '"') {
+        inString = true;
+        out += c;
+      } else if (c === "/" && text[i + 1] === "/") {
+        while (i < text.length && text[i] !== "\n") i++;
+        out += "\n";
+      } else {
+        out += c;
+      }
+    }
+    return out.replace(/,(\s*[\]}])/g, "$1");
+  }
+
+  const parseJsonc = text => JSON.parse(stripJsonc(text.replace(/^﻿/, "")));
+
+  /** As linhas de comentário do começo do arquivo, para gravar de volta. */
+  function leadingComments(text) {
+    const lines = [];
+    for (const line of text.replace(/^﻿/, "").split(/\r?\n/)) {
+      if (line.trim().startsWith("//")) lines.push(line.trimEnd());
+      else if (line.trim() !== "") break;
+    }
+    return lines;
+  }
+
+  /**
+   * JSON no jeito dos arquivos de Data/: objeto só de valores simples fica numa linha (um efeito, os
+   * atributos), o resto abre. Assim cada efeito de habilidade é uma linha.
+   */
+  function format(value, indent = "") {
+    const inner = indent + "  ";
+    if (Array.isArray(value)) {
+      if (value.length === 0) return "[]";
+      return "[\n" + value.map(item => inner + format(item, inner)).join(",\n") + "\n" + indent + "]";
+    }
+    if (isPlain(value)) {
+      const keys = Object.keys(value);
+      if (keys.length === 0) return "{}";
+      if (keys.every(k => value[k] === null || typeof value[k] !== "object"))
+        return "{" + keys.map(k => JSON.stringify(k) + ": " + JSON.stringify(value[k])).join(", ") + "}";
+      return "{\n" + keys.map(k => inner + JSON.stringify(k) + ": " + format(value[k], inner)).join(",\n") + "\n" + indent + "}";
+    }
+    return JSON.stringify(value);
+  }
+
+  // Modelo ----------------------------------------------------------------------------------------
+
+  const weights = (w, fallback = NEUTRAL) => ({
+    hp: num(w?.hp, fallback.hp),
+    atk: num(w?.atk, fallback.atk),
+    def: num(w?.def, fallback.def),
+    spd: num(w?.spd, fallback.spd),
+  });
+  const isNeutral = w => w.hp === 1 && w.atk === 1 && w.def === 1 && w.spd === 0;
+
+  /** O modelo com todos os campos, na ordem do arquivo. */
+  function normalizeModel(raw) {
+    const model = {
+      hp_weight: num(raw?.hp_weight, 15),
+      spd_weight: num(raw?.spd_weight, 3),
+      tolerance: num(raw?.tolerance, 1),
+      awakening_spd: num(raw?.awakening_spd, 1),
+      stat_budget: {},
+      awakened_stat_budget: {},
+      role_profiles: {},
+      element_bias: {},
+      base_stats: {
+        crit: num(raw?.base_stats?.crit, 0.15),
+        crit_damage: num(raw?.base_stats?.crit_damage, 0.5),
+        resistance: num(raw?.base_stats?.resistance, 0.05),
+        accuracy: num(raw?.base_stats?.accuracy, 0),
+      },
+    };
+    for (const star of Object.keys(raw?.stat_budget || {}).sort((a, b) => a - b)) {
+      model.stat_budget[star] = num(raw.stat_budget[star]);
+      model.awakened_stat_budget[star] = num(raw.awakened_stat_budget?.[star], model.stat_budget[star]);
+      model.role_profiles[star] = {};
+      for (const [role, profile] of Object.entries(raw.role_profiles?.[star] || {}))
+        model.role_profiles[star][role] = weights(profile, {hp: 1 / 3, atk: 1 / 3, def: 1 / 3, spd: 100});
+    }
+    for (const element of ELEMENTS) model.element_bias[element] = weights(raw?.element_bias?.[element]);
+    return model;
+  }
+
+  const stars = model => Object.keys(model.stat_budget).map(Number).sort((a, b) => a - b);
+  const budgetOf = (model, star, awakened) => (awakened ? model.awakened_stat_budget : model.stat_budget)[star];
+  const bvp = (model, s) => s.hp / model.hp_weight + s.atk + s.def + s.spd * model.spd_weight;
+
+  /**
+   * Os atributos no 6★ nível 40: separa a Velocidade, reparte o resto do orçamento pelas fatias do
+   * papel (com os vieses, normalizadas) e arredonda. A Vida sai em múltiplos do peso dela, e o que o
+   * arredondamento deixou vai para a Defesa, para fechar o orçamento.
+   */
+  function computeStats(model, star, role, awakened, element, family, manual, awakeningSpd) {
+    const budget = budgetOf(model, star, awakened);
+    const profile = model.role_profiles[star]?.[role];
+    if (budget === undefined || !profile) return null;
+    element = element || NEUTRAL;
+    family = family || NEUTRAL;
+    manual = manual || NEUTRAL;
+
+    const spd = round(profile.spd + family.spd + element.spd + manual.spd + (awakened ? (awakeningSpd ?? model.awakening_spd) : 0));
+    const room = Math.max(0, budget - spd * model.spd_weight);
+
+    const hpShare = profile.hp * element.hp * family.hp * manual.hp;
+    const atkShare = profile.atk * element.atk * family.atk * manual.atk;
+    const defShare = profile.def * element.def * family.def * manual.def;
+    let total = hpShare + atkShare + defShare;
+    if (!(total > 0)) total = 1;
+
+    const hp = round(Math.max(0, round(room * hpShare / total)) * model.hp_weight);
+    const atk = Math.max(0, round(room * atkShare / total));
+    let def = Math.max(0, round(room * defShare / total));
+    def = Math.max(0, def + round(budget - hp / model.hp_weight - atk - def - spd * model.spd_weight));
+    return {hp, atk, def, spd};
+  }
+
+  /** A conta passo a passo, para a aba Fórmula. */
+  function explain(model, family, variation, element, awakened) {
+    const star = family.star_grade, profile = model.role_profiles[star]?.[variation.role];
+    const budget = budgetOf(model, star, awakened);
+    if (budget === undefined || !profile) return null;
+    const e = model.element_bias[element] || NEUTRAL, f = weights(family.family_bias), m = weights(variation.bias);
+    const awakeningSpd = isBlank(variation.awakening_spd) ? model.awakening_spd : num(variation.awakening_spd);
+    const stats = computeStats(model, star, variation.role, awakened, e, f, m, awakeningSpd);
+    const shares = {hp: profile.hp * e.hp * f.hp * m.hp, atk: profile.atk * e.atk * f.atk * m.atk, def: profile.def * e.def * f.def * m.def};
+    const total = shares.hp + shares.atk + shares.def || 1;
+    return {budget, profile, element: e, family: f, manual: m, awakeningSpd, stats, shares, total, room: Math.max(0, budget - stats.spd * model.spd_weight), bvp: bvp(model, stats)};
+  }
+
+  function variationStats(model, family, variation, element, awakened) {
+    const awakeningSpd = isBlank(variation.awakening_spd) ? undefined : num(variation.awakening_spd);
+    return computeStats(model, family.star_grade, variation.role, awakened,
+      model.element_bias[element], weights(family.family_bias), weights(variation.bias), awakeningSpd);
+  }
+
+  function validateModel(model, roles) {
+    const problems = [];
+    if (!(model.hp_weight > 0) || !(model.spd_weight > 0)) problems.push("Os pesos de HP e de SPD têm de ser maiores que zero.");
+    if (stars(model).length === 0) problems.push("Sem orçamento: adicione ao menos uma linha de estrelas.");
+    for (const star of stars(model)) {
+      if (model.awakened_stat_budget[star] < model.stat_budget[star])
+        problems.push(`${star}★: o orçamento desperto (${model.awakened_stat_budget[star]}) é menor que o de base (${model.stat_budget[star]}).`);
+      for (const role of roles) {
+        const p = model.role_profiles[star]?.[role];
+        if (!p) problems.push(`${star}★: falta o perfil do papel ${role}.`);
+        else if (!(p.hp > 0) || !(p.atk > 0) || !(p.def > 0) || !(p.spd > 0)) problems.push(`${star}★ ${role}: fatia ou SPD que não é maior que zero.`);
+      }
+    }
+    return problems;
+  }
+
+  const DEFAULT_MODEL_HEADER = [
+    "// The stat model: how the stats of every summon are calculated (docs/summon_family_stat_formula_spec.md).",
+    "// Every summon of the same natural stars spends the same budget of BVP (Base Value Points), and its",
+    "// role decides where:",
+    "//   BVP = HP / hp_weight + ATK + DEF + SPD × spd_weight",
+    "// \"stat_budget\" is the budget per natural stars; \"awakened_stat_budget\" is the budget after the",
+    "// Awakening (its own budget, not a multiplier). \"role_profiles\" gives, per natural stars and role, the",
+    "// shares of the budget left after Speed (HP, Attack and Defense; they are normalized) and the base",
+    "// Speed. \"element_bias\" multiplies those shares and adds Speed per element: it moves stats around and",
+    "// never adds any. \"awakening_spd\" is the Speed the Awakening adds. \"base_stats\" are the four stats",
+    "// outside the budget, equal for every monster: they don't grow with level.",
+    "// These are balance knobs. Change them here or in the \"Modelo\" tab of docs/summon_family_builder.html;",
+    "// then open the project folder in the builder and use \"Recalcular todas\". The stats stored in",
+    "// Data/summons/*_family.json and Data/enemies.json are final numbers at 6★ level 40: the game does not",
+    "// calculate them, it only checks them against this file (Core/Content/StatModel.cs).",
+  ];
+
+  const formatModel = (model, header) => (header && header.length ? header : DEFAULT_MODEL_HEADER).join("\n") + "\n" + format(normalizeModel(model)) + "\n";
+
+  // Família: do arquivo para o editor e de volta ---------------------------------------------------
+
+  const rest = (source, known) => Object.fromEntries(Object.entries(source || {}).filter(([k]) => !known.includes(k)));
+  const listText = list => Array.isArray(list) && list.length ? format(list) : "[]";
+
+  function parseList(text) {
+    if (isBlank(text)) return {list: [], error: null};
+    try {
+      const value = parseJsonc(text);
+      return Array.isArray(value) ? {list: value, error: null} : {list: [], error: "não é uma lista: comece com [ e termine com ]"};
+    } catch (error) {
+      return {list: [], error: error.message};
+    }
+  }
+
+  const blankSkill = (name = "") => ({name, cooldown: "", passive: null, effects: "[]", awakenedEffects: "", levels: "[]", extra: {}});
+
+  function importSkill(source) {
+    return {
+      name: source?.name || "",
+      cooldown: source?.cooldown ?? "",
+      passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", extra: rest(source.passive, ["kind", "value", "awakenedValue"])} : null,
+      effects: listText(source?.effects),
+      awakenedEffects: source?.awakenedEffects?.length ? format(source.awakenedEffects) : "",
+      levels: listText(source?.levels),
+      extra: rest(source, SKILL_KEYS),
+    };
+  }
+
+  function exportSkill(skill) {
+    const out = {name: skill.name};
+    if (skill.passive) {
+      const passive = {kind: skill.passive.kind, value: num(skill.passive.value)};
+      if (num(skill.passive.awakenedValue) > 0) passive.awakenedValue = num(skill.passive.awakenedValue);
+      out.passive = Object.assign(passive, skill.passive.extra);
+    } else {
+      if (num(skill.cooldown) > 0) out.cooldown = num(skill.cooldown);
+      out.effects = parseList(skill.effects).list;
+      const levels = parseList(skill.levels).list;
+      if (levels.length) out.levels = levels;
+      const awakened = parseList(skill.awakenedEffects).list;
+      if (awakened.length) out.awakenedEffects = awakened;
+    }
+    return Object.assign(out, skill.extra);
+  }
+
+  function blankVariation(family, element, enabled = true) {
+    const basic = blankSkill("Attack");
+    basic.effects = format([{kind: "Damage", target: "Target", power: 3.5}]);
+    basic.levels = format([{kind: "Damage", value: 0.05}, {kind: "Damage", value: 0.05}, {kind: "Damage", value: 0.1}, {kind: "Damage", value: 0.15}]);
+    return {
+      enabled,
+      variation_id: `${family.family_id}_${keyOf(element)}`,
+      name: `${element} ${family.base_name}`,
+      role: "Attack",
+      bias: {...NEUTRAL},
+      awakening_spd: "",
+      leader: {stat: "", value: ""},
+      awakening: {name: "", stat: "", skill: null},
+      skills: [basic],
+      extra: {},
+    };
+  }
+
+  function blankFamily(model) {
+    const available = stars(model);
+    const family = {
+      family_id: "new_family", base_name: "Creature", name: "Creatures",
+      star_grade: available.includes(3) ? 3 : available[0] ?? 3,
+      image: "new_family", awakened_image: "new_family_awakened",
+      family_bias: {...NEUTRAL}, variations: {}, extra: {},
+    };
+    for (const element of ELEMENTS) family.variations[keyOf(element)] = blankVariation(family, element);
+    return family;
+  }
+
+  /** Do objeto do arquivo para o estado do editor. O que o construtor não conhece fica guardado em "extra". */
+  function importFamily(source) {
+    const family = {
+      family_id: source.family_id || "family",
+      base_name: source.base_name || "",
+      name: source.name || "",
+      star_grade: num(source.star_grade, 3),
+      image: source.image || "",
+      awakened_image: source.awakened_image || "",
+      family_bias: weights(source.family_bias),
+      variations: {},
+      extra: rest(source, FAMILY_KEYS),
+    };
+    for (const element of ELEMENTS) {
+      const key = keyOf(element);
+      const item = source.variations?.[key] ?? source.variations?.[element];
+      if (!item) {
+        family.variations[key] = blankVariation(family, element, false);
+        continue;
+      }
+      family.variations[key] = {
+        enabled: true,
+        variation_id: item.variation_id || `${family.family_id}_${key}`,
+        name: item.name || "",
+        role: item.role || "Attack",
+        bias: weights(item.bias),
+        awakening_spd: item.awakening_spd ?? "",
+        leader: {stat: item.leader?.stat || "", value: item.leader?.value ?? ""},
+        awakening: {name: item.awakening?.name || "", stat: item.awakening?.stat || "", skill: item.awakening?.skill ? importSkill(item.awakening.skill) : null, extra: rest(item.awakening, ["name", "stat", "skill"])},
+        skills: (item.skills || []).map(importSkill),
+        extra: rest(item, VARIATION_KEYS),
+      };
+    }
+    return family;
+  }
+
+  /** Do estado do editor para o objeto do arquivo, com os atributos calculados agora. */
+  function exportFamily(model, family) {
+    const out = {
+      family_id: family.family_id,
+      base_name: family.base_name,
+      name: family.name,
+      star_grade: num(family.star_grade),
+      image: family.image,
+      awakened_image: family.awakened_image,
+    };
+    const familyBias = weights(family.family_bias);
+    if (!isNeutral(familyBias)) out.family_bias = familyBias;
+    Object.assign(out, family.extra);
+    out.variations = {};
+
+    for (const element of ELEMENTS) {
+      const v = family.variations[keyOf(element)];
+      if (!v || !v.enabled) continue;
+      const item = {
+        variation_id: v.variation_id,
+        name: v.name,
+        element,
+        role: v.role,
+        stats: variationStats(model, family, v, element, false) || {hp: 0, atk: 0, def: 0, spd: 0},
+        awakened_stats: variationStats(model, family, v, element, true) || {hp: 0, atk: 0, def: 0, spd: 0},
+      };
+      const bias = weights(v.bias);
+      if (!isNeutral(bias)) item.bias = bias;
+      if (!isBlank(v.awakening_spd)) item.awakening_spd = num(v.awakening_spd);
+      if (v.leader.stat) item.leader = {stat: v.leader.stat, value: num(v.leader.value)};
+      item.awakening = {name: v.awakening.name};
+      if (v.awakening.stat) item.awakening.stat = v.awakening.stat;
+      if (v.awakening.skill) item.awakening.skill = exportSkill(v.awakening.skill);
+      Object.assign(item.awakening, v.awakening.extra);
+      item.skills = v.skills.map(exportSkill);
+      out.variations[keyOf(element)] = Object.assign(item, v.extra);
+    }
+    return out;
+  }
+
+  const formatFamily = (model, family) => format(exportFamily(model, family)) + "\n";
+
+  /** Lê um arquivo de família e devolve o texto dele com os atributos do modelo de agora. */
+  const recalculate = (model, text) => formatFamily(model, importFamily(parseJsonc(text)));
+
+  // Conferência -----------------------------------------------------------------------------------
+
+  /**
+   * As mesmas regras de GameDatabase.Validate e dos testes de dados, antes de o arquivo chegar ao jogo.
+   * "others": as outras famílias do projeto (objetos de arquivo), para ids e nomes repetidos.
+   */
+  function validateFamily(model, family, enums, others = []) {
+    const issues = [];
+    const add = (level, where, text) => issues.push({level, where, text});
+    const star = num(family.star_grade);
+
+    for (const [field, label] of [["family_id", "Family ID"], ["base_name", "Nome base"], ["name", "Nome da família"], ["image", "Imagem"], ["awakened_image", "Imagem desperta"]])
+      if (isBlank(family[field])) add("error", "Família", `Falta ${label}.`);
+    if (!/^[a-z0-9_]+$/.test(family.family_id || "")) add("warn", "Família", "Family ID: use minúsculas, números e _ (é o nome do arquivo).");
+    if (budgetOf(model, star, false) === undefined) add("error", "Família", `${star}★ não tem orçamento no modelo.`);
+
+    const enabled = ELEMENTS.filter(e => family.variations[keyOf(e)]?.enabled);
+    if (enabled.length === 0) add("error", "Família", "Nenhuma variante.");
+
+    const otherIds = new Set(), otherNames = new Set();
+    for (const other of others) {
+      if (other.family_id === family.family_id) continue;
+      for (const v of Object.values(other.variations || {})) {
+        otherIds.add(v.variation_id);
+        if (v.awakening?.name) otherNames.add(v.awakening.name);
+      }
+    }
+    const ids = new Set(), names = new Set();
+
+    for (const element of enabled) {
+      const v = family.variations[keyOf(element)];
+      const where = element;
+      if (isBlank(v.variation_id)) add("error", where, "Falta o Variation ID.");
+      else if (ids.has(v.variation_id) || otherIds.has(v.variation_id)) add("error", where, `O id "${v.variation_id}" já existe.`);
+      ids.add(v.variation_id);
+      if (isBlank(v.name)) add("error", where, "Falta o nome.");
+      if (!enums.roles.includes(v.role)) add("error", where, `Papel desconhecido: "${v.role}".`);
+
+      const base = variationStats(model, family, v, element, false), awakened = variationStats(model, family, v, element, true);
+      if (!base || !awakened) add("error", where, `O modelo não tem perfil para ${star}★ ${v.role}.`);
+      else for (const [stats, isAwakened, label] of [[base, false, "stats"], [awakened, true, "awakened_stats"]]) {
+        const difference = bvp(model, stats) - budgetOf(model, star, isAwakened);
+        if (stats.spd <= 0) add("error", where, `${label}: SPD tem de ser maior que zero.`);
+        if (Math.abs(difference) > model.tolerance + 1e-9) add("error", where, `${label}: BVP ${+bvp(model, stats).toFixed(1)} fora do orçamento de ${budgetOf(model, star, isAwakened)} (tolerância ${model.tolerance}).`);
+      }
+
+      if (v.leader.stat) {
+        if (!enums.stats.includes(v.leader.stat)) add("error", where, `Liderança: atributo desconhecido "${v.leader.stat}".`);
+        if (!(num(v.leader.value) > 0)) add("error", where, "Liderança: o valor tem de ser maior que zero (0.18 = 18%).");
+      }
+
+      if (isBlank(v.awakening.name)) add("error", where, "Falta o nome de Despertar.");
+      else if (names.has(v.awakening.name) || otherNames.has(v.awakening.name)) add("error", where, `O nome de Despertar "${v.awakening.name}" já existe.`);
+      names.add(v.awakening.name);
+      if (v.awakening.stat && !AWAKENING_STATS.includes(v.awakening.stat)) add("error", where, `O Despertar dá ${AWAKENING_STATS.join(", ")}, não ${v.awakening.stat}.`);
+      if (v.awakening.stat === "Speed" && !isBlank(v.awakening_spd) && num(v.awakening_spd) > model.awakening_spd)
+        add("warn", where, "O atributo do Despertar já é Speed: o jogo soma +15 por cima dos atributos despertos. O SPD do Despertar daqui entra no orçamento, além desses 15.");
+
+      const skills = v.skills.map(exportSkill);
+      const extra = v.awakening.skill ? exportSkill(v.awakening.skill) : null;
+      const all = extra ? [...skills, extra] : skills;
+      const changes = s => (s.awakenedEffects || []).length > 0 || num(s.passive?.awakenedValue) > 0;
+      if (!v.awakening.stat && !extra && !skills.some(changes)) add("error", where, "O Despertar não dá nada: um atributo, uma habilidade nova ou uma habilidade melhorada.");
+      if (extra && !extra.passive && !(num(extra.cooldown) > 0)) add("error", where, "A habilidade do Despertar precisa de recarga ou ser passiva.");
+
+      if (all.length === 0 || all[0].passive || num(all[0].cooldown) !== 0) add("error", where, "A primeira habilidade é ativa e sem recarga.");
+      if (all.slice(1).some(s => !s.passive && !(num(s.cooldown) > 0))) add("error", where, "Habilidade ativa além da primeira sem recarga.");
+      if (all.filter(s => s.passive).length > 1) add("error", where, "Mais de uma passiva.");
+
+      const editors = v.awakening.skill ? [...v.skills, v.awakening.skill] : v.skills;
+      all.forEach((skill, index) => validateSkill(skill, editors[index], `${where} · ${skill.name || "habilidade " + (index + 1)}`, enums, add));
+
+      // Convenções do jogo por estrelas naturais (Tests/DataTests.cs).
+      if (star === 3 && !extra) add("warn", where, "Convenção: as 3★ ganham uma habilidade nova no Despertar.");
+      if (star === 4 && !skills.some(changes)) add("warn", where, "Convenção: as 4★ melhoram uma habilidade no Despertar (awakenedEffects ou valor desperto da passiva).");
+      if (star >= 5 && (!v.awakening.stat || skills.some(changes))) add("warn", where, "Convenção: as 5★ só ganham um atributo no Despertar.");
+    }
+    return issues;
+  }
+
+  function validateSkill(skill, editor, where, enums, add) {
+    if (isBlank(skill.name)) add("error", where, "Habilidade sem nome.");
+    if (skill.passive) {
+      if (!enums.passives.includes(skill.passive.kind)) add("error", where, `Passiva desconhecida: "${skill.passive.kind}".`);
+      if (!(num(skill.passive.value) > 0)) add("warn", where, "Passiva com valor zero.");
+      return;
+    }
+
+    for (const [field, label] of [["effects", "Effects"], ["awakenedEffects", "Awakened effects"], ["levels", "Levels"]]) {
+      const error = editor ? parseList(editor[field]).error : null;
+      if (error) add("error", where, `${label}: JSON inválido (${error}).`);
+    }
+
+    if ((skill.effects || []).length === 0) add("error", where, "Habilidade ativa sem efeitos.");
+    if ((skill.levels || []).length === 0) add("warn", where, "Não sobe de nível: toda habilidade ativa tem \"levels\".");
+    for (const level of skill.levels || []) {
+      if (!enums.levelKinds.includes(level.kind)) add("error", where, `Nível desconhecido: "${level.kind}".`);
+      if (!(num(level.value) > 0)) add("error", where, "Nível que não melhora nada (value tem de ser maior que zero).");
+    }
+
+    for (const effect of [...(skill.effects || []), ...(skill.awakenedEffects || [])]) {
+      if (!isPlain(effect)) { add("error", where, "Cada efeito é um objeto { ... }."); continue; }
+      if (!enums.effectKinds.includes(effect.kind)) add("error", where, `Efeito desconhecido: "${effect.kind}".`);
+      if (effect.target !== undefined && !enums.targets.includes(effect.target)) add("error", where, `Alvo desconhecido: "${effect.target}".`);
+      if (effect.kind === "Status" && !enums.statuses.includes(effect.status)) add("error", where, `Status desconhecido: "${effect.status}".`);
+      if (effect.hits !== undefined && !(effect.hits >= 1)) add("error", where, `Efeito com ${effect.hits} golpes.`);
+      if (effect.chance !== undefined && !(effect.chance >= 0 && effect.chance <= 1)) add("error", where, `Chance ${effect.chance} fora de 0 a 1.`);
+      if (effect.kind === "Status" && effect.turns !== undefined && !(effect.turns >= 1)) add("error", where, "Efeito de status sem duração.");
+      for (const key of Object.keys(effect)) if (!EFFECT_FIELDS.includes(key)) add("warn", where, `Campo "${key}" que o jogo não lê.`);
+    }
+  }
+
+  // Chefes e enums do projeto -----------------------------------------------------------------------
+
+  /** Data/enemies.json com os "stats" de cada chefe refeitos pelo modelo (papel e estrelas, sem viés). */
+  function rewriteEnemies(text, model) {
+    const enemies = parseJsonc(text);
+    let index = 0, missing = [];
+    const result = text.replace(/"stats"\s*:\s*\{[^{}]*\}/g, match => {
+      const enemy = enemies[index++];
+      const stats = enemy && computeStats(model, enemy.rarity, enemy.role, false);
+      if (!stats) { if (enemy) missing.push(enemy.id); return match; }
+      return '"stats": ' + format(stats);
+    });
+    if (index !== enemies.length) throw new Error(`Data/enemies.json: ${enemies.length} chefes e ${index} blocos "stats". Cada chefe precisa de um.`);
+    if (missing.length) throw new Error(`Data/enemies.json: o modelo não tem perfil para ${missing.join(", ")}.`);
+    return result;
+  }
+
+  /** Os nomes de um enum de C# (Core/Content/*.cs), na ordem do arquivo. */
+  function parseEnum(source, name) {
+    const match = new RegExp("enum\\s+" + name + "\\s*\\{([\\s\\S]*?)\\}").exec(source);
+    if (!match) return null;
+    const names = match[1].replace(/\/\/[^\n]*/g, "").split(",").map(part => part.split("=")[0].trim()).filter(part => /^\w+$/.test(part));
+    return names.length ? names : null;
+  }
+
+  return {
+    ELEMENTS, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
+    stripJsonc, parseJsonc, leadingComments, format,
+    weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
+    parseList, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
+    validateFamily, rewriteEnemies, parseEnum,
+  };
+})();
+
+if (typeof module !== "undefined") module.exports = Core;
+</script>
+
+<script id="ui">
+"use strict";
+(() => {
+  if (typeof document === "undefined") return;
+
+  const C = Core;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+  const fmt = (n, d = 0) => Number(n).toLocaleString("pt-BR", {maximumFractionDigits: d});
+  const readJson = id => JSON.parse($(id).textContent);
+  const DRAFT_KEY = "sigilos.family_builder.draft";
+  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind"};
+  const EFFECT_TEMPLATES = {
+    Damage: {kind: "Damage", target: "Target", power: 3.5},
+    Heal: {kind: "Heal", target: "LowestAlly", power: 0.1},
+    Shield: {kind: "Shield", target: "AllAllies", power: 0.1, turns: 2},
+    Status: {kind: "Status", target: "Target", status: "Burn", chance: 0.3, turns: 2},
+    Impeto: {kind: "Impeto", target: "Target", power: -20},
+    Cleanse: {kind: "Cleanse", target: "LowestAlly"},
+  };
+  const LEVEL_TEMPLATES = {Damage: 0.1, Recovery: 0.1, EffectRate: 0.1, Cooldown: 1};
+  const TABS = [["variations", "Variações"], ["model", "Modelo"], ["formula", "Fórmula"], ["issues", "Validação"], ["preview", "JSON final"]];
+
+  const ui = {
+    model: C.normalizeModel(readJson("default-model")),
+    modelHeader: null,
+    modelSource: "de fábrica",
+    modelDirty: false,
+    enums: readJson("default-enums"),
+    enumsSource: "de fábrica",
+    family: null,
+    familyFile: null,
+    dirty: false,
+    active: "fire",
+    tab: "variations",
+    project: null,
+    remembered: null,
+  };
+
+  // Estado -----------------------------------------------------------------------------------------
+
+  function setPath(root, path, value) {
+    const parts = path.split(".");
+    let node = root;
+    for (const part of parts.slice(0, -1)) node = node[part];
+    node[parts.at(-1)] = value;
+  }
+
+  function getPath(root, path) {
+    return path.split(".").reduce((node, part) => node?.[part], root);
+  }
+
+  const variation = () => ui.family.variations[ui.active];
+  const elementOf = key => C.ELEMENTS.find(e => C.keyOf(e) === key);
+  const others = () => ui.project ? [...ui.project.families.values()].map(f => f.data) : [];
+  const issues = () => C.validateFamily(ui.model, ui.family, ui.enums, others());
+
+  function loadFamily(family, file = null) {
+    ui.family = family;
+    ui.familyFile = file;
+    ui.dirty = false;
+    if (!family.variations[ui.active]?.enabled) ui.active = C.keyOf(C.ELEMENTS.find(e => family.variations[C.keyOf(e)].enabled) || "Fire");
+    renderAll();
+  }
+
+  function saveDraft() {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({family: ui.family, file: ui.familyFile, dirty: ui.dirty})); } catch { /* sem armazenamento: segue sem rascunho */ }
+  }
+
+  function touch() {
+    ui.dirty = true;
+    saveDraft();
+    refresh();
+  }
+
+  let toastTimer = 0;
+  function toast(text, seconds = 5) {
+    const node = $("toast");
+    node.textContent = text;
+    node.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => node.classList.remove("show"), seconds * 1000);
+  }
+
+  // Peças de formulário ------------------------------------------------------------------------------
+
+  const field = (label, inner, cls = "") => `<div class="field ${cls}"><label>${label}</label>${inner}</div>`;
+  const text = (path, value, extra = "") => `<input data-path="${path}" value="${esc(value)}" ${extra}>`;
+  const number = (path, value, step = "1", extra = "") => `<input data-path="${path}" data-type="number" type="number" step="${step}" value="${esc(value)}" ${extra}>`;
+  const select = (path, value, options, empty = null) =>
+    `<select data-path="${path}">${empty !== null ? `<option value="">${empty}</option>` : ""}${options.map(o => `<option ${o === value ? "selected" : ""}>${esc(o)}</option>`).join("")}${value && !options.includes(value) ? `<option selected>${esc(value)}</option>` : ""}</select>`;
+
+  // Painéis da esquerda --------------------------------------------------------------------------------
+
+  function renderProject() {
+    const p = ui.project;
+    let html = `<div class="spread"><h2 style="margin:0">Projeto</h2>${p ? `<span class="badge ok">${esc(p.name)}</span>` : `<span class="badge">sem pasta</span>`}</div>`;
+    if (!p) {
+      html += `<p class="note" style="margin-top:8px">Sem a pasta do projeto, o construtor usa o modelo de fábrica: importe e baixe os arquivos à mão. Com a pasta aberta ele lê <code>Data/stat_model.json</code>, as famílias de <code>Data/summons</code> e os nomes de efeito do código, e salva no lugar.</p>`;
+      if (!window.showDirectoryPicker) html += `<p class="note" id="noPicker">Este navegador não abre pastas: o Chrome e o Edge abrem.</p>`;
+      if (ui.remembered) html += `<div class="row" style="margin-top:8px"><button class="btn small primary" data-action="reopen-project">Reabrir ${esc(ui.remembered.name)}</button></div>`;
+      html += `<div class="row" style="margin-top:8px"><button class="btn small" data-action="new-family">Nova família</button></div>`;
+    } else {
+      html += `<div class="list">${[...p.families.entries()].map(([file, entry]) => {
+        const stale = entry.stale ? `<span class="badge warn" title="Os atributos guardados não são os do modelo de agora">recalcular</span>` : "";
+        return `<button data-action="load-family" data-file="${esc(file)}" class="${file === ui.familyFile ? "active" : ""}"><span>${esc(entry.data.name || entry.data.family_id)} <span class="note">${esc(entry.data.star_grade)}★ · ${Object.keys(entry.data.variations || {}).length} var.</span></span>${stale}</button>`;
+      }).join("")}</div>
+      <div class="row">
+        <button class="btn small" data-action="new-family">Nova família</button>
+        <button class="btn small good" data-action="save-family">Salvar família${ui.dirty ? " •" : ""}</button>
+        <button class="btn small warn" data-action="recalc-all" title="Refaz os atributos de todas as famílias e dos chefes com o modelo de agora e grava os arquivos">Recalcular todas</button>
+      </div>
+      <p class="note" style="margin-top:8px">${p.families.size} famílias · ${p.enemies ? "chefes em Data/enemies.json" : "sem Data/enemies.json"} · nomes ${esc(ui.enumsSource)}</p>`;
+    }
+    $("projectPanel").innerHTML = html;
+  }
+
+  function renderFamilyPanel() {
+    const f = ui.family, stars = C.stars(ui.model);
+    $("familyPanel").innerHTML = `
+      <h2>Família</h2>
+      <div class="form-grid">
+        ${field("Family ID", text("family_id", f.family_id))}
+        ${field("Nome base", text("base_name", f.base_name, `title="No singular: dele saem os nomes das variantes (Fire Dragon)"`))}
+        ${field("Nome da família", text("name", f.name, `title="Como aparece no Grimório (Dragons)"`))}
+        ${field("Estrelas naturais", `<select data-path="star_grade" data-type="number">${stars.map(s => `<option ${s === Number(f.star_grade) ? "selected" : ""}>${s}</option>`).join("")}${stars.includes(Number(f.star_grade)) ? "" : `<option selected>${esc(f.star_grade)}</option>`}</select>`)}
+        ${field("Imagem", text("image", f.image, `title="Arquivo em Assets/Creatures, sem extensão"`))}
+        ${field("Imagem desperta", text("awakened_image", f.awakened_image))}
+      </div>
+      <hr>
+      <h3>Viés da família</h3>
+      <p class="note">A personalidade da família: 1.00 é neutro. Vale para as 5 variantes e nunca muda o BVP.</p>
+      <div class="four">
+        ${field("HP", number("family_bias.hp", f.family_bias.hp, "0.01"))}
+        ${field("ATK", number("family_bias.atk", f.family_bias.atk, "0.01"))}
+        ${field("DEF", number("family_bias.def", f.family_bias.def, "0.01"))}
+        ${field("SPD +", number("family_bias.spd", f.family_bias.spd, "1"))}
+      </div>`;
+  }
+
+  function renderModelSummary() {
+    const m = ui.model;
+    $("modelSummary").innerHTML = `
+      <div class="spread"><h2 style="margin:0">Modelo</h2><span class="badge ${ui.project && !ui.modelDirty ? "ok" : "warn"}">${esc(ui.modelSource)}${ui.modelDirty ? " · alterado" : ""}</span></div>
+      <div class="formula" style="margin-top:10px">BVP = HP / ${fmt(m.hp_weight, 2)} + ATK + DEF + (SPD × ${fmt(m.spd_weight, 2)})</div>
+      <div class="table-wrap" style="margin-top:10px"><table>
+        <tr><th>Estrelas</th><th>BVP</th><th>Desperto</th><th>Δ</th></tr>
+        ${C.stars(m).map(s => `<tr><td>${s}★</td><td>${fmt(m.stat_budget[s])}</td><td>${fmt(m.awakened_stat_budget[s])}</td><td>+${fmt(m.awakened_stat_budget[s] - m.stat_budget[s])}</td></tr>`).join("")}
+      </table></div>
+      <p class="note" style="margin-top:8px">Todos os parâmetros são editáveis na aba Modelo.</p>`;
+  }
+
+  // Variações ------------------------------------------------------------------------------------------
+
+  function renderTabs() {
+    const list = issues(), errors = list.filter(i => i.level === "error").length, warns = list.length - errors;
+    $("mainTabs").innerHTML = TABS.map(([id, label]) => {
+      const count = id !== "issues" || list.length === 0 ? "" : `<span class="count ${errors ? "error" : "warn"}">${errors || warns}</span>`;
+      return `<button class="tab ${ui.tab === id ? "active" : ""}" data-action="tab" data-tab="${id}">${label}${count}</button>`;
+    }).join("");
+    for (const [id] of TABS) $("tab-" + id).classList.toggle("active", ui.tab === id);
+  }
+
+  function renderElementTabs() {
+    $("elementTabs").innerHTML = C.ELEMENTS.map(e => {
+      const key = C.keyOf(e), v = ui.family.variations[key];
+      return `<button class="tab ${key === ui.active ? "active" : ""} ${v.enabled ? "" : "off"}" data-action="element" data-key="${key}">${e}</button>`;
+    }).join("");
+  }
+
+  function renderVariation() {
+    const key = ui.active, v = variation(), element = elementOf(key), base = `variations.${key}`;
+    if (!v.enabled) {
+      $("variationEditor").innerHTML = `<div class="hint">A família não tem variante de ${element}. <button class="btn small" data-action="toggle-variation">Criar variante</button></div>`;
+      $("skillsSection").innerHTML = "";
+      return;
+    }
+    $("variationEditor").innerHTML = `
+      <div class="form-grid">
+        ${field("Variation ID", text(`${base}.variation_id`, v.variation_id))}
+        ${field("Nome", text(`${base}.name`, v.name))}
+        ${field("Elemento", `<input value="${element}" disabled>`)}
+        ${field("Papel", select(`${base}.role`, v.role, ui.enums.roles))}
+        ${field("Liderança: atributo", select(`${base}.leader.stat`, v.leader.stat, ui.enums.stats, "sem Liderança"))}
+        ${field("Liderança: valor", number(`${base}.leader.value`, v.leader.value, "0.01", `placeholder="0.18 = 18%"`))}
+        ${field("Nome de Despertar", text(`${base}.awakening.name`, v.awakening.name))}
+        ${field("Atributo do Despertar", select(`${base}.awakening.stat`, v.awakening.stat, C.AWAKENING_STATS, "nenhum"))}
+      </div>
+
+      <hr>
+      <h3>Ajuste fino desta variante</h3>
+      <p class="note">1.00 é neutro. Soma-se ao viés do elemento (aba Modelo) e ao da família; a conta normaliza depois, então o BVP não muda.</p>
+      <div class="four">
+        ${field("Viés HP", number(`${base}.bias.hp`, v.bias.hp, "0.01"))}
+        ${field("Viés ATK", number(`${base}.bias.atk`, v.bias.atk, "0.01"))}
+        ${field("Viés DEF", number(`${base}.bias.def`, v.bias.def, "0.01"))}
+        ${field("SPD +", number(`${base}.bias.spd`, v.bias.spd, "1", `title="Cada ponto de SPD gasta ${ui.model.spd_weight} de BVP"`))}
+      </div>
+      <div class="form-grid" style="margin-top:8px">
+        ${field("SPD do Despertar", `<input data-path="${base}.awakening_spd" data-type="optional" type="number" step="1" value="${esc(v.awakening_spd)}" placeholder="padrão do modelo: +${ui.model.awakening_spd}">`)}
+      </div>
+
+      <div id="variationStats"></div>
+      <div class="row" style="margin-top:10px"><button class="btn small" data-action="toggle-variation" title="A família fica sem a variante deste elemento">Remover a variante de ${element}</button></div>`;
+    renderSkills();
+    renderVariationStats();
+  }
+
+  function renderVariationStats() {
+    const node = $("variationStats");
+    if (!node) return;
+    const v = variation(), element = elementOf(ui.active), star = Number(ui.family.star_grade);
+    const base = C.variationStats(ui.model, ui.family, v, element, false), awakened = C.variationStats(ui.model, ui.family, v, element, true);
+    if (!base || !awakened) {
+      node.innerHTML = `<p class="bad" style="margin-top:10px">O modelo não tem perfil para ${star}★ ${esc(v.role)}.</p>`;
+      return;
+    }
+    const profile = ui.model.role_profiles[star][v.role];
+    const line = (label, stats, isAwakened) => {
+      const target = C.budgetOf(ui.model, star, isAwakened), value = C.bvp(ui.model, stats), difference = value - target;
+      const ok = Math.abs(difference) <= ui.model.tolerance + 1e-9;
+      return `${label}: BVP <b class="${ok ? "ok" : "bad"}">${fmt(value, 1)}</b> / alvo ${fmt(target, 1)} (Δ ${difference > 0 ? "+" : ""}${fmt(difference, 1)})`;
+    };
+    const metric = (label, k, d = 0) => `<div class="metric"><div class="k">${label}</div><div class="v">${fmt(base[k], d)}</div><div class="s">Desperto ${fmt(awakened[k], d)}</div></div>`;
+    node.innerHTML = `
+      <div class="statbox">${metric("HP", "hp")}${metric("ATK", "atk")}${metric("DEF", "def")}${metric("SPD", "spd")}</div>
+      <p class="note" style="margin-top:8px">${line("Base", base, false)} · ${line("Desperto", awakened, true)}<br>
+      Perfil ${star}★ ${esc(v.role)}: HP ${fmt(profile.hp * 100, 1)}% / ATK ${fmt(profile.atk * 100, 1)}% / DEF ${fmt(profile.def * 100, 1)}% · SPD ${fmt(profile.spd, 1)}</p>`;
+  }
+
+  const rowsOf = content => Math.min(16, Math.max(2, String(content || "").split("\n").length));
+  const area = (path, content) => `<textarea data-path="${path}" data-json spellcheck="false" rows="${rowsOf(content)}">${esc(content)}</textarea>`;
+
+  function skillCard(skill, path, title, badge, controls, awakening) {
+    const isPassive = !!skill.passive;
+    const bad = f => !isPassive && C.parseList(skill[f]).error ? "bad" : "";
+    const chips = (action, names) => `<div class="chips">${names.map(n => `<button class="chip" data-action="${action}" data-skill="${path}" data-kind="${esc(n)}">+ ${esc(n)}</button>`).join("")}</div>`;
+    return `
+      <div class="skill-card ${awakening ? "awakening" : ""}">
+        <div class="skill-head"><h3>${title} <span class="badge">${badge}</span></h3><div class="row">${controls}</div></div>
+        <div class="skill-grid">
+          ${field("Nome", text(`${path}.name`, skill.name))}
+          ${field("Tipo", `<select data-action="skill-type" data-skill="${path}"><option ${isPassive ? "" : "selected"}>Ativa</option><option ${isPassive ? "selected" : ""}>Passiva</option></select>`)}
+          ${isPassive ? "<div></div>" : field("Recarga", `<input data-path="${path}.cooldown" data-type="optional" type="number" step="1" min="0" value="${esc(skill.cooldown)}" placeholder="0">`)}
+          ${isPassive ? `
+            ${field("Passiva", select(`${path}.passive.kind`, skill.passive.kind, ui.enums.passives))}
+            ${field("Valor", number(`${path}.passive.value`, skill.passive.value, "0.01", `placeholder="0.2 = 20%"`))}
+            ${field("Valor desperto", `<input data-path="${path}.passive.awakenedValue" data-type="optional" type="number" step="0.01" value="${esc(skill.passive.awakenedValue)}" placeholder="não muda">`)}
+          ` : `
+            ${field("Efeitos (JSON): um por linha, na ordem em que acontecem", `${area(`${path}.effects`, skill.effects)}${chips("add-effect", ui.enums.effectKinds)}`, `wide ${bad("effects")}`)}
+            ${field("Níveis (JSON): o primeiro é o nível 2", `${area(`${path}.levels`, skill.levels)}${chips("add-level", ui.enums.levelKinds)}`, bad("levels"))}
+            ${awakening ? "" : field("Efeitos depois do Despertar (JSON): vazio quando o Despertar não muda a habilidade", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}
+          `}
+        </div>
+      </div>`;
+  }
+
+  function renderSkills() {
+    const key = ui.active, v = variation(), base = `variations.${key}`;
+    const cards = v.skills.map((skill, i) => skillCard(skill, `${base}.skills.${i}`, `Habilidade ${i + 1}`, i === 0 ? "básica" : skill.passive ? "passiva" : "ativa", `
+        <button class="btn small" data-action="move-skill" data-index="${i}" data-step="-1" ${i === 0 ? "disabled" : ""} title="Subir">↑</button>
+        <button class="btn small" data-action="move-skill" data-index="${i}" data-step="1" ${i === v.skills.length - 1 ? "disabled" : ""} title="Descer">↓</button>
+        <button class="btn small" data-action="remove-skill" data-index="${i}" title="Remover">✕</button>`, false));
+    if (v.awakening.skill) cards.push(skillCard(v.awakening.skill, `${base}.awakening.skill`, "Habilidade do Despertar", "só depois de despertar", "", true));
+    $("skillsSection").innerHTML = `
+      <hr>
+      <div class="spread"><h2 style="margin:0">Habilidades de ${esc(v.name || elementOf(key))}</h2>
+        <div class="row">
+          <button class="btn small" data-action="add-skill">+ habilidade</button>
+          <button class="btn small" data-action="toggle-awakening-skill">${v.awakening.skill ? "Tirar a habilidade do Despertar" : "+ habilidade do Despertar"}</button>
+        </div>
+      </div>
+      <div class="hint small" id="cheatSheet"></div>
+      <div class="skills">${cards.join("")}</div>`;
+    renderCheatSheet();
+  }
+
+  function renderSummary() {
+    const star = Number(ui.family.star_grade);
+    $("familySummary").innerHTML = C.ELEMENTS.map(e => {
+      const v = ui.family.variations[C.keyOf(e)];
+      if (!v.enabled) return `<div style="padding:9px 0;border-bottom:1px solid var(--line)" class="note">${e}: sem variante</div>`;
+      const base = C.variationStats(ui.model, ui.family, v, e, false), awakened = C.variationStats(ui.model, ui.family, v, e, true);
+      if (!base || !awakened) return `<div style="padding:9px 0;border-bottom:1px solid var(--line)"><strong>${esc(v.name)}</strong> <span class="badge bad">sem perfil</span></div>`;
+      const ok = [[base, false], [awakened, true]].every(([s, a]) => Math.abs(C.bvp(ui.model, s) - C.budgetOf(ui.model, star, a)) <= ui.model.tolerance + 1e-9);
+      return `<div style="padding:9px 0;border-bottom:1px solid var(--line)">
+        <div class="spread"><strong>${esc(v.name)}</strong><span class="row"><span class="badge">${esc(v.role)}</span><span class="badge ${ok ? "ok" : "bad"}">BVP ${fmt(C.bvp(ui.model, base), 1)}</span></span></div>
+        <div class="small" style="color:var(--muted)">${e} · Base ${fmt(base.hp)}/${fmt(base.atk)}/${fmt(base.def)}/${fmt(base.spd)} · Desperto ${fmt(awakened.hp)}/${fmt(awakened.atk)}/${fmt(awakened.def)}/${fmt(awakened.spd)}</div>
+      </div>`;
+    }).join("");
+  }
+
+  function renderCheatSheet() {
+    const e = ui.enums;
+    if (!$("cheatSheet")) return;
+    $("cheatSheet").innerHTML = `
+      <b>Cola dos efeitos</b> <span class="note">(nomes ${esc(ui.enumsSource)})</span><br>
+      <code>kind</code>: ${e.effectKinds.join(", ")}<br>
+      <code>target</code>: ${e.targets.join(", ")}<br>
+      <code>status</code>: ${e.statuses.join(", ")}<br>
+      Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
+      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém).<br>
+      Os efeitos acontecem na ordem da lista. "4 golpes, o último ignorando a Defesa" são dois efeitos:
+      <code>{"kind": "Damage", "power": 1.2, "hits": 3}</code> e <code>{"kind": "Damage", "power": 1.2, "ignoreDefense": 1}</code>.`;
+  }
+
+  // Modelo, fórmula, validação, JSON ------------------------------------------------------------------
+
+  const cell = (path, value, step, scale = 1) => `<td><input data-model="${path}" data-scale="${scale}" type="number" step="${step}" value="${esc(+(value * scale).toFixed(6))}"></td>`;
+
+  function renderModelTab() {
+    const m = ui.model, roles = ui.enums.roles, problems = C.validateModel(m, roles);
+    $("tab-model").innerHTML = `
+      <div class="spread"><h2 style="margin:0">Modelo de atributos</h2>
+        <div class="toolbar">
+          <span class="badge ${ui.project && !ui.modelDirty ? "ok" : "warn"}">${esc(ui.modelSource)}${ui.modelDirty ? " · alterado" : ""}</span>
+          <button class="btn small" data-action="import-model">Importar modelo</button>
+          <button class="btn small good" data-action="export-model">Baixar stat_model.json</button>
+          ${ui.project ? `<button class="btn small primary" data-action="save-model">Salvar no projeto</button>` : ""}
+          <button class="btn small" data-action="reset-model">Modelo de fábrica</button>
+        </div>
+      </div>
+      <p class="note">São os parâmetros de balanceamento do jogo inteiro (<code>Data/stat_model.json</code>). Depois de mudar, salve o modelo e use "Recalcular todas": os atributos de todas as famílias e dos chefes são refeitos, e o teste de dados do jogo confere.</p>
+      ${problems.length ? `<div class="issues" style="margin:10px 0">${problems.map(p => `<div class="issue error">${esc(p)}</div>`).join("")}</div>` : ""}
+
+      <div class="formula">BVP = HP / peso do HP + ATK + DEF + (SPD × peso do SPD)</div>
+      <div class="four" style="margin-top:10px">
+        ${field("Peso do HP (HP por 1 BVP)", `<input data-model="hp_weight" type="number" step="1" value="${m.hp_weight}">`)}
+        ${field("Peso do SPD (BVP por 1 SPD)", `<input data-model="spd_weight" type="number" step="0.1" value="${m.spd_weight}">`)}
+        ${field("Tolerância de BVP", `<input data-model="tolerance" type="number" step="0.5" value="${m.tolerance}">`)}
+        ${field("SPD do Despertar", `<input data-model="awakening_spd" type="number" step="1" value="${m.awakening_spd}">`)}
+      </div>
+
+      <hr>
+      <div class="spread"><h3 style="margin:0">Orçamento de BVP por estrelas naturais</h3><button class="btn small" data-action="add-star">+ estrelas</button></div>
+      <div class="table-wrap" style="margin-top:8px"><table class="edit">
+        <tr><th>Estrelas</th><th>BVP de base</th><th>BVP desperto</th><th>Δ</th><th></th></tr>
+        ${C.stars(m).map(s => `<tr><td>${s}★</td>${cell(`stat_budget.${s}`, m.stat_budget[s], 1)}${cell(`awakened_stat_budget.${s}`, m.awakened_stat_budget[s], 1)}<td>+${fmt(m.awakened_stat_budget[s] - m.stat_budget[s], 1)}</td><td><button class="btn small" data-action="remove-star" data-star="${s}" title="Tirar estas estrelas do modelo">✕</button></td></tr>`).join("")}
+      </table></div>
+
+      <hr>
+      <h3>Perfis por papel</h3>
+      <p class="note">As fatias do orçamento que sobra depois do SPD. São normalizadas: o que vale é a proporção entre as três. O SPD de base é o do papel nessas estrelas.</p>
+      <div class="table-wrap"><table class="edit">
+        <tr><th>Estrelas</th><th class="l">Papel</th><th>HP %</th><th>ATK %</th><th>DEF %</th><th>Σ</th><th>SPD</th></tr>
+        ${C.stars(m).map(s => roles.map(r => {
+          const p = m.role_profiles[s]?.[r];
+          if (!p) return `<tr><td>${s}★</td><td class="l">${esc(r)}</td><td colspan="5"><button class="btn small" data-action="add-profile" data-star="${s}" data-role="${esc(r)}">criar perfil</button></td></tr>`;
+          const at = `role_profiles.${s}.${r}`;
+          return `<tr><td>${s}★</td><td class="l">${esc(r)}</td>${cell(`${at}.hp`, p.hp, 0.1, 100)}${cell(`${at}.atk`, p.atk, 0.1, 100)}${cell(`${at}.def`, p.def, 0.1, 100)}<td>${fmt((p.hp + p.atk + p.def) * 100, 1)}%</td>${cell(`${at}.spd`, p.spd, 0.5)}</tr>`;
+        }).join("")).join("")}
+      </table></div>
+
+      <hr>
+      <h3>Viés por elemento</h3>
+      <p class="note">A tendência de cada elemento, igual para o jogo inteiro: 1.00 é neutro. Muda a distribuição, nunca o total.</p>
+      <div class="table-wrap"><table class="edit">
+        <tr><th>Elemento</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD +</th></tr>
+        ${C.ELEMENTS.map(e => { const b = m.element_bias[e]; const at = `element_bias.${e}`; return `<tr><td>${e}</td>${cell(`${at}.hp`, b.hp, 0.01)}${cell(`${at}.atk`, b.atk, 0.01)}${cell(`${at}.def`, b.def, 0.01)}${cell(`${at}.spd`, b.spd, 1)}</tr>`; }).join("")}
+      </table></div>
+
+      <hr>
+      <h3>Atributos de base, fora do orçamento</h3>
+      <p class="note">Iguais para todo monstro; não crescem com o nível. O jogo lê daqui.</p>
+      <div class="four">
+        ${field("Crítico %", `<input data-model="base_stats.crit" data-scale="100" type="number" step="1" value="${+(m.base_stats.crit * 100).toFixed(6)}">`)}
+        ${field("Dano crítico %", `<input data-model="base_stats.crit_damage" data-scale="100" type="number" step="1" value="${+(m.base_stats.crit_damage * 100).toFixed(6)}">`)}
+        ${field("Resistência %", `<input data-model="base_stats.resistance" data-scale="100" type="number" step="1" value="${+(m.base_stats.resistance * 100).toFixed(6)}">`)}
+        ${field("Precisão %", `<input data-model="base_stats.accuracy" data-scale="100" type="number" step="1" value="${+(m.base_stats.accuracy * 100).toFixed(6)}">`)}
+      </div>`;
+  }
+
+  function renderFormula() {
+    const v = variation(), element = elementOf(ui.active), m = ui.model;
+    const steps = awakened => {
+      const x = v.enabled ? C.explain(m, ui.family, v, element, awakened) : null;
+      if (!x) return "Esta variante não tem perfil no modelo.";
+      const share = k => `${fmt(x.profile[k] * 100, 1)}% × ${fmt(x.element[k], 3)} × ${fmt(x.family[k], 3)} × ${fmt(x.manual[k], 3)} = ${fmt(x.shares[k] * 100, 2)}`;
+      const part = k => fmt(x.room * x.shares[k] / x.total, 2);
+      return `Orçamento ${ui.family.star_grade}★${awakened ? " desperto" : ""} = ${fmt(x.budget, 1)} BVP
+
+1. SPD = papel ${fmt(x.profile.spd, 1)} + família ${fmt(x.family.spd)} + elemento ${fmt(x.element.spd)} + variante ${fmt(x.manual.spd)}${awakened ? ` + Despertar ${fmt(x.awakeningSpd)}` : ""} = ${fmt(x.stats.spd)}
+2. Sobra = ${fmt(x.budget, 1)} − ${fmt(x.stats.spd)} × ${fmt(m.spd_weight, 2)} = ${fmt(x.room, 1)} BVP
+
+3. Fatias (papel × elemento × família × variante)
+   HP : ${share("hp")}
+   ATK: ${share("atk")}
+   DEF: ${share("def")}
+   Σ = ${fmt(x.total * 100, 2)}  → normaliza dividindo por Σ
+
+4. HP  = ${fmt(x.room, 1)} × ${fmt(x.shares.hp / x.total * 100, 2)}% = ${part("hp")} BVP × ${fmt(m.hp_weight, 2)} → ${fmt(x.stats.hp)}
+   ATK = ${fmt(x.room, 1)} × ${fmt(x.shares.atk / x.total * 100, 2)}% = ${part("atk")} → ${fmt(x.stats.atk)}
+   DEF = ${fmt(x.room, 1)} × ${fmt(x.shares.def / x.total * 100, 2)}% = ${part("def")} → ${fmt(x.stats.def)} (a Defesa fecha a sobra do arredondamento)
+
+5. Conferência: ${fmt(x.stats.hp)} / ${fmt(m.hp_weight, 2)} + ${fmt(x.stats.atk)} + ${fmt(x.stats.def)} + ${fmt(x.stats.spd)} × ${fmt(m.spd_weight, 2)} = ${fmt(x.bvp, 1)} BVP`;
+    };
+    $("tab-formula").innerHTML = `
+      <h2>A conta de ${esc(v.enabled ? v.name : element)}</h2>
+      <p class="note">O mesmo algoritmo para todo monstro. Estrelas dizem quanto poder existe; o papel, como ele é repartido; elemento, família e variante só deslocam a repartição. Liderança, habilidades, Passiva e o atributo do Despertar ficam fora do orçamento.</p>
+      <div class="two">
+        <div><h3>Base</h3><div class="formula">${esc(steps(false))}</div></div>
+        <div><h3>Desperto</h3><div class="formula">${esc(steps(true))}</div></div>
+      </div>
+      <hr>
+      <h3>O que não fazer</h3>
+      <div class="formula">Aumentar um atributo "na mão": todo ganho sai de outro atributo.
+Usar SPD para dar poder: cada ponto custa ${fmt(m.spd_weight, 2)} de BVP.
+Dar mais BVP a um papel: o papel só escolhe onde o orçamento é gasto.
+Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`;
+  }
+
+  function renderIssues() {
+    const list = issues();
+    let html = `<h2>Validação</h2><p class="note">As mesmas regras que o jogo confere ao abrir (<code>GameDatabase.Validate</code>) e as convenções dos testes de dados. Erro impede o jogo de carregar a família direito; aviso é convenção.</p>`;
+    html += list.length === 0
+      ? `<p class="ok">Nada a corrigir nesta família.</p>`
+      : `<div class="issues">${list.map(i => `<div class="issue ${i.level}"><div class="where">${i.level === "error" ? "Erro" : "Aviso"} · ${esc(i.where)}</div>${esc(i.text)}</div>`).join("")}</div>`;
+    if (ui.project) {
+      const rows = [...ui.project.families.entries()].map(([file, entry]) => `<tr><td>${esc(file)}</td><td>${esc(entry.data.star_grade)}★</td><td>${Object.keys(entry.data.variations || {}).length}</td><td>${entry.stale ? `<span class="bad">atributos fora do modelo</span>` : `<span class="ok">em dia</span>`}</td></tr>`).join("");
+      html += `<hr><h3>Projeto</h3><div class="table-wrap"><table><tr><th>Arquivo</th><th>Estrelas</th><th>Variantes</th><th>Atributos</th></tr>${rows}
+        <tr><td>enemies.json</td><td></td><td></td><td>${ui.project.enemies === null ? "sem arquivo" : ui.project.enemiesStale ? `<span class="bad">atributos fora do modelo</span>` : `<span class="ok">em dia</span>`}</td></tr></table></div>`;
+    }
+    $("tab-issues").innerHTML = html;
+  }
+
+  function renderPreview() {
+    const list = issues(), errors = list.filter(i => i.level === "error").length;
+    $("previewBadges").innerHTML = `
+      <span class="badge">${esc(ui.family.family_id)}_family.json</span>
+      <span class="badge">${C.ELEMENTS.filter(e => ui.family.variations[C.keyOf(e)].enabled).length} variantes</span>
+      <span class="badge ${errors ? "bad" : "ok"}">${errors ? `${errors} erro(s): veja a aba Validação` : "pronto para Data/summons"}</span>`;
+    $("jsonPreview").textContent = C.formatFamily(ui.model, ui.family);
+  }
+
+  /** Tudo o que depende dos números, sem refazer os campos em que a pessoa está digitando. */
+  function refresh() {
+    renderTabs();
+    renderElementTabs();
+    renderVariationStats();
+    renderSummary();
+    renderModelSummary();
+    if (ui.tab === "formula") renderFormula();
+    if (ui.tab === "issues") renderIssues();
+    if (ui.tab === "preview") renderPreview();
+    const save = document.querySelector('[data-action="save-family"]');
+    if (save) save.textContent = "Salvar família" + (ui.dirty ? " •" : "");
+  }
+
+  function renderAll() {
+    renderProject();
+    renderFamilyPanel();
+    renderVariation();
+    renderModelTab();
+    renderFormula();
+    renderIssues();
+    renderPreview();
+    refresh();
+  }
+
+  // Entrada --------------------------------------------------------------------------------------------
+
+  function readInput(node) {
+    if (node.dataset.type === "number") return C.num(node.value, 0);
+    if (node.dataset.type === "optional") return node.value.trim() === "" ? "" : C.num(node.value, 0);
+    return node.value;
+  }
+
+  document.addEventListener("input", event => {
+    const node = event.target;
+    if (node.dataset.path) {
+      setPath(ui.family, node.dataset.path, readInput(node));
+      if (node.hasAttribute("data-json")) {
+        node.closest(".field").classList.toggle("bad", !!C.parseList(node.value).error);
+        node.rows = rowsOf(node.value);
+      }
+      touch();
+    } else if (node.dataset.model) {
+      const scale = C.num(node.dataset.scale, 1);
+      setPath(ui.model, node.dataset.model, scale === 1 ? C.num(node.value, 0) : Number((C.num(node.value, 0) / scale).toFixed(8)));
+      ui.modelDirty = true;
+      markStale();
+      refresh();
+    }
+  });
+
+  document.addEventListener("change", event => {
+    const node = event.target;
+    if (node.dataset.action === "skill-type") {
+      const skill = getPath(ui.family, node.dataset.skill);
+      skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", extra: {}} : null;
+      renderSkills();
+      touch();
+    } else if (node.hasAttribute?.("data-json")) {
+      // Ao sair do campo, o JSON válido é arrumado: um efeito por linha.
+      const {list, error} = C.parseList(node.value);
+      if (!error && node.value.trim() !== "") {
+        node.value = list.length ? C.format(list) : "[]";
+        node.rows = rowsOf(node.value);
+        setPath(ui.family, node.dataset.path, node.value);
+        touch();
+      }
+    } else if (node.dataset.model) {
+      renderModelTab();
+      renderVariation();
+    }
+  });
+
+  function appendJson(path, field, item) {
+    const skill = getPath(ui.family, path);
+    const {list, error} = C.parseList(skill[field]);
+    if (error) return toast("Corrija o JSON do campo antes de acrescentar.");
+    skill[field] = C.format([...list, item]);
+    renderSkills();
+    touch();
+  }
+
+  const actions = {
+    tab: node => { ui.tab = node.dataset.tab; renderAll(); },
+    element: node => { ui.active = node.dataset.key; renderVariation(); renderFormula(); refresh(); },
+    "toggle-variation": () => {
+      const v = variation();
+      if (v.enabled && !confirm(`Remover a variante de ${elementOf(ui.active)} desta família?`)) return;
+      v.enabled = !v.enabled;
+      renderVariation(); touch();
+    },
+    "add-skill": () => {
+      const skill = C.blankSkill("New Skill");
+      skill.cooldown = 4;
+      skill.effects = C.format([EFFECT_TEMPLATES.Damage]);
+      skill.levels = C.format([{kind: "Damage", value: 0.1}, {kind: "Damage", value: 0.1}, {kind: "Cooldown", value: 1}]);
+      variation().skills.push(skill);
+      renderSkills(); touch();
+    },
+    "remove-skill": node => { variation().skills.splice(Number(node.dataset.index), 1); renderSkills(); touch(); },
+    "move-skill": node => {
+      const list = variation().skills, from = Number(node.dataset.index), to = from + Number(node.dataset.step);
+      if (to < 0 || to >= list.length) return;
+      [list[from], list[to]] = [list[to], list[from]];
+      renderSkills(); touch();
+    },
+    "toggle-awakening-skill": () => {
+      const awakening = variation().awakening;
+      if (awakening.skill) awakening.skill = null;
+      else {
+        awakening.skill = C.blankSkill("Awakened Skill");
+        awakening.skill.cooldown = 5;
+        awakening.skill.effects = C.format([EFFECT_TEMPLATES.Damage]);
+        awakening.skill.levels = C.format([{kind: "Damage", value: 0.1}, {kind: "Cooldown", value: 1}]);
+      }
+      renderSkills(); touch();
+    },
+    "add-effect": node => appendJson(node.dataset.skill, "effects", EFFECT_TEMPLATES[node.dataset.kind] || {kind: node.dataset.kind, target: "Target"}),
+    "add-level": node => appendJson(node.dataset.skill, "levels", {kind: node.dataset.kind, value: LEVEL_TEMPLATES[node.dataset.kind] ?? 0.1}),
+    "new-family": () => {
+      if (ui.dirty && !confirm("Descartar as mudanças desta família?")) return;
+      loadFamily(C.blankFamily(ui.model));
+      ui.dirty = true;
+    },
+    "import-family": () => $("familyInput").click(),
+    "export-family": () => {
+      if (!confirmErrors("baixar")) return;
+      download(`${ui.family.family_id}_family.json`, C.formatFamily(ui.model, ui.family));
+    },
+    "copy-json": async () => {
+      await navigator.clipboard.writeText(C.formatFamily(ui.model, ui.family));
+      $("copyBtn").textContent = "Copiado";
+      setTimeout(() => $("copyBtn").textContent = "Copiar JSON", 1200);
+    },
+    "import-model": () => $("modelInput").click(),
+    "export-model": () => download("stat_model.json", C.formatModel(ui.model, ui.modelHeader)),
+    "reset-model": () => {
+      if (!confirm("Voltar ao modelo de fábrica que vem dentro do construtor?")) return;
+      ui.model = C.normalizeModel(readJson("default-model"));
+      ui.modelSource = "de fábrica"; ui.modelDirty = !!ui.project;
+      markStale(); renderAll();
+    },
+    "add-star": () => {
+      const star = Number(prompt("Estrelas naturais a acrescentar (1 a 6):"));
+      if (!Number.isInteger(star) || star < 1 || star > 6 || ui.model.stat_budget[star] !== undefined) return;
+      const nearest = C.stars(ui.model).sort((a, b) => Math.abs(a - star) - Math.abs(b - star))[0];
+      ui.model.stat_budget[star] = nearest ? ui.model.stat_budget[nearest] : 2000;
+      ui.model.awakened_stat_budget[star] = nearest ? ui.model.awakened_stat_budget[nearest] : 2150;
+      ui.model.role_profiles[star] = nearest ? C.clone(ui.model.role_profiles[nearest]) : {};
+      ui.model = C.normalizeModel(ui.model);
+      ui.modelDirty = true; renderAll();
+    },
+    "remove-star": node => {
+      const star = node.dataset.star;
+      if (!confirm(`Tirar ${star}★ do modelo? Famílias de ${star}★ ficam sem orçamento.`)) return;
+      delete ui.model.stat_budget[star]; delete ui.model.awakened_stat_budget[star]; delete ui.model.role_profiles[star];
+      ui.modelDirty = true; markStale(); renderAll();
+    },
+    "add-profile": node => {
+      ui.model.role_profiles[node.dataset.star][node.dataset.role] = {hp: 0.333, atk: 0.333, def: 0.333, spd: 100};
+      ui.modelDirty = true; renderAll();
+    },
+    "open-project": () => openProject(),
+    "reopen-project": () => openProject(ui.remembered),
+    "load-family": node => {
+      if (ui.dirty && !confirm("Descartar as mudanças desta família?")) return;
+      const entry = ui.project.families.get(node.dataset.file);
+      loadFamily(C.importFamily(entry.data), node.dataset.file);
+    },
+    "save-family": () => saveFamily(),
+    "save-model": () => saveModel(),
+    "recalc-all": () => recalcAll(),
+  };
+
+  document.addEventListener("click", event => {
+    const node = event.target.closest("[data-action]");
+    if (!node || node.tagName === "SELECT") return;
+    const action = actions[node.dataset.action];
+    if (action) Promise.resolve(action(node)).catch(error => toast(String(error.message || error), 9));
+  });
+
+  function confirmErrors(verb) {
+    const errors = issues().filter(i => i.level === "error");
+    return errors.length === 0 || confirm(`Esta família tem ${errors.length} erro(s) (aba Validação). Quer ${verb} assim mesmo?`);
+  }
+
+  function download(name, content) {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([content], {type: "application/json;charset=utf-8"}));
+    link.download = name;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  function readFile(input, done) {
+    input.addEventListener("change", event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try { done(String(reader.result), file.name); } catch (error) { alert("JSON inválido: " + error.message); }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    });
+  }
+
+  readFile($("familyInput"), (content, name) => {
+    const data = C.parseJsonc(content);
+    if (!data.variations) throw new Error("não é um arquivo de família (falta \"variations\").");
+    loadFamily(C.importFamily(data), ui.project?.families.has(name) ? name : null);
+    ui.dirty = true;
+    refresh();
+  });
+
+  readFile($("modelInput"), (content, name) => {
+    const data = C.parseJsonc(content);
+    if (!data.stat_budget) throw new Error("não é um modelo (falta \"stat_budget\").");
+    ui.model = C.normalizeModel(data);
+    ui.modelHeader = C.leadingComments(content);
+    ui.modelSource = "importado: " + name;
+    ui.modelDirty = !!ui.project;
+    markStale();
+    renderAll();
+  });
+
+  // Pasta do projeto (File System Access: Chrome e Edge) -----------------------------------------------
+
+  const normalizeEol = s => s.replace(/\r\n/g, "\n");
+
+  async function readText(directory, name) {
+    const handle = await directory.getFileHandle(name);
+    return (await (await handle.getFile()).text()).replace(/^﻿/, "");
+  }
+
+  async function writeText(directory, name, content) {
+    const handle = await directory.getFileHandle(name, {create: true});
+    const writable = await handle.createWritable();
+    await writable.write(content);
+    await writable.close();
+  }
+
+  async function child(directory, name) {
+    try { return await directory.getDirectoryHandle(name); } catch { return null; }
+  }
+
+  /** As famílias cujos atributos guardados não são os do modelo de agora. */
+  function markStale() {
+    const p = ui.project;
+    if (!p) return;
+    for (const entry of p.families.values()) {
+      try { entry.stale = normalizeEol(C.recalculate(ui.model, entry.text)) !== normalizeEol(C.format(entry.data) + "\n"); } catch { entry.stale = true; }
+    }
+    try { p.enemiesStale = p.enemies !== null && normalizeEol(C.rewriteEnemies(p.enemies, ui.model)) !== normalizeEol(p.enemies); } catch { p.enemiesStale = true; }
+  }
+
+  async function openProject(remembered = null) {
+    if (!window.showDirectoryPicker) {
+      alert("Este navegador não abre pastas. Use o Chrome ou o Edge, ou trabalhe com Importar e Baixar.");
+      return;
+    }
+    const root = remembered || await window.showDirectoryPicker({mode: "readwrite"});
+    if (remembered && await root.requestPermission({mode: "readwrite"}) !== "granted") return;
+
+    // Aceita a pasta do projeto ou a própria pasta Data.
+    const data = await child(root, "summons") ? root : await child(root, "Data");
+    const summons = data && await child(data, "summons");
+    if (!summons) throw new Error("Não achei Data/summons nesta pasta. Escolha a pasta do projeto (a que tem o project.godot).");
+
+    const project = {name: root.name, root, data, summons, families: new Map(), enemies: null, enemiesStale: false};
+    const names = [];
+    for await (const [name, handle] of summons.entries()) if (handle.kind === "file" && name.endsWith(".json")) names.push(name);
+    for (const name of names.sort()) {
+      const content = await readText(summons, name);
+      try {
+        const parsed = C.parseJsonc(content);
+        if (parsed.variations) project.families.set(name, {data: parsed, text: content, stale: false});
+      } catch (error) {
+        toast(`${name}: ${error.message}`, 9);
+      }
+    }
+
+    try {
+      const content = await readText(data, "stat_model.json");
+      ui.model = C.normalizeModel(C.parseJsonc(content));
+      ui.modelHeader = C.leadingComments(content);
+      ui.modelSource = "Data/stat_model.json";
+    } catch {
+      ui.modelSource = "de fábrica (o projeto não tem stat_model.json)";
+    }
+    ui.modelDirty = false;
+    try { project.enemies = await readText(data, "enemies.json"); } catch { project.enemies = null; }
+
+    // Os nomes válidos vêm dos enums do jogo: status novo no código já aparece aqui.
+    const content = data === root ? null : await child(await child(root, "Core") || root, "Content");
+    if (content) {
+      let read = 0;
+      for (const [key, name] of Object.entries(ENUM_FILES)) {
+        try {
+          const parsed = C.parseEnum(await readText(content, name + ".cs"), name);
+          if (parsed) { ui.enums[key] = parsed; read++; }
+        } catch { /* fica com a lista de fábrica */ }
+      }
+      if (read) ui.enumsSource = "do código do projeto";
+    }
+
+    ui.project = project;
+    markStale();
+    remember(root);
+    const first = project.families.keys().next().value;
+    const current = `${ui.family.family_id}_family.json`;
+    if (ui.dirty) {
+      // A família em edição fica: se ela já existe no projeto, salvar grava por cima.
+      ui.familyFile = project.families.has(current) ? current : null;
+      renderAll();
+    } else if (first) {
+      loadFamily(C.importFamily(project.families.get(first).data), first);
+    } else {
+      renderAll();
+    }
+    const stale = [...project.families.values()].filter(f => f.stale).length;
+    toast(`${project.families.size} famílias lidas de ${root.name}.` + (stale ? `\n${stale} com atributos fora do modelo: use "Recalcular todas".` : ""));
+  }
+
+  async function saveFamily() {
+    const p = ui.project;
+    if (!p) return actions["export-family"]();
+    if (!/^[a-z0-9_]+$/.test(ui.family.family_id || "")) return toast("O Family ID é o nome do arquivo: use minúsculas, números e _.");
+    if (!confirmErrors("salvar")) return;
+    const file = `${ui.family.family_id}_family.json`, content = C.formatFamily(ui.model, ui.family);
+    await writeText(p.summons, file, content);
+    if (ui.familyFile && ui.familyFile !== file && confirm(`O id mudou. Apagar o arquivo antigo (${ui.familyFile})?`)) {
+      await p.summons.removeEntry(ui.familyFile);
+      p.families.delete(ui.familyFile);
+    }
+    p.families.set(file, {data: C.parseJsonc(content), text: content, stale: false});
+    p.families = new Map([...p.families.entries()].sort(([a], [b]) => a.localeCompare(b)));
+    ui.familyFile = file;
+    ui.dirty = false;
+    saveDraft();
+    renderAll();
+    toast(`Salvo em Data/summons/${file}.`);
+  }
+
+  async function saveModel() {
+    const p = ui.project, problems = C.validateModel(ui.model, ui.enums.roles);
+    if (problems.length && !confirm(`O modelo tem ${problems.length} problema(s). Salvar assim mesmo?`)) return;
+    await writeText(p.data, "stat_model.json", C.formatModel(ui.model, ui.modelHeader));
+    ui.modelSource = "Data/stat_model.json";
+    ui.modelDirty = false;
+    markStale();
+    renderAll();
+    const stale = [...p.families.values()].filter(f => f.stale).length + (p.enemiesStale ? 1 : 0);
+    toast("Modelo salvo em Data/stat_model.json." + (stale ? `\n${stale} arquivo(s) com atributos do modelo antigo: use "Recalcular todas".` : ""));
+  }
+
+  async function recalcAll() {
+    const p = ui.project;
+    if (ui.modelDirty && !confirm("O modelo foi alterado e ainda não foi salvo. Recalcular com ele e salvar o modelo junto?")) return;
+    if (ui.modelDirty) await writeText(p.data, "stat_model.json", C.formatModel(ui.model, ui.modelHeader));
+    ui.modelDirty = false;
+    ui.modelSource = "Data/stat_model.json";
+
+    let changed = 0;
+    for (const [file, entry] of p.families) {
+      const content = C.recalculate(ui.model, entry.text);
+      if (normalizeEol(content) === normalizeEol(entry.text)) continue;
+      await writeText(p.summons, file, content);
+      p.families.set(file, {data: C.parseJsonc(content), text: content, stale: false});
+      changed++;
+    }
+    let enemies = "";
+    if (p.enemies !== null) {
+      const content = C.rewriteEnemies(p.enemies, ui.model);
+      if (normalizeEol(content) !== normalizeEol(p.enemies)) {
+        await writeText(p.data, "enemies.json", content);
+        p.enemies = content;
+        enemies = " Chefes atualizados em Data/enemies.json.";
+      }
+    }
+    markStale();
+    if (ui.familyFile && p.families.has(ui.familyFile) && !ui.dirty) ui.family = C.importFamily(p.families.get(ui.familyFile).data);
+    renderAll();
+    toast(`${changed} de ${p.families.size} famílias regravadas.${enemies}\nRode os testes do jogo para conferir: dotnet run --project Tests`, 9);
+  }
+
+  // Lembrar a última pasta (IndexedDB guarda o acesso; o navegador pede permissão de novo) -------------
+
+  function database() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open("sigilos-family-builder", 1);
+      request.onupgradeneeded = () => request.result.createObjectStore("handles");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function remember(handle) {
+    try {
+      const db = await database();
+      db.transaction("handles", "readwrite").objectStore("handles").put(handle, "project");
+    } catch { /* sem IndexedDB: só não lembra */ }
+  }
+
+  async function recall() {
+    try {
+      const db = await database();
+      const request = db.transaction("handles").objectStore("handles").get("project");
+      request.onsuccess = () => { if (request.result) { ui.remembered = request.result; renderProject(); } };
+    } catch { /* sem IndexedDB */ }
+  }
+
+  // Começo ---------------------------------------------------------------------------------------------
+
+  function start() {
+    let family = null, dirty = false;
+    try {
+      const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+      const whole = draft?.family && C.ELEMENTS.every(e => Array.isArray(draft.family.variations?.[C.keyOf(e)]?.skills));
+      if (whole) { family = draft.family; dirty = !!draft.dirty; }
+    } catch { /* rascunho ilegível: começa do exemplo */ }
+    if (!family) {
+      const sample = readJson("sample-family");
+      family = sample ? C.importFamily(sample) : C.blankFamily(ui.model);
+    }
+    ui.family = family;
+    ui.familyFile = null;
+    ui.dirty = dirty;
+    const hash = new URLSearchParams(location.hash.slice(1));
+    if (TABS.some(([id]) => id === hash.get("tab"))) ui.tab = hash.get("tab");
+    if (family.variations[hash.get("element")]) ui.active = hash.get("element");
+    if (!family.variations[ui.active]?.enabled) ui.active = C.keyOf(C.ELEMENTS.find(e => family.variations[C.keyOf(e)]?.enabled) || "Fire");
+    renderAll();
+    if (window.showDirectoryPicker) recall();
+  }
+
+  window.addEventListener("beforeunload", event => {
+    if (ui.project && (ui.dirty || ui.modelDirty)) event.preventDefault();
+  });
+
+  // Para testar pelo console.
+  window.builder = {ui, renderAll, openProject, saveFamily, saveModel, recalcAll};
+  start();
+})();
+</script>
+</body>
+</html>

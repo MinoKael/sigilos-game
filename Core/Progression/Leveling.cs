@@ -7,10 +7,12 @@ namespace Sigilos.Core.Progression
 {
 	/// <summary>
 	/// Nível de cada monstro, até o máximo das estrelas dele (<see cref="Growth.MaxLevel"/>). A
-	/// experiência de cada nível segue a tabela de Summoners War: cada estrela tem a sua coluna, e um
-	/// 6★ do 1 ao 40 pede 1.005.420. Vem de duas fontes: toda vitória dá experiência a quem lutou, e a
-	/// Essência pode ser infundida, <see cref="ExperiencePerEssence"/> de experiência por Essência.
-	/// No nível máximo a experiência para: o próximo passo é evoluir (<see cref="Evolution"/>).
+	/// experiência de cada nível segue a tabela de Summoners War: cada estrela tem a sua coluna. Como
+	/// evoluir mantém o nível, de cada estrela acima da natural só se sobem os 5 últimos níveis: um 3★
+	/// natural chega ao 6★ nível 40 com 858.795 de experiência. Vem de duas fontes: toda vitória dá
+	/// experiência a quem lutou, e a Essência pode ser infundida, <see cref="ExperiencePerEssence"/> de
+	/// experiência por Essência. No nível máximo a experiência para: o próximo passo é evoluir
+	/// (<see cref="Evolution"/>).
 	/// </summary>
 	public static class Leveling
 	{
