@@ -1,0 +1,234 @@
+{
+  "family_id": "wizard",
+  "base_name": "Wizard",
+  "name": "Wizards",
+  "star_grade": 5,
+  "image": "wizard",
+  "awakened_image": "wizard_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "wizard_fire",
+      "name": "Fire Wizard",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Crit", "value": 0.15},
+      "awakening": {"name": "Vulcaris", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Ember Glyph",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Flame Barrage",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.6, "hits": 3},
+            {"kind": "Damage", "target": "Target", "power": 1.6, "ignoreDefense": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Arcane Flow",
+          "passive": {"kind": "CooldownEachTurn", "value": 0.3}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "wizard_water",
+      "name": "Water Wizard",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Accuracy", "value": 0.25},
+      "awakening": {"name": "Rimewald", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Frost Shard",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.35, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Brittle Frost",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Glacial Tomb",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.8},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "wizard_wind",
+      "name": "Wind Wizard",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.15},
+      "awakening": {"name": "Galewyn", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Arc Spark",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.45, "hits": 3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Chain Lightning",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.1, "hits": 2},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Arcane Flow",
+          "passive": {"kind": "CooldownEachTurn", "value": 0.3}
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "wizard_light",
+      "name": "Light Wizard",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.2},
+      "awakening": {"name": "Lumenar", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Dawn Spark",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Glyph of Warding",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Arcane Flow",
+          "passive": {"kind": "CooldownEachTurn", "value": 0.3}
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "wizard_dark",
+      "name": "Dark Wizard",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "CritDamage", "value": 0.3},
+      "awakening": {"name": "Noctivar", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Hex Bolt",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Doom Glyph",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Annihilate",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 7.7, "ignoreDefense": 0.3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

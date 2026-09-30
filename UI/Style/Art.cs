@@ -50,9 +50,16 @@ namespace Sigilos.UI.Style
 					PassiveKind.ShieldOnDeath => new Symbol(Effect(StatusKind.Shield)),
 					PassiveKind.DamageReduction => new Symbol(Effect(StatusKind.DefenseUp)),
 					PassiveKind.BurnOnHit => new Symbol(Effect(StatusKind.Burn)),
+					PassiveKind.CurseOnHit => new Symbol(Effect(StatusKind.Curse)),
+					PassiveKind.StunAttacker => new Symbol(Effect(StatusKind.Stun)),
+					PassiveKind.CleanseAllyEachTurn => new Symbol(Effect(StatusKind.Immunity)),
 					PassiveKind.RebirthOnce => Symbol.Of(RuneSets.For(RuneSet.Wrath).Glyph),
 					PassiveKind.ImpetoAtWaveStart => Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph),
 					PassiveKind.RegenEachTurn => Symbol.Of(Texts.GlyphOf(Stat.Health)),
+					PassiveKind.HealAllyEachTurn => Symbol.Of(Texts.GlyphOf(Stat.Health)),
+					PassiveKind.Lifesteal => Symbol.Of(RuneSets.For(RuneSet.Siphon).Glyph),
+					PassiveKind.CooldownEachTurn => Symbol.Of(RuneSets.For(RuneSet.Frenzy).Glyph),
+					PassiveKind.Dodge => Symbol.Of(RuneSets.For(RuneSet.Haste).Glyph),
 					_ => Symbol.Of(RuneSets.For(RuneSet.Counter).Glyph),
 				};
 			}

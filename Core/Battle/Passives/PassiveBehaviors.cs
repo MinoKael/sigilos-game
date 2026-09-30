@@ -24,7 +24,15 @@ namespace Sigilos.Core.Battle.Passives
 			[PassiveKind.BonusVsWounded] = new BonusVsWoundedPassive(),
 			[PassiveKind.ImpetoAtWaveStart] = new ImpetoAtWaveStartPassive(),
 			[PassiveKind.RegenEachTurn] = new RegenEachTurnPassive(),
-			[PassiveKind.BurnOnHit] = new BurnOnHitPassive(),
+			[PassiveKind.BurnOnHit] = new StatusOnHitPassive(StatusKind.Burn, BattleRules.BurnOnHitTurns),
+			[PassiveKind.CooldownEachTurn] = new CooldownEachTurnPassive(),
+			[PassiveKind.HealAllyEachTurn] = new HealAllyEachTurnPassive(),
+			[PassiveKind.Thorns] = new ThornsPassive(),
+			[PassiveKind.StunAttacker] = new StunAttackerPassive(),
+			[PassiveKind.Lifesteal] = new LifestealPassive(),
+			[PassiveKind.CurseOnHit] = new StatusOnHitPassive(StatusKind.Curse, BattleRules.CurseOnHitTurns),
+			[PassiveKind.Dodge] = new DodgePassive(),
+			[PassiveKind.CleanseAllyEachTurn] = new CleanseAllyEachTurnPassive(),
 		};
 
 		public static UnitBehavior Of(PassiveKind kind) => Table[kind];

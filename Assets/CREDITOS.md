@@ -4,7 +4,9 @@ Toda a arte vem do [Wikimedia Commons](https://commons.wikimedia.org/). Os ícon
 interface são do projeto [game-icons.net](https://game-icons.net), republicados no Commons; as runas e
 os símbolos de elemento são de domínio público. Lista-fonte: `Tools/art/commons_assets.csv`.
 
-Parte dos arquivos veio de Rabiscos&Runas (`Game/Assets`), que usa as mesmas fontes.
+Parte dos arquivos veio de Rabiscos&Runas (`Game/Assets`), que usa as mesmas fontes. Os ícones mais
+novos foram copiados do acervo baixado de game-icons.net: são os mesmos desenhos, autores e licença, e
+a coluna do Commons aponta para a página de cada um lá.
 
 Alteração feita: só o `width`/`height` do `<svg>` raiz, para o Godot rasterizar em 256 px (`Tools/art/fetch_commons_assets.py`). O desenho não muda. No jogo, as silhuetas
 pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.
@@ -104,14 +106,14 @@ pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.
 | `Icons/region.svg` | [Castle - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Castle_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/tower.svg` | [Tower-flag - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Tower-flag_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/collect.svg` | [Sparkles - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Sparkles_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
-| `Effects/shield.svg` | [Energy-shield - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Energy-shield_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Effects/shield.svg` | [Vibrating-shield - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Vibrating-shield_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/burn.svg` | [Small-fire - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Small-fire_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/stun.svg` | [Star-swirl - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Star-swirl_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/taunt.svg` | [Target-arrows - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Target-arrows_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/hidden.svg` | [Hood - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Hood_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/curse.svg` | [Cursed-star - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Cursed-star_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/blind.svg` | [Blindfold - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Blindfold_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
-| `Effects/ward.svg` | [Magic-shield - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Magic-shield_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Effects/aegis.svg` | [Magic-shield - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Magic-shield_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/foresight.svg` | [Crystal-ball - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Crystal-ball_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/immunity.svg` | [Aura - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Aura_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/attackup.svg` | [Broadsword - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Broadsword_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
@@ -120,3 +122,23 @@ pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.
 | `Effects/speedup.svg` | [Wingfoot - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Wingfoot_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/pause.svg` | [Pause-button - Guard13007 - game-icons.svg](https://commons.wikimedia.org/wiki/File:Pause-button_-_Guard13007_-_game-icons.svg) | Guard13007 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/play.svg` | [Play-button - Guard13007 - game-icons.svg](https://commons.wikimedia.org/wiki/File:Play-button_-_Guard13007_-_game-icons.svg) | Guard13007 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Effects/bomb.svg` | [Unlit-bomb - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Unlit-bomb_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Effects/defensebreak.svg` | [Cracked-shield - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Cracked-shield_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Effects/poison.svg` | [Poison-gas - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Poison-gas_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/star.svg` | [Round-star - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Round-star_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/wizard.svg` | [Pointy-hat - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Pointy-hat_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/wizard_awakened.svg` | [Warlock-hood - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Warlock-hood_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/paladin.svg` | [Templar-shield - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Templar-shield_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/paladin_awakened.svg` | [Winged-shield - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Winged-shield_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/druid.svg` | [Deer-head - Caro Asercion - game-icons.svg](https://commons.wikimedia.org/wiki/File:Deer-head_-_Caro_Asercion_-_game-icons.svg) | Caro Asercion | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/druid_awakened.svg` | [Deku-tree - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Deku-tree_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/gargoyle.svg` | [Gargoyle - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Gargoyle_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/gargoyle_awakened.svg` | [Devil-mask - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Devil-mask_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/vampire.svg` | [Vampire-dracula - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Vampire-dracula_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/vampire_awakened.svg` | [Evil-bat - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Evil-bat_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/crow.svg` | [Raven - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Raven_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/crow_awakened.svg` | [Crow-dive - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Crow-dive_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/bird.svg` | [Sparrow - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Sparrow_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/bird_awakened.svg` | [Eagle-head - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Eagle-head_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/pixie.svg` | [Fairy - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Fairy_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/pixie_awakened.svg` | [Woman-elf-face - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Woman-elf-face_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |

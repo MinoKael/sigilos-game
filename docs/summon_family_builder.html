@@ -239,7 +239,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse"],
   "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies"],
   "statuses": ["Shield", "Burn", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "Poison"],
-  "passives": ["SpeedWhenLowest", "ShieldOnDeath", "RebirthOnce", "DamageReduction", "BonusVsDebuffed", "BonusVsWounded", "ImpetoAtWaveStart", "RegenEachTurn", "BurnOnHit"],
+  "passives": ["SpeedWhenLowest", "ShieldOnDeath", "RebirthOnce", "DamageReduction", "BonusVsDebuffed", "BonusVsWounded", "ImpetoAtWaveStart", "RegenEachTurn", "BurnOnHit", "CooldownEachTurn", "HealAllyEachTurn", "Thorns", "StunAttacker", "Lifesteal", "CurseOnHit", "Dodge", "CleanseAllyEachTurn"],
   "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"]
 }
 </script>
@@ -924,7 +924,7 @@ const Core = (() => {
       all.forEach((skill, index) => validateSkill(skill, editors[index], `${where} · ${skill.name || "habilidade " + (index + 1)}`, enums, add));
 
       // Convenções do jogo por estrelas naturais (Tests/DataTests.cs).
-      if (star === 3 && !extra) add("warn", where, "Convenção: as 3★ ganham uma habilidade nova no Despertar.");
+      if (star <= 3 && !extra) add("warn", where, "Convenção: as 2★ e as 3★ ganham uma habilidade nova no Despertar.");
       if (star === 4 && !skills.some(changes)) add("warn", where, "Convenção: as 4★ melhoram uma habilidade no Despertar (awakenedEffects ou valor desperto da passiva).");
       if (star >= 5 && (!v.awakening.stat || skills.some(changes))) add("warn", where, "Convenção: as 5★ só ganham um atributo no Despertar.");
     }

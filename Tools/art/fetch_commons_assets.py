@@ -140,7 +140,9 @@ def write_credits(rows: list[dict[str, str]]) -> None:
         "interface são do projeto [game-icons.net](https://game-icons.net), republicados no Commons; as runas e",
         "os símbolos de elemento são de domínio público. Lista-fonte: `Tools/art/commons_assets.csv`.",
         "",
-        "Parte dos arquivos veio de Rabiscos&Runas (`Game/Assets`), que usa as mesmas fontes.",
+        "Parte dos arquivos veio de Rabiscos&Runas (`Game/Assets`), que usa as mesmas fontes. Os ícones mais",
+        "novos foram copiados do acervo baixado de game-icons.net: são os mesmos desenhos, autores e licença, e",
+        "a coluna do Commons aponta para a página de cada um lá.",
         "",
         "Alteração feita: só o `width`/`height` do `<svg>` raiz, para o Godot rasterizar em "
         f"{RENDER_SIZE} px (`Tools/art/fetch_commons_assets.py`). O desenho não muda. No jogo, as silhuetas",

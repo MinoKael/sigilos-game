@@ -1,0 +1,235 @@
+{
+  "family_id": "paladin",
+  "base_name": "Paladin",
+  "name": "Paladins",
+  "star_grade": 5,
+  "image": "paladin",
+  "awakened_image": "paladin_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "paladin_fire",
+      "name": "Fire Paladin",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Attack", "value": 0.18},
+      "awakening": {"name": "Valorian", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Smite",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Crusade",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Devotion",
+          "passive": {"kind": "HealAllyEachTurn", "value": 0.06}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "paladin_water",
+      "name": "Water Paladin",
+      "element": "Water",
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.2},
+      "awakening": {"name": "Thalassar", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Tide Hammer",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Shield", "target": "LowestAlly", "power": 0.08, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Bastion",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Tidal Aegis",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "paladin_wind",
+      "name": "Wind Paladin",
+      "element": "Wind",
+      "role": "Defense",
+      "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
+      "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
+      "leader": {"stat": "Defense", "value": 0.25},
+      "awakening": {"name": "Windric", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Gale Strike",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Impeto", "target": "Self", "power": 15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Rallying Wind",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 25},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Devotion",
+          "passive": {"kind": "HealAllyEachTurn", "value": 0.06}
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "paladin_light",
+      "name": "Light Paladin",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Resistance", "value": 0.25},
+      "awakening": {"name": "Seraphiel", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Holy Strike",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Lay on Hands",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.5},
+            {"kind": "Cleanse", "target": "LowestAlly"},
+            {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Devotion",
+          "passive": {"kind": "HealAllyEachTurn", "value": 0.06}
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "paladin_dark",
+      "name": "Dark Paladin",
+      "element": "Dark",
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "Accuracy", "value": 0.25},
+      "awakening": {"name": "Mordain", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Dread Blade",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85, "drain": 0.2},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Grim Challenge",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Blood Oath",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.6, "drain": 0.5},
+            {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

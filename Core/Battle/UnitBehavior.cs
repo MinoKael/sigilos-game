@@ -55,7 +55,7 @@ namespace Sigilos.Core.Battle
 		/// <summary>O dono vai dar um golpe: pode errar, garantir o crítico, somar dreno.</summary>
 		public virtual void OnAttack(UnitRule rule, Strike strike) { }
 
-		/// <summary>O dono vai levar um golpe que não errou: pode anular.</summary>
+		/// <summary>O dono vai levar um golpe que não errou: pode esquivar (o golpe erra) ou anular.</summary>
 		public virtual void OnDefend(UnitRule rule, Strike strike) { }
 
 		/// <summary>Multiplica o dano dos golpes do dono neste alvo (1 = não muda).</summary>
@@ -67,7 +67,7 @@ namespace Sigilos.Core.Battle
 		/// <summary>Quanto deste dano a regra segura antes de chegar à Vida do dono (escudo).</summary>
 		public virtual double Absorb(UnitRule rule, double amount) => 0;
 
-		/// <summary>O dono levou o golpe e sobreviveu.</summary>
+		/// <summary>O dono levou o golpe e sobreviveu: pode revidar em quem atacou.</summary>
 		public virtual void AfterHurt(UnitRule rule, Strike strike) { }
 
 		/// <summary>O dono acertou o golpe e o alvo sobreviveu.</summary>

@@ -352,7 +352,15 @@
     "BonusVsWounded": "+{0} damage against targets below {1} HP.",
     "ImpetoAtWaveStart": "Starts each wave with at least {0} {1}.",
     "RegenEachTurn": "Recovers {0} of max HP at the start of each of its turns.",
-    "BurnOnHit": "{0} chance to inflict {1} on each target hit, once per skill."
+    "BurnOnHit": "{0} chance to inflict {1} on each target hit, once per skill.",
+    "CooldownEachTurn": "{0} chance at the start of its turn to shorten its own cooldowns by 1 turn.",
+    "HealAllyEachTurn": "At the start of its turn, heals the most injured ally for {0} of max HP.",
+    "Thorns": "Whoever hits it takes {0} of the damage dealt.",
+    "StunAttacker": "{0} chance to inflict {1} on whoever hits it, once per skill.",
+    "Lifesteal": "Drains {0} of all the damage it deals as HP.",
+    "CurseOnHit": "{0} chance to inflict {1} on each target hit, once per skill.",
+    "Dodge": "{0} chance to dodge each hit.",
+    "CleanseAllyEachTurn": "{0} chance at the start of its turn to remove one harmful effect from an ally."
   },
 
   "awaken": {

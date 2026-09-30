@@ -22,6 +22,8 @@ Sep 23, 2026 · @Mikael
 
 > **Décima primeira revisão de 30/09/2026: atributos por orçamento.** Os atributos das invocações deixaram de sair de uma tabela por papel: todo monstro das mesmas estrelas naturais gasta o mesmo orçamento de BVP (pontos de valor de base: Vida ÷ 15 + Ataque + Defesa + Velocidade × 3), e o papel (Vida, Ataque, Defesa ou Suporte) decide onde. Elemento, família e variante só deslocam a distribuição; o Despertar tem o orçamento dele. Cada família virou um arquivo só, com as variantes e os atributos já calculados, feito no construtor de famílias. Entraram três efeitos: Veneno (acumula), Bomba (explode depois da contagem, ignorando a Defesa) e Quebra de Defesa. Evoluir deixou de voltar ao nível 1: o monstro mantém o nível e os atributos sobem na hora.
 
+> **Décima segunda revisão de 30/09/2026: oito famílias novas e as primeiras 2★.** Entraram oito famílias, cada uma com 5 elementos e a Passiva dela. Nas 5★: Magos (Fluxo Arcano: chance de encurtar as próprias recargas no começo do turno), Paladinos (Devoção: curam o aliado mais ferido no começo do turno) e Druidas (Couro de Espinhos: quem bate neles recebe de volta parte do dano). Nas 4★: Gárgulas (Olhar de Pedra: chance de atordoar quem bate nelas), Vampiros (Sede de Sangue: drenam parte de todo dano que causam) e Corvos (Mau Agouro: chance de Maldição em quem eles acertam). E as primeiras 2★: Pássaros (Voo Esquivo: chance de esquivar de cada golpe) e Pixies (Pó de Pixie: chance de tirar um efeito negativo de um aliado no começo do turno). O jogo passa a ter 17 famílias e 85 invocações. As 2★ seguem a regra das 3★ (habilidade nova no Despertar, sem Liderança), com o menor orçamento de atributos, e nascem no 2★ nível 1. O Pergaminho Místico continua sorteando de 3★ a 5★: de onde vêm as 2★ é pergunta em aberto (seção 14).
+
 > **Nona revisão de 27/09/2026: fontes, runas e menos botões.** A fonte do jogo é a SFC Wezards, e os Glifos passaram a ser escritos na fonte rúnica Kehdrai (nítidos em qualquer tamanho). A runa em miniatura é uma pedra quadrada de cantos redondos, com o espaço e as estrelas no alto e a melhora embaixo. O Resolver saiu: a Batalha automática pergunta quantas lutas seguidas (30 de início, até 100). A Canalização Rápida saiu. Os efeitos de batalha têm símbolos próprios, e toda arte é PNG renderizado do SVG, recortado no formato do componente.
 
 ## 1. Visão geral
@@ -188,13 +190,13 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 | Campo | Conteúdo |
 | --- | --- |
 | Identidade | Família, elemento e papel (Vida, Ataque, Defesa ou Suporte): o papel decide como o orçamento de atributos é repartido |
-| Raridade | 3, 4 ou 5 estrelas naturais, definida pela família; toda invocação evolui até 6★ |
+| Raridade | De 2 a 5 estrelas naturais, definida pela família; toda invocação evolui até 6★ |
 | Atributos | Os de Summoners War: Vida, Ataque, Defesa, Velocidade, Crítico, Dano crítico, Resistência e Precisão (chance de aplicar efeitos). Os quatro primeiros saem do orçamento das estrelas naturais (seção 15); os outros quatro são iguais para todos |
 | Básica | Habilidade sempre disponível |
 | Ativas | Uma ou duas com recarga de 3 a 5 turnos |
 | Passiva | Nem todos têm: alguns têm uma terceira ativa no lugar; famílias de 4 e 5 estrelas também têm Liderança |
 | Níveis | Cada habilidade sobe com cópias fundidas |
-| Despertar | Nome próprio, desenho novo e, pelas estrelas naturais, uma habilidade nova (3★), uma mais forte (4★) ou um atributo (5★) |
+| Despertar | Nome próprio, desenho novo e, pelas estrelas naturais, uma habilidade nova (2★ e 3★), uma mais forte (4★) ou um atributo (5★) |
 
 ### Famílias
 
@@ -231,12 +233,12 @@ Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocaçã
 | Regra | Valor inicial |
 | --- | --- |
 | Custo | 1 Pergaminho Místico por invocação; 10 por dez |
-| Taxas | 3★ 65%, 4★ 28%, 5★ 7% |
+| Taxas | 3★ 65%, 4★ 28%, 5★ 7% (as 2★ não saem do Pergaminho Místico) |
 | Luz e Trevas | Metade da chance das outras variantes da mesma raridade, como em Summoners War |
 | Garantia | 5★ após 60 invocações sem nenhuma, com contador na tela |
 | Coleção | 50 vagas; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele) |
 | Cópia repetida | Fundida em outra da mesma variante: sobe uma habilidade sorteada em um nível, até todas no máximo |
-| Liberar | O monstro vira Fragmentos: 5 (3★), 10 (4★) ou 20 (5★) |
+| Liberar | O monstro vira Fragmentos: 5 (2★ e 3★), 10 (4★) ou 20 (5★) |
 | Troca por Fragmentos | Qualquer invocação: 30, 60 ou 120 Fragmentos, conforme a raridade |
 
 **O traçado.** Você desenha o sigilo com o mouse ou o dedo, e um reconhecedor de gestos simples (como o $1 Unistroke Recognizer, cerca de 100 linhas de código) avalia o desenho. Não muda as taxas: um traçado limpo só dá 50 de Essência. Invocações de dez usam traçado automático.
@@ -260,10 +262,10 @@ Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e
 | --- | --- | --- |
 | Estrelas e nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 10 de experiência); no nível máximo, Evolução com Essência e Fragmentos | Das estrelas naturais até 6★; nível máximo 10 + 5 por estrela (25 no 3★, 40 no 6★); Vida, Ataque e Defesa pela faixa de Summoners War de cada estrela |
 | Níveis de habilidade | Fundir cópias da mesma variante | Cada cópia sobe uma habilidade sorteada: mais dano, cura, chance de efeito ou menos recarga |
-| Despertar | Essência pelas estrelas naturais: 25 000 (3★), 50 000 (4★), 75 000 (5★) | Nome próprio, desenho novo, estrelas roxas, Vida, Ataque e Defesa maiores (os do orçamento desperto: cerca de 8% a 10% a mais) e +1 de Velocidade e, pelas estrelas naturais, uma habilidade nova (3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
+| Despertar | Essência pelas estrelas naturais: 25 000 (2★ e 3★), 50 000 (4★), 75 000 (5★) | Nome próprio, desenho novo, estrelas roxas, Vida, Ataque e Defesa maiores (os do orçamento desperto: cerca de 8% a 11% a mais) e +1 de Velocidade e, pelas estrelas naturais, uma habilidade nova (2★ e 3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
 | Runas | Campanha (até 4★) e Masmorras (4★ a 6★, conjuntos certos), melhoradas com Essência; Pedras de Afiar e Gemas da Forja | Atributos, conjuntos e o ajuste fino de Velocidade |
 
-**Estrelas e nível, como em Summoners War.** Cada invocação nasce nas estrelas naturais, no nível 1, e sobe até o máximo da estrela (25 no 3★, 30 no 4★, 35 no 5★, 40 no 6★), com a experiência de cada nível da tabela de Summoners War. No máximo, a Evolução gasta Essência e Fragmentos (2 000 e 5 no 1★ até 100 000 e 80 no 5★), dá uma estrela e mantém o nível: diferente de Summoners War, o monstro não volta ao 1. Ele continua no nível em que estava, agora na faixa da estrela nova (um 3★ no 25 tem 40% dos atributos do máximo; evoluído, o 4★ no 25 tem 50%), e só faltam os 5 níveis novos. Os atributos de base do apêndice são os de 6★ nível 40; cada estrela tem a faixa de lá (3★: de 22% a 40% do máximo; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Quem nasce com menos estrelas chega ao 6★ nível 40 com menos: o orçamento de uma 3★ natural é 85% do de uma 5★, e o de uma 4★, 93%. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
+**Estrelas e nível, como em Summoners War.** Cada invocação nasce nas estrelas naturais, no nível 1, e sobe até o máximo da estrela (20 no 2★, 25 no 3★, 30 no 4★, 35 no 5★, 40 no 6★), com a experiência de cada nível da tabela de Summoners War. No máximo, a Evolução gasta Essência e Fragmentos (2 000 e 5 no 1★ até 100 000 e 80 no 5★), dá uma estrela e mantém o nível: diferente de Summoners War, o monstro não volta ao 1. Ele continua no nível em que estava, agora na faixa da estrela nova (um 3★ no 25 tem 40% dos atributos do máximo; evoluído, o 4★ no 25 tem 50%), e só faltam os 5 níveis novos. Os atributos de base do apêndice são os de 6★ nível 40; cada estrela tem a faixa de lá (2★: de 16% a 29% do máximo; 3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Quem nasce com menos estrelas chega ao 6★ nível 40 com menos: o orçamento de uma 2★ natural é 78% do de uma 5★, o de uma 3★, 85%, e o de uma 4★, 93%. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
 
 **Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), um segundo desenho, estrelas roxas no lugar das douradas, atributos maiores e o que as estrelas naturais pedem: habilidade nova, habilidade mais forte ou atributo. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
 
@@ -408,6 +410,7 @@ O maior risco não é técnico: é o escopo crescer até o projeto parar. Os out
 - [x] Qual motor você já domina? Godot é sugestão, não requisito. Godot
 - [ ] Quantas horas por semana há de verdade? O roadmap supõe 8 a 10.
 - [x] Quer mostrar para amigos? Se sim, Convidados e Espelho sobem de prioridade. Sim
+- [ ] De onde vêm as 2★ (Pássaros e Pixies)? O Pergaminho Místico sorteia de 3★ a 5★, então hoje elas só aparecem no Grimório. Opções: uma fatia das taxas dele, um pergaminho comum de 1★ a 3★ (o Pergaminho Desconhecido de Summoners War) ou queda nas fases da Campanha, com elas entre os inimigos.
 
 ## 15. Apêndice: fórmulas e números iniciais
 
@@ -462,6 +465,10 @@ Os atributos que a conta dá, em 6★ nível 40:
 
 | Estrelas | Papel | Vida | Ataque | Defesa | Velocidade | Desperto |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2★ | Ataque | 6420 | 600 | 427 | 110 | 7140 / 668 / 476 / 111 |
+| 2★ | Defesa | 7290 | 453 | 552 | 98 | 8100 / 503 / 613 / 99 |
+| 2★ | Vida | 8010 | 456 | 495 | 100 | 8895 / 507 / 550 / 101 |
+| 2★ | Suporte | 7275 | 463 | 543 | 98 | 8085 / 514 / 603 / 99 |
 | 3★ | Ataque | 7905 | 631 | 483 | 101 | 8730 / 697 / 533 / 102 |
 | 3★ | Defesa | 8595 | 483 | 594 | 98 | 9480 / 534 / 655 / 99 |
 | 3★ | Vida | 9210 | 506 | 527 | 99 | 10170 / 558 / 582 / 100 |
@@ -479,7 +486,7 @@ Todos começam com Crítico 15%, Dano crítico 50%, Resistência 5% e Precisão 
 
 Os números de cada variante ficam gravados no arquivo da família (Data/summons), já calculados; quem calcula é o construtor de famílias (docs/summon_family_builder.html), e o jogo só confere. Mudar um parâmetro do modelo é recalcular todas as famílias pelo construtor e rodar o simulador.
 
-Velocidade é fixa desde o nível 1; os outros atributos seguem a faixa de Summoners War de cada estrela, em linha reta do nível 1 ao máximo dela (3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
+Velocidade é fixa desde o nível 1; os outros atributos seguem a faixa de Summoners War de cada estrela, em linha reta do nível 1 ao máximo dela (2★: 16% a 29%; 3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
 
 Os inimigos comuns são invocações (3★ a 5★ naturais), nas estrelas e no nível do encontro, com Vida e Ataque multiplicados pelas estrelas naturais e pela força do encontro; os chefes têm os atributos do papel e das estrelas deles, pelo mesmo modelo, e multiplicadores próprios (Data/enemies.json). Nenhum inimigo usa runas nem Despertar, e as habilidades ficam no nível 1.
 

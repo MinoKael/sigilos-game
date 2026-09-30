@@ -6,7 +6,10 @@ using Sigilos.Core.Player;
 
 namespace Sigilos.Tests
 {
-	/// <summary>As Passivas das famílias que vieram dos inimigos: Limos, Goblins, Lobos, Bandidos, Trolls e Dragões.</summary>
+	/// <summary>
+	/// As Passivas das famílias: as que vieram dos inimigos (Limos, Goblins, Lobos, Bandidos, Trolls e
+	/// Dragões) e as de Magos, Paladinos, Druidas, Gárgulas, Vampiros, Corvos, Pássaros e Pixies.
+	/// </summary>
 	internal static class SignatureTests
 	{
 		private static PassiveDefinition Passive(PassiveKind kind, double value) => new() { Kind = kind, Value = value };
@@ -85,6 +88,184 @@ namespace Sigilos.Tests
 			}
 
 			Assert.True(burned >= 15, $"com 100% de chance quase sempre queima (só a Resistência mínima barra): {burned}/20");
+		}
+
+		[Test]
+		private static void WizardsShortenTheirCooldowns()
+		{
+			var special = TestData.Strike with { Name = "Especial", Cooldown = 3, Effects = new[] { new EffectDefinition { Kind = EffectKind.Damage, Power = 2 } } };
+			foreach (var flows in new[] { true, false })
+			{
+				var wizard = TestData.Unit("mago", Side.Allies, speed: 300, special: special, passive: flows ? Passive(PassiveKind.CooldownEachTurn, 1) : null);
+				var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000, attack: 1);
+				var session = TestData.Session(new[] { wizard }, new[] { foe });
+				session.Start();
+
+				TestData.RunUntilTurnOf(session, wizard);
+				session.Act(new UnitAction(1, foe));
+				Assert.Equal(2, wizard.Cooldown(1), "recarga 3 conta o turno de uso");
+
+				// Segundo turno: com a Passiva, a recarga cai mais um no começo (2 → 1) e outro no fim (→ 0).
+				TestData.RunUntilTurnOf(session, wizard);
+				session.Act(new UnitAction(0, foe));
+				TestData.RunUntilTurnOf(session, wizard);
+				Assert.Equal(flows, wizard.IsReady(1), flows ? "com a Passiva, pronta um turno antes" : "sem a Passiva, ainda em recarga");
+			}
+		}
+
+		[Test]
+		private static void PaladinsMendTheMostInjuredAlly()
+		{
+			var paladin = TestData.Unit("paladino", Side.Allies, speed: 300, passive: Passive(PassiveKind.HealAllyEachTurn, 0.06));
+			var friend = TestData.Unit("amigo", Side.Allies, speed: 1, health: 1000);
+			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 1, attack: 1);
+			var session = TestData.Session(new[] { paladin, friend }, new[] { foe });
+			session.Start();
+			friend.Health = 500;
+
+			var turn = session.BeginTurn();
+			Assert.Equal(paladin, turn.Actor, "o paladino é o mais rápido");
+			Assert.Near(560, friend.Health, "o mais ferido recupera 6% da Vida máxima dele");
+			Assert.Near(1000, paladin.Health, "quem está inteiro não ganha nada");
+		}
+
+		[Test]
+		private static void DruidsHurtWhoeverHitsThem()
+		{
+			var druid = TestData.Unit("druida", Side.Enemies, health: 10_000, passive: Passive(PassiveKind.Thorns, 0.25));
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, health: 1000);
+			var session = TestData.Session(new[] { hero }, new[] { druid });
+			session.Start();
+
+			TestData.RunUntilTurnOf(session, hero);
+			session.Act(new UnitAction(0, druid));
+			Assert.Near(9900, druid.Health, "o golpe de 100 entra");
+			Assert.Near(975, hero.Health, "e 25% dele voltam para quem bateu");
+		}
+
+		[Test]
+		private static void ThornsCanStopASkillHalfway()
+		{
+			var flurry = TestData.Strike with
+			{
+				Effects = new[]
+				{
+					new EffectDefinition { Kind = EffectKind.Damage, Power = 1, Hits = 3 },
+					new EffectDefinition { Kind = EffectKind.Heal, Target = TargetKind.AllAllies, Power = 0.5 },
+				},
+			};
+			var druid = TestData.Unit("druida", Side.Enemies, health: 10_000, attack: 1, passive: Passive(PassiveKind.Thorns, 0.25));
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, health: 20, basic: flurry);
+			var friend = TestData.Unit("amigo", Side.Allies, speed: 1, health: 1000);
+			var session = TestData.Session(new[] { hero, friend }, new[] { druid });
+			session.Start();
+			friend.Health = 100;
+
+			TestData.RunUntilTurnOf(session, hero);
+			var events = session.Act(new UnitAction(0, druid));
+			Assert.False(hero.IsAlive, "os espinhos derrubam quem atacou");
+			Assert.Equal(1, events.OfType<Damaged>().Count(e => e.Target == druid), "os golpes que faltavam não acontecem");
+			Assert.Near(100, friend.Health, "nem o resto da habilidade");
+			Assert.False(session.IsOver, "e a luta segue com quem sobrou");
+		}
+
+		[Test]
+		private static void GargoylesStunWhoeverHitsThem()
+		{
+			var triple = TestData.Strike with { Effects = new[] { new EffectDefinition { Kind = EffectKind.Damage, Power = 1, Hits = 3 } } };
+			var stunned = 0;
+			for (var seed = 1; seed <= 20; seed++)
+			{
+				var gargoyle = TestData.Unit("gárgula", Side.Enemies, health: 1_000_000, attack: 1, passive: Passive(PassiveKind.StunAttacker, 1));
+				var hero = TestData.Unit("herói", Side.Allies, speed: 300, basic: triple);
+				var session = TestData.Session(new[] { hero }, new[] { gargoyle }, seed);
+				session.Start();
+
+				TestData.RunUntilTurnOf(session, hero);
+				var events = session.Act(new UnitAction(0, gargoyle));
+				var rolls = events.OfType<StatusApplied>().Count(e => e.Status == StatusKind.Stun && e.Target == hero) + events.OfType<Resisted>().Count(e => e.Target == hero);
+				Assert.Equal(1, rolls, "um sorteio por habilidade, não por golpe");
+				if (!hero.Has(StatusKind.Stun))
+					continue;
+
+				stunned++;
+				var next = session.BeginTurn();
+				Assert.True(next.Actor == hero && !next.NeedsDecision, "quem foi atordoado perde o turno seguinte");
+			}
+
+			Assert.True(stunned >= 15, $"com 100% de chance quase sempre atordoa (só a Resistência mínima barra): {stunned}/20");
+		}
+
+		[Test]
+		private static void VampiresDrainWhatTheyDeal()
+		{
+			var vampire = TestData.Unit("vampiro", Side.Allies, speed: 300, health: 1000, passive: Passive(PassiveKind.Lifesteal, 0.2));
+			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000, attack: 1);
+			var session = TestData.Session(new[] { vampire }, new[] { foe });
+			session.Start();
+			vampire.Health = 500;
+
+			TestData.RunUntilTurnOf(session, vampire);
+			session.Act(new UnitAction(0, foe));
+			Assert.Near(520, vampire.Health, "drena 20% de um golpe de 100");
+		}
+
+		[Test]
+		private static void CrowsCurseWhatTheyHit()
+		{
+			var cursed = 0;
+			for (var seed = 1; seed <= 20; seed++)
+			{
+				var crow = TestData.Unit("corvo", Side.Allies, speed: 300, passive: Passive(PassiveKind.CurseOnHit, 1));
+				var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
+				var session = TestData.Session(new[] { crow }, new[] { foe }, seed);
+				session.Start();
+				TestData.RunUntilTurnOf(session, crow);
+				var events = session.Act(new UnitAction(0, foe));
+				Assert.True(events.OfType<StatusApplied>().Count(e => e.Status == StatusKind.Curse) + events.OfType<Resisted>().Count() == 1, "um sorteio por alvo");
+				if (foe.Has(StatusKind.Curse))
+					cursed++;
+			}
+
+			Assert.True(cursed >= 15, $"com 100% de chance quase sempre amaldiçoa: {cursed}/20");
+		}
+
+		[Test]
+		private static void BirdsDodgeHits()
+		{
+			var bird = TestData.Unit("pássaro", Side.Enemies, health: 1000, attack: 1, passive: Passive(PassiveKind.Dodge, 1));
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300);
+			var session = TestData.Session(new[] { hero }, new[] { bird });
+			session.Start();
+
+			TestData.RunUntilTurnOf(session, hero);
+			var events = session.Act(new UnitAction(0, bird));
+			Assert.True(events.OfType<Missed>().Any(e => e.Target == bird), "o golpe erra");
+			Assert.False(events.OfType<Damaged>().Any(), "e não causa dano");
+			Assert.Near(1000, bird.Health, "a Vida fica inteira");
+		}
+
+		[Test]
+		private static void PixiesCleanseAnAllyAtTheStartOfTheirTurn()
+		{
+			var pixie = TestData.Unit("pixie", Side.Allies, speed: 300, passive: Passive(PassiveKind.CleanseAllyEachTurn, 1));
+			var friend = TestData.Unit("amigo", Side.Allies, speed: 1);
+			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 1, attack: 1);
+			var session = TestData.Session(new[] { pixie, friend }, new[] { foe });
+			session.Start();
+			friend.AddStatus(new StatusEffect(StatusKind.AttackDown, 3));
+			friend.AddStatus(new StatusEffect(StatusKind.AttackUp, 3));
+
+			var turn = session.BeginTurn();
+			Assert.Equal(pixie, turn.Actor, "a pixie é a mais rápida");
+			Assert.False(friend.Has(StatusKind.AttackDown), "o efeito negativo do aliado sai");
+			Assert.True(friend.Has(StatusKind.AttackUp), "o positivo fica");
+			session.Act(new UnitAction(0, foe));
+
+			// Atordoada, ela limpa a si mesma antes de perder o turno.
+			pixie.AddStatus(new StatusEffect(StatusKind.Stun, 1));
+			var freed = session.BeginTurn();
+			Assert.True(freed.Actor == pixie && freed.NeedsDecision, "a pixie sai do próprio atordoamento e age");
 		}
 
 		[Test]

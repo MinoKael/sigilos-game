@@ -23,5 +23,29 @@ namespace Sigilos.Core.Content
 		RegenEachTurn,
 		/// <summary>Dragões: chance de Queimadura em cada alvo atingido, uma vez por habilidade.</summary>
 		BurnOnHit,
+
+		/// <summary>Magos: chance de encurtar as próprias recargas no começo de cada turno.</summary>
+		CooldownEachTurn,
+
+		/// <summary>Paladinos: curam o aliado mais ferido no começo de cada turno.</summary>
+		HealAllyEachTurn,
+
+		/// <summary>Druidas: quem os atinge recebe de volta parte do dano que causou.</summary>
+		Thorns,
+
+		/// <summary>Gárgulas: chance de atordoar quem as atinge, uma vez por habilidade.</summary>
+		StunAttacker,
+
+		/// <summary>Vampiros: drenam parte de todo dano que causam.</summary>
+		Lifesteal,
+
+		/// <summary>Corvos: chance de Maldição em cada alvo atingido, uma vez por habilidade.</summary>
+		CurseOnHit,
+
+		/// <summary>Pássaros: chance de esquivar de cada golpe.</summary>
+		Dodge,
+
+		/// <summary>Pixies: chance de tirar um efeito negativo de um aliado no começo de cada turno.</summary>
+		CleanseAllyEachTurn,
 	}
 }

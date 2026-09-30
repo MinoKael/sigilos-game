@@ -51,6 +51,12 @@ namespace Sigilos.Core.Battle
 		/// <summary>Duração da Queimadura que a Passiva dos Dragões põe.</summary>
 		public const int BurnOnHitTurns = 2;
 
+		/// <summary>Duração da Maldição que a Passiva dos Corvos põe.</summary>
+		public const int CurseOnHitTurns = 2;
+
+		/// <summary>Duração do Atordoamento que a Passiva das Gárgulas põe em quem as atinge.</summary>
+		public const int StunAttackerTurns = 1;
+
 		/// <summary>
 		/// Efeitos negativos: a Resistência do alvo pode barrar, a Imunidade barra sempre e a Purificação
 		/// remove. Quem diz é a estratégia de cada efeito (Statuses/StatusBehaviors).

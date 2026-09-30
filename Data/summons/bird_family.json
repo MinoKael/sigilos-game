@@ -1,0 +1,234 @@
+{
+  "family_id": "bird",
+  "base_name": "Bird",
+  "name": "Birds",
+  "star_grade": 2,
+  "image": "bird",
+  "awakened_image": "bird_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "bird_fire",
+      "name": "Fire Bird",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
+      "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
+      "awakening": {
+        "name": "Flick",
+        "skill": {
+          "name": "Evasive Flight",
+          "passive": {"kind": "Dodge", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Hot Peck",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Fire Dive",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.9}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "bird_water",
+      "name": "Water Bird",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "awakening": {
+        "name": "Drizzle",
+        "skill": {
+          "name": "Rain Dance",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 15}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Splash",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Preen",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "bird_wind",
+      "name": "Wind Bird",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
+      "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
+      "awakening": {
+        "name": "Whistle",
+        "skill": {
+          "name": "Evasive Flight",
+          "passive": {"kind": "Dodge", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Quick Peck",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.6, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Tailwind",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "bird_light",
+      "name": "Light Bird",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "awakening": {
+        "name": "Chirp",
+        "skill": {
+          "name": "Sunrise",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Glare",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Morning Song",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.15}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "bird_dark",
+      "name": "Dark Bird",
+      "element": "Dark",
+      "role": "Defense",
+      "stats": {"hp": 7290, "atk": 453, "def": 552, "spd": 98},
+      "awakened_stats": {"hp": 8100, "atk": 503, "def": 613, "spd": 99},
+      "awakening": {
+        "name": "Soot",
+        "skill": {
+          "name": "Evasive Flight",
+          "passive": {"kind": "Dodge", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Shadow Peck",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.15, "drain": 0.15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Night Screech",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -10}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

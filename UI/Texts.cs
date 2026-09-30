@@ -241,6 +241,8 @@ namespace Sigilos.UI
 				PassiveKind.ShieldOnDeath => T("passive.ShieldOnDeath", Term(StatusKind.Shield), value),
 				PassiveKind.ImpetoAtWaveStart => T("passive.ImpetoAtWaveStart", value, Impeto),
 				PassiveKind.BurnOnHit => T("passive.BurnOnHit", value, Term(StatusKind.Burn)),
+				PassiveKind.CurseOnHit => T("passive.CurseOnHit", value, Term(StatusKind.Curse)),
+				PassiveKind.StunAttacker => T("passive.StunAttacker", value, Term(StatusKind.Stun)),
 				PassiveKind.BonusVsWounded => T("passive.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
 				_ => T($"passive.{passive.Kind}", value),
 			};

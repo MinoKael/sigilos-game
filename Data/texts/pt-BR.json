@@ -349,7 +349,15 @@
     "BonusVsWounded": "+{0} de dano em alvos abaixo de {1} da Vida.",
     "ImpetoAtWaveStart": "Começa cada onda com pelo menos {0} de {1}.",
     "RegenEachTurn": "Recupera {0} da Vida máxima no começo de cada turno dele.",
-    "BurnOnHit": "{0} de chance de causar {1} em cada alvo atingido, uma vez por habilidade."
+    "BurnOnHit": "{0} de chance de causar {1} em cada alvo atingido, uma vez por habilidade.",
+    "CooldownEachTurn": "{0} de chance, no começo do turno, de encurtar as próprias recargas em 1 turno.",
+    "HealAllyEachTurn": "No começo do turno, cura {0} da Vida máxima do aliado mais ferido.",
+    "Thorns": "Quem o atinge recebe {0} do dano que causou.",
+    "StunAttacker": "{0} de chance de causar {1} em quem o atinge, uma vez por habilidade.",
+    "Lifesteal": "Drena {0} de todo dano que causa como Vida.",
+    "CurseOnHit": "{0} de chance de causar {1} em cada alvo atingido, uma vez por habilidade.",
+    "Dodge": "{0} de chance de esquivar de cada golpe.",
+    "CleanseAllyEachTurn": "{0} de chance, no começo do turno, de remover um efeito negativo de um aliado."
   },
 
   "awaken": {

@@ -1,0 +1,252 @@
+{
+  "family_id": "vampire",
+  "base_name": "Vampire",
+  "name": "Vampires",
+  "star_grade": 4,
+  "image": "vampire",
+  "awakened_image": "vampire_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "vampire_fire",
+      "name": "Fire Vampire",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Count Embris"},
+      "skills": [
+        {
+          "name": "Scalding Bite",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Blood Boil",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 6.3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 7},
+            {"kind": "Status", "target": "Target", "status": "Burn", "turns": 2}
+          ]
+        },
+        {
+          "name": "Blood Thirst",
+          "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "vampire_water",
+      "name": "Water Vampire",
+      "element": "Water",
+      "role": "HP",
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.15},
+      "awakening": {"name": "Countess Mirelle"},
+      "skills": [
+        {
+          "name": "Cold Embrace",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Impeto", "target": "Target", "power": -15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Mist Form",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Hidden"},
+            {"kind": "Heal", "target": "Self", "power": 0.2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Self", "status": "Hidden"},
+            {"kind": "Heal", "target": "Self", "power": 0.3},
+            {"kind": "Status", "target": "Self", "status": "Aegis"}
+          ]
+        },
+        {
+          "name": "Blood Thirst",
+          "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "vampire_wind",
+      "name": "Wind Vampire",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Count Vesper"},
+      "skills": [
+        {
+          "name": "Swift Fangs",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Impeto", "target": "Self", "power": 10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Bat Swarm",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.4, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.75, "hits": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
+          ]
+        },
+        {
+          "name": "Night Flight",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Impeto", "target": "Self", "power": 50}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "vampire_light",
+      "name": "Light Vampire",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Countess Aurelle"},
+      "skills": [
+        {
+          "name": "Pale Touch",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Transfusion",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ]
+        },
+        {
+          "name": "Sanguine Pact",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "vampire_dark",
+      "name": "Dark Vampire",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "CritDamage", "value": 0.25},
+      "awakening": {"name": "Count Noctis"},
+      "skills": [
+        {
+          "name": "Drain Life",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Feast",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.6, "drain": 0.5}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 7, "drain": 0.5},
+            {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+          ]
+        },
+        {
+          "name": "Blood Thirst",
+          "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
+        }
+      ]
+    }
+  }
+}

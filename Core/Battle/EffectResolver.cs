@@ -51,6 +51,10 @@ namespace Sigilos.Core.Battle
 
 			foreach (var effect in effects)
 			{
+				// Quem lança pode cair no meio da própria habilidade (os espinhos dos Druidas): ela para ali.
+				if (!caster.IsAlive)
+					break;
+
 				if (effect.OnKill && !cast.Killed)
 					continue;
 
@@ -73,8 +77,8 @@ namespace Sigilos.Core.Battle
 		}
 
 		/// <summary>
-		/// Um golpe, na ordem: quem ataca pode errar; quem apanha pode anular; o crítico; o dano; o
-		/// escudo; o dreno; a queda; e, se o alvo ficou de pé, o que o golpe dispara nos dois.
+		/// Um golpe, na ordem: quem ataca pode errar; quem apanha pode esquivar ou anular; o crítico; o
+		/// dano; o escudo; o dreno; a queda; e, se o alvo ficou de pé, o que o golpe dispara nos dois.
 		/// </summary>
 		public void Land(Strike strike)
 		{
@@ -94,6 +98,12 @@ namespace Sigilos.Core.Battle
 			foreach (var rule in target.Rules())
 			{
 				rule.Behavior.OnDefend(rule, strike);
+				if (strike.Missed)
+				{
+					Emit(new Missed(target));
+					return;
+				}
+
 				if (strike.Blocked)
 				{
 					Emit(new Protected(target));
@@ -123,6 +133,10 @@ namespace Sigilos.Core.Battle
 
 			foreach (var rule in target.Rules())
 				rule.Behavior.AfterHurt(rule, strike);
+
+			// O que o alvo devolveu pode ter derrubado quem atacou: aí o golpe dele não dispara mais nada.
+			if (!attacker.IsAlive)
+				return;
 			foreach (var rule in attacker.Rules())
 				rule.Behavior.AfterHit(rule, strike);
 		}

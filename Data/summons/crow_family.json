@@ -1,0 +1,253 @@
+{
+  "family_id": "crow",
+  "base_name": "Crow",
+  "name": "Crows",
+  "star_grade": 4,
+  "image": "crow",
+  "awakened_image": "crow_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "crow_fire",
+      "name": "Fire Crow",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Crit", "value": 0.1},
+      "awakening": {"name": "Ashwing"},
+      "skills": [
+        {
+          "name": "Ember Peck",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
+            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Scorched Flock",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.6, "turns": 2}
+          ]
+        },
+        {
+          "name": "Ill Omen",
+          "passive": {"kind": "CurseOnHit", "value": 0.2, "awakenedValue": 0.3}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "crow_water",
+      "name": "Water Crow",
+      "element": "Water",
+      "role": "Defense",
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "leader": {"stat": "Accuracy", "value": 0.2},
+      "awakening": {"name": "Mirecaw"},
+      "skills": [
+        {
+          "name": "Bog Peck",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Drowning Omen",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.6, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.8, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.6, "turns": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+          ]
+        },
+        {
+          "name": "Ill Omen",
+          "passive": {"kind": "CurseOnHit", "value": 0.2, "awakenedValue": 0.3}
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "crow_wind",
+      "name": "Wind Crow",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Galefeather"},
+      "skills": [
+        {
+          "name": "Talon Rake",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.9, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Carrion Dive",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.25}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 6.3, "ignoreDefense": 0.3}
+          ]
+        },
+        {
+          "name": "Murder of Crows",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.2, "hits": 3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "crow_light",
+      "name": "Light Crow",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Dawncaller"},
+      "skills": [
+        {
+          "name": "Shiny Trinket",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Impeto", "target": "LowestAlly", "power": 10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Dawn Chorus",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 20},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 30},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight"},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ]
+        },
+        {
+          "name": "Augury",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity"},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.15}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "crow_dark",
+      "name": "Dark Crow",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Nevermore"},
+      "skills": [
+        {
+          "name": "Eye Peck",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Death Omen",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.9},
+            {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.8, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Status", "target": "Target", "status": "Bomb", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2}
+          ]
+        },
+        {
+          "name": "Ill Omen",
+          "passive": {"kind": "CurseOnHit", "value": 0.2, "awakenedValue": 0.3}
+        }
+      ]
+    }
+  }
+}

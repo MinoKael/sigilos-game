@@ -36,13 +36,13 @@ namespace Sigilos.Tests
 		[Test]
 		private static void AwakeningFollowsNaturalStars()
 		{
-			// 3★ ganham habilidade nova, 4★ uma habilidade mais forte, 5★ um atributo.
+			// 2★ e 3★ ganham habilidade nova, 4★ uma habilidade mais forte, 5★ um atributo.
 			foreach (var summon in TestData.Database.Summons)
 			{
 				switch (summon.Rarity)
 				{
-					case 3:
-						Assert.True(summon.Awakening.Skill != null, $"{summon.Id}: 3★ ganha habilidade no Despertar");
+					case <= 3:
+						Assert.True(summon.Awakening.Skill != null, $"{summon.Id}: {summon.Rarity}★ ganha habilidade no Despertar");
 						break;
 					case 4:
 						Assert.True(summon.Skills.Any(s => s.ChangesOnAwakening), $"{summon.Id}: 4★ melhora uma habilidade");

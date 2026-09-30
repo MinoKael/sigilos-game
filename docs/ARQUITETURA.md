@@ -36,7 +36,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 
 | Quero... | Mexa em |
 | --- | --- |
-| Nova família ou nova variante | `docs/summon_family_builder.html` (abra no Chrome ou no Edge e use "Abrir pasta do projeto"): ele calcula os atributos e grava `Data/summons/<familia>_family.json`, um arquivo por família com até 5 variantes. Família nova pede também dois SVG em `Assets/Creatures/` (normal e desperto). Nenhum código |
+| Nova família ou nova variante | `docs/summon_family_builder.html` (abra no Chrome ou no Edge e use "Abrir pasta do projeto"): ele calcula os atributos e grava `Data/summons/<familia>_family.json`, um arquivo por família com até 5 variantes. Família nova pede também dois SVG em `Assets/Creatures/` (normal e desperto; ver "Novo símbolo"). Nenhum código, a não ser que a Passiva dela ainda não exista (ver "Nova Passiva") |
 | Habilidades de uma variante | `"skills"` da variante, no construtor ou direto no arquivo da família: a primeira é a básica (sem `cooldown`), as outras ativas têm `cooldown`, no máximo uma é `passive`; `levels` são as melhorias por cópia fundida (`Damage`, `Recovery`, `EffectRate`, `Cooldown`); `awakenedEffects` troca os efeitos ao despertar |
 | Habilidade fora do padrão (golpes diferentes entre si) | só dados: os efeitos acontecem na ordem da lista, então "3 golpes comuns e um quarto que ignora a Defesa" são dois efeitos `Damage` (`{"hits": 3}` e `{"ignoreDefense": 1}`). Ver "Combate: regras como estratégias" |
 | O que o Despertar dá | `"awakening"` da variante: `stat` (bônus de atributo) ou `skill` (habilidade nova, que só existe desperta); os atributos maiores são os `"awakened_stats"`, que o construtor calcula |
@@ -45,7 +45,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Inimigos de fase ou andar | ondas em `Data/stages.json` e `Data/dungeons.json`: `"summon"` é uma variante de invocação, `"enemy"` um chefe de `Data/enemies.json`; `stars` e `level` de cada fase e andar |
 | Reforço dos inimigos-invocação | `BattleFactory.FoeScale` (por estrelas naturais) e `scale` do andar |
 | Novo efeito de status | o nome em `Core/Content/StatusKind.cs`, a estratégia em `Core/Battle/Statuses/` (uma das prontas, `StatChange` e `DamageOverTime`, ou uma classe nova que herda de `StatusBehavior`), a linha em `StatusBehaviors`, os textos `effect.Nome.name` e `.info` em `Data/texts` e o símbolo em `Assets/Effects/` |
-| Nova Passiva | o nome em `Core/Content/PassiveKind.cs`, uma classe em `Core/Battle/Passives/` que herda de `UnitBehavior` e sobrescreve o momento dela, a linha em `PassiveBehaviors` e o texto `passive.Nome` em `Data/texts` |
+| Nova Passiva | o nome em `Core/Content/PassiveKind.cs`, uma classe em `Core/Battle/Passives/` que herda de `UnitBehavior` e sobrescreve o momento dela, a linha em `PassiveBehaviors`, o texto `passive.Nome` em `Data/texts` e o símbolo em `Art.Skill`. Com a pasta do projeto aberta, o construtor já oferece o nome novo |
 | Novo tipo de efeito de habilidade | o nome em `Core/Content/EffectKind.cs`, uma classe em `Core/Battle/Effects/` que herda de `SkillEffect`, a linha em `SkillEffects`, a descrição em `UI/Texts.cs` e o texto em `Data/texts` |
 | Novo momento da luta (algo que nenhuma regra consegue ouvir hoje) | um método vazio em `Core/Battle/UnitBehavior.cs` e a chamada no ponto em que ele acontece (`BattleSession` para turno e onda, `EffectResolver` para habilidade e golpe) |
 | Mexer no código do combate sem mudar a regra | `dotnet run --project Tests -- --digest > antes.txt`, mexa, rode de novo e compare: mais de mil lutas com semente fixa, uma linha por luta |
@@ -57,7 +57,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Nível da conta e Ouro por nível | `Core/Progression/Account.cs` |
 | Loja | ofertas em `Data/shop.json`; regra em `Core/Progression/Shop.cs` |
 | Qualquer texto da interface | `Data/texts/en.json` (a base) e a mesma chave em `Data/texts/pt-BR.json`, depois `py Tools/texts/check_texts.py`. Chave nova não pode ter o nome de um grupo que já existe (`filter.order` apagaria `filter.order.*`) |
-| Novo símbolo (ícone) | uma linha em `Tools/art/commons_assets.csv` (game-icons.net no Commons), `py Tools/art/fetch_commons_assets.py --chrome ...`, `py Tools/art/render_png.py` (os PNG) e `Art.Icon("nome")` |
+| Novo símbolo (ícone) | o SVG do acervo de game-icons.net copiado para a pasta dele em `Assets/` (ou baixado do Commons: `py Tools/art/fetch_commons_assets.py --chrome ...`), a linha de crédito em `Tools/art/commons_assets.csv`, `py Tools/art/fetch_commons_assets.py` (refaz `Assets/CREDITOS.md`), `py Tools/art/render_png.py` (os PNG) e `Art.Icon("nome")` |
 | Símbolo de um efeito de batalha | `Assets/Effects/<efeito>.svg` (o nome do `StatusKind` em minúsculas) + render; no texto rico, `Texts.Term(StatusKind)` põe o símbolo na frente |
 | Símbolo de uma habilidade | `Art.Skill` (o efeito que ela aplica, senão o Glifo do que ela faz) |
 | Tamanho da runa em miniatura | `RuneTile.Side` (quadrada; cada lugar passa a escala) |
@@ -126,16 +126,18 @@ Os momentos (métodos de `UnitBehavior`; a estratégia sobrescreve só os dela):
 | `Modify` | alguém pergunta um atributo de agora | Ataque+, Ataque−, Defesa+, Quebra de Defesa, Velocidade+, Passiva dos Diabretes |
 | `SkipsTurn`, `HidesOwner`, `BlocksHarmful`, `ForcedTarget` | perguntas de sim ou não | Atordoamento, Oculto, Imunidade, Provocação |
 | `OnWaveStart` | começou uma onda | conjuntos Tenacidade e Baluarte, Passiva dos Bandidos |
-| `OnTurnStart` | começou o turno do dono | Queimadura, Veneno, Bomba, Passiva dos Trolls |
-| `OnAttack` → `OnDefend` | antes do dano de um golpe | Cegueira (erra), Presságio (crítico), Sifão (dreno) → Égide (anula) |
+| `OnTurnStart` | começou o turno do dono | Queimadura, Veneno, Bomba, Passivas dos Trolls, Magos, Paladinos e Pixies |
+| `OnAttack` → `OnDefend` | antes do dano de um golpe | Cegueira (erra), Presságio (crítico), Sifão e Passiva dos Vampiros (dreno) → Passiva dos Pássaros (esquiva), Égide (anula) |
 | `DamageDealt`, `DamageTaken`, `Absorb` | a conta do dano | Passivas dos Goblins e Lobos; Maldição e Passiva dos Limos; Escudo |
-| `AfterHurt`, `AfterHit` | o golpe acertou e o alvo ficou de pé | Perdição; Tormento e Passiva dos Dragões |
+| `AfterHurt`, `AfterHit` | o golpe acertou e o alvo ficou de pé | Perdição e Passivas dos Druidas e das Gárgulas; Tormento e Passivas dos Dragões e dos Corvos |
 | `AfterEffect`, `AfterSkill`, `AfterStruck` | fim de um efeito e da habilidade | Presságio (some); Oblívio; Contragolpe |
 | `AfterAction` | o dono acabou de agir | Frenesi |
 | `OnDeath` | o dono caiu | Passivas dos Cavaleiros e da Fênix |
 
-A ordem de um golpe está em `EffectResolver.Land`: quem ataca pode errar, quem apanha pode anular, o
-crítico, o dano, o escudo, o dreno, a queda e, se o alvo ficou de pé, o que o golpe dispara nos dois.
+A ordem de um golpe está em `EffectResolver.Land`: quem ataca pode errar, quem apanha pode esquivar ou
+anular, o crítico, o dano, o escudo, o dreno, a queda e, se o alvo ficou de pé, o que o golpe dispara
+nos dois. O alvo pode devolver dano (a Passiva dos Druidas): se quem ataca cai com isso, os golpes e os
+efeitos que faltavam da habilidade não acontecem.
 
 **Um status novo.** "Congelado: perde o turno e recebe 20% a mais de dano":
 
@@ -293,7 +295,7 @@ O que o contrato do projeto tem de diferente da especificação:
 
 ## Simplificações do MVP em relação ao GDD
 
-- Passivas simples (nove tipos), habilidades novas do Despertar só nas 3★ e em quatro 4★.
+- Passivas simples (dezessete tipos, uma por família), habilidades novas do Despertar só nas 2★ e nas 3★.
 - Viés de elemento neutro: os cinco elementos repartem o orçamento igual (o modelo aceita o viés).
 - Sem Tiques, traçado do sigilo, troca por Fragmentos, regras de região, Torre, Provações e Portais
   Secretos (o Despertar ainda não pede Provação: só Essência).

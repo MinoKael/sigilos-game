@@ -34,7 +34,7 @@ namespace Sigilos.Core.Battle
 		/// <summary>Nulo: sorteia pela chance de Crítico de quem ataca. Uma regra pode decidir antes.</summary>
 		public bool? Crit { get; set; }
 
-		/// <summary>O golpe errou: não acontece mais nada.</summary>
+		/// <summary>O golpe errou (quem ataca estava cego, ou o alvo esquivou): não acontece mais nada.</summary>
 		public bool Missed { get; set; }
 
 		/// <summary>O alvo anulou o golpe: não acontece mais nada.</summary>

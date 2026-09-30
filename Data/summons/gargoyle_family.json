@@ -1,0 +1,256 @@
+{
+  "family_id": "gargoyle",
+  "base_name": "Gargoyle",
+  "name": "Gargoyles",
+  "star_grade": 4,
+  "image": "gargoyle",
+  "awakened_image": "gargoyle_awakened",
+  "variations": {
+    "fire": {
+      "variation_id": "gargoyle_fire",
+      "name": "Fire Gargoyle",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Pyrestone"},
+      "skills": [
+        {
+          "name": "Rending Claw",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.95, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Molten Dive",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 6.3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 7, "ignoreDefense": 0.3}
+          ]
+        },
+        {
+          "name": "Stone Gaze",
+          "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "gargoyle_water",
+      "name": "Water Gargoyle",
+      "element": "Water",
+      "role": "Defense",
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "leader": {"stat": "Defense", "value": 0.2},
+      "awakening": {"name": "Tidewatch"},
+      "skills": [
+        {
+          "name": "Stone Fist",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Rain Spout",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.7, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.3, "turns": 2}
+          ]
+        },
+        {
+          "name": "Stone Gaze",
+          "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "gargoyle_wind",
+      "name": "Wind Gargoyle",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Stormperch"},
+      "skills": [
+        {
+          "name": "Swoop",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Impeto", "target": "Target", "power": -15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Dive Bomb",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.8}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+          ]
+        },
+        {
+          "name": "Tempest Wings",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "gargoyle_light",
+      "name": "Light Gargoyle",
+      "element": "Light",
+      "role": "HP",
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.15},
+      "awakening": {"name": "Dawnspire"},
+      "skills": [
+        {
+          "name": "Blessed Stone",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Heal", "target": "Self", "power": 0.05}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Cathedral Ward",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.12, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
+            {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2}
+          ]
+        },
+        {
+          "name": "Stone Gaze",
+          "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "gargoyle_dark",
+      "name": "Dark Gargoyle",
+      "element": "Dark",
+      "role": "Defense",
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Gloomgrin"},
+      "skills": [
+        {
+          "name": "Grim Talon",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Dread Gaze",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.45},
+            {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.4, "turns": 2}
+          ]
+        },
+        {
+          "name": "Crumble",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}
