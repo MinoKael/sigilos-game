@@ -14,3 +14,5 @@ mono_crash.*
 
 # Python das ferramentas de arte
 __pycache__/
+
+releases
