@@ -3,7 +3,7 @@
   "name": "Wind Bandit",
   "family": "bandit",
   "element": "Wind",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Swipe",
     "skill": {

@@ -3,7 +3,7 @@
   "name": "Dark Knight",
   "family": "knight",
   "element": "Dark",
-  "role": "Front",
+  "role": "HP",
   "leader": {"stat": "Resistance", "value": 0.2},
   "awakening": {"name": "Sir Sepulcher"},
   "skills": [

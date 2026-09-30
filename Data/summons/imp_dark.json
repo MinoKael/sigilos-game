@@ -3,7 +3,7 @@
   "name": "Dark Imp",
   "family": "imp",
   "element": "Dark",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Murk",
     "skill": {

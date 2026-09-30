@@ -3,7 +3,7 @@
   "name": "Dark Troll",
   "family": "troll",
   "element": "Dark",
-  "role": "Front",
+  "role": "HP",
   "leader": {"stat": "Accuracy", "value": 0.2},
   "awakening": {"name": "Gravemaw"},
   "skills": [

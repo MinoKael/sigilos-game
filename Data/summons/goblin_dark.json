@@ -3,7 +3,7 @@
   "name": "Dark Goblin",
   "family": "goblin",
   "element": "Dark",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Skulk",
     "skill": {

@@ -3,7 +3,7 @@
   "name": "Water Bandit",
   "family": "bandit",
   "element": "Water",
-  "role": "Control",
+  "role": "Defense",
   "awakening": {
     "name": "Undertow",
     "skill": {

@@ -3,7 +3,7 @@
   "name": "Wind Goblin",
   "family": "goblin",
   "element": "Wind",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Zipp",
     "skill": {

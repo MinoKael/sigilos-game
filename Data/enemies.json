@@ -7,7 +7,7 @@
   {
     "id": "chain_master",
     "name": "The Chain Master",
-    "role": "Control",
+    "role": "Defense",
     "rarity": 3,
     "healthScale": 5.6, "attackScale": 1.6,
     "image": "chain_master",
@@ -25,7 +25,7 @@
   {
     "id": "runic_golem",
     "name": "Runic Golem",
-    "role": "Front",
+    "role": "HP",
     "rarity": 3,
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "rock_golem",
@@ -43,7 +43,7 @@
   {
     "id": "elder_wyvern",
     "name": "Elder Wyvern",
-    "role": "Attacker",
+    "role": "Attack",
     "rarity": 3,
     "healthScale": 5.4, "attackScale": 1.45,
     "image": "wyvern",
@@ -61,7 +61,7 @@
   {
     "id": "bone_king",
     "name": "Bone King",
-    "role": "Control",
+    "role": "Defense",
     "rarity": 3,
     "healthScale": 6.8, "attackScale": 1.6,
     "image": "crowned_skull",
@@ -96,7 +96,7 @@
   {
     "id": "forge_guardian",
     "name": "Forge Guardian",
-    "role": "Front",
+    "role": "HP",
     "rarity": 3,
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "golem_head",

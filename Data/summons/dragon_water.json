@@ -3,7 +3,7 @@
   "name": "Water Dragon",
   "family": "dragon",
   "element": "Water",
-  "role": "Control",
+  "role": "Defense",
   "leader": {"stat": "Health", "value": 0.2},
   "awakening": {"name": "Maelstra", "stat": "Accuracy"},
   "skills": [

@@ -3,7 +3,7 @@
   "name": "Fire Bandit",
   "family": "bandit",
   "element": "Fire",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Scorch",
     "skill": {

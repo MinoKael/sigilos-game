@@ -3,7 +3,7 @@
   "name": "Dark Phoenix",
   "family": "phoenix",
   "element": "Dark",
-  "role": "Attacker",
+  "role": "Attack",
   "leader": {"stat": "CritDamage", "value": 0.3},
   "awakening": {"name": "Nycteria", "stat": "Crit"},
   "skills": [

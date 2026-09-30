@@ -3,7 +3,7 @@
   "name": "Light Phoenix",
   "family": "phoenix",
   "element": "Light",
-  "role": "Control",
+  "role": "Defense",
   "leader": {"stat": "Crit", "value": 0.15},
   "awakening": {"name": "Solaria", "stat": "Accuracy"},
   "skills": [

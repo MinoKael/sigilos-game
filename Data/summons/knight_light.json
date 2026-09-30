@@ -3,7 +3,7 @@
   "name": "Light Knight",
   "family": "knight",
   "element": "Light",
-  "role": "Front",
+  "role": "HP",
   "leader": {"stat": "Defense", "value": 0.2},
   "awakening": {"name": "Sir Dawn"},
   "skills": [

@@ -3,7 +3,7 @@
   "name": "Wind Imp",
   "family": "imp",
   "element": "Wind",
-  "role": "Control",
+  "role": "Defense",
   "awakening": {
     "name": "Eddy",
     "skill": {

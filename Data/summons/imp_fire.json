@@ -3,7 +3,7 @@
   "name": "Fire Imp",
   "family": "imp",
   "element": "Fire",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Cinder",
     "skill": {

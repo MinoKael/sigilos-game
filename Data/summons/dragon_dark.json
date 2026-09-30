@@ -3,7 +3,7 @@
   "name": "Dark Dragon",
   "family": "dragon",
   "element": "Dark",
-  "role": "Attacker",
+  "role": "Attack",
   "leader": {"stat": "CritDamage", "value": 0.3},
   "awakening": {"name": "Umbrax", "stat": "Accuracy"},
   "skills": [

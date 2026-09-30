@@ -3,7 +3,7 @@
   "name": "Fire Knight",
   "family": "knight",
   "element": "Fire",
-  "role": "Attacker",
+  "role": "Attack",
   "leader": {"stat": "Attack", "value": 0.15},
   "awakening": {"name": "Sir Ember"},
   "skills": [

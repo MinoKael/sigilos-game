@@ -3,7 +3,7 @@
   "name": "Water Knight",
   "family": "knight",
   "element": "Water",
-  "role": "Front",
+  "role": "HP",
   "leader": {"stat": "Health", "value": 0.15},
   "awakening": {"name": "Dame Tide"},
   "skills": [

@@ -3,7 +3,7 @@
   "name": "Fire Dragon",
   "family": "dragon",
   "element": "Fire",
-  "role": "Attacker",
+  "role": "Attack",
   "leader": {"stat": "Attack", "value": 0.18},
   "awakening": {"name": "Pyrrhax", "stat": "Crit"},
   "skills": [

@@ -3,7 +3,7 @@
   "name": "Water Imp",
   "family": "imp",
   "element": "Water",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Gulp",
     "skill": {

@@ -3,7 +3,7 @@
   "name": "Water Slime",
   "family": "slime",
   "element": "Water",
-  "role": "Front",
+  "role": "HP",
   "awakening": {
     "name": "Brine",
     "skill": {

@@ -73,10 +73,10 @@
   },
 
   "role": {
-    "Front": "Front",
-    "Attacker": "Attacker",
+    "HP": "HP",
+    "Attack": "Attack",
     "Support": "Support",
-    "Control": "Control"
+    "Defense": "Defense"
   },
 
   "stat": {

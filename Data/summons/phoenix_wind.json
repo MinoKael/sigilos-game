@@ -3,7 +3,7 @@
   "name": "Wind Phoenix",
   "family": "phoenix",
   "element": "Wind",
-  "role": "Attacker",
+  "role": "Attack",
   "leader": {"stat": "Speed", "value": 0.15},
   "awakening": {"name": "Zephyra", "stat": "Speed"},
   "skills": [

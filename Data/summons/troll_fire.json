@@ -3,7 +3,7 @@
   "name": "Fire Troll",
   "family": "troll",
   "element": "Fire",
-  "role": "Attacker",
+  "role": "Attack",
   "leader": {"stat": "Attack", "value": 0.15},
   "awakening": {"name": "Ashjaw"},
   "skills": [

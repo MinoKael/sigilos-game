@@ -3,7 +3,7 @@
   "name": "Dark Slime",
   "family": "slime",
   "element": "Dark",
-  "role": "Control",
+  "role": "Defense",
   "awakening": {
     "name": "Tarrow",
     "skill": {

@@ -3,7 +3,7 @@
   "name": "Dark Wolf",
   "family": "wolf",
   "element": "Dark",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Nightmaw",
     "skill": {

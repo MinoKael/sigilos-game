@@ -3,7 +3,7 @@
   "name": "Water Goblin",
   "family": "goblin",
   "element": "Water",
-  "role": "Control",
+  "role": "Defense",
   "awakening": {
     "name": "Snivvel",
     "skill": {

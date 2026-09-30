@@ -3,7 +3,7 @@
   "name": "Water Wolf",
   "family": "wolf",
   "element": "Water",
-  "role": "Front",
+  "role": "HP",
   "awakening": {
     "name": "Frostmane",
     "skill": {

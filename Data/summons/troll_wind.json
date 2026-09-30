@@ -3,7 +3,7 @@
   "name": "Wind Troll",
   "family": "troll",
   "element": "Wind",
-  "role": "Control",
+  "role": "Defense",
   "leader": {"stat": "Speed", "value": 0.1},
   "awakening": {"name": "Thunderhide"},
   "skills": [

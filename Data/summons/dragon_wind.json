@@ -3,7 +3,7 @@
   "name": "Wind Dragon",
   "family": "dragon",
   "element": "Wind",
-  "role": "Attacker",
+  "role": "Attack",
   "leader": {"stat": "Speed", "value": 0.15},
   "awakening": {"name": "Zephyrax", "stat": "Speed"},
   "skills": [

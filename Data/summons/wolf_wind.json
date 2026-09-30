@@ -3,7 +3,7 @@
   "name": "Wind Wolf",
   "family": "wolf",
   "element": "Wind",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Gustpaw",
     "skill": {

@@ -3,7 +3,7 @@
   "name": "Wind Slime",
   "family": "slime",
   "element": "Wind",
-  "role": "Control",
+  "role": "Defense",
   "awakening": {
     "name": "Froth",
     "skill": {

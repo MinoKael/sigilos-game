@@ -3,7 +3,7 @@
   "name": "Fire Wolf",
   "family": "wolf",
   "element": "Fire",
-  "role": "Attacker",
+  "role": "Attack",
   "awakening": {
     "name": "Cinderfang",
     "skill": {
