@@ -82,7 +82,7 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			var (header, extra) = Layout.Header(T("destination.Monsters"), "storage", _currencies, () => BackRequested?.Invoke());
+			var (header, extra) = Layout.Header(T("destination.Monsters"), "monster", _currencies, () => BackRequested?.Invoke());
 			extra.AddChild(_count);
 			extra.AddChild(new Control { Name = "Spacer", CustomMinimumSize = new Vector2(12, 0) });
 			extra.AddChild(_headerTools);

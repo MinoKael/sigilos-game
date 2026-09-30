@@ -1,7 +1,9 @@
-using System;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Runes;
+using Sigilos.Core.Summoning;
+using System;
+using System.Linq;
 
 namespace Sigilos.Core.Progression
 {
@@ -15,9 +17,11 @@ namespace Sigilos.Core.Progression
 	{
 		/// <summary>Chance de runa numa vitória repetida.</summary>
 		public const double RepeatRuneChance = 0.5;
+		public const double MonsterChance = 0.25;
+		public const int MonsterRarityDrop = 2;
 
-		/// <summary>Uma fase abre quando a anterior foi vencida.</summary>
-		public static bool IsUnlocked(PlayerState player, int stageNumber) => stageNumber <= player.HighestStage + 1;
+        /// <summary>Uma fase abre quando a anterior foi vencida.</summary>
+        public static bool IsUnlocked(PlayerState player, int stageNumber) => stageNumber <= player.HighestStage + 1;
 
 		public static bool IsCleared(PlayerState player, int stageNumber) => stageNumber <= player.HighestStage;
 
@@ -25,7 +29,7 @@ namespace Sigilos.Core.Progression
 		public static EntryProblem Check(PlayerState player, StageDefinition stage) =>
 			Mana.Check(player, IsUnlocked(player, stage.Number), stage.Mana, dropsRunes: true);
 
-		public static VictoryReward ApplyVictory(Random random, PlayerState player, StageDefinition stage)
+		public static VictoryReward ApplyVictory(Random random, PlayerState player, StageDefinition stage, GameDatabase database)
 		{
 			var mana = Mana.Spend(player, stage.Mana);
 			var firstClear = !IsCleared(player, stage.Number);
@@ -43,7 +47,12 @@ namespace Sigilos.Core.Progression
 				? RuneInventory.Create(random, player, stage.RuneGrade)
 				: null;
 
-			return new VictoryReward(mana, scrolls, 0, essence, stage.Experience, firstClear, rune, Array.Empty<RuneTool>(), levelUps, accountLevels);
+			var summon = database.Summons.Where(s => s.Rarity == MonsterRarityDrop).OrderBy(_ => random.Next()).FirstOrDefault();
+            var summonResult = random.NextDouble() < MonsterChance
+				? new SummonResult(summon!, Roster.Add(player, summon!), !player.Owns(summon!.Id))
+                : null;
+
+			return new VictoryReward(mana, scrolls, 0, essence, stage.Experience, firstClear, rune, summonResult, Array.Empty<RuneTool>(), levelUps, accountLevels);
 		}
 	}
 }

@@ -40,7 +40,7 @@ namespace Sigilos.UI.Screens
 			Destination.Campaign => "campaign",
 			Destination.Dungeons => "dungeon",
 			Destination.Summon => "summon",
-			Destination.Monsters => "storage",
+			Destination.Monsters => "monster",
 			Destination.Runes => "rune",
 			Destination.Teams => "team",
 			Destination.Shop => "shop",

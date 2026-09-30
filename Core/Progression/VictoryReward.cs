@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Sigilos.Core.Runes;
+using Sigilos.Core.Summoning;
 
 namespace Sigilos.Core.Progression
 {
@@ -17,6 +18,7 @@ namespace Sigilos.Core.Progression
 		int Experience,
 		bool FirstClear,
 		Rune? Rune,
+		SummonResult? SummonResult,
 		IReadOnlyList<RuneTool> Tools,
 		IReadOnlyList<int> LevelUps,
 		int AccountLevels);

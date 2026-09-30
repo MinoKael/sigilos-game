@@ -68,7 +68,7 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Mana", "mana", T("compendium.basic.mana.title"), T("compendium.basic.mana.text", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
 			Card(grid, "Gold", "gold", T("compendium.basic.gold.title"), T("compendium.basic.gold.text", Account.LevelUpGold));
 			Card(grid, "Summon", "summon", T("compendium.basic.summon.title"), T("compendium.basic.summon.text"));
-			Card(grid, "Monsters", "storage", T("compendium.basic.monsters.title"), T("compendium.basic.monsters.text", PlayerState.CollectionCapacity, RuneInventory.Capacity));
+			Card(grid, "Monsters", "monster", T("compendium.basic.monsters.title"), T("compendium.basic.monsters.text", PlayerState.CollectionCapacity, RuneInventory.Capacity));
 			Card(grid, "Teams", "team", T("compendium.basic.teams.title"), T("compendium.basic.teams.text", PlayerState.TeamSize));
 			Card(grid, "Level", "essence", T("compendium.basic.level.title"), T("compendium.basic.level.text", Growth.MaxLevel(3), Growth.MaxLevel(Growth.MaxStars), Leveling.ExperiencePerEssence));
 			var (e3, f3) = Evolution.Cost(3);

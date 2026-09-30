@@ -214,7 +214,7 @@ namespace Sigilos.GameEntry
 				stage.Mana,
 				stage.Encounter,
 				Teams.Campaign,
-				() => Campaign.ApplyVictory(_random, _player, stage),
+				() => Campaign.ApplyVictory(_random, _player, stage, _database),
 				() => ShowCampaign(stage.Number, null));
 			Swap(campaign);
 			if (message != null)
@@ -345,7 +345,7 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage), Back);
+			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage, _database), Back);
 		}
 
 		private void FightFloor(DungeonDefinition dungeon, int floor)

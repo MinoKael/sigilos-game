@@ -58,7 +58,7 @@ namespace Sigilos.Core.Progression
 				}
 			}
 
-			return new VictoryReward(mana, 0, gold, floor.Essence, floor.Experience, firstClear, rune, tools, levelUps, accountLevels);
+			return new VictoryReward(mana, 0, gold, floor.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, accountLevels);
 		}
 	}
 }

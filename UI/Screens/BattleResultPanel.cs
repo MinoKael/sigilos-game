@@ -211,7 +211,10 @@ namespace Sigilos.UI.Screens
 				chips.AddChild(Layout.Chip("level_max", $"+{reward.Experience}", T("reward.experience")).Named("Experience"));
 				if (reward.AccountLevels > 0)
 					chips.AddChild(Layout.Chip("avatar", outcome.AccountLevel.ToString(), T("battle.account", outcome.AccountLevel, reward.AccountLevels * Account.LevelUpGold), Palette.Arcane).Named("AccountLevel"));
-				for (var i = 0; i < reward.Tools.Count; i++)
+				if (reward.SummonResult != null)
+					chips.AddChild(Layout.Chip("monster", reward.SummonResult.Summon.Name.ToString(), ""));
+
+                for (var i = 0; i < reward.Tools.Count; i++)
 				{
 					var tool = reward.Tools[i];
 					chips.AddChild(Layout.Chip(tool.Kind == RuneToolKind.Grindstone ? "grindstone" : "gem", "", $"{Texts.Name(tool)} ({Texts.Range(tool)})", Palette.Of(tool.Grade)).Named($"Tool{i + 1}"));
