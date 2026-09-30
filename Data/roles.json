@@ -4,8 +4,8 @@
 // Crit Rate 15%, Crit Damage 50%, Resistance 5% and Accuracy 0% are the same for almost every monster:
 // they don't grow with level. Runes, Awakening and Leadership raise them.
 {
-  "Front":    { "health": 11100, "attack": 620, "defense": 700, "speed": 98,  "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
-  "Attacker": { "health": 9300,  "attack": 900, "defense": 500, "speed": 103, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
+  "HP":    { "health": 11100, "attack": 620, "defense": 700, "speed": 98,  "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
+  "Attack": { "health": 9300,  "attack": 900, "defense": 500, "speed": 103, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
   "Support":  { "health": 10400, "attack": 660, "defense": 640, "speed": 107, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 },
-  "Control":  { "health": 9900,  "attack": 760, "defense": 580, "speed": 102, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 }
+  "Defense":  { "health": 9900,  "attack": 760, "defense": 580, "speed": 102, "crit": 0.15, "critDamage": 0.5, "resistance": 0.05, "accuracy": 0 }
 }
