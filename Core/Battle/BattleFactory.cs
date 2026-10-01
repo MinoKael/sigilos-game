@@ -70,12 +70,16 @@ namespace Sigilos.Core.Battle
 				sheet.Runes.Effects);
 		}
 
+		/// <summary>
+		/// Um inimigo de <paramref name="encounter"/>, pronto para lutar: a tela da fase usa o mesmo para
+		/// mostrar o resumo dele antes da luta (os números que o jogador vê são os que lutam).
+		/// </summary>
+		public static BattleUnit Foe(GameDatabase database, StageEnemy slot, Encounter encounter) =>
+			slot.Summon is { } id ? SummonFoe(database.Summon(id), encounter) : EnemyFoe(database.Enemy(slot.Enemy!), slot.Element, encounter);
+
 		private static IReadOnlyList<BattleUnit> Wave(GameDatabase database, IReadOnlyList<StageEnemy> slots, Encounter encounter)
 		{
-			var units = slots
-				.Select(slot => slot.Summon is { } id ? SummonFoe(database.Summon(id), encounter) : EnemyFoe(database.Enemy(slot.Enemy!), slot.Element, encounter))
-				.ToList();
-
+			var units = slots.Select(slot => Foe(database, slot, encounter)).ToList();
 			foreach (var unit in units)
 				unit.Team = units;
 			return units;

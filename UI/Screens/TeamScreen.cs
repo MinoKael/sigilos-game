@@ -11,9 +11,10 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Equipes: uma para a Campanha e uma para cada Masmorra, escolhidas pelos sigilos do cabeçalho (o
-	/// chefe de cada Masmorra). Em cima as 5 vagas (a primeira é a Líder, com a coroa; a coroa embaixo
-	/// das outras faz Líder) e a Liderança; embaixo a coleção — tocar num monstro põe ou tira da equipe.
+	/// Equipes: uma para a Campanha e uma para cada Masmorra, nas abas escritas do alto (com quantos
+	/// monstros cada uma tem). Em cima, as 5 vagas (a primeira é a Líder) e a Liderança; tocar num
+	/// monstro da equipe abre o que dá para fazer com ele (tornar Líder, tirar da equipe). Embaixo, a
+	/// coleção: tocar num monstro põe ou tira da equipe. Segurar qualquer monstro abre o resumo.
 	/// </summary>
 	public partial class TeamScreen : Control
 	{
@@ -26,8 +27,8 @@ namespace Sigilos.UI.Screens
 		private readonly CurrencyBar _currencies = new();
 		private readonly HBoxContainer _contents = Layout.Row(8).Named("Contents");
 		private readonly HBoxContainer _slots = Layout.Row(12).Named("Slots");
-		private readonly HBoxContainer _leader = Layout.Row(10).Named("Leadership");
-		private readonly GridContainer _roster = new() { Name = "Roster", Columns = 10 };
+		private readonly VBoxContainer _leader = new() { Name = "Leadership" };
+		private readonly TileGrid _roster = new(10) { Name = "Roster" };
 
 		public TeamScreen(GameDatabase database, PlayerState player, string content)
 		{
@@ -49,22 +50,33 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			var (header, extra) = Layout.Header(T("destination.Teams"), "team", _currencies, () => BackRequested?.Invoke());
-			extra.AddChild(_contents);
-			page.AddChild(header);
+			page.AddChild(Layout.Header(T("destination.Teams"), _currencies, () => BackRequested?.Invoke()).Header);
+			// Muitas Masmorras não cabem numa fileira: as abas rolam de lado.
+			var contents = new ScrollContainer
+			{
+				Name = "ContentsScroll",
+				HorizontalScrollMode = ScrollContainer.ScrollMode.Auto,
+				VerticalScrollMode = ScrollContainer.ScrollMode.Disabled,
+				CustomMinimumSize = new Vector2(0, 66),
+			};
+			contents.AddChild(_contents);
+			page.AddChild(contents);
 
 			var teamPanel = new PanelContainer { Name = "Team" };
 			var teamRow = Layout.Row(24).Named("Row");
 			teamRow.AddChild(_slots);
 			_leader.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+			_leader.AddThemeConstantOverride("separation", 8);
 			teamRow.AddChild(_leader);
 			teamPanel.AddChild(teamRow);
 			page.AddChild(teamPanel);
 
 			var rosterPanel = new PanelContainer { Name = "Collection", SizeFlagsVertical = SizeFlags.ExpandFill };
-			_roster.AddThemeConstantOverride("h_separation", 10);
-			_roster.AddThemeConstantOverride("v_separation", 10);
-			rosterPanel.AddChild(Layout.Scroll(_roster));
+			var rosterColumn = new VBoxContainer { Name = "Column" };
+			rosterColumn.AddThemeConstantOverride("separation", 8);
+			rosterColumn.AddChild(Layout.Text(T("teams.hint"), GameTheme.Faded).Named("Hint"));
+			rosterColumn.AddChild(Layout.Scroll(_roster));
+			rosterPanel.AddChild(rosterColumn);
 			page.AddChild(rosterPanel);
 
 			Refresh();
@@ -81,11 +93,11 @@ namespace Sigilos.UI.Screens
 		private void RefreshContents()
 		{
 			Layout.Clear(_contents);
-			var tabs = new SigilTabs(vertical: false, 52) { Name = "Tabs" };
+			var tabs = new TextTabs { Name = "Tabs" };
 			var keys = new[] { Teams.Campaign }.Concat(_database.Dungeons.Select(d => d.Id)).ToList();
-			AddTab(tabs, Teams.Campaign, Art.Icon("campaign"), T("teams.campaign"), true);
+			AddTab(tabs, Teams.Campaign, T("teams.campaign"), "campaign", true, 0);
 			foreach (var dungeon in _database.Dungeons)
-				AddTab(tabs, dungeon.Id, Art.Creature(dungeon.Image), dungeon.Name, Dungeons.IsUnlocked(_player, dungeon));
+				AddTab(tabs, dungeon.Id, dungeon.Name, "dungeon", Dungeons.IsUnlocked(_player, dungeon), dungeon.UnlockStage);
 			tabs.Select(Math.Max(0, keys.IndexOf(_content)));
 			tabs.Changed += index =>
 			{
@@ -95,13 +107,11 @@ namespace Sigilos.UI.Screens
 			_contents.AddChild(tabs);
 		}
 
-		private void AddTab(SigilTabs tabs, string content, Texture2D? icon, string name, bool open)
+		private void AddTab(TextTabs tabs, string content, string name, string icon, bool open, int unlockStage)
 		{
 			var count = Teams.Of(_player, content).Count;
-			var tab = tabs.Add(icon, open ? name : T("teams.content_locked", name), $"{count}/{PlayerState.TeamSize}");
-			tab.Name = Layout.NodeName(content);
-			if (!open)
-				tab.Ink = Palette.TextFaded;
+			var detail = open ? $"{count}/{PlayerState.TeamSize}" : T("teams.opens_at", unlockStage);
+			tabs.Add(name, detail, icon, open).Name = Layout.NodeName(content);
 		}
 
 		private void RefreshTeam()
@@ -112,39 +122,61 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < PlayerState.TeamSize; i++)
 			{
 				var slot = new VBoxContainer { Name = $"Slot{i + 1}" };
-				slot.AddThemeConstantOverride("separation", 6);
+				slot.AddThemeConstantOverride("separation", 4);
 				if (i < team.Count)
 				{
 					var monster = team[i];
-					var card = new CreatureCard(_database.Summon(monster.SummonId), monster, SlotWidth, i == 0 ? "leader" : null, i == 0 ? T("teams.leader") : null) { Name = "Card" };
-					card.Pressed += c => ToggleRequested?.Invoke(_content, c.Monster!.Id);
+					var leader = i == 0;
+					var card = new CreatureCard(_database.Summon(monster.SummonId), monster, SlotWidth, leader ? "leader" : null, leader ? T("teams.leader") : null) { Name = "Card" };
+					card.Pressed += c => SlotActions(c, monster, leader);
 					slot.AddChild(card);
-					var crown = new CenterContainer { Name = "Crown", CustomMinimumSize = new Vector2(0, 44) };
-					if (i > 0)
-						crown.AddChild(SigilButton.Of("leader", T("teams.make_leader"), () => LeaderRequested?.Invoke(_content, monster.Id), 42).Named("MakeLeader"));
-					slot.AddChild(crown);
 				}
 				else
 				{
-					var empty = new PanelContainer { Name = "Empty", CustomMinimumSize = new Vector2(SlotWidth, SlotWidth * 1.25f), ThemeTypeVariation = GameTheme.InsetPanel, TooltipText = T("teams.empty") };
-					var plus = new Label { Name = "Plus", Text = "+", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-					plus.AddThemeFontSizeOverride("font_size", 40);
-					plus.AddThemeColorOverride("font_color", new Color(Palette.GoldDark, 0.6f));
-					empty.AddChild(plus);
+					var empty = new PanelContainer { Name = "Empty", CustomMinimumSize = new Vector2(SlotWidth, SlotWidth * 1.25f), ThemeTypeVariation = GameTheme.InsetPanel };
+					var text = new Label { Name = "Text", Text = T("teams.empty"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+					text.AddThemeColorOverride("font_color", new Color(Palette.GoldDark, 0.9f));
+					empty.AddChild(text);
 					slot.AddChild(empty);
-					slot.AddChild(new Control { Name = "Spacer", CustomMinimumSize = new Vector2(0, 44) });
 				}
 
 				_slots.AddChild(slot);
 			}
 
+			_leader.AddChild(new Label { Name = "Title", Text = T("teams.leadership_title"), ThemeTypeVariation = GameTheme.Heading });
 			var leaderSummon = team.Count > 0 ? _database.Summon(team[0].SummonId) : null;
-			if (leaderSummon?.Leader is not { } skill)
-				return;
-			var leaderIcon = Doodle.Icon(Art.Icon("leader"), 40, Palette.Gold).Named("Icon");
-			leaderIcon.SizeFlagsVertical = SizeFlags.ShrinkBegin;
-			_leader.AddChild(leaderIcon);
-			_leader.AddChild(RichText.Label(T("teams.leadership_text", leaderSummon.NameFor(team[0].Awakened), Texts.Percent(skill.Value), Texts.Name(skill.Stat)), 260).Named("Text"));
+			if (leaderSummon?.Leader is { } skill)
+				_leader.AddChild(RichText.Label(T("teams.leadership_text", leaderSummon.NameFor(team[0].Awakened), Texts.Percent(skill.Value), Texts.Name(skill.Stat)), 300).Named("Text"));
+			else
+				_leader.AddChild(Layout.Text(team.Count == 0 ? T("teams.no_team") : T("teams.no_leadership"), GameTheme.Faded, 300).Named("Text"));
+			_leader.AddChild(Layout.Text(T("teams.leader_hint"), GameTheme.Faded, 300).Named("Hint"));
+		}
+
+		/// <summary>O que fazer com um monstro da equipe: tornar Líder ou tirar.</summary>
+		private void SlotActions(CreatureCard card, OwnedSummon monster, bool leader)
+		{
+			var summon = card.Summon;
+			var dialog = Dialog.Open(card, summon.NameFor(monster.Awakened), 420, card, "SlotDialog");
+			dialog.Body.AddChild(Layout.Text(leader ? T("teams.is_leader") : T("teams.slot_text"), GameTheme.Faded, 380).Named("Text"));
+			var column = new VBoxContainer { Name = "Buttons" };
+			column.AddThemeConstantOverride("separation", 10);
+			if (!leader)
+				column.AddChild(GameButton.Of(T("teams.make_leader"), () =>
+				{
+					dialog.Close();
+					LeaderRequested?.Invoke(_content, monster.Id);
+				}, ButtonKind.Primary, "leader").Named("MakeLeader"));
+			column.AddChild(GameButton.Of(T("teams.remove"), () =>
+			{
+				dialog.Close();
+				ToggleRequested?.Invoke(_content, monster.Id);
+			}, ButtonKind.Secondary, "cancel").Named("Remove"));
+			column.AddChild(GameButton.Of(T("teams.details"), () =>
+			{
+				dialog.Close();
+				MonsterSummary.Open(card, summon, monster);
+			}, ButtonKind.Secondary, "stats").Named("Details"));
+			dialog.Body.AddChild(column);
 		}
 
 		private void RefreshRoster()
@@ -162,7 +194,7 @@ namespace Sigilos.UI.Screens
 			foreach (var monster in monsters)
 			{
 				var inTeam = team.Contains(monster.Id);
-				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, 96, inTeam ? "team" : null, inTeam ? T("teams.on_team") : null) { Name = $"Monster{monster.Id}" };
+				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, 100, null, inTeam ? T("teams.on_team") : null) { Name = $"Monster{monster.Id}" };
 				card.SetSelected(inTeam);
 				card.Pressed += c => ToggleRequested?.Invoke(_content, c.Monster!.Id);
 				_roster.AddChild(card);

@@ -8,21 +8,21 @@
   "variations": {
     "fire": {
       "variation_id": "goblin_fire",
-      "name": "Fire Goblin",
+      "name": "Goblin de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Grizzle",
+        "name": "Resmungo",
         "skill": {
-          "name": "Cheap Shot",
+          "name": "Golpe Baixo",
           "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
         }
       },
       "skills": [
         {
-          "name": "Torch Stab",
+          "name": "Facada de Tocha",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.9, "hits": 2},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
@@ -35,7 +35,7 @@
           ]
         },
         {
-          "name": "Firebomb",
+          "name": "Bomba de Fogo",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.25},
@@ -51,15 +51,15 @@
     },
     "water": {
       "variation_id": "goblin_water",
-      "name": "Water Goblin",
+      "name": "Goblin de Água",
       "element": "Water",
       "role": "Defense",
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Snivvel",
+        "name": "Fungão",
         "skill": {
-          "name": "Drowning Snare",
+          "name": "Laço Afogador",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.9},
@@ -73,7 +73,7 @@
       },
       "skills": [
         {
-          "name": "Net Throw",
+          "name": "Arremesso de Rede",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Impeto", "target": "Target", "power": -20}
@@ -86,7 +86,7 @@
           ]
         },
         {
-          "name": "Soaking Trap",
+          "name": "Armadilha Encharcada",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
@@ -102,21 +102,21 @@
     },
     "wind": {
       "variation_id": "goblin_wind",
-      "name": "Wind Goblin",
+      "name": "Goblin de Vento",
       "element": "Wind",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Zipp",
+        "name": "Zás",
         "skill": {
-          "name": "Cheap Shot",
+          "name": "Golpe Baixo",
           "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
         }
       },
       "skills": [
         {
-          "name": "Quick Stab",
+          "name": "Facada Rápida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.75, "hits": 2}
           ],
@@ -128,7 +128,7 @@
           ]
         },
         {
-          "name": "Knife Flurry",
+          "name": "Chuva de Facas",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.4, "hits": 4}
@@ -143,7 +143,7 @@
     },
     "light": {
       "variation_id": "goblin_light",
-      "name": "Light Goblin",
+      "name": "Goblin de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
@@ -151,7 +151,7 @@
       "awakening": {
         "name": "Glimmik",
         "skill": {
-          "name": "Golden Charm",
+          "name": "Amuleto Dourado",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
@@ -164,7 +164,7 @@
       },
       "skills": [
         {
-          "name": "Shiny Distraction",
+          "name": "Distração Brilhante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
@@ -177,7 +177,7 @@
           ]
         },
         {
-          "name": "Lucky Charm",
+          "name": "Amuleto da Sorte",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
@@ -190,21 +190,21 @@
     },
     "dark": {
       "variation_id": "goblin_dark",
-      "name": "Dark Goblin",
+      "name": "Goblin de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Skulk",
+        "name": "Espreita",
         "skill": {
-          "name": "Cheap Shot",
+          "name": "Golpe Baixo",
           "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
         }
       },
       "skills": [
         {
-          "name": "Backstab",
+          "name": "Punhalada nas Costas",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5, "ignoreDefense": 0.2}
           ],
@@ -216,7 +216,7 @@
           ]
         },
         {
-          "name": "Poisoned Blade",
+          "name": "Lâmina Envenenada",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.9},

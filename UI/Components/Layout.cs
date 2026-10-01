@@ -81,16 +81,14 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>
-		/// Cabeçalho de tela: o título (com o símbolo da tela, se houver) à esquerda, o cabeçalho de
-		/// recursos e o sigilo de voltar à direita. A caixa do meio (<c>Extra</c>) recebe o que a tela
-		/// quiser pôr ao lado do título (contagem, abas).
+		/// Cabeçalho de tela, igual em todas: a seta de voltar e o título à esquerda, a caixa do meio
+		/// (<c>Extra</c>, para o que a tela quiser mostrar ao lado do título: contagem, abas) e o cabeçalho
+		/// de recursos à direita. A seta também responde ao Esc e ao Voltar do celular.
 		/// </summary>
-		public static (HBoxContainer Header, HBoxContainer Extra) Header(string title, string? icon, CurrencyBar? currencies, Action onBack)
+		public static (HBoxContainer Header, HBoxContainer Extra) Header(string title, CurrencyBar? currencies, Action onBack)
 		{
 			var header = new HBoxContainer { Name = "Header" };
-			header.AddThemeConstantOverride("separation", 12);
-			if (icon != null)
-				header.AddChild(Doodle.Icon(Art.Icon(icon), 40, Palette.Gold).Named("Icon"));
+			header.AddThemeConstantOverride("separation", 14);
 			header.AddChild(new Label { Name = "Title", Text = title, ThemeTypeVariation = GameTheme.Title, VerticalAlignment = VerticalAlignment.Center });
 			var extra = new HBoxContainer { Name = "Extra", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Begin };
 			extra.AddThemeConstantOverride("separation", 10);
@@ -100,39 +98,64 @@ namespace Sigilos.UI.Components
 				currencies.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
 				header.AddChild(currencies);
 			}
+			header.AddChild(new BackButton(onBack) { Name = "Back" });
 
-			header.AddChild(SigilButton.Of("back", T("common.back"), onBack, 48, SigilShape.Square));
 			return (header, extra);
 		}
 
-		/// <summary>Cápsula de símbolo e número: recompensa, custo, contagem. O nome vai na dica; o nó leva o nome do símbolo (<c>Essence</c>).</summary>
-		public static PanelContainer Chip(string icon, string value, string tooltip, Color? ink = null, Vector2 labelMinimumSize = default) => Chip(Art.Icon(icon), value, tooltip, ink, labelMinimumSize);
+		/// <summary>Cápsula de símbolo e número: custo, contagem, recompensa. O nó leva o nome do símbolo (<c>Essence</c>).</summary>
+		public static PanelContainer Chip(string icon, string value, Color? ink = null, Vector2 labelMinimumSize = default) => Chip(Art.Icon(icon), value, ink, labelMinimumSize);
 
 		/// <summary>Cápsula com um Glifo, escrito na fonte das runas; o nó leva o nome do Glifo.</summary>
-		public static PanelContainer Chip(Core.Content.Glyph glyph, string value, string tooltip, Color? ink = null, Vector2 labelMinimumSize = default) =>
-			Capsule(glyph.ToString(), new RuneGlyph(glyph, 20, ink ?? Palette.Gold) { Name = "Glyph" }, value, tooltip, labelMinimumSize);
+		public static PanelContainer Chip(Core.Content.Glyph glyph, string value, Color? ink = null, Vector2 labelMinimumSize = default) =>
+			Capsule(glyph.ToString(), new RuneGlyph(glyph, 22, ink ?? Palette.Gold) { Name = "Glyph" }, value, "", labelMinimumSize);
 
 		/// <summary>Cápsula com qualquer desenho (efeito, criatura); o nó leva o nome do desenho.</summary>
-		public static PanelContainer Chip(Texture2D? icon, string value, string tooltip, Color? ink = null, Vector2 labelMinimumSize = default) =>
-			Capsule(Art.NameOf(icon) is { } name ? NodeName(name) : "Chip", Medal(icon, ink ?? Palette.Gold, 22).Named("Icon"), value, tooltip, labelMinimumSize);
+		public static PanelContainer Chip(Texture2D? icon, string value, Color? ink = null, Vector2 labelMinimumSize = default) =>
+			Capsule(Art.NameOf(icon) is { } name ? NodeName(name) : "Chip", Medal(icon, ink ?? Palette.Gold, 24).Named("Icon"), value, "", labelMinimumSize);
 
-		/// <summary>A cápsula: o símbolo e o número (<c>Value</c>) numa fileira (<c>Row</c>).</summary>
-		private static PanelContainer Capsule(string name, Control icon, string value, string tooltip, Vector2 labelMinimumSize)
+		/// <summary>
+		/// Cápsula que se explica sozinha: o símbolo, o número e o que ele é, escrito ("575 Essência",
+		/// "★★★★ 50% Runa"). É o jeito de mostrar recompensa e custo sem depender de dica.
+		/// </summary>
+		public static PanelContainer Labeled(string icon, string value, string caption, Color? ink = null) =>
+			Capsule(NodeName(icon), Medal(Art.Icon(icon), ink ?? Palette.Gold, 24).Named("Icon"), value, caption, default);
+
+		/// <summary>A cápsula labeled com um Glifo no lugar do símbolo.</summary>
+		public static PanelContainer Labeled(Core.Content.Glyph glyph, string value, string caption, Color? ink = null) =>
+			Capsule(glyph.ToString(), new RuneGlyph(glyph, 22, ink ?? Palette.Gold) { Name = "Glyph" }, value, caption, default);
+
+		/// <summary>A cápsula labeled com qualquer desenho (efeito, criatura).</summary>
+		public static PanelContainer Labeled(Texture2D? icon, string value, string caption, Color? ink = null) =>
+			Capsule(Art.NameOf(icon) is { } name ? NodeName(name) : "Chip", Medal(icon, ink ?? Palette.Gold, 24).Named("Icon"), value, caption, default);
+
+		/// <summary>A cápsula: o símbolo, o número (<c>Value</c>) e, se houver, o que ele é (<c>Caption</c>), numa fileira (<c>Row</c>).</summary>
+		private static PanelContainer Capsule(string name, Control icon, string value, string caption, Vector2 labelMinimumSize)
 		{
-			var capsule = new PanelContainer { Name = name, TooltipText = tooltip, MouseFilter = Control.MouseFilterEnum.Stop };
-			var box = GameTheme.Carved(Palette.Inset, 3);
-			box.SetCornerRadiusAll(14);
-			box.ContentMarginLeft = 4;
-			box.ContentMarginRight = 10;
+			var capsule = new PanelContainer { Name = name, MouseFilter = Control.MouseFilterEnum.Ignore };
+			var box = GameTheme.Carved(Palette.Inset, 4);
+			box.SetCornerRadiusAll(16);
+			box.ContentMarginLeft = 5;
+			box.ContentMarginRight = 12;
 			capsule.AddThemeStyleboxOverride("panel", box);
 			var row = new HBoxContainer { Name = "Row", MouseFilter = Control.MouseFilterEnum.Ignore };
-			row.AddThemeConstantOverride("separation", 4);
+			row.AddThemeConstantOverride("separation", 6);
 			row.AddChild(icon);
-			var label = new Label { Name = "Value", Text = value, ThemeTypeVariation = GameTheme.Number, MouseFilter = Control.MouseFilterEnum.Ignore };
-			label.AddThemeFontSizeOverride("font_size", 15);
-			label.CustomMinimumSize = labelMinimumSize;
-			label.HorizontalAlignment = HorizontalAlignment.Right;
-			row.AddChild(label);
+			if (value.Length > 0)
+			{
+				var label = new Label { Name = "Value", Text = value, ThemeTypeVariation = GameTheme.Number, MouseFilter = Control.MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
+				label.AddThemeFontSizeOverride("font_size", 17);
+				label.CustomMinimumSize = labelMinimumSize;
+				label.HorizontalAlignment = HorizontalAlignment.Right;
+				row.AddChild(label);
+			}
+
+			if (caption.Length > 0)
+			{
+				var text = new Label { Name = "Caption", Text = caption, ThemeTypeVariation = GameTheme.Faded, MouseFilter = Control.MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
+				row.AddChild(text);
+			}
+
 			capsule.AddChild(row);
 			return capsule;
 		}

@@ -6,16 +6,18 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma habilidade: o Glifo dela num sigilo (losango na Passiva), o nome com a recarga e os níveis em
-	/// losangos cheios e vazios, e o que ela faz. Travada (a do Despertar, antes de despertar), fica
-	/// apagada com o olho do Despertar ao lado.
+	/// Uma habilidade: o símbolo dela num sigilo (losango na Passiva), o nome, a recarga e o nível
+	/// escritos ("Recarga 4", "Nv 2/5"), e o que ela faz. Com <c>levels</c>, uma linha a mais diz o que
+	/// cada nível que falta dá. Travada (a do Despertar, antes de despertar), fica apagada, com "Liberada
+	/// no Despertar" ao lado do nome.
 	/// </summary>
 	public static class SkillRow
 	{
-		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400)
+		/// <param name="level">O nível de agora; 0 esconde o nível (na luta, a habilidade já vem no dela).</param>
+		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400, bool levels = false)
 		{
 			var row = Layout.Row(10).Named("Skill");
-			var icon = new SigilButton(null, "", 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
+			var icon = new SigilButton(null, 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
 			{
 				Name = "Symbol",
 				MouseFilter = Control.MouseFilterEnum.Ignore,
@@ -34,31 +36,32 @@ namespace Sigilos.UI.Components
 			name.AddThemeColorOverride("font_color", locked ? Palette.TextFaded : Palette.Gold);
 			title.AddChild(name);
 			if (!skill.IsPassive && skill.Cooldown > 0)
-				title.AddChild(new Label { Name = "Cooldown", Text = $"⟳{skill.At(level, awakened).Cooldown}", ThemeTypeVariation = GameTheme.Faded, TooltipText = T("skill.cooldown_tip"), MouseFilter = Control.MouseFilterEnum.Stop });
-			if (skill.MaxLevel > 1)
+				title.AddChild(new Label { Name = "Cooldown", Text = T("skill.cooldown_short", level > 0 ? skill.At(level, awakened).Cooldown : skill.Cooldown), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+			if (level > 0 && skill.MaxLevel > 1)
 			{
-				var pips = new Label
-				{
-					Name = "Level",
-					Text = new string('◆', level) + new string('◇', skill.MaxLevel - level),
-					TooltipText = Texts.Plain(Texts.LevelUps(skill, 1)),
-					MouseFilter = Control.MouseFilterEnum.Stop,
-				};
-				pips.AddThemeColorOverride("font_color", Palette.Gold);
-				pips.AddThemeFontSizeOverride("font_size", 13);
-				title.AddChild(pips);
+				var tag = new Label { Name = "Level", Text = T("skill.level", level, skill.MaxLevel), VerticalAlignment = VerticalAlignment.Center };
+				tag.AddThemeColorOverride("font_color", level >= skill.MaxLevel ? Palette.Gold : Palette.Text);
+				tag.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
+				title.AddChild(tag);
 			}
 
 			if (locked)
 			{
-				var eye = Doodle.Icon(Art.Icon("awaken"), 18, Palette.Awakened).Named("Locked");
-				eye.TooltipText = T("monsters.skill_locked");
-				eye.MouseFilter = Control.MouseFilterEnum.Stop;
-				title.AddChild(eye);
+				var note = new Label { Name = "Locked", Text = T("monsters.skill_locked"), VerticalAlignment = VerticalAlignment.Center };
+				note.AddThemeColorOverride("font_color", Palette.Awakened);
+				note.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
+				title.AddChild(note);
 			}
 
 			column.AddChild(title);
-			column.AddChild(RichText.Label(Texts.Describe(skill, awakened), width, GameTheme.Faded, 14).Named("Description"));
+			column.AddChild(RichText.Label(Texts.Describe(skill, awakened), width, GameTheme.Faded, GameTheme.SmallSize).Named("Description"));
+			if (levels && level > 0 && level < skill.MaxLevel)
+			{
+				var next = new Label { Name = "Levels", Text = Texts.LevelUps(skill, level), AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(width, 0) };
+				next.AddThemeFontSizeOverride("font_size", 14);
+				next.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.35f));
+				column.AddChild(next);
+			}
 			row.AddChild(column);
 			return row;
 		}

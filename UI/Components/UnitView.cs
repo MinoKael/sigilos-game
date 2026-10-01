@@ -9,10 +9,12 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma unidade em campo, quase quadrada e só de símbolos: o desenho, com o elemento e o nível nos
-	/// cantos de cima e os efeitos e as recargas nos de baixo; embaixo dele a barra de Vida (o escudo por
-	/// cima, o número dentro) e a de Ímpeto. O nome vem na dica. Lê o estado do <see cref="BattleUnit"/>
-	/// em <see cref="Refresh"/>; o avanço de quem age é da <see cref="BattleArena"/>, o tremor daqui.
+	/// Uma unidade em campo, quase quadrada: o desenho, com o elemento e o nível nos cantos de cima e os
+	/// efeitos e as recargas nos de baixo; embaixo dele a barra de Vida (o escudo por cima, o número
+	/// dentro) e a de Ímpeto. Toque curto é <see cref="Pressed"/> (escolher o alvo); toque longo é
+	/// <see cref="LongPressed"/> (o resumo da unidade, sem parar a luta). Lê o estado do
+	/// <see cref="BattleUnit"/> em <see cref="Refresh"/>; o avanço de quem age é da
+	/// <see cref="BattleArena"/>, o tremor daqui.
 	/// </summary>
 	public partial class UnitView : PanelContainer
 	{
@@ -23,8 +25,9 @@ namespace Sigilos.UI.Components
 		private readonly ProgressBar _shield;
 		private readonly ProgressBar _impeto;
 		private readonly Label _healthText;
-		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Stop };
+		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Label _cooldown = new() { Name = "Cooldowns", MouseFilter = MouseFilterEnum.Ignore };
+		private readonly Press _press = new();
 		private bool _active;
 		private bool _targetable;
 
@@ -34,7 +37,8 @@ namespace Sigilos.UI.Components
 			CustomMinimumSize = CardSize;
 			MouseFilter = MouseFilterEnum.Stop;
 			PivotOffset = CardSize / 2;
-			TooltipText = T("battle.unit_tip", unit.Name, unit.Level);
+			_press.Tapped += () => Pressed?.Invoke(this);
+			_press.Held += () => LongPressed?.Invoke(this);
 
 			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, 10, 5);
 			AddThemeStyleboxOverride("panel", _box);
@@ -72,8 +76,6 @@ namespace Sigilos.UI.Components
 			column.AddChild(bars);
 
 			_impeto = Bar(Palette.Arcane, 4).Named("Impetus");
-			_impeto.TooltipText = T("battle.impetus_tip");
-			_impeto.MouseFilter = MouseFilterEnum.Stop;
 			column.AddChild(_impeto);
 
 			MouseEntered += Restyle;
@@ -82,6 +84,9 @@ namespace Sigilos.UI.Components
 		}
 
 		public event Action<UnitView>? Pressed;
+
+		/// <summary>Toque longo (ou clique direito): o resumo da unidade.</summary>
+		public event Action<UnitView>? LongPressed;
 
 		public BattleUnit Unit { get; }
 
@@ -106,7 +111,6 @@ namespace Sigilos.UI.Components
 				_statuses.AddChild(Doodle.Icon(Art.Effect(kind), 14, ink));
 			}
 
-			_statuses.TooltipText = string.Join("\n", Unit.Statuses.Select(s => T("battle.effect_tip", Texts.Name(s.Kind), Texts.Turns(s.Turns))));
 			_cooldown.Text = string.Join(" ", Enumerable.Range(1, Math.Max(0, Unit.Skills.Count - 1))
 				.Where(i => Unit.Cooldown(i) > 0)
 				.Select(i => $"⟳{Unit.Cooldown(i)}"));
@@ -143,11 +147,7 @@ namespace Sigilos.UI.Components
 		/// <summary>Um texto que sobe do cartão: o dano maior, os efeitos no tamanho padrão.</summary>
 		public void Float(string text, Color color, int size = FloatingText.SmallSize) => FloatingText.Spawn(this, text, color, size);
 
-		public override void _GuiInput(InputEvent @event)
-		{
-			if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-				Pressed?.Invoke(this);
-		}
+		public override void _GuiInput(InputEvent @event) => _press.Feed(this, @event);
 
 		private void Restyle()
 		{

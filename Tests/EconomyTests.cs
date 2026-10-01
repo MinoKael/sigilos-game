@@ -48,7 +48,7 @@ namespace Sigilos.Tests
 			var player = TestData.PlayerWith("phoenix_fire");
 			var stage = database.Stage(1);
 
-			var reward = Campaign.ApplyVictory(new Random(1), player, stage);
+			var reward = Campaign.ApplyVictory(new Random(1), player, stage, database);
 			var total = player.AccountExperience + Enumerable.Range(1, player.AccountLevel - 1).Sum(Account.ExperienceToNext);
 			Assert.Equal(stage.Experience, total, "a experiência da fase vai para a conta");
 			Assert.Equal(player.AccountLevel - 1, reward.AccountLevels, "e a recompensa conta os níveis");
@@ -65,7 +65,7 @@ namespace Sigilos.Tests
 
 			Assert.Equal(EntryProblem.None, Campaign.Check(player, stage), "a fase 1 abre");
 			Assert.Equal(mana, player.Mana, "começar não cobra: a derrota não custa nada");
-			Assert.Equal(stage.Mana, Campaign.ApplyVictory(new Random(1), player, stage).Mana, "a vitória cobra a Mana da fase");
+			Assert.Equal(stage.Mana, Campaign.ApplyVictory(new Random(1), player, stage, database).Mana, "a vitória cobra a Mana da fase");
 			Assert.Equal(mana - stage.Mana, player.Mana, "Mana na conta");
 			Assert.Equal(EntryProblem.Locked, Campaign.Check(player, database.Stage(3)), "a fase 3 espera a 2");
 

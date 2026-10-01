@@ -1,26 +1,28 @@
-using System.Collections.Generic;
 using Godot;
 using Sigilos.UI.Style;
 
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// O menu de atalhos do Santuário: um sigilo grande no centro e estrelas em volta, ligadas por fios
-	/// de luz por onde corre uma faísca. As estrelas ficam em vagas fixas, de ângulos e distâncias
-	/// desiguais, para parecer uma constelação e não uma roda. Em volta do centro, um anel mostra o
-	/// quanto a canalização já encheu (<see cref="Progress"/>).
+	/// A constelação da Canalização: um sigilo grande no centro e estrelas em volta, ligadas a ele por
+	/// fios de luz por onde corre uma faísca. As estrelas ficam em vagas fixas, de ângulos e distâncias
+	/// desiguais, para parecer uma constelação e não uma roda, e são só desenho: brilham e piscam, mas
+	/// quem se toca é o centro. Em volta do centro, um anel mostra o quanto a canalização já encheu
+	/// (<see cref="Progress"/>).
 	///
-	/// Só arruma e desenha: quem cria os sigilos e o que eles fazem é a tela.
+	/// Só arruma e desenha: o sigilo do centro e o que ele faz são da tela.
 	/// </summary>
 	public partial class Constellation : Control
 	{
-		/// <summary>Ângulo (graus, 0 à direita, sentido horário) e distância relativa de cada vaga.</summary>
+		/// <summary>Ângulo (graus, 0 à direita, sentido horário) e distância relativa de cada estrela.</summary>
 		private static readonly (float Angle, float Distance)[] Places =
 		{
 			(-152, 0.96f), (-98, 0.82f), (-42, 1.0f), (6, 0.92f), (46, 0.74f), (102, 0.86f), (152, 0.96f),
 		};
 
-		private readonly List<Control?> _satellites = new();
+		/// <summary>O raio da estrela maior; cada uma tem o seu, entre 60% e 100% disso.</summary>
+		private const float StarSize = 9;
+
 		private Control? _center;
 		private float _time;
 
@@ -33,35 +35,17 @@ namespace Sigilos.UI.Components
 		/// <summary>Quanto o anel do centro encheu, de 0 a 1.</summary>
 		public float Progress { get; set; }
 
-		/// <summary>Quantas vagas existem.</summary>
-		public static int Capacity => Places.Length;
-
-		/// <summary>Põe o sigilo do centro e os das vagas (nulo = vaga sem ninguém).</summary>
-		public void Set(Control center, IReadOnlyList<Control?> satellites)
+		/// <summary>Põe o sigilo do centro (o tamanho dele é o <see cref="Control.CustomMinimumSize"/>).</summary>
+		public void SetCenter(Control center)
 		{
-			foreach (var child in GetChildren())
-				Layout.Discard(child);
-
+			if (_center != null)
+				Layout.Discard(_center);
 			_center = center;
 			AddChild(center);
-			_satellites.Clear();
-			foreach (var satellite in satellites)
-			{
-				_satellites.Add(satellite);
-				if (satellite != null)
-					AddChild(satellite);
-			}
-
 			Arrange();
 		}
 
-		/// <summary>Um controle extra preso ao centro (a canalização rápida, as recompensas): não entra nas vagas.</summary>
-		public void Attach(Control control, Vector2 offsetFromCenter)
-		{
-			control.SetMeta("offset", offsetFromCenter);
-			AddChild(control);
-			Arrange();
-		}
+		public override Vector2 _GetMinimumSize() => _center == null ? Vector2.Zero : _center.CustomMinimumSize + new Vector2(80, 80);
 
 		public override void _Process(double delta)
 		{
@@ -76,16 +60,14 @@ namespace Sigilos.UI.Components
 
 			var center = Middle;
 			var core = _center.Size.X / 2;
+			var radii = Radii;
 
-			for (var i = 0; i < _satellites.Count; i++)
+			for (var i = 0; i < Places.Length; i++)
 			{
-				if (_satellites[i] is not { } star)
-					continue;
-
-				var target = star.Position + star.Size / 2;
+				var target = Star(i, center, radii);
 				var direction = (target - center).Normalized();
-				var from = center + direction * (core + 12);
-				var to = target - direction * (star.Size.X / 2 + 4);
+				var from = center + direction * (core + 20);
+				var to = target - direction * (StarSize + 3);
 				DrawLine(from, to, new Color(Palette.Arcane, 0.07f), 7, true);
 				DrawLine(from, to, new Color(Palette.Gold, 0.4f), 1.5f, true);
 
@@ -94,6 +76,12 @@ namespace Sigilos.UI.Components
 				var spark = from.Lerp(to, t);
 				DrawCircle(spark, 5, new Color(Palette.Spirit, 0.12f));
 				DrawCircle(spark, 2.2f, new Color(Palette.Spirit, 0.85f * Mathf.Sin(t * Mathf.Pi)));
+
+				// A estrela: um brilho de quatro pontas, que pisca devagar, cada uma no seu tempo.
+				var twinkle = 0.65f + 0.35f * Mathf.Sin(_time * 1.7f + i * 1.3f);
+				var size = StarSize * (0.6f + 0.4f * ((i * 37) % 10) / 9f);
+				Sparkle(target, size * 2.2f, new Color(Palette.Gold, 0.12f * twinkle));
+				Sparkle(target, size, new Color(Palette.Gold.Lightened(0.25f), twinkle));
 			}
 
 			// O anel da canalização em volta do centro.
@@ -109,39 +97,37 @@ namespace Sigilos.UI.Components
 			}
 		}
 
-		private Vector2 Middle => new(Size.X / 2, Size.Y * 0.47f);
+		private Vector2 Middle => Size / 2;
+
+		/// <summary>A elipse das estrelas: o espaço que sobra, menos a margem da estrela maior.</summary>
+		private Vector2 Radii => new(Mathf.Max(0, Size.X / 2 - StarSize * 2.4f), Mathf.Max(0, Size.Y / 2 - StarSize * 2.4f));
+
+		private static Vector2 Star(int index, Vector2 center, Vector2 radii)
+		{
+			var (angle, distance) = Places[index];
+			var rad = Mathf.DegToRad(angle);
+			return center + new Vector2(Mathf.Cos(rad) * radii.X, Mathf.Sin(rad) * radii.Y) * distance;
+		}
+
+		private void Sparkle(Vector2 at, float size, Color color)
+		{
+			var waist = size * 0.24f;
+			DrawColoredPolygon(new[]
+			{
+				at + new Vector2(0, -size), at + new Vector2(waist, -waist),
+				at + new Vector2(size, 0), at + new Vector2(waist, waist),
+				at + new Vector2(0, size), at + new Vector2(-waist, waist),
+				at + new Vector2(-size, 0), at + new Vector2(-waist, -waist),
+			}, color);
+		}
 
 		private void Arrange()
 		{
 			if (_center == null)
 				return;
 
-			var middle = Middle;
 			_center.Size = _center.CustomMinimumSize;
-			_center.Position = middle - _center.Size / 2;
-
-			// Elipse: a tela é larga, as estrelas se espalham mais para os lados.
-			var radii = new Vector2(Mathf.Min(Size.X * 0.36f, 440), Mathf.Min(Size.Y * 0.4f, 260));
-			for (var i = 0; i < _satellites.Count && i < Places.Length; i++)
-			{
-				if (_satellites[i] is not { } star)
-					continue;
-				var (angle, distance) = Places[i];
-				var rad = Mathf.DegToRad(angle);
-				star.Size = star.CustomMinimumSize;
-				star.Position = middle + new Vector2(Mathf.Cos(rad) * radii.X, Mathf.Sin(rad) * radii.Y) * distance - star.Size / 2;
-			}
-
-			foreach (var child in GetChildren())
-			{
-				if (child is Control control && control.HasMeta("offset"))
-				{
-					var offset = control.GetMeta("offset").AsVector2();
-					var size = new Vector2(85, 14);
-					control.Position = middle - size / 4 + offset - size;
-				}
-			}
-
+			_center.Position = Middle - _center.Size / 2;
 			QueueRedraw();
 		}
 	}

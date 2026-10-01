@@ -7,8 +7,8 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// A pausa da luta, por cima da tela: a árvore inteira para (<see cref="SceneTree.Paused"/>) e só este
-	/// painel segue vivo. Três sigilos: continuar, recomeçar a luta do início e sair dela. Clicar fora ou
-	/// Esc continua.
+	/// painel segue vivo. Três botões escritos: Continuar, Recomeçar a luta (do início, sem custo) e Sair
+	/// da luta (sem recompensa). Tocar fora, Esc e Voltar continuam.
 	/// </summary>
 	public partial class PauseMenu : ColorRect
 	{
@@ -18,38 +18,33 @@ namespace Sigilos.UI.Components
 			ProcessMode = ProcessModeEnum.Always;
 			Color = new Color(0, 0, 0, 0.6f);
 			MouseFilter = MouseFilterEnum.Stop;
-            ZIndex = 99;
-            SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			ZIndex = 99;
+			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
 			var center = new CenterContainer { Name = "Center", MouseFilter = MouseFilterEnum.Ignore };
 			center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(center);
 
-			var panel = new PanelContainer { Name = "Panel" };
+			var panel = new PanelContainer { Name = "Panel", CustomMinimumSize = new Vector2(420, 0) };
 			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 26));
 			center.AddChild(panel);
 
 			var column = new VBoxContainer { Name = "Content" };
-			column.AddThemeConstantOverride("separation", 22);
+			column.AddThemeConstantOverride("separation", 16);
 			panel.AddChild(column);
-
-			var title = Layout.Row(12, true).Named("Header");
-			title.AddChild(new Label { Name = "Title", Text = T("battle.paused"), ThemeTypeVariation = GameTheme.Title });
-			column.AddChild(title);
-
-			var actions = Layout.Row(28, true).Named("Actions");
-			actions.AddChild(SigilButton.Of("play", T("battle.continue"), Resume, 68).Named("Continue"));
-			actions.AddChild(SigilButton.Of("repeat", T("battle.restart"), () =>
+			column.AddChild(new Label { Name = "Title", Text = T("battle.paused"), ThemeTypeVariation = GameTheme.Title, HorizontalAlignment = HorizontalAlignment.Center });
+			column.AddChild(GameButton.Of(T("battle.continue"), Resume, ButtonKind.Primary, "play", 64).Named("Continue"));
+			column.AddChild(GameButton.Of(T("battle.restart"), () =>
 			{
 				Resume();
 				restart();
-			}, 60, SigilShape.Diamond).Named("Restart"));
-			actions.AddChild(SigilButton.Of("retreat", T("battle.retreat"), () =>
+			}, ButtonKind.Secondary, "repeat").Named("Restart"));
+			column.AddChild(GameButton.Of(T("battle.retreat"), () =>
 			{
 				Resume();
 				leave();
-			}, 60, SigilShape.Diamond).Named("Leave"));
-			column.AddChild(actions);
+			}, ButtonKind.Danger, "retreat").Named("Leave"));
+			column.AddChild(Layout.Text(T("battle.retreat_tip"), GameTheme.Faded, 360).Named("Note"));
 		}
 
 		/// <summary>Pausa o jogo e abre o painel por cima da tela de <paramref name="from"/>.</summary>
@@ -65,7 +60,7 @@ namespace Sigilos.UI.Components
 				Resume();
 		}
 
-		public override void _UnhandledKeyInput(InputEvent @event)
+		public override void _UnhandledInput(InputEvent @event)
 		{
 			if (!@event.IsActionPressed("ui_cancel"))
 				return;

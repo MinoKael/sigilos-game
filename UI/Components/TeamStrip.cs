@@ -9,21 +9,24 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// A equipe de um conteúdo em miniatura: um medalhão por monstro (a Líder com a coroa), com estrelas
-	/// e nível na dica, e o sigilo que abre a tela de Equipes. As vagas vazias aparecem como pedras.
+	/// A equipe de um conteúdo em miniatura: um medalhão por monstro (a Líder com moldura de ouro e a
+	/// palavra "Líder" embaixo), as vagas vazias como pedras, e o botão escrito que abre a tela de
+	/// Equipes. Toque longo num medalhão abre o resumo do monstro.
 	/// </summary>
 	public partial class TeamStrip : HBoxContainer
 	{
-		private const float Medal = 44;
+		private const float Medal = 58;
 
 		public TeamStrip(GameDatabase database, PlayerState player, string content, Action onEdit)
 		{
 			Name = "Team";
-			AddThemeConstantOverride("separation", 6);
+			AddThemeConstantOverride("separation", 8);
 			var team = Teams.Of(player, content).Select(player.Monster).OfType<OwnedSummon>().Where(m => database.HasSummon(m.SummonId)).ToList();
 			for (var i = 0; i < PlayerState.TeamSize; i++)
 			{
-				var slot = new PanelContainer { Name = $"Slot{i + 1}", CustomMinimumSize = new Vector2(Medal, Medal), MouseFilter = MouseFilterEnum.Stop };
+				var column = new VBoxContainer { Name = $"Slot{i + 1}", MouseFilter = MouseFilterEnum.Ignore };
+				column.AddThemeConstantOverride("separation", 0);
+				var slot = new PanelContainer { Name = "Medal", CustomMinimumSize = new Vector2(Medal, Medal), MouseFilter = MouseFilterEnum.Pass };
 				var box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 1, (int)(Medal / 2), 3);
 				if (i < team.Count)
 				{
@@ -31,21 +34,22 @@ namespace Sigilos.UI.Components
 					var summon = database.Summon(monster.SummonId);
 					box.BorderColor = i == 0 ? Palette.Gold : Palette.Frame(summon.Rarity);
 					box.SetBorderWidthAll(2);
-					slot.TooltipText = $"{summon.NameFor(monster.Awakened)} · {T("common.stars_level", Texts.Stars(monster.Stars), monster.Level)}" + (i == 0 ? $"\n{T("teams.leader")}" : "");
 					slot.AddChild(Doodle.Masked(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), MaskShape.Circle, boil: false));
-				}
-				else
-				{
-					slot.TooltipText = T("teams.empty");
+					Press.On(slot, null, () => MonsterSummary.Open(slot, summon, monster));
 				}
 
 				slot.AddThemeStyleboxOverride("panel", box);
-				box.SetContentMarginAll(2);
-				AddChild(slot);
+				box.SetContentMarginAll(3);
+				column.AddChild(slot);
+				var caption = new Label { Name = "Caption", Text = i == 0 && team.Count > 0 ? T("teams.leader") : "", HorizontalAlignment = HorizontalAlignment.Center };
+				caption.AddThemeFontSizeOverride("font_size", 13);
+				caption.AddThemeColorOverride("font_color", Palette.Gold);
+				column.AddChild(caption);
+				AddChild(column);
 			}
 
-			var edit = SigilButton.Of("team", T("common.team"), onEdit, 48, SigilShape.Square).Named("Edit");
-			edit.Highlight = team.Count == 0;
+			var edit = GameButton.Of(T("common.edit_team"), onEdit, team.Count == 0 ? ButtonKind.Primary : ButtonKind.Secondary, "team").Named("Edit");
+			edit.SizeFlagsVertical = SizeFlags.ShrinkBegin;
 			AddChild(edit);
 		}
 	}

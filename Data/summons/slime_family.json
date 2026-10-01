@@ -1,28 +1,28 @@
 {
   "family_id": "slime",
-  "base_name": "Slime",
-  "name": "Slimes",
+  "base_name": "Limo",
+  "name": "Limos",
   "star_grade": 3,
   "image": "slime",
   "awakened_image": "slime_awakened",
   "variations": {
     "fire": {
       "variation_id": "slime_fire",
-      "name": "Fire Slime",
+      "name": "Limo de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Magmire",
+        "name": "Magmalodo",
         "skill": {
-          "name": "Gelatinous Body",
+          "name": "Corpo Gelatinoso",
           "passive": {"kind": "DamageReduction", "value": 0.2}
         }
       },
       "skills": [
         {
-          "name": "Scalding Glob",
+          "name": "Bolota Escaldante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
@@ -35,7 +35,7 @@
           ]
         },
         {
-          "name": "Eruption",
+          "name": "Erupção",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
@@ -51,15 +51,15 @@
     },
     "water": {
       "variation_id": "slime_water",
-      "name": "Water Slime",
+      "name": "Limo de Água",
       "element": "Water",
       "role": "HP",
       "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
       "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
       "awakening": {
-        "name": "Brine",
+        "name": "Salmoura",
         "skill": {
-          "name": "Ooze Fortress",
+          "name": "Fortaleza de Gosma",
           "cooldown": 5,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
@@ -73,7 +73,7 @@
       },
       "skills": [
         {
-          "name": "Ooze Ball",
+          "name": "Bola de Gosma",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.15},
             {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.15, "turns": 2}
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "name": "Engulf",
+          "name": "Engolfar",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
@@ -102,21 +102,21 @@
     },
     "wind": {
       "variation_id": "slime_wind",
-      "name": "Wind Slime",
+      "name": "Limo de Vento",
       "element": "Wind",
       "role": "Defense",
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Froth",
+        "name": "Espuma",
         "skill": {
-          "name": "Gelatinous Body",
+          "name": "Corpo Gelatinoso",
           "passive": {"kind": "DamageReduction", "value": 0.2}
         }
       },
       "skills": [
         {
-          "name": "Sticky Splash",
+          "name": "Respingo Grudento",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Impeto", "target": "Target", "power": -15}
@@ -129,7 +129,7 @@
           ]
         },
         {
-          "name": "Glue Burst",
+          "name": "Estouro de Cola",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
@@ -145,15 +145,15 @@
     },
     "light": {
       "variation_id": "slime_light",
-      "name": "Light Slime",
+      "name": "Limo de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Gleamgel",
+        "name": "Geleluz",
         "skill": {
-          "name": "Radiant Gel",
+          "name": "Gel Radiante",
           "cooldown": 5,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.25},
@@ -167,7 +167,7 @@
       },
       "skills": [
         {
-          "name": "Soothing Ooze",
+          "name": "Gosma Calmante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
@@ -180,7 +180,7 @@
           ]
         },
         {
-          "name": "Mending Gel",
+          "name": "Gel Curativo",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.15}
@@ -195,21 +195,21 @@
     },
     "dark": {
       "variation_id": "slime_dark",
-      "name": "Dark Slime",
+      "name": "Limo de Trevas",
       "element": "Dark",
       "role": "Defense",
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Tarrow",
+        "name": "Piche",
         "skill": {
-          "name": "Gelatinous Body",
+          "name": "Corpo Gelatinoso",
           "passive": {"kind": "DamageReduction", "value": 0.2}
         }
       },
       "skills": [
         {
-          "name": "Tar Grip",
+          "name": "Agarrão de Piche",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
@@ -222,7 +222,7 @@
           ]
         },
         {
-          "name": "Black Mire",
+          "name": "Lodo Negro",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.75},

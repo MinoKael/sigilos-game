@@ -74,10 +74,31 @@ namespace Sigilos.Tests
 			var random = new Random(3);
 			foreach (var stage in database.Stages)
 			{
-				var reward = Campaign.ApplyVictory(random, player, stage);
+				var reward = Campaign.ApplyVictory(random, player, stage, database);
 				Assert.Equal(0, reward.Tools.Count, $"fase {stage.Number} sem pedras");
 				Assert.True(reward.Rune == null || reward.Rune.Grade <= 4, $"fase {stage.Number}: runa até 4★");
 			}
+		}
+
+		[Test]
+		private static void MonsterDropKnowsTheFirstCopy()
+		{
+			var database = TestData.LoadReal();
+			var player = TestData.PlayerWith(TestData.TypicalTeam);
+			var random = new Random(5);
+			var stage = database.Stage(1);
+			var seen = new System.Collections.Generic.HashSet<string>(player.Monsters.Select(m => m.SummonId));
+			var drops = 0;
+			for (var i = 0; i < 400 && drops < 12; i++)
+			{
+				player.Mana = stage.Mana;
+				if (Campaign.ApplyVictory(random, player, stage, database).SummonResult is not { } drop)
+					continue;
+				drops++;
+				Assert.Equal(seen.Add(drop.Summon.Id), drop.FirstCopy, $"queda {drops}: primeira cópia de {drop.Summon.Id}");
+			}
+
+			Assert.True(drops >= 12, "o monstro cai de vez em quando");
 		}
 	}
 }

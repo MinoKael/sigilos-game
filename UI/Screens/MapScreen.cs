@@ -3,7 +3,6 @@ using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
-using Sigilos.Core.Progression;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -11,13 +10,13 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O Mapa: três portais altos lado a lado — o que ainda não existe (Torre e Provações, fechado), a
-	/// Campanha com a próxima fase (região-fase) e as Masmorras com o chefe da primeira aberta. Cada
-	/// portal tem uma barra de energia com o progresso.
+	/// A escolha de batalha: três portais grandes, cada um com o nome e o progresso escritos — a
+	/// Campanha (a próxima fase), as Masmorras (quantas abertas, andares vencidos) e a Torre e as
+	/// Provações, fechadas ("em breve").
 	/// </summary>
 	public partial class MapScreen : Control
 	{
-		private static readonly Vector2 DoorSize = new(250, 400);
+		private static readonly Vector2 DoorSize = new(300, 360);
 
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
@@ -35,61 +34,33 @@ namespace Sigilos.UI.Screens
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			var row = Layout.Row(36, true).Named("Doors");
-			AddChild(Layout.Background(row));
+			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Map"), "map", _currencies, () => BackRequested?.Invoke()).Header);
+			page.AddChild(Layout.Header(T("destination.Map"), _currencies, () => BackRequested?.Invoke()).Header);
 			_currencies.Refresh(_player);
 
 			var center = new CenterContainer { Name = "Center", SizeFlagsVertical = SizeFlags.ExpandFill };
+			var row = Layout.Row(32, true).Named("Doors");
 			center.AddChild(row);
 			page.AddChild(center);
 
-			row.AddChild(new DoorCard(Art.Icon("tower"), Palette.Gold, T("map.locked"), true, DoorSize) { Name = "Tower" });
-			row.AddChild(Campaign());
-			row.AddChild(Dungeons());
-		}
-
-		private Control Campaign()
-		{
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
 			var stage = _database.Stage(next);
-			var door = new DoorCard(Art.Icon("region"), Palette.Gold, T("map.campaign", stage.Name), false, DoorSize) { Name = "Campaign" };
-			door.Footer.AddChild(Caption(T("map.stage", 1, next)));
-			door.Footer.AddChild(Progress(_player.HighestStage, _database.Stages.Count, T("map.campaign_progress", _player.HighestStage, _database.Stages.Count)));
-			door.Pressed += () => Requested?.Invoke(Destination.Campaign);
-			return door;
-		}
+			var campaign = new TileButton(T("destination.Campaign"), T("map.campaign_detail", next, stage.Name, _player.HighestStage, _database.Stages.Count), Art.Icon("region"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Campaign" };
+			campaign.Highlight = _player.HighestStage == 0;
+			campaign.Pressed += () => Requested?.Invoke(Destination.Campaign);
+			row.AddChild(campaign);
 
-		private Control Dungeons()
-		{
-			var open = _database.Dungeons.Where(d => Core.Progression.Dungeons.IsUnlocked(_player, d)).ToList();
-			var shown = open.LastOrDefault() ?? _database.Dungeons[0];
+			var open = _database.Dungeons.Count(d => Core.Progression.Dungeons.IsUnlocked(_player, d));
 			var cleared = _database.Dungeons.Sum(d => Core.Progression.Dungeons.Cleared(_player, d));
-			var total = _database.Dungeons.Sum(d => d.Floors.Count);
-			var door = new DoorCard(Art.Creature(shown.Image), Palette.Gold, T("map.dungeons", open.Count, _database.Dungeons.Count), false, DoorSize) { Name = "Dungeons" };
-			door.Footer.AddChild(Caption($"{open.Count}/{_database.Dungeons.Count}"));
-			door.Footer.AddChild(Progress(cleared, total, T("map.dungeons_progress", cleared, total)));
-			door.Pressed += () => Requested?.Invoke(Destination.Dungeons);
-			return door;
-		}
+			var floors = _database.Dungeons.Sum(d => d.Floors.Count);
+			var shown = _database.Dungeons.Where(d => Core.Progression.Dungeons.IsUnlocked(_player, d)).LastOrDefault() ?? _database.Dungeons[0];
+			var dungeons = new TileButton(T("destination.Dungeons"), T("map.dungeons_detail", open, _database.Dungeons.Count, cleared, floors), Art.Creature(shown.Image), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Dungeons" };
+			dungeons.Pressed += () => Requested?.Invoke(Destination.Dungeons);
+			row.AddChild(dungeons);
 
-		private static Label Caption(string text)
-		{
-			var label = new Label { Name = "Caption", Text = text, HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
-			label.AddThemeFontSizeOverride("font_size", 28);
-			label.AddThemeColorOverride("font_color", Palette.Gold);
-			return label;
-		}
-
-		private static ProgressBar Progress(int value, int max, string tooltip)
-		{
-			var bar = Layout.Energy(Palette.Arcane, 10).Named("Progress");
-			bar.MaxValue = Math.Max(1, max);
-			bar.Value = value;
-			bar.TooltipText = tooltip;
-			bar.MouseFilter = MouseFilterEnum.Ignore;
-			return bar;
+			var tower = new TileButton(T("map.tower"), T("map.tower_detail"), Art.Icon("tower"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Tower", Disabled = true };
+			row.AddChild(tower);
 		}
 	}
 }

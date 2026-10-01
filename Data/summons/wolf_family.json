@@ -1,28 +1,28 @@
 {
   "family_id": "wolf",
-  "base_name": "Wolf",
-  "name": "Wolves",
+  "base_name": "Lobo",
+  "name": "Lobos",
   "star_grade": 3,
   "image": "wolf",
   "awakened_image": "wolf_awakened",
   "variations": {
     "fire": {
       "variation_id": "wolf_fire",
-      "name": "Fire Wolf",
+      "name": "Lobo de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Cinderfang",
+        "name": "Presa de Brasa",
         "skill": {
-          "name": "Hunter's Instinct",
+          "name": "Instinto de Caça",
           "passive": {"kind": "BonusVsWounded", "value": 0.4}
         }
       },
       "skills": [
         {
-          "name": "Ember Bite",
+          "name": "Mordida de Brasa",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
@@ -35,7 +35,7 @@
           ]
         },
         {
-          "name": "Blazing Rush",
+          "name": "Investida Flamejante",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.45}
@@ -50,15 +50,15 @@
     },
     "water": {
       "variation_id": "wolf_water",
-      "name": "Water Wolf",
+      "name": "Lobo de Água",
       "element": "Water",
       "role": "HP",
       "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
       "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
       "awakening": {
-        "name": "Frostmane",
+        "name": "Juba de Gelo",
         "skill": {
-          "name": "Iron Pack",
+          "name": "Matilha de Ferro",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
@@ -72,7 +72,7 @@
       },
       "skills": [
         {
-          "name": "Cold Bite",
+          "name": "Mordida Gelada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "name": "Pack Guard",
+          "name": "Guarda da Matilha",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
@@ -98,21 +98,21 @@
     },
     "wind": {
       "variation_id": "wolf_wind",
-      "name": "Wind Wolf",
+      "name": "Lobo de Vento",
       "element": "Wind",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Gustpaw",
+        "name": "Pata de Rajada",
         "skill": {
-          "name": "Hunter's Instinct",
+          "name": "Instinto de Caça",
           "passive": {"kind": "BonusVsWounded", "value": 0.4}
         }
       },
       "skills": [
         {
-          "name": "Bite",
+          "name": "Mordida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5}
           ],
@@ -124,7 +124,7 @@
           ]
         },
         {
-          "name": "Howl",
+          "name": "Uivo",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 25}
@@ -137,15 +137,15 @@
     },
     "light": {
       "variation_id": "wolf_light",
-      "name": "Light Wolf",
+      "name": "Lobo de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Moonfur",
+        "name": "Pelo de Lua",
         "skill": {
-          "name": "Full Moon",
+          "name": "Lua Cheia",
           "cooldown": 5,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.25},
@@ -159,7 +159,7 @@
       },
       "skills": [
         {
-          "name": "Radiant Bite",
+          "name": "Mordida Radiante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
@@ -172,7 +172,7 @@
           ]
         },
         {
-          "name": "Moon Howl",
+          "name": "Uivo Lunar",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.15},
@@ -188,21 +188,21 @@
     },
     "dark": {
       "variation_id": "wolf_dark",
-      "name": "Dark Wolf",
+      "name": "Lobo de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Nightmaw",
+        "name": "Bocarra da Noite",
         "skill": {
-          "name": "Hunter's Instinct",
+          "name": "Instinto de Caça",
           "passive": {"kind": "BonusVsWounded", "value": 0.4}
         }
       },
       "skills": [
         {
-          "name": "Shadow Bite",
+          "name": "Mordida Sombria",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
           ],
@@ -214,7 +214,7 @@
           ]
         },
         {
-          "name": "Hunt",
+          "name": "Caçada",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.6},

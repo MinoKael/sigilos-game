@@ -1,23 +1,23 @@
 {
   "family_id": "druid",
-  "base_name": "Druid",
-  "name": "Druids",
+  "base_name": "Druida",
+  "name": "Druidas",
   "star_grade": 5,
   "image": "druid",
   "awakened_image": "druid_awakened",
   "variations": {
     "fire": {
       "variation_id": "druid_fire",
-      "name": "Fire Druid",
+      "name": "Druida de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Attack", "value": 0.18},
-      "awakening": {"name": "Emberhorn", "stat": "Crit"},
+      "awakening": {"name": "Chifre de Brasa", "stat": "Crit"},
       "skills": [
         {
-          "name": "Maul",
+          "name": "Dilacerar",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.1, "hits": 2},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
@@ -30,7 +30,7 @@
           ]
         },
         {
-          "name": "Wildfire",
+          "name": "Fogo Selvagem",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
@@ -44,23 +44,23 @@
           ]
         },
         {
-          "name": "Thornhide",
+          "name": "Couro de Espinhos",
           "passive": {"kind": "Thorns", "value": 0.25}
         }
       ]
     },
     "water": {
       "variation_id": "druid_water",
-      "name": "Water Druid",
+      "name": "Druida de Água",
       "element": "Water",
       "role": "Support",
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
       "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
       "leader": {"stat": "Resistance", "value": 0.25},
-      "awakening": {"name": "Brookwarden", "stat": "Resistance"},
+      "awakening": {"name": "Guarda-Riacho", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Soothing Rain",
+          "name": "Chuva Calmante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Heal", "target": "AllAllies", "power": 0.04}
@@ -73,7 +73,7 @@
           ]
         },
         {
-          "name": "Rejuvenate",
+          "name": "Rejuvenescer",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.2},
@@ -86,7 +86,7 @@
           ]
         },
         {
-          "name": "Spring Tide",
+          "name": "Maré da Primavera",
           "cooldown": 5,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.3},
@@ -101,16 +101,16 @@
     },
     "wind": {
       "variation_id": "druid_wind",
-      "name": "Wind Druid",
+      "name": "Druida de Vento",
       "element": "Wind",
       "role": "Defense",
       "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
       "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
       "leader": {"stat": "Defense", "value": 0.25},
-      "awakening": {"name": "Galebark", "stat": "Speed"},
+      "awakening": {"name": "Casca de Vendaval", "stat": "Speed"},
       "skills": [
         {
-          "name": "Thorn Lash",
+          "name": "Chicote de Espinhos",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.4, "turns": 2}
@@ -123,7 +123,7 @@
           ]
         },
         {
-          "name": "Entangling Roots",
+          "name": "Raízes Enredantes",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
@@ -137,23 +137,23 @@
           ]
         },
         {
-          "name": "Thornhide",
+          "name": "Couro de Espinhos",
           "passive": {"kind": "Thorns", "value": 0.25}
         }
       ]
     },
     "light": {
       "variation_id": "druid_light",
-      "name": "Light Druid",
+      "name": "Druida de Luz",
       "element": "Light",
       "role": "HP",
       "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
       "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
       "leader": {"stat": "Health", "value": 0.2},
-      "awakening": {"name": "Sunroot", "stat": "Resistance"},
+      "awakening": {"name": "Raiz do Sol", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Antler Charge",
+          "name": "Investida de Galhada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.35}
@@ -166,7 +166,7 @@
           ]
         },
         {
-          "name": "Sacred Grove",
+          "name": "Bosque Sagrado",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7},
@@ -180,23 +180,23 @@
           ]
         },
         {
-          "name": "Thornhide",
+          "name": "Couro de Espinhos",
           "passive": {"kind": "Thorns", "value": 0.25}
         }
       ]
     },
     "dark": {
       "variation_id": "druid_dark",
-      "name": "Dark Druid",
+      "name": "Druida de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Accuracy", "value": 0.25},
-      "awakening": {"name": "Blightthorn", "stat": "Accuracy"},
+      "awakening": {"name": "Espinho-Praga", "stat": "Accuracy"},
       "skills": [
         {
-          "name": "Rot Bite",
+          "name": "Mordida Podre",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.2},
             {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.5, "turns": 2}
@@ -209,7 +209,7 @@
           ]
         },
         {
-          "name": "Plague Spores",
+          "name": "Esporos da Praga",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
@@ -222,7 +222,7 @@
           ]
         },
         {
-          "name": "Wither",
+          "name": "Definhar",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 6.3},

@@ -1,13 +1,15 @@
-"""Confere Data/texts/en.json (a base) contra o código e as traduções contra a base.
+"""Confere Data/texts/pt-BR.json (a base) contra o código e as traduções contra a base.
 
 Procura as chaves literais usadas em T("...") dentro de UI/ e GameEntry/ e diz quais faltam no
 arquivo de textos e quais sobram nele. Chaves montadas a partir de enum (T($"stat.{stat}"))
 não aparecem aqui: essas o jogo confere ao abrir e avisa no console (Texts.MissingEnumKeys).
-Depois confere cada tradução (pt-BR.json...): mesmas chaves e mesmos marcadores {0}, {1}... da base.
+Depois confere cada tradução (en.json...): mesmas chaves e mesmos marcadores {0}, {1}... da base,
+e o grupo "names": a tradução de cada nome dos dados (invocações, habilidades, fases, Masmorras,
+chefes, Loja), pelo nome em português que está em Data/.
 
 Uso:
-    py Tools/texts/check_texts.py            # en e todas as traduções
-    py Tools/texts/check_texts.py pt-BR      # a base e só esta tradução
+    py Tools/texts/check_texts.py            # pt-BR e todas as traduções
+    py Tools/texts/check_texts.py en         # a base e só esta tradução
     py Tools/texts/check_texts.py --listar   # só lista as chaves do código
 """
 
@@ -18,8 +20,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CODE = [ROOT / "UI", ROOT / "GameEntry"]
-TEXTS = ROOT / "Data" / "texts"
-BASE = "en"
+DATA = ROOT / "Data"
+TEXTS = DATA / "texts"
+BASE = "pt-BR"
+NAMES = "names"
 LITERAL = re.compile(r'\bT\(\s*"([a-z0-9_.]+)"')
 # Chaves passadas por variável ou em "? :" dentro de T(...): qualquer texto "grupo.chave" no código.
 KEYLIKE = re.compile(r'"([a-z][a-z0-9_]*(?:\.[A-Za-z0-9_]+)+)"')
@@ -48,14 +52,43 @@ def flatten(node, prefix=""):
             yield full, value
 
 
-def load(language):
-    path = TEXTS / f"{language}.json"
+def parse(path):
     lines = [line for line in path.read_text(encoding="utf-8").splitlines() if not line.lstrip().startswith("//")]
-    return dict(flatten(json.loads("\n".join(lines))))
+    text = re.sub(r",(\s*[}\]])", r"\1", "\n".join(lines))
+    return json.loads(text)
 
 
-def check_translation(language, base):
-    other = load(language)
+def load(language):
+    """Os textos por chave (sem o grupo "names") e os nomes traduzidos, à parte."""
+    tree = parse(TEXTS / f"{language}.json")
+    names = tree.pop(NAMES, {})
+    return dict(flatten(tree)), names
+
+
+def data_names():
+    """Todo "name" e "base_name" dos arquivos de Data/ (fora os textos): o que o grupo "names" traduz."""
+    found = set()
+
+    def walk(node):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key in ("name", "base_name") and isinstance(value, str):
+                    found.add(value)
+                else:
+                    walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    for path in sorted(DATA.rglob("*.json")):
+        if TEXTS in path.parents or path.name == "stat_model.json":
+            continue
+        walk(parse(path))
+    return found
+
+
+def check_translation(language, base, names):
+    other, translated = load(language)
     problems = 0
     for key in sorted(base.keys() - other.keys()):
         print(f"{language}: FALTA   {key}")
@@ -67,7 +100,13 @@ def check_translation(language, base):
         if set(HOLE.findall(base[key])) != set(HOLE.findall(other[key])):
             print(f"{language}: MARCADORES  {key}")
             problems += 1
-    print(f"{language}: {len(other)} chaves, {problems} problemas.")
+    for name in sorted(names - translated.keys()):
+        print(f"{language}: FALTA NOME   {name}")
+        problems += 1
+    for name in sorted(translated.keys() - names):
+        print(f"{language}: SOBRA NOME   {name}")
+        problems += 1
+    print(f"{language}: {len(other)} chaves e {len(translated)} nomes, {problems} problemas.")
     return problems
 
 
@@ -79,20 +118,21 @@ def main():
         print("\n".join(sorted(literal)))
         return 0
 
-    base = load(BASE)
-    # "chave_tip" acompanha "chave" quando o código monta a dica a partir do nome do botão.
-    used = literal | {f"{k}_tip" for k in literal}
+    base, base_names = load(BASE)
     missing = sorted(literal - base.keys())
-    unused = sorted(k for k in base.keys() - used if not any(k.startswith(p) for p in prefixes))
+    unused = sorted(k for k in base.keys() - literal if not any(k.startswith(p) for p in prefixes))
     for key in missing:
         print(f"FALTA   {key}")
     for key in unused:
         print(f"SOBRA   {key}")
+    if base_names:
+        print(f'{BASE}.json não precisa do grupo "{NAMES}": os nomes da base são os de Data/.')
     print(f"{len(literal)} chaves no código, {len(base)} em {BASE}.json, {len(missing)} faltando, {len(unused)} sem uso.")
 
+    names = data_names()
     translations = args or sorted(p.stem for p in TEXTS.glob("*.json") if p.stem != BASE)
-    problems = sum(check_translation(language, base) for language in translations)
-    return 1 if missing or problems else 0
+    problems = sum(check_translation(language, base, names) for language in translations)
+    return 1 if missing or problems or base_names else 0
 
 
 if __name__ == "__main__":

@@ -2,19 +2,18 @@ using System;
 using Godot;
 using Sigilos.Core.Runes;
 using Sigilos.UI.Style;
-using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma runa em miniatura, quadrada de cantos redondos (a dica é a <see cref="RuneCard"/> dela): o espaço no canto de cima à esquerda, as
-	/// estrelas ao lado dele, o Glifo do conjunto grande no meio (na fonte das runas, na cor da
-	/// raridade) e a melhora no canto de baixo à direita. O nome e os atributos vêm na dica. Sem runa,
-	/// só o número do espaço, apagado.
+	/// Uma runa em miniatura, quadrada de cantos redondos: as estrelas no alto, o Glifo do conjunto grande
+	/// no meio (na fonte das runas, na cor da raridade), o espaço no canto de baixo à esquerda e a melhora
+	/// no de baixo à direita. Sem runa, só o número do espaço, apagado.
 	///
-	/// Sob o mouse a moldura acende; escolhida, fica azul arcano; marcada para desfazer, ganha o ✓ verde.
-	/// Na lista, a runa equipada mostra no canto de baixo à esquerda o medalhão de quem a usa (apagado se
-	/// ele está no Baú).
+	/// Toque curto é <see cref="Pressed"/>; toque longo abre a ficha da runa (<see cref="RuneCard"/>) numa
+	/// janela colada nela. Escolhida, fica azul arcano; marcada para vender, ganha o ✓ verde. Na lista, a
+	/// runa equipada mostra no canto de baixo à esquerda o medalhão de quem a usa (apagado se ele está no
+	/// Baú). O toque passa para cima, então arrastar rola a lista.
 	/// </summary>
 	public partial class RuneTile : PanelContainer
 	{
@@ -29,9 +28,9 @@ namespace Sigilos.UI.Components
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly float _scale;
 		private readonly int _stars;
+		private readonly Press _press = new();
 		private bool _selected;
 		private bool _marked;
-		private string? _owner;
 
 		public RuneTile(Rune? rune, int slot, float scale = 1)
 		{
@@ -40,8 +39,14 @@ namespace Sigilos.UI.Components
 			_scale = scale;
 			_stars = rune?.Grade ?? 0;
 			CustomMinimumSize = TileSize * scale;
-			MouseFilter = MouseFilterEnum.Stop;
+			MouseFilter = MouseFilterEnum.Pass;
 			MouseDefaultCursorShape = CursorShape.PointingHand;
+			_press.Tapped += () => Pressed?.Invoke(this);
+			_press.Held += () =>
+			{
+				if (Rune != null)
+					RuneDialog.Show(this, Rune);
+			};
 
 			_color = rune == null ? Palette.GoldDark : Palette.Of(rune.Rarity);
 			_box = GameTheme.Box(Palette.Inset, _color, rune == null ? 1 : 2, (int)(9 * scale), 0);
@@ -88,7 +93,7 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Quem usa a runa: o medalhão do monstro no canto de baixo à esquerda (apagado se ele está no Baú).</summary>
-		public void SetOwner(Texture2D? creature, Color ink, bool stored, string name)
+		public void SetOwner(Texture2D? creature, Color ink, bool stored)
 		{
 			var size = 18 * _scale;
 			var holder = new Control { Name = "Owner", MouseFilter = MouseFilterEnum.Ignore };
@@ -99,8 +104,24 @@ namespace Sigilos.UI.Components
 			holder.OffsetTop = holder.OffsetBottom - size;
 			holder.AddChild(Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false));
 			_layer.AddChild(holder);
-			_owner = T(stored ? "rune.owner_vault" : "rune.owner", name);
-			TooltipText += "\n" + _owner;
+		}
+
+		/// <summary>Uma faixa escrita por cima da runa ("Vendida"), e a runa apagada.</summary>
+		public void SetStamp(string text)
+		{
+			Modulate = new Color(1, 1, 1, 0.55f);
+			var plate = new PanelContainer { Name = "Stamp", MouseFilter = MouseFilterEnum.Ignore };
+			var box = GameTheme.Box(new Color(Palette.Inset, 0.95f), Palette.Negative, 1, 5, 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 4;
+			plate.AddThemeStyleboxOverride("panel", box);
+			var label = new Label { Name = "Text", Text = text, MouseFilter = MouseFilterEnum.Ignore };
+			label.AddThemeFontSizeOverride("font_size", (int)(12 * _scale));
+			label.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.3f));
+			plate.AddChild(label);
+			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
+			plate.GrowHorizontal = GrowDirection.Both;
+			plate.GrowVertical = GrowDirection.Both;
+			_layer.AddChild(plate);
 		}
 
 		/// <summary>Marca para desfazer em massa.</summary>
@@ -111,14 +132,7 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		/// <summary>A dica de uma runa é a ficha dela (<see cref="RuneCard"/>); a de um espaço vazio, o texto.</summary>
-		//public override GodotObject _MakeCustomTooltip(string forText) => Rune == null ? null! : new RuneCard(Rune, note: _owner);
-
-		public override void _GuiInput(InputEvent @event)
-		{
-			if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-				Pressed?.Invoke(this);
-		}
+		public override void _GuiInput(InputEvent @event) => _press.Feed(this, @event);
 
 		/// <summary>
 		/// As estrelas da runa, em fileira no alto, ao lado do número do espaço: o desenho da estrela (o PNG

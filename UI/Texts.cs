@@ -204,7 +204,7 @@ namespace Sigilos.UI
 		/// <summary>Um efeito de batalha em dourado, com o símbolo dele na frente ([effect=Nome]).</summary>
 		public static string Term(StatusKind status) => $"[effect={status}][color=#{Palette.Gold.ToHtml(false)}]{Name(status)}[/color]";
 
-		public static string Term(RuneSet set) => Term(Name(set), RuneSets.For(set).Glyph);
+		public static string Term(RuneSet set) => Name(set);
 
 		public static string Impeto => Term(T("term.impetus"), RuneSets.For(RuneSet.Bane).Glyph);
 
@@ -301,7 +301,11 @@ namespace Sigilos.UI
 			? T("skill.level_up.Cooldown", (int)up.Value)
 			: T($"skill.level_up.{up.Kind}", Percent(up.Value));
 
-		public static string Describe(IEnumerable<EffectDefinition> effects) => string.Join("; ", effects.Select(Describe)) + ".";
+		public static string Describe(IEnumerable<EffectDefinition> effects) => Sentence(string.Join("; ", effects.Select(Describe)) + ".");
+
+		/// <summary>A frase começa com maiúscula ("remove um efeito…" vira "Remove um efeito…").</summary>
+		private static string Sentence(string text) =>
+			text.Length > 0 && char.IsLower(text[0]) ? char.ToUpperInvariant(text[0]) + text[1..] : text;
 
 		private static string Describe(EffectDefinition effect)
 		{

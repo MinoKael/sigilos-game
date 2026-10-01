@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
@@ -19,6 +20,11 @@ namespace Sigilos.UI.Screens
 	{
 		/// <summary>Chegou (ou já estava) no nível máximo das estrelas.</summary>
 		public bool MaxLevel { get; init; }
+
+		/// <summary>Quem é, para o resumo do toque longo no retrato.</summary>
+		public SummonDefinition? Summon { get; init; }
+
+		public OwnedSummon? Monster { get; init; }
 
 		/// <summary>
 		/// Os trechos da barra entre o antes (<paramref name="level"/>, <paramref name="experience"/>) e o
@@ -51,9 +57,10 @@ namespace Sigilos.UI.Screens
 
 	/// <summary>
 	/// O fim da luta, por cima do campo: "Vitória" ou "Derrota" grande no alto; no canto, o tempo da luta
-	/// e o melhor tempo dela (aceso quando foi batido); no meio, a faixa com o que a luta rendeu; embaixo,
-	/// a equipe, cada monstro com a barra de experiência subindo nível a nível (ou "nível máximo"). A runa
-	/// que caiu abre por cima, na <see cref="RuneCard"/>, com Vender e Pegar.
+	/// e o melhor tempo dela (aceso quando foi batido); no meio, a faixa com o que a luta rendeu, cada
+	/// item escrito; embaixo, a equipe, cada monstro com o nome e a barra de experiência subindo nível a
+	/// nível (ou "nível máximo"), e os botões Lutar de novo e Continuar. A runa que caiu abre por cima,
+	/// na <see cref="RuneCard"/>, com Guardar e Vender.
 	/// </summary>
 	public partial class BattleResultPanel : ColorRect
 	{
@@ -72,7 +79,7 @@ namespace Sigilos.UI.Screens
 
 		/// <param name="seconds">O tempo da luta na tela.</param>
 		/// <param name="defeat">Na derrota, o motivo e o símbolo dele (o tempo esgotado ou todos caídos).</param>
-		public BattleResultPanel(BattleOutcome outcome, double seconds, (string Icon, string Text)? defeat, Action onContinue, Action<Rune> sell)
+		public BattleResultPanel(BattleOutcome outcome, double seconds, (string Icon, string Text)? defeat, Action onContinue, Action onRestart, Action<Rune> sell)
 		{
 			_outcome = outcome;
 			_sell = sell;
@@ -87,12 +94,14 @@ namespace Sigilos.UI.Screens
 			AddChild(Rewards(outcome, defeat));
 			AddChild(Team(outcome.Team));
 
-			var next = SigilButton.Of("confirm", T("common.continue"), onContinue, 64).Named("Continue");
-			next.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
-			next.GrowHorizontal = GrowDirection.Both;
-			next.GrowVertical = GrowDirection.Begin;
-			next.OffsetTop = next.OffsetBottom = -Layout.ScreenMargin;
-			AddChild(next);
+			var actions = Layout.Row(20, true).Named("Actions");
+			actions.AddChild(GameButton.Of(T("battle.again"), onRestart, ButtonKind.Secondary, "repeat", 64).Named("Again").Wide(240));
+			actions.AddChild(GameButton.Of(T("common.continue"), onContinue, ButtonKind.Primary, "confirm", 64).Named("Continue").Wide(240));
+			actions.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
+			actions.GrowHorizontal = GrowDirection.Both;
+			actions.GrowVertical = GrowDirection.Begin;
+			actions.OffsetTop = actions.OffsetBottom = -Layout.ScreenMargin;
+			AddChild(actions);
 		}
 
 		public override void _Ready()
@@ -105,11 +114,12 @@ namespace Sigilos.UI.Screens
 
 			// A runa que caiu, por cima de tudo: o jogador decide antes de ver o resto.
 			var value = RuneRules.SellValue(rune);
-			var sell = SigilButton.Of("dismantle", T("runes.sell", value), () => Sell(rune, value), 64, SigilShape.Diamond).Named("Sell");
-			sell.Badge = value.ToString();
-			var keep = SigilButton.Of("confirm", T("battle.keep_rune"), () => { }, 64, SigilShape.Diamond).Named("Keep");
+			var dialog = RuneDialog.Show(this, rune, anchored: false);
+			dialog.Dismissable = false;
+			dialog.AddAction(T("runes.sell_button", value), () => Sell(rune, value), ButtonKind.Danger, true, "dismantle").Named("Sell");
+			dialog.AddAction(T("battle.keep_rune"), null, ButtonKind.Primary, true, "confirm").Named("Keep");
 			// As barras só sobem depois que a runa sai da frente, para o jogador ver.
-			RunePopup.Open(this, rune, new[] { sell, keep }, modal: true).TreeExiting += Animate;
+			dialog.Closed += Animate;
 		}
 
 		private void Animate()
@@ -201,29 +211,37 @@ namespace Sigilos.UI.Screens
 			if (outcome.Reward is { } reward)
 			{
 				if (reward.Scrolls > 0)
-					chips.AddChild(Layout.Chip("scroll", $"+{reward.Scrolls}", T("currency.scrolls_name")));
+					chips.AddChild(Layout.Labeled("scroll", $"+{reward.Scrolls}", T("currency.scrolls_name")));
 				if (reward.Gold > 0)
-					chips.AddChild(Layout.Chip("gold", $"+{reward.Gold}", T("currency.gold")));
-				var essence = Layout.Chip("essence", $"+{reward.Essence}", T("currency.essence"));
+					chips.AddChild(Layout.Labeled("gold", $"+{reward.Gold}", T("currency.gold")));
+				var essence = Layout.Labeled("essence", $"+{reward.Essence}", T("currency.essence"));
 				_essence = essence.GetNode<Label>("Row/Value");
 				_essenceShown = reward.Essence;
 				chips.AddChild(essence);
-				chips.AddChild(Layout.Chip("level_max", $"+{reward.Experience}", T("reward.experience")).Named("Experience"));
+				chips.AddChild(Layout.Labeled("level_max", $"+{reward.Experience}", T("reward.experience")).Named("Experience"));
 				if (reward.AccountLevels > 0)
-					chips.AddChild(Layout.Chip("avatar", outcome.AccountLevel.ToString(), T("battle.account", outcome.AccountLevel, reward.AccountLevels * Account.LevelUpGold), Palette.Arcane).Named("AccountLevel"));
-				if (reward.SummonResult != null)
-					chips.AddChild(Layout.Chip("monster", reward.SummonResult.Summon.Name.ToString(), ""));
+					chips.AddChild(Layout.Labeled("avatar", outcome.AccountLevel.ToString(), T("battle.account", reward.AccountLevels * Account.LevelUpGold), Palette.Arcane).Named("AccountLevel"));
+				if (reward.SummonResult is { } summon)
+				{
+					var caption = summon.Monster.Stored ? T("summon.sent_to_vault") : summon.FirstCopy ? T("battle.monster_drop") : T("battle.monster_copy");
+					var chip = Layout.Labeled(Art.Creature(summon.Summon.ImageFor(false)), summon.Summon.Name, caption, Palette.Of(summon.Summon.Element)).Named("Monster");
+					chip.MouseFilter = MouseFilterEnum.Stop;
+					chip.MouseDefaultCursorShape = CursorShape.PointingHand;
+					void Open() => MonsterSummary.Open(chip, summon.Summon, summon.Monster);
+					Press.On(chip, Open, Open);
+					chips.AddChild(chip);
+				}
 
-                for (var i = 0; i < reward.Tools.Count; i++)
+				for (var i = 0; i < reward.Tools.Count; i++)
 				{
 					var tool = reward.Tools[i];
-					chips.AddChild(Layout.Chip(tool.Kind == RuneToolKind.Grindstone ? "grindstone" : "gem", "", $"{Texts.Name(tool)} ({Texts.Range(tool)})", Palette.Of(tool.Grade)).Named($"Tool{i + 1}"));
+					chips.AddChild(Layout.Labeled(tool.Kind == RuneToolKind.Grindstone ? "grindstone" : "gem", "", Texts.Name(tool), Palette.Of(tool.Grade)).Named($"Tool{i + 1}"));
 				}
 			}
 			else if (defeat is { } reason)
 			{
-				chips.AddChild(Layout.Chip(reason.Icon, "", reason.Text, Palette.Negative).Named("Reason"));
-				chips.AddChild(new Label { Name = "Text", Text = reason.Text, VerticalAlignment = VerticalAlignment.Center });
+				chips.AddChild(Layout.Labeled(reason.Icon, "", reason.Text, Palette.Negative).Named("Reason"));
+				chips.AddChild(Layout.Text(T("battle.defeat_tip"), GameTheme.Faded).Named("Tip"));
 			}
 
 			return band;
@@ -246,7 +264,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Um monstro: o retrato e, ao lado, o nível e a barra. Não é container: o "subiu de nível" flutua por cima.</summary>
 		private Control Monster(ResultMonster monster)
 		{
-			var view = new Control { CustomMinimumSize = new Vector2(214, 72), TooltipText = monster.Name, MouseFilter = MouseFilterEnum.Stop };
+			var view = new Control { CustomMinimumSize = new Vector2(220, 72), MouseFilter = MouseFilterEnum.Ignore };
 			var row = Layout.Row(8).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
             view.AddChild(row);
@@ -255,10 +273,24 @@ namespace Sigilos.UI.Screens
 			var box = GameTheme.Box(Palette.Inset, monster.Ink, 2, 32, 2);
 			frame.AddThemeStyleboxOverride("panel", box);
 			frame.AddChild(Layout.Medal(monster.Art, monster.Ink, 58));
+			if (monster.Summon is { } summon)
+			{
+				// Tocar ou segurar o retrato abre o resumo, como em qualquer lugar em que um monstro aparece.
+				frame.MouseFilter = MouseFilterEnum.Stop;
+				frame.MouseDefaultCursorShape = CursorShape.PointingHand;
+				void Open() => MonsterSummary.Open(frame, summon, monster.Monster);
+				Press.On(frame, Open, Open);
+			}
+
 			row.AddChild(frame);
 
 			var column = new VBoxContainer { Name = "Experience", Alignment = BoxContainer.AlignmentMode.Center, MouseFilter = MouseFilterEnum.Ignore };
 			column.AddThemeConstantOverride("separation", 4);
+			var name = new Label { Name = "Name", Text = monster.Name, MouseFilter = MouseFilterEnum.Ignore, ClipText = true, CustomMinimumSize = new Vector2(130, 0) };
+			name.AddThemeFontSizeOverride("font_size", 15);
+			name.AddThemeColorOverride("font_outline_color", Palette.Background);
+			name.AddThemeConstantOverride("outline_size", 4);
+			column.AddChild(name);
 			var level = new Label { Name = "Level", ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
 			level.AddThemeFontSizeOverride("font_size", 17);
 			level.AddThemeColorOverride("font_outline_color", Palette.Background);

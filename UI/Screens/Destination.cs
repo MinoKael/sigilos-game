@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Sigilos.Core.Player;
 using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Screens
 {
-	/// <summary>Para onde um sigilo de navegação leva: os atalhos do Santuário, a Bolsa e o Mapa.</summary>
+	/// <summary>Para onde um botão de navegação leva: a barra do Santuário e a escolha de batalha.</summary>
 	public enum Destination
 	{
 		Campaign,
@@ -18,23 +14,14 @@ namespace Sigilos.UI.Screens
 		Shop,
 		Compendium,
 		Grimoire,
+
+		/// <summary>A escolha de batalha: Campanha, Masmorras e o que ainda vem.</summary>
 		Map,
-		Bag,
 	}
 
-	/// <summary>O símbolo e o nome de cada destino, e os atalhos do Santuário guardados no save.</summary>
+	/// <summary>O símbolo e o nome escrito de cada destino.</summary>
 	public static class Destinations
 	{
-		/// <summary>Vagas na constelação do Santuário.</summary>
-		public const int Slots = 7;
-
-		/// <summary>Os atalhos de uma conta nova (e de quem nunca mexeu).</summary>
-		public static readonly Destination?[] Defaults =
-		{
-			Destination.Summon, Destination.Campaign, Destination.Dungeons, Destination.Monsters,
-			Destination.Runes, Destination.Teams, Destination.Compendium,
-		};
-
 		public static string Icon(Destination destination) => destination switch
 		{
 			Destination.Campaign => "campaign",
@@ -46,24 +33,9 @@ namespace Sigilos.UI.Screens
 			Destination.Shop => "shop",
 			Destination.Compendium => "compendium",
 			Destination.Grimoire => "grimoire",
-			Destination.Map => "map",
-			_ => "bag",
+			_ => "fight",
 		};
 
 		public static string Name(Destination destination) => T($"destination.{destination}");
-
-		/// <summary>Os atalhos da conta, vaga a vaga (nulo = vaga vazia).</summary>
-		public static IReadOnlyList<Destination?> Shortcuts(PlayerState player)
-		{
-			if (player.Shortcuts.Count == 0)
-				return Defaults;
-
-			return Enumerable.Range(0, Slots)
-				.Select(i => i < player.Shortcuts.Count && Enum.TryParse<Destination>(player.Shortcuts[i], out var destination) ? destination : (Destination?)null)
-				.ToList();
-		}
-
-		/// <summary>O que o save guarda: o nome de cada destino, "" na vaga vazia.</summary>
-		public static List<string> Save(IEnumerable<Destination?> shortcuts) => shortcuts.Select(d => d?.ToString() ?? "").ToList();
 	}
 }

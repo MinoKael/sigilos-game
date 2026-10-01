@@ -1,23 +1,23 @@
 {
   "family_id": "vampire",
-  "base_name": "Vampire",
-  "name": "Vampires",
+  "base_name": "Vampiro",
+  "name": "Vampiros",
   "star_grade": 4,
   "image": "vampire",
   "awakened_image": "vampire_awakened",
   "variations": {
     "fire": {
       "variation_id": "vampire_fire",
-      "name": "Fire Vampire",
+      "name": "Vampiro de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Count Embris"},
+      "awakening": {"name": "Conde Embris"},
       "skills": [
         {
-          "name": "Scalding Bite",
+          "name": "Mordida Escaldante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
@@ -30,7 +30,7 @@
           ]
         },
         {
-          "name": "Blood Boil",
+          "name": "Sangue Fervente",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 6.3}
@@ -46,23 +46,23 @@
           ]
         },
         {
-          "name": "Blood Thirst",
+          "name": "Sede de Sangue",
           "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
         }
       ]
     },
     "water": {
       "variation_id": "vampire_water",
-      "name": "Water Vampire",
+      "name": "Vampiro de Água",
       "element": "Water",
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Countess Mirelle"},
+      "awakening": {"name": "Condessa Mirelle"},
       "skills": [
         {
-          "name": "Cold Embrace",
+          "name": "Abraço Frio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Impeto", "target": "Target", "power": -15}
@@ -75,7 +75,7 @@
           ]
         },
         {
-          "name": "Mist Form",
+          "name": "Forma de Névoa",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Hidden"},
@@ -93,23 +93,23 @@
           ]
         },
         {
-          "name": "Blood Thirst",
+          "name": "Sede de Sangue",
           "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
         }
       ]
     },
     "wind": {
       "variation_id": "vampire_wind",
-      "name": "Wind Vampire",
+      "name": "Vampiro de Vento",
       "element": "Wind",
       "role": "Attack",
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Count Vesper"},
+      "awakening": {"name": "Conde Vesper"},
       "skills": [
         {
-          "name": "Swift Fangs",
+          "name": "Presas Velozes",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Impeto", "target": "Self", "power": 10}
@@ -122,7 +122,7 @@
           ]
         },
         {
-          "name": "Bat Swarm",
+          "name": "Enxame de Morcegos",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.4, "hits": 2}
@@ -138,7 +138,7 @@
           ]
         },
         {
-          "name": "Night Flight",
+          "name": "Voo Noturno",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.6},
@@ -153,16 +153,16 @@
     },
     "light": {
       "variation_id": "vampire_light",
-      "name": "Light Vampire",
+      "name": "Vampiro de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Countess Aurelle"},
+      "awakening": {"name": "Condessa Aurelle"},
       "skills": [
         {
-          "name": "Pale Touch",
+          "name": "Toque Pálido",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
@@ -175,7 +175,7 @@
           ]
         },
         {
-          "name": "Transfusion",
+          "name": "Transfusão",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.2}
@@ -191,7 +191,7 @@
           ]
         },
         {
-          "name": "Sanguine Pact",
+          "name": "Pacto de Sangue",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
@@ -205,16 +205,16 @@
     },
     "dark": {
       "variation_id": "vampire_dark",
-      "name": "Dark Vampire",
+      "name": "Vampiro de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "CritDamage", "value": 0.25},
-      "awakening": {"name": "Count Noctis"},
+      "awakening": {"name": "Conde Noctis"},
       "skills": [
         {
-          "name": "Drain Life",
+          "name": "Drenar Vida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
@@ -227,7 +227,7 @@
           ]
         },
         {
-          "name": "Feast",
+          "name": "Banquete",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.6, "drain": 0.5}
@@ -243,7 +243,7 @@
           ]
         },
         {
-          "name": "Blood Thirst",
+          "name": "Sede de Sangue",
           "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
         }
       ]

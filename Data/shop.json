@@ -2,8 +2,8 @@
 // quantity and "price" the price in Gold. Gold only comes from playing: channeling, account levels and
 // the first victory on each Dungeon floor. Bought Mana can go past the maximum.
 [
-  {"id": "mana_flask", "name": "Mana Flask", "item": "Mana", "amount": 30, "price": 15},
-  {"id": "mana_jug", "name": "Mana Jug", "item": "Mana", "amount": 120, "price": 50},
-  {"id": "scroll", "name": "Mystic Scroll", "item": "Scrolls", "amount": 1, "price": 20},
-  {"id": "scrolls_10", "name": "Bundle of Scrolls", "item": "Scrolls", "amount": 10, "price": 180}
+  {"id": "mana_flask", "name": "Frasco de Mana", "item": "Mana", "amount": 30, "price": 15},
+  {"id": "mana_jug", "name": "Cântaro de Mana", "item": "Mana", "amount": 120, "price": 50},
+  {"id": "scroll", "name": "Pergaminho Místico", "item": "Scrolls", "amount": 1, "price": 20},
+  {"id": "scrolls_10", "name": "Maço de Pergaminhos", "item": "Scrolls", "amount": 10, "price": 180}
 ]

@@ -1,14 +1,14 @@
 {
   "family_id": "dragon",
-  "base_name": "Dragon",
-  "name": "Dragons",
+  "base_name": "Dragão",
+  "name": "Dragões",
   "star_grade": 5,
   "image": "dragon",
   "awakened_image": "dragon_awakened",
   "variations": {
     "fire": {
       "variation_id": "dragon_fire",
-      "name": "Fire Dragon",
+      "name": "Dragão de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
@@ -17,7 +17,7 @@
       "awakening": {"name": "Pyrrhax", "stat": "Crit"},
       "skills": [
         {
-          "name": "Claw",
+          "name": "Garra",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.2},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
@@ -30,7 +30,7 @@
           ]
         },
         {
-          "name": "Breath",
+          "name": "Sopro",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
@@ -43,14 +43,14 @@
           ]
         },
         {
-          "name": "Dragonfire",
+          "name": "Fogo de Dragão",
           "passive": {"kind": "BurnOnHit", "value": 0.2}
         }
       ]
     },
     "water": {
       "variation_id": "dragon_water",
-      "name": "Water Dragon",
+      "name": "Dragão de Água",
       "element": "Water",
       "role": "Defense",
       "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
@@ -59,7 +59,7 @@
       "awakening": {"name": "Maelstra", "stat": "Accuracy"},
       "skills": [
         {
-          "name": "Tidal Claw",
+          "name": "Garra da Maré",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.2},
             {"kind": "Impeto", "target": "Target", "power": -20}
@@ -72,7 +72,7 @@
           ]
         },
         {
-          "name": "Deluge",
+          "name": "Dilúvio",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "name": "Maelstrom",
+          "name": "Sorvedouro",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 4.55},
@@ -101,7 +101,7 @@
     },
     "wind": {
       "variation_id": "dragon_wind",
-      "name": "Wind Dragon",
+      "name": "Dragão de Vento",
       "element": "Wind",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
@@ -110,7 +110,7 @@
       "awakening": {"name": "Zephyrax", "stat": "Speed"},
       "skills": [
         {
-          "name": "Gust Claw",
+          "name": "Garra de Rajada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2, "hits": 2}
           ],
@@ -122,7 +122,7 @@
           ]
         },
         {
-          "name": "Cyclone",
+          "name": "Ciclone",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
@@ -135,7 +135,7 @@
           ]
         },
         {
-          "name": "Tempest",
+          "name": "Tempestade",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 4.9},
@@ -151,7 +151,7 @@
     },
     "light": {
       "variation_id": "dragon_light",
-      "name": "Light Dragon",
+      "name": "Dragão de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
@@ -160,7 +160,7 @@
       "awakening": {"name": "Aurelion", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Radiant Claw",
+          "name": "Garra Radiante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
@@ -173,7 +173,7 @@
           ]
         },
         {
-          "name": "Holy Breath",
+          "name": "Sopro Sagrado",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.2},
@@ -186,14 +186,14 @@
           ]
         },
         {
-          "name": "Dragonfire",
+          "name": "Fogo de Dragão",
           "passive": {"kind": "BurnOnHit", "value": 0.2}
         }
       ]
     },
     "dark": {
       "variation_id": "dragon_dark",
-      "name": "Dark Dragon",
+      "name": "Dragão de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
@@ -202,7 +202,7 @@
       "awakening": {"name": "Umbrax", "stat": "Accuracy"},
       "skills": [
         {
-          "name": "Shadow Claw",
+          "name": "Garra Sombria",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.2, "drain": 0.25}
           ],
@@ -214,7 +214,7 @@
           ]
         },
         {
-          "name": "Void Breath",
+          "name": "Sopro do Vazio",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
@@ -227,7 +227,7 @@
           ]
         },
         {
-          "name": "Dragonfire",
+          "name": "Fogo de Dragão",
           "passive": {"kind": "BurnOnHit", "value": 0.2}
         }
       ]

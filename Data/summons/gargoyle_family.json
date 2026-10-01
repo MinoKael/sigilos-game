@@ -1,23 +1,23 @@
 {
   "family_id": "gargoyle",
-  "base_name": "Gargoyle",
-  "name": "Gargoyles",
+  "base_name": "Gárgula",
+  "name": "Gárgulas",
   "star_grade": 4,
   "image": "gargoyle",
   "awakened_image": "gargoyle_awakened",
   "variations": {
     "fire": {
       "variation_id": "gargoyle_fire",
-      "name": "Fire Gargoyle",
+      "name": "Gárgula de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Pyrestone"},
+      "awakening": {"name": "Pedra-Pira"},
       "skills": [
         {
-          "name": "Rending Claw",
+          "name": "Garra Dilacerante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.95, "hits": 2},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.25, "turns": 2}
@@ -30,7 +30,7 @@
           ]
         },
         {
-          "name": "Molten Dive",
+          "name": "Mergulho Derretido",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 6.3}
@@ -45,23 +45,23 @@
           ]
         },
         {
-          "name": "Stone Gaze",
+          "name": "Olhar de Pedra",
           "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
         }
       ]
     },
     "water": {
       "variation_id": "gargoyle_water",
-      "name": "Water Gargoyle",
+      "name": "Gárgula de Água",
       "element": "Water",
       "role": "Defense",
       "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
       "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "leader": {"stat": "Defense", "value": 0.2},
-      "awakening": {"name": "Tidewatch"},
+      "awakening": {"name": "Vigia-Maré"},
       "skills": [
         {
-          "name": "Stone Fist",
+          "name": "Punho de Pedra",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
@@ -74,7 +74,7 @@
           ]
         },
         {
-          "name": "Rain Spout",
+          "name": "Bica de Chuva",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
@@ -92,23 +92,23 @@
           ]
         },
         {
-          "name": "Stone Gaze",
+          "name": "Olhar de Pedra",
           "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
         }
       ]
     },
     "wind": {
       "variation_id": "gargoyle_wind",
-      "name": "Wind Gargoyle",
+      "name": "Gárgula de Vento",
       "element": "Wind",
       "role": "Attack",
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Stormperch"},
+      "awakening": {"name": "Poleiro da Tormenta"},
       "skills": [
         {
-          "name": "Swoop",
+          "name": "Rasante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Impeto", "target": "Target", "power": -15}
@@ -121,7 +121,7 @@
           ]
         },
         {
-          "name": "Dive Bomb",
+          "name": "Mergulho Explosivo",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.8}
@@ -137,7 +137,7 @@
           ]
         },
         {
-          "name": "Tempest Wings",
+          "name": "Asas da Tempestade",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
@@ -152,16 +152,16 @@
     },
     "light": {
       "variation_id": "gargoyle_light",
-      "name": "Light Gargoyle",
+      "name": "Gárgula de Luz",
       "element": "Light",
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Dawnspire"},
+      "awakening": {"name": "Torre da Aurora"},
       "skills": [
         {
-          "name": "Blessed Stone",
+          "name": "Pedra Abençoada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Heal", "target": "Self", "power": 0.05}
@@ -174,7 +174,7 @@
           ]
         },
         {
-          "name": "Cathedral Ward",
+          "name": "Guarda da Catedral",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
@@ -192,23 +192,23 @@
           ]
         },
         {
-          "name": "Stone Gaze",
+          "name": "Olhar de Pedra",
           "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
         }
       ]
     },
     "dark": {
       "variation_id": "gargoyle_dark",
-      "name": "Dark Gargoyle",
+      "name": "Gárgula de Trevas",
       "element": "Dark",
       "role": "Defense",
       "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
       "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Gloomgrin"},
+      "awakening": {"name": "Sorriso Sombrio"},
       "skills": [
         {
-          "name": "Grim Talon",
+          "name": "Garra Sinistra",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15}
@@ -221,7 +221,7 @@
           ]
         },
         {
-          "name": "Dread Gaze",
+          "name": "Olhar Temível",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
@@ -239,7 +239,7 @@
           ]
         },
         {
-          "name": "Crumble",
+          "name": "Desmoronar",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.6},

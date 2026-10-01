@@ -134,7 +134,7 @@ namespace Sigilos.Tests
 		{
 			WaveStarted e => $"wave {e.Wave}/{e.WaveCount} {e.Enemies.Count}",
 			TurnStarted e => $"turn {Id(e.Actor)} {e.Round}",
-			SkillUsed e => $"skill {Id(e.Actor)} {e.Skill.Name}",
+			SkillUsed e => $"skill {Id(e.Actor)} {SkillIndex(e.Actor, e.Skill)}",
 			Damaged e => $"damage {Id(e.Target)} {e.Amount} {e.Absorbed} {e.Crit} {e.ElementMultiplier:R}",
 			Missed e => $"miss {Id(e.Target)}",
 			Protected e => $"protected {Id(e.Target)}",
@@ -153,6 +153,18 @@ namespace Sigilos.Tests
 			BattleEnded e => $"end {e.Victory}",
 			_ => battleEvent.GetType().Name,
 		};
+
+		/// <summary>A posição da habilidade na lista da unidade: o nome muda com o idioma dos dados, a posição não.</summary>
+		private static string SkillIndex(BattleUnit unit, SkillDefinition skill)
+		{
+			for (var i = 0; i < unit.Skills.Count; i++)
+			{
+				if (ReferenceEquals(unit.Skills[i], skill))
+					return i.ToString();
+			}
+
+			return skill.Name;
+		}
 
 		/// <summary>Lado, lugar no time e quem é: o bastante para não confundir duas unidades.</summary>
 		private static string Id(BattleUnit unit)

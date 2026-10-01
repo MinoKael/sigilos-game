@@ -4,18 +4,31 @@ namespace Sigilos.UI.Style
 {
 	/// <summary>
 	/// O tema da interface: painéis de couro com moldura de ouro (<see cref="Ornament.Panel"/>), pedra
-	/// entalhada nos fundos rebaixados, botões de madeira que brilham em azul arcano sob o mouse, barra
-	/// de rolagem que é só uma gema deslizando, caixinhas de marcar que são sigilos acesos e barras de
-	/// energia entalhadas. Nada de cara de página web: sem trilho de rolagem, sem borda reta de campo.
+	/// entalhada nos fundos rebaixados, barra de rolagem que é só uma gema deslizando, caixinhas de marcar
+	/// que são sigilos acesos e barras de energia entalhadas.
 	///
-	/// A fonte do jogo inteiro é a SFC Wezards (Assets/Fonts), com uma fonte do sistema de reserva para
-	/// o que ela não desenha (★, ×, ⟳...). As runas usam a Kehdrai (<see cref="Runes"/>), que troca letra
-	/// por runa: os Glifos são texto, nítidos em qualquer tamanho. As telas pedem os papéis pelo nome de
-	/// variação (<see cref="Title"/>, <see cref="Heading"/>...), nunca por cor solta. Os botões de ícone
-	/// (<see cref="Components.SigilButton"/>) se desenham sozinhos e não usam estes estilos.
+	/// Tudo é pensado para o dedo primeiro (celular deitado, 1280×720 de base): texto grande, botões com
+	/// pelo menos <see cref="Touch"/> px de altura e nada que dependa de passar o mouse — não existe dica
+	/// (tooltip); o que precisa de explicação abre um <see cref="Components.Dialog"/>.
+	///
+	/// A fonte do jogo inteiro vem de Assets/Fonts, com uma fonte do sistema de reserva para o que ela
+	/// não desenha (★, ×, ⟳...). As runas usam a Kehdrai (<see cref="Runes"/>), que troca letra por runa:
+	/// os Glifos são texto, nítidos em qualquer tamanho. As telas pedem os papéis pelo nome de variação
+	/// (<see cref="Title"/>, <see cref="Heading"/>...), nunca por cor solta. Os botões de texto são os
+	/// <see cref="Components.GameButton"/>; os de ícone (<see cref="Components.SigilButton"/>) ficam para o
+	/// que todo mundo reconhece (fechar, voltar, pausa).
 	/// </summary>
 	public static class GameTheme
 	{
+		/// <summary>Altura mínima de tudo o que se toca: botão, aba, linha de lista.</summary>
+		public const float Touch = 56;
+
+		/// <summary>Tamanho do texto corrido.</summary>
+		public const int BodySize = 18;
+
+		/// <summary>Tamanho do texto pequeno (legendas, valores secundários).</summary>
+		public const int SmallSize = 15;
+
 		/// <summary>Título grande de tela.</summary>
 		public const string Title = "TitleLabel";
 
@@ -51,7 +64,7 @@ namespace Sigilos.UI.Style
 
 		public static Theme Build()
 		{
-			var theme = new Theme { DefaultFont = Sans, DefaultFontSize = 16 };
+			var theme = new Theme { DefaultFont = Sans, DefaultFontSize = BodySize };
 
 			Labels(theme);
 			Panels(theme);
@@ -69,23 +82,23 @@ namespace Sigilos.UI.Style
 
 			theme.SetTypeVariation(Title, "Label");
 			theme.SetFont("font", Title, Serif);
-			theme.SetFontSize("font_size", Title, 34);
+			theme.SetFontSize("font_size", Title, 32);
 			theme.SetColor("font_color", Title, Palette.Gold);
 			theme.SetColor("font_shadow_color", Title, new Color(0, 0, 0, 0.6f));
 			theme.SetConstant("shadow_offset_y", Title, 2);
 
 			theme.SetTypeVariation(Heading, "Label");
 			theme.SetFont("font", Heading, Serif);
-			theme.SetFontSize("font_size", Heading, 21);
+			theme.SetFontSize("font_size", Heading, 23);
 			theme.SetColor("font_color", Heading, Palette.Gold);
 
 			theme.SetTypeVariation(Faded, "Label");
-			theme.SetFontSize("font_size", Faded, 13);
+			theme.SetFontSize("font_size", Faded, SmallSize);
 			theme.SetColor("font_color", Faded, Palette.TextFaded);
 
 			theme.SetTypeVariation(Number, "Label");
 			theme.SetFont("font", Number, Serif);
-			theme.SetFontSize("font_size", Number, 18);
+			theme.SetFontSize("font_size", Number, 19);
 			theme.SetColor("font_color", Number, Palette.Text);
 			theme.SetColor("font_outline_color", Number, Palette.Background);
 			theme.SetConstant("outline_size", Number, 4);
@@ -120,7 +133,7 @@ namespace Sigilos.UI.Style
 			theme.SetColor("font_focus_color", "Button", Palette.Text);
 			theme.SetColor("font_disabled_color", "Button", Palette.TextFaded.Darkened(0.2f));
 			theme.SetFont("font", "Button", Serif);
-			theme.SetFontSize("font_size", "Button", 17);
+			theme.SetFontSize("font_size", "Button", 19);
 
 			// MenuButton e OptionButton herdam do Button, mas precisam das caixas próprias.
 			foreach (var type in new[] { "MenuButton", "OptionButton" })
@@ -211,10 +224,6 @@ namespace Sigilos.UI.Style
 			theme.SetStylebox("hover", "PopupMenu", Box(Palette.PanelLight, Palette.Arcane, 1, 4, 4));
 			theme.SetColor("font_color", "PopupMenu", Palette.Text);
 			theme.SetColor("font_hover_color", "PopupMenu", Palette.Arcane);
-
-			theme.SetStylebox("panel", "TooltipPanel", Carved(Palette.Inset.Lerp(Palette.Panel, 0.4f), 8, Palette.Gold));
-			theme.SetColor("font_color", "TooltipLabel", Palette.Text);
-			theme.SetFontSize("font_size", "TooltipLabel", 14);
 		}
 
 		/// <summary>Caixa simples, para destaques pontuais.</summary>

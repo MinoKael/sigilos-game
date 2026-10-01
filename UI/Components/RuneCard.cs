@@ -9,8 +9,8 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// A ficha de uma runa: o jeito de mostrar runa em todo o jogo (a tela de Runas, a vitória, o toque
-	/// numa runa da Batalha automática e a dica de toda runa em miniatura).
+	/// A ficha de uma runa: o jeito de mostrar runa em todo o jogo (a tela de Runas, a vitória, a
+	/// Batalha automática e o toque longo em toda runa em miniatura).
 	///
 	/// No alto, o título (conjunto e espaço) na cor da raridade e a plaquinha da raridade; ao lado da runa,
 	/// o atributo principal grande e o inato em ouro; embaixo, os subatributos com o Glifo; por fim, o
@@ -19,11 +19,12 @@ namespace Sigilos.UI.Components
 	/// Com <c>opened</c> (o nível da runa quando a tela abriu), o que ela ganhou desde então fica em verde
 	/// ao lado do valor, e o subatributo novo inteiro em verde, com "new". <c>tools</c> põe sigilos no fim
 	/// de cada linha de subatributo (as pedras da tela de Runas); <c>note</c> é uma linha apagada no pé
-	/// (quem usa a runa).
+	/// (quem usa a runa). Sem <c>title</c>, o título fica de fora: a <see cref="RuneDialog"/> o põe no
+	/// cabeçalho da janela.
 	/// </summary>
 	public partial class RuneCard : VBoxContainer
 	{
-		public RuneCard(Rune rune, float width = 320, int? opened = null, Func<int, IEnumerable<Control>>? tools = null, string? note = null)
+		public RuneCard(Rune rune, float width = 320, int? opened = null, Func<int, IEnumerable<Control>>? tools = null, string? note = null, bool title = true)
 		{
 			Name = "RuneCard";
 			CustomMinimumSize = new Vector2(width, 0);
@@ -31,14 +32,17 @@ namespace Sigilos.UI.Components
 			AddThemeConstantOverride("separation", 8);
 			var color = Palette.Of(rune.Rarity);
 
-			var header = Layout.Row(10).Named("Header");
-			var title = new Label { Name = "Title", Text = Texts.Title(rune), HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill, AutowrapMode = TextServer.AutowrapMode.WordSmart };
-			title.AddThemeColorOverride("font_color", color);
-			header.AddChild(title);
-			AddChild(header);
+			if (title)
+			{
+				var header = Layout.Row(10).Named("Header");
+				var name = new Label { Name = "Title", Text = Texts.Title(rune), HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+				name.AddThemeColorOverride("font_color", color);
+				header.AddChild(name);
+				AddChild(header);
+			}
 
             var body = Layout.Row(14).Named("Body");
-            body.AddChild(new RuneTile(rune, rune.Slot, 1.35f) { Name = "Tile", MouseFilter = MouseFilterEnum.Ignore, TooltipText = "" });
+            body.AddChild(new RuneTile(rune, rune.Slot, 1.35f) { Name = "Tile", MouseFilter = MouseFilterEnum.Ignore });
             var stats = new VBoxContainer { Name = "Stats", Alignment = AlignmentMode.Begin, SizeFlagsHorizontal = SizeFlags.ExpandFill };
             stats.AddThemeConstantOverride("separation", 4);
 
@@ -70,14 +74,14 @@ namespace Sigilos.UI.Components
 
             stats.AddChild(main);
 
-            if (rune.Innate is { } innate)
-            {
-                var label = new Label { Name = "Innate", Text = Texts.Format(innate), TooltipText = T("runes.innate"), MouseFilter = MouseFilterEnum.Stop };
-                label.AddThemeColorOverride("font_color", Palette.Gold);
-                stats.AddChild(label);
-            }
+			if (rune.Innate is { } innate)
+			{
+				var label = new Label { Name = "Innate", Text = Texts.Format(innate) };
+				label.AddThemeColorOverride("font_color", Palette.Gold);
+				stats.AddChild(label);
+			}
 
-            body.AddChild(stats);
+			body.AddChild(stats);
             AddChild(body);
 
             if (rune.Substats.Count > 0)
@@ -96,21 +100,6 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>
-		/// Como dica, a ficha mora numa janela que só cresce: o texto rico mede a altura antes de ter largura,
-		/// e a janela fica alta demais. Depois do primeiro layout ela volta ao tamanho da ficha.
-		/// </summary>
-		public override async void _Ready()
-		{
-			if (GetParent() is not PopupPanel tooltip)
-				return;
-
-			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-			if (IsInstanceValid(tooltip))
-				tooltip.ResetSize();
-		}
-
-		/// <summary>
 		/// Um subatributo. O que mudou desde <paramref name="opened"/> fica em verde: a linha inteira com
 		/// "new" se ele nasceu depois, ou o quanto subiu ao lado do valor.
 		/// </summary>
@@ -123,11 +112,7 @@ namespace Sigilos.UI.Components
 			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Glyph" });
 			var label = new Label { Name = "Value", Text = Texts.Format(substat), VerticalAlignment = VerticalAlignment.Center };
 			if (substat.Enchanted)
-			{
-				label.Text += " ◆";
-				label.TooltipText = T("runes.enchanted_tip");
-				label.MouseFilter = MouseFilterEnum.Stop;
-			}
+				label.Text = T("runes.enchanted_line", label.Text);
 
 			row.AddChild(label);
 			if (isNew)

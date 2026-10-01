@@ -13,30 +13,25 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Runas. À esquerda o carrossel em arco dos monstros (Baú incluído) sobre o círculo de conjuração
-	/// com os 6 espaços do escolhido (GDD, seção 10), e a ficha dele. No meio, pelas abas de sigilo, o
-	/// inventário de runas (a busca é uma fileira de sigilos, cada um abre o carrossel das opções; a
-	/// seleção em massa desfaz de uma vez), as Pedras de Afiar e as Gemas Encantadas. À direita a runa
-	/// escolhida, com os sigilos de equipar, tirar, melhorar, afiar, encantar e desfazer.
+	/// Runas, em três colunas:
 	///
-	/// O que a runa ganhou desde que a tela abriu aparece em verde ao lado do valor: o quanto subiu
-	/// ("HP +1215 +945", "Speed +9 +4"), ou o subatributo novo inteiro em verde, com "new". Sair da tela
-	/// apaga o destaque; o histórico de verdade fica na runa (<see cref="RuneSubstat.Rolls"/>). Os sigilos
-	/// de ação ficam presos embaixo da ficha, fora da rolagem.
+	/// - À esquerda, o monstro que recebe as runas (Escolher monstro abre a grade de todos), o círculo
+	///   de conjuração com os 6 espaços dele (tocar num espaço filtra a lista por ele), os conjuntos
+	///   ativos e a ficha de atributos.
+	/// - No meio, pelas abas escritas, o inventário de runas (com os botões Filtros, Ordenar e Onde, e
+	///   Vender várias para marcar e vender de uma vez), as Pedras de Afiar e as Gemas Encantadas.
+	/// - À direita, a runa escolhida, com os botões presos embaixo: Equipar, Remover, Melhorar, Vender,
+	///   cada um dizendo o custo; e, na linha de cada subatributo, Afiar e Encantar quando alguma pedra
+	///   serve.
 	///
-	/// Os nós, pelo nome (<c>Page/Content/Body/...</c>): <c>Left/Column</c> tem <c>Stage</c> (o <c>Ring</c>
-	/// com <c>Monster</c> e <c>Slot1</c>..<c>Slot6</c>, e o carrossel <c>Monsters</c>), <c>Sets</c> e
-	/// <c>Stats</c>; <c>Middle/Column</c> tem <c>TabRow/Tabs</c> e <c>List</c> (<c>Filters</c>, <c>Selection</c>
-	/// e <c>Scroll/Grid</c> com <c>Rune&lt;id&gt;</c>, ou <c>Scroll/Tools</c> com <c>Tool&lt;n&gt;</c>);
-	/// <c>Right/Column</c> tem a ficha da runa em <c>Scroll/Detail</c> (a <see cref="RuneCard"/>, com as
-	/// pedras na linha de cada subatributo, e <c>Holder</c>) e, embaixo, <c>ActionsLine</c> e <c>Actions</c>.
+	/// O que a runa ganhou desde que a tela abriu aparece em verde ao lado do valor. A Batalha automática
+	/// segue rodando enquanto esta tela está aberta; o aviso no alto continua contando.
 	/// </summary>
 	public partial class RuneScreen : Control
 	{
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
 		private int? _monsterId;
-		private int _slotFilter;
 		private int? _selectedRune;
 		private int _tab;
 		private RuneFilter _filter = new();
@@ -57,12 +52,10 @@ namespace Sigilos.UI.Screens
 		}
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly Label _count = new() { Name = "Count", ThemeTypeVariation = GameTheme.Number, VerticalAlignment = VerticalAlignment.Center };
 		private readonly VBoxContainer _left = new() { Name = "Column" };
 		private readonly HBoxContainer _tabs = Layout.Row(8).Named("TabRow");
 		private readonly VBoxContainer _middle = new() { Name = "List", SizeFlagsVertical = SizeFlags.ExpandFill };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
-		private readonly HSeparator _actionsLine = new() { Name = "ActionsLine" };
 		private readonly HFlowContainer _actions = Layout.Flow(10).Named("Actions");
 
 		public RuneScreen(GameDatabase database, PlayerState player, int? monsterId)
@@ -96,17 +89,15 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			var (header, extra) = Layout.Header(T("destination.Runes"), "rune", _currencies, () => BackRequested?.Invoke(_monsterId));
-			extra.AddChild(_count);
-			page.AddChild(header);
+			page.AddChild(Layout.Header(T("destination.Runes"), _currencies, () => BackRequested?.Invoke(_monsterId)).Header);
 
 			var body = Layout.Row(12).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
-			var left = new PanelContainer { Name = "Left", CustomMinimumSize = new Vector2(390, 0) };
-			_left.AddThemeConstantOverride("separation", 6);
-			left.AddChild(_left);
+			var left = new PanelContainer { Name = "Left", CustomMinimumSize = new Vector2(330, 0) };
+			_left.AddThemeConstantOverride("separation", 8);
+			left.AddChild(Layout.Scroll(_left));
 			body.AddChild(left);
 
 			var middle = new PanelContainer { Name = "Middle", SizeFlagsHorizontal = SizeFlags.ExpandFill };
@@ -122,7 +113,6 @@ namespace Sigilos.UI.Screens
 			rightColumn.AddThemeConstantOverride("separation", 8);
 			_detail.AddThemeConstantOverride("separation", 8);
 			rightColumn.AddChild(Layout.Scroll(_detail));
-			rightColumn.AddChild(_actionsLine);
 			rightColumn.AddChild(_actions);
 			right.AddChild(rightColumn);
 			body.AddChild(right);
@@ -137,7 +127,6 @@ namespace Sigilos.UI.Screens
 			_marked.RemoveWhere(runeId => _player.Runes.All(r => r.Id != runeId));
 
 			_currencies.Refresh(_player);
-			_count.Text = $"{RuneInventory.Count(_player)}/{RuneInventory.Capacity}";
 			RefreshLeft();
 			RefreshTabs();
 			RefreshMiddle();
@@ -151,39 +140,42 @@ namespace Sigilos.UI.Screens
 		private void RefreshLeft()
 		{
 			Layout.Clear(_left);
-			var monsters = _player.Monsters.Where(m => _database.HasSummon(m.SummonId)).OrderBy(m => m.Stored).ThenByDescending(m => m.Stars).ThenByDescending(m => m.Level).ToList();
-			var items = new List<ArcItem> { new(Art.Icon("cancel"), T("runes.no_monster"), Palette.TextFaded) };
-			foreach (var candidate in monsters)
+			var head = Layout.Row(10).Named("Monster");
+			if (Monster is { } monster)
 			{
-				var summon = _database.Summon(candidate.SummonId);
-				var name = T(candidate.Stored ? "runes.monster_item_vault" : "runes.monster_item", summon.NameFor(candidate.Awakened), candidate.Level);
-				items.Add(new ArcItem(Art.Creature(summon.ImageFor(candidate.Awakened)), name, Palette.Of(summon.Element), Accent: Palette.Frame(summon.Rarity)));
+				var summon = _database.Summon(monster.SummonId);
+				var portrait = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(64, 64), MouseFilter = MouseFilterEnum.Stop };
+				portrait.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 2, 32, 3));
+				portrait.AddChild(Doodle.Masked(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), MaskShape.Circle, boil: false));
+				Press.On(portrait, null, () => MonsterSummary.Open(portrait, summon, monster));
+				head.AddChild(portrait);
+				var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
+				info.AddChild(new Label { Name = "Name", Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading });
+				info.AddChild(new Label { Name = "Level", Text = T("common.stars_level", Texts.Stars(monster.Stars), monster.Level) + (monster.Stored ? " · " + T("monsters.vault") : ""), ThemeTypeVariation = GameTheme.Faded });
+				head.AddChild(info);
+			}
+			else
+			{
+				head.AddChild(Layout.Text(T("runes.no_monster_text"), GameTheme.Faded, 320).Named("None"));
 			}
 
-			// O círculo sobe para dentro do arco do carrossel: as pontas do arco descem pelos lados, onde
-			// o círculo ainda é estreito, e a ficha inteira cabe embaixo sem rolagem.
-			var stage = new Control { Name = "Stage", CustomMinimumSize = new Vector2(0, RingTop + RingSize), MouseFilter = MouseFilterEnum.Ignore };
-			_left.AddChild(stage);
+			_left.AddChild(head);
+			_left.AddChild(GameButton.Of(Monster == null ? T("runes.choose_monster") : T("runes.change_monster"), () =>
+				MonsterPicker.Open(this, _database, _player, _monsterId, true, id =>
+				{
+					_monsterId = id;
+					Refresh();
+				}), Monster == null ? ButtonKind.Primary : ButtonKind.Secondary, "monster", 48).Named("Choose"));
 
-			var ring = new SigilRing(RingSize) { Name = "Ring", Spread = 0.72f };
-			Place(stage, ring, new Vector2(RingSize, RingSize), RingTop);
-
-			var picker = new ArcCarousel(items, Monster == null ? 0 : monsters.FindIndex(m => m.Id == _monsterId) + 1, 50, 250, 5) { Name = "Monsters" };
-			picker.Selected += index =>
-			{
-				_monsterId = index == 0 ? null : monsters[index - 1].Id;
-				Callable.From(Refresh).CallDeferred();
-			};
-			Place(stage, picker, picker.CustomMinimumSize, 0);
+			var ring = new SigilRing(300) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
 			var tiles = new List<Control>();
 			var equipped = Monster is { } holder ? _player.RunesOn(holder.Id) : Array.Empty<Rune>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
-				var tile = new RuneTile(equipped.FirstOrDefault(r => r.Slot == slot), slot, 1.05f) { Name = $"Slot{slot}" };
-				tile.SetSelected(tile.Rune != null ? tile.Rune.Id == _selectedRune : slot == _slotFilter);
+				var tile = new RuneTile(equipped.FirstOrDefault(r => r.Slot == slot), slot, 1.1f) { Name = $"Slot{slot}" };
+				tile.SetSelected(tile.Rune != null ? tile.Rune.Id == _selectedRune : _filter.Slot == slot);
 				tile.Pressed += t =>
 				{
-					_slotFilter = t.Slot;
 					_filter = _filter with { Slot = t.Slot };
 					_selectedRune = t.Rune?.Id;
 					_tab = 0;
@@ -192,14 +184,9 @@ namespace Sigilos.UI.Screens
 				tiles.Add(tile);
 			}
 
-			Control? center = null;
-			if (Monster is { } monster)
-			{
-				var summon = _database.Summon(monster.SummonId);
-				center = Layout.Medal(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), 88).Named("Monster");
-			}
-
-			ring.Set(center, tiles);
+			ring.Set(null, tiles);
+			_left.AddChild(ring);
+			_left.AddChild(Layout.Text(T("runes.ring_hint"), GameTheme.Faded, 320).Named("RingHint"));
 
 			if (Monster is not { } chosen)
 				return;
@@ -213,8 +200,9 @@ namespace Sigilos.UI.Screens
 				for (var i = 0; i < sheet.Runes.ActiveSets.Count; i++)
 				{
 					var set = sheet.Runes.ActiveSets[i];
-					sets.AddChild(Layout.Chip(RuneSets.For(set.Set).Glyph, Texts.Name(set.Set), Texts.Plain($"{Texts.Name(set.Set)}: {Texts.Describe(set)}")).Named($"{set.Set}{i + 1}"));
+					sets.AddChild(Layout.Labeled(RuneSets.For(set.Set).Glyph, "", Texts.Name(set.Set)).Named($"{set.Set}{i + 1}"));
 				}
+
 				_left.AddChild(sets);
 			}
 
@@ -223,29 +211,15 @@ namespace Sigilos.UI.Screens
 			_left.AddChild(table);
 		}
 
-		private const float RingSize = 280;
-		private const float RingTop = 76;
-
-		/// <summary>Põe um controle centrado na largura de <paramref name="stage"/>, a <paramref name="top"/> px do alto.</summary>
-		private static void Place(Control stage, Control control, Vector2 size, float top)
-		{
-			control.SetAnchorsPreset(LayoutPreset.CenterTop);
-			control.OffsetLeft = -size.X / 2;
-			control.OffsetRight = size.X / 2;
-			control.OffsetTop = top;
-			control.OffsetBottom = top + size.Y;
-			stage.AddChild(control);
-		}
-
 		// Abas do meio ------------------------------------------------------------------------------
 
 		private void RefreshTabs()
 		{
 			Layout.Clear(_tabs);
-			var tabs = new SigilTabs(vertical: false, 50) { Name = "Tabs" };
-			tabs.Add(Art.Icon("rune"), T("runes.tab_runes"), RuneInventory.Count(_player).ToString()).Name = "Runes";
-			tabs.Add(Art.Icon("grindstone"), T("runes.tab_grindstones"), _player.Tools.Count(t => t.Kind == RuneToolKind.Grindstone).ToString()).Name = "Grindstones";
-			tabs.Add(Art.Icon("gem"), T("runes.tab_gems"), _player.Tools.Count(t => t.Kind == RuneToolKind.Gem).ToString()).Name = "Gems";
+			var tabs = new TextTabs(compact: true) { Name = "Tabs" };
+			tabs.Add(T("runes.tab_runes"), $"{RuneInventory.Count(_player)}/{RuneInventory.Capacity}").Name = "Runes";
+			tabs.Add(T("runes.tab_grindstones"), _player.Tools.Count(t => t.Kind == RuneToolKind.Grindstone).ToString()).Name = "Grindstones";
+			tabs.Add(T("runes.tab_gems"), _player.Tools.Count(t => t.Kind == RuneToolKind.Gem).ToString()).Name = "Gems";
 			tabs.Select(_tab);
 			tabs.Changed += index =>
 			{
@@ -267,12 +241,12 @@ namespace Sigilos.UI.Screens
 		private void RuneList()
 		{
 			var runes = _filter.Apply(_player.Runes.Where(InPlace)).ToList();
-			_middle.AddChild(FilterBar(runes.Count));
+			_middle.AddChild(Toolbar(runes.Count));
 
 			if (_selecting)
 				_middle.AddChild(SelectionBar(runes));
 
-			var grid = Layout.Flow(8).Named("Grid");
+			var grid = new TileGrid(8) { Name = "Grid" };
 			foreach (var rune in runes)
 			{
 				var tile = new RuneTile(rune, rune.Slot) { Name = $"Rune{rune.Id}" };
@@ -281,7 +255,7 @@ namespace Sigilos.UI.Screens
 				if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
 				{
 					var summon = _database.Summon(holder.SummonId);
-					tile.SetOwner(Art.Creature(summon.ImageFor(holder.Awakened)), Palette.Of(summon.Element), holder.Stored, summon.NameFor(holder.Awakened));
+					tile.SetOwner(Art.Creature(summon.ImageFor(holder.Awakened)), Palette.Of(summon.Element), holder.Stored);
 				}
 
 				tile.Pressed += t =>
@@ -302,37 +276,20 @@ namespace Sigilos.UI.Screens
 				grid.AddChild(tile);
 			}
 
+			if (runes.Count == 0)
+				_middle.AddChild(Layout.Text(T("runes.none_found"), GameTheme.Faded, 400).Named("Empty"));
 			_middle.AddChild(Layout.Scroll(grid));
 		}
 
-		/// <summary>A busca: um sigilo por campo (conjunto, espaço, principal, subatributo, estrelas, raridade, melhora, ordem, onde), o de limpar e o de selecionar.</summary>
-		private Control FilterBar(int found)
+		/// <summary>Os botões do inventário: Filtros (com quantos ligados), Ordenar, Onde, Vender várias e quantas runas a busca achou.</summary>
+		private Control Toolbar(int found)
 		{
-			var flow = Layout.Flow(6).Named("Filters");
-			// "Todos" em cada campo: o símbolo do campo, apagado; escolhido um valor, acende em ouro.
-			ArcItem All(string icon) => new(Art.Icon(icon), T("filter.all"), Palette.TextFaded);
-			ArcItem AllLetters(string letters) => new(null, T("filter.all"), Palette.TextFaded, letters);
+			var flow = Layout.Flow(8).Named("Toolbar");
+			var active = ActiveFilters();
+			var filters = GameButton.Of(active == 0 ? T("filter.button") : T("filter.button_active", active), OpenFilters, active == 0 ? ButtonKind.Secondary : ButtonKind.Primary, "search", 48).Named("Filters");
+			flow.AddChild(filters);
 
-			flow.AddChild(Picker("Set", T("filter.set"), Enum.GetValues<RuneSet>().Select(s => (new ArcItem(null, Texts.Name(s), Palette.Gold, Rune: RuneSets.For(s).Glyph), (int)s)), All("rune"), _filter.Set is { } set ? (int)set : -1,
-				value => _filter = _filter with { Set = value < 0 ? null : (RuneSet)value }));
-			flow.AddChild(Picker("Slot", T("filter.slot"), Enumerable.Range(1, RuneRules.Slots).Select(s => (Letters(s.ToString(), T("filter.slot_n", s)), s)), AllLetters("#"), _filter.Slot ?? -1,
-				value =>
-				{
-					_filter = _filter with { Slot = value < 0 ? null : value };
-					_slotFilter = Math.Max(0, value);
-				}));
-			flow.AddChild(Picker("Main", T("filter.main"), Enum.GetValues<RuneStat>().Select(s => (Letters(Texts.Short(s), Texts.Label(s)), (int)s)), AllLetters("◆"), _filter.Main is { } main ? (int)main : -1,
-				value => _filter = _filter with { Main = value < 0 ? null : (RuneStat)value }));
-			flow.AddChild(Picker("Substat", T("filter.substat"), Enum.GetValues<RuneStat>().Select(s => (Letters(Texts.Short(s), Texts.Label(s)), (int)s)), AllLetters("◇"), _filter.Substats.Count > 0 ? (int)_filter.Substats[0] : -1,
-				value => _filter = _filter with { Substats = value < 0 ? Array.Empty<RuneStat>() : new[] { (RuneStat)value } }));
-			flow.AddChild(Picker("Stars", T("filter.stars"), Enumerable.Range(2, RuneRules.MaxGrade - 1).Select(g => (Letters($"{g}★", T("filter.at_least", Texts.Stars(g))), g)), AllLetters("★"), _filter.MinGrade > 1 ? _filter.MinGrade : -1,
-				value => _filter = _filter with { MinGrade = Math.Max(1, value) }));
-			flow.AddChild(Picker("Rarity", T("filter.rarity"), Enum.GetValues<RuneRarity>().Skip(1).Select(r => (new ArcItem(Art.Icon("gem"), T("filter.at_least", Texts.Name(r)), Palette.Of(r)), (int)r)), All("gem"), _filter.MinRarity > RuneRarity.Normal ? (int)_filter.MinRarity : -1,
-				value => _filter = _filter with { MinRarity = value < 0 ? RuneRarity.Normal : (RuneRarity)value }));
-			flow.AddChild(Picker("Upgrade", T("filter.upgrade"), new[] { 3, 6, 9, 12, 15 }.Select(l => (Letters($"+{l}", T("filter.at_least", $"+{l}")), l)), AllLetters("+"), _filter.MinLevel > 0 ? _filter.MinLevel : -1,
-				value => _filter = _filter with { MinLevel = Math.Max(0, value) }));
-
-			var sort = new SigilPicker(T("filter.sort"), Enum.GetValues<RuneSort>().Select(s => (SortItem(s), (int)s)).ToList(), (int)_filter.Sort) { Name = "Sort" };
+			var sort = new ChoiceButton(T("filter.sort"), Enum.GetValues<RuneSort>().Select(s => (new Choice(Texts.Name(s)), (int)s)).ToList(), (int)_filter.Sort) { Name = "Sort" };
 			sort.Changed += value =>
 			{
 				_filter = _filter with { Sort = (RuneSort)value };
@@ -340,7 +297,7 @@ namespace Sigilos.UI.Screens
 			};
 			flow.AddChild(sort);
 
-			var place = new SigilPicker(T("filter.where"), Enum.GetValues<RunePlace>().Select(p => (PlaceItem(p), (int)p)).ToList(), (int)_place) { Name = "Place" };
+			var place = new ChoiceButton(T("filter.where"), Enum.GetValues<RunePlace>().Select(p => (new Choice(T($"filter.place.{p}")), (int)p)).ToList(), (int)_place) { Name = "Place" };
 			place.Changed += value =>
 			{
 				_place = (RunePlace)value;
@@ -348,100 +305,115 @@ namespace Sigilos.UI.Screens
 			};
 			flow.AddChild(place);
 
-			var clear = SigilButton.Of("cancel", T("filter.clear"), () =>
+			flow.AddChild(GameButton.Of(_selecting ? T("runes.select_done") : T("runes.select"), () =>
 			{
-				_filter = new RuneFilter();
-				_slotFilter = 0;
-				Refresh();
-			}, 44).Named("Clear");
-			flow.AddChild(clear);
-
-			flow.AddChild(Layout.Chip("search", found.ToString(), T("runes.found")).Named("Found"));
-			var select = new SigilButton(Art.Icon("select"), T("runes.select"), 50, SigilShape.Square) { Name = "Select", ToggleMode = true, ButtonPressed = _selecting };
-			select.Toggled += on =>
-			{
-				_selecting = on;
+				_selecting = !_selecting;
 				_marked.Clear();
 				Callable.From(Refresh).CallDeferred();
-			};
-			flow.AddChild(select);
+			}, _selecting ? ButtonKind.Primary : ButtonKind.Secondary, "select", 48).Named("Select"));
+
+			flow.AddChild(new Label { Name = "Found", Text = T("runes.found", found), VerticalAlignment = VerticalAlignment.Center, CustomMinimumSize = new Vector2(0, 48) });
 			return flow;
 		}
 
-		/// <summary>Um campo de busca, com o nome de nó <paramref name="name"/>: a primeira opção é "todos" (-1).</summary>
-		private SigilPicker Picker(string name, string title, IEnumerable<(ArcItem Item, int Value)> options, ArcItem all, int current, Action<int> changed)
+		private int ActiveFilters() =>
+			(_filter.Set != null ? 1 : 0) + (_filter.Slot != null ? 1 : 0) + (_filter.Main != null ? 1 : 0) + (_filter.Substats.Count > 0 ? 1 : 0)
+			+ (_filter.MinGrade > 1 ? 1 : 0) + (_filter.MinRarity > RuneRarity.Normal ? 1 : 0) + (_filter.MinLevel > 0 ? 1 : 0);
+
+		/// <summary>A janela dos filtros: um campo por linha, cada um abre a lista das opções. Muda na hora.</summary>
+		private void OpenFilters()
 		{
-			var list = new List<(ArcItem Item, int Value)> { (all, -1) };
-			list.AddRange(options);
-			var picker = new SigilPicker(title, list, current) { Name = name };
-			picker.Changed += value =>
+			var dialog = Dialog.Open(this, T("filter.title"), 560, null, "FilterDialog");
+			void Build()
 			{
-				changed(value);
-				Callable.From(Refresh).CallDeferred();
-			};
-			return picker;
+				Layout.Clear(dialog.Body);
+				var column = new VBoxContainer { Name = "Fields" };
+				column.AddThemeConstantOverride("separation", 10);
+				column.AddChild(Field("Set", T("filter.set"), Enum.GetValues<RuneSet>().Select(s => (new Choice(Texts.Name(s), Rune: RuneSets.For(s).Glyph), (int)s)), _filter.Set is { } set ? (int)set : -1,
+					value => _filter = _filter with { Set = value < 0 ? null : (RuneSet)value }));
+				column.AddChild(Field("Slot", T("filter.slot"), Enumerable.Range(1, RuneRules.Slots).Select(s => (new Choice(T("filter.slot_n", s)), s)), _filter.Slot ?? -1,
+					value => _filter = _filter with { Slot = value < 0 ? null : value }));
+				column.AddChild(Field("Main", T("filter.main"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Main is { } main ? (int)main : -1,
+					value => _filter = _filter with { Main = value < 0 ? null : (RuneStat)value }));
+				column.AddChild(Field("Substat", T("filter.substat"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Substats.Count > 0 ? (int)_filter.Substats[0] : -1,
+					value => _filter = _filter with { Substats = value < 0 ? Array.Empty<RuneStat>() : new[] { (RuneStat)value } }));
+				column.AddChild(Field("Stars", T("filter.stars"), Enumerable.Range(2, RuneRules.MaxGrade - 1).Select(g => (new Choice(T("filter.at_least", Texts.Stars(g))), g)), _filter.MinGrade > 1 ? _filter.MinGrade : -1,
+					value => _filter = _filter with { MinGrade = Math.Max(1, value) }));
+				column.AddChild(Field("Rarity", T("filter.rarity"), Enum.GetValues<RuneRarity>().Skip(1).Select(r => (new Choice(T("filter.at_least", Texts.Name(r)), Art.Icon("gem"), Palette.Of(r)), (int)r)), _filter.MinRarity > RuneRarity.Normal ? (int)_filter.MinRarity : -1,
+					value => _filter = _filter with { MinRarity = value < 0 ? RuneRarity.Normal : (RuneRarity)value }));
+				column.AddChild(Field("Upgrade", T("filter.upgrade"), new[] { 3, 6, 9, 12, 15 }.Select(l => (new Choice(T("filter.at_least", $"+{l}")), l)), _filter.MinLevel > 0 ? _filter.MinLevel : -1,
+					value => _filter = _filter with { MinLevel = Math.Max(0, value) }));
+				dialog.Body.AddChild(column);
+			}
+
+			// Um campo: o botão com o valor de agora; a primeira opção é "Todos" (-1).
+			ChoiceButton Field(string name, string title, IEnumerable<(Choice Choice, int Value)> options, int current, Action<int> changed)
+			{
+				var list = new List<(Choice Choice, int Value)> { (new Choice(T("filter.all")), -1) };
+				list.AddRange(options);
+				var field = new ChoiceButton(title, list, current, 52) { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+				field.Changed += value =>
+				{
+					changed(value);
+					Refresh();
+					Callable.From(Build).CallDeferred();
+				};
+				return field;
+			}
+
+			Build();
+			dialog.AddAction(T("filter.clear"), () =>
+			{
+				_filter = new RuneFilter { Sort = _filter.Sort };
+				Refresh();
+			}, ButtonKind.Secondary, true, "cancel").Named("Clear");
+			dialog.AddAction(T("filter.done"), null, ButtonKind.Primary).Named("Done");
 		}
-
-		private static ArcItem Letters(string letters, string tooltip) => new(null, tooltip, Palette.Gold, letters);
-
-		private static ArcItem SortItem(RuneSort sort) => sort switch
-		{
-			RuneSort.Grade => new ArcItem(Art.Icon("evolve"), Texts.Name(sort), Palette.Gold),
-			RuneSort.Level => new ArcItem(Art.Icon("level_max"), Texts.Name(sort), Palette.Gold),
-			RuneSort.Rarity => new ArcItem(Art.Icon("gem"), Texts.Name(sort), Palette.Gold),
-			RuneSort.Set => new ArcItem(Art.Icon("rune"), Texts.Name(sort), Palette.Gold),
-			RuneSort.Newest => new ArcItem(Art.Icon("collect"), Texts.Name(sort), Palette.Gold),
-			_ => Letters("#", Texts.Name(sort)),
-		};
-
-		private static ArcItem PlaceItem(RunePlace place) => place switch
-		{
-			RunePlace.Inventory => new ArcItem(Art.Icon("rune"), T("filter.place.Inventory"), Palette.Gold),
-			RunePlace.Collection => new ArcItem(Art.Icon("storage"), T("filter.place.Collection"), Palette.Gold),
-			RunePlace.Storage => new ArcItem(Art.Icon("chest"), T("filter.place.Storage"), Palette.Gold),
-			_ => new ArcItem(Art.Icon("bag"), T("filter.place.All"), Palette.Gold),
-		};
 
 		private Control SelectionBar(IReadOnlyList<Rune> visible)
 		{
-			var row = Layout.Row(8).Named("Selection");
-			row.AddChild(SigilButton.Of("copies", T("runes.mark_all"), () =>
+			var row = Layout.Flow(8).Named("Selection");
+			var marked = _player.Runes.Where(r => _marked.Contains(r.Id)).ToList();
+			row.AddChild(new Label { Name = "Hint", Text = T("runes.select_hint", marked.Count), VerticalAlignment = VerticalAlignment.Center, CustomMinimumSize = new Vector2(0, 48) });
+			row.AddChild(GameButton.Of(T("runes.mark_all"), () =>
 			{
 				foreach (var rune in visible.Where(r => r.EquippedOn == null))
 					_marked.Add(rune.Id);
 				Refresh();
-			}, 48).Named("MarkAll"));
-			row.AddChild(SigilButton.Of("cancel", T("runes.unmark"), () =>
+			}, ButtonKind.Secondary, "copies", 48).Named("MarkAll"));
+			var unmark = GameButton.Of(T("runes.unmark"), () =>
 			{
 				_marked.Clear();
 				Refresh();
-			}, 48).Named("Unmark"));
+			}, ButtonKind.Secondary, null, 48).Named("Unmark");
+			unmark.Disabled = marked.Count == 0;
+			row.AddChild(unmark);
 
-			var marked = _player.Runes.Where(r => _marked.Contains(r.Id)).ToList();
 			var value = marked.Sum(RuneRules.SellValue);
-			var sell = SigilButton.Of("dismantle", T("runes.sell_marked", marked.Count, value), () =>
-			{
-				var ids = marked.Select(r => r.Id).ToList();
-				_marked.Clear();
-				SellManyRequested?.Invoke(ids);
-			}, 56, SigilShape.Diamond).Named("SellMarked");
+			var sell = GameButton.Of(T("runes.sell_marked", marked.Count), () => Dialog.Confirm(this,
+				T("runes.sell_title"),
+				T("runes.sell_many_confirm", marked.Count, value),
+				T("runes.sell_button_short"),
+				() =>
+				{
+					var ids = marked.Select(r => r.Id).ToList();
+					_marked.Clear();
+					SellManyRequested?.Invoke(ids);
+				}, ButtonKind.Danger), ButtonKind.Danger, "dismantle", 48).Named("SellMarked");
+			if (marked.Count > 0)
+				sell.WithCost("essence", $"+{value}");
 			sell.Disabled = marked.Count == 0;
-			sell.Badge = marked.Count > 0 ? marked.Count.ToString() : "";
 			row.AddChild(sell);
 			return row;
 		}
 
 		private void ToolList(RuneToolKind kind)
 		{
+			_middle.AddChild(Layout.Text(T(kind == RuneToolKind.Grindstone ? "runes.grind_hint" : "runes.enchant_hint", RuneForge.EnchantLevel), GameTheme.Faded).Named("Hint"));
 			var groups = _player.Tools.Where(t => t.Kind == kind).GroupBy(t => t).OrderByDescending(g => g.Key.Grade).ThenBy(g => g.Key.Stat).ToList();
 			if (groups.Count == 0)
 			{
-				var empty = Doodle.Icon(Art.Icon(kind == RuneToolKind.Grindstone ? "grindstone" : "gem"), 96, new Color(Palette.GoldDark, 0.5f)).Named("Icon");
-				empty.TooltipText = T("runes.no_tools");
-				empty.MouseFilter = MouseFilterEnum.Stop;
-				var center = new CenterContainer { Name = "Empty", SizeFlagsVertical = SizeFlags.ExpandFill };
-				center.AddChild(empty);
-				_middle.AddChild(center);
+				_middle.AddChild(Layout.Text(T("runes.no_tools"), GameTheme.Faded).Named("Empty"));
 				return;
 			}
 
@@ -451,13 +423,12 @@ namespace Sigilos.UI.Screens
 			{
 				var group = groups[i];
 				var row = Layout.Row(10).Named($"Tool{i + 1}");
-				row.AddChild(Doodle.Icon(Art.Icon(kind == RuneToolKind.Grindstone ? "grindstone" : "gem"), 30, Palette.Of(group.Key.Grade)).Named("Icon"));
-				row.AddChild(new RuneGlyph(Texts.GlyphOf(group.Key.Stat), 22, Palette.Gold) { Name = "Glyph" });
-				var name = new Label { Name = "Stat", Text = Texts.Label(group.Key.Stat), SizeFlagsHorizontal = SizeFlags.ExpandFill, TooltipText = Texts.Name(group.Key), MouseFilter = MouseFilterEnum.Stop };
+				row.AddChild(Doodle.Icon(Art.Icon(kind == RuneToolKind.Grindstone ? "grindstone" : "gem"), 32, Palette.Of(group.Key.Grade)).Named("Icon"));
+				var name = new Label { Name = "Name", Text = Texts.Name(group.Key), SizeFlagsHorizontal = SizeFlags.ExpandFill, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 				name.AddThemeColorOverride("font_color", Palette.Of(group.Key.Grade));
 				row.AddChild(name);
 				row.AddChild(new Label { Name = "Range", Text = Texts.Range(group.Key), ThemeTypeVariation = GameTheme.Faded });
-				row.AddChild(new Label { Name = "Count", Text = $"×{group.Count()}", ThemeTypeVariation = GameTheme.Number, CustomMinimumSize = new Vector2(44, 0), HorizontalAlignment = HorizontalAlignment.Right });
+				row.AddChild(new Label { Name = "Count", Text = $"×{group.Count()}", ThemeTypeVariation = GameTheme.Number, CustomMinimumSize = new Vector2(48, 0), HorizontalAlignment = HorizontalAlignment.Right });
 				list.AddChild(row);
 			}
 
@@ -471,12 +442,10 @@ namespace Sigilos.UI.Screens
 			Layout.Clear(_detail);
 			Layout.Clear(_actions);
 			var rune = _player.Runes.FirstOrDefault(r => r.Id == _selectedRune);
-			_actionsLine.Visible = _actions.Visible = rune != null;
+			_actions.Visible = rune != null;
 			if (rune == null)
 			{
-				var center = new CenterContainer { Name = "Empty", CustomMinimumSize = new Vector2(0, 300) };
-				center.AddChild(Doodle.Icon(Art.Icon("rune"), 110, new Color(Palette.GoldDark, 0.45f)).Named("Icon"));
-				_detail.AddChild(center);
+				_detail.AddChild(Layout.Text(T("runes.pick_one"), GameTheme.Faded, 320).Named("Empty"));
 				return;
 			}
 
@@ -484,78 +453,74 @@ namespace Sigilos.UI.Screens
 			if (!_levelWhenOpened.ContainsKey(rune.Id))
 				_levelWhenOpened[rune.Id] = rune.Level;
 
-			_detail.AddChild(new RuneCard(rune, 300, opened, index => SubstatTools(rune, index)));
-
-			if (rune.EquippedOn is { } owner && owner != _monsterId && _player.Monster(owner) is { } holder)
-			{
-				var summon = _database.Summon(holder.SummonId);
-				var row = Layout.Row(6).Named("Holder");
-				var who = Layout.Medal(Art.Creature(summon.ImageFor(holder.Awakened)), Palette.Of(summon.Element), 32);
-				who.TooltipText = T(holder.Stored ? "runes.equipped_on_vault" : "runes.equipped_on", summon.NameFor(holder.Awakened));
-				who.MouseFilter = MouseFilterEnum.Stop;
-				row.AddChild(who);
-				if (holder.Stored)
-					row.AddChild(Doodle.Icon(Art.Icon("chest"), 22, Palette.TextFaded).Named("Vault"));
-				_detail.AddChild(row);
-			}
+			string? note = null;
+			if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
+				note = T(holder.Stored ? "rune.owner_vault" : "rune.owner", _database.Summon(holder.SummonId).NameFor(holder.Awakened));
+			_detail.AddChild(new RuneCard(rune, 300, opened, index => SubstatTools(rune, index), note));
 
 			var full = RuneInventory.IsFull(_player);
-			var fullTip = full ? T("runes.inventory_full", RuneInventory.Capacity) : T("runes.remove");
-			if (rune.EquippedOn != null && rune.EquippedOn == _monsterId)
-				_actions.AddChild(Act("Unequip", "cancel", fullTip, full, () => UnequipRequested?.Invoke(rune.Id)));
+			if (rune.EquippedOn != null && (rune.EquippedOn == _monsterId || Monster == null))
+			{
+				var remove = GameButton.Of(T("runes.remove"), () => UnequipRequested?.Invoke(rune.Id), ButtonKind.Secondary, "cancel").Named("Unequip");
+				remove.Disabled = full;
+				_actions.AddChild(remove);
+				if (full)
+					_detail.AddChild(Layout.Text(T("runes.inventory_full", RuneInventory.Capacity), GameTheme.Faded).Named("Full"));
+			}
 			else if (Monster is { } monster)
-				_actions.AddChild(Act("Equip", "confirm", T("runes.equip_on", _database.Summon(monster.SummonId).NameFor(monster.Awakened)), false, () => EquipRequested?.Invoke(rune.Id, monster.Id)));
-			else if (rune.EquippedOn != null)
-				_actions.AddChild(Act("Unequip", "cancel", fullTip, full, () => UnequipRequested?.Invoke(rune.Id)));
+			{
+				_actions.AddChild(GameButton.Of(T("runes.equip_on", _database.Summon(monster.SummonId).NameFor(monster.Awakened)), () => EquipRequested?.Invoke(rune.Id, monster.Id), ButtonKind.Primary, "confirm").Named("Equip"));
+			}
 
 			if (rune.Level < RuneRules.MaxLevel)
 			{
 				var next = RuneRules.UpgradeCost(rune);
-				var up = Act("Upgrade", "essence", T("runes.upgrade_to", rune.Level + 1, next), _player.Essence < next, () => UpgradeRequested?.Invoke(rune.Id, rune.Level + 1));
-				up.Badge = $"+{rune.Level + 1}";
+				var up = GameButton.Of(T("runes.upgrade_one", rune.Level + 1), () => UpgradeRequested?.Invoke(rune.Id, rune.Level + 1), ButtonKind.Primary, "essence").WithCost("essence", Texts.Short(next)).Named("Upgrade");
+				up.Disabled = _player.Essence < next;
 				_actions.AddChild(up);
 
 				var milestone = RuneRules.NextMilestone(rune.Level);
 				if (milestone > rune.Level + 1)
 				{
 					var total = RuneRules.UpgradeCost(rune, milestone);
-					var jump = Act("UpgradeToMilestone", "level_max", T("runes.upgrade_milestone", milestone, total), _player.Essence < total, () => UpgradeRequested?.Invoke(rune.Id, milestone));
-					jump.Badge = $"+{milestone}";
+					var jump = GameButton.Of(T("runes.upgrade_button", milestone), () => RuneDialog.ConfirmUpgrade(this, rune, milestone, _player.Essence, () => UpgradeRequested?.Invoke(rune.Id, milestone)),
+						ButtonKind.Secondary, "level_max").WithCost("essence", Texts.Short(total)).Named("UpgradeToMilestone");
+					jump.Disabled = _player.Essence < total;
 					_actions.AddChild(jump);
 				}
 			}
 
 			if (rune.EquippedOn == null)
 			{
-				var sell = Act("Sell", "dismantle", T("runes.sell", RuneRules.SellValue(rune)), false, () => SellRequested?.Invoke(rune.Id));
-				sell.Badge = RuneRules.SellValue(rune).ToString();
-				_actions.AddChild(sell);
+				var value = RuneRules.SellValue(rune);
+				_actions.AddChild(GameButton.Of(T("runes.sell_button_short"), () => Dialog.Confirm(this, T("runes.sell_title"), T("runes.sell_confirm", value), T("runes.sell_button_short"),
+					() => SellRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Danger, "dismantle").WithCost("essence", $"+{value}").Named("Sell"));
 			}
 		}
 
-		/// <summary>Os sigilos das pedras que servem num subatributo, no fim da linha dele na ficha.</summary>
+		/// <summary>Os botões das pedras que servem num subatributo, no fim da linha dele na ficha.</summary>
 		private IEnumerable<Control> SubstatTools(Rune rune, int index)
 		{
 			var grindstones = Usable(t => RuneForge.CanGrind(rune, index, t));
 			if (grindstones.Count > 0)
-				yield return ToolMenu("grindstone", T("runes.grind"), grindstones, tool => GrindRequested?.Invoke(rune.Id, index, tool)).Named("Grind");
+				yield return ToolButton(T("runes.grind"), "grindstone", grindstones, tool => GrindRequested?.Invoke(rune.Id, index, tool)).Named("Grind");
 
 			var gems = Usable(t => RuneForge.CanEnchant(rune, index, t));
 			if (gems.Count > 0)
-				yield return ToolMenu("gem", T("runes.enchant"), gems, tool => EnchantRequested?.Invoke(rune.Id, index, tool)).Named("Enchant");
+				yield return ToolButton(T("runes.enchant"), "gem", gems, tool => EnchantRequested?.Invoke(rune.Id, index, tool)).Named("Enchant");
 		}
 
 		/// <summary>Pedras diferentes que servem, uma de cada.</summary>
 		private List<RuneTool> Usable(Func<RuneTool, bool> fits) =>
 			_player.Tools.Distinct().Where(fits).OrderByDescending(t => t.Grade).ToList();
 
-		/// <summary>O sigilo da pedra: abre o carrossel das pedras que servem neste subatributo.</summary>
-		private SigilButton ToolMenu(string icon, string tooltip, IReadOnlyList<RuneTool> tools, Action<RuneTool> chosen)
+		/// <summary>O botão da pedra: abre a lista das pedras que servem neste subatributo.</summary>
+		private GameButton ToolButton(string text, string icon, IReadOnlyList<RuneTool> tools, Action<RuneTool> chosen)
 		{
-			var button = new SigilButton(Art.Icon(icon), tooltip, 38);
-			button.Pressed += () => ArcPicker.Open(this,
-				tools.Select(t => new ArcItem(Art.Icon(icon), $"{Texts.Name(t)} ({Texts.Range(t)})", Palette.Of(t.Grade))).ToList(),
-				0, button.GetGlobalRect().GetCenter(), index => chosen(tools[index]));
+			var button = new GameButton(text, ButtonKind.Secondary, icon, 40);
+			button.Pressed += () => Choices.Open(button, text,
+				tools.Select(t => new Choice($"{Texts.Name(t)} ({Texts.Range(t)})", Art.Icon(icon), Palette.Of(t.Grade))).ToList(),
+				-1, index => chosen(tools[index]));
 			return button;
 		}
 
@@ -567,13 +532,5 @@ namespace Sigilos.UI.Screens
 			RunePlace.Storage => _player.Monster(rune.EquippedOn ?? -1) is { Stored: true },
 			_ => true,
 		};
-
-		/// <summary>Um sigilo de ação da ficha; <paramref name="name"/> é o que ele faz (<c>Equip</c>, <c>Sell</c>), não o símbolo.</summary>
-		private static SigilButton Act(string name, string icon, string tooltip, bool disabled, Action onPressed)
-		{
-			var button = SigilButton.Of(icon, tooltip, onPressed, 60, SigilShape.Diamond).Named(name);
-			button.Disabled = disabled;
-			return button;
-		}
 	}
 }

@@ -8,15 +8,15 @@
   "variations": {
     "fire": {
       "variation_id": "pixie_fire",
-      "name": "Fire Pixie",
+      "name": "Pixie de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Kindle",
+        "name": "Acendalha",
         "skill": {
-          "name": "Wildfire Dust",
+          "name": "Pó de Incêndio",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
@@ -30,7 +30,7 @@
       },
       "skills": [
         {
-          "name": "Spark Dust",
+          "name": "Pó de Faísca",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.1, "hits": 3}
           ],
@@ -42,7 +42,7 @@
           ]
         },
         {
-          "name": "Will-o'-Wisp",
+          "name": "Fogo-Fátuo",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.5},
@@ -58,21 +58,21 @@
     },
     "water": {
       "variation_id": "pixie_water",
-      "name": "Water Pixie",
+      "name": "Pixie de Água",
       "element": "Water",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Dewdrop",
+        "name": "Gota de Orvalho",
         "skill": {
-          "name": "Pixie Dust",
+          "name": "Pó de Pixie",
           "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
         }
       },
       "skills": [
         {
-          "name": "Droplet",
+          "name": "Gotinha",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "name": "Morning Dew",
+          "name": "Orvalho da Manhã",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.12}
@@ -100,21 +100,21 @@
     },
     "wind": {
       "variation_id": "pixie_wind",
-      "name": "Wind Pixie",
+      "name": "Pixie de Vento",
       "element": "Wind",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Thistle",
+        "name": "Cardo",
         "skill": {
-          "name": "Pixie Dust",
+          "name": "Pó de Pixie",
           "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
         }
       },
       "skills": [
         {
-          "name": "Tickle",
+          "name": "Cócegas",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Impeto", "target": "Target", "power": -10}
@@ -127,7 +127,7 @@
           ]
         },
         {
-          "name": "Fairy Ring",
+          "name": "Círculo de Fadas",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
@@ -141,21 +141,21 @@
     },
     "light": {
       "variation_id": "pixie_light",
-      "name": "Light Pixie",
+      "name": "Pixie de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Twinkle",
+        "name": "Cintila",
         "skill": {
-          "name": "Pixie Dust",
+          "name": "Pó de Pixie",
           "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
         }
       },
       "skills": [
         {
-          "name": "Sparkle",
+          "name": "Brilhinho",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Shield", "target": "LowestAlly", "power": 0.05, "turns": 2}
@@ -168,7 +168,7 @@
           ]
         },
         {
-          "name": "Glamour",
+          "name": "Encanto",
           "cooldown": 4,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.12, "turns": 2}
@@ -183,15 +183,15 @@
     },
     "dark": {
       "variation_id": "pixie_dark",
-      "name": "Dark Pixie",
+      "name": "Pixie de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Nettle",
+        "name": "Urtiga",
         "skill": {
-          "name": "Bad Luck",
+          "name": "Má Sorte",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2},
@@ -205,7 +205,7 @@
       },
       "skills": [
         {
-          "name": "Hex Dust",
+          "name": "Pó de Feitiço",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}
@@ -218,7 +218,7 @@
           ]
         },
         {
-          "name": "Nightmare",
+          "name": "Pesadelo",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.9},

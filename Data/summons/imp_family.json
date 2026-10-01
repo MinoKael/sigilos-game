@@ -1,28 +1,28 @@
 {
   "family_id": "imp",
-  "base_name": "Imp",
-  "name": "Seal Imps",
+  "base_name": "Diabrete",
+  "name": "Diabretes de Selo",
   "star_grade": 3,
   "image": "imp",
   "awakened_image": "imp_awakened",
   "variations": {
     "fire": {
       "variation_id": "imp_fire",
-      "name": "Fire Imp",
+      "name": "Diabrete de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Cinder",
+        "name": "Fagulha",
         "skill": {
-          "name": "Coward's Flight",
+          "name": "Fuga Covarde",
           "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
         }
       },
       "skills": [
         {
-          "name": "Spark",
+          "name": "Faísca",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.93, "hits": 2}
           ],
@@ -34,7 +34,7 @@
           ]
         },
         {
-          "name": "Broken Seal",
+          "name": "Selo Rompido",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 6.3},
@@ -50,15 +50,15 @@
     },
     "water": {
       "variation_id": "imp_water",
-      "name": "Water Imp",
+      "name": "Diabrete de Água",
       "element": "Water",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Gulp",
+        "name": "Sorvo",
         "skill": {
-          "name": "Deep Thirst",
+          "name": "Sede Profunda",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 7.7, "drain": 0.8},
@@ -72,7 +72,7 @@
       },
       "skills": [
         {
-          "name": "Frost Nip",
+          "name": "Mordisco Gelado",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.2}
           ],
@@ -84,7 +84,7 @@
           ]
         },
         {
-          "name": "Seal's Thirst",
+          "name": "Sede do Selo",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.25, "drain": 0.5}
@@ -99,21 +99,21 @@
     },
     "wind": {
       "variation_id": "imp_wind",
-      "name": "Wind Imp",
+      "name": "Diabrete de Vento",
       "element": "Wind",
       "role": "Defense",
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Eddy",
+        "name": "Rodamoinho",
         "skill": {
-          "name": "Coward's Flight",
+          "name": "Fuga Covarde",
           "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
         }
       },
       "skills": [
         {
-          "name": "Spin",
+          "name": "Rodopio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
@@ -126,7 +126,7 @@
           ]
         },
         {
-          "name": "Whirlwind",
+          "name": "Redemoinho",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
@@ -142,15 +142,15 @@
     },
     "light": {
       "variation_id": "imp_light",
-      "name": "Light Imp",
+      "name": "Diabrete de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Glint",
+        "name": "Lampejo",
         "skill": {
-          "name": "Radiant Omen",
+          "name": "Presságio Radiante",
           "cooldown": 5,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 45},
@@ -163,7 +163,7 @@
       },
       "skills": [
         {
-          "name": "Flash",
+          "name": "Clarão",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Impeto", "target": "Target", "power": -15}
@@ -176,7 +176,7 @@
           ]
         },
         {
-          "name": "Foresee",
+          "name": "Olhar Adiante",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 20}
@@ -189,21 +189,21 @@
     },
     "dark": {
       "variation_id": "imp_dark",
-      "name": "Dark Imp",
+      "name": "Diabrete de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Murk",
+        "name": "Negrume",
         "skill": {
-          "name": "Coward's Flight",
+          "name": "Fuga Covarde",
           "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
         }
       },
       "skills": [
         {
-          "name": "Shadow Strike",
+          "name": "Golpe Sombrio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
@@ -216,7 +216,7 @@
           ]
         },
         {
-          "name": "Vanish into the Seal",
+          "name": "Sumir no Selo",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Hidden"},

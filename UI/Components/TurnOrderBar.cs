@@ -7,7 +7,10 @@ using Side = Sigilos.Core.Battle.Side;
 
 namespace Sigilos.UI.Components
 {
-	/// <summary>Os próximos a agir, de cima para baixo, depois do símbolo de velocidade. Moldura verde: aliado; vermelha: inimigo.</summary>
+	/// <summary>
+	/// Os próximos a agir, de cima para baixo, com a palavra "Próximos" no alto. Moldura verde: aliado;
+	/// vermelha: inimigo. Toque longo num retrato abre o resumo da unidade.
+	/// </summary>
 	public partial class TurnOrderBar : VBoxContainer
 	{
 		public TurnOrderBar()
@@ -19,17 +22,18 @@ namespace Sigilos.UI.Components
 		public void Show(IReadOnlyList<BattleUnit> order)
 		{
 			Layout.Clear(this);
-			var icon = Doodle.Icon(Art.Icon("speed"), 28, Palette.GoldDark.Lightened(0.3f)).Named("NextUp");
-			icon.TooltipText = T("battle.next_up");
-			icon.MouseFilter = MouseFilterEnum.Stop;
-			AddChild(icon);
+			var title = new Label { Name = "NextUp", Text = T("battle.next_up"), HorizontalAlignment = HorizontalAlignment.Center };
+			title.AddThemeFontSizeOverride("font_size", 14);
+			title.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.35f));
+			AddChild(title);
 
 			for (var i = 0; i < order.Count; i++)
 			{
 				var unit = order[i];
-				var frame = new PanelContainer { Name = $"Turn{i + 1}", TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
-				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow, 2, 18, 2));
-				frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 34));
+				var frame = new PanelContainer { Name = $"Turn{i + 1}", MouseFilter = MouseFilterEnum.Stop };
+				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow, 2, 22, 2));
+				frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 40));
+				Press.On(frame, () => MonsterSummary.Open(frame, unit), () => MonsterSummary.Open(frame, unit));
 				AddChild(frame);
 			}
 		}

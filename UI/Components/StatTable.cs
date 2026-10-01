@@ -25,10 +25,7 @@ namespace Sigilos.UI.Components
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
 				// Quatro células por atributo, com o nome dele na frente: HpGlyph, HpName, HpBase, HpBonus.
-				var icon = new RuneGlyph(Texts.GlyphOf(stat), 18, Palette.Gold) { Name = $"{stat}Glyph" };
-				icon.TooltipText = Texts.Name(Texts.GlyphOf(stat));
-				icon.MouseFilter = MouseFilterEnum.Stop;
-				AddChild(icon);
+				AddChild(new RuneGlyph(Texts.GlyphOf(stat), 20, Palette.Gold) { Name = $"{stat}Glyph" });
 				AddChild(new Label { Name = $"{stat}Name", Text = Texts.Name(stat) });
 
 				var baseValue = new Label { Name = $"{stat}Base", Text = Texts.Value(stat, sheet.Base.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };

@@ -7,7 +7,7 @@
 [
   {
     "number": 1,
-    "name": "Menhir Road",
+    "name": "Estrada dos Menires",
     "stars": 3,
     "level": 1,
     "mana": 2,
@@ -23,7 +23,7 @@
   },
   {
     "number": 2,
-    "name": "Fallen Stones",
+    "name": "Pedras Caídas",
     "stars": 3,
     "level": 3,
     "mana": 2,
@@ -39,7 +39,7 @@
   },
   {
     "number": 3,
-    "name": "Shepherds' Trail",
+    "name": "Trilha dos Pastores",
     "stars": 3,
     "level": 5,
     "mana": 2,
@@ -55,7 +55,7 @@
   },
   {
     "number": 4,
-    "name": "Howls in the Valley",
+    "name": "Uivos no Vale",
     "stars": 3,
     "level": 8,
     "mana": 2,
@@ -72,7 +72,7 @@
   },
   {
     "number": 5,
-    "name": "Old Bridge",
+    "name": "Ponte Velha",
     "stars": 3,
     "level": 11,
     "mana": 2,
@@ -88,7 +88,7 @@
   },
   {
     "number": 6,
-    "name": "Still Marsh",
+    "name": "Charco Parado",
     "stars": 3,
     "level": 14,
     "mana": 3,
@@ -105,7 +105,7 @@
   },
   {
     "number": 7,
-    "name": "Burned Camp",
+    "name": "Acampamento Queimado",
     "stars": 3,
     "level": 17,
     "mana": 3,
@@ -121,7 +121,7 @@
   },
   {
     "number": 8,
-    "name": "Cracked Menhir",
+    "name": "Menir Rachado",
     "stars": 3,
     "level": 20,
     "mana": 3,
@@ -138,7 +138,7 @@
   },
   {
     "number": 9,
-    "name": "Wolves' Den",
+    "name": "Toca dos Lobos",
     "stars": 3,
     "level": 23,
     "mana": 3,
@@ -154,7 +154,7 @@
   },
   {
     "number": 10,
-    "name": "Troll Hill",
+    "name": "Colina do Troll",
     "stars": 3,
     "level": 25,
     "mana": 3,
@@ -172,7 +172,7 @@
   },
   {
     "number": 11,
-    "name": "Unmarked Road",
+    "name": "Estrada Sem Placas",
     "stars": 4,
     "level": 6,
     "mana": 4,
@@ -188,7 +188,7 @@
   },
   {
     "number": 12,
-    "name": "Abandoned Mill",
+    "name": "Moinho Abandonado",
     "stars": 4,
     "level": 10,
     "mana": 4,
@@ -205,7 +205,7 @@
   },
   {
     "number": 13,
-    "name": "River Ford",
+    "name": "Vau do Rio",
     "stars": 4,
     "level": 14,
     "mana": 4,
@@ -221,7 +221,7 @@
   },
   {
     "number": 14,
-    "name": "Menhir Graveyard",
+    "name": "Cemitério de Menires",
     "stars": 4,
     "level": 18,
     "mana": 4,
@@ -239,7 +239,7 @@
   },
   {
     "number": 15,
-    "name": "Ash Nest",
+    "name": "Ninho de Cinzas",
     "stars": 4,
     "level": 22,
     "mana": 4,
@@ -257,7 +257,7 @@
   },
   {
     "number": 16,
-    "name": "Stone Gate",
+    "name": "Portão de Pedra",
     "stars": 4,
     "level": 26,
     "mana": 5,
@@ -273,7 +273,7 @@
   },
   {
     "number": 17,
-    "name": "Forest of Chains",
+    "name": "Floresta de Correntes",
     "stars": 4,
     "level": 30,
     "mana": 5,
@@ -290,7 +290,7 @@
   },
   {
     "number": 18,
-    "name": "The Master's Guard",
+    "name": "Guarda do Mestre",
     "stars": 5,
     "level": 10,
     "mana": 5,
@@ -307,7 +307,7 @@
   },
   {
     "number": 19,
-    "name": "Hall of Links",
+    "name": "Salão dos Elos",
     "stars": 5,
     "level": 20,
     "mana": 5,
@@ -323,7 +323,7 @@
   },
   {
     "number": 20,
-    "name": "The Chain Master",
+    "name": "O Mestre de Correntes",
     "stars": 5,
     "level": 30,
     "mana": 5,

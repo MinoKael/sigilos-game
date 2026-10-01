@@ -18,11 +18,11 @@ namespace Sigilos.Core.Content
 		[JsonPropertyName("family_id")]
 		public string Id { get; init; } = "";
 
-		/// <summary>O nome no singular, de que saem os nomes das variantes ("Dragon" em "Fire Dragon").</summary>
+		/// <summary>O nome no singular, de que saem os nomes das variantes ("Dragão" em "Dragão de Fogo"); é o que o Grimório mostra.</summary>
 		[JsonPropertyName("base_name")]
 		public string BaseName { get; init; } = "";
 
-		/// <summary>O nome da família no Grimório ("Dragons").</summary>
+		/// <summary>O plural ("Dragões"), para a lista do construtor de famílias.</summary>
 		public string Name { get; init; } = "";
 
 		/// <summary>Estrelas naturais: escolhem o orçamento de atributos (<see cref="StatModel"/>).</summary>

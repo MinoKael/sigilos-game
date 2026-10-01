@@ -14,13 +14,13 @@ namespace Sigilos.UI.Components
 	}
 
 	/// <summary>
-	/// O botão do jogo: só um símbolo dentro de um sigilo, sem texto. O nome vem na dica (passar o
-	/// mouse); o único texto é a <see cref="Badge"/>, um número pequeno (custo, quantidade).
+	/// O botão só de símbolo, dentro de um sigilo: fica para o que todo mundo reconhece sem ler — fechar
+	/// (✕), voltar (seta), pausar, 2×, os passos + e −. Toda outra ação é um <see cref="GameButton"/>, com
+	/// texto. O único texto aqui é a <see cref="Badge"/>, um número pequeno.
 	///
-	/// Os estados se leem pela luz, não pela cor de fundo: sob o mouse a moldura vira ouro e ganha a
-	/// aura arcana (sem crescer); apertado, afunda; ligado (<see cref="BaseButton.ToggleMode"/>)
-	/// fica aceso em azul — é o substituto da caixinha de marcar —; desligado, apaga. <see cref="Highlight"/>
-	/// pulsa em verde para chamar o jogador (o que coletar, por onde começar).
+	/// Os estados se leem pela luz, não pela cor de fundo: apertado, afunda; ligado
+	/// (<see cref="BaseButton.ToggleMode"/>) fica aceso em azul; desligado, apaga. <see cref="Highlight"/>
+	/// pulsa em verde para chamar o jogador. No PC, sob o mouse a moldura vira ouro; nada depende disso.
 	/// </summary>
 	public partial class SigilButton : Button
 	{
@@ -52,12 +52,11 @@ namespace Sigilos.UI.Components
 		private Color _ink = Palette.Gold;
 		private Color? _accent;
 
-		public SigilButton(Texture2D? icon, string tooltip, float size = 56, SigilShape shape = SigilShape.Circle)
+		public SigilButton(Texture2D? icon, float size = 56, SigilShape shape = SigilShape.Circle)
 		{
 			Shape = shape;
 			Flat = true;
 			FocusMode = FocusModeEnum.None;
-			TooltipText = tooltip;
 			CustomMinimumSize = new Vector2(size, size);
 			MouseDefaultCursorShape = CursorShape.PointingHand;
 
@@ -208,10 +207,10 @@ namespace Sigilos.UI.Components
 
 		public void SetIcon(Texture2D? icon) => _icon.SetArt(icon);
 
-		/// <summary>Botão pronto: símbolo de Assets/Icons, dica e ação. O nó leva o nome do símbolo (<c>level_max</c> → <c>LevelMax</c>).</summary>
-		public static SigilButton Of(string icon, string tooltip, Action onPressed, float size = 56, SigilShape shape = SigilShape.Circle)
+		/// <summary>Botão pronto: símbolo de Assets/Icons e ação. O nó leva o nome do símbolo (<c>level_max</c> → <c>LevelMax</c>).</summary>
+		public static SigilButton Of(string icon, Action onPressed, float size = 56, SigilShape shape = SigilShape.Circle)
 		{
-			var button = new SigilButton(Art.Icon(icon), tooltip, size, shape) { Name = Layout.NodeName(icon) };
+			var button = new SigilButton(Art.Icon(icon), size, shape) { Name = Layout.NodeName(icon) };
 			button.Pressed += onPressed;
 			return button;
 		}

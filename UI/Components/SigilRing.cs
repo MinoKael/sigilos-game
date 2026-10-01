@@ -6,7 +6,7 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// Um círculo de conjuração: dois anéis entalhados com marcas de runa, os controles em volta, a
-	/// intervalos iguais a partir do alto, e um no centro. É a Bolsa e o círculo das 6 runas.
+	/// intervalos iguais a partir do alto, e um no centro. É o círculo das 6 runas.
 	/// </summary>
 	public partial class SigilRing : Control
 	{

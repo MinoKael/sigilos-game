@@ -1,28 +1,28 @@
 {
   "family_id": "bird",
-  "base_name": "Bird",
-  "name": "Birds",
+  "base_name": "Pássaro",
+  "name": "Pássaros",
   "star_grade": 2,
   "image": "bird",
   "awakened_image": "bird_awakened",
   "variations": {
     "fire": {
       "variation_id": "bird_fire",
-      "name": "Fire Bird",
+      "name": "Pássaro de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Flick",
+        "name": "Chispa",
         "skill": {
-          "name": "Evasive Flight",
+          "name": "Voo Esquivo",
           "passive": {"kind": "Dodge", "value": 0.2}
         }
       },
       "skills": [
         {
-          "name": "Hot Peck",
+          "name": "Bicada Quente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.2, "turns": 2}
@@ -35,7 +35,7 @@
           ]
         },
         {
-          "name": "Fire Dive",
+          "name": "Mergulho de Fogo",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.9}
@@ -50,15 +50,15 @@
     },
     "water": {
       "variation_id": "bird_water",
-      "name": "Water Bird",
+      "name": "Pássaro de Água",
       "element": "Water",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Drizzle",
+        "name": "Garoa",
         "skill": {
-          "name": "Rain Dance",
+          "name": "Dança da Chuva",
           "cooldown": 5,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.2},
@@ -72,7 +72,7 @@
       },
       "skills": [
         {
-          "name": "Splash",
+          "name": "Respingo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.2, "turns": 2}
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "name": "Preen",
+          "name": "Alisar as Penas",
           "cooldown": 4,
           "effects": [
             {"kind": "Cleanse", "target": "AllAllies"},
@@ -101,21 +101,21 @@
     },
     "wind": {
       "variation_id": "bird_wind",
-      "name": "Wind Bird",
+      "name": "Pássaro de Vento",
       "element": "Wind",
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Whistle",
+        "name": "Assobio",
         "skill": {
-          "name": "Evasive Flight",
+          "name": "Voo Esquivo",
           "passive": {"kind": "Dodge", "value": 0.2}
         }
       },
       "skills": [
         {
-          "name": "Quick Peck",
+          "name": "Bicada Rápida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.6, "hits": 2}
           ],
@@ -127,7 +127,7 @@
           ]
         },
         {
-          "name": "Tailwind",
+          "name": "Vento a Favor",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 20}
@@ -140,15 +140,15 @@
     },
     "light": {
       "variation_id": "bird_light",
-      "name": "Light Bird",
+      "name": "Pássaro de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Chirp",
+        "name": "Pio",
         "skill": {
-          "name": "Sunrise",
+          "name": "Nascer do Sol",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
@@ -161,7 +161,7 @@
       },
       "skills": [
         {
-          "name": "Glare",
+          "name": "Brilho Ofuscante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.2, "turns": 2}
@@ -174,7 +174,7 @@
           ]
         },
         {
-          "name": "Morning Song",
+          "name": "Canto da Manhã",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
@@ -190,21 +190,21 @@
     },
     "dark": {
       "variation_id": "bird_dark",
-      "name": "Dark Bird",
+      "name": "Pássaro de Trevas",
       "element": "Dark",
       "role": "Defense",
       "stats": {"hp": 7290, "atk": 453, "def": 552, "spd": 98},
       "awakened_stats": {"hp": 8100, "atk": 503, "def": 613, "spd": 99},
       "awakening": {
-        "name": "Soot",
+        "name": "Fuligem",
         "skill": {
-          "name": "Evasive Flight",
+          "name": "Voo Esquivo",
           "passive": {"kind": "Dodge", "value": 0.2}
         }
       },
       "skills": [
         {
-          "name": "Shadow Peck",
+          "name": "Bicada Sombria",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15, "drain": 0.15}
           ],
@@ -216,7 +216,7 @@
           ]
         },
         {
-          "name": "Night Screech",
+          "name": "Grito Noturno",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},

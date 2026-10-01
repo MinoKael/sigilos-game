@@ -8,69 +8,40 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A Configuração, por cima do Santuário: um sigilo por idioma (o aceso é o atual) e o de fechar.
-	/// Trocar de idioma avisa o GameRoot, que recarrega os textos e remonta a tela.
+	/// Os Ajustes, numa janela: um botão por idioma, com o nome escrito no próprio idioma (o atual
+	/// aceso). Trocar de idioma avisa o GameRoot, que recarrega os textos e remonta a tela.
 	/// </summary>
-	public partial class ConfigPanel : ColorRect
+	public static class ConfigPanel
 	{
-		public ConfigPanel(IReadOnlyList<string> languages, string current)
+		/// <summary>O nome de cada idioma nele mesmo: quem não entende o atual acha o seu.</summary>
+		private static readonly Dictionary<string, string> Names = new()
 		{
-			Name = nameof(ConfigPanel);
-			Color = new Color(0, 0, 0, 0.55f);
-			MouseFilter = MouseFilterEnum.Stop;
-			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			["en"] = "English",
+			["pt-BR"] = "Português (Brasil)",
+		};
 
-			var center = new CenterContainer { Name = "Center", MouseFilter = MouseFilterEnum.Ignore };
-			center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(center);
-
-			var panel = new PanelContainer { Name = "Panel" };
-			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 24));
-			center.AddChild(panel);
-
-			var column = new VBoxContainer { Name = "Content" };
-			column.AddThemeConstantOverride("separation", 22);
-			panel.AddChild(column);
-
-			var title = Layout.Row(12).Named("Header");
-			title.AddChild(Doodle.Icon(Art.Icon("config"), 40, Palette.Gold));
-			title.AddChild(new Label { Name = "Title", Text = T("destination.Config"), ThemeTypeVariation = GameTheme.Title });
-			column.AddChild(title);
-
-			var row = Layout.Row(16, true).Named("Languages");
+		public static Dialog Open(Control from, IReadOnlyList<string> languages, string current, Action<string> chosen)
+		{
+			var dialog = Dialog.Open(from, T("destination.Config"), 520, null, "ConfigDialog");
+			dialog.Body.AddChild(new Label { Name = "LanguageTitle", Text = T("config.language"), ThemeTypeVariation = GameTheme.Heading });
+			var column = new VBoxContainer { Name = "Languages" };
+			column.AddThemeConstantOverride("separation", 10);
 			foreach (var language in languages)
 			{
 				var code = language;
+				var name = Names.GetValueOrDefault(code, code);
 				// "pt-BR" → PtBR.
-				var sigil = new SigilButton(null, code, 64) { Name = Layout.NodeName(code.Replace('-', '_')), ToggleMode = true, ButtonPressed = code == current, Letters = code.Split('-')[0].ToUpperInvariant() };
-				sigil.Pressed += () =>
+				var button = GameButton.Of(code == current ? T("config.current", name) : name, () =>
 				{
+					dialog.Close();
 					if (code != current)
-						LanguageChosen?.Invoke(code);
-					else
-						sigil.ButtonPressed = true;
-				};
-				row.AddChild(sigil);
+						chosen(code);
+				}, code == current ? ButtonKind.Primary : ButtonKind.Secondary).Named(Layout.NodeName(code.Replace('-', '_')));
+				column.AddChild(button);
 			}
 
-			column.AddChild(row);
-			var close = Layout.Row(0, true).Named("Actions");
-			close.AddChild(SigilButton.Of("cancel", T("common.close"), QueueFree, 52).Named("Close"));
-			column.AddChild(close);
-		}
-
-		public event Action<string>? LanguageChosen;
-
-		public override void _GuiInput(InputEvent @event)
-		{
-			if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-				QueueFree();
-		}
-
-		public override void _UnhandledKeyInput(InputEvent @event)
-		{
-			if (@event.IsActionPressed("ui_cancel"))
-				QueueFree();
+			dialog.Body.AddChild(column);
+			return dialog;
 		}
 	}
 }

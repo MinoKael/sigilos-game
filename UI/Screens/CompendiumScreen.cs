@@ -13,11 +13,11 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O Compêndio: o único lugar do jogo com texto explicativo. As regras em abas de sigilo — como
-	/// jogar, combate, atributos, Glifos, efeitos e runas —, cada tópico um cartão curto com o seu
-	/// símbolo. As outras telas só mostram símbolos e números; o porquê está aqui. Todo número vem das
-	/// regras do Core, então a explicação acompanha o balanceamento. O que existe no jogo (invocações,
-	/// tabelas de runa, pedras) fica no Grimório.
+	/// O Compêndio: as regras do jogo por inteiro, em abas escritas — como jogar, combate, atributos,
+	/// Glifos, efeitos e runas —, cada tópico um cartão curto com o seu símbolo. As telas explicam o que
+	/// o jogador precisa na hora (textos curtos e janelas ao tocar); aqui fica o porquê completo. Todo
+	/// número vem das regras do Core, então a explicação acompanha o balanceamento. O que existe no jogo
+	/// (invocações, tabelas de runa, pedras) fica no Grimório.
 	/// </summary>
 	public partial class CompendiumScreen : Control
 	{
@@ -34,8 +34,9 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			var (header, extra) = Layout.Header(T("destination.Compendium"), "compendium", null, () => BackRequested?.Invoke());
-			page.AddChild(header);
+			page.AddChild(Layout.Header(T("destination.Compendium"), null, () => BackRequested?.Invoke()).Header);
+			var sigils = new TextTabs { Name = "Tabs" };
+			page.AddChild(sigils);
 
 			var tabs = new TabContainer { Name = "Pages", SizeFlagsVertical = SizeFlags.ExpandFill, TabsVisible = false };
 			page.AddChild(tabs);
@@ -46,17 +47,13 @@ namespace Sigilos.UI.Screens
 			Statuses(Layout.Tab(tabs, "Effects", T("compendium.tab.effects")));
 			Runes(Layout.Tab(tabs, "Runes", T("compendium.tab.runes")));
 
-			var sigils = new SigilTabs(vertical: false, 48) { Name = "Tabs" };
-			sigils.Add(Art.Icon("region"), T("compendium.tab.basic")).Name = "Basics";
-			sigils.Add(Art.Icon("fight"), T("compendium.tab.combat")).Name = "Combat";
-			sigils.Add(Art.Icon("stats"), T("compendium.tab.stats")).Name = "Stats";
-			var glyphs = sigils.Add(null, T("compendium.tab.glyphs"));
-			glyphs.Name = "Glyphs";
-			glyphs.Rune = RuneSets.For(RuneSet.Frenzy).Glyph;
-			sigils.Add(Art.Icon("effects"), T("compendium.tab.effects")).Name = "Effects";
-			sigils.Add(Art.Icon("rune"), T("compendium.tab.runes")).Name = "Runes";
+			sigils.Add(T("compendium.tab.basic"), "", "region").Name = "Basics";
+			sigils.Add(T("compendium.tab.combat"), "", "fight").Name = "Combat";
+			sigils.Add(T("compendium.tab.stats"), "", "stats").Name = "Stats";
+			sigils.Add(T("compendium.tab.glyphs"), "", "rune").Name = "Glyphs";
+			sigils.Add(T("compendium.tab.effects"), "", "effects").Name = "Effects";
+			sigils.Add(T("compendium.tab.runes"), "", "grindstone").Name = "Runes";
 			sigils.Changed += index => tabs.CurrentTab = index;
-			extra.AddChild(sigils);
 		}
 
 		private static void Basics(VBoxContainer column)

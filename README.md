@@ -8,13 +8,16 @@ Este repositório é o **MVP**: combate 5 contra 5 com Ímpeto e habilidades com
 e Passiva), gacha com garantia em que cada invocação é uma cópia nova, coleção com Baú, cópias fundidas
 sobem o nível de uma habilidade sorteada, uma equipe por conteúdo, ociosidade, estrelas e experiência
 pela tabela de Summoners War (Evolução até 6★ com Essência e Fragmentos), Despertar que dá habilidade
-nova (2★ e 3★), habilidade mais forte (4★) ou atributo (5★), interface de símbolos (botões são sigilos, o nome
-vem na dica; texto explicativo só no Compêndio), runas e atributos iguais aos de Summoners War (1 a 6
+nova (2★ e 3★), habilidade mais forte (4★) ou atributo (5★), interface feita para o celular (botões
+com texto, nenhuma dica de mouse: toda explicação abre numa janela colada no que foi tocado, e segurar
+um monstro ou uma runa mostra o resumo), runas e atributos iguais aos de Summoners War (1 a 6
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
 melhora nunca falha), 17 famílias de invocação de 2★ a 5★ naturais (85 variantes; os inimigos comuns
-são invocações reforçadas), a região 1 (20 fases), cinco Masmorras, Batalha automática (30 lutas seguidas), Mana para
-entrar nas lutas, nível da conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe). O jogo é em inglês: todo texto da
-interface mora em `Data/texts/en.json`, com tradução para português em `Data/texts/pt-BR.json`.
+são invocações reforçadas), a região 1 (20 fases), cinco Masmorras, Batalha automática (30 lutas seguidas,
+correndo por trás enquanto se usa o resto do jogo), Mana para
+entrar nas lutas, nível da conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe). O jogo nasce em português:
+todo texto da interface mora em `Data/texts/pt-BR.json` e os nomes (invocações, habilidades, fases, Masmorras) nos dados, com
+tradução para o inglês em `Data/texts/en.json`.
 
 ## Rodar
 
@@ -41,9 +44,11 @@ turno a turno. `--digest` resume mais de mil lutas de semente fixa, uma por linh
 de mexer no código do combate para conferir que nenhuma luta mudou.
 
 Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro save;
-`--language=nome` usa `Data/texts/nome.json` (padrão: `en`; `pt-BR` para português);
-`--screen=map|bag|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela direto.
-O idioma também pode ser trocado no jogo, na engrenagem do Santuário (fica salvo).
+`--language=nome` usa `Data/texts/nome.json` (padrão: `pt-BR`; `en` para inglês);
+`--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela direto
+(`map` é a tela Batalha, com Campanha e Masmorras). O idioma também pode ser trocado no jogo, em Ajustes, na
+barra de baixo da tela inicial (fica salvo). No computador, segurar é apertar e esperar ou o botão direito; Esc
+é o Voltar.
 
 Depuração visual da interface, com o jogo rodando: Ctrl+F1 contornos, Ctrl+F2 nomes, Ctrl+F3 valores
 ao vivo, Ctrl+F4 origem no código (a mesma tecla desliga). É o addon `addons/visual_debugger`, que só
@@ -61,10 +66,12 @@ A fórmula está em [docs/summon_family_stat_formula_spec.md](docs/summon_family
 
 ## Textos e tradução
 
-Todo texto da interface está em `Data/texts/en.json`, a base, por chave. Para traduzir, copie o
-arquivo (`es.json`...), troque os textos e rode com `-- --language=es`; `pt-BR.json` já é uma tradução
-pronta. Ids e nomes de dados são em inglês. Nomes de invocações, inimigos, fases e
-Masmorras ficam nos arquivos de `Data/`. Para conferir se falta ou sobra alguma chave:
+Todo texto da interface está em `Data/texts/pt-BR.json`, a base, por chave. Os nomes de invocações,
+habilidades, fases, Masmorras, chefes e da Loja ficam nos arquivos de `Data/`, também em português; os
+ids são em inglês e não mudam. Para traduzir, copie `pt-BR.json` (`es.json`...), troque os textos, ponha
+no grupo `names` a tradução de cada nome dos dados (pelo nome em português) e rode com
+`-- --language=es`; `en.json` já é uma tradução pronta. Para conferir se falta ou sobra alguma chave ou
+nome:
 
 ```bash
 py Tools/texts/check_texts.py

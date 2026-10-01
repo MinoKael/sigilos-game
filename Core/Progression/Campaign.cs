@@ -48,9 +48,13 @@ namespace Sigilos.Core.Progression
 				: null;
 
 			var summon = database.Summons.Where(s => s.Rarity == MonsterRarityDrop).OrderBy(_ => random.Next()).FirstOrDefault();
-            var summonResult = random.NextDouble() < MonsterChance
-				? new SummonResult(summon!, Roster.Add(player, summon!), !player.Owns(summon!.Id))
-                : null;
+			SummonResult? summonResult = null;
+			if (random.NextDouble() < MonsterChance && summon != null)
+			{
+				// Primeira cópia se ainda não tinha nenhuma: tem de olhar antes de entregar esta.
+				var firstCopy = !player.Owns(summon.Id);
+				summonResult = new SummonResult(summon, Roster.Add(player, summon), firstCopy);
+			}
 
 			return new VictoryReward(mana, scrolls, 0, essence, stage.Experience, firstClear, rune, summonResult, Array.Empty<RuneTool>(), levelUps, accountLevels);
 		}

@@ -22,24 +22,32 @@ namespace Sigilos.GameEntry
 	/// <b>As telas não o conhecem.</b> Cada uma recebe o que mostra e avisa por evento o que o jogador
 	/// escolheu; quem muda o <see cref="PlayerState"/> e salva é esta classe.
 	///
-	/// A navegação é por símbolos: o Santuário leva ao Mapa (Campanha, Masmorras), à Bolsa (monstros,
-	/// runas, equipes, invocar, livros), à Loja e aos atalhos; cada tela volta para onde veio.
+	/// A navegação: o Santuário leva à escolha de batalha (Campanha, Masmorras), à Invocação e, pela
+	/// barra de baixo, a Monstros, Runas, Equipes, Loja, Grimório, Compêndio e Ajustes; cada tela volta
+	/// para onde veio (seta, Esc ou o Voltar do celular). A Batalha automática roda fora das telas
+	/// (<see cref="AutoBattleRunner"/>), com o aviso flutuante no alto de todas.
 	///
 	/// Argumentos de desenvolvimento (depois de <c>--</c>): <c>--save=nome</c> usa outro arquivo de
 	/// save; <c>--language=nome</c> usa Data/texts/nome.json (padrão: o da Configuração, ou en);
-	/// <c>--screen=map|bag|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto.
+	/// <c>--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto.
 	/// </summary>
 	public partial class GameRoot : Node
 	{
 		private const string DefaultSlot = "sigilos";
 
 		private readonly Random _random = new();
+		private readonly AutoBattleRunner _runner = new();
+		private readonly AutoBattleBadge _badge = new();
 		private Control _ui = null!;
+		private Control _screens = null!;
 		private Control? _screen;
 		private GameDatabase _database = null!;
 		private SaveStore _store = null!;
 		private PlayerState _player = null!;
 		private string _language = ContentLoader.BaseLanguage;
+
+		/// <summary>Remonta a tela de agora (depois de uma janela que mudou algo, ou para voltar a ela).</summary>
+		private Action _current = () => { };
 
 		// Para onde cada tela de conteúdo volta: vale também depois de uma luta ou da Loja.
 		private Action _campaignBack = null!;
@@ -50,24 +58,35 @@ namespace Sigilos.GameEntry
 		public override void _Ready()
 		{
 			_campaignBack = _dungeonsBack = ShowMap;
-			_storageBack = _summonBack = ShowBag;
-			_database = ContentLoader.Load();
+			_storageBack = _summonBack = ShowHub;
+			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles.
 			_store = new SaveStore(Argument("--save=") ?? DefaultSlot);
-			_player = _store.Load() ?? NewGame.Create(DateTime.Now, _random, _database);
-			_language = Argument("--language=") ?? _player.Language ?? ContentLoader.BaseLanguage;
+			var saved = _store.Load();
+			_language = Argument("--language=") ?? saved?.Language ?? ContentLoader.BaseLanguage;
 			ContentLoader.LoadTexts(_language);
+			_database = ContentLoader.Load();
+			_player = saved ?? NewGame.Create(DateTime.Now, _random, _database);
+			UiSession.Database = _database;
+			UiSession.Player = _player;
+
+			// O Voltar do celular vira Esc (ui_cancel): fecha a janela de cima ou volta de tela.
+			GetTree().QuitOnGoBack = false;
 
 			_ui = new Control { Name = "UI", Theme = GameTheme.Build() };
 			_ui.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 			AddChild(_ui);
+			_screens = new Control { Name = "Screens", MouseFilter = Control.MouseFilterEnum.Ignore };
+			_screens.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+			_ui.AddChild(_screens);
+			_ui.AddChild(_badge);
+			_badge.Pressed += OpenAutoBattle;
+			AddChild(_runner);
+			_runner.RunChanged += run => _badge.Show(run);
 
 			switch (Argument("--screen="))
 			{
 				case "map":
 					ShowMap();
-					break;
-				case "bag":
-					ShowBag();
 					break;
 				case "campaign":
 					Go(Destination.Campaign, ShowMap);
@@ -76,25 +95,25 @@ namespace Sigilos.GameEntry
 					Go(Destination.Dungeons, ShowMap);
 					break;
 				case "summon":
-					Go(Destination.Summon, ShowBag);
+					Go(Destination.Summon, ShowHub);
 					break;
 				case "shop":
 					Go(Destination.Shop, ShowHub);
 					break;
 				case "monsters":
-					Go(Destination.Monsters, ShowBag);
+					Go(Destination.Monsters, ShowHub);
 					break;
 				case "teams":
-					Go(Destination.Teams, ShowBag);
+					Go(Destination.Teams, ShowHub);
 					break;
 				case "runes":
-					ShowRunes(Teams.Of(_player, Teams.Campaign).FirstOrDefault(), ShowBag);
+					ShowRunes(Teams.Of(_player, Teams.Campaign).FirstOrDefault(), ShowHub);
 					break;
 				case "compendium":
-					Go(Destination.Compendium, ShowBag);
+					Go(Destination.Compendium, ShowHub);
 					break;
 				case "grimoire":
-					Go(Destination.Grimoire, ShowBag);
+					Go(Destination.Grimoire, ShowHub);
 					break;
 				case "battle":
 					FightStage(_database.Stage(Math.Min(_player.HighestStage + 1, _database.Stages.Count)));
@@ -109,6 +128,10 @@ namespace Sigilos.GameEntry
 		{
 			if (what == NotificationWMCloseRequest)
 				Save();
+			else if (what == NotificationWMGoBackRequest)
+				Input.ParseInputEvent(new InputEventAction { Action = "ui_cancel", Pressed = true });
+			else if (what == NotificationApplicationPaused)
+				Save();
 		}
 
 		// Telas -------------------------------------------------------------------------------------
@@ -117,10 +140,19 @@ namespace Sigilos.GameEntry
 		{
 			var hub = new HubScreen(_database, _player);
 			hub.Requested += destination => Go(destination, ShowHub);
-			hub.ConfigRequested += () => OpenConfig(hub);
-			hub.ShortcutsChanged += shortcuts => Change(() => _player.Shortcuts = Destinations.Save(shortcuts), () => { });
+			hub.ConfigRequested += () => ConfigPanel.Open(hub, ContentLoader.Languages(), _language, language =>
+			{
+				_language = language;
+				_player.Language = language;
+				Save();
+				ContentLoader.LoadTexts(language);
+				_database = ContentLoader.Load();
+				UiSession.Database = _database;
+				_badge.Show(_runner.Run);
+				ShowHub();
+			});
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
-			Swap(hub);
+			Swap(hub, ShowHub);
 		}
 
 		private void ShowMap()
@@ -128,15 +160,7 @@ namespace Sigilos.GameEntry
 			var map = new MapScreen(_database, _player);
 			map.BackRequested += ShowHub;
 			map.Requested += destination => Go(destination, ShowMap);
-			Swap(map);
-		}
-
-		private void ShowBag()
-		{
-			var bag = new BagScreen(_player);
-			bag.BackRequested += ShowHub;
-			bag.Requested += destination => Go(destination, ShowBag);
-			Swap(bag);
+			Swap(map, ShowMap);
 		}
 
 		/// <summary>Abre um destino de navegação; <paramref name="back"/> é para onde ele volta.</summary>
@@ -178,25 +202,7 @@ namespace Sigilos.GameEntry
 				case Destination.Map:
 					ShowMap();
 					break;
-				case Destination.Bag:
-					ShowBag();
-					break;
 			}
-		}
-
-		/// <summary>A Configuração por cima do Santuário: trocar de idioma salva a escolha e remonta a tela.</summary>
-		private void OpenConfig(Control over)
-		{
-			var config = new ConfigPanel(ContentLoader.Languages(), _language);
-			config.LanguageChosen += language =>
-			{
-				_language = language;
-				_player.Language = language;
-				Save();
-				ContentLoader.LoadTexts(language);
-				ShowHub();
-			};
-			over.AddChild(config);
 		}
 
 		/// <summary>A Campanha na fase <paramref name="selected"/> (nula: a próxima a vencer), com um aviso embaixo.</summary>
@@ -207,16 +213,16 @@ namespace Sigilos.GameEntry
 			campaign.FightRequested += FightStage;
 			campaign.TeamRequested += () => ShowTeams(Teams.Campaign, () => ShowCampaign(campaign.Selected, null));
 			campaign.ShopRequested += () => ShowShop(() => ShowCampaign(campaign.Selected, null));
-			campaign.RepeatRequested += (stage, runs) => RepeatBattle(
-				runs,
+			campaign.RepeatRequested += stage => StartAutoBattle(
+				campaign,
 				T("battle.title_stage", stage.Number, stage.Name),
+				Teams.Campaign,
 				() => Campaign.Check(_player, stage),
 				stage.Mana,
 				stage.Encounter,
-				Teams.Campaign,
 				() => Campaign.ApplyVictory(_random, _player, stage, _database),
 				() => ShowCampaign(stage.Number, null));
-			Swap(campaign);
+			Swap(campaign, () => ShowCampaign(campaign.Selected, null));
 			if (message != null)
 				campaign.ShowMessage(message);
 		}
@@ -228,16 +234,16 @@ namespace Sigilos.GameEntry
 			dungeons.FightRequested += FightFloor;
 			dungeons.TeamRequested += dungeon => ShowTeams(dungeon.Id, () => ShowDungeons(dungeon.Id));
 			dungeons.ShopRequested += dungeon => ShowShop(() => ShowDungeons(dungeon.Id));
-			dungeons.RepeatRequested += (dungeon, floor, runs) => RepeatBattle(
-				runs,
+			dungeons.RepeatRequested += (dungeon, floor) => StartAutoBattle(
+				dungeons,
 				T("battle.title_floor", dungeon.Name, floor),
+				dungeon.Id,
 				() => Dungeons.Check(_player, dungeon, floor),
 				dungeon.Floor(floor).Mana,
 				dungeon.Floor(floor).Encounter,
-				dungeon.Id,
 				() => Dungeons.ApplyVictory(_random, _player, dungeon, floor),
 				() => ShowDungeons(dungeon.Id));
-			Swap(dungeons);
+			Swap(dungeons, () => ShowDungeons(selected));
 			if (message != null)
 				dungeons.ShowMessage(message);
 		}
@@ -247,6 +253,11 @@ namespace Sigilos.GameEntry
 			var summon = new SummonScreen(_database, _player);
 			summon.BackRequested += () => _summonBack();
 			summon.ShopRequested += () => ShowShop(ShowSummon);
+			summon.MonstersRequested += () =>
+			{
+				_storageBack = ShowSummon;
+				ShowStorage(null);
+			};
 			summon.SummonRequested += count =>
 			{
 				var results = SummonRitual.Perform(_random, _database, _player, count);
@@ -257,7 +268,7 @@ namespace Sigilos.GameEntry
 				Save();
 				summon.ShowResults(results);
 			};
-			Swap(summon);
+			Swap(summon, ShowSummon);
 		}
 
 		private void ShowStorage(int? selected)
@@ -276,7 +287,7 @@ namespace Sigilos.GameEntry
 			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), storage.Refresh);
 			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), storage.Refresh);
 			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), storage.Refresh);
-			Swap(storage);
+			Swap(storage, () => ShowStorage(selected));
 		}
 
 		private void ShowShop(Action back)
@@ -288,7 +299,7 @@ namespace Sigilos.GameEntry
 				if (Shop.Buy(_player, offer))
 					shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
 			}, shop.Refresh);
-			Swap(shop);
+			Swap(shop, () => ShowShop(back));
 		}
 
 		private void ShowTeams(string content, Action back)
@@ -297,7 +308,7 @@ namespace Sigilos.GameEntry
 			teams.BackRequested += back;
 			teams.ToggleRequested += (key, id) => Change(() => Teams.Toggle(_player, key, id), teams.Refresh);
 			teams.LeaderRequested += (key, id) => Change(() => Teams.MakeLeader(_player, key, id), teams.Refresh);
-			Swap(teams);
+			Swap(teams, () => ShowTeams(content, back));
 		}
 
 		private void ShowRunes(int? monsterId, Action back)
@@ -311,21 +322,21 @@ namespace Sigilos.GameEntry
 			runes.EnchantRequested += (id, index, tool) => Change(() => RuneInventory.Enchant(_random, _player, Rune(id), index, tool), runes.Refresh);
 			runes.SellRequested += id => Change(() => RuneInventory.Sell(_player, Rune(id)), runes.Refresh);
 			runes.SellManyRequested += ids => Change(() => RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))), runes.Refresh);
-			Swap(runes);
+			Swap(runes, () => ShowRunes(monsterId, back));
 		}
 
 		private void ShowCompendium(Action back)
 		{
 			var compendium = new CompendiumScreen();
 			compendium.BackRequested += back;
-			Swap(compendium);
+			Swap(compendium, () => ShowCompendium(back));
 		}
 
 		private void ShowGrimoire(Action back)
 		{
 			var grimoire = new GrimoireScreen(_database, _player);
 			grimoire.BackRequested += back;
-			Swap(grimoire);
+			Swap(grimoire, () => ShowGrimoire(back));
 		}
 
 		// Lutas -------------------------------------------------------------------------------------
@@ -335,7 +346,7 @@ namespace Sigilos.GameEntry
 			// Fase nova vencida: a Campanha volta já na próxima. Fase repetida: volta nela, para farmar.
 			var repeat = Campaign.IsCleared(_player, stage.Number);
 			void Back() => ShowCampaign(repeat ? stage.Number : null, null);
-			if (NeedsTeam(Teams.Campaign, Back))
+			if (NeedsTeam(Teams.Campaign, Back) || BusyWithAutoBattle(() => FightStage(stage)))
 				return;
 
 			var problem = Campaign.Check(_player, stage);
@@ -345,13 +356,13 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage, _database), Back);
+			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage, _database), Back, () => FightStage(stage));
 		}
 
 		private void FightFloor(DungeonDefinition dungeon, int floor)
 		{
 			void Back() => ShowDungeons(dungeon.Id);
-			if (NeedsTeam(dungeon.Id, Back))
+			if (NeedsTeam(dungeon.Id, Back) || BusyWithAutoBattle(() => FightFloor(dungeon, floor)))
 				return;
 
 			var problem = Dungeons.Check(_player, dungeon, floor);
@@ -361,7 +372,7 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("battle.title_floor", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, Records.FloorKey(dungeon.Id, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back);
+			Fight(T("battle.title_floor", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, Records.FloorKey(dungeon.Id, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back, () => FightFloor(dungeon, floor));
 		}
 
 		/// <summary>Sem ninguém na equipe do conteúdo, abre a tela de Equipes em vez da luta.</summary>
@@ -375,18 +386,38 @@ namespace Sigilos.GameEntry
 		}
 
 		/// <summary>
+		/// Uma luta na tela não divide a equipe com a Batalha automática: com uma rodando, pergunta se é
+		/// para parar e lutar (<paramref name="then"/>). Verdadeiro quando a luta não começa agora.
+		/// </summary>
+		private bool BusyWithAutoBattle(Action then)
+		{
+			if (!_runner.Running)
+				return false;
+
+			Dialog.Confirm(_ui, T("auto.busy_title"), T("auto.busy_text"), T("auto.busy_confirm"), () =>
+			{
+				_runner.Dismiss();
+				then();
+			}, ButtonKind.Danger);
+			return true;
+		}
+
+		/// <summary>
 		/// A luta na tela: a vitória cobra a Mana, entrega a recompensa e grava o tempo no recorde
 		/// <paramref name="record"/>; o resultado mostra a experiência de cada monstro subindo do ponto em que
-		/// estava. Volta para <paramref name="back"/>.
+		/// estava. Volta para <paramref name="back"/>; <paramref name="again"/> é a mesma luta de novo, pela
+		/// porta de entrada (confere Mana e equipe).
 		/// </summary>
-		private void Fight(string title, Encounter encounter, string content, string record, Func<VictoryReward> victoryReward, Action back)
+		private void Fight(string title, Encounter encounter, string content, string record, Func<VictoryReward> victoryReward, Action back, Action again)
 		{
 			Save();
 			var team = PlayerTeam.Build(_player, _database, content);
 			var session = BattleFactory.Create(_database, team, encounter, _random.Next());
 			var battle = new BattleScreen(session, title, _player.AutoBattle);
+			var finished = false;
 			battle.Finished += victory =>
 			{
+				finished = true;
 				var before = Teams.Of(_player, content)
 					.Select(_player.Monster)
 					.OfType<OwnedSummon>()
@@ -396,8 +427,8 @@ namespace Sigilos.GameEntry
 				var reward = victory ? victoryReward() : null;
 				var newBest = victory && Records.Submit(_player, record, battle.Elapsed);
 				Save();
-				var team = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
-				battle.ShowResult(new BattleOutcome(victory, reward, team, _player.AccountLevel, Records.Best(_player, record), newBest));
+				var result = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
+				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest));
 			};
 			battle.RuneSellRequested += rune =>
 			{
@@ -412,67 +443,96 @@ namespace Sigilos.GameEntry
 			};
 			battle.RestartRequested += auto =>
 			{
-				// A Mana só sai na vitória: recomeçar é abrir a mesma luta de novo, com outra semente.
+				// A Mana só sai na vitória: recomeçar no meio é abrir a mesma luta, com outra semente; depois
+				// do fim, é entrar de novo pela porta (que confere a Mana).
 				_player.AutoBattle = auto;
-				Fight(title, encounter, content, record, victoryReward, back);
+				if (finished)
+					again();
+				else
+					Fight(title, encounter, content, record, victoryReward, back, again);
 			};
-			Swap(battle);
+			Swap(battle, back);
 		}
 
+		// Batalha automática ------------------------------------------------------------------------
+
 		/// <summary>
-		/// A Batalha automática: até <paramref name="runs"/> lutas (o jogador escolhe) resolvidas uma atrás da
-		/// outra. Cada luta é resolvida na hora, mas a recompensa só entra depois do tempo que ela levaria
-		/// na tela (<see cref="BattlePace.AutoBattleFactor"/>). Para quando falta Mana ou vaga de runa.
+		/// Abre a escolha de quantas lutas e começa a Batalha automática, que segue sozinha fora das telas;
+		/// a janela dela abre em seguida (e pode ser fechada sem parar nada). Já havendo uma rodando,
+		/// pergunta antes de trocar.
 		/// </summary>
-		private void RepeatBattle(int runs, string title, Func<EntryProblem> check, int mana, Encounter encounter, string content, Func<VictoryReward> victoryReward, Action back)
+		private void StartAutoBattle(Control from, string title, string content, Func<EntryProblem> check, int mana, Encounter encounter, Func<VictoryReward> victory, Action back)
 		{
 			if (NeedsTeam(content, back))
 				return;
 
-			var screen = new RepeatBattleScreen(_player, title, runs);
-			var number = 0;
-			var victory = false;
-
-			void Next()
+			void Setup() => AutoBattleSetup.Open(from, title, mana, _player.Mana, runs =>
 			{
-				if (number >= runs)
+				var run = new AutoBattleRun(title, content, mana, runs);
+				_runner.Start(run, check, () =>
 				{
-					screen.Finish(T("auto.done", number));
-					return;
-				}
-
-				var problem = check();
-				if (problem != EntryProblem.None)
+					var session = BattleFactory.Create(_database, PlayerTeam.Build(_player, _database, content), encounter, _random.Next());
+					var log = new List<BattleEvent>();
+					var won = AutoBattle.Run(session, log);
+					return (won, BattlePace.Seconds(log, BattlePace.AutoBattleFactor));
+				}, victory, () =>
 				{
-					screen.Finish(Texts.Refusal(problem, mana));
-					return;
-				}
-
-				number++;
-				var session = BattleFactory.Create(_database, PlayerTeam.Build(_player, _database, content), encounter, _random.Next());
-				var log = new List<BattleEvent>();
-				victory = AutoBattle.Run(session, log);
-				screen.BeginRun(number, BattlePace.Seconds(log, BattlePace.AutoBattleFactor));
-			}
-
-			screen.RunFinished += () =>
-			{
-				if (victory)
-				{
-					var reward = victoryReward();
 					Save();
-					screen.AddVictory(reward, _player.AccountLevel);
-				}
-				else
-				{
-					screen.AddDefeat();
-				}
+					UiSession.NotifyChanged();
+				});
+				OpenAutoBattle();
+			});
 
-				Next();
-			};
-			screen.BackRequested += back;
-			Swap(screen);
-			Next();
+			if (_runner.Running)
+				Dialog.Confirm(from, T("auto.replace_title"), T("auto.replace_text", _runner.Run!.Title), T("auto.replace_confirm"), () =>
+				{
+					_runner.Dismiss();
+					Setup();
+				}, ButtonKind.Danger);
+			else
+				Setup();
+		}
+
+		/// <summary>A janela da Batalha automática, por cima de qualquer tela; fechar não para nada.</summary>
+		private void OpenAutoBattle()
+		{
+			if (_runner.Run is not { } run)
+				return;
+
+			AutoBattleDialog.Open(_ui, run, _player, new AutoBattleActions
+			{
+				Stop = _runner.Stop,
+				Resume = _runner.Resume,
+				Dismiss = _runner.Dismiss,
+				SetRuns = _runner.SetRuns,
+				SellRune = rune =>
+				{
+					RuneInventory.Sell(_player, rune);
+					run.Sold.Add(rune.Id);
+					Save();
+					run.Notify();
+					RefreshCurrent();
+				},
+				UpgradeRune = (rune, target) =>
+				{
+					RuneInventory.Upgrade(_random, _player, rune, target);
+					Save();
+					run.Notify();
+					RefreshCurrent();
+				},
+				ManageRunes = () =>
+				{
+					if (_screen is not RuneScreen)
+						ShowRunes(null, _current);
+				},
+			});
+		}
+
+		/// <summary>Remonta a tela de agora quando uma janela por cima mudou algo que ela mostra (moedas, runas).</summary>
+		private void RefreshCurrent()
+		{
+			if (_screen is not BattleScreen)
+				_current();
 		}
 
 		// Infraestrutura ----------------------------------------------------------------------------
@@ -494,19 +554,25 @@ namespace Sigilos.GameEntry
 			return new ResultMonster(summon.NameFor(monster.Awakened), Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), ResultMonster.StepsOf(monster, level, experience))
 			{
 				MaxLevel = Leveling.IsMaxLevel(monster),
+				Summon = summon,
+				Monster = monster,
 			};
 		}
 
 		private void Save() => _store.Save(_player);
 
-		/// <summary>Troca a tela. A nova leva o nome da classe (<c>RuneScreen</c>): é a raiz do caminho de todo nó dela.</summary>
-		private void Swap(Control screen)
+		/// <summary>
+		/// Troca a tela. A nova leva o nome da classe (<c>RuneScreen</c>): é a raiz do caminho de todo nó
+		/// dela. <paramref name="reshow"/> é como remontá-la (para voltar a ela depois de uma janela).
+		/// </summary>
+		private void Swap(Control screen, Action reshow)
 		{
 			if (_screen != null)
 				Layout.Discard(_screen);
 			_screen = screen;
+			_current = reshow;
 			screen.Name = screen.GetType().Name;
-			_ui.AddChild(screen);
+			_screens.AddChild(screen);
 		}
 
 		private static string? Argument(string prefix) => OS.GetCmdlineUserArgs()

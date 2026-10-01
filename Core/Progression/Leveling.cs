@@ -103,6 +103,20 @@ namespace Sigilos.Core.Progression
 			return spent;
 		}
 
+		/// <summary>O nível a que <paramref name="essence"/> de Essência levaria o monstro, sem mudar nada (para a confirmação).</summary>
+		public static int LevelAfter(OwnedSummon monster, int essence)
+		{
+			var level = monster.Level;
+			var experience = monster.Experience + Math.Max(0, essence) * ExperiencePerEssence;
+			while (level < MaxLevel(monster) && experience >= ExperienceToNext(monster.Stars, level))
+			{
+				experience -= ExperienceToNext(monster.Stars, level);
+				level++;
+			}
+
+			return level;
+		}
+
 		/// <summary>Quanto de Essência leva até o próximo nível e até o máximo (a conta arredonda para cima).</summary>
 		public static (int Next, int Max) InfuseCosts(OwnedSummon monster) => (EssenceFor(Missing(monster)), EssenceFor(MissingToMax(monster)));
 

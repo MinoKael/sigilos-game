@@ -30,9 +30,5 @@ namespace Sigilos.UI.Components
 		}
 
 		public Glyph Glyph { get; }
-
-		/// <summary>Glifo com dica (o nome dele, ou o que quiser), que responde ao mouse.</summary>
-		public static RuneGlyph WithTip(Glyph glyph, int size, Color color, string tooltip) =>
-			new(glyph, size, color) { TooltipText = tooltip, MouseFilter = MouseFilterEnum.Stop };
 	}
 }

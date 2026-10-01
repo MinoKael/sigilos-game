@@ -1,14 +1,14 @@
 {
   "family_id": "phoenix",
-  "base_name": "Phoenix",
-  "name": "Phoenixes",
+  "base_name": "Fênix",
+  "name": "Fênix",
   "star_grade": 5,
   "image": "phoenix",
   "awakened_image": "phoenix_awakened",
   "variations": {
     "fire": {
       "variation_id": "phoenix_fire",
-      "name": "Fire Phoenix",
+      "name": "Fênix de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
@@ -17,7 +17,7 @@
       "awakening": {"name": "Ignara", "stat": "Crit"},
       "skills": [
         {
-          "name": "Spiral Flame",
+          "name": "Chama Espiral",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.2},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
@@ -30,7 +30,7 @@
           ]
         },
         {
-          "name": "Crimson Flight",
+          "name": "Voo Rubro",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
@@ -43,14 +43,14 @@
           ]
         },
         {
-          "name": "From the Ashes",
+          "name": "Das Cinzas",
           "passive": {"kind": "RebirthOnce", "value": 0.4}
         }
       ]
     },
     "water": {
       "variation_id": "phoenix_water",
-      "name": "Water Phoenix",
+      "name": "Fênix de Água",
       "element": "Water",
       "role": "Support",
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
@@ -59,7 +59,7 @@
       "awakening": {"name": "Nereia", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Dew",
+          "name": "Orvalho",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
@@ -72,7 +72,7 @@
           ]
         },
         {
-          "name": "Renewing Rain",
+          "name": "Chuva Renovadora",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.2},
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "name": "Tide of Renewal",
+          "name": "Maré da Renovação",
           "cooldown": 5,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.3},
@@ -101,16 +101,16 @@
     },
     "wind": {
       "variation_id": "phoenix_wind",
-      "name": "Wind Phoenix",
+      "name": "Fênix de Vento",
       "element": "Wind",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Speed", "value": 0.15},
-      "awakening": {"name": "Zephyra", "stat": "Speed"},
+      "awakening": {"name": "Zéfira", "stat": "Speed"},
       "skills": [
         {
-          "name": "Ember Dive",
+          "name": "Rasante de Brasa",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Impeto", "target": "Target", "power": -20}
@@ -123,7 +123,7 @@
           ]
         },
         {
-          "name": "Feather Storm",
+          "name": "Tempestade de Penas",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
@@ -136,7 +136,7 @@
           ]
         },
         {
-          "name": "Hurricane of Feathers",
+          "name": "Furacão de Penas",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.85},
@@ -152,13 +152,13 @@
     },
     "light": {
       "variation_id": "phoenix_light",
-      "name": "Light Phoenix",
+      "name": "Fênix de Luz",
       "element": "Light",
       "role": "Defense",
       "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
       "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
       "leader": {"stat": "Crit", "value": 0.15},
-      "awakening": {"name": "Solaria", "stat": "Accuracy"},
+      "awakening": {"name": "Solária", "stat": "Accuracy"},
       "skills": [
         {
           "name": "Aurora",
@@ -174,7 +174,7 @@
           ]
         },
         {
-          "name": "Solar Crown",
+          "name": "Coroa Solar",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
@@ -187,23 +187,23 @@
           ]
         },
         {
-          "name": "From the Ashes",
+          "name": "Das Cinzas",
           "passive": {"kind": "RebirthOnce", "value": 0.4}
         }
       ]
     },
     "dark": {
       "variation_id": "phoenix_dark",
-      "name": "Dark Phoenix",
+      "name": "Fênix de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "CritDamage", "value": 0.3},
-      "awakening": {"name": "Nycteria", "stat": "Crit"},
+      "awakening": {"name": "Nictéria", "stat": "Crit"},
       "skills": [
         {
-          "name": "Veiled Claw",
+          "name": "Garra Velada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.2},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
@@ -229,7 +229,7 @@
           ]
         },
         {
-          "name": "From the Ashes",
+          "name": "Das Cinzas",
           "passive": {"kind": "RebirthOnce", "value": 0.4}
         }
       ]

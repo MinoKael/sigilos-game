@@ -1,23 +1,23 @@
 {
   "family_id": "paladin",
-  "base_name": "Paladin",
-  "name": "Paladins",
+  "base_name": "Paladino",
+  "name": "Paladinos",
   "star_grade": 5,
   "image": "paladin",
   "awakened_image": "paladin_awakened",
   "variations": {
     "fire": {
       "variation_id": "paladin_fire",
-      "name": "Fire Paladin",
+      "name": "Paladino de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Attack", "value": 0.18},
-      "awakening": {"name": "Valorian", "stat": "Crit"},
+      "awakening": {"name": "Valoriano", "stat": "Crit"},
       "skills": [
         {
-          "name": "Smite",
+          "name": "Castigo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.2},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
@@ -30,7 +30,7 @@
           ]
         },
         {
-          "name": "Crusade",
+          "name": "Cruzada",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
@@ -43,14 +43,14 @@
           ]
         },
         {
-          "name": "Devotion",
+          "name": "Devoção",
           "passive": {"kind": "HealAllyEachTurn", "value": 0.06}
         }
       ]
     },
     "water": {
       "variation_id": "paladin_water",
-      "name": "Water Paladin",
+      "name": "Paladino de Água",
       "element": "Water",
       "role": "HP",
       "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
@@ -59,7 +59,7 @@
       "awakening": {"name": "Thalassar", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Tide Hammer",
+          "name": "Martelo da Maré",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Shield", "target": "LowestAlly", "power": 0.08, "turns": 2}
@@ -72,7 +72,7 @@
           ]
         },
         {
-          "name": "Bastion",
+          "name": "Bastião",
           "cooldown": 4,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
@@ -85,7 +85,7 @@
           ]
         },
         {
-          "name": "Tidal Aegis",
+          "name": "Égide da Maré",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 2},
@@ -99,7 +99,7 @@
     },
     "wind": {
       "variation_id": "paladin_wind",
-      "name": "Wind Paladin",
+      "name": "Paladino de Vento",
       "element": "Wind",
       "role": "Defense",
       "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
@@ -108,7 +108,7 @@
       "awakening": {"name": "Windric", "stat": "Speed"},
       "skills": [
         {
-          "name": "Gale Strike",
+          "name": "Golpe de Vendaval",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Impeto", "target": "Self", "power": 15}
@@ -121,7 +121,7 @@
           ]
         },
         {
-          "name": "Rallying Wind",
+          "name": "Vento Inspirador",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 25},
@@ -132,14 +132,14 @@
           ]
         },
         {
-          "name": "Devotion",
+          "name": "Devoção",
           "passive": {"kind": "HealAllyEachTurn", "value": 0.06}
         }
       ]
     },
     "light": {
       "variation_id": "paladin_light",
-      "name": "Light Paladin",
+      "name": "Paladino de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
@@ -148,7 +148,7 @@
       "awakening": {"name": "Seraphiel", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Holy Strike",
+          "name": "Golpe Sagrado",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.1}
@@ -161,7 +161,7 @@
           ]
         },
         {
-          "name": "Lay on Hands",
+          "name": "Imposição de Mãos",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "LowestAlly", "power": 0.5},
@@ -175,14 +175,14 @@
           ]
         },
         {
-          "name": "Devotion",
+          "name": "Devoção",
           "passive": {"kind": "HealAllyEachTurn", "value": 0.06}
         }
       ]
     },
     "dark": {
       "variation_id": "paladin_dark",
-      "name": "Dark Paladin",
+      "name": "Paladino de Trevas",
       "element": "Dark",
       "role": "HP",
       "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
@@ -191,7 +191,7 @@
       "awakening": {"name": "Mordain", "stat": "Accuracy"},
       "skills": [
         {
-          "name": "Dread Blade",
+          "name": "Lâmina Temível",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85, "drain": 0.2},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
@@ -204,7 +204,7 @@
           ]
         },
         {
-          "name": "Grim Challenge",
+          "name": "Desafio Sinistro",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
@@ -218,7 +218,7 @@
           ]
         },
         {
-          "name": "Blood Oath",
+          "name": "Juramento de Sangue",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.6, "drain": 0.5},

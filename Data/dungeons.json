@@ -6,7 +6,7 @@
 [
   {
     "id": "golem",
-    "name": "Runic Golem",
+    "name": "Golem Rúnico",
     "kind": "Runes",
     "image": "rock_golem",
     "unlockStage": 6,
@@ -51,7 +51,7 @@
   },
   {
     "id": "forge",
-    "name": "Cracked Forge",
+    "name": "Forja Rachada",
     "kind": "Tools",
     "image": "golem_head",
     "unlockStage": 8,
@@ -95,7 +95,7 @@
   },
   {
     "id": "wyvern",
-    "name": "Wyvern's Nest",
+    "name": "Ninho da Serpe",
     "kind": "Runes",
     "image": "wyvern",
     "unlockStage": 10,
@@ -140,7 +140,7 @@
   },
   {
     "id": "crypt",
-    "name": "Crypt of the Bone King",
+    "name": "Cripta do Rei Ossudo",
     "kind": "Runes",
     "image": "crowned_skull",
     "unlockStage": 13,
@@ -185,7 +185,7 @@
   },
   {
     "id": "sanctum",
-    "name": "Drowned Sanctum",
+    "name": "Santuário Afogado",
     "kind": "Runes",
     "image": "kraken",
     "unlockStage": 16,

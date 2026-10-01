@@ -12,9 +12,10 @@ Data/*.json ──texto──▶ GameEntry ──▶ Core   (regras, sem Godot)
   Por isso roda igual no jogo e no console de testes, e o combate é determinístico por semente.
 - **UI/** recebe o que mostra no construtor e avisa por evento C# (`FightRequested`, `AwakenRequested`...).
   Nenhuma tela muda o `PlayerState` nem salva. Nenhuma tela tem texto escrito no código: tudo vem de
-  `Data/texts/en.json` por chave (`Locale.T("runes.upgrade_to", ...)`); `UI/Texts.cs` só monta nomes
-  por enum e as descrições geradas das regras. A interface é de símbolos: botões são sigilos sem
-  texto (o nome é a dica), e texto explicativo só existe no Compêndio.
+  `Data/texts/pt-BR.json` por chave (`Locale.T("runes.upgrade_to", ...)`); `UI/Texts.cs` só monta nomes
+  por enum e as descrições geradas das regras. A interface é para o toque: botões de ação com texto
+  (`GameButton`), símbolo sozinho só no ✕ e na seta de voltar, nenhuma dica de mouse, e toda
+  explicação numa janela (`Dialog`) colada no elemento tocado.
 - **GameEntry/** é a raiz de composição: o `GameRoot` assina os eventos das telas, chama as regras do
   Core, salva e troca de tela. É o único lugar que junta tudo.
 
@@ -56,18 +57,27 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
 | Nível da conta e Ouro por nível | `Core/Progression/Account.cs` |
 | Loja | ofertas em `Data/shop.json`; regra em `Core/Progression/Shop.cs` |
-| Qualquer texto da interface | `Data/texts/en.json` (a base) e a mesma chave em `Data/texts/pt-BR.json`, depois `py Tools/texts/check_texts.py`. Chave nova não pode ter o nome de um grupo que já existe (`filter.order` apagaria `filter.order.*`) |
+| Qualquer texto da interface | `Data/texts/pt-BR.json` (a base) e a mesma chave em `Data/texts/en.json`, depois `py Tools/texts/check_texts.py`. Chave nova não pode ter o nome de um grupo que já existe (`filter.order` apagaria `filter.order.*`) |
 | Novo símbolo (ícone) | o SVG do acervo de game-icons.net copiado para a pasta dele em `Assets/` (ou baixado do Commons: `py Tools/art/fetch_commons_assets.py --chrome ...`), a linha de crédito em `Tools/art/commons_assets.csv`, `py Tools/art/fetch_commons_assets.py` (refaz `Assets/CREDITOS.md`), `py Tools/art/render_png.py` (os PNG) e `Art.Icon("nome")` |
 | Símbolo de um efeito de batalha | `Assets/Effects/<efeito>.svg` (o nome do `StatusKind` em minúsculas) + render; no texto rico, `Texts.Term(StatusKind)` põe o símbolo na frente |
 | Símbolo de uma habilidade | `Art.Skill` (o efeito que ela aplica, senão o Glifo do que ela faz) |
 | Tamanho da runa em miniatura | `RuneTile.Side` (quadrada; cada lugar passa a escala) |
-| Como uma runa aparece (a ficha) | `UI/Components/RuneCard.cs`: a mesma em todo lugar (tela de Runas, vitória, Batalha automática e a dica de todo `RuneTile`); por cima da tela, `RunePopup` |
+| Como uma runa aparece (a ficha) | `UI/Components/RuneCard.cs`: a mesma em todo lugar (tela de Runas, vitória, Batalha automática e o toque longo de todo `RuneTile`); por cima da tela, `RuneDialog.Show` (uma `Dialog` com a ficha, e quem abre põe os botões) |
 | Resultado da luta (vitória e derrota) | `UI/Screens/BattleResultPanel.cs` (a barra de experiência de cada monstro em `ResultMonster.StepsOf`); o melhor tempo de cada fase e andar em `Core/Progression/Records.cs`, guardado em `PlayerState.BestTimes` |
-| Novo botão | `SigilButton.Of("ícone", T("dica"), ação, tamanho, forma)`: círculo navega, losango age, pedra quadrada é aba ou atalho; número pequeno vai em `Badge` |
-| Escolher entre opções | `SigilPicker` (um sigilo que abre o `ArcPicker`) ou `ArcCarousel` direto na tela; confirmação com `SigilDialog.Ask` |
-| Atalhos do Santuário, destinos da Bolsa e do Mapa | `UI/Screens/Destination.cs` (símbolo, nome, atalhos de fábrica) e `GameRoot.Go` (qual tela abre e para onde volta) |
+| Novo botão | `GameButton.Of(T("texto"), ação, ButtonKind.Primary, "ícone")`: texto sempre, o símbolo acompanha; `Primary` (laranja) é a ação da tela, `Secondary` a comum, `Danger` (vermelho) vender e liberar; `WithCost` põe o preço numa segunda linha. Destino grande (tela inicial, tela Batalha, barra de baixo) é `TileButton`. `SigilButton` (só símbolo) fica para o universal: fechar, voltar, pausa, velocidade, habilidade de batalha |
+| Explicar algo (o que antes era dica) | `Dialog.Info(elemento, título, texto)`: abre colada no elemento, com a seta apontando para ele. Janela com botões: `Dialog.Open(...)` + `AddAction`; pergunta: `Dialog.Confirm` |
+| Toque e toque longo | `Press.On(controle, toque, segurar)` (ou `Press.Feed` dentro do `_GuiInput`, `Press.OnButton` num botão): segurar é 0,45 s parado; arrastar cancela, para a rolagem funcionar no dedo. Botão direito do mouse conta como segurar |
+| Resumo de um monstro (toque longo) | `UI/Components/MonsterSummary.cs`: `Open(de, variante, cópia)` para o que o jogador tem ou vê no catálogo, `Open(de, BattleUnit)` para quem está lutando (Vida, efeitos e recargas de agora). `CreatureCard`, `TeamStrip`, `UnitView`, `TurnOrderBar`, os inimigos da fase e o resultado da luta já abrem |
+| Escolher entre opções | `ChoiceButton` (mostra "Campo: valor" e abre a lista numa `Dialog`) ou `Choices.Open` direto; escolher um monstro é o `MonsterPicker` |
+| Abas | `TextTabs` (escritas, com detalhe opcional embaixo, em pé ou deitadas); o Compêndio e o Grimório usam `Layout.Tab` num `TabContainer` |
+| Grade de runas ou de monstros | `TileGrid`: cabem quantas colunas a largura deixar, e a sobra vira espaço entre elas (a grade vai de borda a borda em qualquer tela) |
+| Gasto grande de uma vez (subir até o nível máximo, melhorar a runa até o próximo marco) | pergunta antes, com o gasto e aonde chega: `Dialog.Confirm` (o da runa é `RuneDialog.ConfirmUpgrade`) |
+| A constelação da Canalização (tela inicial) | `UI/Components/Constellation.cs`: o sigilo do centro, o anel do tempo acumulado e as estrelas desenhadas em volta (`Places`) |
+| Destinos da barra de baixo e da tela Batalha | `UI/Screens/Destination.cs` (símbolo e nome) e `GameRoot.Go` (qual tela abre e para onde volta) |
+| Voltar (seta, Esc e o Voltar do celular) | `BackButton` e `Layout.Header`; o Voltar do Android vira a ação `ui_cancel` no `GameRoot`. Quem fecha ou volta ouve `ui_cancel` em `_UnhandledInput`, que corre do último nó para o primeiro: a janela de cima fecha antes da tela voltar |
 | Idiomas oferecidos na Configuração | um arquivo por idioma em `Data/texts`; `ContentLoader.Languages()` lista, `PlayerState.Language` guarda a escolha |
-| Traduzir | copie `Data/texts/en.json` com outro nome e rode com `-- --language=nome` |
+| Traduzir | copie `Data/texts/pt-BR.json` com outro nome, troque os textos, ponha no grupo `names` o nome de cada coisa dos dados (pelo nome em português; o `check_texts.py` diz quais faltam) e rode com `-- --language=nome` |
+| Nome de invocação, habilidade, fase, Masmorra, chefe ou oferta da Loja | o `"name"` (ou `"base_name"`) no arquivo de `Data/`, em português, e a tradução no grupo `names` do `en.json` (a chave é o nome em português: renomear pede renomear lá também) |
 | Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simulate` |
 | Atributos por papel e estrelas naturais | `Data/stat_model.json` (orçamento de BVP e perfis de papel), pelo construtor |
 | Atributos por estrelas e nível de agora | faixas por estrela em `Core/Progression/Growth.cs`: a fração do 6★ nível 40 |
@@ -81,7 +91,8 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Pedras (Afiar, Gema) | `Core/Runes/RuneForge.cs` (regras), `Core/Runes/RuneRules.cs` (faixas), grau por andar em `Data/dungeons.json` |
 | Glifo de um conjunto ou de um atributo | `Core/Runes/RuneSets.cs` (conjunto → Glifo); atributo → Glifo em `UI/Texts.cs` (`GlyphOf`); a letra que desenha cada Glifo na fonte das runas em `Texts.Rune`; na tela, `RuneGlyph` |
 | Fontes | `Assets/Fonts`: a SFC Wezards é a do jogo (com reserva do sistema para ★ × ⟳), a Kehdrai a das runas; carregadas em `GameTheme` |
-| Batalha automática (quantas lutas) | o padrão e o máximo em `Core/Battle/AutoBattle.cs` (`RepeatRuns`, `MaxRuns`); a escolha é o `RunsPicker` |
+| Batalha automática (quantas lutas) | o padrão e o máximo em `Core/Battle/AutoBattle.cs` (`RepeatRuns`, `MaxRuns`); a escolha é o `AutoBattleSetup` |
+| Batalha automática por trás | `GameEntry/AutoBattleRunner.cs` (o nó que corre as lutas, mesmo com a tela trocada), `UI/AutoBattleRun.cs` (o estado que a interface lê, com o evento `Changed`), `UI/Components/AutoBattleBadge.cs` (o selo no alto) e `UI/Screens/AutoBattleDialog.cs` (a janela; as ações dela são o `AutoBattleActions` que o `GameRoot` monta) |
 | Coleção, Baú, equipes | `Core/Player/Roster.cs`, `Core/Player/Teams.cs`, `PlayerState.CollectionCapacity`/`TeamSize` |
 | Vagas do inventário de runas | `RuneInventory.Capacity` (runas equipadas, inclusive em monstro do Baú, não contam) |
 | Taxas do gacha | `Core/Summoning/SummonRates.cs` |
@@ -90,7 +101,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Cores, fontes, molduras, rolagem | `UI/Style/Palette.cs` (cores), `UI/Style/GameTheme.cs` (estilos por tipo de controle), `UI/Style/Ornament.cs` (texturas geradas: couro com moldura, gema da rolagem, sigilo de marcar), `Assets/Shaders/backdrop.gdshader` (o fundo) |
 | Nova tela | `UI/Screens/` + o `Show...` correspondente em `GameEntry/GameRoot.cs` e, se for destino de navegação, um valor em `Destination` |
 | Ver contornos, nomes, valores e origem dos nós com o jogo rodando | Ctrl+F1 a Ctrl+F4: o addon `addons/visual_debugger` (autoload `VisualDebug`, não conhece o jogo), opções em `visual_debug/*` nas Configurações do Projeto |
-| Nome dos nós (o caminho na árvore e o rótulo do modo de depuração) | todo nó tem nome: quem cria dá o do papel dele no pai, em PascalCase (`Name = "Body"`, `Layout.Row(8).Named("Actions")`), e o que se repete leva número ou id (`Slot3`, `Rune17`, `Ally2`). A tela ganha o nome da classe em `GameRoot.Swap`, as janelas por cima (`ArcPicker`, `SigilDialog`, `RunsPicker`, `ConfigPanel`) o da classe, e os componentes nomeiam as próprias peças. Nome padrão: `SigilButton.Of`, `Layout.Chip` e `Doodle.Icon` usam o do símbolo (`level_max` → `LevelMax`), célula de grade usa `Layout.NextCell` (`R2C3`), aba usa o nome passado a `Layout.Tab`. Para remontar, `Layout.Clear` ou `Layout.Discard`, nunca `QueueFree` direto: o nó novo entraria com o nome ainda ocupado e viraria `@Nome@123` |
+| Nome dos nós (o caminho na árvore e o rótulo do modo de depuração) | todo nó tem nome: quem cria dá o do papel dele no pai, em PascalCase (`Name = "Body"`, `Layout.Row(8).Named("Actions")`), e o que se repete leva número ou id (`Slot3`, `Rune17`, `Ally2`). A tela ganha o nome da classe em `GameRoot.Swap`, as janelas por cima o nome passado a `Dialog.Open` (`RuneDialog`, `MonsterSummary`, `AutoBattleDialog`, `ConfigDialog`...), e os componentes nomeiam as próprias peças. Nome padrão: `SigilButton.Of`, `Layout.Chip` e `Doodle.Icon` usam o do símbolo (`level_max` → `LevelMax`), célula de grade usa `Layout.NextCell` (`R2C3`), aba usa o nome passado a `Layout.Tab`. Para remontar, `Layout.Clear` ou `Layout.Discard`, nunca `QueueFree` direto: o nó novo entraria com o nome ainda ocupado e viraria `@Nome@123` |
 
 `GameDatabase.Validate()` confere referências e faixas dos dados; o teste `DataTests` falha se algo
 estiver quebrado (inclusive básica com recarga, ativa sem recarga, duas Passivas ou atributos que não
@@ -243,15 +254,24 @@ O que o contrato do projeto tem de diferente da especificação:
 - **Uma batalha, vários conteúdos.** Fase e andar de Masmorra viram um `Encounter` (estrelas, nível,
   ondas, força); a mesma `BattleFactory`, a mesma tela e a mesma Batalha automática servem aos dois. O que muda é a
   equipe (por conteúdo) e a recompensa (`Campaign` ou `Dungeons`, as duas devolvem `VictoryReward`).
-- **O jogo é em inglês; o código fala português.** Ids, nomes em `Data/`, chaves e textos da interface
-  (`Data/texts/en.json`), argumentos e o simulador são em inglês. `pt-BR.json` é uma tradução da
-  interface, com as mesmas chaves. Comentários, mensagens dos testes e estes docs seguem em português.
-- **Símbolo primeiro, e desenhado em código.** Não há cena `.tscn` nem imagem de interface pronta:
+- **O jogo nasce em português; ids em inglês.** Os textos da interface (`Data/texts/pt-BR.json`, a
+  base) e os nomes em `Data/` (invocações, habilidades, fases, Masmorras, chefes, Loja) são em
+  português; ids, chaves, enums e argumentos ficam em inglês e nunca mudam (o save guarda ids). O
+  `en.json` é uma tradução: as mesmas chaves, mais o grupo `names` com o nome de cada coisa dos dados
+  pelo nome em português. O `ContentLoader` troca os nomes ao montar o `GameDatabase` (`Locale.Name`),
+  então o Core e a batalha já recebem tudo no idioma escolhido; trocar de idioma remonta o banco.
+- **Celular primeiro.** A tela é pensada para o dedo: nada depende do mouse (sem dica; o brilho sob
+  o mouse é só enfeite), alvos de toque com 56 px de altura (`GameTheme.Touch`), texto de 18 px, e
+  toda explicação numa `Dialog` colada no que foi tocado (elemento → toque → janela). Segurar um
+  monstro abre o resumo dele, segurar uma runa a ficha, em toda tela. A janela tampa o jogo, mas não o
+  para: a Batalha automática segue por baixo.
+- **Desenhado em código.** Não há cena `.tscn` nem imagem de interface pronta:
   o `Theme` sai de `GameTheme.Build()`, as molduras são texturas geradas uma vez por cor
   (`Ornament`, viram `StyleBoxTexture` de 9 partes, com o miolo repetido para o grão não esticar) e os
   sigilos se desenham em `_Draw` (`SigilButton`, `SigilRing`, `Constellation`, `EnergyRing`). Os
-  estados se leem pela luz: ouro sob o mouse, azul arcano ligado, verde espiritual chamando; o peso
-  (crescer sob o mouse, afundar ao apertar) é o `Juice`. Os desenhos do Commons são pretos e o
+  estados se leem pela luz: azul arcano ligado, verde espiritual chamando; o peso
+  (afundar ao apertar) é o `Juice`. `Button` do Godot não mede os filhos: `GameButton`, `TileButton`
+  e as abas acertam o `CustomMinimumSize` pelo conteúdo (`Fit`). Os desenhos do Commons são pretos e o
   `Doodle` os pinta pelo shader, então um ícone serve em qualquer cor. O número de um sigilo fica
   numa plaquinha escura com contorno, por cima da borda de baixo.
 - **PNG em vários tamanhos, escolhido pelo tamanho na tela.** Os SVG são só a fonte: o
@@ -260,10 +280,12 @@ O que o contrato do projeto tem de diferente da especificação:
   janela) — a redução que sobra é pequena e suavizada. Todo desenho fica em "contain" (proporção
   mantida, inteiro no espaço) e, dentro de um componente com forma, recortado nela pela `ArtMask`
   (`ClipChildren`): o símbolo no sigilo, o retrato no medalhão, a criatura no cartão.
-- **O fundo segue o foco da tela.** O anel do `Backdrop` fica no centro da constelação, do portal de
-  invocar, do círculo da Bolsa ou dos portais do Mapa; nas outras telas, no meio.
-- **Camadas por cima vão no alto da árvore.** `ArcPicker`, `SigilDialog` e a Configuração se penduram
-  no controle mais alto (`Layout.Host`), que tem o tema; assim cobrem a tela inteira de qualquer botão.
+- **O fundo segue o foco da tela.** O anel do `Backdrop` fica no centro do portal de invocar; nas
+  outras telas, no meio (a batalha não tem anel: o oval é o campo).
+- **Camadas por cima vão no alto da árvore.** O `GameRoot` põe a tela num contêiner (`Screens`), o
+  selo da Batalha automática depois dele e as janelas (`Dialog`) no controle mais alto (`Layout.Host`),
+  que tem o tema; assim cobrem a tela inteira de qualquer botão e sobrevivem à troca de tela. Ordem
+  de desenho: resultado da luta 60, selo 70, janela 80, pausa 99.
 - **Texto fora do código.** As telas pedem texto por chave ao `Locale`; o que depende de regra
   (descrição de habilidade, conjunto, efeito) é montado em `Texts` a partir das mesmas regras que o
   combate usa, então a explicação nunca desatualiza. `Tools/texts/check_texts.py` confere as chaves

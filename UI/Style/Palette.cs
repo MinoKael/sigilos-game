@@ -35,11 +35,21 @@ namespace Sigilos.UI.Style
 
 		public static readonly Color GoldDark = Color.Color8(122, 92, 50);
 
-		/// <summary>Madeira dos botões de texto.</summary>
+		/// <summary>Madeira dos botões de texto secundários.</summary>
 		public static readonly Color Button = Color.Color8(74, 53, 34);
 
 		public static readonly Color ButtonHover = Color.Color8(94, 68, 43);
 		public static readonly Color Disabled = Color.Color8(48, 42, 37);
+
+		/// <summary>O botão da ação principal da tela (Lutar, Invocar, Comprar): âmbar aceso.</summary>
+		public static readonly Color Primary = Color.Color8(214, 132, 46);
+
+		public static readonly Color PrimaryDark = Color.Color8(112, 58, 20);
+
+		/// <summary>O botão do que não tem volta (liberar, vender, parar).</summary>
+		public static readonly Color Danger = Color.Color8(166, 64, 48);
+
+		public static readonly Color DangerDark = Color.Color8(86, 28, 20);
 
 		/// <summary>O brilho de runa: sob o mouse, sigilo aceso, seleção.</summary>
 		public static readonly Color Arcane = Color.Color8(124, 200, 255);

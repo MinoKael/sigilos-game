@@ -1,23 +1,23 @@
 {
   "family_id": "knight",
-  "base_name": "Knight",
-  "name": "Sworn Knights",
+  "base_name": "Cavaleiro",
+  "name": "Cavaleiros Juramentados",
   "star_grade": 4,
   "image": "knight",
   "awakened_image": "knight_awakened",
   "variations": {
     "fire": {
       "variation_id": "knight_fire",
-      "name": "Fire Knight",
+      "name": "Cavaleiro de Fogo",
       "element": "Fire",
       "role": "Attack",
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Sir Ember"},
+      "awakening": {"name": "Dom Brasa"},
       "skills": [
         {
-          "name": "Burning Blade",
+          "name": "Lâmina Ardente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.85}
           ],
@@ -29,7 +29,7 @@
           ]
         },
         {
-          "name": "Flaming Charge",
+          "name": "Carga Flamejante",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.8}
@@ -44,7 +44,7 @@
           ]
         },
         {
-          "name": "Blazing Oath",
+          "name": "Juramento em Chamas",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
@@ -59,16 +59,16 @@
     },
     "water": {
       "variation_id": "knight_water",
-      "name": "Water Knight",
+      "name": "Cavaleiro de Água",
       "element": "Water",
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Dame Tide"},
+      "awakening": {"name": "Dama Maré"},
       "skills": [
         {
-          "name": "Shield Bash",
+          "name": "Golpe de Escudo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
@@ -81,7 +81,7 @@
           ]
         },
         {
-          "name": "Tide Wall",
+          "name": "Muralha de Maré",
           "cooldown": 4,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
@@ -98,23 +98,23 @@
           ]
         },
         {
-          "name": "Last Vow",
+          "name": "Último Voto",
           "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
         }
       ]
     },
     "wind": {
       "variation_id": "knight_wind",
-      "name": "Wind Knight",
+      "name": "Cavaleiro de Vento",
       "element": "Wind",
       "role": "Support",
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Sir Gale"},
+      "awakening": {"name": "Dom Vendaval"},
       "skills": [
         {
-          "name": "Swift Thrust",
+          "name": "Estocada Veloz",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5}
           ],
@@ -126,7 +126,7 @@
           ]
         },
         {
-          "name": "War Horn",
+          "name": "Clarim de Guerra",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 25}
@@ -140,7 +140,7 @@
           ]
         },
         {
-          "name": "Gale Banner",
+          "name": "Estandarte do Vendaval",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
@@ -154,16 +154,16 @@
     },
     "light": {
       "variation_id": "knight_light",
-      "name": "Light Knight",
+      "name": "Cavaleiro de Luz",
       "element": "Light",
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Defense", "value": 0.2},
-      "awakening": {"name": "Sir Dawn"},
+      "awakening": {"name": "Dom Alvor"},
       "skills": [
         {
-          "name": "Oath",
+          "name": "Juramento",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
@@ -176,7 +176,7 @@
           ]
         },
         {
-          "name": "Shield Vow",
+          "name": "Voto de Escudo",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Taunt"},
@@ -192,23 +192,23 @@
           ]
         },
         {
-          "name": "Last Vow",
+          "name": "Último Voto",
           "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
         }
       ]
     },
     "dark": {
       "variation_id": "knight_dark",
-      "name": "Dark Knight",
+      "name": "Cavaleiro de Trevas",
       "element": "Dark",
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Sir Sepulcher"},
+      "awakening": {"name": "Dom Sepulcro"},
       "skills": [
         {
-          "name": "Hungry Blade",
+          "name": "Lâmina Faminta",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.3}
           ],
@@ -220,7 +220,7 @@
           ]
         },
         {
-          "name": "Dark Oath",
+          "name": "Juramento Sombrio",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.3}
@@ -236,7 +236,7 @@
           ]
         },
         {
-          "name": "Last Vow",
+          "name": "Último Voto",
           "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
         }
       ]

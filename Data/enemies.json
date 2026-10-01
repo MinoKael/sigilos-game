@@ -9,18 +9,18 @@
 [
   {
     "id": "chain_master",
-    "name": "The Chain Master",
+    "name": "O Mestre de Correntes",
     "role": "Defense",
     "rarity": 3,
     "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
     "healthScale": 5.6, "attackScale": 1.6,
     "image": "chain_master",
     "skills": [
-      { "name": "Chain", "effects": [
+      { "name": "Corrente", "effects": [
         {"kind": "Damage", "power": 3.5},
         {"kind": "Status", "status": "Taunt", "chance": 0.3}
       ] },
-      { "name": "Shackles", "cooldown": 4, "effects": [
+      { "name": "Grilhões", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
         {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
       ] }
@@ -28,18 +28,18 @@
   },
   {
     "id": "runic_golem",
-    "name": "Runic Golem",
+    "name": "Golem Rúnico",
     "role": "HP",
     "rarity": 3,
     "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "rock_golem",
     "skills": [
-      { "name": "Stone Fist", "effects": [
+      { "name": "Punho de Pedra", "effects": [
         {"kind": "Damage", "power": 3.5},
         {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 0.3, "turns": 2}
       ] },
-      { "name": "Earthquake", "cooldown": 4, "effects": [
+      { "name": "Terremoto", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
         {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
       ] }
@@ -47,18 +47,18 @@
   },
   {
     "id": "elder_wyvern",
-    "name": "Elder Wyvern",
+    "name": "Serpe Anciã",
     "role": "Attack",
     "rarity": 3,
     "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
     "healthScale": 5.4, "attackScale": 1.45,
     "image": "wyvern",
     "skills": [
-      { "name": "Searing Bite", "effects": [
+      { "name": "Mordida Ardente", "effects": [
         {"kind": "Damage", "power": 3.8},
         {"kind": "Status", "status": "Burn", "chance": 0.4, "turns": 2}
       ] },
-      { "name": "Ash Breath", "cooldown": 4, "effects": [
+      { "name": "Sopro de Cinzas", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.6},
         {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
       ] }
@@ -66,17 +66,17 @@
   },
   {
     "id": "bone_king",
-    "name": "Bone King",
+    "name": "Rei Ossudo",
     "role": "Defense",
     "rarity": 3,
     "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
     "healthScale": 6.8, "attackScale": 1.6,
     "image": "crowned_skull",
     "skills": [
-      { "name": "Grave Touch", "effects": [
+      { "name": "Toque do Túmulo", "effects": [
         {"kind": "Damage", "power": 3.5, "drain": 0.3}
       ] },
-      { "name": "Crown of Dust", "cooldown": 4, "effects": [
+      { "name": "Coroa de Pó", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.0},
         {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
       ] }
@@ -84,18 +84,18 @@
   },
   {
     "id": "drowned_guardian",
-    "name": "Drowned Guardian",
+    "name": "Guardião Afogado",
     "role": "Support",
     "rarity": 3,
     "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
     "healthScale": 6.4, "attackScale": 1.55,
     "image": "kraken",
     "skills": [
-      { "name": "Tentacle", "effects": [
+      { "name": "Tentáculo", "effects": [
         {"kind": "Damage", "power": 3.5},
         {"kind": "Impeto", "power": -20, "chance": 0.5}
       ] },
-      { "name": "Black Tide", "cooldown": 4, "effects": [
+      { "name": "Maré Negra", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
         {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
       ] }
@@ -103,17 +103,17 @@
   },
   {
     "id": "forge_guardian",
-    "name": "Forge Guardian",
+    "name": "Guardião da Forja",
     "role": "HP",
     "rarity": 3,
     "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
     "healthScale": 8.0, "attackScale": 1.6,
     "image": "golem_head",
     "skills": [
-      { "name": "Hammer Blow", "effects": [
+      { "name": "Martelada", "effects": [
         {"kind": "Damage", "power": 3.6}
       ] },
-      { "name": "Anvil Ember", "cooldown": 4, "effects": [
+      { "name": "Brasa da Bigorna", "cooldown": 4, "effects": [
         {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
         {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
         {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}

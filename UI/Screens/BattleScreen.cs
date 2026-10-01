@@ -22,12 +22,13 @@ namespace Sigilos.UI.Screens
 	///    <see cref="AutoPilot"/> (automático). O automático pode ser ligado e desligado no meio.
 	///
 	/// O campo é a <see cref="BattleArena"/>: o círculo oval com os aliados embaixo à esquerda e os
-	/// inimigos em cima à direita, e o que acontece escrito no meio dele. Em volta, tudo sigilo: no canto
-	/// de cima à esquerda o nome da luta, a onda e a rodada, e embaixo, em pé, quem age a seguir; no de
-	/// cima à direita a pausa (<see cref="PauseMenu"/>: continuar, recomeçar, sair); embaixo à esquerda o
-	/// automático, a velocidade e os Efeitos; embaixo à direita um sigilo por habilidade (o Glifo dela, o
-	/// número ou a recarga na plaquinha). O painel de Efeitos abre no centro do círculo. No fim avisa
-	/// <see cref="Finished"/>; o GameRoot aplica a recompensa, grava o melhor tempo e chama
+	/// inimigos em cima à direita, e o que acontece escrito no meio dele. Em volta: no canto de cima à
+	/// esquerda o nome da luta, a onda e a rodada, escritas, e embaixo, em pé, quem age a seguir; no de
+	/// cima à direita a pausa (<see cref="PauseMenu"/>: continuar, recomeçar, sair); embaixo à esquerda
+	/// os botões Automático, a velocidade e Efeitos; embaixo à direita uma habilidade por botão, com o
+	/// nome embaixo (segurar mostra o que ela faz). Tocar numa unidade (fora da escolha de alvo) ou
+	/// segurá-la abre o resumo dela, sem parar a luta. O painel de Efeitos abre no centro do círculo. No
+	/// fim avisa <see cref="Finished"/>; o GameRoot aplica a recompensa, grava o melhor tempo e chama
 	/// <see cref="ShowResult"/>, que mostra o <see cref="BattleResultPanel"/>.
 	/// </summary>
 	public partial class BattleScreen : Control
@@ -51,9 +52,9 @@ namespace Sigilos.UI.Screens
 		private string _round = "";
 		private readonly Label _banner = new() { Name = "Banner" };
 		private readonly HBoxContainer _actions = Layout.Row(12).Named("Skills");
-		private readonly SigilButton _autoButton = new(Art.Icon("auto"), "", 52, SigilShape.Square) { Name = "Auto", ToggleMode = true };
-		private readonly SigilButton _speedButton = new(null, "", 52, SigilShape.Square) { Name = "Speed" };
-		private readonly SigilButton _effectsButton = new(Art.Icon("effects"), "", 52, SigilShape.Square) { Name = "Effects", ToggleMode = true };
+		private readonly GameButton _autoButton = new("", ButtonKind.Secondary, "auto", 56) { Name = "Auto", ToggleMode = true };
+		private readonly SigilButton _speedButton = new(null, 56, SigilShape.Square) { Name = "Speed" };
+		private readonly GameButton _effectsButton = new("", ButtonKind.Secondary, "effects", 56) { Name = "Effects", ToggleMode = true };
 		private readonly TurnOrderBar _order = new();
 		private readonly PanelContainer _effects = new() { Name = "EffectsPanel", Visible = false };
 		private readonly VBoxContainer _effectsList = new() { Name = "Units" };
@@ -68,9 +69,6 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>O que um toque em unidade faz agora; nulo fora da escolha de alvo.</summary>
 		private Action<BattleUnit>? _pickTarget;
-
-		/// <summary>A unidade cujo efeito o painel destaca (toque numa unidade fora da escolha de alvo).</summary>
-		private BattleUnit? _focused;
 
 		/// <summary>Quem está fora do lugar, na frente do alvo: dá o tranco a cada golpe até voltar.</summary>
 		private UnitView? _striker;
@@ -114,7 +112,7 @@ namespace Sigilos.UI.Screens
 			AddChild(Banner());
 			AddChild(Pin(_order, LayoutPreset.TopLeft));
 			_order.OffsetTop = _order.OffsetBottom = 104;
-			AddChild(Pin(SigilButton.Of("pause", T("battle.pause"), OpenPause, 52, SigilShape.Square), LayoutPreset.TopRight));
+			AddChild(Pin(SigilButton.Of("pause", OpenPause, 56, SigilShape.Square), LayoutPreset.TopRight));
 			AddChild(Pin(Controls(), LayoutPreset.BottomLeft));
 			AddChild(Pin(_actions, LayoutPreset.BottomRight));
 			AddChild(EffectsPanel());
@@ -137,7 +135,7 @@ namespace Sigilos.UI.Screens
 				: _session.Round > BattleRules.RoundLimit ? ("resolve", T("battle.timeout", BattleRules.RoundLimit))
 				: ("retreat", T("battle.all_fell"));
 			_banner.Text = "";
-			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, rune => RuneSellRequested?.Invoke(rune)));
+			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune)));
 		}
 
 		public override void _Process(double delta)
@@ -148,7 +146,8 @@ namespace Sigilos.UI.Screens
 
 		public override void _ExitTree() => _closed = true;
 
-		public override void _UnhandledKeyInput(InputEvent @event)
+		/// <summary>Esc e o Voltar do celular pausam — depois que as janelas por cima (resumo, habilidade) fecharam.</summary>
+		public override void _UnhandledInput(InputEvent @event)
 		{
 			if (!@event.IsActionPressed("ui_cancel"))
 				return;
@@ -198,7 +197,7 @@ namespace Sigilos.UI.Screens
 			};
 			row.AddChild(_speedButton);
 
-			_effectsButton.TooltipText = T("battle.effects");
+			_effectsButton.Text = T("battle.effects");
 			_effectsButton.Toggled += on =>
 			{
 				_effects.Visible = on;
@@ -213,16 +212,15 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_counters);
 			if (_wave.Length > 0)
-				_counters.AddChild(Layout.Chip("fight", _wave, T("battle.wave_tip")).Named("Wave"));
+				_counters.AddChild(Layout.Labeled("fight", _wave, T("battle.wave_tip")).Named("Wave"));
 			if (_round.Length > 0)
-				_counters.AddChild(Layout.Chip("resolve", _round, T("battle.round_tip")).Named("Round"));
+				_counters.AddChild(Layout.Labeled("resolve", _round, T("battle.round_tip")).Named("Round"));
 		}
 
 		private void ShowSpeed()
 		{
 			var label = BattlePace.Speeds[_speedIndex].Label;
 			_speedButton.Letters = $"{label}×";
-			_speedButton.TooltipText = T("battle.speed", label);
 		}
 
 		/// <summary>Pausa a luta e abre o menu: continuar, recomeçar do começo ou sair.</summary>
@@ -280,8 +278,8 @@ namespace Sigilos.UI.Screens
             var column = new VBoxContainer { Name = "Column" };
             var header = Layout.Row(8).Named("Header");
             header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold).Named("Icon"));
-            header.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
-            header.AddChild(SigilButton.Of("cancel", T("common.close"), () => _effectsButton.ButtonPressed = false, 40).Named("Close"));
+            header.AddChild(new Label { Name = "Title", Text = T("battle.effects"), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+            header.AddChild(SigilButton.Of("cancel", () => _effectsButton.ButtonPressed = false, 48).Named("Close"));
             column.AddChild(header);
 
             _effectsList.AddThemeConstantOverride("separation", 8);
@@ -319,16 +317,18 @@ namespace Sigilos.UI.Screens
 
             foreach (var team in teams)
             {
-                var units = team.Members.Where(u => u.IsAlive).OrderByDescending(u => u == _focused).ToList();
+                var units = team.Members.Where(u => u.IsAlive).ToList();
                 for (var i = 0; i < units.Count; i++)
                 {
                     var unit = units[i];
                     var row = Layout.Row(8).Named($"Unit{i + 1}");
-                    var frame = new PanelContainer { Name = "Portrait", TooltipText = unit.Name, MouseFilter = MouseFilterEnum.Stop };
-                    var ring = unit == _focused ? Palette.Gold : unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow;
+                    var frame = new PanelContainer { Name = "Portrait", MouseFilter = MouseFilterEnum.Stop };
+                    var ring = unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow;
 
                     frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, ring, 2, 18, 2));
-                    frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 32));
+                    frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 36));
+                    var shown = unit;
+                    Press.On(frame, () => MonsterSummary.Open(frame, shown), () => MonsterSummary.Open(frame, shown));
                     row.AddChild(frame);
 
                     var statuses = Layout.Flow(6).Named("Statuses");
@@ -339,8 +339,7 @@ namespace Sigilos.UI.Screens
                         var status = unit.Statuses[k];
                         var ink = BattleRules.IsNegative(status.Kind) ? Palette.Negative : Palette.Positive;
                         var value = status.Kind == Core.Content.StatusKind.Shield ? $" • {Math.Round(status.Value)}" : "";
-                        var tip = T("battle.effect_tip", Texts.Name(status.Kind), Texts.Turns(status.Turns));
-                        statuses.AddChild(Layout.Chip(Art.Effect(status.Kind), $"{status.Turns}{value}", tip, ink).Named($"{status.Kind}{k + 1}"));
+                        statuses.AddChild(Layout.Labeled(Art.Effect(status.Kind), $"{status.Turns}{value}", Texts.Name(status.Kind), ink).Named($"{status.Kind}{k + 1}"));
                     }
 
                     row.AddChild(statuses);
@@ -361,12 +360,9 @@ namespace Sigilos.UI.Screens
 					return;
 				}
 
-				_focused = v.Unit;
-				if (_effectsButton.ButtonPressed)
-					RefreshEffects();
-				else
-					_effectsButton.ButtonPressed = true;
+				MonsterSummary.Open(v, v.Unit);
 			};
+			view.LongPressed += v => MonsterSummary.Open(v, v.Unit);
 			_views[unit] = view;
 			return view;
 		}
@@ -415,21 +411,30 @@ namespace Sigilos.UI.Screens
 				var index = i;
 				var skill = ally.Skill(index);
 				var ready = ally.IsReady(index);
-				var button = new SigilButton(null, $"{skill.Name}\n{Texts.Plain(Texts.Describe(skill))}", 66, SigilShape.Square)
+				var slot = new VBoxContainer { Name = $"Skill{index + 1}" };
+				slot.AddThemeConstantOverride("separation", 2);
+				var button = new SigilButton(null, 74, SigilShape.Square)
 				{
-					Name = $"Skill{index + 1}",
+					Name = "Button",
 					Disabled = !ready,
-					Badge = ready ? Texts.Roman(index + 1) : $"⟳{ally.Cooldown(index)}",
+					Badge = ready ? "" : T("battle.cooldown_badge", ally.Cooldown(index)),
 				};
 				button.SetSymbol(Art.Skill(skill));
-				button.Pressed += () =>
+				Press.OnButton(button, () =>
 				{
 					if (skill.NeedsTarget)
 						PickTarget(ally, button, target => Decide(new UnitAction(index, target)));
 					else
 						Decide(new UnitAction(index, null));
-				};
-				_actions.AddChild(button);
+				}, () => Dialog.Info(button, skill.Name, Texts.Describe(skill)));
+				slot.AddChild(button);
+				var name = new Label { Name = "Name", Text = skill.Name, HorizontalAlignment = HorizontalAlignment.Center, CustomMinimumSize = new Vector2(92, 0), AutowrapMode = TextServer.AutowrapMode.WordSmart };
+				name.AddThemeFontSizeOverride("font_size", 14);
+				name.AddThemeColorOverride("font_color", ready ? Palette.Text : Palette.TextFaded);
+				name.AddThemeColorOverride("font_outline_color", Palette.Background);
+				name.AddThemeConstantOverride("outline_size", 4);
+				slot.AddChild(name);
+				_actions.AddChild(slot);
 			}
 
 			return decision.Task;
@@ -440,8 +445,10 @@ namespace Sigilos.UI.Screens
 		{
 			foreach (var view in _views.Values)
 				view.SetTargetable(false);
-			foreach (var child in _actions.GetChildren().OfType<SigilButton>())
+			foreach (var child in _actions.GetChildren().Select(c => c.GetNodeOrNull<SigilButton>("Button")).OfType<SigilButton>())
 				child.Highlight = child == skill;
+			_banner.Text = T("battle.pick_target");
+			_banner.AddThemeColorOverride("font_color", Palette.Arcane);
 
 			var choosable = _session.ChoosableTargets(actor);
 			foreach (var unit in choosable)
@@ -471,10 +478,7 @@ namespace Sigilos.UI.Screens
 				_decideAutomatically?.Invoke();
 		}
 
-		private void RefreshAuto()
-		{
-			_autoButton.TooltipText = _auto ? T("battle.auto_on") : T("battle.auto_off");
-		}
+		private void RefreshAuto() => _autoButton.Text = _auto ? T("battle.auto_on") : T("battle.auto_off");
 
 		private void Close()
 		{

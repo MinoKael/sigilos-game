@@ -19,7 +19,7 @@ namespace Sigilos.UI.Components
 		private readonly int _cleared;
 
 		/// <param name="cleared">Quantas fases já foram vencidas (o caminho brilha até aí).</param>
-		public StagePath(int count, int cleared, int unlocked, int selected, Func<int, string> tooltip)
+		public StagePath(int count, int cleared, int unlocked, int selected)
 		{
 			_cleared = cleared;
 			var rows = (count + PerRow - 1) / PerRow;
@@ -29,7 +29,7 @@ namespace Sigilos.UI.Components
 			for (var number = 1; number <= count; number++)
 			{
 				var stage = number;
-				var node = new SigilButton(null, tooltip(number), number == count ? Node + 12 : Node)
+				var node = new SigilButton(null, number == count ? Node + 12 : Node)
 				{
 					Name = $"Stage{number}",
 					Letters = number.ToString(),

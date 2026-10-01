@@ -3,18 +3,19 @@ using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.UI.Style;
-using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Cartão de monstro, só símbolos: estrelas de agora no alto à esquerda (douradas, roxas depois do
-	/// Despertar), o elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à
-	/// direita. A moldura é pelas estrelas naturais (bronze, prata, ouro); o nome vem na dica. Um
-	/// símbolo pequeno embaixo à esquerda marca o que importa ali (Líder, na equipe, novo, no Baú).
+	/// Cartão de monstro: estrelas de agora no alto à esquerda (douradas, roxas depois do Despertar), o
+	/// elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à direita. A moldura é
+	/// pelas estrelas naturais (bronze, prata, ouro). Um símbolo pequeno embaixo à esquerda marca o que
+	/// importa ali (na equipe, Líder) e uma faixa escrita embaixo diz o que o jogador precisa saber na
+	/// hora ("Novo!", "Líder").
 	///
-	/// Sob o mouse a moldura acende; escolhido, fica azul arcano; marcado para fundir ou liberar, ganha
-	/// o ✓ verde. Clicável quando alguém assina <see cref="Pressed"/>.
+	/// Toque curto é <see cref="Pressed"/> (escolher, marcar); toque longo abre o resumo do monstro
+	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado para fundir
+	/// ou liberar, ganha o ✓ verde. O toque passa para cima, então arrastar rola a lista.
 	/// </summary>
 	public partial class CreatureCard : PanelContainer
 	{
@@ -22,23 +23,24 @@ namespace Sigilos.UI.Components
 		private readonly Color _frame;
 		private readonly int _border;
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
+		private readonly Press _press = new();
 		private bool _selected;
 		private bool _marked;
 
 		/// <param name="monster">Nulo quando não é um monstro da conta (Grimório): nível 1, sem Despertar.</param>
-		/// <param name="marker">Símbolo de Assets/Icons embaixo à esquerda (crown, team, collect, chest).</param>
-		/// <param name="markerTip">O que o símbolo quer dizer, somado à dica do cartão.</param>
-		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, float width = 104, string? marker = null, string? markerTip = null, bool awakenedPreview = false)
+		/// <param name="marker">Símbolo de Assets/Icons embaixo à esquerda (leader, team).</param>
+		/// <param name="tag">Faixa escrita embaixo do desenho ("Novo!", "Líder").</param>
+		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, float width = 104, string? marker = null, string? tag = null, bool awakenedPreview = false)
 		{
 			Summon = summon;
 			Monster = monster;
 			var awakened = monster?.Awakened ?? awakenedPreview;
-			var name = summon.NameFor(awakened);
 
 			CustomMinimumSize = new Vector2(width, width * 1.25f);
-			MouseFilter = MouseFilterEnum.Stop;
+			MouseFilter = MouseFilterEnum.Pass;
 			MouseDefaultCursorShape = CursorShape.PointingHand;
-			TooltipText = T("card.tip", name, Texts.Name(summon.Element), Texts.Name(summon.Role)) + (markerTip != null ? $"\n{markerTip}" : "");
+			_press.Tapped += () => Pressed?.Invoke(this);
+			_press.Held += () => MonsterSummary.Open(this, Summon, Monster);
 
 			_frame = Palette.Frame(summon.Rarity);
 			_border = summon.Rarity >= 3 ? 3 : 2;
@@ -91,6 +93,9 @@ namespace Sigilos.UI.Components
 				layer.AddChild(icon);
 			}
 
+			if (tag != null)
+				layer.AddChild(Tag(tag, width));
+
 			_check.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
 			_check.OffsetLeft = _check.OffsetTop = -width * 0.25f;
 			_check.OffsetRight = _check.OffsetBottom = width * 0.25f;
@@ -120,10 +125,24 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		public override void _GuiInput(InputEvent @event)
+		public override void _GuiInput(InputEvent @event) => _press.Feed(this, @event);
+
+		/// <summary>A faixa escrita, em ouro sobre pedra, presa na borda de baixo do desenho.</summary>
+		private static Control Tag(string text, float width)
 		{
-			if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-				Pressed?.Invoke(this);
+			var plate = new PanelContainer { Name = "Tag", MouseFilter = MouseFilterEnum.Ignore };
+			var box = GameTheme.Box(new Color(Palette.Inset, 0.92f), Palette.Gold, 1, 6, 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 6;
+			plate.AddThemeStyleboxOverride("panel", box);
+			var label = new Label { Name = "Text", Text = text, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
+			label.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.13f), 12, 17));
+			label.AddThemeColorOverride("font_color", Palette.Gold);
+			plate.AddChild(label);
+			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
+			plate.GrowHorizontal = GrowDirection.Both;
+			plate.GrowVertical = GrowDirection.Begin;
+			plate.OffsetBottom = -width * 0.2f;
+			return plate;
 		}
 
 		private void Restyle()
