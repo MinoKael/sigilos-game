@@ -23,7 +23,8 @@ tradução para o inglês em `Data/texts/en.json`.
 
 Precisa do Godot 4.7 **.NET** e do .NET SDK 8+.
 
-- Jogo: abra `project.godot` no editor e aperte F5 (ou `Godot --path .`).
+- Jogo: abra `project.godot` no editor e aperte F5 (ou `Godot --path .`). A versão (`application/config/version` no
+  `project.godot`) aparece no canto de baixo à esquerda do Santuário: suba ela a cada release.
 - Testes e simulador (sem Godot), na raiz:
 
 ```bash

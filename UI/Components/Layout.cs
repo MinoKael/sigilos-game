@@ -114,15 +114,15 @@ namespace Sigilos.UI.Components
 		public static PanelContainer Chip(Texture2D? icon, string value, Color? ink = null, Vector2 labelMinimumSize = default) =>
 			Capsule(Art.NameOf(icon) is { } name ? NodeName(name) : "Chip", Medal(icon, ink ?? Palette.Gold, 24).Named("Icon"), value, "", labelMinimumSize);
 
-		/// <summary>
-		/// Cápsula que se explica sozinha: o símbolo, o número e o que ele é, escrito ("575 Essência",
-		/// "★★★★ 50% Runa"). É o jeito de mostrar recompensa e custo sem depender de dica.
-		/// </summary>
-		public static PanelContainer Labeled(string icon, string value, string caption, Color? ink = null) =>
-			Capsule(NodeName(icon), Medal(Art.Icon(icon), ink ?? Palette.Gold, 24).Named("Icon"), value, caption, default);
+        /// <summary>
+        /// Cápsula que se explica sozinha: o símbolo, o número e o que ele é, escrito ("575 Essência",
+        /// "★★★★ 50% Runa"). É o jeito de mostrar recompensa e custo sem depender de dica.
+        /// </summary>
+        public static PanelContainer Labeled(string icon, string value, string caption, Color? ink = null, Vector2 labelMinimumSize = default) =>
+            Capsule(NodeName(icon), Medal(Art.Icon(icon), ink ?? Palette.Gold, 24).Named("Icon"), value, caption, labelMinimumSize);
 
-		/// <summary>A cápsula labeled com um Glifo no lugar do símbolo.</summary>
-		public static PanelContainer Labeled(Core.Content.Glyph glyph, string value, string caption, Color? ink = null) =>
+        /// <summary>A cápsula labeled com um Glifo no lugar do símbolo.</summary>
+        public static PanelContainer Labeled(Core.Content.Glyph glyph, string value, string caption, Color? ink = null) =>
 			Capsule(glyph.ToString(), new RuneGlyph(glyph, 22, ink ?? Palette.Gold) { Name = "Glyph" }, value, caption, default);
 
 		/// <summary>A cápsula labeled com qualquer desenho (efeito, criatura).</summary>

@@ -4,26 +4,31 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// A constelação da Canalização: um sigilo grande no centro e estrelas em volta, ligadas a ele por
-	/// fios de luz por onde corre uma faísca. As estrelas ficam em vagas fixas, de ângulos e distâncias
-	/// desiguais, para parecer uma constelação e não uma roda, e são só desenho: brilham e piscam, mas
-	/// quem se toca é o centro. Em volta do centro, um anel mostra o quanto a canalização já encheu
-	/// (<see cref="Progress"/>).
+	/// A constelação da Canalização, ocupando o painel inteiro: um sigilo grande no centro e sete orbes em
+	/// volta, ligados a ele por fios de luz por onde corre uma faísca. Os orbes ficam em vagas fixas, de
+	/// ângulos e distâncias desiguais, para parecer uma constelação e não uma roda; são só desenho (cada
+	/// um com uma estrela que pisca), e quem se toca é o centro. Em volta do centro, um anel mostra o
+	/// quanto a canalização já encheu (<see cref="Progress"/>). Embaixo do centro vai o que a tela prender
+	/// com <see cref="Attach"/> (o tempo, o que juntou e o Coletar).
 	///
 	/// Só arruma e desenha: o sigilo do centro e o que ele faz são da tela.
 	/// </summary>
 	public partial class Constellation : Control
 	{
-		/// <summary>Ângulo (graus, 0 à direita, sentido horário) e distância relativa de cada estrela.</summary>
+		/// <summary>Ângulo (graus, 0 à direita, sentido horário) e distância relativa de cada orbe.</summary>
 		private static readonly (float Angle, float Distance)[] Places =
 		{
-			(-152, 0.96f), (-98, 0.82f), (-42, 1.0f), (6, 0.92f), (46, 0.74f), (102, 0.86f), (152, 0.96f),
+			(-152, 0.96f), (-98, 0.82f), (-42, 1.0f), (6, 0.92f), (42, 0.78f), (142, 0.96f),
 		};
 
-		/// <summary>O raio da estrela maior; cada uma tem o seu, entre 60% e 100% disso.</summary>
-		private const float StarSize = 9;
+		/// <summary>O raio dos orbes em volta.</summary>
+		private const float Orb = 30;
+
+		/// <summary>A altura do centro, em fração do painel: um pouco acima do meio, para caber o que vai embaixo.</summary>
+		private const float CenterHeight = 0.45f;
 
 		private Control? _center;
+		private Control? _attached;
 		private float _time;
 
 		public Constellation()
@@ -45,7 +50,16 @@ namespace Sigilos.UI.Components
 			Arrange();
 		}
 
-		public override Vector2 _GetMinimumSize() => _center == null ? Vector2.Zero : _center.CustomMinimumSize + new Vector2(80, 80);
+		/// <summary>Prende um controle logo embaixo do anel do centro, centrado (fica por cima dos fios).</summary>
+		public void Attach(Control control)
+		{
+			_attached = control;
+			AddChild(control);
+			control.MinimumSizeChanged += Arrange;
+			Arrange();
+		}
+
+		public override Vector2 _GetMinimumSize() => _center == null ? Vector2.Zero : _center.CustomMinimumSize + new Vector2(Orb * 6, Orb * 6);
 
 		public override void _Process(double delta)
 		{
@@ -64,24 +78,26 @@ namespace Sigilos.UI.Components
 
 			for (var i = 0; i < Places.Length; i++)
 			{
-				var target = Star(i, center, radii);
+				var target = OrbAt(i, center, radii);
 				var direction = (target - center).Normalized();
-				var from = center + direction * (core + 20);
-				var to = target - direction * (StarSize + 3);
+				var from = center + direction * (core + 12);
+				var to = target - direction * (Orb + 4);
 				DrawLine(from, to, new Color(Palette.Arcane, 0.07f), 7, true);
 				DrawLine(from, to, new Color(Palette.Gold, 0.4f), 1.5f, true);
 
-				// A faísca que corre do centro para a estrela.
+				// A faísca que corre do centro para o orbe.
 				var t = Mathf.PosMod(_time * 0.22f + i * 0.37f, 1f);
 				var spark = from.Lerp(to, t);
 				DrawCircle(spark, 5, new Color(Palette.Spirit, 0.12f));
 				DrawCircle(spark, 2.2f, new Color(Palette.Spirit, 0.85f * Mathf.Sin(t * Mathf.Pi)));
 
-				// A estrela: um brilho de quatro pontas, que pisca devagar, cada uma no seu tempo.
-				var twinkle = 0.65f + 0.35f * Mathf.Sin(_time * 1.7f + i * 1.3f);
-				var size = StarSize * (0.6f + 0.4f * ((i * 37) % 10) / 9f);
-				Sparkle(target, size * 2.2f, new Color(Palette.Gold, 0.12f * twinkle));
-				Sparkle(target, size, new Color(Palette.Gold.Lightened(0.25f), twinkle));
+				// O orbe: o mesmo sigilo de pedra dos botões redondos, com uma estrela que pisca no seu tempo.
+				DrawCircle(target, Orb, Palette.Panel);
+				DrawArc(target, Orb, 0, Mathf.Tau, 48, Palette.GoldDark, 2, true);
+				DrawArc(target, Orb - 4, 0, Mathf.Tau, 48, new Color(Palette.GoldDark, 0.35f), 1, true);
+				var twinkle = 0.55f + 0.45f * Mathf.Sin(_time * 1.7f + i * 1.3f);
+				Sparkle(target, Orb * 0.75f, new Color(Palette.Gold, 0.12f * twinkle));
+				Sparkle(target, Orb * 0.38f, new Color(Palette.Gold.Lightened(0.2f), 0.45f + 0.5f * twinkle));
 			}
 
 			// O anel da canalização em volta do centro.
@@ -97,12 +113,17 @@ namespace Sigilos.UI.Components
 			}
 		}
 
-		private Vector2 Middle => Size / 2;
+		private Vector2 Middle => new(Size.X / 2, Size.Y * CenterHeight);
 
-		/// <summary>A elipse das estrelas: o espaço que sobra, menos a margem da estrela maior.</summary>
-		private Vector2 Radii => new(Mathf.Max(0, Size.X / 2 - StarSize * 2.4f), Mathf.Max(0, Size.Y / 2 - StarSize * 2.4f));
+		/// <summary>
+		/// A elipse dos orbes: larga, como o painel, sem deixar orbe nenhum sair dele (o de cima é o que
+		/// encosta primeiro: a vaga dele sobe 81% do raio).
+		/// </summary>
+		private Vector2 Radii => new(
+			Mathf.Max(0, Mathf.Min(Size.X * 0.46f, Size.X / 2 - Orb - 10)),
+			Mathf.Max(0, Mathf.Min(Size.Y * 0.41f, (Size.Y * CenterHeight - Orb - 8) / 0.81f)));
 
-		private static Vector2 Star(int index, Vector2 center, Vector2 radii)
+		private static Vector2 OrbAt(int index, Vector2 center, Vector2 radii)
 		{
 			var (angle, distance) = Places[index];
 			var rad = Mathf.DegToRad(angle);
@@ -126,8 +147,16 @@ namespace Sigilos.UI.Components
 			if (_center == null)
 				return;
 
+			var middle = Middle;
 			_center.Size = _center.CustomMinimumSize;
-			_center.Position = Middle - _center.Size / 2;
+			_center.Position = middle - _center.Size / 2;
+			if (_attached != null)
+			{
+				_attached.Size = _attached.GetCombinedMinimumSize();
+				var top = middle.Y + _center.Size.Y / 2 + 36;
+				_attached.Position = new Vector2(middle.X - _attached.Size.X / 2, Mathf.Min(top, Size.Y - _attached.Size.Y));
+			}
+
 			QueueRedraw();
 		}
 	}

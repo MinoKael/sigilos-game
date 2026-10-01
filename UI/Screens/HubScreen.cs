@@ -13,11 +13,12 @@ namespace Sigilos.UI.Screens
 	/// O Santuário: a tela de abertura de toda sessão (GDD, seção 11), pensada para o celular.
 	///
 	/// - No alto, a conta (retrato, nível e a barra de experiência; tocar explica) e os recursos.
-	/// - No meio, à esquerda, a Canalização: a constelação (o sigilo do centro com o anel do tempo
-	///   acumulado), o que se juntou enquanto o jogador estava fora, o tempo e o botão Coletar. À direita,
-	///   os dois caminhos principais em botões grandes: Batalha e Invocar.
+	/// - No meio, à esquerda, a Canalização: a constelação ocupa o painel (o sigilo do centro com o anel
+	///   do tempo acumulado e os orbes em volta) e, embaixo do centro, o tempo, o que se juntou enquanto o
+	///   jogador estava fora e o botão Coletar. À direita, os dois caminhos principais em botões grandes:
+	///   Batalha e Invocar.
 	/// - Embaixo, a barra com tudo o mais, cada botão com o nome escrito: Monstros, Runas, Equipes, Loja,
-	///   Grimório, Compêndio e Ajustes.
+	///   Grimório, Compêndio e Ajustes; no canto esquerdo dela, a versão do jogo.
 	///
 	/// Quem ainda não invocou vê Invocar pulsar; quem não venceu a primeira fase, Batalha.
 	/// Só mostra e avisa: quem muda o <see cref="PlayerState"/> e salva é o GameRoot.
@@ -29,10 +30,10 @@ namespace Sigilos.UI.Screens
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly Button _account = new() { Name = "Account", FocusMode = FocusModeEnum.None, Flat = true, MouseDefaultCursorShape = CursorShape.PointingHand };
-		private readonly Constellation _constellation = new() { Name = "Constellation", CustomMinimumSize = new Vector2(330, 0) };
+		private readonly Constellation _constellation = new() { Name = "Constellation" };
 		private readonly SigilButton _core = new(Art.Icon("collect"), 128) { Name = "Core" };
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
-		private readonly HFlowContainer _pending = Layout.Flow(8).Named("Pending");
+		private readonly HBoxContainer _pending = Layout.Row(8, true).Named("Pending");
 		private readonly GameButton _collect;
 		private TileButton? _battle;
 		private TileButton? _summon;
@@ -41,7 +42,7 @@ namespace Sigilos.UI.Screens
 		{
 			_database = database;
 			_player = player;
-			_collect = GameButton.Of(T("hub.collect"), () => CollectRequested?.Invoke(), ButtonKind.Primary, "collect", 64).Named("Collect");
+			_collect = GameButton.Of(T("hub.collect"), () => CollectRequested?.Invoke(), ButtonKind.Primary, "collect", 50).Named("Collect");
 		}
 
 		public event Action<Destination>? Requested;
@@ -51,7 +52,8 @@ namespace Sigilos.UI.Screens
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(Layout.Background());
+			// O anel do fundo gira em volta do sigilo da Canalização.
+			AddChild(Layout.Background(_core));
 			var page = Layout.Page(this);
 
 			var top = Layout.Row(12).Named("Top");
@@ -127,14 +129,17 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>
-		/// A Canalização: a constelação (o sigilo do centro, o anel do tempo acumulado e as estrelas), o que
-		/// já se juntou e o botão Coletar. Tocar no sigilo do centro também coleta, quando há o que coletar.
+		/// A Canalização: a constelação ocupa o painel inteiro (o sigilo do centro com o anel do tempo
+		/// acumulado e os orbes em volta) e, logo embaixo do centro, numa placa escura, o tempo, o que já se
+		/// juntou e o botão Coletar. Tocar no sigilo do centro também coleta, quando há o que coletar; tocar
+		/// no tempo explica a Canalização.
 		/// </summary>
 		private Control Channel()
 		{
 			var panel = new PanelContainer { Name = "Channel", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var row = Layout.Row(20).Named("Row");
-			panel.AddChild(row);
+			// Couro translúcido: o anel do fundo, centrado no sigilo, aparece atrás da constelação.
+			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(new Color(Palette.Panel, 0.6f), Palette.GoldDark));
+			panel.AddChild(_constellation);
 
 			_core.Pressed += () =>
 			{
@@ -142,19 +147,35 @@ namespace Sigilos.UI.Screens
 					CollectRequested?.Invoke();
 			};
 			_constellation.SetCenter(_core);
-			row.AddChild(_constellation);
 
-			var column = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			column.AddThemeConstantOverride("separation", 12);
-			column.AddChild(new Label { Name = "Title", Text = T("hub.channel"), ThemeTypeVariation = GameTheme.Title });
-			column.AddChild(Layout.Text(T("hub.channel_text", Idle.CapHours), GameTheme.Faded).Named("Explain"));
+			var plate = new PanelContainer { Name = "Plate" };
+			var box = new StyleBoxFlat { BgColor = new Color(0, 0, 0, 0f), AntiAliasing = true };
+			box.SetCornerRadiusAll(14);
+			box.ContentMarginLeft = box.ContentMarginRight = 16;
+			box.ContentMarginTop = box.ContentMarginBottom = 8;
+			plate.AddThemeStyleboxOverride("panel", box);
+			var column = new VBoxContainer { Name = "Column" };
+			column.AddThemeConstantOverride("separation", 6);
+			plate.AddChild(column);
+
+			// O tempo é um botão sem moldura: parece texto, e o toque abre a explicação colada nele.
+			var time = new Button { Name = "Time", Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand };
+			time.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
+			time.AddThemeStyleboxOverride("hover", new StyleBoxEmpty());
+			time.AddThemeStyleboxOverride("pressed", new StyleBoxEmpty());
+			_time.HorizontalAlignment = HorizontalAlignment.Center;
+			_time.MouseFilter = MouseFilterEnum.Ignore;
 			_time.AddThemeFontSizeOverride("font_size", 22);
-			column.AddChild(_time);
+			_time.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			time.AddChild(_time);
+			_time.MinimumSizeChanged += () => time.CustomMinimumSize = _time.GetCombinedMinimumSize();
+			time.Pressed += () => Dialog.Info(time, T("hub.channel"), T("hub.channel_text", Idle.CapHours));
+			column.AddChild(time);
+
 			column.AddChild(_pending);
-			var actions = Layout.Row(0).Named("Actions");
-			actions.AddChild(_collect.Wide(240));
+			var actions = Layout.Row(0, true).Named("Actions");
 			column.AddChild(actions);
-			row.AddChild(column);
+			_constellation.Attach(plate);
 			return panel;
 		}
 
@@ -176,13 +197,27 @@ namespace Sigilos.UI.Screens
 			return column;
 		}
 
-		/// <summary>A barra de baixo: um botão escrito para cada lugar do jogo.</summary>
+		/// <summary>
+		/// A barra de baixo: um botão escrito para cada lugar do jogo, no meio. No canto de baixo à esquerda,
+		/// a versão do jogo (application/config/version), para saber de que release é o que está rodando.
+		/// </summary>
 		private Control NavBar()
 		{
 			var panel = new PanelContainer { Name = "Nav" };
 			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.GoldDark, 8));
-			var row = Layout.Row(8, true).Named("Row");
+			var row = Layout.Row(8).Named("Row");
 			panel.AddChild(row);
+
+			// A versão e o vão da direita dividem a sobra igual: os botões ficam no centro.
+			var version = ProjectSettings.GetSetting("application/config/version").AsString();
+			row.AddChild(new Label
+			{
+				Name = "Version",
+				Text = OS.IsDebugBuild() ? T("hub.version_debug", version) : T("hub.version", version),
+				ThemeTypeVariation = GameTheme.Faded,
+				SizeFlagsHorizontal = SizeFlags.ExpandFill,
+				SizeFlagsVertical = SizeFlags.ShrinkEnd,
+			});
 			foreach (var destination in new[] { Destination.Monsters, Destination.Runes, Destination.Teams, Destination.Shop, Destination.Grimoire, Destination.Compendium })
 			{
 				var button = TileButton.Nav(Destinations.Name(destination), Destinations.Icon(destination)).Named(destination.ToString());
@@ -193,6 +228,7 @@ namespace Sigilos.UI.Screens
 			var config = TileButton.Nav(T("destination.Config"), "config").Named("Config");
 			config.Pressed += () => ConfigRequested?.Invoke();
 			row.AddChild(config);
+			row.AddChild(new Control { Name = "Balance", SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
 			return panel;
 		}
 
@@ -206,9 +242,9 @@ namespace Sigilos.UI.Screens
 			_time.Text = T("hub.channeling", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
 
 			Layout.Clear(_pending);
-			_pending.AddChild(Layout.Labeled("essence", Texts.Short(preview.Essence), T("currency.essence")));
-			_pending.AddChild(Layout.Labeled("gold", Texts.Short(preview.Gold), T("currency.gold")));
-			_pending.AddChild(Layout.Labeled("mana", Texts.Short(preview.Mana), T("currency.mana")));
+			_pending.AddChild(Layout.Labeled("essence", Texts.Short(preview.Essence), T("currency.essence"), labelMinimumSize: new Vector2(40,22)));
+			_pending.AddChild(Layout.Labeled("gold", Texts.Short(preview.Gold), T("currency.gold"), labelMinimumSize: new Vector2(23, 22)));
+			_pending.AddChild(Layout.Labeled("mana", Texts.Short(preview.Mana), T("currency.mana"), labelMinimumSize: new Vector2(26, 22)));
 			_collect.Disabled = preview.IsEmpty;
 		}
 	}

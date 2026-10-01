@@ -12,11 +12,13 @@
     Tools/ só tem Python, mas fica fora pelo mesmo motivo. As duas pastas têm .gdignore.
   -->
   <ItemGroup>
+    <Compile Remove="android\**" />
     <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="android\**" />
     <EmbeddedResource Remove="Tests\**" />
     <None Remove="Tests\**" />
     <Compile Remove="Tools\**" />
-    <None Remove="Tools\**" />
+	<None Remove="Tools\**" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\*.json" />

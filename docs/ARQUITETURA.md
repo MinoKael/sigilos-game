@@ -72,7 +72,8 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Abas | `TextTabs` (escritas, com detalhe opcional embaixo, em pé ou deitadas); o Compêndio e o Grimório usam `Layout.Tab` num `TabContainer` |
 | Grade de runas ou de monstros | `TileGrid`: cabem quantas colunas a largura deixar, e a sobra vira espaço entre elas (a grade vai de borda a borda em qualquer tela) |
 | Gasto grande de uma vez (subir até o nível máximo, melhorar a runa até o próximo marco) | pergunta antes, com o gasto e aonde chega: `Dialog.Confirm` (o da runa é `RuneDialog.ConfirmUpgrade`) |
-| A constelação da Canalização (tela inicial) | `UI/Components/Constellation.cs`: o sigilo do centro, o anel do tempo acumulado e as estrelas desenhadas em volta (`Places`) |
+| A constelação da Canalização (tela inicial) | `UI/Components/Constellation.cs`: ocupa o painel; o sigilo do centro (`SetCenter`), o anel do tempo acumulado, os orbes desenhados em volta (`Places`, `Radii`) e o que vai logo embaixo do centro (`Attach`) |
+| Versão do jogo (canto de baixo à esquerda do Santuário) | `application/config/version` no `project.godot`; numa build de depuração aparece "· depuração" |
 | Destinos da barra de baixo e da tela Batalha | `UI/Screens/Destination.cs` (símbolo e nome) e `GameRoot.Go` (qual tela abre e para onde volta) |
 | Voltar (seta, Esc e o Voltar do celular) | `BackButton` e `Layout.Header`; o Voltar do Android vira a ação `ui_cancel` no `GameRoot`. Quem fecha ou volta ouve `ui_cancel` em `_UnhandledInput`, que corre do último nó para o primeiro: a janela de cima fecha antes da tela voltar |
 | Idiomas oferecidos na Configuração | um arquivo por idioma em `Data/texts`; `ContentLoader.Languages()` lista, `PlayerState.Language` guarda a escolha |

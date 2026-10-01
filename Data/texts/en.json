@@ -414,7 +414,9 @@
     "collect": "Collect",
     "battle": "Battle",
     "battle_detail": "Campaign (stage {0} of {1}) and Dungeons",
-    "summon_detail": "New monsters · you have {0} Scrolls"
+    "summon_detail": "New monsters · you have {0} Scrolls",
+    "version": "v{0}",
+    "version_debug": "v{0} · debug"
   },
 
   "campaign": {

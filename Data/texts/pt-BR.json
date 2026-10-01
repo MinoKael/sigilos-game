@@ -415,7 +415,9 @@
     "collect": "Coletar",
     "battle": "Batalha",
     "battle_detail": "Campanha (fase {0} de {1}) e Masmorras",
-    "summon_detail": "Monstros novos · você tem {0} Pergaminhos"
+    "summon_detail": "Monstros novos · você tem {0} Pergaminhos",
+    "version": "v{0}",
+    "version_debug": "v{0} · depuração"
   },
 
   "campaign": {
