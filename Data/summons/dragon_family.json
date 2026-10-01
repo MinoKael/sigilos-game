@@ -4,7 +4,6 @@
   "name": "Dragões",
   "star_grade": 5,
   "image": "dragon",
-  "awakened_image": "dragon_awakened",
   "variations": {
     "fire": {
       "variation_id": "dragon_fire",

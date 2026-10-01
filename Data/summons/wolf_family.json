@@ -4,7 +4,6 @@
   "name": "Lobos",
   "star_grade": 3,
   "image": "wolf",
-  "awakened_image": "wolf_awakened",
   "variations": {
     "fire": {
       "variation_id": "wolf_fire",

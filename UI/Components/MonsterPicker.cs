@@ -10,7 +10,7 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// Escolher um monstro numa janela: a grade dos cartões (coleção primeiro, depois o Baú, cada um
-	/// com a faixa "Baú"), o escolhido de agora aceso, e, se <c>allowNone</c>, o botão Nenhum. Tocar
+	/// com a faixa "Baú"; em cada parte, os favoritos na frente), o escolhido de agora aceso, e, se <c>allowNone</c>, o botão Nenhum. Tocar
 	/// escolhe e fecha; segurar abre o resumo, como em todo lugar.
 	/// </summary>
 	public static class MonsterPicker
@@ -25,6 +25,7 @@ namespace Sigilos.UI.Components
 			IEnumerable<OwnedSummon> monsters = player.Monsters
 				.Where(m => database.HasSummon(m.SummonId))
 				.OrderBy(m => m.Stored)
+				.ThenByDescending(m => m.Favorite)
 				.ThenByDescending(m => m.Stars)
 				.ThenByDescending(m => m.Level);
 			foreach (var monster in monsters)

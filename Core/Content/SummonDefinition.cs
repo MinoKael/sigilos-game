@@ -80,6 +80,7 @@ namespace Sigilos.Core.Content
 
 		public string NameFor(bool awakened) => awakened ? Awakening.Name : Name;
 
-		public string ImageFor(bool awakened) => awakened ? Family.AwakenedImage : Family.Image;
+		/// <summary>O desenho da família. Desperto é o mesmo desenho, com a aura do elemento (a tela é quem desenha).</summary>
+		public string Image => Family.Image;
 	}
 }

@@ -119,7 +119,7 @@ namespace Sigilos.UI.Screens
 			stars.AddThemeColorOverride("font_color", Palette.Stars(_awakened));
 			column.AddChild(stars);
 			var art = new Control { Name = "Art", CustomMinimumSize = new Vector2(0, 80), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
-			art.AddChild(Doodle.Masked(Art.Creature(_awakened ? family.AwakenedImage : family.Image), Palette.Gold, MaskShape.Rounded, 6));
+			art.AddChild(Doodle.Masked(Art.Creature(family.Image), Palette.Gold, MaskShape.Rounded, 6, aura: _awakened ? Element.Light : null));
 			column.AddChild(art);
 			var name = new Label { Name = "Name", Text = family.BaseName, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore, ClipText = true };
 			name.AddThemeFontSizeOverride("font_size", 15);
@@ -186,7 +186,7 @@ namespace Sigilos.UI.Screens
 			var identity = Layout.Row(12).Named("Identity");
 			var portrait = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(96, 96), MouseFilter = MouseFilterEnum.Stop };
 			portrait.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 3, 10, 6));
-			portrait.AddChild(Doodle.Masked(Art.Creature(summon.ImageFor(_awakened)), Palette.Of(summon.Element), MaskShape.Rounded, 6));
+			portrait.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Rounded, 6, aura: _awakened ? summon.Element : null));
 			Press.On(portrait, null, () => MonsterSummary.Open(portrait, summon, null));
 			identity.AddChild(portrait);
 			var info = new VBoxContainer { Name = "Info" };

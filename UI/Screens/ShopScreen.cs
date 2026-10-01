@@ -71,12 +71,25 @@ namespace Sigilos.UI.Screens
 
 			var name = new Label { Name = "Name", Text = Texts.Amount(offer.Item, offer.Amount), HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading };
 			content.AddChild(name);
-			var icon = Doodle.Icon(Art.Icon(offer.Item == ShopItem.Mana ? "mana" : "scroll"), 100, Palette.Gold);
+			var icon = offer.Item switch
+			{
+				ShopItem.Mana => Doodle.Icon(Art.Icon("mana"), 100, Palette.Gold),
+				ShopItem.ReappraisalGems => Doodle.Icon(Art.Icon("gem"), 100, Palette.Arcane),
+				_ => Doodle.Icon(Art.Icon("scroll"), 100, Palette.Gold),
+			};
 			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
 			content.AddChild(icon);
 			var what = Layout.Text(offer.Name, GameTheme.Faded, 220).Named("What");
 			what.HorizontalAlignment = HorizontalAlignment.Center;
 			content.AddChild(what);
+			if (offer.Item == ShopItem.ReappraisalGems)
+			{
+				// O que a gema faz e quantas o jogador já tem: ela não aparece em nenhuma barra de moedas.
+				var info = Layout.Text(T("shop.reappraisal_info", _player.ReappraisalGems), GameTheme.Faded, 220).Named("Info");
+				info.HorizontalAlignment = HorizontalAlignment.Center;
+				info.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
+				content.AddChild(info);
+			}
 
 			var canBuy = Shop.CanBuy(_player, offer);
 			var buy = GameButton.Of(T("shop.buy_button"), () => Dialog.Confirm(this,

@@ -37,12 +37,13 @@ namespace Sigilos.Tests
 		private static void FusingACopyRaisesARandomSkill()
 		{
 			var database = TestData.Database;
-			var player = TestData.PlayerWith("phoenix_fire", "phoenix_fire", "phoenix_water");
-			var (target, copy, other) = (player.Monsters[0], player.Monsters[1], player.Monsters[2]);
+			var player = TestData.PlayerWith("phoenix_fire", "phoenix_fire", "phoenix_water", "dragon_fire");
+			var (target, copy, other, stranger) = (player.Monsters[0], player.Monsters[1], player.Monsters[2], player.Monsters[3]);
 			var rune = RuneInventory.Create(new Random(1), player, 3);
 			RuneInventory.Equip(player, rune, copy.Id);
 
-			Assert.False(Fusion.CanFuse(player, database, target.Id, other.Id), "variante diferente não funde");
+			Assert.True(Fusion.CanFuse(player, database, target.Id, other.Id), "outro elemento da mesma família funde");
+			Assert.False(Fusion.CanFuse(player, database, target.Id, stranger.Id), "outra família não funde");
 			var index = Fusion.Fuse(new Random(1), player, database, target.Id, copy.Id);
 			Assert.True(index >= 0, "funde a cópia");
 			Assert.Equal(2, target.SkillLevel(index), "a habilidade sorteada sobe para o nível 2");

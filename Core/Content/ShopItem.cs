@@ -5,5 +5,8 @@ namespace Sigilos.Core.Content
 	{
 		Mana,
 		Scrolls,
+
+		/// <summary>Gema de Reavaliação: devolve uma runa ao estado em que caiu (Core/Runes/RuneReappraisal).</summary>
+		ReappraisalGems,
 	}
 }

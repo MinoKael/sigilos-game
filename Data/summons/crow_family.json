@@ -4,7 +4,6 @@
   "name": "Corvos",
   "star_grade": 4,
   "image": "crow",
-  "awakened_image": "crow_awakened",
   "variations": {
     "fire": {
       "variation_id": "crow_fire",

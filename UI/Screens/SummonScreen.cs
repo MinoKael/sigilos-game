@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
@@ -14,8 +15,9 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// Invocação ritual (GDD, seção 9): o portal no centro; à esquerda, tudo escrito — os botões
 	/// Invocar ×1 e Invocar ×10 com o custo em Pergaminhos, Comprar Pergaminhos, a garantia de 5★ (quantas
-	/// faltam, com a barra) e as chances. O círculo gira e brilha antes do resultado; cada cartão novo
-	/// diz embaixo se é novo, cópia ou se foi para o Baú, e segurar um abre o resumo do monstro.
+	/// faltam, com a barra) e as chances. O círculo gira e brilha antes do resultado (e espera a invocação
+	/// chegar à nuvem); cada cartão novo diz embaixo se é novo, cópia ou se foi para o Baú, e segurar um
+	/// abre o resumo do monstro. 4★ e 5★ aparecem com destaque, e Luz e Trevas com o deles.
 	/// </summary>
 	public partial class SummonScreen : Control
 	{
@@ -128,8 +130,14 @@ namespace Sigilos.UI.Screens
 			Cost(_ten, 10);
 		}
 
-		/// <summary>O círculo gira e brilha; depois os cartões aparecem um a um.</summary>
-		public void ShowResults(IReadOnlyList<SummonResult> results)
+		/// <summary>Quanto o resultado espera, no máximo, a invocação chegar à nuvem.</summary>
+		private const double SaveWaitSeconds = 4;
+
+		/// <summary>
+		/// O círculo gira e brilha; depois os cartões aparecem um a um. Com <paramref name="saved"/> (o envio
+		/// para a nuvem), o resultado só aparece depois dele, ou de <see cref="SaveWaitSeconds"/>.
+		/// </summary>
+		public void ShowResults(IReadOnlyList<SummonResult> results, Task? saved = null)
 		{
 			Refresh();
 			Layout.Clear(_cards);
@@ -153,15 +161,30 @@ namespace Sigilos.UI.Screens
 			tween.Parallel().TweenProperty(_sigil, "rotation", Mathf.Tau, RitualSeconds);
 			tween.Parallel().TweenMethod(Callable.From<Color>(c => _sigil.SetInk(c)), Palette.Gold, Palette.Frame(best).Lerp(Colors.White, 0.3f), RitualSeconds);
 			tween.TweenProperty(_sigil, "modulate:a", 0f, 0.25);
-			tween.TweenCallback(Callable.From(() => Reveal(results)));
+			tween.TweenCallback(Callable.From(() => RevealWhenSaved(results, saved)));
 		}
 
+		private async void RevealWhenSaved(IReadOnlyList<SummonResult> results, Task? saved)
+		{
+			if (saved is { IsCompleted: false })
+				await Task.WhenAny(saved, Task.Delay(TimeSpan.FromSeconds(SaveWaitSeconds)));
+			if (IsInsideTree())
+				Reveal(results);
+		}
+
+		/// <summary>
+		/// Os cartões aparecem um a um. 4★ e 5★ ganham destaque: um halo de raios atrás, a faixa no alto
+		/// ("4★!", "5★!") e o cartão que salta; o 5★ ainda acende a tela num clarão. Luz e Trevas, os
+		/// elementos mais raros, trocam o ouro e a prata pela cor do elemento, com raios em duas cores e
+		/// o nome do elemento na faixa.
+		/// </summary>
 		private void Reveal(IReadOnlyList<SummonResult> results)
 		{
 			_sigil?.QueueFree();
 			_sigil = null;
 			_cards.Columns = Math.Min(5, results.Count);
 			_results.Visible = true;
+			var width = results.Count == 1 ? 180 : 124;
 
 			for (var i = 0; i < results.Count; i++)
 			{
@@ -169,14 +192,91 @@ namespace Sigilos.UI.Screens
 				var tag = result.Monster.Stored ? T("summon.sent_to_vault")
 					: result.FirstCopy ? T("summon.new")
 					: T("summon.copy");
-				var card = new CreatureCard(result.Summon, result.Monster, results.Count == 1 ? 180 : 124, null, tag) { Name = $"Result{i + 1}", Modulate = new Color(1, 1, 1, 0) };
-				_cards.AddChild(card);
-				card.CreateTween().TweenProperty(card, "modulate:a", 1f, 0.25).SetDelay(0.08 * i);
+				var slot = new Control { Name = $"Result{i + 1}", CustomMinimumSize = new Vector2(width, width * 1.25f), MouseFilter = MouseFilterEnum.Ignore };
+				var card = new CreatureCard(result.Summon, result.Monster, width, null, tag) { Name = "Card", Modulate = new Color(1, 1, 1, 0) };
+				var delay = 0.08 * i;
+				var rare = result.Summon.Rarity >= 4;
+				if (rare)
+				{
+					var halo = Halo(result.Summon, width);
+					slot.AddChild(halo);
+					halo.CreateTween().TweenProperty(halo, "modulate:a", 1f, 0.3).SetDelay(delay);
+				}
+
+				slot.AddChild(card);
+				var tween = card.CreateTween();
+				tween.TweenProperty(card, "modulate:a", 1f, 0.25).SetDelay(delay);
+				if (rare)
+				{
+					card.PivotOffset = new Vector2(width, width * 1.25f) / 2;
+					card.Scale = Vector2.One * 0.45f;
+					tween.Parallel().TweenProperty(card, "scale", Vector2.One * 1.12f, 0.25).SetDelay(delay).SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+					tween.TweenProperty(card, "scale", Vector2.One, 0.15);
+					slot.AddChild(Ribbon(result.Summon, width, delay));
+					if (result.Summon.Rarity >= 5)
+						Flash(Glow(result.Summon), delay);
+				}
+
+				_cards.AddChild(slot);
 			}
 
 			// Espera o grid medir os cartões antes de centralizar.
 			Callable.From(Center).CallDeferred();
 			Refresh();
+		}
+
+		/// <summary>Luz e Trevas, os elementos mais raros, têm destaque próprio na invocação.</summary>
+		private static bool Special(SummonDefinition summon) => summon.Element is Element.Light or Element.Dark;
+
+		/// <summary>A cor do destaque: prata no 4★, ouro no 5★; a do elemento em Luz e Trevas.</summary>
+		private static Color Glow(SummonDefinition summon) => Special(summon) ? Palette.Of(summon.Element) : Palette.Frame(summon.Rarity);
+
+		/// <summary>Os raios atrás do cartão, um tanto maiores que ele.</summary>
+		private static SummonHalo Halo(SummonDefinition summon, float width)
+		{
+			var special = Special(summon);
+			var accent = !special ? Glow(summon).Lightened(0.35f)
+				: summon.Element == Element.Light ? Colors.White
+				: Palette.Of(summon.Element).Darkened(0.55f);
+			var rays = special ? 16 : summon.Rarity >= 5 ? 12 : 8;
+			var halo = new SummonHalo(Glow(summon), accent, rays, summon.Element == Element.Dark ? -0.5f : 0.5f) { Name = "Halo", Modulate = new Color(1, 1, 1, 0) };
+			var size = width * 1.7f;
+			halo.Size = new Vector2(size, size);
+			halo.Position = new Vector2(width, width * 1.25f) / 2 - halo.Size / 2;
+			return halo;
+		}
+
+		/// <summary>A faixa no alto do cartão: "4★!", "5★!" ou, em Luz e Trevas, o elemento junto.</summary>
+		private static Control Ribbon(SummonDefinition summon, float width, double delay)
+		{
+			var text = Special(summon) ? T("summon.special", Texts.Name(summon.Element), summon.Rarity) : T("summon.rare", summon.Rarity);
+			var plate = new PanelContainer { Name = "Ribbon", MouseFilter = MouseFilterEnum.Ignore, Modulate = new Color(1, 1, 1, 0) };
+			var box = GameTheme.Box(Palette.Inset, Glow(summon), 2, 8, 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 10;
+			plate.AddThemeStyleboxOverride("panel", box);
+			var label = new Label { Name = "Text", Text = text, HorizontalAlignment = HorizontalAlignment.Center };
+			label.AddThemeFontOverride("font", GameTheme.Serif);
+			label.AddThemeFontSizeOverride("font_size", width >= 160 ? 22 : 17);
+			label.AddThemeColorOverride("font_color", Glow(summon).Lightened(0.2f));
+			plate.AddChild(label);
+			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
+			plate.GrowHorizontal = GrowDirection.Both;
+			plate.GrowVertical = GrowDirection.Begin;
+			plate.OffsetTop = plate.OffsetBottom = 10;
+			plate.CreateTween().TweenProperty(plate, "modulate:a", 1f, 0.2).SetDelay(delay + 0.2);
+			return plate;
+		}
+
+		/// <summary>O clarão do 5★: a tela acende na cor dele e apaga.</summary>
+		private void Flash(Color color, double delay)
+		{
+			var flash = new ColorRect { Name = "Flash", Color = new Color(color.Lightened(0.4f), 0), MouseFilter = MouseFilterEnum.Ignore };
+			flash.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			AddChild(flash);
+			var tween = flash.CreateTween();
+			tween.TweenProperty(flash, "color:a", 0.45f, 0.12).SetDelay(delay);
+			tween.TweenProperty(flash, "color:a", 0f, 0.5);
+			tween.TweenCallback(Callable.From(flash.QueueFree));
 		}
 
 		private void Center()

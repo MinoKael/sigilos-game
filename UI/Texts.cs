@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
+using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
 using Sigilos.UI.Style;
@@ -362,6 +363,7 @@ namespace Sigilos.UI
 				.Concat(Keys<ShopItem>("shop.item.{0}"))
 				.Concat(Keys<EntryProblem>("entry.{0}").Where(k => !k.EndsWith("None")))
 				.Concat(Keys<RuneSetEffect>("set_effect.{0}").Where(k => !k.EndsWith("None")))
+				.Concat(Keys<DefeatAdvice.Kind>("battle.advice.{0}"))
 				.Where(key => !Has(key));
 		}
 	}

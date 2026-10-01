@@ -294,6 +294,42 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void ReappraisalGemReturnsTheRuneToItsDrop()
+		{
+			var random = new Random(5);
+			var rune = Rune(RuneSet.Vigor, 2, RuneStat.AttackPercent, 6, 0, Sub(RuneStat.Speed, 4), Sub(RuneStat.Crit, 0.05));
+			var dropped = rune.Substats.Select(s => (s.Stat, s.Value)).ToList();
+			for (var i = 0; i < RuneRules.MaxLevel; i++)
+				RuneForge.RaiseLevel(random, rune);
+			rune.Substats[0].Grind = 2;
+			var gem = new RuneTool(RuneToolKind.Gem, RuneStat.Accuracy, RuneRarity.Legendary);
+			Assert.True(RuneForge.Enchant(random, rune, 1, gem), "encanta o Crítico");
+			Assert.True(RuneForge.Enchant(random, rune, 1, gem with { Stat = RuneStat.Resistance }), "e de novo, no mesmo");
+
+			var player = TestData.PlayerWith();
+			var preview = RuneReappraisal.Preview(rune);
+			Assert.Equal(RuneRules.MaxLevel, preview.Level, "volta da +15");
+			Assert.Equal(2, preview.RemovedSubstats.Count, "saem os dois que vieram nas melhoras");
+			Assert.Equal((RuneStat.Resistance, RuneStat.Crit), preview.Enchant, "o encantado volta ao Crítico do drop");
+			Assert.False(RuneReappraisal.Reappraise(player, rune), "sem gema, nada");
+
+			player.ReappraisalGems = 1;
+			Assert.True(RuneReappraisal.Reappraise(player, rune), "gasta a gema");
+			Assert.Equal(0, player.ReappraisalGems, "uma a menos");
+			Assert.Equal(0, rune.Level, "+0");
+			Assert.Equal(string.Join(",", dropped), string.Join(",", rune.Substats.Select(s => (s.Stat, s.Value))), "os subatributos do drop, com o sorteio de origem");
+			Assert.True(rune.Substats.All(s => s.Grind == 0 && !s.Enchanted), "sem pedra nem encantamento");
+			Assert.False(RuneReappraisal.Preview(rune).Any, "nada mais a desfazer");
+
+			// Encantada antes de o jogo guardar o trocado: o encantado fica.
+			var old = Rune(RuneSet.Vigor, 2, RuneStat.AttackPercent, 6, 12, Sub(RuneStat.Speed, 4), new RuneSubstat { Stat = RuneStat.Accuracy, Rolls = { new RuneRoll(12, 0.08) }, Enchanted = true });
+			player.ReappraisalGems = 1;
+			Assert.True(RuneReappraisal.Preview(old).EnchantKept, "avisa que fica");
+			Assert.True(RuneReappraisal.Reappraise(player, old), "reavalia o resto");
+			Assert.Equal(2, old.Substats.Count, "o encantado não some");
+		}
+
+		[Test]
 		private static void LeaderGrowsOnlyTheBase()
 		{
 			var sheet = new StatSheet(new StatBlock { Attack = 100 }, RuneBonus.None with { Stats = new StatBlock { Attack = 200 } });

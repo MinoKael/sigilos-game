@@ -4,7 +4,6 @@
   "name": "Fênix",
   "star_grade": 5,
   "image": "phoenix",
-  "awakened_image": "phoenix_awakened",
   "variations": {
     "fire": {
       "variation_id": "phoenix_fire",

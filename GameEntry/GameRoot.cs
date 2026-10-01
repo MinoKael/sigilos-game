@@ -723,7 +723,9 @@ namespace Sigilos.GameEntry
 
 				Teams.FillCampaign(_player, results.Select(r => r.Monster).OrderByDescending(m => _database.Summon(m.SummonId).Rarity));
 				Save();
-				summon.ShowResults(results);
+				// O gasto de Pergaminhos e os monstros sobem para a nuvem antes de o resultado aparecer: fechar
+				// o jogo na hora não desfaz a invocação. O envio corre durante o ritual.
+				summon.ShowResults(results, _account.Connected ? _account.Flush() : null);
 			};
 			Swap(summon, ShowSummon);
 		}
@@ -737,14 +739,15 @@ namespace Sigilos.GameEntry
 			{
 				var monster = _player.Monster(id)!;
 				Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.InfuseCosts(monster).Next);
-			}, () => storage.Refresh());
-			storage.AwakenRequested += id => Change(() => Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), () => storage.Refresh());
-			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), () => storage.Refresh());
-			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), () => storage.Refresh());
-			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), () => storage.Refresh());
-			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), () => storage.Refresh(true));
-			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), () => storage.Refresh());
-			storage.LockRequested += id => Change(() => _player.Monster(id)!.Locked = !_player.Monster(id)!.Locked, () => storage.Refresh());
+			}, storage.Refresh);
+			storage.AwakenRequested += id => Change(() => Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), storage.Refresh);
+			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), storage.Refresh);
+			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), storage.Refresh);
+			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), storage.Refresh);
+			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), storage.Refresh);
+			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), storage.Refresh);
+			storage.LockRequested += id => Change(() => _player.Monster(id)!.Locked = !_player.Monster(id)!.Locked, storage.Refresh);
+			storage.FavoriteRequested += id => Change(() => _player.Monster(id)!.Favorite = !_player.Monster(id)!.Favorite, storage.Refresh);
 			Swap(storage, () => ShowStorage(selected));
 		}
 
@@ -781,6 +784,7 @@ namespace Sigilos.GameEntry
 			runes.SellRequested += id => Change(() => RuneInventory.Sell(_player, Rune(id)), runes.Refresh);
 			runes.SellManyRequested += ids => Change(() => RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))), runes.Refresh);
 			runes.LockRequested += id => Change(() => Rune(id).Locked = !Rune(id).Locked, runes.Refresh);
+			runes.ReappraiseRequested += id => Change(() => Core.Runes.RuneReappraisal.Reappraise(_player, Rune(id)), runes.Refresh);
 			Swap(runes, () => ShowRunes(monsterId, back));
 		}
 
@@ -887,7 +891,8 @@ namespace Sigilos.GameEntry
 				var newBest = victory && Records.Submit(_player, record, battle.Elapsed);
 				Save();
 				var result = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
-				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest));
+				var tips = victory ? null : DefeatAdvice.For(_player, _database, before.Select(b => b.Monster).ToList(), encounter);
+				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest, tips));
 			};
 			battle.RuneSellRequested += rune =>
 			{
@@ -1029,7 +1034,7 @@ namespace Sigilos.GameEntry
 		private ResultMonster ResultOf(OwnedSummon monster, int level, int experience)
 		{
 			var summon = _database.Summon(monster.SummonId);
-			return new ResultMonster(summon.NameFor(monster.Awakened), Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), ResultMonster.StepsOf(monster, level, experience))
+			return new ResultMonster(summon.NameFor(monster.Awakened), Art.Creature(summon.Image), Palette.Of(summon.Element), ResultMonster.StepsOf(monster, level, experience))
 			{
 				MaxLevel = Leveling.IsMaxLevel(monster),
 				Summon = summon,
@@ -1037,10 +1042,13 @@ namespace Sigilos.GameEntry
 			};
 		}
 
+		/// <summary>Grava no aparelho e, jogando na conta, manda para a nuvem logo em seguida (as ações seguidas viram um envio só).</summary>
 		private void Save()
 		{
-			if (_playing)
-				_store.Save(_player);
+			if (!_playing)
+				return;
+			_store.Save(_player);
+			_account.SaveSoon();
 		}
 
 		/// <summary>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
@@ -29,6 +30,19 @@ namespace Sigilos.UI.Screens
 		private readonly HBoxContainer _slots = Layout.Row(12).Named("Slots");
 		private readonly VBoxContainer _leader = new() { Name = "Leadership" };
 		private readonly TileGrid _roster = new(10) { Name = "Roster" };
+
+		/// <summary>
+		/// A ordem da coleção embaixo, fixada ao abrir a aba: pôr ou tirar um monstro da equipe não muda o
+		/// lugar dos cartões (reordenar a cada toque fazia o cartão tocado sumir de baixo do dedo).
+		/// </summary>
+		private List<int>? _order;
+
+		private string? _orderContent;
+
+		private ScrollContainer _rosterScroll = null!;
+
+		/// <summary>O monstro que o jogador acabou de tocar na coleção: a rolagem o mostra inteiro.</summary>
+		private int? _touched;
 
 		public TeamScreen(GameDatabase database, PlayerState player, string content)
 		{
@@ -75,7 +89,8 @@ namespace Sigilos.UI.Screens
 			var rosterColumn = new VBoxContainer { Name = "Column" };
 			rosterColumn.AddThemeConstantOverride("separation", 8);
 			rosterColumn.AddChild(Layout.Text(T("teams.hint"), GameTheme.Faded).Named("Hint"));
-			rosterColumn.AddChild(Layout.Scroll(_roster));
+			_rosterScroll = Layout.Scroll(_roster);
+			rosterColumn.AddChild(_rosterScroll);
 			rosterPanel.AddChild(rosterColumn);
 			page.AddChild(rosterPanel);
 
@@ -183,22 +198,40 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_roster);
 			var team = Teams.Of(_player, _content);
-			var monsters = _player.Collection
-				.Where(m => _database.HasSummon(m.SummonId))
-				.OrderByDescending(m => team.Contains(m.Id))
-				.ThenByDescending(m => m.Stars)
-				.ThenByDescending(m => _database.Summon(m.SummonId).Rarity)
-				.ThenByDescending(m => m.Level)
-				.ThenBy(m => m.Id);
+			var shown = _player.Collection.Where(m => _database.HasSummon(m.SummonId)).ToList();
+			if (_order == null || _orderContent != _content)
+			{
+				_orderContent = _content;
+				_order = shown
+					.OrderByDescending(m => m.Favorite)
+					.ThenByDescending(m => team.Contains(m.Id))
+					.ThenByDescending(m => m.Stars)
+					.ThenByDescending(m => _database.Summon(m.SummonId).Rarity)
+					.ThenByDescending(m => m.Level)
+					.ThenBy(m => m.Id)
+					.Select(m => m.Id)
+					.ToList();
+			}
+
+			var place = _order.Select((id, index) => (id, index)).ToDictionary(p => p.id, p => p.index);
+			var monsters = shown.OrderBy(m => place.GetValueOrDefault(m.Id, int.MaxValue)).ThenBy(m => m.Id);
 
 			foreach (var monster in monsters)
 			{
 				var inTeam = team.Contains(monster.Id);
 				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, 100, null, inTeam ? T("teams.on_team") : null) { Name = $"Monster{monster.Id}" };
 				card.SetSelected(inTeam);
-				card.Pressed += c => ToggleRequested?.Invoke(_content, c.Monster!.Id);
+				card.Pressed += c =>
+				{
+					_touched = c.Monster!.Id;
+					ToggleRequested?.Invoke(_content, c.Monster.Id);
+				};
 				_roster.AddChild(card);
+				if (monster.Id == _touched)
+					Layout.Reveal(_rosterScroll, card);
 			}
+
+			_touched = null;
 		}
 	}
 }

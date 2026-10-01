@@ -4,7 +4,6 @@
   "name": "Druidas",
   "star_grade": 5,
   "image": "druid",
-  "awakened_image": "druid_awakened",
   "variations": {
     "fire": {
       "variation_id": "druid_fire",

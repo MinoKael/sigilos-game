@@ -72,11 +72,14 @@ namespace Sigilos.UI.Components
 		/// Libera o nó no fim do quadro. Antes troca o nome dele por um que não se repete: o substituto entra
 		/// na hora com o mesmo nome, e se o antigo ainda o tivesse, o Godot renomearia o novo para "@Nome@123".
 		/// Não sai da árvore agora porque quem chama costuma estar no meio de um sinal do próprio nó (o clique
-		/// que pediu a remontagem).
+		/// que pediu a remontagem). Mas some na hora: escondido, não conta no tamanho do contêiner, e a
+		/// rolagem não pula com o conteúdo dobrado por um quadro (o velho e o novo juntos).
 		/// </summary>
 		public static void Discard(Node node)
 		{
 			node.Name = $"Discarded{node.GetInstanceId()}";
+			if (node is CanvasItem item)
+				item.Visible = false;
 			node.QueueFree();
 		}
 
@@ -201,10 +204,26 @@ namespace Sigilos.UI.Components
 				SizeFlagsVertical = Control.SizeFlags.ExpandFill,
 				SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
 				HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled,
+				// A roda do mouse anda um bom pedaço por clique (o padrão, um oitavo da altura, se arrasta).
+				ScrollVerticalCustomStep = WheelStep,
 			};
 			content.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 			scroll.AddChild(content);
 			return scroll;
+		}
+
+		/// <summary>Quanto um clique da roda do mouse rola, em px: perto de meia linha de cartões.</summary>
+		public const float WheelStep = 72;
+
+		/// <summary>
+		/// Rola só o necessário para <paramref name="control"/> aparecer inteiro (o cartão tocado na última
+		/// linha, cortado pela borda). Espera o quadro seguinte: o contêiner ainda vai arrumar os filhos novos.
+		/// </summary>
+		public static async void Reveal(ScrollContainer scroll, Control control)
+		{
+			await scroll.ToSignal(scroll.GetTree(), SceneTree.SignalName.ProcessFrame);
+			if (GodotObject.IsInstanceValid(scroll) && GodotObject.IsInstanceValid(control) && control.IsInsideTree())
+				scroll.EnsureControlVisible(control);
 		}
 
 		/// <summary>Uma aba com rolagem vertical, de nome de nó <paramref name="name"/>; o conteúdo vai na coluna devolvida.</summary>

@@ -109,22 +109,33 @@ namespace Sigilos.UI.Components
 			_layer.AddChild(holder);
 		}
 
-		/// <summary>Uma faixa escrita por cima da runa ("Vendida"), e a runa apagada.</summary>
+		/// <summary>
+		/// Uma faixa escrita por cima da runa ("Vendida"), no centro da pedra, e a runa apagada por baixo.
+		/// Só o desenho e a moldura apagam: a faixa fica inteira, para ler.
+		/// </summary>
 		public void SetStamp(string text)
 		{
-			Modulate = new Color(1, 1, 1, 0.55f);
-			var plate = new PanelContainer { Name = "Stamp", MouseFilter = MouseFilterEnum.Ignore };
-			var box = GameTheme.Box(new Color(Palette.Inset, 0.95f), Palette.Negative, 1, 5, 0);
-			box.ContentMarginLeft = box.ContentMarginRight = 4;
+			_layer.Modulate = new Color(1, 1, 1, 0.35f);
+			SelfModulate = new Color(1, 1, 1, 0.55f);
+			var center = new CenterContainer { Name = "Stamp", MouseFilter = MouseFilterEnum.Ignore };
+			var plate = new PanelContainer { Name = "Plate", MouseFilter = MouseFilterEnum.Ignore };
+			var box = GameTheme.Box(Palette.Inset, Palette.Negative, 1, (int)(5 * _scale), 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 5 * _scale;
+			box.ContentMarginTop = box.ContentMarginBottom = 1 * _scale;
 			plate.AddThemeStyleboxOverride("panel", box);
-			var label = new Label { Name = "Text", Text = text, MouseFilter = MouseFilterEnum.Ignore };
+			var label = new Label
+			{
+				Name = "Text",
+				Text = text,
+				MouseFilter = MouseFilterEnum.Ignore,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+			};
 			label.AddThemeFontSizeOverride("font_size", (int)(12 * _scale));
-			label.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.3f));
+			label.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.35f));
 			plate.AddChild(label);
-			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
-			plate.GrowHorizontal = GrowDirection.Both;
-			plate.GrowVertical = GrowDirection.Both;
-			_layer.AddChild(plate);
+			center.AddChild(plate);
+			AddChild(center);
 		}
 
 		/// <summary>O cadeado da runa bloqueada: uma plaquinha no meio da borda de baixo, entre o espaço e a melhora.</summary>

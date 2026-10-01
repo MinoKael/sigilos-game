@@ -44,8 +44,9 @@ namespace Sigilos.GameEntry.Account
 	/// 1. Entrar: <see cref="Login"/> (ou <see cref="Register"/>, ou <see cref="Resume"/> com o token
 	///    guardado), <see cref="Claim"/> a sessão e <see cref="Sync"/>, que resolve o save desta conta.
 	///    Daí <see cref="Begin"/> liga o batimento e o envio.
-	/// 2. Jogando: o save local é a verdade e a nuvem é a cópia. A cada <see cref="UploadSeconds"/>, ao
-	///    pausar e ao sair, <see cref="Flush"/> envia se mudou. Sem rede, nada muda para o jogador.
+	/// 2. Jogando: o save local é a verdade e a nuvem é a cópia. Logo depois de cada ação que muda a
+	///    conta (<see cref="SaveSoon"/>), a cada <see cref="UploadSeconds"/>, ao pausar e ao sair,
+	///    <see cref="Flush"/> envia se mudou. Sem rede, nada muda para o jogador.
 	///    - Outro aparelho tomou a conta: <see cref="Lost"/>. O que não subiu vira backup, nada é enviado.
 	///    - A nuvem mudou por fora (o envio volta com conflito): <see cref="SyncNeeded"/>, e o GameRoot
 	///      sincroniza de novo.
@@ -67,6 +68,9 @@ namespace Sigilos.GameEntry.Account
 
 		public const double UploadSeconds = 60;
 
+		/// <summary>Quanto esperar depois da última ação para enviar (<see cref="SaveSoon"/>): ações seguidas viram um envio só.</summary>
+		public const double SoonSeconds = 2;
+
 		/// <summary>Quanto sair (fechar o jogo, Sair da conta) espera o servidor antes de seguir sem ele.</summary>
 		private static readonly TimeSpan LeaveTimeout = TimeSpan.FromSeconds(3);
 
@@ -78,6 +82,7 @@ namespace Sigilos.GameEntry.Account
 		private readonly CloudSave _cloud;
 		private readonly Timer _beat = new() { Name = "Heartbeat", WaitTime = SessionLock.BeatSeconds };
 		private readonly Timer _upload = new() { Name = "Upload", WaitTime = UploadSeconds };
+		private readonly Timer _soon = new() { Name = "Soon", WaitTime = SoonSeconds, OneShot = true };
 		private Func<PlayerState?> _player = () => null;
 		private Task<bool>? _flushing;
 		private Task<SyncResult>? _syncing;
@@ -177,8 +182,10 @@ namespace Sigilos.GameEntry.Account
 		{
 			AddChild(_beat);
 			AddChild(_upload);
+			AddChild(_soon);
 			_beat.Timeout += async () => Handle(await Check());
 			_upload.Timeout += () => _ = Flush();
+			_soon.Timeout += () => _ = Flush();
 		}
 
 		public override void _ExitTree() => _http.Dispose();
@@ -341,6 +348,17 @@ namespace Sigilos.GameEntry.Account
 		}
 
 		/// <summary>
+		/// Uma ação mudou a conta (subir nível, melhorar runa, fundir, invocar, vencer, bloquear...): envia
+		/// para a nuvem daqui a <see cref="SoonSeconds"/>, contando de novo a cada ação. O envio a cada
+		/// <see cref="UploadSeconds"/> continua por baixo, para o que muda sozinho (a canalização).
+		/// </summary>
+		public void SaveSoon()
+		{
+			if (Playing)
+				_soon.Start();
+		}
+
+		/// <summary>
 		/// Sai da conta: para o batimento e solta a sessão (sem esperar mais que <see cref="LeaveTimeout"/>).
 		/// <paramref name="forget"/> esquece o token (Sair da conta); sem ele, a próxima abertura entra sozinha.
 		/// Envie antes com <see cref="Flush"/>.
@@ -489,6 +507,7 @@ namespace Sigilos.GameEntry.Account
 			_player = () => null;
 			_beat.Stop();
 			_upload.Stop();
+			_soon.Stop();
 		}
 
 		private static PlayerState? Parse(string json)

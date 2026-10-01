@@ -122,7 +122,7 @@ namespace Sigilos.Core.Runes
 			rune.Innate?.Stat != tool.Stat &&
 			RuneRules.CanBeSubstat(rune.Slot, rune.Main, tool.Stat);
 
-		/// <summary>As melhoras e o bônus de pedra do subatributo trocado se perdem.</summary>
+		/// <summary>As melhoras e o bônus de pedra do subatributo trocado se perdem (ele fica guardado no <see cref="RuneSubstat.Original"/>).</summary>
 		public static bool Enchant(Random random, Rune rune, int index, RuneTool tool)
 		{
 			if (!CanEnchant(rune, index, tool))
@@ -130,6 +130,8 @@ namespace Sigilos.Core.Runes
 
 			var enchanted = RuneSubstat.Rolled(tool.Stat, rune.Level, RuneRules.RollGem(random, tool.Stat, tool.Grade));
 			enchanted.Enchanted = true;
+			// Guarda o trocado, para a Gema de Reavaliação poder devolvê-lo.
+			enchanted.Original = rune.Substats[index].Original ?? rune.Substats[index];
 			rune.Substats[index] = enchanted;
 			return true;
 		}

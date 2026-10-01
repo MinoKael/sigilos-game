@@ -29,7 +29,7 @@ namespace Sigilos.UI.Components
 		private const float Arrow = 12;
 
 		private readonly PanelContainer _panel = new() { Name = "Panel" };
-		private readonly ScrollContainer _scroll = new() { Name = "Scroll", HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
+		private readonly ScrollContainer _scroll = new() { Name = "Scroll", HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, ScrollVerticalCustomStep = Layout.WheelStep };
 		private readonly HBoxContainer _actions = new() { Name = "Actions", Alignment = BoxContainer.AlignmentMode.End, Visible = false };
 		private readonly SigilButton _close;
 
@@ -116,6 +116,12 @@ namespace Sigilos.UI.Components
 			_caption.Visible = text.Length > 0;
 			_right.SizeFlagsHorizontal = _caption.Visible ? SizeFlags.ExpandFill : SizeFlags.Fill;
 		}
+
+		/// <summary>
+		/// Troca o ✕ pela seta de voltar: para a janela que é um lugar para onde se volta depois (a da Batalha
+		/// automática, que fechar não para), e não uma pergunta que se cancela.
+		/// </summary>
+		public void UseBackButton() => _close.SetIcon(Art.Icon("back"));
 
 		/// <summary>Tocar fora, o ✕, Esc e Voltar fecham; falso esconde o ✕ e deixa só os botões de ação (escolha obrigatória).</summary>
 		public bool Dismissable

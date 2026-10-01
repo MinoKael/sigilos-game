@@ -32,10 +32,6 @@ namespace Sigilos.Core.Content
 		/// <summary>Nome do arquivo em Assets/Creatures, sem extensão.</summary>
 		public string Image { get; init; } = "";
 
-		/// <summary>O segundo desenho, depois do Despertar (GDD, seção 5).</summary>
-		[JsonPropertyName("awakened_image")]
-		public string AwakenedImage { get; init; } = "";
-
 		/// <summary>A personalidade da família na distribuição dos atributos; sem ela, neutra.</summary>
 		[JsonPropertyName("family_bias")]
 		public StatWeights? Bias { get; init; }

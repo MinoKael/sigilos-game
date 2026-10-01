@@ -4,7 +4,6 @@
   "name": "Goblins",
   "star_grade": 3,
   "image": "goblin",
-  "awakened_image": "goblin_awakened",
   "variations": {
     "fire": {
       "variation_id": "goblin_fire",

@@ -35,6 +35,9 @@ namespace Sigilos.Core.Player
 
 		public int Fragments { get; set; }
 
+		/// <summary>Gemas de Reavaliação, compradas na Loja: cada uma devolve uma runa ao estado em que caiu.</summary>
+		public int ReappraisalGems { get; set; }
+
 		/// <summary>Paga cada vitória; a derrota não custa nada. A ociosidade recarrega até o máximo (Core/Progression/Mana).</summary>
 		public int Mana { get; set; }
 

@@ -4,7 +4,6 @@
   "name": "Cavaleiros Juramentados",
   "star_grade": 4,
   "image": "knight",
-  "awakened_image": "knight_awakened",
   "variations": {
     "fire": {
       "variation_id": "knight_fire",

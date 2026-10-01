@@ -466,20 +466,24 @@
     "pity_title": "5★ guarantee",
     "rates": "Chances of each summon:",
     "note": "Every summon is a new copy, at level 1. Copies of the same monster raise its skills.",
-    "view_monsters": "See my monsters"
+    "view_monsters": "See my monsters",
+    "rare": "{0}★!",
+    "special": "{0} · {1}★!"
   },
 
   "shop": {
     "item": {
       "Mana": "{0} Mana",
-      "Scrolls": "{0} Scrolls"
+      "Scrolls": "{0} Scrolls",
+      "ReappraisalGems": "{0} Reappraisal Gem"
     },
     "no_gold": "{0} Gold short.",
     "confirm": "Buy {0} ({1}) for {2} Gold?",
     "bought": "Bought: +{0}.",
     "intro": "Trade the Gold you earn by playing for Mana or Scrolls.",
     "buy_button": "Buy",
-    "confirm_title": "Confirm purchase"
+    "confirm_title": "Confirm purchase",
+    "reappraisal_info": "Returns a rune to the state it dropped in: removes upgrades, Grindstones and the enchantment. You have {0}."
   },
 
   "monsters": {
@@ -500,20 +504,12 @@
     "evolve": "Evolve to {0}",
     "awaken_button": "Awaken",
     "runes_button": "Manage runes",
-    "store": "Store in Vault",
-    "take_from_vault": "Take out of Vault",
     "collection_full": "The collection is full: store monsters in the Vault or release them first.",
     "fuse_full": "Every skill is at max level.",
-    "fuse_item": "{0} · {2} Lv {1}{3}",
-    "in_vault_short": " · Vault",
-    "fuse_confirm": "Fuse {0} (Lv {1})? The copy is gone, and its runes go back to the inventory.",
     "release": "Release",
     "release_confirm": "Release {0} (Lv {1}) for {2} Fragments? This can't be undone.",
     "select": "Select several",
-    "mark_copies": "Mark copies of {0}",
     "unmark": "Unmark",
-    "fuse_marked": "Fuse {1} into {0}",
-    "fuse_many_confirm": "Fuse {0} copies into {1}? Each raises a random skill ({2} levels left). The copies are gone; their runes go back to the inventory.",
     "release_marked": "Release {0}",
     "release_many_confirm": "Release {0} monsters for {1} Fragments? They are gone for good; their runes go back to the inventory.",
     "valuable_warning": "Warning: the selection has an awakened, evolved, leveled, skilled-up, teamed or runed monster.",
@@ -529,9 +525,7 @@
     "release_button": "Release",
     "fuse_title": "Fuse copies?",
     "fuse_button": "Fuse",
-    "fuse_button_one": "Fuse a copy",
-    "fuse_choose": "Choose the copy to fuse",
-    "fuse_hint": "Fusing a copy of this same monster raises a random skill by one level. {0} skill levels left; you have {1} copies.",
+    "fuse_hint": "Fusing a copy of the same family (any element) raises a random skill by one level. {0} skill levels left; you have {1} free copies.",
     "none_selected": "Choose a monster on the left.",
     "level_hint": "Levels up by infusing Essence: {0} experience per Essence. Victories also give experience to the team that fought.",
     "fully_grown": "At the maximum: 6★ and max level.",
@@ -540,13 +534,30 @@
     "no_sets": "No complete set: 2 or 4 runes of the same set give its bonus.",
     "awaken_title": "Awaken?",
     "awaken_confirm": "Awaken {0} into {1} for {2} Essence? It is permanent.",
-    "awaken_gains": "When awakened, it gets its own name, new art and:",
+    "awaken_gains": "When awakened, it gets its own name, an aura with the ring of its element and:",
     "awakened_already": "Already awakened. It gained:",
     "awaken_short": "{0} Essence short.",
     "max_confirm_title": "Level up to {0}?",
     "max_confirm": "Spend {0} Essence to take {1} to level {2}? You have {3}.",
     "locked": "Locked",
-    "locked_note": "Locked: it can't be released nor fused into another monster. Unlock it first."
+    "locked_note": "Locked: it can't be released nor fused into another monster. Unlock it first.",
+    "favorite": "Favorite",
+    "unfavorite": "Unfavorite",
+    "store_short": "Vault",
+    "retrieve_short": "Take out",
+    "fuse_open": "Fuse copies",
+    "fusion_title": "Fuse into {0}",
+    "fusion_text": "Each fused copy raises a random skill of {0} by one level, and {1} more fit. Any copy of the same family counts, of any element: it disappears, and its runes go back to the inventory.",
+    "fusion_same_element": "Mark {0} copies",
+    "fusion_room": "{0} of {1}",
+    "fusion_pick": "Tap the copies to choose them.",
+    "fusion_none": "No copy of this family to fuse.",
+    "fusion_consumed": "Will disappear ({0}): {1}.",
+    "fusion_button": "Fuse {0}",
+    "fusion_full": "Only {0} fit: unmark one to choose another.",
+    "fusion_locked": "Locked: it can't be used in a fusion. Unlock it on its sheet first.",
+    "fusion_confirm": "Fuse {0} into {1}? These disappear for good: {2}. Their runes go back to the inventory.",
+    "fusion_level": "Lv {0}"
   },
 
   "teams": {
@@ -605,7 +616,18 @@
     "enchant_hint": "Enchanted Gems swap a substat of a +{0} rune. Use them on the rune sheet, on the substat line.",
     "upgrade_confirm_title": "Upgrade to +{0}?",
     "upgrade_confirm": "Spend {0} Essence to upgrade {1} from +{2} to +{3}? You have {4}.",
-    "locked_note": "Locked: it can't be sold. Unlock it first."
+    "locked_note": "Locked: it can't be sold. Unlock it first.",
+    "reappraise": "Reappraise ({0})",
+    "reappraise_title": "Reappraise the rune?",
+    "reappraise_button": "Reappraise",
+    "reappraise_none": "The Reappraisal Gem, sold in the Shop, returns this rune to the state it dropped in.",
+    "reappraise_level": "Back to +0 (it is at +{0}).",
+    "reappraise_removed": "The substats that came with the upgrades go away: {0}.",
+    "reappraise_rolls": "The substats it was born with lose {0} upgrade rolls.",
+    "reappraise_grinds": "{0} Grindstone bonuses disappear.",
+    "reappraise_enchant": "The enchantment is undone: {0} comes back in place of {1}.",
+    "reappraise_enchant_kept": "The enchantment stays: this rune was enchanted before the game kept the replaced substat.",
+    "reappraise_cost": "Uses 1 Reappraisal Gem (you have {0}). The Essence spent on upgrades does not come back."
   },
 
   "filter": {
@@ -662,7 +684,7 @@
       "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
       "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star: the monster keeps its level, its stats jump to the new star's and the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
       "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a duplicate copy raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
-      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, new art, purple stars and higher HP, Attack and Defense (each monster has its own awakened stats: see the Grimoire), plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {3}, {4}, {5} or {6})." },
+      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, a living aura with the ring of its element, purple stars and higher HP, Attack and Defense (each monster has its own awakened stats: see the Grimoire), plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {3}, {4}, {5} or {6})." },
       "sanctuary": { "title": "Sanctuary and controls", "text": "The Sanctuary is the home screen. The Channeling gathers Essence, Gold and Mana while you are away, up to {0} hours: collect it there. Battle leads to the Campaign and the Dungeons; the bar at the bottom leads to Monsters, Runes, Teams, the Shop and the books. Touch a currency, a reward or a word you don't know to see what it is; hold a monster to see its summary." }
     },
     "combat": {
@@ -697,7 +719,21 @@
       "grind": { "title": "Grindstone", "text": "Adds a bonus to an HP, Attack, Defense or Speed substat of the same type as the stone. A new stone replaces the old bonus." },
       "gem": { "title": "Enchanted Gem", "text": "Swaps a substat of a +{0} rune for the gem's. Only one substat per rune can be enchanted." },
       "where": { "title": "Where to get them", "text": "The Campaign drops runes of up to {0} stars (always on the first victory, {1} chance afterwards). The Dungeons drop the 5 and 6 star ones and the tools." },
-      "grimoire": { "title": "Tables", "text": "The numbers for each star, the upgrade costs and the tool ranges are in the Grimoire." }
+      "grimoire": { "title": "Tables", "text": "The numbers for each star, the upgrade costs and the tool ranges are in the Grimoire." },
+      "rarity": {
+        "title": "Rune rarity",
+        "text": "The rune's color shows its rarity: how many substats it is born with. The upgrades at +3, +6, +9 and +12 add the missing ones until there are four; a Legendary rune is born with all four, so each of those upgrades raises one of them.",
+        "subs": "Born with {0} substats"
+      }
+    },
+    "rarity": {
+      "title": "Monster rarity",
+      "text": "The card's frame shows its rarity: the natural stars the monster is born with. More natural stars mean a bigger stat budget and a rarer summon. The stars at the top of the card are the current ones (they go up by evolving); the frame never changes.",
+      "frame2": "Faded frame",
+      "frame3": "Bronze frame",
+      "frame4": "Silver frame",
+      "frame5": "Gold frame",
+      "awakened": "Awakened: aura and purple stars"
     }
   },
 
@@ -773,7 +809,19 @@
     "cooldown_badge": "⟳{0}",
     "again": "Fight again",
     "monster_drop": "New monster",
-    "monster_copy": "Monster copy"
+    "monster_copy": "Monster copy",
+    "advice_title": "To get stronger:",
+    "advice": {
+      "EquipRunes": "Equip runes: {0} rune slots in the team are empty (Monsters → Runes).",
+      "UpgradeRunes": "Upgrade runes: {0} of the team's runes are below +{1} (Runes → Upgrade).",
+      "LevelUp": "Level up: {0} monsters in the team are below their max level (Monsters → Level up).",
+      "Element": "Bring {0} monsters: the enemies here are mostly {1}, which beats {2} of your team.",
+      "Evolve": "Evolve: {0} monsters are at max level and can gain a star (Monsters → Evolve).",
+      "Awaken": "Awaken: {0} monsters in the team are not awakened yet (Monsters → Awaken)."
+    },
+    "effects_help": "What the effects do",
+    "effects_help_active": "The effects in play right now:",
+    "effects_help_all": "No effect in play right now; these are all of them:"
   },
 
   "destination": {
@@ -1409,6 +1457,7 @@
     "Frasco de Mana": "Mana Flask",
     "Cântaro de Mana": "Mana Jug",
     "Pergaminho Místico": "Mystic Scroll",
-    "Maço de Pergaminhos": "Bundle of Scrolls"
+    "Maço de Pergaminhos": "Bundle of Scrolls",
+    "Gema de Reavaliação": "Reappraisal Gem"
   }
 }

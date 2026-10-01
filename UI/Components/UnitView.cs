@@ -49,7 +49,7 @@ namespace Sigilos.UI.Components
 
 			// O desenho, com as quatro marcas nos cantos por cima dele.
 			var art = new Control { Name = "Art", SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
-			art.AddChild(Doodle.Masked(Art.Creature(unit.Image), Palette.Of(unit.Element), MaskShape.Rounded, 6));
+			art.AddChild(Doodle.Masked(Art.Creature(unit.Image), Palette.Of(unit.Element), MaskShape.Rounded, 6, aura: unit.Awakened ? unit.Element : null));
 			var element = Doodle.Icon(Art.Element(unit.Element), 16, Palette.Of(unit.Element)).Named("Element");
 			element.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
 			art.AddChild(element);

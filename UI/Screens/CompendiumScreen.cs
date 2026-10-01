@@ -16,8 +16,9 @@ namespace Sigilos.UI.Screens
 	/// O Compêndio: as regras do jogo por inteiro, em abas escritas — como jogar, combate, atributos,
 	/// Glifos, efeitos e runas —, cada tópico um cartão curto com o seu símbolo. As telas explicam o que
 	/// o jogador precisa na hora (textos curtos e janelas ao tocar); aqui fica o porquê completo. Todo
-	/// número vem das regras do Core, então a explicação acompanha o balanceamento. O que existe no jogo
-	/// (invocações, tabelas de runa, pedras) fica no Grimório.
+	/// número vem das regras do Core, então a explicação acompanha o balanceamento. As cores de raridade
+	/// (a moldura dos monstros, a cor das runas) têm legenda com exemplos de verdade. O que existe no
+	/// jogo (invocações, tabelas de runa, pedras) fica no Grimório.
 	/// </summary>
 	public partial class CompendiumScreen : Control
 	{
@@ -76,6 +77,47 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Awaken", "grimoire", T("compendium.basic.awaken.title"), T("compendium.basic.awaken.text",
 				Awakening.Cost(3), Awakening.Cost(4), Awakening.Cost(5),
 				Texts.AwakeningBonus(Stat.Speed), Texts.AwakeningBonus(Stat.Crit), Texts.AwakeningBonus(Stat.Resistance), Texts.AwakeningBonus(Stat.Accuracy)));
+			MonsterRarity(column);
+		}
+
+		/// <summary>
+		/// A legenda das cores de raridade dos monstros, com cartões de verdade: a moldura de cada estrela
+		/// natural (apagada, bronze, prata, ouro) e, por último, as estrelas roxas do desperto.
+		/// </summary>
+		private static void MonsterRarity(VBoxContainer column)
+		{
+			column.AddChild(new Label { Name = "RarityTitle", Text = T("compendium.rarity.title"), ThemeTypeVariation = GameTheme.Heading });
+			column.AddChild(RichText.Label(T("compendium.rarity.text"), 1150, GameTheme.Faded).Named("RarityText"));
+			var row = Layout.Flow(24).Named("Rarities");
+			if (UiSession.Database is { } database)
+			{
+				for (var stars = 2; stars <= 5; stars++)
+				{
+					if (database.Summons.FirstOrDefault(s => s.Rarity == stars) is { } summon)
+						row.AddChild(Swatch($"Rarity{stars}", new CreatureCard(summon, null, 84), Texts.Stars(stars), T($"compendium.rarity.frame{stars}"), Palette.Frame(stars)));
+				}
+
+				if (database.Summons.FirstOrDefault(s => s.Rarity == 5) is { } awakened)
+					row.AddChild(Swatch("Awakened", new CreatureCard(awakened, null, 84, awakenedPreview: true), Texts.Stars(5), T("compendium.rarity.awakened"), Palette.Awakened));
+			}
+
+			column.AddChild(row);
+		}
+
+		/// <summary>Um exemplo da legenda: o desenho, as estrelas e o que a cor quer dizer, na cor dela.</summary>
+		private static VBoxContainer Swatch(string name, Control sample, string stars, string meaning, Color color)
+		{
+			var swatch = new VBoxContainer { Name = name, Alignment = BoxContainer.AlignmentMode.Center };
+			swatch.AddThemeConstantOverride("separation", 4);
+			sample.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
+			swatch.AddChild(sample.Named("Sample"));
+			var top = new Label { Name = "Stars", Text = stars, HorizontalAlignment = HorizontalAlignment.Center };
+			top.AddThemeColorOverride("font_color", color);
+			swatch.AddChild(top);
+			var text = new Label { Name = "Meaning", Text = meaning, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(150, 0) };
+			text.AddThemeColorOverride("font_color", color);
+			swatch.AddChild(text);
+			return swatch;
 		}
 
 		private static void Combat(VBoxContainer column)
@@ -169,6 +211,20 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Gem", "gem", T("compendium.runes.gem.title"), T("compendium.runes.gem.text", RuneForge.EnchantLevel));
 			Card(grid, "Where", "dungeon", T("compendium.runes.where.title"), T("compendium.runes.where.text", GameDatabase.MaxCampaignRuneGrade, Texts.Percent(Campaign.RepeatRuneChance)));
 			Card(grid, "Grimoire", "grimoire", T("compendium.runes.grimoire.title"), T("compendium.runes.grimoire.text"));
+
+			column.AddChild(new Label { Name = "RarityTitle", Text = T("compendium.runes.rarity.title"), ThemeTypeVariation = GameTheme.Heading });
+			column.AddChild(RichText.Label(T("compendium.runes.rarity.text"), 1150, GameTheme.Faded).Named("RarityText"));
+			var row = Layout.Flow(24).Named("Rarities");
+			foreach (var rarity in Enum.GetValues<RuneRarity>())
+			{
+				var stone = new PanelContainer { Name = "Stone", CustomMinimumSize = RuneTile.TileSize };
+				stone.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Of(rarity), 2, 9, 0));
+				var glyph = new RuneGlyph(RuneSets.For(RuneSet.Vigor).Glyph, 40, Palette.Of(rarity), outline: true) { Name = "Glyph" };
+				stone.AddChild(glyph);
+				row.AddChild(Swatch(rarity.ToString(), stone, Texts.Name(rarity), T("compendium.runes.rarity.subs", (int)rarity), Palette.Of(rarity)));
+			}
+
+			column.AddChild(row);
 		}
 
 		private static GridContainer Cards(VBoxContainer column)

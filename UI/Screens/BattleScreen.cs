@@ -138,6 +138,8 @@ namespace Sigilos.UI.Screens
 				: _session.Round > BattleRules.RoundLimit ? ("resolve", T("battle.timeout", BattleRules.RoundLimit))
 				: ("retreat", T("battle.all_fell"));
 			_banner.Text = "";
+			// O painel de Efeitos aberto ficaria por baixo do resultado, atrapalhando a leitura.
+			_effectsButton.ButtonPressed = false;
 			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune), rune => RuneLockRequested?.Invoke(rune)));
 		}
 
@@ -282,6 +284,11 @@ namespace Sigilos.UI.Screens
             var header = Layout.Row(8).Named("Header");
             header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold).Named("Icon"));
             header.AddChild(new Label { Name = "Title", Text = T("battle.effects"), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+            // O "?" ao lado do ✕, do mesmo tamanho: o que cada efeito em jogo faz, com o texto do Compêndio.
+            var help = new SigilButton(null, 48) { Name = "Help", Letters = "?" };
+            help.SetLetterSize(26);
+            help.Pressed += () => ExplainEffects(help);
+            header.AddChild(help);
             header.AddChild(SigilButton.Of("cancel", () => _effectsButton.ButtonPressed = false, 48).Named("Close"));
             column.AddChild(header);
 
@@ -290,6 +297,36 @@ namespace Sigilos.UI.Screens
             _effects.AddChild(column);
 
             return _effects;
+        }
+
+        /// <summary>
+        /// A janela estreita do "?": os efeitos que estão em jogo agora (todos, se nenhum), um embaixo do
+        /// outro, cada um com o símbolo, se é bom ou ruim e a explicação do Compêndio.
+        /// </summary>
+        private void ExplainEffects(Control anchor)
+        {
+            const float width = 440;
+            var active = _session.Allies.Concat(_session.Enemies)
+                .Where(u => u.IsAlive)
+                .SelectMany(u => u.Statuses)
+                .Select(status => status.Kind)
+                .Distinct()
+                .ToList();
+            var kinds = active.Count > 0 ? active : Enum.GetValues<Core.Content.StatusKind>().ToList();
+
+            var dialog = Dialog.Open(anchor, T("battle.effects_help"), width, anchor, "EffectsHelp");
+            dialog.Body.AddChild(Layout.Text(T(active.Count > 0 ? "battle.effects_help_active" : "battle.effects_help_all"), GameTheme.Faded, width - 40).Named("Intro"));
+            foreach (var kind in kinds)
+            {
+                var negative = BattleRules.IsNegative(kind);
+                var row = Layout.Row(10).Named(kind.ToString());
+                var icon = Doodle.Icon(Art.Effect(kind), 36, negative ? Palette.Negative : Palette.Positive).Named("Icon");
+                icon.SizeFlagsVertical = SizeFlags.ShrinkBegin;
+                row.AddChild(icon);
+                var tag = negative ? T("compendium.effects.negative") : T("compendium.effects.positive");
+                row.AddChild(RichText.Label($"{Texts.Term(kind)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(kind)}", width - 90).Named("Text"));
+                dialog.Body.AddChild(row);
+            }
         }
 
         private void RefreshEffects()

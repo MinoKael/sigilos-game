@@ -4,7 +4,6 @@
   "name": "Gárgulas",
   "star_grade": 4,
   "image": "gargoyle",
-  "awakened_image": "gargoyle_awakened",
   "variations": {
     "fire": {
       "variation_id": "gargoyle_fire",

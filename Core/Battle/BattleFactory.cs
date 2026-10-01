@@ -59,7 +59,7 @@ namespace Sigilos.Core.Battle
 			return new BattleUnit(
 				summon.Id,
 				summon.NameFor(member.Awakened),
-				summon.ImageFor(member.Awakened),
+				summon.Image,
 				Side.Allies,
 				summon.Element,
 				member.Level,
@@ -94,7 +94,7 @@ namespace Sigilos.Core.Battle
 			return new BattleUnit(
 				summon.Id,
 				summon.Name,
-				summon.ImageFor(false),
+				summon.Image,
 				Side.Enemies,
 				summon.Element,
 				encounter.Level,

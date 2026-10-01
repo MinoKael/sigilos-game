@@ -467,20 +467,24 @@
     "pity_title": "Garantia de 5★",
     "rates": "Chances de cada invocação:",
     "note": "Cada invocação é uma cópia nova, no nível 1. Cópias do mesmo monstro sobem as habilidades dele.",
-    "view_monsters": "Ver meus monstros"
+    "view_monsters": "Ver meus monstros",
+    "rare": "{0}★!",
+    "special": "{0} · {1}★!"
   },
 
   "shop": {
     "item": {
       "Mana": "{0} Mana",
-      "Scrolls": "{0} Pergaminhos"
+      "Scrolls": "{0} Pergaminhos",
+      "ReappraisalGems": "{0} Gema de Reavaliação"
     },
     "no_gold": "Faltam {0} de Ouro.",
     "confirm": "Comprar {0} ({1}) por {2} Ouro?",
     "bought": "Comprado: +{0}.",
     "intro": "Troque o Ouro que você ganha jogando por Mana ou Pergaminhos.",
     "buy_button": "Comprar",
-    "confirm_title": "Confirmar compra"
+    "confirm_title": "Confirmar compra",
+    "reappraisal_info": "Devolve uma runa ao estado em que caiu: tira as melhoras, as Pedras de Afiar e o encantamento. Você tem {0}."
   },
 
   "monsters": {
@@ -501,20 +505,12 @@
     "evolve": "Evoluir para {0}",
     "awaken_button": "Despertar",
     "runes_button": "Gerenciar runas",
-    "store": "Guardar no Baú",
-    "take_from_vault": "Tirar do Baú",
     "collection_full": "A coleção está cheia: guarde monstros no Baú ou libere alguns antes.",
     "fuse_full": "Todas as habilidades no nível máximo.",
-    "fuse_item": "{0} · {2} Nv {1}{3}",
-    "in_vault_short": " · Baú",
-    "fuse_confirm": "Fundir {0} (Nv {1})? A cópia some, e as runas dela voltam ao inventário.",
     "release": "Liberar",
     "release_confirm": "Liberar {0} (Nv {1}) por {2} Fragmentos? Não dá para desfazer.",
     "select": "Selecionar vários",
-    "mark_copies": "Marcar cópias de {0}",
     "unmark": "Desmarcar",
-    "fuse_marked": "Fundir {1} em {0}",
-    "fuse_many_confirm": "Fundir {0} cópias em {1}? Cada uma sobe uma habilidade sorteada (faltam {2} níveis). As cópias somem; as runas delas voltam ao inventário.",
     "release_marked": "Liberar {0}",
     "release_many_confirm": "Liberar {0} monstros por {1} Fragmentos? Eles somem para sempre; as runas voltam ao inventário.",
     "valuable_warning": "Atenção: a seleção tem monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas.",
@@ -530,9 +526,7 @@
     "release_button": "Liberar",
     "fuse_title": "Fundir cópias?",
     "fuse_button": "Fundir",
-    "fuse_button_one": "Fundir uma cópia",
-    "fuse_choose": "Escolha a cópia a fundir",
-    "fuse_hint": "Fundir uma cópia deste mesmo monstro sobe uma habilidade sorteada em um nível. Faltam {0} níveis de habilidade; você tem {1} cópias.",
+    "fuse_hint": "Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. Faltam {0} níveis de habilidade; você tem {1} cópias livres.",
     "none_selected": "Escolha um monstro à esquerda.",
     "level_hint": "Sobe de nível infundindo Essência: {0} de experiência por Essência. Vitórias também dão experiência a quem lutou.",
     "fully_grown": "No máximo: 6★ e nível máximo.",
@@ -541,13 +535,30 @@
     "no_sets": "Nenhum conjunto completo: 2 ou 4 runas do mesmo conjunto dão o bônus dele.",
     "awaken_title": "Despertar?",
     "awaken_confirm": "Despertar {0} em {1} por {2} de Essência? É para sempre.",
-    "awaken_gains": "Desperto, ganha nome próprio, desenho novo e:",
+    "awaken_gains": "Desperto, ganha nome próprio, a aura com o anel do elemento e:",
     "awakened_already": "Já desperto. Ganhou:",
     "awaken_short": "Faltam {0} de Essência.",
     "max_confirm_title": "Subir até o nível {0}?",
     "max_confirm": "Gastar {0} de Essência para levar {1} ao nível {2}? Você tem {3}.",
     "locked": "Bloqueado",
-    "locked_note": "Bloqueado: não pode ser liberado nem fundido em outro. Desbloqueie antes."
+    "locked_note": "Bloqueado: não pode ser liberado nem fundido em outro. Desbloqueie antes.",
+    "favorite": "Favoritar",
+    "unfavorite": "Desfavoritar",
+    "store_short": "Baú",
+    "retrieve_short": "Retirar",
+    "fuse_open": "Fundir cópias",
+    "fusion_title": "Fundir em {0}",
+    "fusion_text": "Cada cópia fundida sobe uma habilidade sorteada de {0} em um nível, e ainda cabem {1}. Vale qualquer cópia da mesma família, de qualquer elemento: ela some, e as runas dela voltam ao inventário.",
+    "fusion_same_element": "Marcar cópias de {0}",
+    "fusion_room": "{0} de {1}",
+    "fusion_pick": "Toque nas cópias para escolher.",
+    "fusion_none": "Nenhuma cópia desta família para fundir.",
+    "fusion_consumed": "Vão sumir ({0}): {1}.",
+    "fusion_button": "Fundir {0}",
+    "fusion_full": "Só cabem {0}: desmarque uma para escolher outra.",
+    "fusion_locked": "Bloqueado: não vira material de fusão. Desbloqueie na ficha dele antes.",
+    "fusion_confirm": "Fundir {0} em {1}? Estes somem para sempre: {2}. As runas deles voltam ao inventário.",
+    "fusion_level": "Nv {0}"
   },
 
   "teams": {
@@ -606,7 +617,18 @@
     "enchant_hint": "Gemas Encantadas trocam um subatributo de uma runa +{0}. Use na ficha da runa, na linha do subatributo.",
     "upgrade_confirm_title": "Melhorar até +{0}?",
     "upgrade_confirm": "Gastar {0} de Essência para melhorar {1} de +{2} até +{3}? Você tem {4}.",
-    "locked_note": "Bloqueada: não pode ser vendida. Desbloqueie antes."
+    "locked_note": "Bloqueada: não pode ser vendida. Desbloqueie antes.",
+    "reappraise": "Reavaliar ({0})",
+    "reappraise_title": "Reavaliar a runa?",
+    "reappraise_button": "Reavaliar",
+    "reappraise_none": "A Gema de Reavaliação, vendida na Loja, devolve esta runa ao estado em que caiu.",
+    "reappraise_level": "Volta para +0 (está em +{0}).",
+    "reappraise_removed": "Saem os subatributos que vieram nas melhoras: {0}.",
+    "reappraise_rolls": "Os subatributos com que ela nasceu perdem {0} sorteios das melhoras.",
+    "reappraise_grinds": "Somem {0} bônus de Pedra de Afiar.",
+    "reappraise_enchant": "O encantamento é desfeito: {0} volta no lugar de {1}.",
+    "reappraise_enchant_kept": "O encantamento fica: esta runa foi encantada antes de o jogo guardar o subatributo trocado.",
+    "reappraise_cost": "Gasta 1 Gema de Reavaliação (você tem {0}). A Essência gasta nas melhoras não volta."
   },
 
   "filter": {
@@ -663,7 +685,7 @@
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela: o monstro mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
       "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia repetida sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
-      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, desenho novo, estrelas roxas e mais Vida, Ataque e Defesa (cada monstro tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
+      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada monstro tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
       "sanctuary": { "title": "Santuário e controles", "text": "O Santuário é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Monstros, Runas, Equipes, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um monstro para ver o resumo dele." }
     },
     "combat": {
@@ -698,7 +720,21 @@
       "grind": { "title": "Pedra de Afiar", "text": "Soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo." },
       "gem": { "title": "Gema Encantada", "text": "Troca um subatributo de uma runa +{0} pelo da gema. Só um subatributo por runa pode ser encantado." },
       "where": { "title": "Onde conseguir", "text": "A Campanha solta runas de até {0} estrelas (sempre na primeira vitória, {1} de chance depois). As Masmorras soltam as de 5 e 6 estrelas e as pedras." },
-      "grimoire": { "title": "Tabelas", "text": "Os números de cada estrela, os custos de melhora e as faixas das pedras estão no Grimório." }
+      "grimoire": { "title": "Tabelas", "text": "Os números de cada estrela, os custos de melhora e as faixas das pedras estão no Grimório." },
+      "rarity": {
+        "title": "Raridade das runas",
+        "text": "A cor da runa mostra a raridade dela: com quantos subatributos ela nasce. As melhoras em +3, +6, +9 e +12 dão os que faltam até chegar a quatro; a Lendária já nasce com os quatro, então cada uma dessas melhoras sobe um deles.",
+        "subs": "Nasce com {0} subatributos"
+      }
+    },
+    "rarity": {
+      "title": "Raridade dos monstros",
+      "text": "A moldura do cartão mostra a raridade: as estrelas naturais com que o monstro nasce. Mais estrelas naturais querem dizer mais atributos e uma invocação mais rara. As estrelas no alto do cartão são as de agora (sobem evoluindo); a moldura não muda.",
+      "frame2": "Moldura apagada",
+      "frame3": "Moldura de bronze",
+      "frame4": "Moldura de prata",
+      "frame5": "Moldura de ouro",
+      "awakened": "Desperto: aura e estrelas roxas"
     }
   },
 
@@ -774,7 +810,19 @@
     "cooldown_badge": "⟳{0}",
     "again": "Lutar de novo",
     "monster_drop": "Monstro novo",
-    "monster_copy": "Cópia de monstro"
+    "monster_copy": "Cópia de monstro",
+    "advice_title": "Para ficar mais forte:",
+    "advice": {
+      "EquipRunes": "Equipe runas: {0} vagas de runa da equipe estão vazias (Monstros → Runas).",
+      "UpgradeRunes": "Melhore as runas: {0} runas da equipe estão abaixo de +{1} (Runas → Melhorar).",
+      "LevelUp": "Suba o nível: {0} monstros da equipe não estão no nível máximo (Monstros → Subir nível).",
+      "Element": "Leve monstros de {0}: os inimigos aqui são mais de {1}, que tem vantagem sobre {2} da sua equipe.",
+      "Evolve": "Evolua: {0} monstros estão no nível máximo e já podem ganhar uma estrela (Monstros → Evoluir).",
+      "Awaken": "Desperte: {0} monstros da equipe ainda não despertaram (Monstros → Despertar)."
+    },
+    "effects_help": "O que os efeitos fazem",
+    "effects_help_active": "Os efeitos em jogo agora:",
+    "effects_help_all": "Nenhum efeito em jogo agora; estes são todos:"
   },
 
   "destination": {

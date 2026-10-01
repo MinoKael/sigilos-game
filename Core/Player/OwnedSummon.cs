@@ -50,5 +50,8 @@ namespace Sigilos.Core.Player
 		/// Receber uma fusão, evoluir e o resto seguem livres.
 		/// </summary>
 		public bool Locked { get; set; }
+
+		/// <summary>Favorito do jogador: aparece antes dos outros nas listas de monstros. Não muda regra nenhuma.</summary>
+		public bool Favorite { get; set; }
 	}
 }

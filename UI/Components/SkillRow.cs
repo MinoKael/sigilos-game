@@ -29,7 +29,10 @@ namespace Sigilos.UI.Components
 
 			var column = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			column.AddThemeConstantOverride("separation", 2);
-			var title = Layout.Row(8).Named("Title");
+			// Em fileira que quebra: nome, recarga, nível e o "ao despertar" não cabem sempre numa linha, e o
+			// que não cabe alargava a ficha inteira.
+			var title = Layout.Flow(8).Named("Title");
+			title.AddThemeConstantOverride("v_separation", 0);
 			var name = new Label { Name = "Name", Text = skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name };
 			name.AddThemeFontOverride("font", GameTheme.Serif);
 			name.AddThemeFontSizeOverride("font_size", 17);

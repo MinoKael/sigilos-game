@@ -97,7 +97,7 @@ namespace Sigilos.Core.Content
 			if (slot.Summon is { } id)
 			{
 				var summon = Summon(id);
-				return (summon.Name, summon.ImageFor(false), summon.Element);
+				return (summon.Name, summon.Image, summon.Element);
 			}
 
 			var enemy = Enemy(slot.Enemy!);
@@ -145,8 +145,8 @@ namespace Sigilos.Core.Content
 			{
 				if (StatModel.Budget(family.Rarity, false) == null)
 					yield return $"Família {family.Id}: {family.Rarity}★ não tem orçamento em stat_model.json.";
-				if (family.Image.Length == 0 || family.AwakenedImage.Length == 0)
-					yield return $"Família {family.Id}: falta a imagem normal ou a do Despertar.";
+				if (family.Image.Length == 0)
+					yield return $"Família {family.Id}: falta a imagem.";
 				if (family.Variations.Count == 0)
 					yield return $"Família {family.Id}: sem variantes.";
 				foreach (var (key, summon) in family.Variations)

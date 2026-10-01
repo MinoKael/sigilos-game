@@ -22,6 +22,12 @@ namespace Sigilos.Core.Runes
 		/// <summary>Veio de uma Gema Encantada. Só um subatributo por runa pode ser encantado.</summary>
 		public bool Enchanted { get; set; }
 
+		/// <summary>
+		/// No encantado: o subatributo que a gema trocou (o primeiro, se a runa foi encantada de novo). A
+		/// Gema de Reavaliação o devolve (Core/Runes/RuneReappraisal).
+		/// </summary>
+		public RuneSubstat? Original { get; set; }
+
 		[JsonIgnore]
 		public double Value => Rolls.Sum(r => r.Amount);
 

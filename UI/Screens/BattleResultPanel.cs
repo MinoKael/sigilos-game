@@ -52,8 +52,8 @@ namespace Sigilos.UI.Screens
 		}
 	}
 
-	/// <summary>O que o resultado recebe do GameRoot além do que a própria luta sabe.</summary>
-	public sealed record BattleOutcome(bool Victory, VictoryReward? Reward, IReadOnlyList<ResultMonster> Team, int AccountLevel, double? Best, bool NewBest);
+	/// <summary>O que o resultado recebe do GameRoot além do que a própria luta sabe. Na derrota, <paramref name="Tips"/> diz o que fazer para ficar mais forte.</summary>
+	public sealed record BattleOutcome(bool Victory, VictoryReward? Reward, IReadOnlyList<ResultMonster> Team, int AccountLevel, double? Best, bool NewBest, IReadOnlyList<DefeatTip>? Tips = null);
 
 	/// <summary>
 	/// O fim da luta, por cima do campo: "Vitória" ou "Derrota" grande no alto; no canto, o tempo da luta
@@ -207,8 +207,14 @@ namespace Sigilos.UI.Screens
 			band.AnchorLeft = 0;
 			band.AnchorRight = 1;
 			band.AnchorTop = band.AnchorBottom = 0.36f;
-			band.OffsetTop = -36;
-			band.OffsetBottom = 36;
+			// Cresce para os dois lados da linha: a derrota tem mais linhas que a vitória.
+			band.GrowVertical = GrowDirection.Both;
+
+			if (outcome.Reward == null && defeat is { } reason)
+			{
+				band.AddChild(DefeatBand(reason, outcome.Tips ?? Array.Empty<DefeatTip>()));
+				return band;
+			}
 
 			var chips = Layout.Row(14, true).Named("Chips");
 			band.AddChild(chips);
@@ -228,7 +234,7 @@ namespace Sigilos.UI.Screens
 				if (reward.SummonResult is { } summon)
 				{
 					var caption = summon.Monster.Stored ? T("summon.sent_to_vault") : summon.FirstCopy ? T("battle.monster_drop") : T("battle.monster_copy");
-					var chip = Layout.Labeled(Art.Creature(summon.Summon.ImageFor(false)), summon.Summon.Name, caption, Palette.Of(summon.Summon.Element)).Named("Monster");
+					var chip = Layout.Labeled(Art.Creature(summon.Summon.Image), summon.Summon.Name, caption, Palette.Of(summon.Summon.Element)).Named("Monster");
 					chip.MouseFilter = MouseFilterEnum.Stop;
 					chip.MouseDefaultCursorShape = CursorShape.PointingHand;
 					void Open() => MonsterSummary.Open(chip, summon.Summon, summon.Monster);
@@ -242,14 +248,66 @@ namespace Sigilos.UI.Screens
 					chips.AddChild(Layout.Labeled(tool.Kind == RuneToolKind.Grindstone ? "grindstone" : "gem", "", Texts.Name(tool), Palette.Of(tool.Grade)).Named($"Tool{i + 1}"));
 				}
 			}
-			else if (defeat is { } reason)
-			{
-				chips.AddChild(Layout.Labeled(reason.Icon, "", reason.Text, Palette.Negative).Named("Reason"));
-				chips.AddChild(Layout.Text(T("battle.defeat_tip"), GameTheme.Faded).Named("Tip"));
-			}
 
 			return band;
 		}
+
+		/// <summary>
+		/// A derrota: o motivo e, embaixo, o que fazer para ficar mais forte (as runas primeiro), uma linha
+		/// por conselho, cada uma dizendo onde se faz.
+		/// </summary>
+		private static VBoxContainer DefeatBand((string Icon, string Text) reason, IReadOnlyList<DefeatTip> tips)
+		{
+			const float width = 760;
+			var column = new VBoxContainer { Name = "Defeat", Alignment = BoxContainer.AlignmentMode.Center };
+			column.AddThemeConstantOverride("separation", 8);
+			var top = Layout.Row(14, true).Named("Reason");
+			top.AddChild(Layout.Labeled(reason.Icon, "", reason.Text, Palette.Negative).Named("Chip"));
+			column.AddChild(top);
+
+			if (tips.Count == 0)
+			{
+				column.AddChild(Centered(T("battle.defeat_tip"), width).Named("Tip"));
+				return column;
+			}
+
+			var title = Centered(T("battle.advice_title"), width).Named("Title");
+			title.AddThemeColorOverride("font_color", Palette.Gold);
+			column.AddChild(title);
+			for (var i = 0; i < tips.Count; i++)
+			{
+				var tip = tips[i];
+				var row = Layout.Row(10, true).Named($"Tip{i + 1}");
+				row.AddChild(Doodle.Icon(Art.Icon(TipIcon(tip.Kind)), 28, Palette.Gold).Named("Icon"));
+				var text = Layout.Text(TipText(tip), GameTheme.Faded, width - 40).Named("Text");
+				row.AddChild(text);
+				column.AddChild(row);
+			}
+
+			return column;
+		}
+
+		private static Label Centered(string text, float width)
+		{
+			var label = Layout.Text(text, GameTheme.Faded, width);
+			label.HorizontalAlignment = HorizontalAlignment.Center;
+			return label;
+		}
+
+		private static string TipIcon(DefeatAdvice.Kind kind) => kind switch
+		{
+			DefeatAdvice.Kind.EquipRunes or DefeatAdvice.Kind.UpgradeRunes => "rune",
+			DefeatAdvice.Kind.LevelUp => "level_max",
+			DefeatAdvice.Kind.Evolve => "evolve",
+			DefeatAdvice.Kind.Awaken => "awaken",
+			_ => "fight",
+		};
+
+		private static string TipText(DefeatTip tip) => tip.Kind == DefeatAdvice.Kind.Element
+			? T("battle.advice.Element", Texts.Name(tip.Element!.Value), Texts.Name(tip.Foe!.Value), tip.Count)
+			: tip.Kind == DefeatAdvice.Kind.UpgradeRunes
+				? T("battle.advice.UpgradeRunes", tip.Count, DefeatAdvice.RuneTarget)
+				: T($"battle.advice.{tip.Kind}", tip.Count);
 
 		/// <summary>A equipe embaixo, cada um com a barra de experiência subindo.</summary>
 		private HBoxContainer Team(IReadOnlyList<ResultMonster> team)

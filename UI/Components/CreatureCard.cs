@@ -10,8 +10,9 @@ namespace Sigilos.UI.Components
 	/// Cartão de monstro: estrelas de agora no alto à esquerda (douradas, roxas depois do Despertar), o
 	/// elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à direita. A moldura é
 	/// pelas estrelas naturais (bronze, prata, ouro). Um símbolo pequeno embaixo à esquerda marca o que
-	/// importa ali (na equipe, Líder), o cadeado ao lado dele diz que o monstro está bloqueado, e uma
-	/// faixa escrita embaixo diz o que o jogador precisa saber na hora ("Novo!", "Líder").
+	/// importa ali (na equipe, Líder), o cadeado ao lado dele diz que o monstro está bloqueado, o
+	/// coração abaixo das estrelas marca o favorito, e uma faixa escrita embaixo diz o que o jogador
+	/// precisa saber na hora ("Novo!", "Líder").
 	///
 	/// Toque curto é <see cref="Pressed"/> (escolher, marcar); toque longo abre o resumo do monstro
 	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado para fundir
@@ -57,7 +58,7 @@ namespace Sigilos.UI.Components
 			var frame = new ArtMask(MaskShape.Rounded, 6) { Name = "Frame" };
 			frame.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			layer.AddChild(frame);
-			var art = new Doodle(Art.Creature(summon.ImageFor(awakened)), Palette.Of(summon.Element)) { Name = "Art" };
+			var art = new Doodle(Art.Creature(summon.Image), Palette.Of(summon.Element), aura: awakened ? summon.Element : null) { Name = "Art" };
 			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			art.OffsetTop = width * 0.18f;
 			art.OffsetBottom = -width * 0.14f;
@@ -95,6 +96,8 @@ namespace Sigilos.UI.Components
 
 			if (monster is { Locked: true })
 				layer.AddChild(LockBadge(width, marker != null));
+			if (monster is { Favorite: true })
+				layer.AddChild(FavoriteBadge(width));
 
 			if (tag != null)
 				layer.AddChild(Tag(tag, width));
@@ -142,6 +145,15 @@ namespace Sigilos.UI.Components
 			badge.OffsetLeft = badge.OffsetRight = besideMarker ? width * 0.21f : 0;
 			badge.OffsetTop = badge.OffsetBottom = 0;
 			return badge;
+		}
+
+		/// <summary>O coração do favorito, logo abaixo das estrelas, à esquerda.</summary>
+		private static Control FavoriteBadge(float width)
+		{
+			var size = (int)Math.Max(14, width * 0.16f);
+			var heart = Doodle.Icon(Art.Icon("favorite"), size, Palette.Negative.Lightened(0.15f)).Named("Favorite");
+			heart.Position = new Vector2(width * 0.04f, width * 0.17f);
+			return heart;
 		}
 
 		/// <summary>A faixa escrita, em ouro sobre pedra, presa na borda de baixo do desenho.</summary>

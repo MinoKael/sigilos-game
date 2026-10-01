@@ -41,8 +41,8 @@ namespace Sigilos.UI.Screens
 	/// rendeu até aqui — moedas, experiência, os monstros (que dá para bloquear) e as runas, que dá para
 	/// vender, melhorar ou bloquear ali mesmo sem parar nada.
 	///
-	/// Fechar a janela (✕, tocar fora, Voltar) não para a Batalha automática: ela segue, e o aviso no alto
-	/// da tela continua contando. Só o botão Parar para.
+	/// Fechar a janela (a seta de voltar, no lugar do ✕; tocar fora; Voltar) não para a Batalha
+	/// automática: ela segue, e o aviso no alto da tela continua contando. Só o botão Parar para.
 	/// </summary>
 	public static partial class AutoBattleDialog
 	{
@@ -51,6 +51,8 @@ namespace Sigilos.UI.Screens
 		public static Dialog Open(Control from, AutoBattleRun run, PlayerState player, AutoBattleActions actions)
 		{
 			var dialog = Dialog.Open(from, T("auto.title"), Width, null, "AutoBattleDialog");
+			// Fechar não para nada: a seta diz que é voltar ao jogo, não cancelar a Batalha automática.
+			dialog.UseBackButton();
 			var clock = new AutoClock(run) { Name = "Clock" };
 			void Rebuild() => Build(dialog, run, player, actions, clock);
 			run.Changed += Rebuild;

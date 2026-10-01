@@ -34,7 +34,7 @@ namespace Sigilos.UI.Components
 					var summon = database.Summon(monster.SummonId);
 					box.BorderColor = i == 0 ? Palette.Gold : Palette.Frame(summon.Rarity);
 					box.SetBorderWidthAll(2);
-					slot.AddChild(Doodle.Masked(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), MaskShape.Circle, boil: false));
+					slot.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Circle, boil: false, aura: monster.Awakened ? summon.Element : null));
 					Press.On(slot, null, () => MonsterSummary.Open(slot, summon, monster));
 				}
 

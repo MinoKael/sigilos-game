@@ -187,23 +187,47 @@ namespace Sigilos.UI.Style
 			theme.SetColor("clear_button_color", "LineEdit", Palette.TextFaded);
 		}
 
-		/// <summary>Sem trilho: só a gema, meio apagada, que acende sob o mouse.</summary>
+		/// <summary>
+		/// Sem trilho: só a gema, meio apagada, que acende sob o mouse. A barra é bem mais larga que a gema
+		/// (<see cref="ScrollbarHit"/>): a área de tocar e arrastar é a faixa inteira, e a gema continua fina.
+		/// </summary>
 		private static void Scrollbars(Theme theme)
 		{
-			foreach (var type in new[] { "VScrollBar", "HScrollBar" })
+			foreach (var (type, vertical) in new[] { ("VScrollBar", true), ("HScrollBar", false) })
 			{
 				var track = new StyleBoxEmpty();
 				track.SetContentMarginAll(2);
+				var side = (ScrollbarHit - GemWidth) / 2f;
+				if (vertical)
+					track.ContentMarginLeft = track.ContentMarginRight = side;
+				else
+					track.ContentMarginTop = track.ContentMarginBottom = side;
 				theme.SetStylebox("scroll", type, track);
 				theme.SetStylebox("scroll_focus", type, track);
-				theme.SetStylebox("grabber", type, Ornament.Gem(Palette.GoldDark));
-				theme.SetStylebox("grabber_highlight", type, Ornament.Gem(Palette.Gold));
-				theme.SetStylebox("grabber_pressed", type, Ornament.Gem(Palette.Arcane));
+				theme.SetStylebox("grabber", type, Thin(Ornament.Gem(Palette.GoldDark), vertical, side));
+				theme.SetStylebox("grabber_highlight", type, Thin(Ornament.Gem(Palette.Gold), vertical, side));
+				theme.SetStylebox("grabber_pressed", type, Thin(Ornament.Gem(Palette.Arcane), vertical, side));
 				foreach (var icon in new[] { "increment", "increment_highlight", "increment_pressed", "decrement", "decrement_highlight", "decrement_pressed" })
 					theme.SetIcon(icon, type, new PlaceholderTexture2D { Size = Vector2.Zero });
 			}
 
 			theme.SetStylebox("panel", "ScrollContainer", new StyleBoxEmpty());
+		}
+
+		/// <summary>A largura da faixa de tocar e arrastar da barra de rolagem.</summary>
+		public const float ScrollbarHit = 22;
+
+		/// <summary>A largura da gema desenhada dentro dela.</summary>
+		private const float GemWidth = 8;
+
+		/// <summary>A gema desenhada estreita no meio da barra larga: a margem negativa encolhe o desenho, não a área.</summary>
+		private static StyleBoxTexture Thin(StyleBoxTexture gem, bool vertical, float side)
+		{
+			if (vertical)
+				gem.ExpandMarginLeft = gem.ExpandMarginRight = -side;
+			else
+				gem.ExpandMarginTop = gem.ExpandMarginBottom = -side;
+			return gem;
 		}
 
 		/// <summary>Barras de energia entalhadas: sulco escuro na pedra e o brilho por dentro.</summary>

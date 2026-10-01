@@ -7,9 +7,9 @@ using Sigilos.Core.Player;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// O destino das cópias repetidas. Fundir uma cópia em outra da mesma variante sobe uma habilidade
-	/// sorteada em um nível, entre as que ainda não estão no máximo (a do Despertar só entra depois de
-	/// despertar); liberar devolve Fragmentos, que pagam a evolução. Nos dois casos o monstro some e as
+	/// O destino das cópias repetidas. Fundir uma cópia em outra da mesma família (de qualquer elemento)
+	/// sobe uma habilidade sorteada em um nível, entre as que ainda não estão no máximo (a do Despertar
+	/// só entra depois de despertar); liberar devolve Fragmentos, que pagam a evolução. Nos dois casos o monstro some e as
 	/// runas dele voltam ao inventário. Monstro bloqueado (<see cref="OwnedSummon.Locked"/>) não some:
 	/// não se libera nem vira material (pode receber a fusão).
 	/// </summary>
@@ -33,7 +33,7 @@ namespace Sigilos.Core.Progression
 			targetId != materialId &&
 			player.Monster(targetId) is { } target &&
 			player.Monster(materialId) is { Locked: false } material &&
-			target.SummonId == material.SummonId &&
+			database.Summon(target.SummonId).FamilyId == database.Summon(material.SummonId).FamilyId &&
 			Upgradable(database, target).Count > 0;
 
 		/// <summary>O material some; uma habilidade sorteada do alvo sobe. Devolve o índice dela, ou -1.</summary>

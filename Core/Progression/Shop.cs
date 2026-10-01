@@ -4,7 +4,7 @@ using Sigilos.Core.Player;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// A Loja (GDD, seção 12): troca Ouro por Mana ou Pergaminhos, pelas ofertas de Data/shop.json. O
+	/// A Loja (GDD, seção 12): troca Ouro por Mana, Pergaminhos ou Gemas de Reavaliação, pelas ofertas de Data/shop.json. O
 	/// Ouro só vem de jogar: canalização, subida de nível da conta e primeira vitória em andar de
 	/// Masmorra. A Mana comprada pode passar do máximo.
 	/// </summary>
@@ -25,6 +25,9 @@ namespace Sigilos.Core.Progression
 					break;
 				case ShopItem.Scrolls:
 					player.Scrolls += offer.Amount;
+					break;
+				case ShopItem.ReappraisalGems:
+					player.ReappraisalGems += offer.Amount;
 					break;
 			}
 

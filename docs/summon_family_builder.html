@@ -252,7 +252,6 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "name": "Dragões",
   "star_grade": 5,
   "image": "dragon",
-  "awakened_image": "dragon_awakened",
   "variations": {
     "fire": {
       "variation_id": "dragon_fire",
@@ -497,7 +496,7 @@ const Core = (() => {
   const ELEMENT_NAMES = {Fire: "Fogo", Water: "Água", Wind: "Vento", Light: "Luz", Dark: "Trevas"};
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
   const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill"];
-  const FAMILY_KEYS = ["family_id", "base_name", "name", "star_grade", "image", "awakened_image", "family_bias", "variations"];
+  const FAMILY_KEYS = ["family_id", "base_name", "name", "star_grade", "image", "family_bias", "variations"];
   const VARIATION_KEYS = ["variation_id", "name", "element", "role", "stats", "awakened_stats", "bias", "awakening_spd", "leader", "awakening", "skills"];
   const SKILL_KEYS = ["name", "cooldown", "effects", "levels", "awakenedEffects", "passive"];
   const NEUTRAL = Object.freeze({hp: 1, atk: 1, def: 1, spd: 0});
@@ -765,7 +764,7 @@ const Core = (() => {
     const family = {
       family_id: "new_family", base_name: "Criatura", name: "Criaturas",
       star_grade: available.includes(3) ? 3 : available[0] ?? 3,
-      image: "new_family", awakened_image: "new_family_awakened",
+      image: "new_family",
       family_bias: {...NEUTRAL}, variations: {}, extra: {},
     };
     for (const element of ELEMENTS) family.variations[keyOf(element)] = blankVariation(family, element);
@@ -780,7 +779,6 @@ const Core = (() => {
       name: source.name || "",
       star_grade: num(source.star_grade, 3),
       image: source.image || "",
-      awakened_image: source.awakened_image || "",
       family_bias: weights(source.family_bias),
       variations: {},
       extra: rest(source, FAMILY_KEYS),
@@ -816,7 +814,6 @@ const Core = (() => {
       name: family.name,
       star_grade: num(family.star_grade),
       image: family.image,
-      awakened_image: family.awakened_image,
     };
     const familyBias = weights(family.family_bias);
     if (!isNeutral(familyBias)) out.family_bias = familyBias;
@@ -864,7 +861,7 @@ const Core = (() => {
     const add = (level, where, text) => issues.push({level, where, text});
     const star = num(family.star_grade);
 
-    for (const [field, label] of [["family_id", "Family ID"], ["base_name", "Nome base"], ["name", "Nome da família"], ["image", "Imagem"], ["awakened_image", "Imagem desperta"]])
+    for (const [field, label] of [["family_id", "Family ID"], ["base_name", "Nome base"], ["name", "Nome da família"], ["image", "Imagem"]])
       if (isBlank(family[field])) add("error", "Família", `Falta ${label}.`);
     if (!/^[a-z0-9_]+$/.test(family.family_id || "")) add("warn", "Família", "Family ID: use minúsculas, números e _ (é o nome do arquivo).");
     if (budgetOf(model, star, false) === undefined) add("error", "Família", `${star}★ não tem orçamento no modelo.`);
@@ -1129,7 +1126,6 @@ if (typeof module !== "undefined") module.exports = Core;
         ${field("Nome da família", text("name", f.name, `title="O plural, para a lista do construtor (Dragões)"`))}
         ${field("Estrelas naturais", `<select data-path="star_grade" data-type="number">${stars.map(s => `<option ${s === Number(f.star_grade) ? "selected" : ""}>${s}</option>`).join("")}${stars.includes(Number(f.star_grade)) ? "" : `<option selected>${esc(f.star_grade)}</option>`}</select>`)}
         ${field("Imagem", text("image", f.image, `title="Arquivo em Assets/Creatures, sem extensão"`))}
-        ${field("Imagem desperta", text("awakened_image", f.awakened_image))}
       </div>
       <hr>
       <h3>Viés da família</h3>

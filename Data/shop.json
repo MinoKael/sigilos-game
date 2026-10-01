@@ -1,9 +1,10 @@
-// The Shop (GDD, section 12): trades Gold for Mana or Scrolls. "item" is Mana or Scrolls, "amount" the
+// The Shop (GDD, section 12): trades Gold for Mana, Scrolls or Reappraisal Gems. "item" is Mana, Scrolls or ReappraisalGems, "amount" the
 // quantity and "price" the price in Gold. Gold only comes from playing: channeling, account levels and
 // the first victory on each Dungeon floor. Bought Mana can go past the maximum.
 [
   {"id": "mana_flask", "name": "Frasco de Mana", "item": "Mana", "amount": 30, "price": 15},
   {"id": "mana_jug", "name": "Cântaro de Mana", "item": "Mana", "amount": 120, "price": 50},
   {"id": "scroll", "name": "Pergaminho Místico", "item": "Scrolls", "amount": 1, "price": 20},
-  {"id": "scrolls_10", "name": "Maço de Pergaminhos", "item": "Scrolls", "amount": 10, "price": 180}
+  {"id": "scrolls_10", "name": "Maço de Pergaminhos", "item": "Scrolls", "amount": 10, "price": 180},
+  {"id": "reappraisal_gem", "name": "Gema de Reavaliação", "item": "ReappraisalGems", "amount": 1, "price": 40}
 ]

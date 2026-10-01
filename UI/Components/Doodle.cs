@@ -1,4 +1,5 @@
 using Godot;
+using Sigilos.Core.Content;
 using Sigilos.UI.Style;
 
 namespace Sigilos.UI.Components
@@ -12,12 +13,18 @@ namespace Sigilos.UI.Components
 	/// tamanho na tela: ao mudar de tamanho, troca pelo PNG renderizado mais próximo (<see cref="Art.Sized"/>),
 	/// e o Godot reduz o resto com mipmaps — nada serrilhado. Para recortar no contorno de um componente
 	/// (círculo, cartão), use <see cref="Masked"/>.
+	///
+	/// Desperto (<c>aura</c> com o elemento), o desenho é o mesmo, mas pelo
+	/// Assets/Shaders/doodle_awakened.gdshader: a silhueta um pouco menor, com a borda acesa por dentro
+	/// na cor do elemento e o anel dele por cima, cada elemento mexendo do seu jeito.
 	/// </summary>
 	public partial class Doodle : TextureRect
 	{
 		private static Shader? _shader;
+		private static Shader? _awakenedShader;
 
-		public Doodle(Texture2D? texture, Color ink, bool boil = true)
+		/// <param name="aura">O elemento do monstro desperto: troca o traço pelo do desperto (aura e anel).</param>
+		public Doodle(Texture2D? texture, Color ink, bool boil = true, Element? aura = null)
 		{
 			Texture = texture;
 			ExpandMode = ExpandModeEnum.IgnoreSize;
@@ -27,6 +34,14 @@ namespace Sigilos.UI.Components
 
 			_shader ??= GD.Load<Shader>("res://Assets/Shaders/doodle.gdshader");
 			var material = new ShaderMaterial { Shader = _shader };
+			if (aura is { } element)
+			{
+				_awakenedShader ??= GD.Load<Shader>("res://Assets/Shaders/doodle_awakened.gdshader");
+				material.Shader = _awakenedShader;
+				material.SetShaderParameter("aura_color", AuraColor(element));
+				material.SetShaderParameter("element", (int)element);
+			}
+
 			material.SetShaderParameter("ink_color", ink);
 			material.SetShaderParameter("boil_strength", boil ? 0.006f : 0f);
 			material.SetShaderParameter("seed", GD.Randf() * 100f);
@@ -51,9 +66,17 @@ namespace Sigilos.UI.Components
 				CustomMinimumSize = new Vector2(size, size),
 			};
 
-		/// <summary>O desenho (<c>Art</c>) recortado numa forma (círculo, losango, cartão), com folga até a borda.</summary>
-		public static ArtMask Masked(Texture2D? texture, Color ink, MaskShape shape, float radius = 8, float inset = 0, bool boil = true) =>
-			ArtMask.Of(new Doodle(texture, ink, boil) { Name = "Art" }, shape, radius, inset);
+		/// <summary>O desenho (<c>Art</c>) recortado numa forma (círculo, losango, cartão), com folga até a borda; com <paramref name="aura"/>, o desperto.</summary>
+		public static ArtMask Masked(Texture2D? texture, Color ink, MaskShape shape, float radius = 8, float inset = 0, bool boil = true, Element? aura = null) =>
+			ArtMask.Of(new Doodle(texture, ink, boil, aura) { Name = "Art" }, shape, radius, inset);
+
+		/// <summary>A cor da borda acesa e do anel do desperto: a do elemento, mais clara (a Luz quase branca).</summary>
+		public static Color AuraColor(Element element) => element switch
+		{
+			Element.Light => new Color(1f, 0.96f, 0.78f),
+			Element.Dark => Palette.Of(Element.Dark).Lightened(0.2f),
+			_ => Palette.Of(element).Lightened(0.3f),
+		};
 
 		public override void _Ready() => Refine();
 

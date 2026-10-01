@@ -4,7 +4,6 @@
   "name": "Paladinos",
   "star_grade": 5,
   "image": "paladin",
-  "awakened_image": "paladin_awakened",
   "variations": {
     "fire": {
       "variation_id": "paladin_fire",

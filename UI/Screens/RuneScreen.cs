@@ -85,6 +85,9 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>Bloquear ou desbloquear a runa (bloqueada não se vende).</summary>
 		public event Action<int>? LockRequested;
+
+		/// <summary>Gastar uma Gema de Reavaliação: a runa volta ao estado em que caiu.</summary>
+		public event Action<int>? ReappraiseRequested;
 		public event Action<int?>? BackRequested;
 
 		public override void _Ready()
@@ -149,7 +152,7 @@ namespace Sigilos.UI.Screens
 				var summon = _database.Summon(monster.SummonId);
 				var portrait = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(64, 64), MouseFilter = MouseFilterEnum.Stop };
 				portrait.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 2, 32, 3));
-				portrait.AddChild(Doodle.Masked(Art.Creature(summon.ImageFor(monster.Awakened)), Palette.Of(summon.Element), MaskShape.Circle, boil: false));
+				portrait.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Circle, boil: false, aura: monster.Awakened ? summon.Element : null));
 				Press.On(portrait, null, () => MonsterSummary.Open(portrait, summon, monster));
 				head.AddChild(portrait);
 				var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
@@ -258,7 +261,7 @@ namespace Sigilos.UI.Screens
 				if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
 				{
 					var summon = _database.Summon(holder.SummonId);
-					tile.SetOwner(Art.Creature(summon.ImageFor(holder.Awakened)), Palette.Of(summon.Element), holder.Stored);
+					tile.SetOwner(Art.Creature(summon.Image), Palette.Of(summon.Element), holder.Stored);
 				}
 
 				tile.Pressed += t =>
@@ -498,6 +501,7 @@ namespace Sigilos.UI.Screens
 			}
 
 			_actions.AddChild(GameButton.Of(rune.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(rune.Id), ButtonKind.Secondary, rune.Locked ? "unlock" : "lock").Named("Lock"));
+			Reappraise(rune);
 			if (rune.Locked)
 			{
 				_detail.AddChild(Layout.Text(T("runes.locked_note"), GameTheme.Faded).Named("Locked"));
@@ -508,6 +512,44 @@ namespace Sigilos.UI.Screens
 				_actions.AddChild(GameButton.Of(T("runes.sell_button_short"), () => Dialog.Confirm(this, T("runes.sell_title"), T("runes.sell_confirm", value), T("runes.sell_button_short"),
 					() => SellRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Danger, "dismantle").WithCost("essence", $"+{value}").Named("Sell"));
 			}
+		}
+
+		/// <summary>
+		/// Reavaliar: só aparece numa runa que mudou desde que caiu. Sem gema, fica apagado e diz onde
+		/// comprar; com, pergunta antes, listando tudo o que vai ser desfeito.
+		/// </summary>
+		private void Reappraise(Rune rune)
+		{
+			var changes = RuneReappraisal.Preview(rune);
+			if (!changes.Any)
+				return;
+
+			var gems = _player.ReappraisalGems;
+			var button = GameButton.Of(T("runes.reappraise", gems), () => Dialog.Confirm(this, T("runes.reappraise_title"), ReappraisalText(changes, gems),
+				T("runes.reappraise_button"), () => ReappraiseRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Secondary, "gem").Named("Reappraise");
+			button.Disabled = gems == 0;
+			_actions.AddChild(button);
+			if (gems == 0)
+				_detail.AddChild(Layout.Text(T("runes.reappraise_none"), GameTheme.Faded, 320).Named("ReappraiseNone"));
+		}
+
+		/// <summary>O que a gema vai desfazer, uma linha por mudança, e o custo.</summary>
+		private static string ReappraisalText(ReappraisalChanges changes, int gems)
+		{
+			var lines = new List<string>();
+			if (changes.Level > 0)
+				lines.Add(T("runes.reappraise_level", changes.Level));
+			if (changes.RemovedSubstats.Count > 0)
+				lines.Add(T("runes.reappraise_removed", string.Join(", ", changes.RemovedSubstats.Select(Texts.Name))));
+			if (changes.ExtraRolls > 0)
+				lines.Add(T("runes.reappraise_rolls", changes.ExtraRolls));
+			if (changes.Grinds > 0)
+				lines.Add(T("runes.reappraise_grinds", changes.Grinds));
+			if (changes.Enchant is { } enchant)
+				lines.Add(T("runes.reappraise_enchant", Texts.Name(enchant.To), Texts.Name(enchant.From)));
+			if (changes.EnchantKept)
+				lines.Add(T("runes.reappraise_enchant_kept"));
+			return string.Join("\n", lines.Select(line => "• " + line)) + "\n\n" + T("runes.reappraise_cost", gems);
 		}
 
 		/// <summary>Os botões das pedras que servem num subatributo, no fim da linha dele na ficha.</summary>

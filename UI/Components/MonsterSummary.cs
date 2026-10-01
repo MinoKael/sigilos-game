@@ -35,7 +35,7 @@ namespace Sigilos.UI.Components
 			var dialog = Dialog.Open(from, summon.NameFor(awakened), Width, from, "MonsterSummary");
 			var body = dialog.Body;
 			var max = monster != null ? Leveling.MaxLevel(monster) : Growth.MaxLevel(stars);
-			body.AddChild(Identity(summon.ImageFor(awakened), summon.Element, summon.Rarity, stars, awakened, Texts.Name(summon.Role), T("summary.level", level, max)));
+			body.AddChild(Identity(summon.Image, summon.Element, summon.Rarity, stars, awakened, Texts.Name(summon.Role), T("summary.level", level, max)));
 
 			if (monster == null)
 				body.AddChild(Layout.Text(T("summary.catalog", Texts.Stars(summon.Rarity)), GameTheme.Faded).Named("Catalog"));
@@ -141,7 +141,7 @@ namespace Sigilos.UI.Components
 			var row = Layout.Row(14).Named("Identity");
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(104, 104) };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, rarity > 0 ? Palette.Frame(rarity) : Palette.GoldDark, 3, 10, 8));
-			frame.AddChild(Doodle.Masked(Art.Creature(image), Palette.Of(element), MaskShape.Rounded, 6));
+			frame.AddChild(Doodle.Masked(Art.Creature(image), Palette.Of(element), MaskShape.Rounded, 6, aura: awakened ? element : null));
 			row.AddChild(frame);
 
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
