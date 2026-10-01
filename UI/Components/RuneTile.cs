@@ -13,7 +13,8 @@ namespace Sigilos.UI.Components
 	/// Toque curto é <see cref="Pressed"/>; toque longo abre a ficha da runa (<see cref="RuneCard"/>) numa
 	/// janela colada nela. Escolhida, fica azul arcano; marcada para vender, ganha o ✓ verde. Na lista, a
 	/// runa equipada mostra no canto de baixo à esquerda o medalhão de quem a usa (apagado se ele está no
-	/// Baú). O toque passa para cima, então arrastar rola a lista.
+	/// Baú); a bloqueada, um cadeado no meio da borda de baixo. O toque passa para cima, então arrastar
+	/// rola a lista.
 	/// </summary>
 	public partial class RuneTile : PanelContainer
 	{
@@ -70,6 +71,8 @@ namespace Sigilos.UI.Components
 				_layer.AddChild(glyph);
 				Corner(Small(slot.ToString(), Palette.Text, 12).Named("Slot"), LayoutPreset.BottomLeft);
 				Corner(Small($"{(rune.Level > 0 ? $"+{rune.Level}" : "")}", Palette.Text, 12, HorizontalAlignment.Right).Named("Level"), LayoutPreset.BottomRight);
+				if (rune.Locked)
+					LockBadge();
 			}
 
 			_check.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -122,6 +125,20 @@ namespace Sigilos.UI.Components
 			plate.GrowHorizontal = GrowDirection.Both;
 			plate.GrowVertical = GrowDirection.Both;
 			_layer.AddChild(plate);
+		}
+
+		/// <summary>O cadeado da runa bloqueada: uma plaquinha no meio da borda de baixo, entre o espaço e a melhora.</summary>
+		private void LockBadge()
+		{
+			var size = 16 * _scale;
+			var badge = new PanelContainer { Name = "Lock", MouseFilter = MouseFilterEnum.Ignore };
+			badge.AddThemeStyleboxOverride("panel", GameTheme.Box(new Color(Palette.Inset, 0.92f), Palette.GoldDark, 1, (int)size, (int)(2 * _scale)));
+			badge.AddChild(Doodle.Icon(Art.Icon("lock"), (int)(size - 4 * _scale), Palette.Gold).Named("Icon"));
+			badge.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
+			badge.GrowHorizontal = GrowDirection.Both;
+			badge.GrowVertical = GrowDirection.Begin;
+			badge.OffsetTop = badge.OffsetBottom = -2 * _scale;
+			_layer.AddChild(badge);
 		}
 
 		/// <summary>Marca para desfazer em massa.</summary>

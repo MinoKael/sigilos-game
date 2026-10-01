@@ -43,7 +43,7 @@
     "rewards": "Rewards so far",
     "monsters": "Monsters ({0})",
     "runes_title": "Runes: {0} kept, {1} sold",
-    "runes_hint": "Touch a rune to sell or upgrade it without stopping.",
+    "runes_hint": "Touch a rune to sell, upgrade or lock it without stopping.",
     "no_runes": "No runes yet.",
     "badge_running": "Auto Battle {0}",
     "badge_stopped": "Auto Battle stopped {0}",
@@ -54,7 +54,9 @@
     "replace_title": "Replace the Auto Battle?",
     "replace_text": "An Auto Battle is running ({0}). Finish it and start this one?",
     "replace_confirm": "Finish and start",
-    "sold": "Sold"
+    "sold": "Sold",
+    "monsters_hint": "Touch a monster to lock it; hold to see its summary.",
+    "monster_lock_text": "Locked, it can't be released nor fused into another monster."
   },
 
   "entry": {
@@ -519,7 +521,7 @@
       "awaken": "Awakening"
     },
     "select_done": "Done selecting",
-    "select_hint": "Touch monsters to mark them ({0} marked):",
+    "select_hint": "Touch monsters to mark them; locked ones stay out ({0} marked):",
     "release_title": "Release monsters?",
     "release_button": "Release",
     "fuse_title": "Fuse copies?",
@@ -539,7 +541,9 @@
     "awakened_already": "Already awakened. It gained:",
     "awaken_short": "{0} Essence short.",
     "max_confirm_title": "Level up to {0}?",
-    "max_confirm": "Spend {0} Essence to take {1} to level {2}? You have {3}."
+    "max_confirm": "Spend {0} Essence to take {1} to level {2}? You have {3}.",
+    "locked": "Locked",
+    "locked_note": "Locked: it can't be released nor fused into another monster. Unlock it first."
   },
 
   "teams": {
@@ -584,7 +588,7 @@
     "ring_hint": "Touch a slot to list only the runes for it.",
     "none_found": "No rune matches the filters.",
     "select_done": "Done selecting",
-    "select_hint": "Touch loose runes to mark them ({0} marked):",
+    "select_hint": "Touch loose runes to mark them; locked ones stay out ({0} marked):",
     "sell_title": "Sell runes?",
     "sell_confirm": "Sell this rune for {0} Essence? It is gone for good.",
     "sell_many_confirm": "Sell {0} runes for {1} Essence? They are gone for good.",
@@ -597,7 +601,8 @@
     "grind_hint": "Grindstones add a bonus to an HP, Attack, Defense or Speed substat. Use them on the rune sheet, on the substat line.",
     "enchant_hint": "Enchanted Gems swap a substat of a +{0} rune. Use them on the rune sheet, on the substat line.",
     "upgrade_confirm_title": "Upgrade to +{0}?",
-    "upgrade_confirm": "Spend {0} Essence to upgrade {1} from +{2} to +{3}? You have {4}."
+    "upgrade_confirm": "Spend {0} Essence to upgrade {1} from +{2} to +{3}? You have {4}.",
+    "locked_note": "Locked: it can't be sold. Unlock it first."
   },
 
   "filter": {
@@ -649,7 +654,7 @@
       "mana": { "title": "Mana and account level", "text": "Every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {2} per hour up to the maximum: {0} at account level 1, {1} at level {3}, the maximum. Every victory also gives experience to the account, and each level refills Mana." },
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Scrolls." },
       "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The first one is a guaranteed 5★, and the 5★ guarantee is always on display." },
-      "monsters": { "title": "Monsters and Vault", "text": "The collection has {0} slots; the Vault keeps whatever goes past that, with no limit. A monster in the Vault doesn't fight, but keeps its runes: they don't take any of the {1} slots of the rune inventory." },
+      "monsters": { "title": "Monsters and Vault", "text": "The collection has {0} slots; the Vault keeps whatever goes past that, with no limit. A monster in the Vault doesn't fight, but keeps its runes: they don't take any of the {1} slots of the rune inventory. Lock a monster or a rune (the padlock) so it is never released, fused away or sold by mistake; unlock it to do so." },
       "teams": { "title": "Teams", "text": "A team of up to {0} monsters for the Campaign and one for each Dungeon. The first one is the Leader." },
       "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
       "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star: the monster keeps its level, its stats jump to the new star's and the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
@@ -1297,5 +1302,10 @@
     "Cântaro de Mana": "Mana Jug",
     "Pergaminho Místico": "Mystic Scroll",
     "Maço de Pergaminhos": "Bundle of Scrolls"
+  },
+
+  "lock": {
+    "lock": "Lock",
+    "unlock": "Unlock"
   }
 }

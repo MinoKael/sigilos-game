@@ -249,9 +249,11 @@ namespace Sigilos.UI.Components
 			var content = Body.GetCombinedMinimumSize().Y;
 			_scroll.CustomMinimumSize = new Vector2(0, Mathf.Clamp(content, 0, Mathf.Max(60, room)));
 
+			// A largura pedida é o mínimo: botões de ação demais alargam o painel, e a conta usa o tamanho de
+			// verdade para não deixar a janela sair da tela.
 			var width = Mathf.Min(_width, screen.X - 2 * Edge);
 			_panel.CustomMinimumSize = new Vector2(width, 0);
-			var size = new Vector2(width, _panel.GetCombinedMinimumSize().Y);
+			var size = _panel.GetCombinedMinimumSize();
 			_panel.Size = size;
 
 			if (_anchor == null || !IsInstanceValid(_anchor) || !_anchor.IsInsideTree())

@@ -190,6 +190,25 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void LockedRuneIsNeverSold()
+		{
+			var player = new PlayerState();
+			var locked = RuneInventory.Create(new Random(1), player, 3);
+			var loose = RuneInventory.Create(new Random(2), player, 3);
+			locked.Locked = true;
+
+			Assert.Equal(0, RuneInventory.Sell(player, locked), "bloqueada não se vende");
+			var value = RuneInventory.SellAll(player, new[] { locked, loose });
+			Assert.Equal(RuneRules.SellValue(loose), value, "em lote, só a solta rende");
+			Assert.Equal(1, player.Runes.Count, "a bloqueada fica");
+			Assert.True(player.Runes.Contains(locked), "e é ela que fica");
+
+			player.Version = PlayerState.CurrentVersion;
+			var saved = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
+			Assert.True(saved.Runes[0].Locked, "o bloqueio vai no save");
+		}
+
+		[Test]
 		private static void RuneKeepsTheHistoryOfEveryRoll()
 		{
 			var random = new Random(8);

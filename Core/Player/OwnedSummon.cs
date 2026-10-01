@@ -44,5 +44,11 @@ namespace Sigilos.Core.Player
 
 		/// <summary>Guardado no Baú: fora da coleção e sem equipe; as runas ficam com ele.</summary>
 		public bool Stored { get; set; }
+
+		/// <summary>
+		/// Bloqueado pelo jogador: não se libera nem vira material de fusão (Core/Progression/Fusion).
+		/// Receber uma fusão, evoluir e o resto seguem livres.
+		/// </summary>
+		public bool Locked { get; set; }
 	}
 }

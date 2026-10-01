@@ -110,10 +110,10 @@ namespace Sigilos.Core.Player
 			return true;
 		}
 
-		/// <summary>Desfaz uma runa do inventário em Essência. Runa equipada precisa sair antes.</summary>
+		/// <summary>Desfaz uma runa do inventário em Essência. Runa equipada precisa sair antes; bloqueada não se vende.</summary>
 		public static int Sell(PlayerState player, Rune rune)
 		{
-			if (rune.EquippedOn != null)
+			if (rune.EquippedOn != null || rune.Locked)
 				return 0;
 
 			var value = RuneRules.SellValue(rune);
@@ -122,7 +122,7 @@ namespace Sigilos.Core.Player
 			return value;
 		}
 
-		/// <summary>Desfaz várias de uma vez; as equipadas ficam. Devolve a Essência total.</summary>
+		/// <summary>Desfaz várias de uma vez; as equipadas e as bloqueadas ficam. Devolve a Essência total.</summary>
 		public static int SellAll(PlayerState player, IEnumerable<Rune> runes) => runes.ToList().Sum(rune => Sell(player, rune));
 	}
 }

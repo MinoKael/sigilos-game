@@ -76,6 +76,9 @@ namespace Sigilos.UI.Screens
 		public event Action<int, IReadOnlyList<int>>? FuseRequested;
 
 		public event Action<IReadOnlyList<int>>? ReleaseRequested;
+
+		/// <summary>Bloquear ou desbloquear o monstro (bloqueado não se libera nem vira material de fusão).</summary>
+		public event Action<int>? LockRequested;
 		public event Action? BackRequested;
 
 		public override void _Ready()
@@ -119,13 +122,14 @@ namespace Sigilos.UI.Screens
 			Refresh();
 		}
 
-		public void Refresh()
+		public void Refresh(bool closeSelecting = false)
 		{
 			if (_selected is { } id && _player.Monster(id) == null)
 				_selected = _player.Collection.FirstOrDefault()?.Id;
-			_marked.RemoveWhere(marked => _player.Monster(marked) == null);
+			_marked.RemoveWhere(marked => _player.Monster(marked) is not { Locked: false });
+            if (closeSelecting) _selecting = !_selecting;
 
-			_currencies.Refresh(_player);
+            _currencies.Refresh(_player);
 			RefreshTools();
 			RefreshSelection();
 			RefreshRoster();
@@ -144,7 +148,7 @@ namespace Sigilos.UI.Screens
 			tabs.Changed += index =>
 			{
 				_showStorage = index == 1;
-				Callable.From(Refresh).CallDeferred();
+				Callable.From(() => Refresh()).CallDeferred();
 			};
 			_tools.AddChild(tabs);
 			_tools.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
@@ -153,7 +157,7 @@ namespace Sigilos.UI.Screens
 			{
 				_selecting = !_selecting;
 				_marked.Clear();
-				Callable.From(Refresh).CallDeferred();
+				Callable.From(() => Refresh()).CallDeferred();
 			}, _selecting ? ButtonKind.Primary : ButtonKind.Secondary, "select", 52).Named("Select");
 			_tools.AddChild(select);
 		}
@@ -161,7 +165,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>A faixa da seleção: o que fazer, quantos marcados, e os botões de marcar, fundir e liberar.</summary>
 		private void RefreshSelection()
 		{
-			Layout.Clear(_selection);
+            Layout.Clear(_selection);
 			_selection.Visible = _selecting;
 			if (!_selecting)
 				return;
@@ -175,7 +179,7 @@ namespace Sigilos.UI.Screens
 				var name = _database.Summon(target.SummonId).NameFor(target.Awakened);
 				_selection.AddChild(GameButton.Of(T("monsters.mark_copies", name), () =>
 				{
-					foreach (var copy in _player.Monsters.Where(m => m.SummonId == target.SummonId && m.Id != target.Id))
+					foreach (var copy in _player.Monsters.Where(m => m.SummonId == target.SummonId && m.Id != target.Id && !m.Locked))
 						_marked.Add(copy.Id);
 					Refresh();
 				}, ButtonKind.Secondary, "copies", 48).Named("MarkCopies"));
@@ -253,7 +257,7 @@ namespace Sigilos.UI.Screens
 				card.Pressed += c =>
 				{
 					var clicked = c.Monster!.Id;
-					if (_selecting && clicked != _selected)
+					if (_selecting && clicked != _selected && !c.Monster.Locked)
 					{
 						if (!_marked.Remove(clicked))
 							_marked.Add(clicked);
@@ -339,6 +343,8 @@ namespace Sigilos.UI.Screens
 			var where = new List<string> { T("monsters.natural_stars", Texts.Stars(summon.Rarity)) };
 			if (monster.Stored)
 				where.Add(T("monsters.in_vault"));
+			if (monster.Locked)
+				where.Add(T("monsters.locked"));
 			var teams = Teams(monster.Id);
 			if (teams.Count > 0)
 				where.Add(T("monsters.teams", string.Join(", ", teams)));
@@ -409,13 +415,18 @@ namespace Sigilos.UI.Screens
 				actions.AddChild(retrieve);
 			}
 
+			actions.AddChild(GameButton.Of(monster.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(id), ButtonKind.Secondary, monster.Locked ? "unlock" : "lock").Named("Lock"));
 			var fragments = Fusion.FragmentsFor(summon.Rarity);
-			actions.AddChild(GameButton.Of(T("monsters.release"), () => Dialog.Confirm(this,
+			var release = GameButton.Of(T("monsters.release"), () => Dialog.Confirm(this,
 				T("monsters.release_title"),
 				T("monsters.release_confirm", summon.NameFor(monster.Awakened), monster.Level, fragments) + Warning(new[] { monster }),
 				T("monsters.release_button"),
-				() => ReleaseRequested?.Invoke(new[] { id }), ButtonKind.Danger), ButtonKind.Danger, "release").WithCost("fragments", $"+{fragments}").Named("Release"));
+				() => ReleaseRequested?.Invoke(new[] { id }), ButtonKind.Danger), ButtonKind.Danger, "release").WithCost("fragments", $"+{fragments}").Named("Release");
+			release.Disabled = monster.Locked;
+			actions.AddChild(release);
 			_detail.AddChild(actions);
+			if (monster.Locked)
+				_detail.AddChild(Layout.Text(T("monsters.locked_note"), GameTheme.Faded).Named("Locked"));
 
 			if (!Leveling.IsMaxLevel(monster))
 				_detail.AddChild(Layout.Text(T("monsters.level_hint", Leveling.ExperiencePerEssence), GameTheme.Faded).Named("LevelHint"));

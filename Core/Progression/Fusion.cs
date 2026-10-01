@@ -10,7 +10,8 @@ namespace Sigilos.Core.Progression
 	/// O destino das cópias repetidas. Fundir uma cópia em outra da mesma variante sobe uma habilidade
 	/// sorteada em um nível, entre as que ainda não estão no máximo (a do Despertar só entra depois de
 	/// despertar); liberar devolve Fragmentos, que pagam a evolução. Nos dois casos o monstro some e as
-	/// runas dele voltam ao inventário.
+	/// runas dele voltam ao inventário. Monstro bloqueado (<see cref="OwnedSummon.Locked"/>) não some:
+	/// não se libera nem vira material (pode receber a fusão).
 	/// </summary>
 	public static class Fusion
 	{
@@ -31,7 +32,7 @@ namespace Sigilos.Core.Progression
 		public static bool CanFuse(PlayerState player, GameDatabase database, int targetId, int materialId) =>
 			targetId != materialId &&
 			player.Monster(targetId) is { } target &&
-			player.Monster(materialId) is { } material &&
+			player.Monster(materialId) is { Locked: false } material &&
 			target.SummonId == material.SummonId &&
 			Upgradable(database, target).Count > 0;
 
@@ -60,10 +61,10 @@ namespace Sigilos.Core.Progression
 			_ => 5,
 		};
 
-		/// <summary>Libera o monstro em Fragmentos. Devolve quantos.</summary>
+		/// <summary>Libera o monstro em Fragmentos (o bloqueado fica). Devolve quantos.</summary>
 		public static int Release(PlayerState player, GameDatabase database, int monsterId)
 		{
-			if (player.Monster(monsterId) is not { } monster)
+			if (player.Monster(monsterId) is not { Locked: false } monster)
 				return 0;
 
 			var fragments = FragmentsFor(database.Summon(monster.SummonId).Rarity);

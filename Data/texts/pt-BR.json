@@ -44,7 +44,7 @@
     "rewards": "Recompensas até agora",
     "monsters": "Monstros ({0})",
     "runes_title": "Runas: {0} guardadas, {1} vendidas",
-    "runes_hint": "Toque numa runa para vender ou melhorar sem parar nada.",
+    "runes_hint": "Toque numa runa para vender, melhorar ou bloquear sem parar nada.",
     "no_runes": "Nenhuma runa ainda.",
     "badge_running": "Batalha automática {0}",
     "badge_stopped": "Batalha automática parada {0}",
@@ -55,7 +55,9 @@
     "replace_title": "Trocar a Batalha automática?",
     "replace_text": "Há uma Batalha automática rodando ({0}). Encerrar e começar esta?",
     "replace_confirm": "Encerrar e começar",
-    "sold": "Vendida"
+    "sold": "Vendida",
+    "monsters_hint": "Toque num monstro para bloquear; segure para ver o resumo.",
+    "monster_lock_text": "Bloqueado, ele não pode ser liberado nem fundido em outro."
   },
 
   "entry": {
@@ -520,7 +522,7 @@
       "awaken": "Despertar"
     },
     "select_done": "Terminar seleção",
-    "select_hint": "Toque nos monstros para marcar ({0} marcados):",
+    "select_hint": "Toque nos monstros para marcar; os bloqueados ficam de fora ({0} marcados):",
     "release_title": "Liberar monstros?",
     "release_button": "Liberar",
     "fuse_title": "Fundir cópias?",
@@ -540,7 +542,9 @@
     "awakened_already": "Já desperto. Ganhou:",
     "awaken_short": "Faltam {0} de Essência.",
     "max_confirm_title": "Subir até o nível {0}?",
-    "max_confirm": "Gastar {0} de Essência para levar {1} ao nível {2}? Você tem {3}."
+    "max_confirm": "Gastar {0} de Essência para levar {1} ao nível {2}? Você tem {3}.",
+    "locked": "Bloqueado",
+    "locked_note": "Bloqueado: não pode ser liberado nem fundido em outro. Desbloqueie antes."
   },
 
   "teams": {
@@ -585,7 +589,7 @@
     "ring_hint": "Toque num espaço para listar só as runas dele.",
     "none_found": "Nenhuma runa com esses filtros.",
     "select_done": "Terminar seleção",
-    "select_hint": "Toque nas runas soltas para marcar ({0} marcadas):",
+    "select_hint": "Toque nas runas soltas para marcar; as bloqueadas ficam de fora ({0} marcadas):",
     "sell_title": "Vender runas?",
     "sell_confirm": "Vender esta runa por {0} de Essência? Ela some de vez.",
     "sell_many_confirm": "Vender {0} runas por {1} de Essência? Elas somem de vez.",
@@ -598,7 +602,8 @@
     "grind_hint": "Pedras de Afiar somam um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade. Use na ficha da runa, na linha do subatributo.",
     "enchant_hint": "Gemas Encantadas trocam um subatributo de uma runa +{0}. Use na ficha da runa, na linha do subatributo.",
     "upgrade_confirm_title": "Melhorar até +{0}?",
-    "upgrade_confirm": "Gastar {0} de Essência para melhorar {1} de +{2} até +{3}? Você tem {4}."
+    "upgrade_confirm": "Gastar {0} de Essência para melhorar {1} de +{2} até +{3}? Você tem {4}.",
+    "locked_note": "Bloqueada: não pode ser vendida. Desbloqueie antes."
   },
 
   "filter": {
@@ -650,7 +655,7 @@
       "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
       "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
-      "monsters": { "title": "Monstros e Baú", "text": "A coleção tem {0} vagas; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas." },
+      "monsters": { "title": "Monstros e Baú", "text": "A coleção tem {0} vagas; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas. Bloqueie um monstro ou uma runa (o cadeado) para nunca liberar, fundir ou vender por engano; desbloqueie para fazer isso." },
       "teams": { "title": "Equipes", "text": "Uma equipe de até {0} monstros para a Campanha e uma para cada Masmorra. A primeira é a Líder." },
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela: o monstro mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
@@ -827,5 +832,10 @@
   "config": {
     "language": "Idioma",
     "current": "{0} (atual)"
+  },
+
+  "lock": {
+    "lock": "Bloquear",
+    "unlock": "Desbloquear"
   }
 }

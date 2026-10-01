@@ -43,9 +43,10 @@ namespace Sigilos.Tests
 				counts[SummonRitual.Roll(random, database, player).Rarity]++;
 			}
 
-			Assert.Near(0.65, counts[3] / (double)pulls, "taxa de 3★", 0.02);
-			Assert.Near(0.28, counts[4] / (double)pulls, "taxa de 4★", 0.02);
-			Assert.Near(0.07, counts[5] / (double)pulls, "taxa de 5★", 0.01);
+			// As taxas da tabela (SummonRates); o que sobra é 3★.
+			Assert.Near(1 - SummonRates.FourStar - SummonRates.FiveStar, counts[3] / (double)pulls, "taxa de 3★", 0.02);
+			Assert.Near(SummonRates.FourStar, counts[4] / (double)pulls, "taxa de 4★", 0.02);
+			Assert.Near(SummonRates.FiveStar, counts[5] / (double)pulls, "taxa de 5★", 0.01);
 		}
 
 		[Test]

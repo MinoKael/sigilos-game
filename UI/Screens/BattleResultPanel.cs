@@ -60,7 +60,7 @@ namespace Sigilos.UI.Screens
 	/// e o melhor tempo dela (aceso quando foi batido); no meio, a faixa com o que a luta rendeu, cada
 	/// item escrito; embaixo, a equipe, cada monstro com o nome e a barra de experiência subindo nível a
 	/// nível (ou "nível máximo"), e os botões Lutar de novo e Continuar. A runa que caiu abre por cima,
-	/// na <see cref="RuneCard"/>, com Guardar e Vender.
+	/// na <see cref="RuneCard"/>, com Vender, Bloquear (guarda e tranca) e Guardar.
 	/// </summary>
 	public partial class BattleResultPanel : ColorRect
 	{
@@ -71,6 +71,7 @@ namespace Sigilos.UI.Screens
 
 		private readonly BattleOutcome _outcome;
 		private readonly Action<Rune> _sell;
+		private readonly Action<Rune> _lock;
 
 		/// <summary>As barras de experiência, prontas para subir quando o jogador puder vê-las.</summary>
 		private readonly List<Action> _animations = new();
@@ -79,10 +80,11 @@ namespace Sigilos.UI.Screens
 
 		/// <param name="seconds">O tempo da luta na tela.</param>
 		/// <param name="defeat">Na derrota, o motivo e o símbolo dele (o tempo esgotado ou todos caídos).</param>
-		public BattleResultPanel(BattleOutcome outcome, double seconds, (string Icon, string Text)? defeat, Action onContinue, Action onRestart, Action<Rune> sell)
+		public BattleResultPanel(BattleOutcome outcome, double seconds, (string Icon, string Text)? defeat, Action onContinue, Action onRestart, Action<Rune> sell, Action<Rune> lockRune)
 		{
 			_outcome = outcome;
 			_sell = sell;
+			_lock = lockRune;
 			Name = "Result";
 			Color = new Color(0, 0, 0, 0.62f);
 			MouseFilter = MouseFilterEnum.Stop;
@@ -117,6 +119,8 @@ namespace Sigilos.UI.Screens
 			var dialog = RuneDialog.Show(this, rune, anchored: false);
 			dialog.Dismissable = false;
 			dialog.AddAction(T("runes.sell_button", value), () => Sell(rune, value), ButtonKind.Danger, true, "dismantle").Named("Sell");
+			// Bloquear também guarda: a runa fica, e com o cadeado não sai numa venda em lote.
+			dialog.AddAction(T("lock.lock"), () => _lock(rune), ButtonKind.Secondary, true, "lock").Named("Lock");
 			dialog.AddAction(T("battle.keep_rune"), null, ButtonKind.Primary, true, "confirm").Named("Keep");
 			// As barras só sobem depois que a runa sai da frente, para o jogador ver.
 			dialog.Closed += Animate;

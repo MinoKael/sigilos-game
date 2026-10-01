@@ -89,6 +89,9 @@ namespace Sigilos.UI.Screens
 		/// <summary>O jogador vendeu a runa que caiu, no resultado.</summary>
 		public event Action<Rune>? RuneSellRequested;
 
+		/// <summary>O jogador bloqueou a runa que caiu, no resultado (ela fica, bloqueada).</summary>
+		public event Action<Rune>? RuneLockRequested;
+
 		/// <summary>O jogador pediu a mesma luta de novo, do começo (no menu de pausa). O valor é a preferência de automático.</summary>
 		public event Action<bool>? RestartRequested;
 
@@ -135,7 +138,7 @@ namespace Sigilos.UI.Screens
 				: _session.Round > BattleRules.RoundLimit ? ("resolve", T("battle.timeout", BattleRules.RoundLimit))
 				: ("retreat", T("battle.all_fell"));
 			_banner.Text = "";
-			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune)));
+			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune), rune => RuneLockRequested?.Invoke(rune)));
 		}
 
 		public override void _Process(double delta)

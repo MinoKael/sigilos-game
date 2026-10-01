@@ -229,12 +229,14 @@ namespace Sigilos.UI.Components
 			return column;
 		}
 
-		/// <summary>Onde o monstro está: no Baú, nas equipes.</summary>
+		/// <summary>Onde o monstro está: no Baú, nas equipes; e se está bloqueado.</summary>
 		private static string Where(OwnedSummon monster)
 		{
 			var parts = new List<string>();
 			if (monster.Stored)
 				parts.Add(T("monsters.in_vault"));
+			if (monster.Locked)
+				parts.Add(T("monsters.locked"));
 			if (UiSession.Player is { } player && UiSession.Database is { } database)
 			{
 				var teams = player.Teams.Where(pair => pair.Value.Contains(monster.Id))

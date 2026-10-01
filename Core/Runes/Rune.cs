@@ -35,6 +35,9 @@ namespace Sigilos.Core.Runes
 		/// <summary>Id do monstro que usa a runa; nulo no inventário.</summary>
 		public int? EquippedOn { get; set; }
 
+		/// <summary>Bloqueada pelo jogador: não se vende, nem sozinha nem em lote (<see cref="Player.RuneInventory.Sell"/>).</summary>
+		public bool Locked { get; set; }
+
 		[JsonIgnore]
 		public double MainValue => RuneRules.MainValue(Main, Grade, Level);
 

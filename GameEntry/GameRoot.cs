@@ -280,13 +280,14 @@ namespace Sigilos.GameEntry
 			{
 				var monster = _player.Monster(id)!;
 				Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.InfuseCosts(monster).Next);
-			}, storage.Refresh);
-			storage.AwakenRequested += id => Change(() => Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), storage.Refresh);
-			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), storage.Refresh);
-			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), storage.Refresh);
-			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), storage.Refresh);
-			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), storage.Refresh);
-			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), storage.Refresh);
+			}, () => storage.Refresh());
+			storage.AwakenRequested += id => Change(() => Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), () => storage.Refresh());
+			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), () => storage.Refresh());
+			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), () => storage.Refresh());
+			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), () => storage.Refresh());
+			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), () => storage.Refresh(true));
+			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), () => storage.Refresh());
+			storage.LockRequested += id => Change(() => _player.Monster(id)!.Locked = !_player.Monster(id)!.Locked, () => storage.Refresh());
 			Swap(storage, () => ShowStorage(selected));
 		}
 
@@ -322,6 +323,7 @@ namespace Sigilos.GameEntry
 			runes.EnchantRequested += (id, index, tool) => Change(() => RuneInventory.Enchant(_random, _player, Rune(id), index, tool), runes.Refresh);
 			runes.SellRequested += id => Change(() => RuneInventory.Sell(_player, Rune(id)), runes.Refresh);
 			runes.SellManyRequested += ids => Change(() => RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))), runes.Refresh);
+			runes.LockRequested += id => Change(() => Rune(id).Locked = !Rune(id).Locked, runes.Refresh);
 			Swap(runes, () => ShowRunes(monsterId, back));
 		}
 
@@ -435,6 +437,11 @@ namespace Sigilos.GameEntry
 				RuneInventory.Sell(_player, rune);
 				Save();
 			};
+			battle.RuneLockRequested += rune =>
+			{
+				rune.Locked = true;
+				Save();
+			};
 			battle.Closed += auto =>
 			{
 				_player.AutoBattle = auto;
@@ -507,8 +514,22 @@ namespace Sigilos.GameEntry
 				SetRuns = _runner.SetRuns,
 				SellRune = rune =>
 				{
-					RuneInventory.Sell(_player, rune);
-					run.Sold.Add(rune.Id);
+					if (RuneInventory.Sell(_player, rune) > 0)
+						run.Sold.Add(rune.Id);
+					Save();
+					run.Notify();
+					RefreshCurrent();
+				},
+				LockRune = rune =>
+				{
+					rune.Locked = !rune.Locked;
+					Save();
+					run.Notify();
+					RefreshCurrent();
+				},
+				LockMonster = monster =>
+				{
+					monster.Locked = !monster.Locked;
 					Save();
 					run.Notify();
 					RefreshCurrent();

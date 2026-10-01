@@ -25,15 +25,21 @@ namespace Sigilos.UI.Screens
 		/// <summary>A runa e o nível a alcançar.</summary>
 		public Action<Rune, int> UpgradeRune { get; init; } = (_, _) => { };
 
+		/// <summary>Bloqueia ou desbloqueia a runa (bloqueada não se vende).</summary>
+		public Action<Rune> LockRune { get; init; } = _ => { };
+
+		/// <summary>Bloqueia ou desbloqueia o monstro que caiu (bloqueado não se libera nem vira material de fusão).</summary>
+		public Action<OwnedSummon> LockMonster { get; init; } = _ => { };
+
 		/// <summary>Abre a tela de Runas sem parar nada.</summary>
 		public Action ManageRunes { get; init; } = () => { };
 	}
 
 	/// <summary>
-	/// A janela da Batalha automática (a do Summoners War, em outra roupa): à esquerda, a luta de agora
-	/// ("4/30"), a barra dela, o tempo que falta, vitórias e derrotas, e quantas lutas fazer (dá para mudar
-	/// no meio); à direita, tudo o que rendeu até aqui — moedas, experiência, monstros e as runas, que dá
-	/// para vender ou melhorar ali mesmo sem parar nada.
+	/// A janela da Batalha automática: à esquerda, a luta de agora ("4/30"), a barra dela, o tempo que
+	/// falta, vitórias e derrotas, e quantas lutas fazer (dá para mudar no meio); à direita, tudo o que
+	/// rendeu até aqui — moedas, experiência, os monstros (que dá para bloquear) e as runas, que dá para
+	/// vender, melhorar ou bloquear ali mesmo sem parar nada.
 	///
 	/// Fechar a janela (✕, tocar fora, Voltar) não para a Batalha automática: ela segue, e o aviso no alto
 	/// da tela continua contando. Só o botão Parar para.
@@ -180,12 +186,15 @@ namespace Sigilos.UI.Screens
 			if (run.Monsters.Count > 0)
 			{
 				column.AddChild(new Label { Name = "MonstersTitle", Text = T("auto.monsters", run.Monsters.Count) });
+				column.AddChild(Layout.Text(T("auto.monsters_hint"), GameTheme.Faded).Named("MonstersHint"));
 				var monsters = Layout.Flow(8).Named("Monsters");
 				for (var i = 0; i < run.Monsters.Count; i++)
 				{
 					var result = run.Monsters[i];
 					var tag = result.Monster.Stored ? T("summon.sent_to_vault") : result.FirstCopy ? T("summon.new") : null;
-					monsters.AddChild(new CreatureCard(result.Summon, result.Monster, 76, tag: tag) { Name = $"Monster{i + 1}" });
+					var card = new CreatureCard(result.Summon, result.Monster, 76, tag: tag) { Name = $"Monster{i + 1}" };
+					card.Pressed += c => MonsterActions(c, player, actions);
+					monsters.AddChild(card);
 				}
 
 				column.AddChild(monsters);
@@ -216,7 +225,28 @@ namespace Sigilos.UI.Screens
 			return column;
 		}
 
-		/// <summary>A ficha da runa tocada, com Vender e Melhorar; ela continua lá se o jogador só fechar.</summary>
+		/// <summary>
+		/// O monstro que caiu, tocado: uma janela colada nele com Ver resumo e Bloquear (ou Desbloquear). Um
+		/// monstro que já saiu da conta (liberado, fundido) só abre o resumo.
+		/// </summary>
+		private static void MonsterActions(CreatureCard card, PlayerState player, AutoBattleActions actions)
+		{
+			if (card.Monster is not { } monster || player.Monster(monster.Id) == null)
+			{
+				MonsterSummary.Open(card, card.Summon, card.Monster);
+				return;
+			}
+
+			var dialog = Dialog.Open(card, card.Summon.NameFor(monster.Awakened), 440, card, "MonsterDialog");
+			dialog.Body.AddChild(Layout.Text(monster.Locked ? T("monsters.locked_note") : T("auto.monster_lock_text"), GameTheme.Faded, 400).Named("Text"));
+			dialog.AddAction(T("teams.details"), () => MonsterSummary.Open(card, card.Summon, monster), ButtonKind.Secondary, true, "stats").Named("Summary");
+			dialog.AddAction(monster.Locked ? T("lock.unlock") : T("lock.lock"), () => actions.LockMonster(monster), ButtonKind.Primary, true, monster.Locked ? "unlock" : "lock").Named("Lock");
+		}
+
+		/// <summary>
+		/// A ficha da runa tocada, com Bloquear, Vender e Melhorar (a bloqueada não tem Vender); ela continua
+		/// lá se o jogador só fechar.
+		/// </summary>
 		private static void RuneActions(Dialog owner, RuneTile tile, PlayerState player, AutoBattleActions actions)
 		{
 			var rune = tile.Rune!;
@@ -224,8 +254,13 @@ namespace Sigilos.UI.Screens
 			if (!player.Runes.Contains(rune))
 				return;
 
-			var value = RuneRules.SellValue(rune);
-			sheet.AddAction(T("runes.sell_button", value), () => actions.SellRune(rune), ButtonKind.Danger, true, "dismantle").Named("Sell");
+			sheet.AddAction(rune.Locked ? T("lock.unlock") : T("lock.lock"), () => actions.LockRune(rune), ButtonKind.Secondary, true, rune.Locked ? "unlock" : "lock").Named("Lock");
+			if (!rune.Locked)
+			{
+				var value = RuneRules.SellValue(rune);
+				sheet.AddAction(T("runes.sell_button", value), () => actions.SellRune(rune), ButtonKind.Danger, true, "dismantle").Named("Sell");
+			}
+
 			if (rune.Level < RuneRules.MaxLevel)
 			{
 				var target = RuneRules.NextMilestone(rune.Level);

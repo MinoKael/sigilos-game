@@ -10,8 +10,8 @@ namespace Sigilos.UI.Components
 	/// Cartão de monstro: estrelas de agora no alto à esquerda (douradas, roxas depois do Despertar), o
 	/// elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à direita. A moldura é
 	/// pelas estrelas naturais (bronze, prata, ouro). Um símbolo pequeno embaixo à esquerda marca o que
-	/// importa ali (na equipe, Líder) e uma faixa escrita embaixo diz o que o jogador precisa saber na
-	/// hora ("Novo!", "Líder").
+	/// importa ali (na equipe, Líder), o cadeado ao lado dele diz que o monstro está bloqueado, e uma
+	/// faixa escrita embaixo diz o que o jogador precisa saber na hora ("Novo!", "Líder").
 	///
 	/// Toque curto é <see cref="Pressed"/> (escolher, marcar); toque longo abre o resumo do monstro
 	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado para fundir
@@ -93,6 +93,9 @@ namespace Sigilos.UI.Components
 				layer.AddChild(icon);
 			}
 
+			if (monster is { Locked: true })
+				layer.AddChild(LockBadge(width, marker != null));
+
 			if (tag != null)
 				layer.AddChild(Tag(tag, width));
 
@@ -126,6 +129,20 @@ namespace Sigilos.UI.Components
 		}
 
 		public override void _GuiInput(InputEvent @event) => _press.Feed(this, @event);
+
+		/// <summary>O cadeado do monstro bloqueado, embaixo à esquerda (ao lado do símbolo, se houver um).</summary>
+		private static Control LockBadge(float width, bool besideMarker)
+		{
+			var size = Math.Max(16, width * 0.17f);
+			var badge = new PanelContainer { Name = "Lock", MouseFilter = MouseFilterEnum.Ignore };
+			badge.AddThemeStyleboxOverride("panel", GameTheme.Box(new Color(Palette.Inset, 0.92f), Palette.GoldDark, 1, (int)size, 2));
+			badge.AddChild(Doodle.Icon(Art.Icon("lock"), (int)(size - 4), Palette.Gold).Named("Icon"));
+			badge.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
+			badge.GrowVertical = GrowDirection.Begin;
+			badge.OffsetLeft = badge.OffsetRight = besideMarker ? width * 0.21f : 0;
+			badge.OffsetTop = badge.OffsetBottom = 0;
+			return badge;
+		}
 
 		/// <summary>A faixa escrita, em ouro sobre pedra, presa na borda de baixo do desenho.</summary>
 		private static Control Tag(string text, float width)

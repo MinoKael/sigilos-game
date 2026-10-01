@@ -72,6 +72,28 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void LockedMonsterIsNeitherReleasedNorUsedAsMaterial()
+		{
+			var database = TestData.Database;
+			var player = TestData.PlayerWith("phoenix_fire", "phoenix_fire");
+			var (target, copy) = (player.Monsters[0], player.Monsters[1]);
+			copy.Locked = true;
+
+			Assert.False(Fusion.CanFuse(player, database, target.Id, copy.Id), "bloqueado não vira material");
+			Assert.Equal(-1, Fusion.Fuse(new Random(1), player, database, target.Id, copy.Id), "e a fusão não acontece");
+			Assert.Equal(0, Fusion.Release(player, database, copy.Id), "bloqueado não se libera");
+			Assert.Equal(0, Fusion.ReleaseMany(player, database, new[] { copy.Id }), "nem em lote");
+			Assert.Equal(2, player.Monsters.Count, "os dois ficam");
+
+			target.Locked = true;
+			copy.Locked = false;
+			Assert.True(Fusion.Fuse(new Random(1), player, database, target.Id, copy.Id) >= 0, "bloqueado ainda recebe a fusão");
+
+			var saved = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
+			Assert.True(saved.Monster(target.Id)!.Locked, "o bloqueio vai no save");
+		}
+
+		[Test]
 		private static void ReleasingGivesFragmentsByRarity()
 		{
 			var database = TestData.LoadReal();

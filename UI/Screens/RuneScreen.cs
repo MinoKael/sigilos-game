@@ -82,6 +82,9 @@ namespace Sigilos.UI.Screens
 
 		public event Action<int>? SellRequested;
 		public event Action<IReadOnlyList<int>>? SellManyRequested;
+
+		/// <summary>Bloquear ou desbloquear a runa (bloqueada não se vende).</summary>
+		public event Action<int>? LockRequested;
 		public event Action<int?>? BackRequested;
 
 		public override void _Ready()
@@ -124,7 +127,7 @@ namespace Sigilos.UI.Screens
 		{
 			if (_selectedRune is { } id && _player.Runes.All(r => r.Id != id))
 				_selectedRune = null;
-			_marked.RemoveWhere(runeId => _player.Runes.All(r => r.Id != runeId));
+			_marked.RemoveWhere(runeId => _player.Runes.FirstOrDefault(r => r.Id == runeId) is not { Locked: false });
 
 			_currencies.Refresh(_player);
 			RefreshLeft();
@@ -261,7 +264,7 @@ namespace Sigilos.UI.Screens
 				tile.Pressed += t =>
 				{
 					var clicked = t.Rune!;
-					if (_selecting && clicked.EquippedOn == null)
+					if (_selecting && clicked.EquippedOn == null && !clicked.Locked)
 					{
 						if (!_marked.Remove(clicked.Id))
 							_marked.Add(clicked.Id);
@@ -370,14 +373,18 @@ namespace Sigilos.UI.Screens
 			dialog.AddAction(T("filter.done"), null, ButtonKind.Primary).Named("Done");
 		}
 
+		/// <summary>A faixa da seleção: a explicação numa linha só dela (quebra em vez de alargar a tela) e os botões embaixo.</summary>
 		private Control SelectionBar(IReadOnlyList<Rune> visible)
 		{
-			var row = Layout.Flow(8).Named("Selection");
+			var bar = new VBoxContainer { Name = "Selection" };
+			bar.AddThemeConstantOverride("separation", 6);
 			var marked = _player.Runes.Where(r => _marked.Contains(r.Id)).ToList();
-			row.AddChild(new Label { Name = "Hint", Text = T("runes.select_hint", marked.Count), VerticalAlignment = VerticalAlignment.Center, CustomMinimumSize = new Vector2(0, 48) });
+			bar.AddChild(Layout.Text(T("runes.select_hint", marked.Count)).Named("Hint"));
+			var row = Layout.Flow(8).Named("Buttons");
+			bar.AddChild(row);
 			row.AddChild(GameButton.Of(T("runes.mark_all"), () =>
 			{
-				foreach (var rune in visible.Where(r => r.EquippedOn == null))
+				foreach (var rune in visible.Where(r => r.EquippedOn == null && !r.Locked))
 					_marked.Add(rune.Id);
 				Refresh();
 			}, ButtonKind.Secondary, "copies", 48).Named("MarkAll"));
@@ -404,7 +411,7 @@ namespace Sigilos.UI.Screens
 				sell.WithCost("essence", $"+{value}");
 			sell.Disabled = marked.Count == 0;
 			row.AddChild(sell);
-			return row;
+			return bar;
 		}
 
 		private void ToolList(RuneToolKind kind)
@@ -490,7 +497,12 @@ namespace Sigilos.UI.Screens
 				}
 			}
 
-			if (rune.EquippedOn == null)
+			_actions.AddChild(GameButton.Of(rune.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(rune.Id), ButtonKind.Secondary, rune.Locked ? "unlock" : "lock").Named("Lock"));
+			if (rune.Locked)
+			{
+				_detail.AddChild(Layout.Text(T("runes.locked_note"), GameTheme.Faded).Named("Locked"));
+			}
+			else if (rune.EquippedOn == null)
 			{
 				var value = RuneRules.SellValue(rune);
 				_actions.AddChild(GameButton.Of(T("runes.sell_button_short"), () => Dialog.Confirm(this, T("runes.sell_title"), T("runes.sell_confirm", value), T("runes.sell_button_short"),
