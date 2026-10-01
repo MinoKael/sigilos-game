@@ -12,7 +12,8 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// O Santuário: a tela de abertura de toda sessão (GDD, seção 11), pensada para o celular.
 	///
-	/// - No alto, a conta (retrato, nível e a barra de experiência; tocar explica) e os recursos.
+	/// - No alto, a conta (retrato, o nome dela e o nível, a barra de experiência; tocar explica) e os
+	///   recursos. Sem conta (ou numa conta sem nome), no lugar do nome vai "Conta".
 	/// - No meio, à esquerda, a Canalização: a constelação ocupa o painel (o sigilo do centro com o anel
 	///   do tempo acumulado e os orbes em volta) e, embaixo do centro, o tempo, o que se juntou enquanto o
 	///   jogador estava fora e o botão Coletar. À direita, os dois caminhos principais em botões grandes:
@@ -28,6 +29,12 @@ namespace Sigilos.UI.Screens
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
 
+		/// <summary>O nome da conta, no lugar de "Conta" ao lado do nível; nulo sem conta (ou sem nome).</summary>
+		private readonly string? _accountName;
+
+		/// <summary>"Sem conexão", ao lado da conta: jogando a conta sem falar com o servidor. Tocar explica.</summary>
+		private readonly Button _offline = new() { Name = "Offline", Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand, SizeFlagsVertical = SizeFlags.ShrinkCenter };
+
 		private readonly CurrencyBar _currencies = new();
 		private readonly Button _account = new() { Name = "Account", FocusMode = FocusModeEnum.None, Flat = true, MouseDefaultCursorShape = CursorShape.PointingHand };
 		private readonly Constellation _constellation = new() { Name = "Constellation" };
@@ -38,10 +45,13 @@ namespace Sigilos.UI.Screens
 		private TileButton? _battle;
 		private TileButton? _summon;
 
-		public HubScreen(GameDatabase database, PlayerState player)
+		/// <param name="offline">Jogando a conta sem conexão com o servidor.</param>
+		public HubScreen(GameDatabase database, PlayerState player, string? accountName = null, bool offline = false)
 		{
 			_database = database;
 			_player = player;
+			_accountName = accountName;
+			_offline.Visible = offline;
 			_collect = GameButton.Of(T("hub.collect"), () => CollectRequested?.Invoke(), ButtonKind.Primary, "collect", 50).Named("Collect");
 		}
 
@@ -58,11 +68,16 @@ namespace Sigilos.UI.Screens
 
 			var top = Layout.Row(12).Named("Top");
 			top.AddChild(_account);
+			top.AddChild(_offline);
 			top.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			_currencies.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			top.AddChild(_currencies);
 			page.AddChild(top);
 			_account.Pressed += ExplainAccount;
+			_offline.Text = T("hub.offline");
+			_offline.AddThemeColorOverride("font_color", Palette.Negative);
+			_offline.AddThemeColorOverride("font_hover_color", Palette.Negative.Lightened(0.2f));
+			_offline.Pressed += () => Dialog.Info(_offline, T("hub.offline"), T("hub.offline_text"));
 
 			var middle = Layout.Row(20).Named("Middle");
 			middle.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -78,6 +93,9 @@ namespace Sigilos.UI.Screens
 
 			Refresh(DateTime.Now);
 		}
+
+		/// <summary>A conexão com o servidor caiu ou voltou: mostra ou esconde o "Sem conexão".</summary>
+		public void SetOffline(bool offline) => _offline.Visible = offline;
 
 		public void Refresh(DateTime now)
 		{
@@ -105,7 +123,7 @@ namespace Sigilos.UI.Screens
 			column.AddThemeConstantOverride("separation", 4);
 			var maxed = _player.AccountLevel >= Account.MaxLevel;
 			var toNext = Account.ExperienceToNext(_player.AccountLevel);
-			column.AddChild(new Label { Name = "Level", Text = T("hub.account_level", _player.AccountLevel), ThemeTypeVariation = GameTheme.Heading, MouseFilter = MouseFilterEnum.Ignore });
+			column.AddChild(new Label { Name = "Level", Text = AccountTitle(), ThemeTypeVariation = GameTheme.Heading, MouseFilter = MouseFilterEnum.Ignore });
 			var bar = Layout.Energy(Palette.Arcane, 10).Named("Experience");
 			bar.CustomMinimumSize = new Vector2(200, 10);
 			bar.MaxValue = 1;
@@ -125,8 +143,12 @@ namespace Sigilos.UI.Screens
 			var text = maxed
 				? T("hub.account_max_tip", _player.AccountLevel)
 				: T("hub.account_tip", _player.AccountExperience, Account.ExperienceToNext(_player.AccountLevel), Account.LevelUpGold, Account.MaxLevel, Mana.BaseMax + Mana.MaxFromLevels);
-			Dialog.Info(_account, T("hub.account_level", _player.AccountLevel), text);
+			Dialog.Info(_account, AccountTitle(), text);
 		}
+
+		/// <summary>"Fulano · Nível 22" com conta que tem nome; "Conta · Nível 22" sem.</summary>
+		private string AccountTitle() =>
+			_accountName != null ? T("hub.account_named", _accountName, _player.AccountLevel) : T("hub.account_level", _player.AccountLevel);
 
 		/// <summary>
 		/// A Canalização: a constelação ocupa o painel inteiro (o sigilo do centro com o anel do tempo

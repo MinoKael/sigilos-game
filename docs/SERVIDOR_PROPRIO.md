@@ -2,7 +2,11 @@
 
 Alternativa ao Firebase de [SAVE_NUVEM.md](SAVE_NUVEM.md): o mesmo resultado (contas, save em nuvem,
 um aparelho por vez), num servidor pequeno na instância Oracle que já existe, com o domínio dela.
-Ainda não implementado.
+
+**Este é o caminho escolhido e está implementado:**
+- o servidor (`Sigilos.Server`, outro repositório) roda em `https://sigilos.minopavel.duckdns.org`, atrás
+  do Caddy e do PM2;
+- o jogo fala com ele por `GameEntry/Account/` (seção [No jogo](#no-jogo)).
 
 ## É viável?
 
@@ -47,26 +51,27 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
     o `PasswordHasher` já vêm no ASP.NET Core.
 - **Caddy** na frente: HTTPS automático e renovação do certificado. O Android recusa HTTP sem TLS por
   padrão, então HTTPS não é opcional.
-- **Implantação:** `dotnet publish -c Release -r linux-arm64 --self-contained` (ou `linux-x64` na AMD)
-  e um serviço `systemd`. Docker Compose (caddy + server) também serve, se você já usa.
+- **Implantação:** `dotnet publish -c Release -r linux-arm64 --self-contained` (ou `linux-x64` na AMD).
+  No ar, quem mantém o processo é o PM2 que a instância já usa (o README do servidor tem os passos).
 
 ## Dados (coleções do LiteDB)
 
 | Coleção | Documento | Observação |
 | --- | --- | --- |
-| `users` | `_id`, `email` (único, minúsculo), `passwordHash`, `createdAt` | senha com PBKDF2 (`PasswordHasher`) ou Argon2id |
+| `users` | `_id`, `email` (único, minúsculo), `passwordHash`, `createdAt`, `name`, `nameKey` | senha com PBKDF2 (`PasswordHasher`). O nome é único: `nameKey` é ele sem acentos e em minúsculas |
 | `refreshTokens` | `_id` (hash do token), `userId`, `deviceId`, `expiresAt` | o token em si nunca é guardado; troca a cada uso |
 | `sessions` | `_id` = userId, `sessionId`, `deviceId`, `deviceName`, `lastSeen` | a trava: um por conta |
 | `saves` | `_id` = userId, `revision`, `savedAt`, `data` (bytes gzip) | ~15 KB por conta |
-| `invites` | `_id` = código, `usedBy` | só entra quem tem convite: o servidor não fica aberto para estranhos |
+| `invites` | `_id` = código, `usedBy` (o id da conta), `usedAt` | só entra quem tem convite: o servidor não fica aberto para estranhos |
 
 ## API
 
 | Método e rota | Corpo | Resposta |
 | --- | --- | --- |
-| `POST /auth/register` | e-mail, senha, convite | 201, ou 409 se o e-mail existe |
-| `POST /auth/login` | e-mail, senha, `deviceId` | token de acesso (JWT, 15 min) e de renovação (30 dias) |
-| `POST /auth/refresh` | token de renovação | um par novo (o velho deixa de valer) |
+| `POST /auth/register` | e-mail, senha, convite, nome | 201; 400 se o convite ou o nome não valem; 409 se o e-mail ou o nome já existem |
+| `POST /auth/login` | e-mail, senha, `deviceId` | token de acesso (JWT, 15 min), de renovação (30 dias) e o nome da conta |
+| `POST /auth/refresh` | token de renovação | um par novo (o velho deixa de valer) e o nome da conta |
+| `PUT /account/name` | nome | 200 com o nome; 400 se não vale; 409 se é de outra conta |
 | `POST /session/claim` | `deviceId`, `deviceName`, `force` | `sessionId`; ou 409 com o aparelho e quando foi visto, se outro está ativo e `force` é falso |
 | `POST /session/heartbeat` | `sessionId` | 204; ou 409 "sessão tomada" (o jogo volta para o login) |
 | `POST /session/release` | `sessionId` | 204 (ao sair da conta) |
@@ -77,7 +82,7 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
 **A trava fica no servidor**, que é quem decide:
 - `claim` troca o `sessionId` da conta: o aparelho antigo passa a receber 409 no próximo batimento
   (a cada 30 s, já que não há cota) e no próximo envio do save.
-- Um arrendamento de ~2 min sem batimento libera a conta sem perguntar.
+- Uma sessão que passa 30 s sem bater libera a conta: o próximo aparelho entra sem pergunta.
 - A mesma regra de conflito de [SAVE_NUVEM.md](SAVE_NUVEM.md) vale no cliente: local primeiro, backup
   `.old-` antes de trocar e pergunta quando os dois lados mudaram.
 - Avisar na hora, em vez de no próximo batimento, é opcional: um endpoint de eventos (SSE) por onde o
@@ -112,14 +117,71 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
 
 ## No jogo
 
-Igual ao desenho com Firebase, só que mais simples, porque a API é sua:
-- `GameEntry/Account/`, com a URL do servidor numa configuração do projeto:
-  - `AuthClient`: cadastro, login, renovação;
-  - `SessionLock`: claim, batimento, release;
-  - `CloudSave`: baixar e enviar.
-- O `GameRoot` mostra o login antes do Santuário e derruba o jogador no 409.
-- O Core não muda.
-- O `HttpClient` do .NET funciona no Godot .NET em Windows e Android.
+`GameEntry/Account/`, com o endereço do servidor em `AccountSession.DefaultServer`
+(`-- --server=url` troca, para testar contra um servidor local):
+- `AuthClient`: cadastro, login e renovação. O token de acesso fica só na memória; o de renovação,
+  em `user://sigilos.account.json`, e a senha nunca. Duas renovações ao mesmo tempo viram uma só,
+  porque o token de renovação troca a cada uso.
+- `SessionLock`: tomar, bater a cada 20 s e soltar a sessão.
+- `CloudSave`: baixar e enviar o save, em Base64.
+- `CloudSync`: quem ganha entre o aparelho e a nuvem, comparando o hash do save e a revisão com o último
+  ponto de sincronização. Gravar sem mudar nada não conta como mudança.
+- `AccountStore`: o arquivo da conta no aparelho.
+- `AccountSession`: o nó que junta tudo, com o batimento e o envio a cada 60 s.
+
+O fluxo, no `GameRoot`:
+1. **Abrir o jogo.**
+   - Quem escolheu jogar sem conta abre direto no save local.
+   - Quem tem conta lembrada entra sozinho. Sem internet, ela abre com o save deste aparelho (se ele
+     tem um desta conta) e o Santuário mostra "Sem conexão".
+   - Os outros veem a tela de login: Entrar, Criar conta (com o nome da conta e o convite) e Jogar sem
+     conta.
+2. **Entrar.**
+   - Toma a sessão. Se outro aparelho bateu há menos de 30 s, pergunta "Entrar aqui fecha a conta
+     lá?".
+   - Depois baixa o save e decide:
+     - só um lado mudou: fica esse;
+     - os dois mudaram: pergunta, mostrando os dois resumos;
+     - a conta é nova: o save sem conta do aparelho sobe para ela.
+   - O que perde vira backup `.old-` no aparelho.
+3. **Jogando.**
+   - O save local é a verdade. Ele sobe a cada 60 s se mudou, ao pausar no celular e ao fechar a janela;
+     fechar também solta a sessão, esperando no máximo uns segundos.
+   - Sem rede, nada muda para o jogador, a não ser o "Sem conexão" no Santuário. O batimento continua
+     tentando. Na volta, o jogo toma a sessão sem forçar e sincroniza: o que se jogou sem rede sobe, ou,
+     se a conta também mudou em outro aparelho, o jogo pergunta qual progresso fica.
+   - Outro aparelho entrou com este conectado: no próximo batimento este volta para o login com o
+     aviso, e o progresso que não subiu vira backup.
+   - Outro aparelho está com a conta quando a rede volta: este volta para o login, mas o que se jogou
+     sem rede fica no aparelho e entra na conta na próxima entrada aqui.
+4. **Nome da conta:** aparece no Santuário, no lugar de "Conta" ao lado do nível, e troca nos Ajustes.
+   Numa conta sem nome (criada antes de ele existir), o jogo pede um logo depois de entrar.
+5. **Sair da conta** (Ajustes): envia, solta e volta para o login. Sem rede, pergunta antes, e o
+   progresso fica no aparelho até a próxima entrada.
+
+Cada conta tem o seu save no aparelho (`sigilos.account-<id>.json`); o `sigilos.json` continua sendo o
+do jogo sem conta. Com `-- --save=nome`, cada nome é um aparelho à parte, com o seu id: dá para testar
+dois aparelhos na mesma máquina.
+
+**Android:** o preset de exportação precisa da permissão **Internet** (Permissions → Internet), que hoje
+está desligada. Sem ela, todo pedido falha como "sem conexão".
+
+### Notas sobre o servidor
+
+Coisas vistas ao ligar o jogo no servidor. Nenhuma impede o uso; ficam para quando mexer nele.
+
+- **A janela da sessão é de 30 s** no `claim` e no batimento (o `claim` era de 2 min e foi igualado).
+  Um celular que passa mais de 30 s em segundo plano volta recebendo "sessão tomada" sem ninguém ter
+  entrado. O jogo contorna: toma de novo sem forçar e segue, e só cai se outro aparelho estiver ativo.
+- **Limitador de `/auth/*` por IP:** 10 pedidos por minuto para cada IP. O Caddy manda o IP de quem
+  chamou em `X-Forwarded-For`, e o `UseForwardedHeaders` só aceita esse cabeçalho vindo de loopback. Sem
+  isso, todos os pedidos chegariam como 127.0.0.1 e dividiriam a mesma cota.
+- **Convite e nome:** o cadastro confere o convite antes de tudo (sem convite, a resposta não diz se o
+  e-mail ou o nome existem), cria a conta e só então gasta o convite, gravando nele o id da conta. A
+  conferência e a gravação ficam sob uma trava, para dois cadastros ao mesmo tempo não pegarem o mesmo
+  convite ou o mesmo nome. O índice de `nameKey` não é único de propósito: contas de antes do nome
+  existir não têm `nameKey`, e o LiteDB contaria os nulos como repetidos.
+- **LGPD:** ainda não há rota para apagar a conta.
 
 ## Etapas e esforço
 

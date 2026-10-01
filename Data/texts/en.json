@@ -418,7 +418,10 @@
     "battle_detail": "Campaign (stage {0} of {1}) and Dungeons",
     "summon_detail": "New monsters · you have {0} Scrolls",
     "version": "v{0}",
-    "version_debug": "v{0} · debug"
+    "version_debug": "v{0} · debug",
+    "account_named": "{0} · Level {1}",
+    "offline": "Offline",
+    "offline_text": "The server didn't answer. You're playing with this device's progress, and it goes up to the cloud on its own when the connection comes back. If the account also changed on another device meanwhile, the game asks which progress stays."
   },
 
   "campaign": {
@@ -830,7 +833,93 @@
 
   "config": {
     "language": "Language",
-    "current": "{0} (current)"
+    "current": "{0} (current)",
+    "account": "Account",
+    "sign_out": "Sign out",
+    "sign_in": "Sign in or create an account",
+    "offline": "Playing without an account: progress stays on this device only. Create an account and it comes along.",
+    "synced": "Everything saved to the cloud (last time at {0}).",
+    "pending": "Some progress hasn't reached the cloud yet; it goes up on its own within a minute, or as soon as there's a connection.",
+    "rename": "Change name",
+    "choose_name": "Choose a name",
+    "no_name": "Unnamed account",
+    "offline_account": "No connection: you're playing with this device's progress. It goes up on its own when the connection comes back."
+  },
+
+  "lock": {
+    "lock": "Lock",
+    "unlock": "Unlock"
+  },
+
+  "account": {
+    "subtitle": "Sign in to take your progress across devices. The account stays open on one device at a time.",
+    "offline": "Play without an account",
+    "offline_hint": "Progress stays on this device only. You can create an account later in Settings, and your progress comes along.",
+    "remembered": "Account on this device",
+    "other": "Use another account",
+    "sign_in_tab": "Sign in",
+    "register_tab": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "password_hint": "At least 8 characters",
+    "invite": "Invite code",
+    "invite_hint": "The code you received",
+    "sign_in": "Sign in",
+    "register": "Create account",
+    "connecting": "Connecting…",
+    "claiming": "Opening the account on this device…",
+    "syncing": "Fetching your progress from the cloud…",
+    "leaving": "Saving to the cloud and signing out…",
+    "wait_title": "One moment",
+    "error_email": "Enter a valid email.",
+    "error_password": "The password needs at least {0} characters.",
+    "error_password_empty": "Enter your password.",
+    "error_invite": "Enter the invite code.",
+    "error_login": "Wrong email or password.",
+    "error_exists": "An account with this email already exists. Sign in instead.",
+    "error_invalid_invite": "Invalid or already used invite.",
+    "error_registration": "Invalid email or short password (at least 8 characters).",
+    "error_offline": "Can't reach the server. Check your connection and try again.",
+    "error_busy": "Too many attempts. Wait a minute and try again.",
+    "error_server": "The server answered with an error ({0}). Try again.",
+    "error_expired": "Your session expired. Sign in again with your password.",
+    "error_cloud": "The cloud progress is from another version of the game and couldn't be opened.",
+    "busy_title": "Account open on another device",
+    "busy_text": "Your account is open on {0} (active {1}). Signing in here closes it there; progress from there that hadn't reached the cloud is kept as a backup on that device.",
+    "busy_confirm": "Sign in here",
+    "seen_now": "just now",
+    "seen_minutes": "{0} min ago",
+    "lost_taken": "Your account was opened on another device.",
+    "signout_offline_title": "No connection",
+    "signout_offline_text": "Your latest progress hasn't reached the cloud. It stays on this device and goes up when you sign in here again. Sign out anyway?",
+    "conflict_title": "Which progress to keep?",
+    "conflict_text": "This device's progress and the cloud's both changed since they last met. Choose which one the account keeps.",
+    "conflict_adopt_text": "This account already has progress in the cloud, and this device has a game without an account. Choose which one the account keeps.",
+    "conflict_note": "Whatever isn't chosen isn't lost: it stays saved on this device.",
+    "conflict_local": "This device",
+    "conflict_offline": "Game without account",
+    "conflict_cloud": "Cloud",
+    "conflict_level": "Account level {0}",
+    "conflict_monsters": "{0} monsters",
+    "conflict_stage": "Stage {0} cleared",
+    "conflict_no_stage": "No stage cleared",
+    "conflict_floors": "{0} Dungeon floors",
+    "conflict_saved": "Saved {0}",
+    "use_local": "Keep this device's",
+    "use_offline": "Keep the game without account",
+    "use_cloud": "Keep the cloud's",
+    "lost_taken_backup": "Your account was opened on another device. Progress from here that hadn't reached the cloud was kept as a backup on this device.",
+    "conflict_wealth": "{0} Essence · {1} Gold",
+    "name": "Account name",
+    "name_hint": "{0} to {1} letters or numbers, no spaces",
+    "name_text": "It's the name shown in the Sanctuary. It's unique: no other account can have it, not even with different capitals or accents.",
+    "name_prompt": "Your account doesn't have a name yet. Choose one: it's shown in the Sanctuary, and no other account can have it.",
+    "name_save": "Save",
+    "name_later": "Later",
+    "saving": "Saving…",
+    "error_name": "The name needs {0} to {1} characters, no spaces: letters, numbers, _ . or -, starting and ending with a letter or number.",
+    "error_name_taken": "That name belongs to another account. Pick another one.",
+    "lost_away": "Your account is open on another device. What you played here without a connection stayed on this device: it goes to the account the next time you sign in here (if the account also changed there, the game asks which progress stays)."
   },
 
   "names": {
@@ -1302,10 +1391,5 @@
     "Cântaro de Mana": "Mana Jug",
     "Pergaminho Místico": "Mystic Scroll",
     "Maço de Pergaminhos": "Bundle of Scrolls"
-  },
-
-  "lock": {
-    "lock": "Lock",
-    "unlock": "Unlock"
   }
 }

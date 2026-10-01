@@ -1,9 +1,12 @@
 # Save em nuvem e contas — escopo
 
 Escopo curto para levar o save do Sigilos para a nuvem **sem manter servidor próprio** e, depois,
-para ter contas com login em qualquer aparelho, **um aparelho por vez** (seção "Contas"). Ainda não
-implementado; é o mapa das opções e do que mudaria no código. A alternativa com servidor próprio (a
-instância Oracle) está em [SERVIDOR_PROPRIO.md](SERVIDOR_PROPRIO.md).
+para ter contas com login em qualquer aparelho, **um aparelho por vez** (seção "Contas").
+
+**O caminho escolhido foi o servidor próprio** (a instância Oracle), que já está no ar e ligado ao jogo:
+ver [SERVIDOR_PROPRIO.md](SERVIDOR_PROPRIO.md). O desenho daqui (local primeiro, metadados de
+sincronização, conflito, trava de sessão) é o que o jogo segue. As partes sobre Firebase ficam como
+registro da alternativa.
 
 ## Ponto de partida
 
@@ -118,11 +121,17 @@ para a tela de login. É o save em nuvem (opção D, Firebase) com duas peças a
 ### O ponto delicado: jogar sem internet
 
 O jogo hoje é todo offline, e garantir "um aparelho por vez" exige rede ao menos para entrar.
-Proposta:
-- **Precisa de internet para entrar** na conta.
-- **Se a rede cair no meio, continua jogando** e sincroniza quando ela voltar.
-- Se nesse meio tempo outro aparelho entrou, o progresso feito sem rede vira backup e não sobrescreve
-  a nuvem: perde-se, no máximo, o que foi jogado sem rede depois da troca.
+Como ficou:
+- **A primeira entrada num aparelho precisa de internet** (a senha só o servidor confere).
+- **Depois, a conta lembrada abre sem internet**, com o save deste aparelho, e mostra "Sem conexão" no
+  Santuário. **Se a rede cair no meio**, dá no mesmo: o jogo continua.
+- **Ao reconectar**, o jogo toma a sessão sem forçar e sincroniza:
+  - só o aparelho mudou: o progresso sobe;
+  - a conta também mudou em outro aparelho nesse meio tempo: pergunta qual fica, e o outro vira
+    backup no aparelho.
+- **Se outro aparelho está com a conta na hora da volta**, este volta para o login, sem perder nada. O
+  que se jogou sem rede fica no aparelho e entra na conta na próxima entrada aqui, com a pergunta se a
+  conta também mudou.
 - **Jogar sem conta** continua existindo, como hoje: tudo local. Ao criar a conta, o save local sobe
   para ela.
 

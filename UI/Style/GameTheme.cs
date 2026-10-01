@@ -70,6 +70,7 @@ namespace Sigilos.UI.Style
 			Panels(theme);
 			Buttons(theme);
 			Toggles(theme);
+			Fields(theme);
 			Scrollbars(theme);
 			Bars(theme);
 			Popups(theme);
@@ -162,6 +163,28 @@ namespace Sigilos.UI.Style
 				theme.SetColor("font_pressed_color", type, Palette.Arcane);
 				theme.SetColor("font_hover_pressed_color", type, Palette.Arcane);
 			}
+		}
+
+		/// <summary>Campo de texto (e-mail, senha): pedra entalhada, que ganha a moldura de ouro ao receber o foco.</summary>
+		private static void Fields(Theme theme)
+		{
+			var normal = Carved(Palette.Inset, 10);
+			normal.ContentMarginLeft = normal.ContentMarginRight = 14;
+			theme.SetStylebox("normal", "LineEdit", normal);
+			var focus = Box(new Color(0, 0, 0, 0), Palette.Gold, 2, 8, 0);
+			focus.DrawCenter = false;
+			theme.SetStylebox("focus", "LineEdit", focus);
+			var disabled = Carved(Palette.Disabled, 10);
+			disabled.ContentMarginLeft = disabled.ContentMarginRight = 14;
+			theme.SetStylebox("read_only", "LineEdit", disabled);
+			theme.SetFont("font", "LineEdit", Serif);
+			theme.SetFontSize("font_size", "LineEdit", 20);
+			theme.SetColor("font_color", "LineEdit", Palette.Text);
+			theme.SetColor("font_uneditable_color", "LineEdit", Palette.TextFaded);
+			theme.SetColor("font_placeholder_color", "LineEdit", new Color(Palette.TextFaded, 0.6f));
+			theme.SetColor("caret_color", "LineEdit", Palette.Gold);
+			theme.SetColor("selection_color", "LineEdit", new Color(Palette.Arcane, 0.35f));
+			theme.SetColor("clear_button_color", "LineEdit", Palette.TextFaded);
 		}
 
 		/// <summary>Sem trilho: só a gema, meio apagada, que acende sob o mouse.</summary>

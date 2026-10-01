@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Summoning;
+using Sigilos.GameEntry.Account;
 using Sigilos.UI;
 using Sigilos.UI.Components;
 using Sigilos.UI.Screens;
@@ -27,9 +29,16 @@ namespace Sigilos.GameEntry
 	/// para onde veio (seta, Esc ou o Voltar do celular). A Batalha automática roda fora das telas
 	/// (<see cref="AutoBattleRunner"/>), com o aviso flutuante no alto de todas.
 	///
-	/// Argumentos de desenvolvimento (depois de <c>--</c>): <c>--save=nome</c> usa outro arquivo de
-	/// save; <c>--language=nome</c> usa Data/texts/nome.json (padrão: o da Configuração, ou en);
-	/// <c>--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto.
+	/// Antes do Santuário vem a conta (<see cref="AccountSession"/>, docs/SAVE_NUVEM.md): a tela de login
+	/// (Entrar, Criar conta, Jogar sem conta), a pergunta "desconectar o outro aparelho?" e, quando o
+	/// aparelho e a nuvem mudaram, "qual progresso usar?". Quem escolheu jogar sem conta abre direto no
+	/// save local; quem tem conta lembrada entra sozinho. Outro aparelho entrando derruba este de volta
+	/// para o login.
+	///
+	/// Argumentos de desenvolvimento (depois de <c>--</c>): <c>--save=nome</c> usa outros arquivos de
+	/// save e de conta (outro "aparelho"); <c>--language=nome</c> usa Data/texts/nome.json (padrão: o do
+	/// save, ou pt-BR); <c>--server=url</c> usa outro servidor de contas;
+	/// <c>--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto, no save sem conta.
 	/// </summary>
 	public partial class GameRoot : Node
 	{
@@ -42,9 +51,18 @@ namespace Sigilos.GameEntry
 		private Control _screens = null!;
 		private Control? _screen;
 		private GameDatabase _database = null!;
+		private AccountSession _account = null!;
 		private SaveStore _store = null!;
 		private PlayerState _player = null!;
 		private string _language = ContentLoader.BaseLanguage;
+
+		/// <summary>Há um save aberto (fora da tela de login): só então <see cref="Save"/> grava.</summary>
+		private bool _playing;
+
+		private bool _quitting;
+
+		/// <summary>Uma sincronização no meio do jogo já corre (pedidos repetidos não abrem outra pergunta).</summary>
+		private bool _resyncing;
 
 		/// <summary>Remonta a tela de agora (depois de uma janela que mudou algo, ou para voltar a ela).</summary>
 		private Action _current = () => { };
@@ -59,18 +77,32 @@ namespace Sigilos.GameEntry
 		{
 			_campaignBack = _dungeonsBack = ShowMap;
 			_storageBack = _summonBack = ShowHub;
-			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles.
-			_store = new SaveStore(Argument("--save=") ?? DefaultSlot);
-			var saved = _store.Load();
-			_language = Argument("--language=") ?? saved?.Language ?? ContentLoader.BaseLanguage;
+			_account = new AccountSession(Argument("--save=") ?? DefaultSlot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
+			AddChild(_account);
+			_account.Lost += (reason, backedUp) => ShowLogin(T(reason switch
+			{
+				LossReason.Expired => "account.error_expired",
+				LossReason.TakenWhileAway => "account.lost_away",
+				_ => backedUp ? "account.lost_taken_backup" : "account.lost_taken",
+			}));
+			_account.SyncNeeded += Resync;
+			_account.ConnectionChanged += () =>
+			{
+				if (_screen is HubScreen hub)
+					hub.SetOffline(!_account.Connected);
+			};
+
+			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles. Antes de abrir um save
+			// (a tela de login), vale o idioma do último jogo deste aparelho.
+			_language = Argument("--language=") ?? _account.Language ?? _account.OfflineStore.Load()?.Language ?? ContentLoader.BaseLanguage;
 			ContentLoader.LoadTexts(_language);
 			_database = ContentLoader.Load();
-			_player = saved ?? NewGame.Create(DateTime.Now, _random, _database);
 			UiSession.Database = _database;
-			UiSession.Player = _player;
 
 			// O Voltar do celular vira Esc (ui_cancel): fecha a janela de cima ou volta de tela.
 			GetTree().QuitOnGoBack = false;
+			// Fechar a janela espera o save subir para a nuvem (Quit).
+			GetTree().AutoAcceptQuit = false;
 
 			_ui = new Control { Name = "UI", Theme = GameTheme.Build() };
 			_ui.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
@@ -83,7 +115,47 @@ namespace Sigilos.GameEntry
 			AddChild(_runner);
 			_runner.RunChanged += run => _badge.Show(run);
 
-			switch (Argument("--screen="))
+			// Com --screen (desenvolvimento), ou depois de escolher jogar sem conta, abre direto o save local.
+			var screen = Argument("--screen=");
+			if (screen != null || _account.Offline)
+				PlayOffline(screen);
+			else
+				ShowLogin(resume: _account.Remembered);
+		}
+
+		public override void _Notification(int what)
+		{
+			if (!IsNodeReady())
+				return;
+
+			if (what == NotificationWMCloseRequest)
+				Quit();
+			else if (what == NotificationWMGoBackRequest)
+				Input.ParseInputEvent(new InputEventAction { Action = "ui_cancel", Pressed = true });
+			else if (what == NotificationApplicationPaused)
+			{
+				// O celular pode matar o jogo em segundo plano: grava e já manda para a nuvem.
+				Save();
+				if (_account.Playing)
+					_ = _account.Flush();
+			}
+			else if (what == NotificationApplicationResumed)
+				_account.Wake();
+		}
+
+		// Conta -------------------------------------------------------------------------------------
+
+		/// <summary>Abre o jogo de <paramref name="store"/> (o save sem conta ou o da conta) na tela pedida (nula: o Santuário).</summary>
+		private void Play(SaveStore store, PlayerState player, string? screen = null)
+		{
+			_store = store;
+			_player = player;
+			_playing = true;
+			UiSession.Player = player;
+			if (Argument("--language=") == null)
+				UseLanguage(player.Language ?? _language);
+
+			switch (screen)
 			{
 				case "map":
 					ShowMap();
@@ -124,33 +196,305 @@ namespace Sigilos.GameEntry
 			}
 		}
 
-		public override void _Notification(int what)
+		private void PlayOffline(string? screen = null)
 		{
-			if (what == NotificationWMCloseRequest)
-				Save();
-			else if (what == NotificationWMGoBackRequest)
-				Input.ParseInputEvent(new InputEventAction { Action = "ui_cancel", Pressed = true });
-			else if (what == NotificationApplicationPaused)
-				Save();
+			var store = _account.OfflineStore;
+			Play(store, store.Load() ?? NewPlayer(), screen);
+		}
+
+		private PlayerState NewPlayer() => NewGame.Create(DateTime.Now, _random, _database);
+
+		/// <summary>
+		/// A tela de login. <paramref name="message"/> diz por que o jogo voltou para ela (outro aparelho
+		/// entrou, o acesso venceu); com <paramref name="resume"/>, já entra com a conta lembrada.
+		/// </summary>
+		private void ShowLogin(string? message = null, bool resume = false)
+		{
+			_playing = false;
+			_runner.Dismiss();
+			CloseDialogs();
+			var login = new LoginScreen(_account.Email, _account.AccountName, _account.Remembered);
+			login.LoginRequested += (email, password) => SignIn(login, () => _account.Login(email, password), false);
+			login.RegisterRequested += (email, password, invite, name) => SignIn(login, () => _account.Register(email, password, invite, name), false);
+			login.ResumeRequested += () => SignIn(login, _account.Resume, true);
+			login.ForgetRequested += _account.Forget;
+			login.OfflineRequested += () =>
+			{
+				_account.Offline = true;
+				PlayOffline();
+			};
+			Swap(login, () => ShowLogin());
+			if (message != null)
+				login.ShowMessage(message);
+			if (resume)
+				SignIn(login, _account.Resume, true);
+		}
+
+		/// <summary>
+		/// Entra na conta: <paramref name="authenticate"/> (senha, cadastro ou, com <paramref name="resume"/>,
+		/// o token guardado), depois a sessão e o save.
+		/// </summary>
+		private async void SignIn(LoginScreen login, Func<Task<ApiResponse>> authenticate, bool resume)
+		{
+			login.SetBusy(T("account.connecting"));
+			var response = await authenticate();
+			if (_screen != login)
+				return;
+
+			if (response.Ok)
+			{
+				await Enter(login, false);
+				return;
+			}
+
+			if (resume && response.Unreached && PlayAccountOffline())
+				return;
+
+			login.ShowMessage(AccountError(response, !resume));
+			if (!_account.Remembered)
+				login.ShowForm();
+		}
+
+		/// <summary>
+		/// Sem internet, a conta lembrada abre com o save deste aparelho; o batimento tenta reconectar e, quando
+		/// conseguir, sincroniza. Falso se este aparelho não tem save desta conta (nunca entrou nela aqui).
+		/// </summary>
+		private bool PlayAccountOffline()
+		{
+			if (_account.Store is not { } store || store.Load() is not { } player)
+				return false;
+
+			_account.Begin(() => _playing ? _player : null, connected: false);
+			Play(store, player);
+			return true;
+		}
+
+		/// <summary>Toma a sessão (<paramref name="force"/>: derruba o outro aparelho), resolve o save e abre o Santuário.</summary>
+		private async Task Enter(LoginScreen login, bool force)
+		{
+			login.SetBusy(T("account.claiming"));
+			var claim = await _account.Claim(force);
+			if (_screen != login)
+				return;
+
+			if (claim.Outcome == ClaimOutcome.Busy)
+			{
+				login.ShowMessage("", false);
+				var device = $"[color=#{Palette.Gold.ToHtml(false)}]{(claim.DeviceName ?? "?").Replace("[", "[lb]")}[/color]";
+				Dialog.Confirm(login, T("account.busy_title"), T("account.busy_text", device, Seen(claim.LastSeen)), T("account.busy_confirm"), () => _ = Enter(login, true), ButtonKind.Danger);
+				return;
+			}
+
+			if (claim.Outcome == ClaimOutcome.Failed)
+			{
+				if (claim.Response.Unreached && PlayAccountOffline())
+					return;
+
+				login.ShowMessage(AccountError(claim.Response));
+				if (!_account.Remembered)
+					login.ShowForm();
+				return;
+			}
+
+			login.SetBusy(T("account.syncing"));
+			var sync = await _account.Sync(NewPlayer, AskConflict);
+			if (_screen != login)
+				return;
+
+			if (!sync.Ok)
+			{
+				if (sync.Error!.Unreached && PlayAccountOffline())
+					return;
+
+				login.ShowMessage(AccountError(sync.Error!));
+				return;
+			}
+
+			// A conta começa antes do Santuário abrir: ele já sai com o nome dela.
+			_account.Begin(() => _playing ? _player : null);
+			Play(_account.Store!, sync.Player!);
+			if (_account.AccountName == null)
+				ChooseName(true);
+		}
+
+		/// <summary>"Qual progresso usar?": verdadeiro fica o da nuvem.</summary>
+		private Task<bool> AskConflict(SaveConflict conflict)
+		{
+			var choice = new TaskCompletionSource<bool>();
+			SaveConflictDialog.Open(_ui, conflict.Local, conflict.LocalSavedAt, conflict.Cloud, conflict.CloudSavedAt, conflict.Adopting, cloud => choice.TrySetResult(cloud));
+			return choice.Task;
+		}
+
+		/// <summary>
+		/// A nuvem mudou por fora durante o jogo, ou a conexão voltou depois de jogar sem ela: sincroniza de novo
+		/// (perguntando, se os dois lados mudaram) e, se ficar o da nuvem, reabre o Santuário com ele.
+		/// </summary>
+		private async void Resync()
+		{
+			if (_resyncing)
+				return;
+
+			_resyncing = true;
+			Save();
+			var sync = await _account.Sync(NewPlayer, AskConflict);
+			_resyncing = false;
+			if (!_playing || !sync.Downloaded)
+				return;
+
+			_runner.Dismiss();
+			CloseDialogs();
+			Play(_account.Store!, sync.Player!);
+		}
+
+		/// <summary>Ajustes → Sair da conta: envia o que falta (perguntando, se não der), solta a sessão e volta para o login.</summary>
+		private async void SignOut()
+		{
+			var wait = Wait(T("account.leaving"));
+			var flushed = await _account.Flush();
+			wait.Close();
+			if (flushed)
+				Leave();
+			else
+				Dialog.Confirm(_ui, T("account.signout_offline_title"), T("account.signout_offline_text"), T("config.sign_out"), Leave, ButtonKind.Danger);
+		}
+
+		private async void Leave()
+		{
+			_playing = false;
+			Wait(T("account.leaving"));
+			await _account.Leave(true);
+			ShowLogin();
+		}
+
+		/// <summary>Ajustes → Entrar ou criar conta, saindo do jogo sem conta (que sobe para a conta, se ela for nova).</summary>
+		private void LeaveOffline()
+		{
+			Save();
+			_account.Offline = false;
+			ShowLogin();
+		}
+
+		/// <summary>
+		/// A janela do nome da conta: trocar (Ajustes) ou, com <paramref name="prompt"/>, pedir um à conta que
+		/// ainda não tem. Com o nome aceito, o Santuário se remonta com ele.
+		/// </summary>
+		private void ChooseName(bool prompt)
+		{
+			var dialog = AccountNameDialog.Open(_ui, _account.AccountName, prompt);
+			dialog.Submitted += async name =>
+			{
+				dialog.SetBusy();
+				var response = await _account.Rename(name);
+				if (!response.Ok)
+				{
+					dialog.ShowError(AccountError(response));
+					return;
+				}
+
+				dialog.Close();
+				if (_screen is HubScreen)
+					_current();
+			};
+		}
+
+		/// <summary>A conta nos Ajustes.</summary>
+		private ConfigAccount AccountSettings()
+		{
+			if (!_account.Playing)
+				return new ConfigAccount(null, null, "", LeaveOffline, SignOut, () => { });
+
+			var status = !_account.Connected ? T("config.offline_account")
+				: _account.Pending ? T("config.pending")
+				: _account.LastSync is { } at ? T("config.synced", at.ToLocalTime().ToString("t", Culture))
+				: "";
+			return new ConfigAccount(_account.Email, _account.AccountName, status, LeaveOffline, SignOut, () => ChooseName(false));
+		}
+
+		/// <summary>Fechar a janela: grava, envia o que falta e solta a sessão (sem esperar o servidor mais que uns segundos).</summary>
+		private async void Quit()
+		{
+			if (_quitting)
+				return;
+			_quitting = true;
+			Save();
+			if (_account.Playing)
+				await Task.WhenAny(FlushAndLeave(), Task.Delay(TimeSpan.FromSeconds(5)));
+			GetTree().Quit();
+		}
+
+		private async Task FlushAndLeave()
+		{
+			await _account.Flush();
+			await _account.Leave(false);
+		}
+
+		/// <summary>
+		/// O que dizer ao jogador sobre uma resposta do servidor que não deu certo. 401 é senha errada só no
+		/// login (<paramref name="login"/>); no resto, é o acesso que venceu.
+		/// </summary>
+		private static string AccountError(ApiResponse response, bool login = false) => response switch
+		{
+			{ Unreached: true } => T("account.error_offline"),
+			{ Status: 429 } => T("account.error_busy"),
+			{ Error: "email_exists" } => T("account.error_exists"),
+			{ Error: "invalid_invite" } => T("account.error_invalid_invite"),
+			{ Error: "invalid_registration" } => T("account.error_registration"),
+			{ Error: "invalid_name" } => T("account.error_name", AccountNameDialog.MinLength, AccountNameDialog.MaxLength),
+			{ Error: "name_taken" } => T("account.error_name_taken"),
+			{ Error: "cloud_unreadable" } => T("account.error_cloud"),
+			{ Status: 401 } => T(login ? "account.error_login" : "account.error_expired"),
+			_ => T("account.error_server", response.Status),
+		};
+
+		/// <summary>Quando o outro aparelho bateu pela última vez, escrito ("agora há pouco", "há 3 min").</summary>
+		private static string Seen(DateTimeOffset? lastSeen)
+		{
+			var minutes = lastSeen is { } at ? (int)(DateTimeOffset.UtcNow - at).TotalMinutes : 0;
+			return minutes < 1 ? T("account.seen_now") : T("account.seen_minutes", minutes);
+		}
+
+		/// <summary>Uma janela de espera, sem fechar, enquanto o servidor responde.</summary>
+		private Dialog Wait(string text)
+		{
+			var dialog = Dialog.Open(_ui, T("account.wait_title"), 420, null, "WaitDialog");
+			dialog.Dismissable = false;
+			dialog.Body.AddChild(Layout.Text(text).Named("Text"));
+			return dialog;
+		}
+
+		private void CloseDialogs()
+		{
+			foreach (var dialog in _ui.GetChildren().OfType<Dialog>())
+				dialog.Close();
+		}
+
+		/// <summary>Põe o jogo no idioma (os textos e os dados, que têm os nomes nele) e o lembra no aparelho.</summary>
+		private void UseLanguage(string language)
+		{
+			_account.Language = language;
+			if (language == _language)
+				return;
+
+			_language = language;
+			ContentLoader.LoadTexts(language);
+			_database = ContentLoader.Load();
+			UiSession.Database = _database;
+			_badge.Show(_runner.Run);
 		}
 
 		// Telas -------------------------------------------------------------------------------------
 
 		private void ShowHub()
 		{
-			var hub = new HubScreen(_database, _player);
+			var hub = new HubScreen(_database, _player, _account.Playing ? _account.AccountName : null, _account.Playing && !_account.Connected);
 			hub.Requested += destination => Go(destination, ShowHub);
 			hub.ConfigRequested += () => ConfigPanel.Open(hub, ContentLoader.Languages(), _language, language =>
 			{
-				_language = language;
 				_player.Language = language;
 				Save();
-				ContentLoader.LoadTexts(language);
-				_database = ContentLoader.Load();
-				UiSession.Database = _database;
-				_badge.Show(_runner.Run);
+				UseLanguage(language);
 				ShowHub();
-			});
+			}, AccountSettings());
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
 			Swap(hub, ShowHub);
 		}
@@ -580,7 +924,11 @@ namespace Sigilos.GameEntry
 			};
 		}
 
-		private void Save() => _store.Save(_player);
+		private void Save()
+		{
+			if (_playing)
+				_store.Save(_player);
+		}
 
 		/// <summary>
 		/// Troca a tela. A nova leva o nome da classe (<c>RuneScreen</c>): é a raiz do caminho de todo nó

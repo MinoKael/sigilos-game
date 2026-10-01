@@ -15,7 +15,8 @@ estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e 
 melhora nunca falha), 17 famílias de invocação de 2★ a 5★ naturais (85 variantes; os inimigos comuns
 são invocações reforçadas), a região 1 (20 fases), cinco Masmorras, Batalha automática (30 lutas seguidas,
 correndo por trás enquanto se usa o resto do jogo), Mana para
-entrar nas lutas, nível da conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe). O jogo nasce em português:
+entrar nas lutas, nível da conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe), e conta com
+save em nuvem, aberta em um aparelho por vez (ou jogar sem conta, tudo local). O jogo nasce em português:
 todo texto da interface mora em `Data/texts/pt-BR.json` e os nomes (invocações, habilidades, fases, Masmorras) nos dados, com
 tradução para o inglês em `Data/texts/en.json`.
 
@@ -44,11 +45,19 @@ rodadas e vida que sobra: é a ferramenta de balanceamento. `--fight=N` imprime 
 turno a turno. `--digest` resume mais de mil lutas de semente fixa, uma por linha: rode antes e depois
 de mexer no código do combate para conferir que nenhuma luta mudou.
 
-Argumentos de desenvolvimento do jogo (depois de `--`): `--save=nome` usa outro save;
-`--language=nome` usa `Data/texts/nome.json` (padrão: `pt-BR`; `en` para inglês);
-`--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela direto
-(`map` é a tela Batalha, com Campanha e Masmorras). O idioma também pode ser trocado no jogo, em Ajustes, na
-barra de baixo da tela inicial (fica salvo). No computador, segurar é apertar e esperar ou o botão direito; Esc
+Argumentos de desenvolvimento do jogo (depois de `--`):
+- `--save=nome` usa outro save e outro arquivo de conta: é outro "aparelho", e dá para testar dois na
+  mesma máquina.
+- `--language=nome` usa `Data/texts/nome.json` (padrão: `pt-BR`; `en` para inglês).
+- `--server=url` usa outro servidor de contas (padrão: o da instância Oracle; ver
+  [docs/SERVIDOR_PROPRIO.md](docs/SERVIDOR_PROPRIO.md)).
+- `--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela
+  direto, no save sem conta (`map` é a tela Batalha, com Campanha e Masmorras).
+
+A primeira entrada na conta pede internet; depois, a conta lembrada abre sem ela e sincroniza quando a
+conexão voltar. Sem conta, o jogo segue todo local, como antes.
+
+O idioma também pode ser trocado no jogo, em Ajustes, na barra de baixo da tela inicial (fica salvo). No computador, segurar é apertar e esperar ou o botão direito; Esc
 é o Voltar.
 
 Depuração visual da interface, com o jogo rodando: Ctrl+F1 contornos, Ctrl+F2 nomes, Ctrl+F3 valores

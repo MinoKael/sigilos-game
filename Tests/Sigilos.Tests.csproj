@@ -20,6 +20,12 @@
   <ItemGroup>
     <Compile Include="*.cs" />
     <Compile Include="..\Core\**\*.cs" LinkBase="Core" />
+    <!-- A conta do jogo: só as peças sem Godot (a conversa com o servidor e a regra da sincronização). -->
+    <Compile Include="..\GameEntry\Account\ApiResponse.cs" LinkBase="Account" />
+    <Compile Include="..\GameEntry\Account\AuthClient.cs" LinkBase="Account" />
+    <Compile Include="..\GameEntry\Account\SessionLock.cs" LinkBase="Account" />
+    <Compile Include="..\GameEntry\Account\CloudSave.cs" LinkBase="Account" />
+    <Compile Include="..\GameEntry\Account\CloudSync.cs" LinkBase="Account" />
   </ItemGroup>
 
 </Project>

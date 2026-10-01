@@ -17,7 +17,8 @@ Data/*.json ──texto──▶ GameEntry ──▶ Core   (regras, sem Godot)
   (`GameButton`), símbolo sozinho só no ✕ e na seta de voltar, nenhuma dica de mouse, e toda
   explicação numa janela (`Dialog`) colada no elemento tocado.
 - **GameEntry/** é a raiz de composição: o `GameRoot` assina os eventos das telas, chama as regras do
-  Core, salva e troca de tela. É o único lugar que junta tudo.
+  Core, salva e troca de tela. É o único lugar que junta tudo. A conta (`GameEntry/Account/`) também
+  mora aqui: é a fronteira com a rede, e o Core não sabe que ela existe.
 
 Dentro do Core:
 
@@ -95,6 +96,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Fontes | `Assets/Fonts`: a SFC Wezards é a do jogo (com reserva do sistema para ★ × ⟳), a Kehdrai a das runas; carregadas em `GameTheme` |
 | Batalha automática (quantas lutas) | o padrão e o máximo em `Core/Battle/AutoBattle.cs` (`RepeatRuns`, `MaxRuns`); a escolha é o `AutoBattleSetup` |
 | Batalha automática por trás | `GameEntry/AutoBattleRunner.cs` (o nó que corre as lutas, mesmo com a tela trocada), `UI/AutoBattleRun.cs` (o estado que a interface lê, com o evento `Changed`), `UI/Components/AutoBattleBadge.cs` (o selo no alto) e `UI/Screens/AutoBattleDialog.cs` (a janela; as ações dela são o `AutoBattleActions` que o `GameRoot` monta) |
+| Conta, login e save em nuvem | `GameEntry/Account/`: `AuthClient` (cadastro, login, tokens), `SessionLock` (um aparelho por vez: tomar, bater, soltar), `CloudSave` (baixar e enviar), `CloudSync` (quem ganha entre aparelho e nuvem), `AccountStore` (`user://nome.account.json`) e `AccountSession` (o nó que junta tudo, com o batimento e o envio periódico). As telas: `LoginScreen`, `SaveConflictDialog`, `AccountNameDialog` (o nome da conta, único no servidor e mostrado no Santuário) e a conta no `ConfigPanel`; o fluxo fica no `GameRoot` (seção "Conta"). O endereço do servidor é `AccountSession.DefaultServer` (`-- --server=url` troca). O servidor é outro repositório: `docs/SERVIDOR_PROPRIO.md` |
 | Coleção, Baú, equipes | `Core/Player/Roster.cs`, `Core/Player/Teams.cs`, `PlayerState.CollectionCapacity`/`TeamSize` |
 | Vagas do inventário de runas | `RuneInventory.Capacity` (runas equipadas, inclusive em monstro do Baú, não contam) |
 | Taxas do gacha | `Core/Summoning/SummonRates.cs` |
@@ -330,6 +332,13 @@ O que o contrato do projeto tem de diferente da especificação:
 `PlayerState.CurrentVersion` marca o formato (hoje 7: estrelas, níveis de habilidade e a experiência por
 estrela; o 6 trouxe ids em inglês; o 5, Mana, Ouro e nível da conta). Um save de outro formato não é lido: o `SaveStore` guarda o arquivo como
 `nome.old-AAAAMMDD-HHMMSS.json` (a data evita apagar um backup mais velho) e começa uma conta nova.
+
+Com conta, cada uma tem o seu save no aparelho (`nome.account-<id>.json`); o `nome.json` é o do jogo sem
+conta, que sobe para a primeira conta que entrar sem save na nuvem. O que o aparelho lembra da conta
+(id do aparelho, e-mail, token de renovação, idioma e o último ponto de sincronização de cada conta) fica
+em `nome.account.json`. Nada se perde na sincronização: o save local trocado pelo da nuvem, o da nuvem
+trocado pelo local (`nome.account-<id>.old-cloud-...json`) e o progresso que não subiu quando outro
+aparelho tomou a conta viram backup `.old-`.
 
 ## Exportar
 
