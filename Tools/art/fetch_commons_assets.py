@@ -146,7 +146,9 @@ def write_credits(rows: list[dict[str, str]]) -> None:
         "",
         "Alteração feita: só o `width`/`height` do `<svg>` raiz, para o Godot rasterizar em "
         f"{RENDER_SIZE} px (`Tools/art/fetch_commons_assets.py`). O desenho não muda. No jogo, as silhuetas",
-        "pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.",
+        "pretas são recoloridas pelo shader `Shaders/doodle.gdshader`. Os ícones do app em `Launcher/` (Android e",
+        "Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adaptativo ou num medalhão",
+        "(`Tools/art/launcher_icons.py`).",
         "",
         "| Arquivo no projeto | Arquivo no Commons | Autor | Licença |",
         "| --- | --- | --- | --- |",

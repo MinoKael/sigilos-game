@@ -26,6 +26,9 @@
     <Compile Include="..\GameEntry\Account\SessionLock.cs" LinkBase="Account" />
     <Compile Include="..\GameEntry\Account\CloudSave.cs" LinkBase="Account" />
     <Compile Include="..\GameEntry\Account\CloudSync.cs" LinkBase="Account" />
+    <!-- A atualização do executável: manifesto assinado, download conferido e troca de arquivos. -->
+    <Compile Include="..\GameEntry\Update\UpdateManifest.cs" LinkBase="Update" />
+    <Compile Include="..\GameEntry\Update\Updater.cs" LinkBase="Update" />
   </ItemGroup>
 
 </Project>

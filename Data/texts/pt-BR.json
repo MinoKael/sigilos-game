@@ -921,5 +921,24 @@
     "error_name": "O nome precisa de {0} a {1} caracteres, sem espaço: letras, números, _ . ou -, começando e terminando em letra ou número.",
     "error_name_taken": "Esse nome já é de outra conta. Escolha outro.",
     "lost_away": "Sua conta está aberta em outro aparelho. O que você jogou aqui sem conexão ficou neste aparelho: ele vai para a conta na próxima vez que você entrar aqui (se a conta também mudou lá, o jogo pergunta qual progresso fica)."
+  },
+
+  "update": {
+    "title": "Nova versão",
+    "required_title": "Atualização obrigatória",
+    "text": "Saiu a versão {0} (você tem a {1}). São {2} MB; no fim, o jogo fecha e abre de novo, já atualizado.",
+    "required_text": "A versão {1} não pode mais ser jogada. Atualize para a {0} para continuar: são {2} MB, e o jogo fecha e abre de novo, já atualizado.",
+    "install": "Atualizar",
+    "retry": "Tentar de novo",
+    "later": "Depois",
+    "quit": "Sair do jogo",
+    "browser": "Baixar no navegador",
+    "downloading": "Baixando a versão {0}…",
+    "progress": "{0} de {1} MB",
+    "installing": "Salvando e abrindo a versão nova…",
+    "error_offline": "Não deu para baixar: sem conexão com o servidor.",
+    "error_corrupt": "O arquivo baixado veio diferente do publicado e foi descartado.",
+    "error_write": "A pasta do jogo não aceita arquivos novos (sem permissão ou sem espaço). Mova o Sigilos para uma pasta sua, como a Área de Trabalho, ou baixe a versão nova no navegador.",
+    "error_install": "Não deu para trocar o jogo pela versão nova. Nada mudou: abra o jogo de novo e tente outra vez."
   }
 }

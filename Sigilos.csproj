@@ -9,7 +9,8 @@
   <!--
     Tests/ é um console app separado que compila Core/ por link. Sem este Remove, o Godot.NET.Sdk
     (que compila **/*.cs) puxaria os testes e o obj/ deles para dentro do jogo.
-    Tools/ só tem Python, mas fica fora pelo mesmo motivo. As duas pastas têm .gdignore.
+    Tools/ fica fora pelo mesmo motivo: tem Python e a ferramenta de publicar versões (Tools/release,
+    outro console app). As duas pastas têm .gdignore.
   -->
   <ItemGroup>
     <Compile Remove="android\**" />

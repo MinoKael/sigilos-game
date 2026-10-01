@@ -15,7 +15,8 @@ config/description="Gacha de fantasia offline para um jogador: colecione invoca√
 config/version="0.3.0"
 run/main_scene="res://Scenes/GameRoot.tscn"
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
-config/icon="uid://ceqfgwhm13jxe"
+config/icon="uid://uegdf4biqbje"
+config/windows_native_icon="res://Assets/Launcher/icon_windows.ico"
 
 [autoload]
 

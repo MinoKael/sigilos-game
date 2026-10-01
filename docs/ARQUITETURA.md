@@ -17,8 +17,9 @@ Data/*.json ──texto──▶ GameEntry ──▶ Core   (regras, sem Godot)
   (`GameButton`), símbolo sozinho só no ✕ e na seta de voltar, nenhuma dica de mouse, e toda
   explicação numa janela (`Dialog`) colada no elemento tocado.
 - **GameEntry/** é a raiz de composição: o `GameRoot` assina os eventos das telas, chama as regras do
-  Core, salva e troca de tela. É o único lugar que junta tudo. A conta (`GameEntry/Account/`) também
-  mora aqui: é a fronteira com a rede, e o Core não sabe que ela existe.
+  Core, salva e troca de tela. É o único lugar que junta tudo. A conta (`GameEntry/Account/`) e a
+  atualização do executável (`GameEntry/Update/`) também moram aqui: são a fronteira com a rede, e o
+  Core não sabe que elas existem.
 
 Dentro do Core:
 
@@ -60,6 +61,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Loja | ofertas em `Data/shop.json`; regra em `Core/Progression/Shop.cs` |
 | Qualquer texto da interface | `Data/texts/pt-BR.json` (a base) e a mesma chave em `Data/texts/en.json`, depois `py Tools/texts/check_texts.py`. Chave nova não pode ter o nome de um grupo que já existe (`filter.order` apagaria `filter.order.*`) |
 | Novo símbolo (ícone) | o SVG do acervo de game-icons.net copiado para a pasta dele em `Assets/` (ou baixado do Commons: `py Tools/art/fetch_commons_assets.py --chrome ...`), a linha de crédito em `Tools/art/commons_assets.csv`, `py Tools/art/fetch_commons_assets.py` (refaz `Assets/CREDITOS.md`), `py Tools/art/render_png.py` (os PNG) e `Art.Icon("nome")` |
+| Ícone do app (Android: launcher e splash; Windows: o `.exe` e a janela) | `py Tools/art/launcher_icons.py`: gera `Assets/Launcher` a partir de `Assets/Icons/rune.svg`, com as cores da paleta no topo do script; o docstring diz que arquivo vai em que campo (presets Android e Windows, e `application/config/windows_native_icon`) |
 | Símbolo de um efeito de batalha | `Assets/Effects/<efeito>.svg` (o nome do `StatusKind` em minúsculas) + render; no texto rico, `Texts.Term(StatusKind)` põe o símbolo na frente |
 | Símbolo de uma habilidade | `Art.Skill` (o efeito que ela aplica, senão o Glifo do que ela faz) |
 | Tamanho da runa em miniatura | `RuneTile.Side` (quadrada; cada lugar passa a escala) |
@@ -96,6 +98,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Fontes | `Assets/Fonts`: a SFC Wezards é a do jogo (com reserva do sistema para ★ × ⟳), a Kehdrai a das runas; carregadas em `GameTheme` |
 | Batalha automática (quantas lutas) | o padrão e o máximo em `Core/Battle/AutoBattle.cs` (`RepeatRuns`, `MaxRuns`); a escolha é o `AutoBattleSetup` |
 | Batalha automática por trás | `GameEntry/AutoBattleRunner.cs` (o nó que corre as lutas, mesmo com a tela trocada), `UI/AutoBattleRun.cs` (o estado que a interface lê, com o evento `Changed`), `UI/Components/AutoBattleBadge.cs` (o selo no alto) e `UI/Screens/AutoBattleDialog.cs` (a janela; as ações dela são o `AutoBattleActions` que o `GameRoot` monta) |
+| Atualização do executável do Windows | `GameEntry/Update/`: `UpdateManifest` (o `latest.json` assinado) e `Updater` (pergunta ao servidor, download conferido, troca do `.exe` e reabertura, com a chave pública em `Updater.PublicKey`). A janela é o `UpdateDialog`; o fluxo fica no `GameRoot` (seção "Atualização"). Publicar: `dotnet run --project Tools/release -- windows`. Tudo em `docs/ATUALIZACOES.md` |
 | Conta, login e save em nuvem | `GameEntry/Account/`: `AuthClient` (cadastro, login, tokens), `SessionLock` (um aparelho por vez: tomar, bater, soltar), `CloudSave` (baixar e enviar), `CloudSync` (quem ganha entre aparelho e nuvem), `AccountStore` (`user://nome.account.json`) e `AccountSession` (o nó que junta tudo, com o batimento e o envio periódico). As telas: `LoginScreen`, `SaveConflictDialog`, `AccountNameDialog` (o nome da conta, único no servidor e mostrado no Santuário) e a conta no `ConfigPanel`; o fluxo fica no `GameRoot` (seção "Conta"). O endereço do servidor é `AccountSession.DefaultServer` (`-- --server=url` troca). O servidor é outro repositório: `docs/SERVIDOR_PROPRIO.md` |
 | Coleção, Baú, equipes | `Core/Player/Roster.cs`, `Core/Player/Teams.cs`, `PlayerState.CollectionCapacity`/`TeamSize` |
 | Vagas do inventário de runas | `RuneInventory.Capacity` (runas equipadas, inclusive em monstro do Baú, não contam) |

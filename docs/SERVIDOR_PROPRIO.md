@@ -50,7 +50,8 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
   - Pacotes: `LiteDB`, `Microsoft.AspNetCore.Authentication.JwtBearer`; o limitador de requisições e
     o `PasswordHasher` já vêm no ASP.NET Core.
 - **Caddy** na frente: HTTPS automático e renovação do certificado. O Android recusa HTTP sem TLS por
-  padrão, então HTTPS não é opcional.
+  padrão, então HTTPS não é opcional. Ele também serve, direto do disco, a pasta `/releases/` com as
+  versões do executável do Windows (a atualização automática, [ATUALIZACOES.md](ATUALIZACOES.md)).
 - **Implantação:** `dotnet publish -c Release -r linux-arm64 --self-contained` (ou `linux-x64` na AMD).
   No ar, quem mantém o processo é o PM2 que a instância já usa (o README do servidor tem os passos).
 

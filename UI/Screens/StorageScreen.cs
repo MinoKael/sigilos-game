@@ -127,9 +127,9 @@ namespace Sigilos.UI.Screens
 			if (_selected is { } id && _player.Monster(id) == null)
 				_selected = _player.Collection.FirstOrDefault()?.Id;
 			_marked.RemoveWhere(marked => _player.Monster(marked) is not { Locked: false });
-            if (closeSelecting) _selecting = !_selecting;
+			if (closeSelecting) _selecting = !_selecting;
 
-            _currencies.Refresh(_player);
+			_currencies.Refresh(_player);
 			RefreshTools();
 			RefreshSelection();
 			RefreshRoster();
@@ -165,7 +165,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>A faixa da seleção: o que fazer, quantos marcados, e os botões de marcar, fundir e liberar.</summary>
 		private void RefreshSelection()
 		{
-            Layout.Clear(_selection);
+			Layout.Clear(_selection);
 			_selection.Visible = _selecting;
 			if (!_selecting)
 				return;

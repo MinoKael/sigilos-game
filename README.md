@@ -51,11 +51,27 @@ Argumentos de desenvolvimento do jogo (depois de `--`):
 - `--language=nome` usa `Data/texts/nome.json` (padrão: `pt-BR`; `en` para inglês).
 - `--server=url` usa outro servidor de contas (padrão: o da instância Oracle; ver
   [docs/SERVIDOR_PROPRIO.md](docs/SERVIDOR_PROPRIO.md)).
+- `--updates=url` procura versões novas em outra pasta (só no executável exportado do Windows; ver
+  [docs/ATUALIZACOES.md](docs/ATUALIZACOES.md)).
 - `--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela
   direto, no save sem conta (`map` é a tela Batalha, com Campanha e Masmorras).
 
 A primeira entrada na conta pede internet; depois, a conta lembrada abre sem ela e sincroniza quando a
 conexão voltar. Sem conta, o jogo segue todo local, como antes.
+
+## Publicar uma versão do Windows
+
+O executável do Windows se atualiza sozinho pelo servidor: ao abrir, oferece a versão nova, baixa,
+troca o próprio `.exe` e abre de novo. Para publicar, suba `application/config/version` no
+`project.godot`, exporte o Windows e rode:
+
+```bash
+dotnet run --project Tools/release -- windows --upload ubuntu@servidor:/home/ubuntu/sigilos/releases/windows/
+```
+
+O manifesto vai assinado com a chave privada de `%USERPROFILE%\.sigilos\update-key.pem`, que nunca
+entra no repositório: guarde uma cópia dela fora deste computador. Versão mínima, configuração do
+Caddy e como testar sem publicar: [docs/ATUALIZACOES.md](docs/ATUALIZACOES.md).
 
 O idioma também pode ser trocado no jogo, em Ajustes, na barra de baixo da tela inicial (fica salvo). No computador, segurar é apertar e esperar ou o botão direito; Esc
 é o Voltar.
@@ -95,9 +111,9 @@ py Tools/texts/check_texts.py
 | `Data/` | Conteúdo em JSON: o modelo de atributos, as famílias de invocação (um arquivo por família), chefes, fases, Masmorras e os textos da interface | — |
 | `UI/` | Telas e componentes Godot. Mostram e avisam por evento | Core |
 | `GameEntry/` | Nó raiz: carrega dados e save, troca telas, aplica regras | Core, UI |
-| `Assets/` | SVGs do Wikimedia Commons e o shader de traço | — |
+| `Assets/` | SVGs do Wikimedia Commons, o shader de traço e os ícones do app (`Launcher/`) | — |
 | `Tests/` | Console app: testes e simulador, compila `Core/` por link | Core |
-| `Tools/` | Scripts: baixar a arte do Commons, conferir os textos | — |
+| `Tools/` | Scripts: baixar a arte do Commons, conferir os textos, publicar uma versão do Windows (`Tools/release`) | — |
 | `addons/visual_debugger/` | Overlay de depuração visual (Ctrl+F1 a Ctrl+F4), independente do jogo | nada |
 
 Detalhes, regras de dependência e onde mexer para cada tipo de mudança: [docs/ARQUITETURA.md](docs/ARQUITETURA.md).
@@ -119,6 +135,14 @@ baixar ou trocar um SVG:
 
 ```bash
 py Tools/art/render_png.py
+```
+
+Os ícones do app ficam em `Assets/Launcher`, gerados da `Icons/rune.svg` em ouro sobre o couro da
+paleta: os do Android (launcher e splash), no tamanho de cada campo do preset, e o `.ico` do Windows (o
+script diz qual vai onde):
+
+```bash
+py Tools/art/launcher_icons.py
 ```
 
 Para baixar de novo (o Python do Inkscape não tem certificados SSL, use `py`; se o Wikimedia

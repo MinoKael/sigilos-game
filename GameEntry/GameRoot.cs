@@ -9,6 +9,7 @@ using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Summoning;
 using Sigilos.GameEntry.Account;
+using Sigilos.GameEntry.Update;
 using Sigilos.UI;
 using Sigilos.UI.Components;
 using Sigilos.UI.Screens;
@@ -35,9 +36,13 @@ namespace Sigilos.GameEntry
 	/// save local; quem tem conta lembrada entra sozinho. Outro aparelho entrando derruba este de volta
 	/// para o login.
 	///
+	/// O executável do Windows procura uma versão nova ao abrir e, se o jogador aceitar, se troca por ela
+	/// (<see cref="Updater"/>, docs/ATUALIZACOES.md).
+	///
 	/// Argumentos de desenvolvimento (depois de <c>--</c>): <c>--save=nome</c> usa outros arquivos de
 	/// save e de conta (outro "aparelho"); <c>--language=nome</c> usa Data/texts/nome.json (padrão: o do
-	/// save, ou pt-BR); <c>--server=url</c> usa outro servidor de contas;
+	/// save, ou pt-BR); <c>--server=url</c> usa outro servidor de contas; <c>--updates=url</c> procura
+	/// versões novas em outra pasta (só no executável exportado);
 	/// <c>--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto, no save sem conta.
 	/// </summary>
 	public partial class GameRoot : Node
@@ -63,6 +68,11 @@ namespace Sigilos.GameEntry
 
 		/// <summary>Uma sincronização no meio do jogo já corre (pedidos repetidos não abrem outra pergunta).</summary>
 		private bool _resyncing;
+
+		private Updater? _updater;
+
+		/// <summary>O download da versão nova em andamento (Cancelar e fechar o jogo param ele).</summary>
+		private System.Threading.CancellationTokenSource? _updateDownload;
 
 		/// <summary>Remonta a tela de agora (depois de uma janela que mudou algo, ou para voltar a ela).</summary>
 		private Action _current = () => { };
@@ -121,6 +131,8 @@ namespace Sigilos.GameEntry
 				PlayOffline(screen);
 			else
 				ShowLogin(resume: _account.Remembered);
+
+			CheckForUpdate();
 		}
 
 		public override void _Notification(int what)
@@ -416,6 +428,7 @@ namespace Sigilos.GameEntry
 			if (_quitting)
 				return;
 			_quitting = true;
+			_updateDownload?.Cancel();
 			Save();
 			if (_account.Playing)
 				await Task.WhenAny(FlushAndLeave(), Task.Delay(TimeSpan.FromSeconds(5)));
@@ -462,9 +475,10 @@ namespace Sigilos.GameEntry
 			return dialog;
 		}
 
+		/// <summary>Fecha as janelas da tela que sai. A da versão nova fica: ela vale para o jogo, não para uma tela.</summary>
 		private void CloseDialogs()
 		{
-			foreach (var dialog in _ui.GetChildren().OfType<Dialog>())
+			foreach (var dialog in _ui.GetChildren().OfType<Dialog>().Where(d => d.Name != UpdateDialog.NodeName))
 				dialog.Close();
 		}
 
@@ -480,6 +494,105 @@ namespace Sigilos.GameEntry
 			_database = ContentLoader.Load();
 			UiSession.Database = _database;
 			_badge.Show(_runner.Run);
+		}
+
+		// Atualização -------------------------------------------------------------------------------
+
+		/// <summary>
+		/// O executável exportado do Windows procura uma versão nova ao abrir, sem segurar nada: a resposta
+		/// chega com o jogo já na tela. No editor e nas outras plataformas, nunca (o executável seria o do
+		/// Godot, ou um APK que não se troca sozinho).
+		/// </summary>
+		private async void CheckForUpdate()
+		{
+			if (OS.GetName() != "Windows" || !OS.HasFeature("template")
+				|| !Version.TryParse(ProjectSettings.GetSetting("application/config/version").AsString(), out var current))
+				return;
+
+			var exe = OS.GetExecutablePath();
+			Updater.Cleanup(exe);
+			var source = Argument("--updates=") ?? $"{AccountSession.DefaultServer}releases/{Updater.Platform}/";
+			_updater = new Updater(new System.Net.Http.HttpClient
+			{
+				BaseAddress = new Uri(source.EndsWith('/') ? source : source + "/"),
+				Timeout = System.Threading.Timeout.InfiniteTimeSpan,
+			});
+			var check = await _updater.Check(current);
+			if (check.State is (UpdateState.Available or UpdateState.Required) && !_quitting)
+				OfferUpdate(exe, check.Manifest!, current, check.State == UpdateState.Required);
+		}
+
+		/// <summary>A janela da versão nova: baixa ao lado do executável, confere e instala.</summary>
+		private void OfferUpdate(string exe, UpdateManifest manifest, Version current, bool required)
+		{
+			var dialog = UpdateDialog.Open(_ui, manifest.Version, current, manifest.Size, required);
+			dialog.QuitRequested += Quit;
+			dialog.CancelRequested += () => _updateDownload?.Cancel();
+			dialog.BrowserRequested += () => OS.ShellOpen(_updater!.Address(manifest).ToString());
+			dialog.UpdateRequested += async () =>
+			{
+				if (_updateDownload != null)
+					return;
+
+				_updateDownload = new System.Threading.CancellationTokenSource();
+				dialog.ShowDownloading();
+				var result = await _updater!.Download(manifest, Updater.NewPath(exe), new Progress<long>(dialog.ShowProgress), _updateDownload.Token);
+				_updateDownload.Dispose();
+				_updateDownload = null;
+				if (_quitting)
+					return;
+
+				switch (result)
+				{
+					case DownloadResult.Done:
+						dialog.ShowInstalling();
+						InstallUpdate(exe, dialog);
+						break;
+					case DownloadResult.Canceled:
+						dialog.ShowOffer();
+						break;
+					case DownloadResult.CannotWrite:
+						dialog.ShowOffer(T("update.error_write"), browser: true);
+						break;
+					default:
+						dialog.ShowOffer(T(result == DownloadResult.Corrupt ? "update.error_corrupt" : "update.error_offline"));
+						break;
+				}
+			};
+		}
+
+		/// <summary>
+		/// Instala o executável baixado: grava, envia o que falta e solta a sessão, como ao fechar, e só então
+		/// troca os arquivos e fecha. Depois da troca nada mais pode carregar: o Godot lê o resto do jogo do
+		/// próprio .exe pelo caminho, que a essa altura já é o do novo. O novo abre quando este terminar.
+		/// </summary>
+		private async void InstallUpdate(string exe, UpdateDialog dialog)
+		{
+			if (_quitting)
+				return;
+			_quitting = true;
+			Save();
+			if (_account.Playing)
+				await Task.WhenAny(FlushAndLeave(), Task.Delay(TimeSpan.FromSeconds(5)));
+
+			try
+			{
+				Updater.Swap(exe);
+			}
+			catch (Exception e) when (e is System.IO.IOException or UnauthorizedAccessException)
+			{
+				// Nada trocou (o Swap desfaz), mas a conta já saiu: o certo é fechar e abrir de novo.
+				_quitting = false;
+				dialog.ShowFailed(T("update.error_install"));
+				return;
+			}
+
+			var arguments = OS.GetCmdlineArgs().ToList();
+			if (OS.GetCmdlineUserArgs() is { Length: > 0 } user)
+				arguments.AddRange(user.Prepend("--"));
+			// Se nem isso abrir, o jogo já está atualizado: o jogador abre de novo.
+			Updater.Relaunch(exe, OS.GetProcessId(), arguments);
+			GetTree().Quit();
 		}
 
 		// Telas -------------------------------------------------------------------------------------

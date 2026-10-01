@@ -9,7 +9,9 @@ novos foram copiados do acervo baixado de game-icons.net: são os mesmos desenho
 a coluna do Commons aponta para a página de cada um lá.
 
 Alteração feita: só o `width`/`height` do `<svg>` raiz, para o Godot rasterizar em 256 px (`Tools/art/fetch_commons_assets.py`). O desenho não muda. No jogo, as silhuetas
-pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.
+pretas são recoloridas pelo shader `Shaders/doodle.gdshader`. Os ícones do app em `Launcher/` (Android e
+Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adaptativo ou num medalhão
+(`Tools/art/launcher_icons.py`).
 
 | Arquivo no projeto | Arquivo no Commons | Autor | Licença |
 | --- | --- | --- | --- |
@@ -143,3 +145,4 @@ pretas são recoloridas pelo shader `Shaders/doodle.gdshader`.
 | `Creatures/pixie.svg` | [Fairy - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Fairy_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Creatures/pixie_awakened.svg` | [Woman-elf-face - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Woman-elf-face_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/unlock.svg` | [Padlock-open - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Padlock-open_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/rune.svg` | [Rune-stone - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Rune-stone_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
