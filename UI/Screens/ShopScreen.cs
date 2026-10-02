@@ -11,8 +11,10 @@ namespace Sigilos.UI.Screens
 {
 	/// <summary>
 	/// A Loja: as ofertas de Data/shop.json em bancas de couro — o que é, escrito ("30 Mana"), o símbolo
-	/// grande e o botão Comprar com o preço em Ouro (sem Ouro, diz quanto falta). Comprar pede
-	/// confirmação; o GameRoot aplica a regra (Core/Progression/Shop) e chama <see cref="Refresh"/>.
+	/// grande e o botão Comprar com o preço em Ouro (sem Ouro, diz quanto falta). Tocar no símbolo abre
+	/// para que a oferta serve. As bancas rolam de lado (arrastando, com o mouse também), com a barra à
+	/// vista embaixo delas. Comprar pede confirmação; o GameRoot aplica a regra (Core/Progression/Shop) e
+	/// chama <see cref="Refresh"/>.
 	/// </summary>
 	public partial class ShopScreen : Control
 	{
@@ -39,12 +41,18 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Shop"), _currencies, () => BackRequested?.Invoke()).Header);
 			page.AddChild(Layout.Text(T("shop.intro"), GameTheme.Faded).Named("Intro"));
+			page.AddChild(Layout.Text(T("shop.info_hint"), GameTheme.Faded).Named("InfoHint"));
 
+			// A fileira de bancas no meio da altura, com a barra logo embaixo dela, sempre à vista.
 			_offers.Alignment = BoxContainer.AlignmentMode.Center;
-			var scroll = Layout.Scroll(_offers);
-			scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Auto;
+			var shelf = new MarginContainer { Name = "Shelf" };
+			shelf.AddThemeConstantOverride("margin_bottom", 14);
+			shelf.AddChild(_offers);
+			var scroll = Layout.Scroll(shelf);
+			scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.ShowAlways;
 			scroll.VerticalScrollMode = ScrollContainer.ScrollMode.Disabled;
-			_offers.SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter;
+			scroll.SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter;
+			GameTheme.Grooved(scroll.GetHScrollBar());
 			page.AddChild(scroll);
 
 			_message.AddThemeColorOverride("font_color", Palette.Gold);
@@ -78,18 +86,14 @@ namespace Sigilos.UI.Screens
 				_ => Doodle.Icon(Art.Icon("scroll"), 100, Palette.Gold),
 			};
 			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
+			icon.MouseDefaultCursorShape = CursorShape.PointingHand;
+			// O símbolo explica a oferta (a Gema diz quantas o jogador já tem: ela não está em nenhuma barra).
+			void Explain() => Dialog.Info(icon, offer.Name, T($"shop.info.{offer.Item}", _player.ReappraisalGems));
+			Press.On(icon, Explain, Explain);
 			content.AddChild(icon);
 			var what = Layout.Text(offer.Name, GameTheme.Faded, 220).Named("What");
 			what.HorizontalAlignment = HorizontalAlignment.Center;
 			content.AddChild(what);
-			if (offer.Item == ShopItem.ReappraisalGems)
-			{
-				// O que a gema faz e quantas o jogador já tem: ela não aparece em nenhuma barra de moedas.
-				var info = Layout.Text(T("shop.reappraisal_info", _player.ReappraisalGems), GameTheme.Faded, 220).Named("Info");
-				info.HorizontalAlignment = HorizontalAlignment.Center;
-				info.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
-				content.AddChild(info);
-			}
 
 			var canBuy = Shop.CanBuy(_player, offer);
 			var buy = GameButton.Of(T("shop.buy_button"), () => Dialog.Confirm(this,

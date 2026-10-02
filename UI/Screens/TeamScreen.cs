@@ -74,6 +74,7 @@ namespace Sigilos.UI.Screens
 				CustomMinimumSize = new Vector2(0, 66),
 			};
 			contents.AddChild(_contents);
+			DragScroll.Enable(contents);
 			page.AddChild(contents);
 
 			var teamPanel = new PanelContainer { Name = "Team" };

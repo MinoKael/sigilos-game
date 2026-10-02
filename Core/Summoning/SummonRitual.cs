@@ -72,7 +72,7 @@ namespace Sigilos.Core.Summoning
 			return available.Contains(rarity) ? rarity : available.OrderBy(r => Math.Abs(r - rarity)).First();
 		}
 
-		private static SummonDefinition WeightedPick(Random random, IReadOnlyList<SummonDefinition> pool)
+		public static SummonDefinition WeightedPick(Random random, IReadOnlyList<SummonDefinition> pool)
 		{
 			static double Weight(SummonDefinition s) => s.Element is Element.Light or Element.Dark ? SummonRates.LightDarkWeight : 1;
 

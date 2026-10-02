@@ -7,14 +7,15 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// Uma runa em miniatura, quadrada de cantos redondos: as estrelas no alto, o Glifo do conjunto grande
-	/// no meio (na fonte das runas, na cor da raridade), o espaço no canto de baixo à esquerda e a melhora
-	/// no de baixo à direita. Sem runa, só o número do espaço, apagado.
+	/// no meio (na fonte das runas, na cor da raridade) e, embaixo, numa linha só, a seta do espaço à
+	/// esquerda e a melhora à direita. A seta aponta para onde o espaço fica no círculo das runas (o 1 no
+	/// alto, os outros em volta, no sentido do relógio). Sem runa, só a seta, grande e apagada.
 	///
 	/// Toque curto é <see cref="Pressed"/>; toque longo abre a ficha da runa (<see cref="RuneCard"/>) numa
 	/// janela colada nela. Escolhida, fica azul arcano; marcada para vender, ganha o ✓ verde. Na lista, a
-	/// runa equipada mostra no canto de baixo à esquerda o medalhão de quem a usa (apagado se ele está no
-	/// Baú); a bloqueada, um cadeado no meio da borda de baixo. O toque passa para cima, então arrastar
-	/// rola a lista.
+	/// runa equipada mostra no lugar da seta o medalhão de quem a usa (apagado se ele está no Baú); a
+	/// bloqueada, um cadeado no meio da linha de baixo. O toque passa para cima, então arrastar rola a
+	/// lista.
 	/// </summary>
 	public partial class RuneTile : PanelContainer
 	{
@@ -23,12 +24,22 @@ namespace Sigilos.UI.Components
 
 		public static readonly Vector2 TileSize = new(Side, Side);
 
+		/// <summary>A linha de baixo (seta, cadeado e melhora): a altura do centro dela acima da borda, na escala 1.</summary>
+		private const float BottomLine = 11;
+
+		/// <summary>A distância da seta e da melhora até a borda do lado, na escala 1.</summary>
+		private const float Inset = 5;
+
+		/// <summary>O lado da seta do espaço na linha de baixo, na escala 1.</summary>
+		private const float ArrowSide = 13;
+
 		private readonly StyleBoxFlat _box;
 		private readonly Color _color;
 		private readonly Control _layer = new() { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly float _scale;
 		private readonly int _stars;
+		private readonly Doodle? _arrow;
 		private readonly Press _press = new();
 		private bool _selected;
 		private bool _marked;
@@ -56,11 +67,12 @@ namespace Sigilos.UI.Components
 
 			if (rune == null)
 			{
-				var number = Small(slot.ToString(), new Color(Palette.GoldDark, 0.8f), 22).Named("Slot");
-				number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-				number.HorizontalAlignment = HorizontalAlignment.Center;
-				number.VerticalAlignment = VerticalAlignment.Center;
-				_layer.AddChild(number);
+				var side = 28 * scale;
+				var arrow = Arrow(slot, side, new Color(Palette.GoldDark, 0.8f));
+				arrow.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
+				arrow.OffsetLeft = arrow.OffsetTop = -side / 2;
+				arrow.OffsetRight = arrow.OffsetBottom = side / 2;
+				_layer.AddChild(arrow);
 			}
 			else
 			{
@@ -69,8 +81,14 @@ namespace Sigilos.UI.Components
 				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				glyph.OffsetTop = 6 * scale;
 				_layer.AddChild(glyph);
-				Corner(Small(slot.ToString(), Palette.Text, 12).Named("Slot"), LayoutPreset.BottomLeft);
-				Corner(Small($"{(rune.Level > 0 ? $"+{rune.Level}" : "")}", Palette.Text, 12, HorizontalAlignment.Right).Named("Level"), LayoutPreset.BottomRight);
+
+				// A linha de baixo: cada peça é centrada num ponto fixo dela, então a seta, o cadeado e a
+				// melhora ficam no mesmo lugar em qualquer escala e com qualquer texto.
+				var side = ArrowSide * scale;
+				_arrow = Arrow(slot, side, Palette.Text);
+				_layer.AddChild(OnBottomLine(_arrow, 0, Inset * scale + side / 2, GrowDirection.Both));
+				var level = Small(rune.Level > 0 ? $"+{rune.Level}" : "", Palette.Text, 12, HorizontalAlignment.Right).Named("Level");
+				_layer.AddChild(OnBottomLine(level, 1, -Inset * scale, GrowDirection.Begin));
 				if (rune.Locked)
 					LockBadge();
 			}
@@ -95,19 +113,24 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		/// <summary>Quem usa a runa: o medalhão do monstro no canto de baixo à esquerda (apagado se ele está no Baú).</summary>
+		/// <summary>Quem usa a runa: o medalhão do monstro no lugar da seta do espaço (apagado se ele está no Baú).</summary>
 		public void SetOwner(Texture2D? creature, Color ink, bool stored)
 		{
 			var size = 18 * _scale;
-			var holder = new Control { Name = "Owner", MouseFilter = MouseFilterEnum.Ignore };
-			holder.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
-			holder.OffsetLeft = 2 * _scale;
-			holder.OffsetRight = holder.OffsetLeft + size;
-			holder.OffsetBottom = -2 * _scale;
-			holder.OffsetTop = holder.OffsetBottom - size;
-			holder.AddChild(Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false));
-			_layer.AddChild(holder);
+			var holder = new Control { Name = "Owner", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(size, size) };
+			var medal = Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false);
+			medal.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			holder.AddChild(medal);
+			_layer.AddChild(OnBottomLine(holder, 0, (Inset + ArrowSide / 2) * _scale, GrowDirection.Both));
+			if (_arrow != null)
+				_arrow.Visible = false;
 		}
+
+		/// <summary>
+		/// Quanto a seta do espaço gira: o desenho aponta para baixo, e o espaço 1 fica no alto do círculo das
+		/// runas, os outros a cada 60°, no sentido do relógio (<see cref="SigilRing"/>).
+		/// </summary>
+		public static float SlotRotation(int slot) => Mathf.DegToRad(-180 + 60 * (slot - 1));
 
 		/// <summary>
 		/// Uma faixa escrita por cima da runa ("Vendida"), no centro da pedra, e a runa apagada por baixo.
@@ -138,18 +161,40 @@ namespace Sigilos.UI.Components
 			AddChild(center);
 		}
 
-		/// <summary>O cadeado da runa bloqueada: uma plaquinha no meio da borda de baixo, entre o espaço e a melhora.</summary>
+		/// <summary>O cadeado da runa bloqueada: uma plaquinha no meio da linha de baixo, entre a seta e a melhora.</summary>
 		private void LockBadge()
 		{
 			var size = 16 * _scale;
 			var badge = new PanelContainer { Name = "Lock", MouseFilter = MouseFilterEnum.Ignore };
 			badge.AddThemeStyleboxOverride("panel", GameTheme.Box(new Color(Palette.Inset, 0.92f), Palette.GoldDark, 1, (int)size, (int)(2 * _scale)));
 			badge.AddChild(Doodle.Icon(Art.Icon("lock"), (int)(size - 4 * _scale), Palette.Gold).Named("Icon"));
-			badge.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
-			badge.GrowHorizontal = GrowDirection.Both;
-			badge.GrowVertical = GrowDirection.Begin;
-			badge.OffsetTop = badge.OffsetBottom = -2 * _scale;
-			_layer.AddChild(badge);
+			_layer.AddChild(OnBottomLine(badge, 0.5f, 0, GrowDirection.Both));
+		}
+
+		/// <summary>A seta do espaço, girada para ele, num quadrado de <paramref name="side"/> px.</summary>
+		private static Doodle Arrow(int slot, float side, Color ink) =>
+			new(Art.Icon("arrow"), ink, boil: false)
+			{
+				Name = "Slot",
+				CustomMinimumSize = new Vector2(side, side),
+				PivotOffset = new Vector2(side, side) / 2,
+				Rotation = SlotRotation(slot),
+			};
+
+		/// <summary>
+		/// Prende o controle à linha de baixo pelo centro: na altura <see cref="BottomLine"/> e em
+		/// <paramref name="x"/> px da borda que <paramref name="anchor"/> marca (0 esquerda, 0,5 meio,
+		/// 1 direita). Ele cresce a partir desse ponto, então o tamanho do texto não o tira do lugar.
+		/// </summary>
+		private Control OnBottomLine(Control control, float anchor, float x, GrowDirection horizontal)
+		{
+			control.AnchorLeft = control.AnchorRight = anchor;
+			control.AnchorTop = control.AnchorBottom = 1;
+			control.OffsetLeft = control.OffsetRight = x;
+			control.OffsetTop = control.OffsetBottom = -BottomLine * _scale;
+			control.GrowHorizontal = horizontal;
+			control.GrowVertical = GrowDirection.Both;
+			return control;
 		}
 
 		/// <summary>Marca para desfazer em massa.</summary>
@@ -192,22 +237,6 @@ namespace Sigilos.UI.Components
 			_box.BgColor = _marked ? Palette.Inset.Lerp(Palette.Spirit, 0.18f) : hover ? Palette.Inset.Lightened(0.06f) : Palette.Inset;
 			_box.ShadowColor = _selected ? new Color(Palette.Arcane, 0.4f) : new Color(_color, hover ? 0.3f : 0);
 			_box.ShadowSize = _selected || hover ? 5 : 0;
-		}
-
-		/// <summary>Um número num canto, por cima do Glifo.</summary>
-		private void Corner(Label label, LayoutPreset corner)
-		{
-			label.SetAnchorsAndOffsetsPreset(corner);
-			var right = corner is LayoutPreset.TopRight or LayoutPreset.BottomRight;
-			var bottom = corner is LayoutPreset.BottomLeft or LayoutPreset.BottomRight;
-			label.GrowHorizontal = right ? GrowDirection.Begin : GrowDirection.End;
-			label.GrowVertical = bottom ? GrowDirection.Begin : GrowDirection.End;
-			var pad = 4 * _scale;
-			label.OffsetLeft += right ? -pad : pad;
-			label.OffsetRight += right ? -pad : pad;
-			label.OffsetTop += bottom ? -pad : pad;
-			label.OffsetBottom += bottom ? pad : -pad;
-			_layer.AddChild(label);
 		}
 
 		private Label Small(string text, Color color, int size, HorizontalAlignment? horizontalAlignment = null, VerticalAlignment? verticalAlignment = null)

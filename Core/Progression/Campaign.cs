@@ -61,8 +61,9 @@ namespace Sigilos.Core.Progression
 				? RuneInventory.Create(random, player, stage.RuneGrade)
 				: null;
 
-			var summon = database.Summons.Where(s => s.Rarity == MonsterRarityDrop).OrderBy(_ => random.Next()).FirstOrDefault();
-			SummonResult? summonResult = null;
+            var pool = database.Summons.Where(s => s.Rarity == MonsterRarityDrop).ToList();
+            var summon = SummonRitual.WeightedPick(random, pool);
+            SummonResult? summonResult = null;
 			if (random.NextDouble() < MonsterChance && summon != null)
 			{
 				// Primeira cópia se ainda não tinha nenhuma: tem de olhar antes de entregar esta.

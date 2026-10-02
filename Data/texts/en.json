@@ -492,7 +492,12 @@
     "intro": "Trade the Gold you earn by playing for Mana or Scrolls.",
     "buy_button": "Buy",
     "confirm_title": "Confirm purchase",
-    "reappraisal_info": "Returns a rune to the state it dropped in: removes upgrades, Grindstones and the enchantment. You have {0}."
+    "info_hint": "Touch an offer's symbol to see what it is for.",
+    "info": {
+      "Mana": "Pays for victories: every fight won, in the Campaign or in a Dungeon, costs Mana (a defeat costs nothing). Channeling refills it over time; Mana bought here can go past the maximum.",
+      "Scrolls": "Summon monsters: each Scroll is one summon, and every summon counts toward the 5★ guarantee.",
+      "ReappraisalGems": "Returns a rune to the state it dropped in: removes upgrades, Grindstones and the enchantment. You have {0}."
+    }
   },
 
   "monsters": {

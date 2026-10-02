@@ -208,7 +208,7 @@ namespace Sigilos.UI.Components
 			return flow;
 		}
 
-		/// <summary>Rolagem vertical: a gema do tema, sem trilho.</summary>
+		/// <summary>Rolagem vertical: a gema do tema, sem trilho. Arrastar com o mouse também rola (<see cref="DragScroll"/>).</summary>
 		public static ScrollContainer Scroll(Control content)
 		{
 			var scroll = new ScrollContainer
@@ -222,6 +222,7 @@ namespace Sigilos.UI.Components
 			};
 			content.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 			scroll.AddChild(content);
+			DragScroll.Enable(scroll);
 			return scroll;
 		}
 

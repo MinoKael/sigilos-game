@@ -104,10 +104,13 @@ namespace Sigilos.UI.Screens
 			_cards.AddThemeConstantOverride("v_separation", 12);
 			_results.AddChild(_cards);
 			var after = Layout.Row(12, true).Named("After");
-			after.AddChild(GameButton.Of(T("summon.view_monsters"), () => MonstersRequested?.Invoke(), ButtonKind.Secondary, "monster").Named("ViewMonsters"));
+			after.AddChild(GameButton.Of(T("summon.view_monsters"), () => MonstersRequested?.Invoke(), ButtonKind.Secondary, "monster").Wide(300).Named("ViewMonsters"));
 			_results.AddChild(after);
 			_stage.AddChild(_results);
 			_stage.Resized += Center;
+			// O resultado não está num contêiner: quando o texto do botão quebra linha, ele primeiro mede
+			// uma letra por linha e depois encolhe; sem centralizar de novo, o bloco ficava da altura da tela.
+			_results.MinimumSizeChanged += Center;
 
 			// O portal em repouso, dentro do anel da garantia: some quando o primeiro ritual começa.
 			var idle = new Control { Name = "Idle", MouseFilter = MouseFilterEnum.Ignore, Size = new Vector2(PortalSize, PortalSize) };

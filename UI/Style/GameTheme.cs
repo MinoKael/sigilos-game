@@ -214,6 +214,40 @@ namespace Sigilos.UI.Style
 			theme.SetStylebox("panel", "ScrollContainer", new StyleBoxEmpty());
 		}
 
+		/// <summary>
+		/// A barra com o trilho à vista: um sulco escuro por baixo da gema, os dois com
+		/// <paramref name="thickness"/> px. Para a lista que rola de lado, onde a gema fina sozinha não
+		/// mostra que há mais coisa.
+		/// </summary>
+		public static void Grooved(ScrollBar bar, float thickness = 12)
+		{
+			var vertical = bar is VScrollBar;
+			var side = (ScrollbarHit - thickness) / 2f;
+			var groove = new StyleBoxFlat { BgColor = new Color(0, 0, 0, 0.45f), BorderColor = new Color(Palette.GoldDark, 0.7f), AntiAliasing = true };
+			groove.SetBorderWidthAll(1);
+			groove.SetCornerRadiusAll((int)thickness);
+			groove.SetContentMarginAll(2);
+			if (vertical)
+			{
+				groove.ContentMarginLeft = groove.ContentMarginRight = side;
+				groove.ExpandMarginLeft = groove.ExpandMarginRight = -side;
+			}
+			else
+			{
+				groove.ContentMarginTop = groove.ContentMarginBottom = side;
+				groove.ExpandMarginTop = groove.ExpandMarginBottom = -side;
+			}
+
+			bar.AddThemeStyleboxOverride("scroll", groove);
+			bar.AddThemeStyleboxOverride("scroll_focus", groove);
+			bar.AddThemeStyleboxOverride("grabber", Thin(Ornament.Gem(Palette.GoldDark), vertical, side));
+			bar.AddThemeStyleboxOverride("grabber_highlight", Thin(Ornament.Gem(Palette.Gold), vertical, side));
+			bar.AddThemeStyleboxOverride("grabber_pressed", Thin(Ornament.Gem(Palette.Arcane), vertical, side));
+			// A faixa inteira de tocar: só com as margens ela teria a altura das margens, e a gema e o
+			// sulco, que encolhem a mesma coisa, sumiriam.
+			bar.CustomMinimumSize = vertical ? new Vector2(ScrollbarHit, 0) : new Vector2(0, ScrollbarHit);
+		}
+
 		/// <summary>A largura da faixa de tocar e arrastar da barra de rolagem.</summary>
 		public const float ScrollbarHit = 22;
 

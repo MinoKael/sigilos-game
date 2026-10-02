@@ -493,7 +493,12 @@
     "intro": "Troque o Ouro que você ganha jogando por Mana ou Pergaminhos.",
     "buy_button": "Comprar",
     "confirm_title": "Confirmar compra",
-    "reappraisal_info": "Devolve a runa ao estado original."
+    "info_hint": "Toque no símbolo de uma oferta para ver para que ela serve.",
+    "info": {
+      "Mana": "Paga as vitórias: cada luta vencida, na Campanha ou numa Masmorra, custa Mana (a derrota não custa nada). A Canalização recarrega com o tempo; a Mana comprada aqui pode passar do máximo.",
+      "Scrolls": "Invocam monstros: cada Pergaminho é uma invocação, e toda invocação conta para a garantia de 5★.",
+      "ReappraisalGems": "Devolve a runa ao estado original."
+    }
   },
 
   "monsters": {
