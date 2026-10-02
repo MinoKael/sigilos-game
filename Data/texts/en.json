@@ -539,7 +539,7 @@
     "none_selected": "Choose a monster on the left.",
     "level_hint": "Levels up by infusing Essence: {0} experience per Essence. Victories also give experience to the team that fought.",
     "fully_grown": "At the maximum: 6★ and max level.",
-    "stats_hint": "Green: what the runes add.",
+    "stats_hint": "The number is the total, runes and sets included; in green, how much of it the runes added.",
     "no_runes": "No runes equipped yet.",
     "no_sets": "No complete set: 2 or 4 runes of the same set give its bonus.",
     "awaken_title": "Awaken?",
@@ -602,7 +602,7 @@
     "new": "new",
     "inventory_full": "Rune inventory full ({0}): dismantle runes before removing this one.",
     "remove": "Remove",
-    "equip_on": "Equip on {0}",
+    "equip_on": "Equip",
     "grind": "Grind",
     "enchant": "Enchant",
     "dialog_title": "Rune",
@@ -704,7 +704,7 @@
       "crit": { "title": "Critical hits", "text": "A critical hit multiplies damage by 1 + Crit Damage. Every monster starts with 15% Crit Rate and 50% Crit Damage." },
       "resistance": { "title": "Resistance and Accuracy", "text": "Every harmful effect can be blocked: the chance is the target's Resistance minus the caster's Accuracy, never below {0}." },
       "leader": { "title": "Leader", "text": "The first one in the team applies its Leadership to everyone. The percentage is on the base stat, never on what came from runes." },
-      "auto": { "title": "Auto and Auto Battle", "text": "Auto uses the strongest ready skill on its own. Stages and floors already cleared get Auto Battle: you choose how many fights in a row ({0} to start), each taking the time it would take on auto at 2×. It keeps going while you do other things (manage runes, level monsters); the notice at the top of the screen shows the progress and opens its window. It stops when you press Stop, when Mana runs out or when the rune inventory is full." },
+      "auto": { "title": "Auto and Auto Battle", "text": "Auto uses the strongest ready skill on its own. Stages and floors already beaten get the Auto Battle: you choose how many fights in a row ({0} to start), each taking the time it would on Auto at 2×. It keeps going while you do other things (tending runes, leveling monsters); the notice at the top of the screen shows the progress and opens its window. It stops when you press Stop, when Mana runs out or when the rune inventory fills up. Tap an enemy during a fight to mark it: Auto strikes it while it can (hold the enemy to see its summary). In a fight with a boss, the pause has \"Focus the boss on Auto\": on, the whole team strikes the boss whenever it can." },
       "elements": "Elements",
       "elements_text": "With advantage, damage goes up {0}; with disadvantage, it goes down {1}. Auto targets whoever it beats first.",
       "wins": "{0} beats {1}"
@@ -833,7 +833,16 @@
     "effects_help_active": "The effects in play right now:",
     "effects_help_all": "No effect in play right now; these are all of them:",
     "opened": "New in the Sanctuary:",
-    "opened_new": "new"
+    "opened_new": "new",
+    "boss": "Boss",
+    "boss_level": "Lv {0}",
+    "boss_health": "{0} / {1}",
+    "boss_wave": "Wave {0} · Boss: {1}",
+    "focus_boss_on": "Focus the boss on Auto: on",
+    "focus_boss_off": "Focus the boss on Auto: off",
+    "focus_boss_tip": "On Auto (and in the Auto Battle), the whole team strikes the boss whenever it can be targeted. Taunt still wins.",
+    "focus_on": "Focus",
+    "focus_off": "Focus off"
   },
 
   "destination": {

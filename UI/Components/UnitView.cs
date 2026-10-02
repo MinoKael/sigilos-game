@@ -9,16 +9,24 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma unidade em campo, quase quadrada: o desenho, com o elemento e o nível nos cantos de cima e os
-	/// efeitos e as recargas nos de baixo; embaixo dele a barra de Vida (o escudo por cima, o número
-	/// dentro) e a de Ímpeto. Toque curto é <see cref="Pressed"/> (escolher o alvo); toque longo é
+	/// Uma unidade em campo, quase quadrada: o desenho, com o elemento e o nível nos cantos de cima e as
+	/// recargas no de baixo; embaixo dele a barra de Vida (o escudo por cima, o número dentro) e a de
+	/// Ímpeto. Os efeitos ficam numa fileira de quadradinhos em cima do cartão (<see cref="StatusChip"/>:
+	/// vermelho o negativo, verde o positivo, com os turnos no canto). Toque curto é <see cref="Pressed"/> (escolher o alvo); toque longo é
 	/// <see cref="LongPressed"/> (o resumo da unidade, sem parar a luta). Lê o estado do
 	/// <see cref="BattleUnit"/> em <see cref="Refresh"/>; o avanço de quem age é da
 	/// <see cref="BattleArena"/>, o tremor daqui.
+	///
+	/// O chefe tem o cartão <see cref="BossScale"/> vezes maior (desenho, marcas e barras juntos) e a
+	/// moldura vermelha acesa; a barra grande no alto da tela (<see cref="BossBar"/>) acompanha
+	/// <see cref="Refreshed"/>.
 	/// </summary>
 	public partial class UnitView : PanelContainer
 	{
 		public static readonly Vector2 CardSize = new(100, 116);
+
+		/// <summary>Quanto o cartão do chefe é maior.</summary>
+		public const float BossScale = 1.5f;
 
 		private readonly StyleBoxFlat _box;
 		private readonly ProgressBar _health;
@@ -28,15 +36,18 @@ namespace Sigilos.UI.Components
 		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Label _cooldown = new() { Name = "Cooldowns", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Press _press = new();
+		private readonly float _scale;
+		private readonly Doodle _focusMark;
 		private bool _active;
 		private bool _targetable;
 
 		public UnitView(BattleUnit unit)
 		{
 			Unit = unit;
-			CustomMinimumSize = CardSize;
+			_scale = unit.IsBoss ? BossScale : 1;
+			CustomMinimumSize = CardSize * _scale;
 			MouseFilter = MouseFilterEnum.Stop;
-			PivotOffset = CardSize / 2;
+			PivotOffset = CustomMinimumSize / 2;
 			_press.Tapped += () => Pressed?.Invoke(this);
 			_press.Held += () => LongPressed?.Invoke(this);
 
@@ -50,43 +61,60 @@ namespace Sigilos.UI.Components
 			// O desenho, com as quatro marcas nos cantos por cima dele.
 			var art = new Control { Name = "Art", SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
 			art.AddChild(Doodle.Masked(Art.Creature(unit.Image), Palette.Of(unit.Element), MaskShape.Rounded, 6, aura: unit.Awakened ? unit.Element : null));
-			var element = Doodle.Icon(Art.Element(unit.Element), 16, Palette.Of(unit.Element)).Named("Element");
+			var element = Doodle.Icon(Art.Element(unit.Element), (int)(16 * _scale), Palette.Of(unit.Element)).Named("Element");
 			element.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
 			art.AddChild(element);
-			var level = Corner(new Label { Name = "Level", Text = unit.Level.ToString(), ThemeTypeVariation = GameTheme.Number }, LayoutPreset.TopRight, 13);
+			var level = Corner(new Label { Name = "Level", Text = unit.Level.ToString(), ThemeTypeVariation = GameTheme.Number }, LayoutPreset.TopRight, (int)(13 * _scale));
 			if (unit.Awakened)
 				level.AddThemeColorOverride("font_color", Palette.Awakened);
 			art.AddChild(level);
-			_statuses.AddThemeConstantOverride("separation", 1);
-			_statuses.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
-			_statuses.GrowVertical = GrowDirection.Begin;
+			// Os efeitos em cima do cartão, por fora da moldura, crescendo para a direita.
+			var chip = ChipSide;
+			// O selo dos turnos sai um pouco do canto de cada quadradinho: o espaço entre eles não deixa cobrir o vizinho.
+			_statuses.AddThemeConstantOverride("separation", 9);
+			_statuses.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
+			_statuses.OffsetTop = _statuses.OffsetBottom = -(chip + 10);
+			_statuses.OffsetLeft = _statuses.OffsetRight = -4;
 			art.AddChild(_statuses);
-			art.AddChild(Corner(_cooldown, LayoutPreset.BottomRight, 11));
+			art.AddChild(Corner(_cooldown, LayoutPreset.BottomRight, (int)(11 * _scale)));
+
+			// A mira do foco, no meio do desenho, por cima: só no inimigo que o jogador marcou.
+			var mark = (int)(46 * _scale);
+			_focusMark = Doodle.Icon(Art.Icon("target"), mark, Palette.Gold).Named("Focus");
+			_focusMark.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
+			_focusMark.OffsetLeft = _focusMark.OffsetTop = -mark / 2f;
+			_focusMark.OffsetRight = _focusMark.OffsetBottom = mark / 2f;
+			_focusMark.Visible = false;
+			art.AddChild(_focusMark);
 			column.AddChild(art);
 
-			var bars = new Control { Name = "Bars", CustomMinimumSize = new Vector2(0, 12), MouseFilter = MouseFilterEnum.Ignore };
-			_health = Bar(Palette.Health, 12).Named("Health");
-			_shield = Bar(Palette.Shield, 4).Named("Shield");
+			var bars = new Control { Name = "Bars", CustomMinimumSize = new Vector2(0, 12 * _scale), MouseFilter = MouseFilterEnum.Ignore };
+			_health = Bar(Palette.Health, (int)(12 * _scale)).Named("Health");
+			_shield = Bar(Palette.Shield, (int)(4 * _scale)).Named("Shield");
 			_health.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			_shield.SetAnchorsAndOffsetsPreset(LayoutPreset.TopWide);
 			bars.AddChild(_health);
 			bars.AddChild(_shield);
-			_healthText = Corner(new Label { Name = "HealthText", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }, LayoutPreset.FullRect, 10);
+			_healthText = Corner(new Label { Name = "HealthText", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }, LayoutPreset.FullRect, (int)(10 * _scale));
 			bars.AddChild(_healthText);
 			column.AddChild(bars);
 
-			_impeto = Bar(Palette.Arcane, 4).Named("Impetus");
+			_impeto = Bar(Palette.Arcane, (int)(4 * _scale)).Named("Impetus");
 			column.AddChild(_impeto);
 
 			MouseEntered += Restyle;
 			MouseExited += Restyle;
 			Refresh();
+			Restyle();
 		}
 
 		public event Action<UnitView>? Pressed;
 
 		/// <summary>Toque longo (ou clique direito): o resumo da unidade.</summary>
 		public event Action<UnitView>? LongPressed;
+
+		/// <summary>O cartão releu a unidade (Vida, escudo, efeitos): a barra do chefe acompanha.</summary>
+		public event Action<UnitView>? Refreshed;
 
 		public BattleUnit Unit { get; }
 
@@ -104,17 +132,16 @@ namespace Sigilos.UI.Components
 			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}" : Unit.Reviving ? T("battle.reviving") : T("battle.fallen");
 			_impeto.Value = Unit.Impeto;
 
+			// Um quadradinho por efeito; vários do mesmo (o Veneno acumula) mostram o prazo mais longo.
 			Layout.Clear(_statuses);
-			foreach (var kind in Unit.Statuses.Where(s => s.Kind != StatusKind.Shield).Select(s => s.Kind).Distinct())
-			{
-				var ink = BattleRules.IsNegative(kind) ? Palette.Negative : Palette.Positive;
-				_statuses.AddChild(Doodle.Icon(Art.Effect(kind), 14, ink));
-			}
+			foreach (var group in Unit.Statuses.Where(s => s.Kind != StatusKind.Shield).GroupBy(s => s.Kind))
+				_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns), ChipSide));
 
 			_cooldown.Text = string.Join(" ", Enumerable.Range(1, Math.Max(0, Unit.Skills.Count - 1))
 				.Where(i => Unit.Cooldown(i) > 0)
 				.Select(i => $"⟳{Unit.Cooldown(i)}"));
 			Modulate = Unit.IsAlive ? Colors.White : new Color(1, 1, 1, 0.35f);
+			Refreshed?.Invoke(this);
 		}
 
 		/// <summary>Quem está agindo: moldura de ouro com aura.</summary>
@@ -123,6 +150,12 @@ namespace Sigilos.UI.Components
 			_active = active;
 			Restyle();
 		}
+
+		/// <summary>O lado dos quadradinhos de efeito: maiores no chefe.</summary>
+		private int ChipSide => _scale > 1 ? 28 : StatusChip.Side;
+
+		/// <summary>O inimigo marcado como foco do automático: a mira dourada por cima do desenho.</summary>
+		public void SetFocused(bool focused) => _focusMark.Visible = focused;
 
 		/// <summary>Marca a unidade como alvo possível de um clique: aura arcana e a mãozinha.</summary>
 		public void SetTargetable(bool targetable)
@@ -152,12 +185,14 @@ namespace Sigilos.UI.Components
 		private void Restyle()
 		{
 			var hover = IsInsideTree() && GetGlobalRect().HasPoint(GetGlobalMousePosition());
-			var ring = _targetable ? Palette.Arcane : _active ? Palette.Gold : Unit.Side == Core.Battle.Side.Allies ? Palette.GoldDark : Palette.Negative.Darkened(0.4f);
+			var boss = Unit.IsBoss;
+			var ring = _targetable ? Palette.Arcane : _active ? Palette.Gold : boss ? Palette.Negative : Unit.Side == Core.Battle.Side.Allies ? Palette.GoldDark : Palette.Negative.Darkened(0.4f);
 			_box.BorderColor = hover && _targetable ? Palette.Arcane.Lightened(0.3f) : ring;
-			_box.SetBorderWidthAll(_active || _targetable ? 3 : 2);
+			_box.SetBorderWidthAll(_active || _targetable || boss ? 3 : 2);
 			_box.BgColor = _targetable ? Palette.Inset.Lerp(Palette.Arcane, hover ? 0.2f : 0.08f) : Palette.Inset;
-			_box.ShadowColor = _targetable ? new Color(Palette.Arcane, 0.45f) : _active ? new Color(Palette.Gold, 0.4f) : new Color(0, 0, 0, 0);
-			_box.ShadowSize = _active || _targetable ? 8 : 0;
+			// O chefe brilha em vermelho o tempo todo: é a luta grande.
+			_box.ShadowColor = _targetable ? new Color(Palette.Arcane, 0.45f) : _active ? new Color(Palette.Gold, 0.4f) : boss ? new Color(Palette.Negative, 0.45f) : new Color(0, 0, 0, 0);
+			_box.ShadowSize = _active || _targetable ? 8 : boss ? 12 : 0;
 		}
 
 		/// <summary>Um rótulo pequeno, contornado para ler sobre o desenho, preso num canto (ou no retângulo todo).</summary>

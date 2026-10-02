@@ -59,7 +59,7 @@ namespace Sigilos.UI.Screens
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly HBoxContainer _tools = Layout.Row(10).Named("Tools");
-		private readonly HFlowContainer _selection = Layout.Flow(8).Named("Selection");
+		private readonly GridContainer _selection = Layout.Grid(3, 8).Named("Selection");
 		private readonly TileGrid _roster = new(10) { Name = "Roster" };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
 		private readonly TextTabs _pages = new(vertical: true, 64) { Name = "Pages" };
@@ -466,12 +466,12 @@ namespace Sigilos.UI.Screens
 			actions.AddChild(GameButton.Of(T("monsters.runes_button"), () => RunesRequested?.Invoke(monster.Id), ButtonKind.Primary, "rune").Named("OpenRunes"));
 			_detail.AddChild(actions);
 
-			var ring = new SigilRing(300) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
+			var ring = new SigilRing(280) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
 			var tiles = new List<Control>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
 				var tile = new RuneTile(runes.FirstOrDefault(r => r.Slot == slot), slot, 1.1f) { Name = $"Slot{slot}" };
-				tile.Pressed += _ => RunesRequested?.Invoke(monster.Id);
+				tile.Pressed += _ => { if (tile.Rune != null) RuneDialog.Show(tile, tile.Rune); };
 				tiles.Add(tile);
 			}
 
@@ -513,7 +513,7 @@ namespace Sigilos.UI.Screens
 			var copies = FusionDialog.Candidates(_database, _player, monster).Count(c => !c.Locked);
 			var left = Fusion.SkillUpsLeft(_database, monster);
 			_detail.AddChild(Layout.Text(left == 0 ? T("monsters.fuse_full") : T("monsters.fuse_hint", left, copies), GameTheme.Faded).Named("FuseHint"));
-			var actions = Layout.Flow(10).Named("Actions");
+			var actions = Layout.Grid(2, 10).Named("Actions");
 			var fuse = GameButton.Of(T("monsters.fuse_open"), () => FusionDialog.Open(this, _database, _player, monster, ids => FuseRequested?.Invoke(monster.Id, ids)), ButtonKind.Primary, "fuse").Named("Fuse");
 			fuse.Disabled = copies == 0 || left == 0;
 			actions.AddChild(fuse);

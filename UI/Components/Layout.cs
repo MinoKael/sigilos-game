@@ -186,7 +186,20 @@ namespace Sigilos.UI.Components
 			return row;
 		}
 
-		/// <summary>Fileira que quebra linha.</summary>
+		/// <summary>
+		/// Grade de botões: <paramref name="columns"/> colunas que dividem a largura toda, e cada
+		/// <see cref="GameButton"/> preenche a célula dele. É o jeito de pôr botões lado a lado; a
+		/// <see cref="Flow"/> fica para fichas e chips, que têm largura própria.
+		/// </summary>
+		public static GridContainer Grid(int columns, int separation = 8)
+		{
+			var grid = new GridContainer { Columns = columns, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			grid.AddThemeConstantOverride("h_separation", separation);
+			grid.AddThemeConstantOverride("v_separation", separation);
+			return grid;
+		}
+
+		/// <summary>Fileira que quebra linha (fichas, chips, cartões; botões vão na <see cref="Grid"/>).</summary>
 		public static HFlowContainer Flow(int separation = 8)
 		{
 			var flow = new HFlowContainer();

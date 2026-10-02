@@ -124,6 +124,8 @@ namespace Sigilos.GameEntry
 			_badge.Pressed += OpenAutoBattle;
 			AddChild(_runner);
 			_runner.RunChanged += run => _badge.Show(run);
+			// No PC, a janela fica sempre em 16:9.
+			AddChild(new WindowAspect());
 
 			// Com --screen (desenvolvimento), ou depois de escolher jogar sem conta, abre direto o save local.
 			var screen = Argument("--screen=");
@@ -919,7 +921,7 @@ namespace Sigilos.GameEntry
 			Save();
 			var team = PlayerTeam.Build(_player, _database, content);
 			var session = BattleFactory.Create(_database, team, encounter, _random.Next());
-			var battle = new BattleScreen(session, title, _player.AutoBattle);
+			var battle = new BattleScreen(session, title, _player.AutoBattle, focusBoss: _player.FocusBoss);
 			var finished = false;
 			battle.Finished += victory =>
 			{
@@ -936,6 +938,11 @@ namespace Sigilos.GameEntry
 				var result = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
 				var tips = victory ? null : DefeatAdvice.For(_player, _database, before.Select(b => b.Monster).ToList(), encounter);
 				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest, tips, victory ? opened : null));
+			};
+			battle.FocusBossChanged += on =>
+			{
+				_player.FocusBoss = on;
+				Save();
 			};
 			battle.RuneSellRequested += rune =>
 			{
@@ -985,7 +992,8 @@ namespace Sigilos.GameEntry
 				{
 					var session = BattleFactory.Create(_database, PlayerTeam.Build(_player, _database, content), encounter, _random.Next());
 					var log = new List<BattleEvent>();
-					var won = AutoBattle.Run(session, log);
+					// A escolha da pausa vale aqui também, lida a cada luta.
+					var won = AutoBattle.Run(session, log, _player.FocusBoss);
 					return (won, BattlePace.Seconds(log, BattlePace.AutoBattleFactor));
 				}, victory, () =>
 				{

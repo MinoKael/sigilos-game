@@ -177,6 +177,10 @@ Como em Summoners War: a primeira habilidade é a básica, sempre pronta; as out
 - **Níveis:** cada habilidade tem de 1 a 5 melhorias (+dano, +cura, +chance de efeito ou −1 de recarga), e cada cópia fundida sobe uma delas, sorteada.
 - **Despertar:** a habilidade que muda ao despertar troca os efeitos pelos da versão desperta; a que o Despertar dá só existe no monstro desperto.
 
+### Chefes
+
+O chefe (as criaturas únicas: o Mestre de Correntes, a Serpe-Mãe, o Arauto do Silêncio e os guardiões das Masmorras) é a luta grande. Na onda dele, ele fica no meio dos inimigos, com o cartão 50% maior e a moldura vermelha acesa, os outros dos dois lados; o meio do círculo anuncia "Onda 3 · Chefe: nome", e uma barra grande no alto da tela mostra o nome, o elemento, o nível, a Vida (com um rastro dourado que desce atrás do dano), o escudo e os efeitos dele.
+
 ### Vitória e derrota
 
 Você vence ao derrotar todas as ondas. Perde se a equipe inteira cair ou se 30 rodadas passarem.
@@ -187,7 +191,7 @@ A ficha de runa é uma só no jogo todo: o título na cor da raridade e a plaqui
 
 ### Automático e manual
 
-Toda luta pode ser automática: usa a habilidade pronta de maior número (a mais forte) e mira com vantagem elemental e, no empate, no mais ferido. No manual, o jogador escolhe a ordem das recargas e o alvo.
+Toda luta pode ser automática: usa a habilidade pronta de maior número (a mais forte) e mira com vantagem elemental e, no empate, no mais ferido. Tocar num inimigo durante a luta marca o foco (a mira dourada aparece nele; tocar de novo desmarca): o automático ataca ele enquanto puder, e o resumo do inimigo fica no toque longo. Sem inimigo marcado, com "Focar o chefe no automático" ligado (na pausa de uma luta com chefe; começa ligado e vale também para a Batalha automática), a equipe inteira ataca o chefe sempre que ele pode ser alvo. Provocar continua mandando nos dois casos. No manual, o jogador escolhe a ordem das recargas e o alvo.
 
 Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham a Batalha automática: o jogador escolhe quantas lutas seguidas (30 de início), e cada uma leva o tempo que levaria no automático em 2×. Ela corre por trás enquanto o jogador usa o resto do jogo: um selo no alto, no meio, mostra "4/30" e reabre a janela dela, onde dá para acompanhar, mudar o número de lutas, vender e melhorar as runas ganhas e parar. Fechar a janela não para; parar pede confirmação. Ela para sozinha sem Mana ou com o inventário de runas cheio, e aí pode ser retomada; a derrota só entra na conta e a próxima luta segue. Começar uma luta manual durante a Batalha automática pergunta antes, porque a para.
 

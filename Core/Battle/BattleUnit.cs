@@ -60,6 +60,12 @@ namespace Sigilos.Core.Battle
 		/// <summary>Id da invocação ou do inimigo em Data/.</summary>
 		public string DefinitionId { get; }
 
+		/// <summary>
+		/// Chefe: criatura única de Data/enemies.json (as invocações inimigas nunca são). Na tela fica no
+		/// meio dos inimigos, maior, com a barra de Vida no alto; no automático pode ser o alvo de todos.
+		/// </summary>
+		public bool IsBoss { get; init; }
+
 		public string Name { get; }
 		public string Image { get; }
 		public Side Side { get; }

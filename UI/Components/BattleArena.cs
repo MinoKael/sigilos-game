@@ -16,7 +16,8 @@ namespace Sigilos.UI.Components
 	///
 	/// As unidades são filhas diretas, em posição absoluta. <see cref="Arrange"/> as recoloca a cada
 	/// mudança de tamanho: o espaço entre vizinhas é medido ao longo da elipse, e o grupo fica centrado no
-	/// seu arco, tenha ele 1 ou 5 unidades.
+	/// seu arco, tenha ele 1 ou 5 unidades. Numa onda com chefe, ele fica no meio do arco (o cartão dele é
+	/// maior) e os outros em volta, um de cada lado, com mais folga junto dele.
 	/// </summary>
 	public partial class BattleArena : Control
 	{
@@ -31,8 +32,12 @@ namespace Sigilos.UI.Components
 
 		private const int Samples = 64;
 
+		/// <summary>A folga a mais (em passos) entre o chefe e quem fica ao lado dele.</summary>
+		private const float BossRoom = 0.3f;
+
 		private readonly List<Control> _allies = new();
 		private readonly List<Control> _enemies = new();
+		private Control? _boss;
 		private readonly Dictionary<Control, Vector2> _homes = new();
 		private readonly ImpactLayer _impacts = new() { Name = "Impacts" };
 
@@ -51,8 +56,12 @@ namespace Sigilos.UI.Components
 
 		public void SetAllies(IReadOnlyList<Control> allies) => Replace(_allies, allies);
 
-		/// <summary>Troca os inimigos (a cada onda); os da onda anterior saem.</summary>
-		public void SetEnemies(IReadOnlyList<Control> enemies) => Replace(_enemies, enemies);
+		/// <summary>Troca os inimigos (a cada onda); os da onda anterior saem. <paramref name="boss"/> fica no meio.</summary>
+		public void SetEnemies(IReadOnlyList<Control> enemies, Control? boss = null)
+		{
+			_boss = boss;
+			Replace(_enemies, enemies);
+		}
 
 		/// <summary>
 		/// Corre até os alvos em <paramref name="seconds"/>: para na frente de um só, do lado de onde veio, ou
@@ -74,10 +83,11 @@ namespace Sigilos.UI.Components
 				var spot = targets.Aggregate(Vector2.Zero, (sum, target) => sum + CenterOf(target)) / targets.Count;
 				var direction = (from - spot).Normalized();
 				// Encosta no alvo sem cobrir o cartão: anda até os dois retângulos se tocarem (um pouco
-				// antes, no meio de um grupo, para não pisar em ninguém).
+				// antes, no meio de um grupo, para não pisar em ninguém). O cartão do chefe é maior.
+				var extent = targets.Count == 1 ? (actor.Size + targets[0].Size) / 2 : actor.Size;
 				var reach = Mathf.Min(
-					Mathf.Abs(direction.X) > 0.01f ? actor.Size.X / Mathf.Abs(direction.X) : float.MaxValue,
-					Mathf.Abs(direction.Y) > 0.01f ? actor.Size.Y / Mathf.Abs(direction.Y) : float.MaxValue);
+					Mathf.Abs(direction.X) > 0.01f ? extent.X / Mathf.Abs(direction.X) : float.MaxValue,
+					Mathf.Abs(direction.Y) > 0.01f ? extent.Y / Mathf.Abs(direction.Y) : float.MaxValue);
 				destination = spot + direction * (reach * (targets.Count == 1 ? 1f : 1.35f) + 6);
 			}
 
@@ -162,12 +172,15 @@ namespace Sigilos.UI.Components
 		private void Arrange()
 		{
 			Place(_allies, AllyFrom, AllyTo);
-			Place(_enemies, EnemyFrom, EnemyTo);
+			Place(_enemies, EnemyFrom, EnemyTo, _boss);
 			QueueRedraw();
 		}
 
-		/// <summary>Põe o grupo no arco: vizinhas à mesma distância ao longo da elipse, o grupo no meio do arco.</summary>
-		private void Place(List<Control> group, float from, float to)
+		/// <summary>
+		/// Põe o grupo no arco: vizinhas à mesma distância ao longo da elipse, o grupo no meio do arco. Com
+		/// <paramref name="center"/> (o chefe), ele fica no meio e os outros se alternam dos dois lados.
+		/// </summary>
+		private void Place(List<Control> group, float from, float to, Control? center = null)
 		{
 			if (group.Count == 0 || Size.X <= 0)
 				return;
@@ -184,17 +197,36 @@ namespace Sigilos.UI.Components
 
 			var total = lengths[Samples];
 			var step = total / (Mathf.Max(Slots, group.Count) - 1);
-			var start = (total - step * (group.Count - 1)) / 2;
-			var segment = 1;
-			for (var k = 0; k < group.Count; k++)
+			var spots = new List<(Control Unit, float At)>();
+			if (center != null && group.Contains(center))
 			{
-				var target = start + k * step;
-				while (segment < Samples && lengths[segment] < target)
+				// O chefe no meio; os outros em anéis dos dois lados. O primeiro anel tem folga a mais para
+				// o cartão maior, e o passo encolhe se os anéis não couberem no arco.
+				var others = group.Where(unit => unit != center).ToList();
+				var rings = (others.Count + 1) / 2;
+				var gap = rings == 0 ? step : Mathf.Min(step, total / 2 / (rings + BossRoom));
+				spots.Add((center, total / 2));
+				for (var i = 0; i < others.Count; i++)
+				{
+					var side = i % 2 == 0 ? 1 : -1;
+					spots.Add((others[i], total / 2 + side * gap * (i / 2 + 1 + BossRoom)));
+				}
+			}
+			else
+			{
+				var start = (total - step * (group.Count - 1)) / 2;
+				for (var k = 0; k < group.Count; k++)
+					spots.Add((group[k], start + k * step));
+			}
+
+			foreach (var (unit, at) in spots)
+			{
+				var segment = 1;
+				while (segment < Samples && lengths[segment] < at)
 					segment++;
 				var span = lengths[segment] - lengths[segment - 1];
-				var point = points[segment - 1].Lerp(points[segment], span > 0 ? (target - lengths[segment - 1]) / span : 0);
+				var point = points[segment - 1].Lerp(points[segment], span > 0 ? Mathf.Clamp((at - lengths[segment - 1]) / span, 0, 1) : 0);
 
-				var unit = group[k];
 				unit.Size = unit.CustomMinimumSize;
 				unit.Position = point - unit.Size / 2;
 				_homes[unit] = unit.Position;

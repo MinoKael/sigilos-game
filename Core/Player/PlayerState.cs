@@ -77,6 +77,12 @@ namespace Sigilos.Core.Player
 		/// <summary>A última escolha de automático na tela de batalha: a próxima luta começa igual.</summary>
 		public bool AutoBattle { get; set; }
 
+		/// <summary>
+		/// No automático (na tela e na Batalha automática), a equipe mira o chefe sempre que pode. Muda na
+		/// pausa da luta; começa ligado, inclusive em save antigo.
+		/// </summary>
+		public bool FocusBoss { get; set; } = true;
+
 		/// <summary>A luta de treino já foi feita (ou pulada): não abre mais sozinha (<see cref="Progression.Tutorial"/>).</summary>
 		public bool TutorialDone { get; set; }
 

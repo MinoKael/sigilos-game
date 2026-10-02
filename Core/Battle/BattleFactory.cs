@@ -118,6 +118,7 @@ namespace Sigilos.Core.Battle
 			var stats = Growth.FoeStats(enemy.Stats, encounter.Stars, encounter.Level);
 			stats = Boosted(stats with { Health = stats.Health * enemy.HealthScale * encounter.Scale, Attack = stats.Attack * enemy.AttackScale * encounter.Scale });
 			var (actives, passive) = Prepare(enemy.Skills, System.Array.Empty<int>(), false);
+			// Inimigo único é chefe: só o que não existe como invocação mora em Data/enemies.json.
 			return new BattleUnit(
 				enemy.Id,
 				enemy.Name,
@@ -129,7 +130,7 @@ namespace Sigilos.Core.Battle
 				stats,
 				actives,
 				passive,
-				RuneSetEffects.None);
+				RuneSetEffects.None) { IsBoss = true };
 		}
 
 		/// <summary>A força a mais de todo inimigo (<see cref="FoeBoost"/>).</summary>

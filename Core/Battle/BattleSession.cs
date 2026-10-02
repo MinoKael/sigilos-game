@@ -44,6 +44,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>Os inimigos da onda atual.</summary>
 		public IReadOnlyList<BattleUnit> Enemies => _waves[_waveIndex];
 
+		/// <summary>Alguma onda tem chefe (a pausa da luta oferece focar nele).</summary>
+		public bool HasBoss => _waves.Any(wave => wave.Any(unit => unit.IsBoss));
+
 		/// <summary>Onda atual, a partir de 1.</summary>
 		public int Wave => _waveIndex + 1;
 

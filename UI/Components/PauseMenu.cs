@@ -8,11 +8,12 @@ namespace Sigilos.UI.Components
 	/// <summary>
 	/// A pausa da luta, por cima da tela: a árvore inteira para (<see cref="SceneTree.Paused"/>) e só este
 	/// painel segue vivo. Três botões escritos: Continuar, Recomeçar a luta (do início, sem custo) e Sair
-	/// da luta (sem recompensa). Tocar fora, Esc e Voltar continuam.
+	/// da luta (sem recompensa). Numa luta com chefe, também o foco do automático no chefe, que liga e
+	/// desliga ali mesmo. Tocar fora, Esc e Voltar continuam.
 	/// </summary>
 	public partial class PauseMenu : ColorRect
 	{
-		private PauseMenu(Action restart, Action leave)
+		private PauseMenu(Action restart, Action leave, (bool On, Action<bool> Changed)? focusBoss)
 		{
 			Name = nameof(PauseMenu);
 			ProcessMode = ProcessModeEnum.Always;
@@ -34,6 +35,8 @@ namespace Sigilos.UI.Components
 			panel.AddChild(column);
 			column.AddChild(new Label { Name = "Title", Text = T("battle.paused"), ThemeTypeVariation = GameTheme.Title, HorizontalAlignment = HorizontalAlignment.Center });
 			column.AddChild(GameButton.Of(T("battle.continue"), Resume, ButtonKind.Primary, "play", 64).Named("Continue"));
+			if (focusBoss is { } focus)
+				column.AddChild(FocusBoss(focus.On, focus.Changed));
 			column.AddChild(GameButton.Of(T("battle.restart"), () =>
 			{
 				Resume();
@@ -47,11 +50,32 @@ namespace Sigilos.UI.Components
 			column.AddChild(Layout.Text(T("battle.retreat_tip"), GameTheme.Faded, 360).Named("Note"));
 		}
 
-		/// <summary>Pausa o jogo e abre o painel por cima da tela de <paramref name="from"/>.</summary>
-		public static void Open(Control from, Action restart, Action leave)
+		/// <summary>
+		/// Pausa o jogo e abre o painel por cima da tela de <paramref name="from"/>. Com
+		/// <paramref name="focusBoss"/> (a luta tem chefe), mostra o foco do automático: como está e quem avisar.
+		/// </summary>
+		public static void Open(Control from, Action restart, Action leave, (bool On, Action<bool> Changed)? focusBoss = null)
 		{
-			Layout.Host(from).AddChild(new PauseMenu(restart, leave));
+			Layout.Host(from).AddChild(new PauseMenu(restart, leave, focusBoss));
 			from.GetTree().Paused = true;
+		}
+
+		/// <summary>O botão de ligar: "Focar o chefe no automático: ligado", com a explicação embaixo.</summary>
+		private static Control FocusBoss(bool on, Action<bool> changed)
+		{
+			var column = new VBoxContainer { Name = "FocusBoss" };
+			column.AddThemeConstantOverride("separation", 4);
+			var button = new GameButton(Label(on), ButtonKind.Secondary, "fight") { Name = "Toggle", ToggleMode = true, ButtonPressed = on };
+			button.Toggled += value =>
+			{
+				button.Text = Label(value);
+				changed(value);
+			};
+			column.AddChild(button);
+			column.AddChild(Layout.Text(T("battle.focus_boss_tip"), GameTheme.Faded, 360).Named("Tip"));
+			return column;
+
+			static string Label(bool value) => T(value ? "battle.focus_boss_on" : "battle.focus_boss_off");
 		}
 
 		public override void _GuiInput(InputEvent @event)

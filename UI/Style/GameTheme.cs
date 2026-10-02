@@ -21,13 +21,13 @@ namespace Sigilos.UI.Style
 	public static class GameTheme
 	{
 		/// <summary>Altura mínima de tudo o que se toca: botão, aba, linha de lista.</summary>
-		public const float Touch = 56;
+		public const float Touch = 52;
 
 		/// <summary>Tamanho do texto corrido.</summary>
-		public const int BodySize = 18;
+		public const int BodySize = 16;
 
 		/// <summary>Tamanho do texto pequeno (legendas, valores secundários).</summary>
-		public const int SmallSize = 15;
+		public const int SmallSize = 12;
 
 		/// <summary>Título grande de tela.</summary>
 		public const string Title = "TitleLabel";

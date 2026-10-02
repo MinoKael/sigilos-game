@@ -102,6 +102,9 @@ namespace Sigilos.UI.Components
 			column.AddChild(_actions);
 
 			Body.MinimumSizeChanged += QueueFit;
+			// Os botões também: o texto deles quebra linha e, antes de ganhar largura, mede uma letra por
+			// linha; sem refazer a conta quando eles encolhem, a janela ficava do tamanho da tela.
+			_actions.MinimumSizeChanged += QueueFit;
 			Resized += QueueFit;
 		}
 

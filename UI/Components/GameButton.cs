@@ -37,62 +37,98 @@ namespace Sigilos.UI.Components
 		private readonly ButtonKind _kind;
 		private float _width;
 
-		public GameButton(string text, ButtonKind kind = ButtonKind.Secondary, string? icon = null, float height = GameTheme.Touch)
-		{
-			_kind = kind;
-			_height = height;
-			Name = "Button";
-			FocusMode = FocusModeEnum.None;
-			MouseDefaultCursorShape = CursorShape.PointingHand;
-			ClipContents = false;
+        public GameButton(string text, ButtonKind kind = ButtonKind.Secondary, string? icon = null, float height = GameTheme.Touch)
+        {
+            _kind = kind;
+            _height = height;
 
-			var (fill, border) = Tones(kind);
-			AddThemeStyleboxOverride("normal", Box(fill, border, false));
-			AddThemeStyleboxOverride("hover", Box(fill.Lightened(0.12f), border.Lightened(0.2f), true));
-			AddThemeStyleboxOverride("pressed", Box(fill.Darkened(0.18f), border, false, pressed: true));
-			AddThemeStyleboxOverride("hover_pressed", Box(fill.Darkened(0.18f), border, false, pressed: true));
-			AddThemeStyleboxOverride("disabled", Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
-			AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
+            Name = "Button";
+            FocusMode = FocusModeEnum.None;
+            MouseDefaultCursorShape = CursorShape.PointingHand;
+            ClipContents = true;
 
-			_content.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			_content.AddThemeConstantOverride("margin_left", 18);
-			_content.AddThemeConstantOverride("margin_right", 18);
-			_content.AddThemeConstantOverride("margin_top", 4);
-			_content.AddThemeConstantOverride("margin_bottom", 6);
-			AddChild(_content);
+            SizeFlagsHorizontal = SizeFlags.ExpandFill;
+            CustomMinimumSize = new Vector2(0, height);
 
-			var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-			row.AddThemeConstantOverride("separation", 10);
-			_content.AddChild(row);
+            var (fill, border) = Tones(kind);
 
-			var size = height >= GameTheme.Touch ? 20 : 17;
-			if (icon != null)
-			{
-				_icon = Doodle.Icon(Art.Icon(icon), (int)(height * 0.5f), Ink);
-				_icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-				row.AddChild(_icon);
-			}
+            AddThemeStyleboxOverride("normal", Box(fill, border, false));
+            AddThemeStyleboxOverride("hover", Box(fill.Lightened(0.12f), border.Lightened(0.2f), true));
+            AddThemeStyleboxOverride("pressed", Box(fill.Darkened(0.18f), border, false, pressed: true));
+            AddThemeStyleboxOverride("hover_pressed", Box(fill.Darkened(0.18f), border, false, pressed: true));
+            AddThemeStyleboxOverride("disabled", Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
+            AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
 
-			var lines = new VBoxContainer { Name = "Text", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-			lines.AddThemeConstantOverride("separation", -2);
-			_label.Text = text;
-			_label.HorizontalAlignment = HorizontalAlignment.Center;
-			_label.AddThemeFontOverride("font", GameTheme.Serif);
-			_label.AddThemeFontSizeOverride("font_size", size);
-			_label.AddThemeColorOverride("font_color", Palette.Text);
-			_label.AddThemeColorOverride("font_outline_color", Outline);
-			_label.AddThemeConstantOverride("outline_size", 5);
-			lines.AddChild(_label);
-			_cost.AddThemeConstantOverride("separation", 4);
-			lines.AddChild(_cost);
-			row.AddChild(lines);
+            _content.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+            _content.AddThemeConstantOverride("margin_left", 18);
+            _content.AddThemeConstantOverride("margin_right", 18);
+            _content.AddThemeConstantOverride("margin_top", 4);
+            _content.AddThemeConstantOverride("margin_bottom", 6);
+            _content.CustomMinimumSize = new Vector2(0, 0);
+            AddChild(_content);
 
-			_content.MinimumSizeChanged += Fit;
-			Juice.Attach(this, 0.95f);
-		}
+            var row = new HBoxContainer
+            {
+                Name = "Row",
+                MouseFilter = MouseFilterEnum.Ignore,
+                Alignment = BoxContainer.AlignmentMode.Center
+            };
 
-		/// <summary>O texto do botão (o <c>Button.Text</c> fica vazio: quem desenha é o rótulo de dentro).</summary>
-		public new string Text
+            row.AddThemeConstantOverride("separation", 10);
+            row.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+
+            _content.AddChild(row);
+
+            var size = height >= GameTheme.Touch ? 20 : 17;
+
+            if (icon != null)
+            {
+                _icon = Doodle.Icon(
+                    Art.Icon(icon),
+                    (int)(height * 0.5f),
+                    Ink);
+
+                _icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
+                row.AddChild(_icon);
+            }
+
+            var lines = new VBoxContainer
+            {
+                Name = "Text",
+                MouseFilter = MouseFilterEnum.Ignore,
+                Alignment = BoxContainer.AlignmentMode.Center,
+                SizeFlagsHorizontal = SizeFlags.ExpandFill
+            };
+
+            lines.AddThemeConstantOverride("separation", -2);
+
+            _label.Text = text;
+            _label.HorizontalAlignment = HorizontalAlignment.Center;
+            _label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+            _label.ClipText = false;
+            _label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+            _label.SizeFlagsVertical = SizeFlags.ShrinkCenter;
+
+            _label.AddThemeFontOverride("font", GameTheme.Serif);
+            _label.AddThemeFontSizeOverride("font_size", size);
+            _label.AddThemeColorOverride("font_color", Palette.Text);
+            _label.AddThemeColorOverride("font_outline_color", Outline);
+            _label.AddThemeConstantOverride("outline_size", 5);
+
+            lines.AddChild(_label);
+
+            _cost.AddThemeConstantOverride("separation", 4);
+            lines.AddChild(_cost);
+
+            row.AddChild(lines);
+
+            _content.MinimumSizeChanged += Fit;
+
+            Juice.Attach(this, 0.95f);
+        }
+
+        /// <summary>O texto do botão (o <c>Button.Text</c> fica vazio: quem desenha é o rótulo de dentro).</summary>
+        public new string Text
 		{
 			get => _label.Text;
 			set
@@ -141,14 +177,35 @@ namespace Sigilos.UI.Components
 
 		public override void _Ready() => Fit();
 
-		/// <summary>O tamanho mínimo: o do conteúdo, com a altura de toque e a largura pedida.</summary>
-		private void Fit()
-		{
-			var content = _content.GetCombinedMinimumSize();
-			CustomMinimumSize = new Vector2(Mathf.Max(content.X, _width), Mathf.Max(content.Y, _height));
-		}
+        /// <summary>
+        /// O tamanho mínimo: a altura de toque (ou a do conteúdo) e, na largura, a pedida em <see cref="Wide"/> ou
+        /// pelo menos as margens, o símbolo e a palavra mais longa. O rótulo quebra linha e não tem largura mínima
+        /// própria: sem esse piso, numa fileira sem largura (HBox, HFlow) o botão encolhia a zero e o texto saía
+        /// uma letra por linha. Numa célula de grade mais larga, o botão continua preenchendo a célula.
+        /// </summary>
+        private void Fit()
+        {
+            var content = _content.GetCombinedMinimumSize();
 
-		public override void _Draw()
+            CustomMinimumSize = new Vector2(
+                Mathf.Max(_width, MinimumWidth()),
+                Mathf.Max(content.Y, _height));
+        }
+
+        /// <summary>As margens, o símbolo e a palavra mais longa do texto (ou o custo, se for maior) numa linha.</summary>
+        private float MinimumWidth()
+        {
+            var font = _label.GetThemeFont("font");
+            var size = _label.GetThemeFontSize("font_size");
+            var word = 0f;
+            foreach (var piece in _label.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                word = Mathf.Max(word, font.GetStringSize(piece, HorizontalAlignment.Left, -1, size).X);
+            var cost = _cost.Visible ? _cost.GetCombinedMinimumSize().X : 0;
+            var icon = _icon != null ? _icon.CustomMinimumSize.X + 10 : 0;
+            return 18 * 2 + icon + Mathf.Max(word, cost) + 6;
+        }
+
+        public override void _Draw()
 		{
 			// Desligado, o conteúdo apaga junto com a madeira.
 			_content.Modulate = Disabled ? new Color(1, 1, 1, 0.45f) : Colors.White;

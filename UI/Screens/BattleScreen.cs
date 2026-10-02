@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.PortableExecutable;
+using System.Threading.Tasks;
 using static Sigilos.UI.Locale;
 using Side = Sigilos.Core.Battle.Side;
 
@@ -26,10 +27,15 @@ namespace Sigilos.UI.Screens
 	/// esquerda o nome da luta, a onda e a rodada, escritas, e embaixo, em pé, quem age a seguir; no de
 	/// cima à direita a pausa (<see cref="PauseMenu"/>: continuar, recomeçar, sair); embaixo à esquerda
 	/// os botões Automático, a velocidade e Efeitos; embaixo à direita uma habilidade por botão, com o
-	/// nome embaixo (segurar mostra o que ela faz). Tocar numa unidade (fora da escolha de alvo) ou
-	/// segurá-la abre o resumo dela, sem parar a luta. O painel de Efeitos abre no centro do círculo. No
+	/// nome embaixo (segurar mostra o que ela faz). Segurar uma unidade abre o resumo dela, sem parar a
+	/// luta; tocar num aliado também, e tocar num inimigo marca o foco (ver abaixo). O painel de Efeitos abre no centro do círculo. No
 	/// fim avisa <see cref="Finished"/>; o GameRoot aplica a recompensa, grava o melhor tempo e chama
 	/// <see cref="ShowResult"/>, que mostra o <see cref="BattleResultPanel"/>.
+	///
+	/// Numa onda com chefe, ele fica no meio dos inimigos, com o cartão maior, e a <see cref="BossBar"/>
+	/// mostra a Vida dele no alto, no centro. Na pausa, o jogador escolhe se o automático foca o chefe.
+	/// Tocar num inimigo (fora da escolha de alvo) marca o foco: a mira aparece nele e o automático ataca
+	/// ele enquanto puder; tocar de novo desmarca. O resumo do inimigo fica no toque longo.
 	///
 	/// Na luta de treino, o <see cref="TutorialCoach"/> fala no alto: a tela espera as explicações dele
 	/// antes de cada vez do jogador, acende só as habilidades e os alvos que ele deixa e lhe mostra cada
@@ -61,10 +67,15 @@ namespace Sigilos.UI.Screens
 		private readonly SigilButton _speedButton = new(null, 56, SigilShape.Square) { Name = "Speed" };
 		private readonly GameButton _effectsButton = new("", ButtonKind.Secondary, "effects", 56) { Name = "Effects", ToggleMode = true };
 		private readonly TurnOrderBar _order = new();
+		private readonly BossBar _bossBar = new();
 		private readonly PanelContainer _effects = new() { Name = "EffectsPanel", Visible = false };
 		private readonly VBoxContainer _effectsList = new() { Name = "Units" };
 
 		private bool _auto;
+		private bool _focusBoss;
+
+		/// <summary>O inimigo que o jogador marcou: o automático ataca ele primeiro. Some quando ele cai ou a onda acaba.</summary>
+		private BattleUnit? _focus;
 		private int _speedIndex = 1;
 		private bool _closed;
 		private bool _finished;
@@ -79,12 +90,14 @@ namespace Sigilos.UI.Screens
 		private UnitView? _striker;
 
 		/// <param name="coach">O Mestre da luta de treino; nulo nas outras lutas.</param>
-		public BattleScreen(BattleSession session, string title, bool auto, TutorialCoach? coach = null)
+		/// <param name="focusBoss">O automático mira o chefe (a preferência salva; muda na pausa).</param>
+		public BattleScreen(BattleSession session, string title, bool auto, TutorialCoach? coach = null, bool focusBoss = false)
 		{
 			_session = session;
 			_title = title;
 			_auto = auto && coach == null;
 			_coach = coach;
+			_focusBoss = focusBoss;
 		}
 
 		/// <summary>A luta acabou: verdadeiro na vitória.</summary>
@@ -101,6 +114,9 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>O jogador pediu a mesma luta de novo, do começo (no menu de pausa). O valor é a preferência de automático.</summary>
 		public event Action<bool>? RestartRequested;
+
+		/// <summary>O jogador ligou ou desligou, na pausa, o foco do automático no chefe.</summary>
+		public event Action<bool>? FocusBossChanged;
 
 		private float Speed => BattlePace.Speeds[_speedIndex].Factor;
 
@@ -120,9 +136,15 @@ namespace Sigilos.UI.Screens
 
 			AddChild(Header());
 			AddChild(Banner());
+			// A barra do chefe no alto, no centro: o nome da luta fica à esquerda, a pausa à direita, e ela
+			// encosta no topo para não cobrir o inimigo do alto do arco.
+			_bossBar.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
+			_bossBar.GrowHorizontal = GrowDirection.Both;
+			_bossBar.OffsetTop = _bossBar.OffsetBottom = 8;
+			AddChild(_bossBar);
 			AddChild(Pin(_order, LayoutPreset.TopLeft));
 			_order.OffsetTop = _order.OffsetBottom = 104;
-			AddChild(Pin(SigilButton.Of("pause", OpenPause, 56, SigilShape.Square), LayoutPreset.TopRight));
+            AddChild(Pin(SigilButton.Of("pause", OpenPause, 56, SigilShape.Square), LayoutPreset.TopRight));
 			AddChild(Pin(Controls(), LayoutPreset.BottomLeft));
 			AddChild(Pin(_actions, LayoutPreset.BottomRight));
 			AddChild(EffectsPanel());
@@ -132,7 +154,7 @@ namespace Sigilos.UI.Screens
 				// aliados ficam embaixo à esquerda, e os inimigos, em cima à direita.
 				_coach.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
 				_coach.OffsetLeft = _coach.OffsetRight = ArenaLeft + 24;
-				_coach.OffsetTop = _coach.OffsetBottom = 72;
+				_coach.OffsetTop = _coach.OffsetBottom = 100;
 				AddChild(_coach);
 				_autoButton.Disabled = true;
 			}
@@ -158,6 +180,7 @@ namespace Sigilos.UI.Screens
 			_banner.Text = "";
 			// O painel de Efeitos aberto ficaria por baixo do resultado, atrapalhando a leitura.
 			_effectsButton.ButtonPressed = false;
+			_bossBar.Clear();
 			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune), rune => RuneLockRequested?.Invoke(rune)));
 		}
 
@@ -178,10 +201,14 @@ namespace Sigilos.UI.Screens
 			OpenPause();
 		}
 
-		/// <summary>O canto de cima à esquerda: o nome da luta, a onda e a rodada.</summary>
+		/// <summary>
+		/// O canto de cima à esquerda: o nome da luta e, embaixo dele, a onda e a rodada (em duas linhas, para
+		/// sobrar o alto do centro para a barra do chefe).
+		/// </summary>
 		private Control Header()
 		{
-			var header = Layout.Row(12).Named("Header");
+			var header = new VBoxContainer { Name = "Header" };
+			header.AddThemeConstantOverride("separation", 4);
 			var title = new Label { Name = "Title", Text = _title, VerticalAlignment = VerticalAlignment.Center };
 			title.AddThemeFontOverride("font", GameTheme.Serif);
 			title.AddThemeFontSizeOverride("font_size", 20);
@@ -204,10 +231,15 @@ namespace Sigilos.UI.Screens
 			return OnArenaMiddle(_banner, new Vector2(300, 80));
 		}
 
-		/// <summary>O canto de baixo à esquerda: automático, velocidade (o número no sigilo) e Efeitos.</summary>
+		/// <summary>
+		/// O canto de baixo à esquerda: automático, velocidade (o número no sigilo) e Efeitos, numa grade de
+		/// três; o Automático tem largura para "Automático: desligado" caber numa linha.
+		/// </summary>
 		private Control Controls()
 		{
-			var row = Layout.Row(10).Named("Controls");
+			var row = Layout.Grid(4, 10).Named("Controls");
+			row.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
+			_autoButton.Wide(150);
 			_autoButton.ButtonPressed = _auto;
 			_autoButton.Toggled += SetAuto;
 			row.AddChild(_autoButton);
@@ -227,7 +259,11 @@ namespace Sigilos.UI.Screens
 				RefreshEffects();
 			};
 			row.AddChild(_effectsButton);
-			return row;
+            var help = new SigilButton(null, 48) { Name = "Help", Letters = "?" };
+            help.SetLetterSize(26);
+            help.Pressed += () => ExplainEffects(help);
+            row.AddChild(help);
+            return row;
 		}
 
 		/// <summary>A onda e a rodada, em cápsulas.</summary>
@@ -251,7 +287,12 @@ namespace Sigilos.UI.Screens
 		{
 			if (_closed)
 				return;
-			PauseMenu.Open(this, Restart, Close);
+			// Foco no chefe só aparece em luta que tem chefe; a preferência vale para todas (e para a Batalha automática).
+			PauseMenu.Open(this, Restart, Close, _session.HasBoss ? (_focusBoss, on =>
+			{
+				_focusBoss = on;
+				FocusBossChanged?.Invoke(on);
+			}) : null);
 		}
 
 		private void Restart()
@@ -302,11 +343,6 @@ namespace Sigilos.UI.Screens
             var header = Layout.Row(8).Named("Header");
             header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold).Named("Icon"));
             header.AddChild(new Label { Name = "Title", Text = T("battle.effects"), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
-            // O "?" ao lado do ✕, do mesmo tamanho: o que cada efeito em jogo faz, com o texto do Compêndio.
-            var help = new SigilButton(null, 48) { Name = "Help", Letters = "?" };
-            help.SetLetterSize(26);
-            help.Pressed += () => ExplainEffects(help);
-            header.AddChild(help);
             header.AddChild(SigilButton.Of("cancel", () => _effectsButton.ButtonPressed = false, 48).Named("Close"));
             column.AddChild(header);
 
@@ -324,16 +360,10 @@ namespace Sigilos.UI.Screens
         private void ExplainEffects(Control anchor)
         {
             const float width = 440;
-            var active = _session.Allies.Concat(_session.Enemies)
-                .Where(u => u.IsAlive)
-                .SelectMany(u => u.Statuses)
-                .Select(status => status.Kind)
-                .Distinct()
-                .ToList();
-            var kinds = active.Count > 0 ? active : Enum.GetValues<Core.Content.StatusKind>().ToList();
+            var kinds = Enum.GetValues<Core.Content.StatusKind>().ToList();
 
             var dialog = Dialog.Open(anchor, T("battle.effects_help"), width, anchor, "EffectsHelp");
-            dialog.Body.AddChild(Layout.Text(T(active.Count > 0 ? "battle.effects_help_active" : "battle.effects_help_all"), GameTheme.Faded, width - 40).Named("Intro"));
+            dialog.Body.AddChild(Layout.Text(T("battle.effects_help_all"), GameTheme.Faded, width - 40).Named("Intro"));
             foreach (var kind in kinds)
             {
                 var negative = BattleRules.IsNegative(kind);
@@ -418,11 +448,33 @@ namespace Sigilos.UI.Screens
 					return;
 				}
 
-				MonsterSummary.Open(v, v.Unit);
+				// Inimigo: marca (ou desmarca) o foco. Aliado: o resumo, como no toque longo.
+				if (v.Unit.Side == Side.Enemies)
+					ToggleFocus(v);
+				else
+					MonsterSummary.Open(v, v.Unit);
 			};
 			view.LongPressed += v => MonsterSummary.Open(v, v.Unit);
 			_views[unit] = view;
 			return view;
+		}
+
+		/// <summary>Marca o inimigo tocado como foco do automático, ou desmarca se já era ele.</summary>
+		private void ToggleFocus(UnitView view)
+		{
+			if (!view.Unit.IsAlive)
+				return;
+
+			var on = _focus != view.Unit;
+			SetFocus(on ? view.Unit : null);
+			view.Float(T(on ? "battle.focus_on" : "battle.focus_off"), Palette.Gold, 14);
+		}
+
+		private void SetFocus(BattleUnit? unit)
+		{
+			_focus = unit;
+			foreach (var view in _views.Values)
+				view.SetFocused(view.Unit == unit);
 		}
 
 		private async void Run()
@@ -462,7 +514,7 @@ namespace Sigilos.UI.Screens
 
 			if (_auto)
 			{
-				var chosen = AutoPilot.ForAlly(_session, ally);
+				var chosen = AutoPilot.ForAlly(_session, ally, _focusBoss, _focus);
 				_coach?.Acted(chosen.Skill);
 				return chosen;
 			}
@@ -475,7 +527,7 @@ namespace Sigilos.UI.Screens
 				decision.TrySetResult(action);
 			}
 
-			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally));
+			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally, _focusBoss, _focus));
 
 			for (var i = 0; i < ally.Skills.Count; i++)
 			{
@@ -616,12 +668,28 @@ namespace Sigilos.UI.Screens
 			switch (battleEvent)
 			{
 				case WaveStarted wave:
+					SetFocus(null);
 					foreach (var old in _views.Keys.Where(u => u.Side == Side.Enemies).ToList())
 						_views.Remove(old);
-					_arena.SetEnemies(wave.Enemies.Select((enemy, i) => (Control)ViewFor(enemy, $"Enemy{i + 1}")).ToList());
+					var enemies = wave.Enemies.Select((enemy, i) => (Control)ViewFor(enemy, $"Enemy{i + 1}")).ToList();
+					var boss = wave.Enemies.FirstOrDefault(enemy => enemy.IsBoss);
+					_arena.SetEnemies(enemies, boss != null ? _views[boss] : null);
 					_wave = $"{wave.Wave}/{wave.WaveCount}";
 					RefreshCounters();
-					_banner.Text = T("battle.wave_banner", wave.Wave);
+					if (boss != null)
+					{
+						// A onda do chefe: a barra grande no alto e o anúncio em vermelho no meio do círculo.
+						_bossBar.Track(_views[boss]);
+						_banner.Text = T("battle.boss_wave", wave.Wave, boss.Name);
+						_banner.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.2f));
+					}
+					else
+					{
+						_bossBar.Clear();
+						_banner.Text = T("battle.wave_banner", wave.Wave);
+						_banner.AddThemeColorOverride("font_color", Palette.Text);
+					}
+
 					return;
 
 				case TurnStarted turn:
@@ -706,6 +774,8 @@ namespace Sigilos.UI.Screens
 
 				case Died died:
 					_views[died.Unit].Refresh();
+					if (died.Unit == _focus)
+						SetFocus(null);
 					return;
 
 				case Revived revived:

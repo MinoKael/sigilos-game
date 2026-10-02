@@ -44,7 +44,7 @@
     "rewards": "Recompensas até agora",
     "monsters": "Monstros ({0})",
     "runes_title": "Runas: {0} guardadas, {1} vendidas",
-    "runes_hint": "Toque numa runa para vender, melhorar ou bloquear sem parar nada.",
+    "runes_hint": "Toque numa runa para vender, evoluir ou bloquear sem parar nada.",
     "no_runes": "Nenhuma runa ainda.",
     "badge_running": "Batalha automática {0}",
     "badge_stopped": "Batalha automática parada {0}",
@@ -106,8 +106,8 @@
     "Attack": "Ataque",
     "Defense": "Defesa",
     "Speed": "Velocidade",
-    "Crit": "Crítico",
-    "CritDamage": "Dano crítico",
+    "Crit": "Chance Crítico",
+    "CritDamage": "Dano Crítico",
     "Resistance": "Resistência",
     "Accuracy": "Precisão"
   },
@@ -321,7 +321,7 @@
     },
     "Bomb": {
       "name": "Bomba",
-      "info": "Explode no começo do último turno dela, com {0} do Ataque de quem pôs. A explosão ignora a Defesa e nunca é crítica; o escudo absorve."
+      "info": "Explode ao expirar, com {0} do Ataque de quem pôs. Ignora a Defesa, mas não escudo e não multiplica crítico."
     },
     "Poison": {
       "name": "Veneno",
@@ -531,7 +531,7 @@
       "awaken": "Despertar"
     },
     "select_done": "Terminar seleção",
-    "select_hint": "Toque nos monstros para marcar; os bloqueados ficam de fora ({0} marcados):",
+    "select_hint": "Selecione os monstros; ignora bloqueados ({0} marcados):",
     "release_title": "Liberar monstros?",
     "release_button": "Liberar",
     "fuse_title": "Fundir cópias?",
@@ -540,7 +540,7 @@
     "none_selected": "Escolha um monstro à esquerda.",
     "level_hint": "Sobe de nível infundindo Essência: {0} de experiência por Essência. Vitórias também dão experiência a quem lutou.",
     "fully_grown": "No máximo: 6★ e nível máximo.",
-    "stats_hint": "Em verde: o que as runas somam.",
+    "stats_hint": "O número é o total, com runas e conjuntos; em verde, quanto disso as runas somaram.",
     "no_runes": "Nenhuma runa equipada ainda.",
     "no_sets": "Nenhum conjunto completo: 2 ou 4 runas do mesmo conjunto dão o bônus dele.",
     "awaken_title": "Despertar?",
@@ -551,7 +551,7 @@
     "max_confirm_title": "Subir até o nível {0}?",
     "max_confirm": "Gastar {0} de Essência para levar {1} ao nível {2}? Você tem {3}.",
     "locked": "Bloqueado",
-    "locked_note": "Bloqueado: não pode ser liberado nem fundido em outro. Desbloqueie antes.",
+    "locked_note": "Bloqueado: não pode ser liberado nem fundido em outro. Libere antes.",
     "favorite": "Favoritar",
     "unfavorite": "Desfavoritar",
     "store_short": "Baú",
@@ -566,7 +566,7 @@
     "fusion_consumed": "Vão sumir ({0}): {1}.",
     "fusion_button": "Fundir {0}",
     "fusion_full": "Só cabem {0}: desmarque uma para escolher outra.",
-    "fusion_locked": "Bloqueado: não vira material de fusão. Desbloqueie na ficha dele antes.",
+    "fusion_locked": "Bloqueado: não vira material de fusão. Libere na ficha dele antes.",
     "fusion_confirm": "Fundir {0} em {1}? Estes somem para sempre: {2}. As runas deles voltam ao inventário.",
     "fusion_level": "Nv {0}"
   },
@@ -603,7 +603,7 @@
     "new": "novo",
     "inventory_full": "Inventário de runas cheio ({0}): desfaça runas antes de tirar esta.",
     "remove": "Remover",
-    "equip_on": "Equipar em {0}",
+    "equip_on": "Equipar",
     "grind": "Afiar",
     "enchant": "Encantar",
     "dialog_title": "Runa",
@@ -619,15 +619,15 @@
     "sell_many_confirm": "Vender {0} runas por {1} de Essência? Elas somem de vez.",
     "sell_button": "Vender (+{0})",
     "sell_button_short": "Vender",
-    "upgrade_one": "Melhorar para +{0}",
-    "upgrade_button": "Melhorar até +{0}",
+    "upgrade_one": "Evoluir +{0}",
+    "upgrade_button": "Até +{0}",
     "pick_one": "Toque numa runa para vê-la aqui.",
     "enchanted_line": "{0} (encantado)",
     "grind_hint": "Pedras de Afiar somam um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade. Use na ficha da runa, na linha do subatributo.",
     "enchant_hint": "Gemas Encantadas trocam um subatributo de uma runa +{0}. Use na ficha da runa, na linha do subatributo.",
-    "upgrade_confirm_title": "Melhorar até +{0}?",
-    "upgrade_confirm": "Gastar {0} de Essência para melhorar {1} de +{2} até +{3}? Você tem {4}.",
-    "locked_note": "Bloqueada: não pode ser vendida. Desbloqueie antes.",
+    "upgrade_confirm_title": "Evoluir até +{0}?",
+    "upgrade_confirm": "Gastar {0} de Essência para evoluir {1} de +{2} até +{3}? Você tem {4}.",
+    "locked_note": "Bloqueada: não pode ser vendida. Libere antes.",
     "reappraise": "Reavaliar ({0})",
     "reappraise_title": "Reavaliar a runa?",
     "reappraise_button": "Reavaliar",
@@ -705,7 +705,7 @@
       "crit": { "title": "Crítico", "text": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo monstro começa com 15% de Crítico e 50% de Dano crítico." },
       "resistance": { "title": "Resistência e Precisão", "text": "Todo efeito negativo pode ser barrado: a chance é a Resistência do alvo menos a Precisão de quem lança, nunca abaixo de {0}." },
       "leader": { "title": "Líder", "text": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio das runas." },
-      "auto": { "title": "Automático e Batalha automática", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 2×. Ela segue enquanto você faz outras coisas (cuidar das runas, subir monstros); o aviso no alto da tela mostra o andamento e abre a janela dela. Para quando você aperta Parar, quando a Mana acaba ou quando o inventário de runas enche." },
+      "auto": { "title": "Automático e Batalha automática", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 2×. Ela segue enquanto você faz outras coisas (cuidar das runas, subir monstros); o aviso no alto da tela mostra o andamento e abre a janela dela. Para quando você aperta Parar, quando a Mana acaba ou quando o inventário de runas enche. Toque num inimigo durante a luta para marcá-lo: o automático ataca ele enquanto puder (segure o inimigo para ver o resumo). Numa luta com chefe, a pausa tem \"Focar o chefe no automático\": ligado, a equipe inteira ataca o chefe sempre que pode." },
       "elements": "Elementos",
       "elements_text": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence.",
       "wins": "{0} vence {1}"
@@ -785,8 +785,8 @@
     "all_fell": "Todos os monstros caíram.",
     "defeat_tip": "Suba o nível, evolua, equipe runas ou desperte monstros.",
     "effects": "Efeitos",
-    "auto_on": "Automático: ligado",
-    "auto_off": "Automático: desligado",
+    "auto_on": "Auto",
+    "auto_off": "Manual",
     "retreat": "Sair da luta",
     "retreat_tip": "Sair ou recomeçar não custa nada: a Mana só sai na vitória.",
     "next_up": "Próximos",
@@ -824,7 +824,7 @@
     "advice_title": "Para ficar mais forte:",
     "advice": {
       "EquipRunes": "Equipe runas: {0} vagas de runa da equipe estão vazias (Monstros → Runas).",
-      "UpgradeRunes": "Melhore as runas: {0} runas da equipe estão abaixo de +{1} (Runas → Melhorar).",
+      "UpgradeRunes": "Evolua as runas: {0} runas da equipe estão abaixo de +{1} (Runas → Melhorar).",
       "LevelUp": "Suba o nível: {0} monstros da equipe não estão no nível máximo (Monstros → Subir nível).",
       "Element": "Leve monstros de {0}: os inimigos aqui são mais de {1}, que tem vantagem sobre {2} da sua equipe.",
       "Evolve": "Evolua: {0} monstros estão no nível máximo e já podem ganhar uma estrela (Monstros → Evoluir).",
@@ -834,7 +834,16 @@
     "effects_help_active": "Os efeitos em jogo agora:",
     "effects_help_all": "Nenhum efeito em jogo agora; estes são todos:",
     "opened": "Abriu no Santuário:",
-    "opened_new": "novo"
+    "opened_new": "novo",
+    "boss": "Chefe",
+    "boss_level": "Nv {0}",
+    "boss_health": "{0} / {1}",
+    "boss_wave": "Onda {0} · Chefe: {1}",
+    "focus_boss_on": "Focar o chefe no automático: ligado",
+    "focus_boss_off": "Focar o chefe no automático: desligado",
+    "focus_boss_tip": "No automático (e na Batalha automática), a equipe inteira ataca o chefe sempre que ele puder ser alvo. Provocar ainda manda.",
+    "focus_on": "Foco",
+    "focus_off": "Sem foco"
   },
 
   "destination": {
@@ -913,7 +922,7 @@
 
   "lock": {
     "lock": "Bloquear",
-    "unlock": "Desbloquear"
+    "unlock": "Liberar"
   },
 
   "account": {

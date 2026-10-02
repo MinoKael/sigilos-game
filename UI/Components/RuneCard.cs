@@ -56,10 +56,18 @@ namespace Sigilos.UI.Components
             tagBox.AddChild(tag);
             main.AddChild(tagBox);
 
-            var valuesBox = new VBoxContainer { Name = "ValuesBox", SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            var valuesBox = new HBoxContainer { Name = "ValuesBox", SizeFlagsHorizontal = SizeFlags.ExpandFill};
+
             valuesBox.AddThemeConstantOverride("separation", 4);
 
-            var mainValue = new Label { Name = "Value", Text = Texts.Format(rune.Main, rune.MainValue) };
+            var mainValue = new Label
+            {
+                Name = "Value",
+                Text = Texts.Format(rune.Main, rune.MainValue),
+                //SizeFlagsHorizontal = SizeFlags.ExpandFill,
+                //SizeFlagsStretchRatio = 1
+            };
+
             mainValue.AddThemeFontOverride("font", GameTheme.Serif);
             mainValue.AddThemeFontSizeOverride("font_size", 22);
             mainValue.HorizontalAlignment = HorizontalAlignment.Left;
@@ -68,8 +76,9 @@ namespace Sigilos.UI.Components
 
             if (opened is { } level && rune.Level > level)
             {
-                valuesBox.AddChild(Gain("Gain", Texts.Amount(rune.Main, rune.MainValue - RuneRules.MainValue(rune.Main, rune.Grade, level)), 22));
+                valuesBox.AddChild(Gain("Gain", Texts.Amount(rune.Main, rune.MainValue - RuneRules.MainValue(rune.Main, rune.Grade, level)), 16));
             }
+
             main.AddChild(valuesBox);
 
             stats.AddChild(main);

@@ -17,9 +17,10 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>
 		/// Devolve verdadeiro na vitória. Com <paramref name="log"/>, guarda todos os eventos da luta: a
-		/// Batalha automática mede com eles quanto a luta levaria na tela.
+		/// Batalha automática mede com eles quanto a luta levaria na tela. Com <paramref name="focusBoss"/>,
+		/// a equipe mira o chefe (a escolha do jogador na pausa da luta); o simulador luta sem.
 		/// </summary>
-		public static bool Run(BattleSession session, List<BattleEvent>? log = null)
+		public static bool Run(BattleSession session, List<BattleEvent>? log = null, bool focusBoss = false)
 		{
 			var events = session.Start();
 			log?.AddRange(events);
@@ -29,7 +30,7 @@ namespace Sigilos.Core.Battle
 				log?.AddRange(turn.Events);
 				if (turn.NeedsDecision)
 				{
-					var acted = session.Act(AutoPilot.For(session, turn.Actor));
+					var acted = session.Act(AutoPilot.For(session, turn.Actor, focusBoss));
 					log?.AddRange(acted);
 				}
 			}
