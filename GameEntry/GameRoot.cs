@@ -71,6 +71,12 @@ namespace Sigilos.GameEntry
 
 		private Updater? _updater;
 
+		/// <summary>As cartas do correio que este save ainda não coletou; nulo antes da primeira busca (ou sem conexão).</summary>
+		private IReadOnlyList<Mail>? _mail;
+
+		/// <summary>A janela do correio, enquanto aberta: a busca que chega depois atualiza ela.</summary>
+		private MailboxDialog? _mailbox;
+
 		/// <summary>O download da versão nova em andamento (Cancelar e fechar o jogo param ele).</summary>
 		private System.Threading.CancellationTokenSource? _updateDownload;
 
@@ -100,6 +106,7 @@ namespace Sigilos.GameEntry
 			{
 				if (_screen is HubScreen hub)
 					hub.SetOffline(!_account.Connected);
+				RefreshMail();
 			};
 
 			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles. Antes de abrir um save
@@ -618,7 +625,94 @@ namespace Sigilos.GameEntry
 				ShowHub();
 			}, AccountSettings(), ShowTutorial);
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
+			hub.MailRequested += () => OpenMailbox(hub);
 			Swap(hub, ShowHub);
+			hub.SetMail(_mail?.Count);
+			RefreshMail();
+		}
+
+		// Correio ------------------------------------------------------------------------------------
+
+		/// <summary>
+		/// Busca as cartas da conta (a cada volta ao Santuário e quando a conexão volta) e atualiza o selo e a
+		/// janela aberta. A carta que este save já coletou, mas o servidor ainda não sabe (a conexão caiu no
+		/// meio), não aparece: o aviso ao servidor vai de novo.
+		/// </summary>
+		private async void RefreshMail()
+		{
+			if (!_account.Connected)
+			{
+				_mail = null;
+				(_screen as HubScreen)?.SetMail(null);
+				return;
+			}
+
+			var fetch = await _account.FetchMail();
+			if (!_playing)
+				return;
+			if (!fetch.Ok)
+			{
+				_mailbox?.ShowMessage(T("mail.error"));
+				return;
+			}
+
+			foreach (var claimed in fetch.Mail.Where(m => _player.ClaimedMail.Contains(m.Id)))
+				_ = _account.ClaimMail(claimed.Id);
+			_mail = Mailbox.Unclaimed(_player, fetch.Mail);
+			(_screen as HubScreen)?.SetMail(_mail.Count);
+			_mailbox?.Show(_mail);
+		}
+
+		/// <summary>A janela do correio: as cartas já buscadas na hora e, depois, as da busca nova.</summary>
+		private void OpenMailbox(HubScreen hub)
+		{
+			var mailbox = MailboxDialog.Open(hub);
+			if (!_account.Playing)
+			{
+				mailbox.ShowMessage(T("mail.no_account"));
+				return;
+			}
+
+			if (!_account.Connected)
+			{
+				mailbox.ShowMessage(T("mail.offline"));
+				return;
+			}
+
+			_mailbox = mailbox;
+			mailbox.Closed += () =>
+			{
+				if (_mailbox == mailbox)
+					_mailbox = null;
+			};
+			mailbox.ClaimRequested += mail => ClaimMail(new[] { mail });
+			mailbox.ClaimAllRequested += () => ClaimMail(_mail ?? Array.Empty<Mail>());
+			if (_mail != null)
+				mailbox.Show(_mail);
+			RefreshMail();
+		}
+
+		/// <summary>
+		/// Coleta: a recompensa entra no save e o save é gravado antes de o servidor saber, então a conexão
+		/// caindo no meio não perde nada (o aviso vai de novo na próxima busca).
+		/// </summary>
+		private void ClaimMail(IEnumerable<Mail> letters)
+		{
+			var claimed = letters.Where(mail => Mailbox.Claim(_player, mail)).ToList();
+			if (claimed.Count == 0)
+				return;
+
+			Save();
+			foreach (var mail in claimed)
+				_ = _account.ClaimMail(mail.Id);
+			_mail = Mailbox.Unclaimed(_player, _mail ?? Array.Empty<Mail>());
+			if (_screen is HubScreen hub)
+			{
+				hub.Refresh(DateTime.Now);
+				hub.SetMail(_mail.Count);
+			}
+
+			_mailbox?.Show(_mail);
 		}
 
 		/// <summary>

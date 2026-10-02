@@ -424,7 +424,8 @@
     "offline": "Sem conexão",
     "offline_text": "O servidor não respondeu. Você está jogando com o progresso deste aparelho, e ele sobe para a nuvem sozinho quando a conexão voltar. Se a conta também mudou em outro aparelho nesse meio tempo, o jogo pergunta qual progresso fica.",
     "channel_opens": "A Canalização abre na fase {0}.",
-    "battle_detail_campaign": "Campanha (fase {0} de {1})"
+    "battle_detail_campaign": "Campanha (fase {0} de {1})",
+    "mail": "Correio"
   },
 
   "campaign": {
@@ -1036,5 +1037,25 @@
     "combo": "Combine os efeitos: com o inimigo atordoado, os outros batem nele sem resposta. Um monstro abre caminho para o outro; é assim que se monta uma equipe.",
     "auto": "Por fim, o Automático, embaixo à esquerda: a equipe luta sozinha, usando a habilidade pronta mais forte. Termine a luta como quiser.",
     "end": "Muito bem, Conjurador! Agora invoque os seus próprios monstros: a primeira invocação traz uma 5★. Depois, a Campanha espera."
+  },
+
+  "mail": {
+    "title": "Correio",
+    "loading": "Buscando as cartas...",
+    "empty": "Nenhuma carta por enquanto. Recompensas e avisos do jogo chegam aqui.",
+    "no_account": "O correio chega pela conta. Entre numa conta para receber recompensas e avisos.",
+    "offline": "Sem conexão: as cartas aparecem quando a conexão voltar.",
+    "error": "Não deu para buscar as cartas agora. Tente de novo daqui a pouco.",
+    "claim": "Coletar",
+    "claim_all": "Coletar tudo",
+    "until": "Coletar até {0}",
+    "item": {
+      "Gold": "Ouro",
+      "Mana": "Mana",
+      "Scrolls": "Pergaminhos",
+      "Essence": "Essência",
+      "Fragments": "Fragmentos",
+      "ReappraisalGems": "Gemas de Reavaliação"
+    }
   }
 }

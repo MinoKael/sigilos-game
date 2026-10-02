@@ -52,7 +52,7 @@ namespace Sigilos.UI.Screens
 			_email = email;
 			_name = name;
 			_remembered = remembered && email != null;
-			_offline = GameButton.Of(T("account.offline"), () => OfflineRequested?.Invoke()).Named("Offline");
+			_offline = GameButton.Of(T("account.offline"), () => OfflineRequested?.Invoke()).Wide(260).Named("Offline");
 		}
 
 		public event Action<string, string>? LoginRequested;

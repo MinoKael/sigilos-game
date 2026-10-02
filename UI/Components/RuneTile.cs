@@ -7,9 +7,10 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// Uma runa em miniatura, quadrada de cantos redondos: as estrelas no alto, o Glifo do conjunto grande
-	/// no meio (na fonte das runas, na cor da raridade) e, embaixo, numa linha só, a seta do espaço à
-	/// esquerda e a melhora à direita. A seta aponta para onde o espaço fica no círculo das runas (o 1 no
-	/// alto, os outros em volta, no sentido do relógio). Sem runa, só a seta, grande e apagada.
+	/// no meio (na fonte das runas, na cor da raridade) e, embaixo, numa linha só, o espaço à esquerda e a
+	/// melhora à direita. O espaço é o número dele por cima de uma seta que aponta para onde ele fica no
+	/// círculo das runas (o 1 no alto, os outros em volta, no sentido do relógio). Sem runa, só o espaço,
+	/// grande e apagado.
 	///
 	/// Toque curto é <see cref="Pressed"/>; toque longo abre a ficha da runa (<see cref="RuneCard"/>) numa
 	/// janela colada nela. Escolhida, fica azul arcano; marcada para vender, ganha o ✓ verde. Na lista, a
@@ -31,7 +32,7 @@ namespace Sigilos.UI.Components
 		private const float Inset = 5;
 
 		/// <summary>O lado da seta do espaço na linha de baixo, na escala 1.</summary>
-		private const float ArrowSide = 13;
+		private const float ArrowSide = 18;
 
 		private readonly StyleBoxFlat _box;
 		private readonly Color _color;
@@ -39,7 +40,7 @@ namespace Sigilos.UI.Components
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly float _scale;
 		private readonly int _stars;
-		private readonly Doodle? _arrow;
+		private readonly Control? _slotMark;
 		private readonly Press _press = new();
 		private bool _selected;
 		private bool _marked;
@@ -67,12 +68,12 @@ namespace Sigilos.UI.Components
 
 			if (rune == null)
 			{
-				var side = 28 * scale;
-				var arrow = Arrow(slot, side, new Color(Palette.GoldDark, 0.8f));
-				arrow.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
-				arrow.OffsetLeft = arrow.OffsetTop = -side / 2;
-				arrow.OffsetRight = arrow.OffsetBottom = side / 2;
-				_layer.AddChild(arrow);
+				var side = 32 * scale;
+				var mark = SlotMark(slot, side, new Color(Palette.GoldDark, 0.6f), new Color(Palette.Gold, 0.9f), 17);
+				mark.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
+				mark.OffsetLeft = mark.OffsetTop = -side / 2;
+				mark.OffsetRight = mark.OffsetBottom = side / 2;
+				_layer.AddChild(mark);
 			}
 			else
 			{
@@ -82,11 +83,11 @@ namespace Sigilos.UI.Components
 				glyph.OffsetTop = 6 * scale;
 				_layer.AddChild(glyph);
 
-				// A linha de baixo: cada peça é centrada num ponto fixo dela, então a seta, o cadeado e a
+				// A linha de baixo: cada peça é centrada num ponto fixo dela, então o espaço, o cadeado e a
 				// melhora ficam no mesmo lugar em qualquer escala e com qualquer texto.
 				var side = ArrowSide * scale;
-				_arrow = Arrow(slot, side, Palette.Text);
-				_layer.AddChild(OnBottomLine(_arrow, 0, Inset * scale + side / 2, GrowDirection.Both));
+				_slotMark = SlotMark(slot, side, Palette.GoldDark, Palette.Text, 11);
+				_layer.AddChild(OnBottomLine(_slotMark, 0, Inset * scale + side / 2, GrowDirection.Both));
 				var level = Small(rune.Level > 0 ? $"+{rune.Level}" : "", Palette.Text, 12, HorizontalAlignment.Right).Named("Level");
 				_layer.AddChild(OnBottomLine(level, 1, -Inset * scale, GrowDirection.Begin));
 				if (rune.Locked)
@@ -113,7 +114,7 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		/// <summary>Quem usa a runa: o medalhão do monstro no lugar da seta do espaço (apagado se ele está no Baú).</summary>
+		/// <summary>Quem usa a runa: o medalhão do monstro no lugar do espaço (apagado se ele está no Baú).</summary>
 		public void SetOwner(Texture2D? creature, Color ink, bool stored)
 		{
 			var size = 18 * _scale;
@@ -122,8 +123,8 @@ namespace Sigilos.UI.Components
 			medal.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			holder.AddChild(medal);
 			_layer.AddChild(OnBottomLine(holder, 0, (Inset + ArrowSide / 2) * _scale, GrowDirection.Both));
-			if (_arrow != null)
-				_arrow.Visible = false;
+			if (_slotMark != null)
+				_slotMark.Visible = false;
 		}
 
 		/// <summary>
@@ -171,15 +172,26 @@ namespace Sigilos.UI.Components
 			_layer.AddChild(OnBottomLine(badge, 0.5f, 0, GrowDirection.Both));
 		}
 
-		/// <summary>A seta do espaço, girada para ele, num quadrado de <paramref name="side"/> px.</summary>
-		private static Doodle Arrow(int slot, float side, Color ink) =>
-			new(Art.Icon("arrow"), ink, boil: false)
+		/// <summary>
+		/// O espaço, num quadrado de <paramref name="side"/> px: a seta girada para ele e, por cima, o número
+		/// dele (de pé, com contorno escuro), em <paramref name="fontSize"/> na escala 1.
+		/// </summary>
+		private Control SlotMark(int slot, float side, Color arrowInk, Color numberInk, int fontSize)
+		{
+			var mark = new Control { Name = "Slot", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(side, side) };
+			var arrow = new Doodle(Art.Icon("arrow"), arrowInk, boil: false)
 			{
-				Name = "Slot",
-				CustomMinimumSize = new Vector2(side, side),
+				Name = "Arrow",
 				PivotOffset = new Vector2(side, side) / 2,
 				Rotation = SlotRotation(slot),
 			};
+			arrow.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			mark.AddChild(arrow);
+			var number = Small(slot.ToString(), numberInk, fontSize).Named("Number");
+			number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			mark.AddChild(number);
+			return mark;
+		}
 
 		/// <summary>
 		/// Prende o controle à linha de baixo pelo centro: na altura <see cref="BottomLine"/> e em

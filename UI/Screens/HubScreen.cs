@@ -12,8 +12,9 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// O Santuário: a tela de abertura de toda sessão (GDD, seção 11), pensada para o celular.
 	///
-	/// - No alto, a conta (retrato, o nome dela e o nível, a barra de experiência; tocar explica) e os
-	///   recursos. Sem conta (ou numa conta sem nome), no lugar do nome vai "Conta".
+	/// - No alto, a conta (retrato, o nome dela e o nível, a barra de experiência; tocar explica), o
+	///   Correio (com quantas cartas faltam coletar num selo vermelho) e os recursos. Sem conta (ou numa
+	///   conta sem nome), no lugar do nome vai "Conta".
 	/// - No meio, à esquerda, a Canalização: a constelação ocupa o painel (o sigilo do centro com o anel
 	///   do tempo acumulado e os orbes em volta) e, embaixo do centro, o tempo, o que se juntou enquanto o
 	///   jogador estava fora e o botão Coletar. À direita, os dois caminhos principais em botões grandes:
@@ -44,6 +45,12 @@ namespace Sigilos.UI.Screens
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
 		private readonly HBoxContainer _pending = Layout.Row(8, true).Named("Pending");
 		private readonly GameButton _collect;
+		/// <summary>O botão do correio: tamanho fixo, para o selo ficar preso no canto dele.</summary>
+		private static readonly Vector2 MailSize = new(170, 52);
+
+		private readonly GameButton _mail;
+		private readonly PanelContainer _mailBadge = new() { Name = "Badge", MouseFilter = MouseFilterEnum.Ignore, Visible = false };
+		private readonly Label _mailCount = new() { Name = "Count", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
 		private TileButton? _battle;
 		private TileButton? _summon;
 		private bool _channelOpen;
@@ -56,11 +63,13 @@ namespace Sigilos.UI.Screens
 			_accountName = accountName;
 			_offline.Visible = offline;
 			_collect = GameButton.Of(T("hub.collect"), () => CollectRequested?.Invoke(), ButtonKind.Primary, "collect", 50).Named("Collect");
+			_mail = GameButton.Of(T("hub.mail"), () => MailRequested?.Invoke(), ButtonKind.Secondary, "mail", MailSize.Y).Wide(MailSize.X).Named("Button");
 		}
 
 		public event Action<Destination>? Requested;
 		public event Action? ConfigRequested;
 		public event Action? CollectRequested;
+		public event Action? MailRequested;
 
 		public override void _Ready()
 		{
@@ -73,6 +82,7 @@ namespace Sigilos.UI.Screens
 			top.AddChild(_account);
 			top.AddChild(_offline);
 			top.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			top.AddChild(MailButton());
 			_currencies.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			top.AddChild(_currencies);
 			page.AddChild(top);
@@ -96,6 +106,40 @@ namespace Sigilos.UI.Screens
 			AddChild(timer);
 
 			Refresh(DateTime.Now);
+		}
+
+		/// <summary>Quantas cartas do correio faltam coletar: o selo vermelho no botão (some com 0 ou sem saber).</summary>
+		public void SetMail(int? count)
+		{
+			_mailBadge.Visible = count > 0;
+			_mailCount.Text = count > 99 ? "99+" : count.ToString();
+		}
+
+		/// <summary>
+		/// O correio: o botão e o selo, um círculo vermelho com o número no canto de cima à direita, meio para
+		/// fora. O selo fica no suporte, ao lado do botão: o botão corta o que passa da borda dele.
+		/// </summary>
+		private Control MailButton()
+		{
+			var holder = new Control { Name = "Mail", CustomMinimumSize = MailSize, SizeFlagsVertical = SizeFlags.ShrinkCenter, MouseFilter = MouseFilterEnum.Ignore };
+			_mail.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			holder.AddChild(_mail);
+			const int side = 24;
+			var box = new StyleBoxFlat { BgColor = Palette.Negative, BorderColor = Palette.Negative.Darkened(0.5f), AntiAliasing = true };
+			box.SetBorderWidthAll(1);
+			box.SetCornerRadiusAll(side);
+			box.ContentMarginLeft = box.ContentMarginRight = 5;
+			_mailBadge.AddThemeStyleboxOverride("panel", box);
+			_mailBadge.CustomMinimumSize = new Vector2(side, side);
+			_mailCount.AddThemeColorOverride("font_color", Colors.White);
+			_mailCount.AddThemeFontSizeOverride("font_size", 15);
+			_mailBadge.AddChild(_mailCount);
+			_mailBadge.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
+			_mailBadge.GrowHorizontal = GrowDirection.Begin;
+			_mailBadge.OffsetLeft = _mailBadge.OffsetRight = side * 0.4f;
+			_mailBadge.OffsetTop = _mailBadge.OffsetBottom = -side * 0.4f;
+			holder.AddChild(_mailBadge);
+			return holder;
 		}
 
 		/// <summary>A conexão com o servidor caiu ou voltou: mostra ou esconde o "Sem conexão".</summary>

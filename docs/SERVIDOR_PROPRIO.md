@@ -78,6 +78,10 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
 | `POST /session/release` | `sessionId` | 204 (ao sair da conta) |
 | `GET /save` | — | revisão, data e o save; ou 404 na conta nova |
 | `PUT /save` | `sessionId`, `baseRevision`, `revision`, save | 204; 409 se a sessão não é mais desse aparelho ou se a nuvem mudou desde `baseRevision` |
+| `GET /mail` | — | as cartas do correio da conta ainda não coletadas: id, título, texto, recompensas, data e prazo |
+| `POST /mail/{id}/claim` | — | 204 (repetir não faz mal); 404 se a carta não é da conta |
+| `POST /admin/mail` | cabeçalho `X-Admin-Key`; `to` (nome, e-mail ou `*` para todas), `title`, `text`, `rewards`, `expiresInDays` | 201 com o id; 401 sem a chave; 400 `invalid_mail` ou `invalid_reward`; 404 `user_not_found` |
+| `GET /admin/mail`, `DELETE /admin/mail/{id}` | cabeçalho `X-Admin-Key` | as cartas enviadas, com quantas contas coletaram; retirar uma carta |
 | `GET /health` | — | 200, para um monitor externo |
 
 **A trava fica no servidor**, que é quem decide:

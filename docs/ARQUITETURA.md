@@ -71,7 +71,8 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Símbolo de um efeito de batalha | `Assets/Effects/<efeito>.svg` (o nome do `StatusKind` em minúsculas) + render; no texto rico, `Texts.Term(StatusKind)` põe o símbolo na frente |
 | Símbolo de uma habilidade | `Art.Skill` (o efeito que ela aplica, senão o Glifo do que ela faz) |
 | Tamanho da runa em miniatura | `RuneTile.Side` (quadrada; cada lugar passa a escala) |
-| A seta do espaço da runa | `RuneTile.SlotRotation` gira `Icons/arrow.svg` para onde o espaço fica no `SigilRing` (o 1 no alto, os outros a cada 60° no sentido do relógio); a seta, o cadeado e a melhora ficam presos pelo centro à linha de baixo (`OnBottomLine`) |
+| O espaço da runa (número sobre a seta) | `RuneTile.SlotMark`: o número por cima de `Icons/arrow.svg`, que `RuneTile.SlotRotation` gira para onde o espaço fica no `SigilRing` (o 1 no alto, os outros a cada 60° no sentido do relógio); o espaço, o cadeado e a melhora ficam presos pelo centro à linha de baixo (`OnBottomLine`) |
+| Correio (cartas com recompensas) | regra em `Core/Progression/Mailbox.cs` (`Claim` soma e anota em `PlayerState.ClaimedMail`), a conversa em `GameEntry/Account/CloudMail.cs` (`AccountSession.FetchMail`/`ClaimMail`), a janela em `UI/Screens/MailboxDialog.cs`, o botão e o selo em `HubScreen`; o `GameRoot` busca a cada volta ao Santuário e coleta gravando o save antes de avisar o servidor. Enviar: `POST /admin/mail` no servidor (docs/api.md de lá) |
 | Rolar arrastando com o mouse | `UI/Components/DragScroll.cs`, ligado em toda `Layout.Scroll` (e nas abas da `TeamScreen`); fora de aparelho de toque, e cancela o clique do botão sob o mouse quando vira arrasto |
 | Barra de rolagem com trilho à vista | `GameTheme.Grooved(bar)` (a da Loja, que rola de lado) |
 | Como uma runa aparece (a ficha) | `UI/Components/RuneCard.cs`: a mesma em todo lugar (tela de Runas, vitória, Batalha automática e o toque longo de todo `RuneTile`); por cima da tela, `RuneDialog.Show` (uma `Dialog` com a ficha, e quem abre põe os botões) |
@@ -366,6 +367,13 @@ O que o contrato do projeto tem de diferente da especificação:
 `PlayerState.CurrentVersion` marca o formato (hoje 7: estrelas, níveis de habilidade e a experiência por
 estrela; o 6 trouxe ids em inglês; o 5, Mana, Ouro e nível da conta). Um save de outro formato não é lido: o `SaveStore` guarda o arquivo como
 `nome.old-AAAAMMDD-HHMMSS.json` (a data evita apagar um backup mais velho) e começa uma conta nova.
+
+**Zerar todas as contas numa versão nova** é subir `PlayerState.CurrentVersion`. Cada aparelho, ao abrir a
+versão nova, guarda o save antigo como backup e começa do zero; na nuvem, o save de versão anterior
+(`PlayerSave.IsObsolete`) vira backup no aparelho (`nome.old-cloud-...json`) e o jogo novo sobe por cima
+dele (`AccountSession.Sync`). As contas (e-mail, senha, nome) ficam. Um save de versão mais nova continua
+recusado ("atualize o jogo"), então uma cópia velha do jogo não apaga o progresso novo. Publique a versão
+com `--minimum` igual a ela (docs/ATUALIZACOES.md), para ninguém seguir jogando a anterior.
 
 Com conta, cada uma tem o seu save no aparelho (`nome.account-<id>.json`); o `nome.json` é o do jogo sem
 conta, que sobe para a primeira conta que entrar sem save na nuvem. O que o aparelho lembra da conta

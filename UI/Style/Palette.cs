@@ -34,9 +34,10 @@ namespace Sigilos.UI.Style
 		public static readonly Color Gold = Color.Color8(214, 174, 96);
 
 		public static readonly Color GoldDark = Color.Color8(122, 92, 50);
+		public static readonly Color Grey = Color.Color8(220, 220, 220);
 
-		/// <summary>Madeira dos botões de texto secundários.</summary>
-		public static readonly Color Button = Color.Color8(74, 53, 34);
+        /// <summary>Madeira dos botões de texto secundários.</summary>
+        public static readonly Color Button = Color.Color8(74, 53, 34);
 
 		public static readonly Color ButtonHover = Color.Color8(94, 68, 43);
 		public static readonly Color Disabled = Color.Color8(48, 42, 37);

@@ -226,6 +226,18 @@ namespace Sigilos.Tests
 			Assert.True(PlayerSave.FromJson("{ \"Scrolls\": 3 }") == null, "save sem versão é recusado");
 		}
 
+		/// <summary>Subir <see cref="PlayerState.CurrentVersion"/> zera as contas: só o save mais velho vira jogo novo.</summary>
+		[Test]
+		private static void OnlyAnOlderSaveIsObsolete()
+		{
+			var current = PlayerState.CurrentVersion;
+			Assert.True(PlayerSave.IsObsolete($"{{ \"Version\": {current - 1}, \"Scrolls\": 3 }}"), "versão anterior: recomeça");
+			Assert.True(PlayerSave.IsObsolete("{ \"Scrolls\": 3 }"), "sem versão: de antes do campo existir");
+			Assert.False(PlayerSave.IsObsolete(PlayerSave.ToJson(NewPlayer())), "a versão atual fica");
+			Assert.False(PlayerSave.IsObsolete($"{{ \"Version\": {current + 1} }}"), "versão mais nova: o jogo é que está velho, nada se apaga");
+			Assert.False(PlayerSave.IsObsolete("não é json"), "texto quebrado não conta");
+		}
+
 		[Test]
 		private static void BestTimeKeepsTheFastestVictory()
 		{

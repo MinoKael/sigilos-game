@@ -134,3 +134,4 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Creatures/silence_herald.svg` | [Spectre - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Spectre_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/target.svg` | [Crosshair - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Crosshair_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/arrow.svg` | [Plain-arrow - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Plain-arrow_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/mail.svg` | [Envelope - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Envelope_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |

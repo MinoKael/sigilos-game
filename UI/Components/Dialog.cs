@@ -96,6 +96,7 @@ namespace Sigilos.UI.Components
 			Body.AddThemeConstantOverride("separation", 12);
 			Body.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_scroll.AddChild(Body);
+			DragScroll.Enable(_scroll);
 			column.AddChild(_scroll);
 
 			_actions.AddThemeConstantOverride("separation", 14);

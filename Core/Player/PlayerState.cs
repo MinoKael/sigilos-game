@@ -19,7 +19,7 @@ namespace Sigilos.Core.Player
 		public const int CollectionCapacity = 50;
 
 		/// <summary>Formato do save. Um save de formato mais antigo não é lido: a conta recomeça.</summary>
-		public const int CurrentVersion = 7;
+		public const int CurrentVersion = 8;
 
 		/// <summary>0 num save anterior ao campo existir.</summary>
 		public int Version { get; set; }
@@ -99,6 +99,9 @@ namespace Sigilos.Core.Player
 
 		/// <summary>O melhor tempo de cada luta vencida, em segundos (<see cref="Progression.Records"/>).</summary>
 		public Dictionary<string, double> BestTimes { get; set; } = new();
+
+		/// <summary>As cartas do correio já coletadas neste save, pelo id do servidor (<see cref="Progression.Mailbox"/>).</summary>
+		public List<string> ClaimedMail { get; set; } = new();
 
 		/// <summary>Tem alguma cópia da variante (na coleção ou no Baú).</summary>
 		public bool Owns(string summonId) => Monsters.Any(m => m.SummonId == summonId);

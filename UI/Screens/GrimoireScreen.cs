@@ -119,7 +119,7 @@ namespace Sigilos.UI.Screens
 			stars.AddThemeColorOverride("font_color", Palette.Stars(_awakened));
 			column.AddChild(stars);
 			var art = new Control { Name = "Art", CustomMinimumSize = new Vector2(0, 80), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
-			art.AddChild(Doodle.Masked(Art.Creature(family.Image), Palette.Gold, MaskShape.Rounded, 6, aura: _awakened ? Element.Light : null));
+			art.AddChild(Doodle.Masked(Art.Creature(family.Image), Palette.Grey, MaskShape.Rounded, 6, aura: _awakened ? Element.Light : null));
 			column.AddChild(art);
 			var name = new Label { Name = "Name", Text = family.BaseName, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore, ClipText = true };
 			name.AddThemeFontSizeOverride("font_size", 15);

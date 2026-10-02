@@ -423,7 +423,8 @@
     "offline": "Offline",
     "offline_text": "The server didn't answer. You're playing with this device's progress, and it goes up to the cloud on its own when the connection comes back. If the account also changed on another device meanwhile, the game asks which progress stays.",
     "channel_opens": "The Channeling opens at stage {0}.",
-    "battle_detail_campaign": "Campaign (stage {0} of {1})"
+    "battle_detail_campaign": "Campaign (stage {0} of {1})",
+    "mail": "Mail"
   },
 
   "campaign": {
@@ -1035,6 +1036,26 @@
     "combo": "Combine effects: while the enemy is stunned, the others strike it without an answer. One monster opens the way for another; that is how a team is built.",
     "auto": "Last, the Auto button, at the bottom left: the team fights on its own, using the strongest ready skill. Finish the fight as you like.",
     "end": "Well done, Conjurer! Now summon your own monsters: your first summon brings a 5★. Then the Campaign awaits."
+  },
+
+  "mail": {
+    "title": "Mail",
+    "loading": "Fetching your mail...",
+    "empty": "No mail for now. Rewards and notices from the game arrive here.",
+    "no_account": "Mail arrives through an account. Sign in to an account to receive rewards and notices.",
+    "offline": "No connection: your mail shows up when the connection is back.",
+    "error": "Couldn't fetch your mail right now. Try again in a moment.",
+    "claim": "Collect",
+    "claim_all": "Collect all",
+    "until": "Collect by {0}",
+    "item": {
+      "Gold": "Gold",
+      "Mana": "Mana",
+      "Scrolls": "Scrolls",
+      "Essence": "Essence",
+      "Fragments": "Fragments",
+      "ReappraisalGems": "Reappraisal Gems"
+    }
   },
 
   "names": {

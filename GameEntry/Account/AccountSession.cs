@@ -80,6 +80,7 @@ namespace Sigilos.GameEntry.Account
 		private readonly AuthClient _auth;
 		private readonly SessionLock _lock;
 		private readonly CloudSave _cloud;
+		private readonly CloudMail _mail;
 		private readonly Timer _beat = new() { Name = "Heartbeat", WaitTime = SessionLock.BeatSeconds };
 		private readonly Timer _upload = new() { Name = "Upload", WaitTime = UploadSeconds };
 		private readonly Timer _soon = new() { Name = "Soon", WaitTime = SoonSeconds, OneShot = true };
@@ -113,6 +114,7 @@ namespace Sigilos.GameEntry.Account
 			_auth.Expired += () => Lose(LossReason.Expired);
 			_lock = new SessionLock(_auth, _data.DeviceId, DeviceName());
 			_cloud = new CloudSave(_auth);
+			_mail = new CloudMail(_auth);
 		}
 
 		/// <summary>A conta caiu durante o jogo: o GameRoot volta para o login com o aviso. O segundo valor diz se o progresso que não subiu virou backup.</summary>
@@ -215,6 +217,12 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>Entra com o token guardado, sem senha.</summary>
 		public Task<ApiResponse> Resume() => _auth.Refresh();
 
+		/// <summary>As cartas do correio desta conta que o servidor ainda não viu coletadas.</summary>
+		public Task<MailFetch> FetchMail() => _mail.Fetch();
+
+		/// <summary>Avisa o servidor que a carta foi coletada (a recompensa já está no save).</summary>
+		public Task<ApiResponse> ClaimMail(string id) => _mail.Claim(id);
+
 		/// <summary>Troca o nome da conta. O servidor recusa nome fora da regra (<c>invalid_name</c>) ou já usado (<c>name_taken</c>).</summary>
 		public async Task<ApiResponse> Rename(string name)
 		{
@@ -267,6 +275,16 @@ namespace Sigilos.GameEntry.Account
 			}
 
 			var cloud = download.Copy;
+			var cloudRevision = cloud?.Revision ?? 0;
+
+			// O save da nuvem é de antes de a versão nova zerar as contas (PlayerSave.IsObsolete): vira backup no
+			// aparelho e conta como nuvem vazia; o jogo novo sobe por cima dele.
+			if (cloud != null && PlayerSave.IsObsolete(cloud.Json))
+			{
+				store.Backup(cloud.Json, "cloud");
+				cloud = null;
+			}
+
 			var cloudPlayer = cloud != null ? Parse(cloud.Json) : null;
 			if (cloud != null && cloudPlayer == null)
 				return new SyncResult(null, false, new ApiResponse(422, "cloud_unreadable", default));
@@ -317,7 +335,7 @@ namespace Sigilos.GameEntry.Account
 						store.Backup(cloud!.Json, "cloud");
 
 					// Sem rede agora, sobe no próximo envio: o save local já é o que vale.
-					await Push(json, cloud?.Revision ?? 0);
+					await Push(json, cloudRevision);
 					return new SyncResult(player, false, null);
 			}
 		}

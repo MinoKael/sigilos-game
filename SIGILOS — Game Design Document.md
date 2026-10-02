@@ -393,6 +393,8 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Pergaminhos Místicos | Primeira vitória de cada fase, Loja, Torre, conquistas | Invocar |
 | Fragmentos | Monstros liberados, Arena | Evolução e troca por uma invocação escolhida |
 
+**Correio.** No alto do Santuário, o Correio traz as cartas que o servidor manda (presentes, compensações, avisos), para uma conta ou para todas, com prazo ou sem; o selo vermelho diz quantas faltam coletar. Coletar soma as recompensas (qualquer das cinco moedas e a Gema de Reavaliação; a Mana pode passar do máximo) e anota a carta no save antes de avisar o servidor: nada se perde se a conexão cair, e nenhuma carta é coletada duas vezes. Sem conta, ou sem conexão, a janela explica por que não há cartas.
+
 **Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180) ou a Gema de Reavaliação (40). As ofertas moram em Data/shop.json.
 
 ### Ritmo-alvo
