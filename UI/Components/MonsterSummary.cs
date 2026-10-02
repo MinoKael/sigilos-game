@@ -172,28 +172,48 @@ namespace Sigilos.UI.Components
 		private static Control Stats(Func<Stat, double> value, Func<Stat, double> bonus)
 		{
 			var grid = new GridContainer { Name = "Stats", Columns = 2 };
-			grid.AddThemeConstantOverride("h_separation", 24);
+			grid.AddThemeConstantOverride("h_separation", 34);
 			grid.AddThemeConstantOverride("v_separation", 4);
-			foreach (var stat in Enum.GetValues<Stat>())
-			{
-				var row = Layout.Row(8).Named(stat.ToString());
-				row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-				row.AddChild(new RuneGlyph(Texts.GlyphOf(stat), 20, Palette.Gold) { Name = "Glyph" });
-				row.AddChild(new Label { Name = "Name", Text = Texts.Name(stat), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
-				row.AddChild(new Label { Name = "Value", Text = Texts.Value(stat, value(stat)), ThemeTypeVariation = GameTheme.Number, HorizontalAlignment = HorizontalAlignment.Right });
-				var extra = bonus(stat);
-				if (extra > 0.0005)
-				{
-					var green = new Label { Name = "Bonus", Text = $"+{Texts.Value(stat, extra)}" };
-					green.AddThemeColorOverride("font_color", Palette.Positive);
-					green.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
-					row.AddChild(green);
-				}
+            var stats = Enum.GetValues<Stat>();
 
-				grid.AddChild(row);
-			}
+            for (var i = 0; i < stats.Length; i++)
+            {
+                var stat = stats[i];
 
-			return grid;
+                var column = i < 4 ? 0 : 1;
+
+                var columnContainer = grid.GetChildOrNull<VBoxContainer>(column);
+                if (columnContainer == null)
+                {
+                    columnContainer = new VBoxContainer { Name = $"Column{column + 1}", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, };
+                    grid.AddChild(columnContainer);
+                }
+
+                var row = Layout.Row(8).Named(stat.ToString());
+                row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+
+                row.AddChild(new RuneGlyph(Texts.GlyphOf(stat), 20, Palette.Gold) { Name = "Glyph" });
+
+                row.AddChild(new Label { Name = "Name", Text = Texts.Name(stat), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+
+                row.AddChild(new Label { Name = "Value", Text = Texts.Value(stat, value(stat)), ThemeTypeVariation = GameTheme.Number, HorizontalAlignment = HorizontalAlignment.Right });
+
+                var extra = bonus(stat);
+
+                if (extra > 0.0005)
+                {
+                    var green = new Label { Name = "Bonus", Text = $"+{Texts.Value(stat, extra)}" };
+
+                    green.AddThemeColorOverride("font_color", Palette.Positive);
+                    green.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
+
+                    row.AddChild(green);
+                }
+
+                columnContainer.AddChild(row);
+            }
+
+            return grid;
 		}
 
 		private static Control PassiveRow(PassiveDefinition passive, bool awakened)

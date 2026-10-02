@@ -215,10 +215,13 @@ namespace Sigilos.Core.Content
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: sem custo de Mana.";
 					if (!ValidLevel(floor.Stars, floor.Level))
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: inimigos {floor.Stars}★ nível {floor.Level}.";
-					if (dungeon.Kind == DungeonKind.Runes && (floor.MinGrade < 1 || floor.MaxGrade > 6 || floor.MinGrade > floor.MaxGrade))
-						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: estrelas de {floor.MinGrade} a {floor.MaxGrade}.";
-					if (dungeon.Kind == DungeonKind.Tools && (floor.ToolGrade is < 1 or > 4 || floor.ToolCount < 1))
-						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: pedra de grau {floor.ToolGrade} ({floor.ToolCount}).";
+					if (dungeon.Kind == DungeonKind.Runes && !ValidChances(floor.Grades, grade => grade is >= 1 and <= 6))
+						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: chances de estrela fora de 1★ a 6★ ou sem somar 100.";
+					// Pedra não tem grau Normal: vai de Mágica (1) a Lendária (4).
+					if (!ValidChances(floor.Rarities, rarity => dungeon.Kind == DungeonKind.Runes || rarity >= RuneRarity.Magic))
+						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: chances de raridade inválidas ou sem somar 100.";
+					if (dungeon.Kind == DungeonKind.Tools && floor.ToolCount < 1)
+						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: nenhuma pedra.";
 				}
 			}
 
@@ -230,6 +233,14 @@ namespace Sigilos.Core.Content
 			if (Shop.Select(o => o.Id).Distinct().Count() != Shop.Count)
 				yield return "Loja: ids repetidos.";
 		}
+
+		/// <summary>
+		/// Uma tabela de chances do drop: valores aceitos, nenhuma negativa, e somando 100% com folga de
+		/// arredondamento (o sorteio divide pela soma).
+		/// </summary>
+		private static bool ValidChances<T>(IReadOnlyDictionary<T, double> chances, Func<T, bool> accepted)
+			where T : notnull =>
+			chances.Count > 0 && chances.All(c => accepted(c.Key) && c.Value >= 0) && Math.Abs(chances.Values.Sum() - 100) <= 0.5;
 
 		private IEnumerable<string> ValidateWaves(IReadOnlyList<IReadOnlyList<StageEnemy>> waves)
 		{

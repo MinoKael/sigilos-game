@@ -60,7 +60,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Botões lado a lado | `Layout.Grid(colunas)`: o `GameButton` preenche a célula e quebra o texto, com largura mínima da palavra mais longa (ou a do `Wide`). Numa `Layout.Flow` ou numa fileira sem largura, a grade é que divide o espaço |
 | Ritmo da luta na tela e da Batalha automática | `UI/BattlePace.cs`; quantas lutas em `AutoBattle.RepeatRuns` |
 | Campo de batalha (onde ficam as unidades, o oval, a corrida até o alvo, o respingo) | `UI/Components/BattleArena.cs` (os arcos de cada lado em graus, `Slots`, a corrida e a volta), `ImpactLayer` (o respingo), o ritmo em `UI/BattlePace.cs` (`Approach`, `Hit`, `Return`); o cartão da unidade em `UnitView`; os cantos e a pausa em `BattleScreen` e `PauseMenu` (a pausa é `SceneTree.Paused`, e a espera entre eventos usa timer que para junto) |
-| Nova Masmorra ou andar | `Data/dungeons.json` (andares, conjuntos, drop, `mana`, `firstClearGold`, `scale` de força); regras em `Core/Progression/Dungeons.cs` |
+| Nova Masmorra ou andar | `Data/dungeons.json` (andares, conjuntos, `mana`, `firstClearGold`, `scale` de força e o drop: `grades` e `rarities`, a chance em % de cada estrela e raridade, a mesma tabela em todas); regras e sorteio em `Core/Progression/Dungeons.cs` |
 | Custo em Mana de fase | `Data/stages.json` (`mana`) |
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
 | Nível da conta e Ouro por nível | `Core/Progression/Account.cs` |
@@ -89,7 +89,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Idiomas oferecidos na Configuração | um arquivo por idioma em `Data/texts`; `ContentLoader.Languages()` lista, `PlayerState.Language` guarda a escolha |
 | Traduzir | copie `Data/texts/pt-BR.json` com outro nome, troque os textos, ponha no grupo `names` o nome de cada coisa dos dados (pelo nome em português; o `check_texts.py` diz quais faltam) e rode com `-- --language=nome` |
 | Nome de invocação, habilidade, fase, Masmorra, chefe ou oferta da Loja | o `"name"` (ou `"base_name"`) no arquivo de `Data/`, em português, e a tradução no grupo `names` do `en.json` (a chave é o nome em português: renomear pede renomear lá também) |
-| Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simulate` (os times de referência em `Tests/ReferenceTeams.cs`; os testes `CampaignTests` conferem a fase 50 e as pontas das Masmorras) |
+| Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simulate` (os times de referência em `Tests/ReferenceTeams.cs`; os testes `CampaignTests` conferem a fase 50 e que cada andar de Masmorra pede o time do drop dele, `ReferenceTeams.AtFloor`) |
 | Atributos por papel e estrelas naturais | `Data/stat_model.json` (orçamento de BVP e perfis de papel), pelo construtor |
 | Atributos por estrelas e nível de agora | faixas por estrela em `Core/Progression/Growth.cs`: a fração do 6★ nível 40 |
 | Crítico, Dano crítico, Resistência e Precisão de base | `"base_stats"` em `Data/stat_model.json` |
@@ -99,7 +99,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Fusão de cópias (sobe uma habilidade sorteada), Fragmentos ao liberar | `Core/Progression/Fusion.cs` |
 | Runas: tabelas, custos, espaços | `Core/Runes/RuneRules.cs` (uma tabela por atributo, de 1★ a 6★) |
 | Conjuntos de runas | `Core/Runes/RuneSets.cs`; o efeito em combate em `Core/Battle/Sets/` (uma estratégia por `RuneSetEffect`) |
-| Pedras (Afiar, Gema) | `Core/Runes/RuneForge.cs` (regras), `Core/Runes/RuneRules.cs` (faixas), grau por andar em `Data/dungeons.json` |
+| Pedras (Afiar, Gema) | `Core/Runes/RuneForge.cs` (regras), `Core/Runes/RuneRules.cs` (faixas), chance de cada grau por andar (`rarities`) em `Data/dungeons.json` |
 | Glifo de um conjunto ou de um atributo | `Core/Runes/RuneSets.cs` (conjunto → Glifo); atributo → Glifo em `UI/Texts.cs` (`GlyphOf`); a letra que desenha cada Glifo na fonte das runas em `Texts.Rune`; na tela, `RuneGlyph` |
 | Fontes | `Assets/Fonts`: a SFC Wezards é a do jogo (com reserva do sistema para ★ × ⟳), a Kehdrai a das runas; carregadas em `GameTheme` |
 | Batalha automática (quantas lutas) | o padrão e o máximo em `Core/Battle/AutoBattle.cs` (`RepeatRuns`, `MaxRuns`); a escolha é o `AutoBattleSetup` |

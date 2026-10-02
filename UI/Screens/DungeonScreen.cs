@@ -187,17 +187,26 @@ namespace Sigilos.UI.Screens
 				head.AddChild(new Label { Name = "Cleared", Text = T("campaign.cleared"), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
 			info.AddChild(head);
 
-			var chips = Layout.Flow(6).Named("Rewards");
+			// O drop do andar com as chances, uma linha para as estrelas da runa (ou quantas pedras) e outra
+			// para a raridade: a porcentagem em destaque, o que ela sorteia escrito ao lado.
+			var grades = Layout.Flow(6).Named("Grades");
 			if (dungeon.Kind == DungeonKind.Runes)
 			{
-				var grades = floor.MinGrade == floor.MaxGrade ? Texts.Stars(floor.MinGrade) : $"{Texts.Stars(floor.MinGrade)}–{Texts.Stars(floor.MaxGrade)}";
-				chips.AddChild(Layout.Labeled("rune", grades, T("dungeons.rune_min", Texts.Name(floor.MinRarity)), Palette.Of(floor.MinRarity)));
+				foreach (var (grade, chance) in floor.Grades.Where(g => g.Value > 0).OrderBy(g => g.Key))
+					grades.AddChild(Layout.Labeled("rune", Texts.Percent(chance / 100), Texts.Stars(grade)).Named($"Grade{grade}"));
 			}
 			else
 			{
-				chips.AddChild(Layout.Labeled("grindstone", $"×{floor.ToolCount}", Texts.Name((RuneRarity)floor.ToolGrade), Palette.Of((RuneRarity)floor.ToolGrade)));
+				grades.AddChild(Layout.Labeled("grindstone", $"×{floor.ToolCount}", T("dungeons.kind.Tools")).Named("Tools"));
 			}
 
+			info.AddChild(grades);
+			var rarities = Layout.Flow(6).Named("Rarities");
+			foreach (var (rarity, chance) in floor.Rarities.Where(r => r.Value > 0).OrderBy(r => r.Key))
+				rarities.AddChild(Layout.Labeled("gem", Texts.Percent(chance / 100), Texts.Name(rarity), Palette.Of(rarity)).Named(rarity.ToString()));
+			info.AddChild(rarities);
+
+			var chips = Layout.Flow(6).Named("Rewards");
 			chips.AddChild(Layout.Labeled("essence", floor.Essence.ToString(), T("currency.essence")));
 			chips.AddChild(Layout.Labeled("level_max", floor.Experience.ToString(), T("reward.experience")).Named("Experience"));
 			if (!cleared)

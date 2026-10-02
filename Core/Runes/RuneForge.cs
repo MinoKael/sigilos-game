@@ -20,7 +20,8 @@ namespace Sigilos.Core.Runes
 
 		/// <summary>
 		/// Uma runa de drop. Sem <paramref name="slot"/>, o espaço é sorteado; sem <paramref name="sets"/>,
-		/// qualquer conjunto. A raridade nunca sai abaixo de <paramref name="minRarity"/> (Masmorras).
+		/// qualquer conjunto. Sem <paramref name="rarity"/> (a Masmorra sorteia a dela), a raridade sai
+		/// pelos pesos de drop.
 		/// </summary>
 		public static Rune Generate(
 			Random random,
@@ -28,7 +29,7 @@ namespace Sigilos.Core.Runes
 			int grade,
 			int? slot = null,
 			IReadOnlyList<RuneSet>? sets = null,
-			RuneRarity minRarity = RuneRarity.Normal)
+			RuneRarity? rarity = null)
 		{
 			var chosenSlot = slot ?? random.Next(1, RuneRules.Slots + 1);
 			var options = RuneRules.MainOptions(chosenSlot);
@@ -45,7 +46,7 @@ namespace Sigilos.Core.Runes
 			if (random.NextDouble() < RuneRules.InnateChance)
 				rune.Innate = NewSubstat(random, rune);
 
-			var count = (int)RuneRules.RollRarity(random, minRarity);
+			var count = (int)(rarity ?? RuneRules.RollRarity(random));
 			for (var i = 0; i < count; i++)
 				rune.Substats.Add(NewSubstat(random, rune));
 

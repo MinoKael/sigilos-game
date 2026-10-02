@@ -461,8 +461,7 @@
     "opens_at": "Opens after stage {0}",
     "drops_sets": "Drops runes of:",
     "drops_tools": "Drops:",
-    "sets_hint": "Touch a set to see its bonus.",
-    "rune_min": "Rune, at least {0}"
+    "sets_hint": "Touch a set to see its bonus."
   },
 
   "summon": {
@@ -685,7 +684,7 @@
     },
     "basic": {
       "campaign": { "title": "Campaign", "text": "50 stages in three regions, with up to 3 waves; each victory costs Mana. The first victory gives Scrolls and always a rune; later ones give Essence and a chance of a rune. The Campaign introduces the game little by little: each part of the Sanctuary opens at a stage. It drops runes of up to {0} stars; beating stage 50 takes about level 20 with runes, or 6★ level 40 without." },
-      "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors, one element in most of its enemies, and drops what the Campaign doesn't: 4 to 6 star runes from four specific sets, or Grindstones and Gems (the Forge). They come after the Campaign, in order of difficulty: Golem (Wind), Wyvern (Fire), Crypt (Dark), Drowned (Water) and the Forge (Light); bring the element with the advantage. Each victory costs Mana; the first victory on each floor gives Gold." },
+      "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors, one element in most of its enemies, and drops what the Campaign doesn't: Rare or better runes from four specific sets, or Grindstones and Gems (the Forge). Every floor shows the chance of each star and rarity, and the deeper the floor, the bigger the runes: 2 and 3 stars on floor 1, only 6 stars on floor 5. Floor 1 is as hard in every Dungeon, and so on, as hard as what it pays. They open during the Campaign: Golem (Wind), Wyvern (Fire), Crypt (Dark), Drowned (Water) and the Forge (Light); bring the element with the advantage. Each victory costs Mana; the first victory on each floor gives Gold." },
       "mana": { "title": "Mana and account level", "text": "Every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {2} per hour up to the maximum: {0} at account level 1, {1} at level {3}, the maximum. Every victory also gives experience to the account, and each level refills Mana." },
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Scrolls." },
       "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The first one is a guaranteed 5★, and the 5★ guarantee is always on display." },
@@ -728,7 +727,7 @@
       "sets": { "title": "Sets", "text": "Two or four runes of the same set give its bonus. With 6 slots you fit one 4-piece and one 2-piece, or three 2-pieces (three of the same count three times). Each set has its Glyph." },
       "grind": { "title": "Grindstone", "text": "Adds a bonus to an HP, Attack, Defense or Speed substat of the same type as the stone. A new stone replaces the old bonus." },
       "gem": { "title": "Enchanted Gem", "text": "Swaps a substat of a +{0} rune for the gem's. Only one substat per rune can be enchanted." },
-      "where": { "title": "Where to get them", "text": "The Campaign drops runes of up to {0} stars (always on the first victory, {1} chance afterwards). The Dungeons drop the 5 and 6 star ones and the tools." },
+      "where": { "title": "Where to get them", "text": "The Campaign drops runes of up to {0} stars (always on the first victory, {1} chance afterwards). The Dungeons drop Rare or better runes from 2 to 6 stars, bigger on each floor, and the tools." },
       "grimoire": { "title": "Tables", "text": "The numbers for each star, the upgrade costs and the tool ranges are in the Grimoire." },
       "rarity": {
         "title": "Rune rarity",

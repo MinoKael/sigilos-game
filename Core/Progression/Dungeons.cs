@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Runes;
@@ -50,20 +51,36 @@ namespace Sigilos.Core.Progression
 			var tools = new List<RuneTool>();
 			if (dungeon.Kind == DungeonKind.Runes)
 			{
-				var grade = random.Next(floor.MinGrade, floor.MaxGrade + 1);
-				rune = RuneInventory.Create(random, player, grade, dungeon.Sets, floor.MinRarity);
+				var grade = Roll(random, floor.Grades);
+				rune = RuneInventory.Create(random, player, grade, dungeon.Sets, Roll(random, floor.Rarities));
 			}
 			else
 			{
 				for (var i = 0; i < floor.ToolCount; i++)
 				{
-					var tool = RuneForge.GenerateTool(random, (RuneRarity)floor.ToolGrade);
+					var tool = RuneForge.GenerateTool(random, Roll(random, floor.Rarities));
 					player.Tools.Add(tool);
 					tools.Add(tool);
 				}
 			}
 
 			return new VictoryReward(mana, 0, gold, floor.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, accountLevels);
+		}
+
+		/// <summary>Sorteia pela tabela de chances do andar (em %), na ordem das chaves.</summary>
+		private static T Roll<T>(Random random, IReadOnlyDictionary<T, double> chances)
+			where T : notnull
+		{
+			var ordered = chances.OrderBy(c => c.Key).ToList();
+			var roll = random.NextDouble() * ordered.Sum(c => c.Value);
+			foreach (var (value, chance) in ordered)
+			{
+				roll -= chance;
+				if (roll < 0)
+					return value;
+			}
+
+			return ordered.Last(c => c.Value > 0).Key;
 		}
 	}
 }

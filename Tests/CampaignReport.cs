@@ -38,17 +38,16 @@ namespace Sigilos.Tests
 			}
 
 			Console.WriteLine();
-			Console.WriteLine("Dungeons: the tier the floor asks for | the tier below");
-			Console.WriteLine("dungeon      floor   enemies        tier      wins | below wins");
+			Console.WriteLine("Dungeons: the team the floor asks for | the team of the floor below");
+			Console.WriteLine("dungeon      floor   enemies             wins | below wins");
 			foreach (var dungeon in database.Dungeons)
 			{
 				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
 				{
 					var encounter = dungeon.Floor(floor).Encounter;
-					var tier = ReferenceTeams.FloorTiers.TryGetValue(dungeon.Id, out var tiers) ? tiers[floor - 1] : 7;
-					var asked = Run(database, encounter, ReferenceTeams.Tier(database, tier));
-					var below = Run(database, encounter, ReferenceTeams.Tier(database, Math.Max(1, tier - 1)));
-					Console.WriteLine($"{dungeon.Id,-12} {floor,5}   {encounter.Stars + "★" + encounter.Level + " ×" + encounter.Scale.ToString("0.00"),-12}  {tier,4}  {asked.Wins,8:P0} | {below.Wins,10:P0}");
+					var asked = Run(database, encounter, ReferenceTeams.AtFloor(database, floor));
+					var below = Run(database, encounter, ReferenceTeams.AtFloor(database, floor - 1));
+					Console.WriteLine($"{dungeon.Id,-12} {floor,5}   {encounter.Stars + "★" + encounter.Level + " ×" + encounter.Scale.ToString("0.00"),-12}  {asked.Wins,8:P0} | {below.Wins,10:P0}");
 				}
 			}
 		}

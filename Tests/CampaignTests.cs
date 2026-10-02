@@ -133,19 +133,24 @@ namespace Sigilos.Tests
 		}
 
 		/// <summary>
-		/// As Masmorras vêm depois da Campanha e em ordem: o andar 5 da Golem já pede mais que o fim da
-		/// Campanha, e o andar 5 da Forja só cai com o degrau mais alto (6★, runas 6★ +15, Despertar).
+		/// A dificuldade do andar acompanha o drop, igual em todas as Masmorras: o time que já usa runas
+		/// como as do andar vence, e o do andar de baixo ainda não (ReferenceTeams.AtFloor). Elas abrem
+		/// durante a Campanha, a Golem primeiro.
 		/// </summary>
 		[Test]
-		private static void DungeonFloorsAskForTheirTier()
+		private static void DungeonFloorsAskForTheTeamTheirDropFits()
 		{
 			var database = TestData.LoadReal();
-			Assert.Equal("golem wyvern crypt sanctum forge", string.Join(" ", database.Dungeons.Select(d => d.Id)), "a ordem de dificuldade");
-			var golem = database.Dungeons.Single(d => d.Id == "golem").Floor(5).Encounter;
-			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtStage(database, 50), golem, 20) < 0.5, "o fim da Campanha ainda não vence a Golem 5");
-			var forge = database.Dungeons.Single(d => d.Id == "forge").Floor(5).Encounter;
-			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Tier(database, 9), forge, 20) < 0.5, "sem Despertar nem habilidades, a Forja 5 não cai");
-			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Tier(database, 10), forge, 20) >= 0.6, "com tudo, cai");
+			Assert.Equal("golem wyvern crypt sanctum forge", string.Join(" ", database.Dungeons.OrderBy(d => d.UnlockStage).Select(d => d.Id)), "a ordem em que abrem");
+			foreach (var dungeon in database.Dungeons)
+			{
+				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
+				{
+					var encounter = dungeon.Floor(floor).Encounter;
+					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtFloor(database, floor), encounter, 10) >= 0.6, $"{dungeon.Id} {floor}: o time do andar vence");
+					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtFloor(database, floor - 1), encounter, 10) < 0.5, $"{dungeon.Id} {floor}: o de baixo ainda não");
+				}
+			}
 		}
 	}
 }

@@ -153,8 +153,12 @@ namespace Sigilos.UI.Screens
 		{
 			column.AddChild(Layout.Text(T("compendium.stats.intro"), GameTheme.Faded).Named("Intro"));
 			var grid = Cards(column);
-			foreach (var stat in Enum.GetValues<Stat>())
-				Card(grid, stat.ToString(), Texts.GlyphOf(stat), Texts.Name(stat), Texts.Explain(stat));
+            Stat[] ordemDesejada = [Stat.Health, Stat.Crit, Stat.Attack, Stat.CritDamage, Stat.Defense, Stat.Resistance, Stat.Speed, Stat.Accuracy];
+
+            foreach (var stat in ordemDesejada)
+            {
+                Card(grid, stat.ToString(), Texts.GlyphOf(stat), Texts.Name(stat), Texts.Explain(stat));
+            };
 		}
 
 		private static void Glyphs(VBoxContainer column)

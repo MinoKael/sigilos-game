@@ -9,8 +9,7 @@ namespace Sigilos.Tests
 {
 	/// <summary>
 	/// Os times de referência da calibragem (GDD, seção 10): o time típico (<see cref="TestData.TypicalTeam"/>)
-	/// no ponto em que um jogador estaria em cada fase, e os degraus depois da Campanha que cada andar de
-	/// Masmorra pede. As runas são as que um jogador montaria: Fatal e Lâmina em quem ataca, Energia,
+	/// no ponto em que um jogador estaria em cada fase, e o que cada andar de Masmorra pede. As runas são as que um jogador montaria: Fatal e Lâmina em quem ataca, Energia,
 	/// Guarda e Escudo nos outros, com o principal certo em cada espaço.
 	/// </summary>
 	internal static class ReferenceTeams
@@ -36,33 +35,19 @@ namespace Sigilos.Tests
 		public static BattleTeam Bare(GameDatabase database) => Team(database, _ => 6, 40);
 
 		/// <summary>
-		/// Os degraus de depois da Campanha, do 1 (a fase 35) ao 10 (6★ nível 40, runas 6★ +15, Despertar e
-		/// habilidades no máximo). Cada andar de Masmorra pede um degrau (Data/dungeons.json).
+		/// Quem o andar de Masmorra pede, o mesmo em todas (Data/dungeons.json): a dificuldade acompanha o
+		/// drop, então é o time que já usa runas como as que o andar solta. 1: a fase 15 (runas 3★); 2: a
+		/// fase 30 (4★ +9); 3: o fim da Campanha (4★ +12); 4: 6★ nível 40 com runas 5★ +12; 5: o mesmo com 6★ +15.
+		/// O andar 0 é o de baixo do 1 (a fase 10), para medir o salto.
 		/// </summary>
-		public static BattleTeam Tier(GameDatabase database, int tier) => tier switch
+		public static BattleTeam AtFloor(GameDatabase database, int floor) => floor switch
 		{
-			1 => AtStage(database, 35),
-			2 => AtStage(database, 45),
+			0 => AtStage(database, 10),
+			1 => AtStage(database, 15),
+			2 => AtStage(database, 30),
 			3 => AtStage(database, 50),
-			4 => Team(database, s => s.Rarity, 25, 5, 12),
-			5 => Team(database, s => Math.Max(s.Rarity, 4), 30, 5, 12),
-			6 => Team(database, _ => 5, 35, 5, 12),
-			7 => Team(database, _ => 6, 40, 5, 12),
-			8 => Team(database, _ => 6, 40, 6, 12),
-			9 => Team(database, _ => 6, 40, 6, 15),
-			_ => new BattleTeam(Team(database, _ => 6, 40, 6, 15).Members
-				.Select(m => m with { Awakened = true, SkillLevels = m.Summon.AllSkills.Select(_ => 99).ToList() })
-				.ToList()),
-		};
-
-		/// <summary>O degrau que cada andar pede, por Masmorra, do andar 1 ao 5.</summary>
-		public static readonly IReadOnlyDictionary<string, int[]> FloorTiers = new Dictionary<string, int[]>
-		{
-			["golem"] = new[] { 1, 2, 3, 4, 5 },
-			["wyvern"] = new[] { 2, 3, 4, 5, 6 },
-			["crypt"] = new[] { 3, 4, 5, 6, 7 },
-			["sanctum"] = new[] { 4, 5, 6, 7, 8 },
-			["forge"] = new[] { 5, 6, 7, 9, 10 },
+			4 => Team(database, _ => 6, 40, 5, 12),
+			_ => Team(database, _ => 6, 40, 6, 15),
 		};
 
 		/// <summary>Quantas vezes o time vence o encontro, de 0 a 1.</summary>

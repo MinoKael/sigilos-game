@@ -61,16 +61,11 @@ namespace Sigilos.Core.Runes
 			RuneStat.DefenseFlat or RuneStat.DefensePercent or
 			RuneStat.Speed;
 
-		/// <summary>Sorteia a raridade pelos pesos de drop, só entre as de <paramref name="min"/> para cima.</summary>
-		public static RuneRarity RollRarity(Random random, RuneRarity min = RuneRarity.Normal)
+		/// <summary>Sorteia a raridade pelos pesos de drop.</summary>
+		public static RuneRarity RollRarity(Random random)
 		{
-			var first = (int)min;
-			var total = 0.0;
-			for (var i = first; i < RarityWeights.Length; i++)
-				total += RarityWeights[i];
-
-			var roll = random.NextDouble() * total;
-			for (var i = first; i < RarityWeights.Length; i++)
+			var roll = random.NextDouble();
+			for (var i = 0; i < RarityWeights.Length; i++)
 			{
 				roll -= RarityWeights[i];
 				if (roll < 0)

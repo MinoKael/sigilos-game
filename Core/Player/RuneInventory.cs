@@ -23,15 +23,15 @@ namespace Sigilos.Core.Player
 
 		public static bool IsFull(PlayerState player) => Count(player) >= Capacity;
 
-		/// <summary>Sorteia uma runa nova e guarda no inventário.</summary>
+		/// <summary>Sorteia uma runa nova e guarda no inventário. Sem raridade, ela sai pelos pesos de drop.</summary>
 		public static Rune Create(
 			Random random,
 			PlayerState player,
 			int grade,
 			IReadOnlyList<RuneSet>? sets = null,
-			RuneRarity minRarity = RuneRarity.Normal)
+			RuneRarity? rarity = null)
 		{
-			var rune = RuneForge.Generate(random, player.NextRuneId++, grade, null, sets, minRarity);
+			var rune = RuneForge.Generate(random, player.NextRuneId++, grade, null, sets, rarity);
 			player.Runes.Add(rune);
 			return rune;
 		}

@@ -27,17 +27,16 @@ namespace Sigilos.Core.Content
 		/// <summary>Experiência de cada monstro da equipe.</summary>
 		public int Experience { get; init; }
 
-		/// <summary>Masmorra de runas: estrelas da runa, sorteadas entre o mínimo e o máximo.</summary>
-		public int MinGrade { get; init; }
+		/// <summary>Masmorra de runas: a chance (em %, somando 100) de cada estrela da runa.</summary>
+		public IReadOnlyDictionary<int, double> Grades { get; init; } = new Dictionary<int, double>();
 
-		public int MaxGrade { get; init; }
+		/// <summary>
+		/// A chance (em %, somando 100) de cada raridade: da runa, na Masmorra de runas; do grau de cada
+		/// pedra, na de pedras.
+		/// </summary>
+		public IReadOnlyDictionary<RuneRarity, double> Rarities { get; init; } = new Dictionary<RuneRarity, double>();
 
-		/// <summary>Masmorra de runas: a runa nunca sai abaixo desta raridade.</summary>
-		public RuneRarity MinRarity { get; init; }
-
-		/// <summary>Masmorra de pedras: grau das pedras (1 Mágica ... 4 Lendária) e quantas saem.</summary>
-		public int ToolGrade { get; init; }
-
+		/// <summary>Masmorra de pedras: quantas saem.</summary>
 		public int ToolCount { get; init; } = 1;
 
 		/// <summary>Multiplica Vida e Ataque de todos os inimigos do andar.</summary>

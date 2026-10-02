@@ -36,23 +36,44 @@ namespace Sigilos.Tests
 			Assert.Equal(EntryProblem.NoMana, Dungeons.Check(player, golem, 1), "sem a Mana da vitória não entra");
 		}
 
+		/// <summary>As estrelas e a raridade saem na proporção da tabela do andar, e só o que ela tem.</summary>
 		[Test]
-		private static void RuneDungeonDropsBigRunesOfItsSets()
+		private static void RuneDungeonDropsByTheFloorChances()
 		{
+			const int drops = 4000;
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
 			var golem = database.Dungeon("golem");
 			var random = new Random(4);
 
 			for (var floor = 1; floor <= golem.Floors.Count; floor++)
 			{
 				var rules = golem.Floor(floor);
-				for (var i = 0; i < 30; i++)
+				var player = TestData.PlayerWith("phoenix_fire");
+				var runes = Enumerable.Range(0, drops).Select(_ => Dungeons.ApplyVictory(random, player, golem, floor).Rune!).ToList();
+				Assert.True(runes.All(r => golem.Sets.Contains(r.Set)), "só conjuntos da Masmorra");
+				Assert.True(runes.All(r => rules.Grades.ContainsKey(r.Grade)), $"andar {floor}: só as estrelas da tabela");
+				Assert.True(runes.All(r => rules.Rarities.ContainsKey(r.Rarity)), $"andar {floor}: só as raridades da tabela");
+				foreach (var (grade, chance) in rules.Grades)
+					Assert.True(Math.Abs(100.0 * runes.Count(r => r.Grade == grade) / drops - chance) < 3, $"andar {floor}: {grade}★ perto de {chance}%");
+				foreach (var (rarity, chance) in rules.Rarities)
+					Assert.True(Math.Abs(100.0 * runes.Count(r => r.Rarity == rarity) / drops - chance) < 3, $"andar {floor}: {rarity} perto de {chance}%");
+			}
+		}
+
+		[Test]
+		private static void EveryDungeonPaysTheSameOnTheSameFloor()
+		{
+			var database = TestData.LoadReal();
+			var golem = database.Dungeon("golem");
+			foreach (var dungeon in database.Dungeons)
+			{
+				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
 				{
-					var rune = Dungeons.ApplyVictory(random, player, golem, floor).Rune!;
-					Assert.True(golem.Sets.Contains(rune.Set), "só conjuntos da Masmorra");
-					Assert.True(rune.Grade >= rules.MinGrade && rune.Grade <= rules.MaxGrade, $"andar {floor}: {rune.Grade}★");
-					Assert.True(rune.Rarity >= rules.MinRarity, $"andar {floor}: raridade {rune.Rarity}");
+					var rules = dungeon.Floor(floor);
+					Assert.True(rules.Rarities.SequenceEqual(golem.Floor(floor).Rarities), $"{dungeon.Id} {floor}: raridades da tabela");
+					if (dungeon.Kind == DungeonKind.Runes)
+						Assert.True(rules.Grades.SequenceEqual(golem.Floor(floor).Grades), $"{dungeon.Id} {floor}: estrelas da tabela");
+					Assert.Equal(golem.Floor(floor).Experience, rules.Experience, $"{dungeon.Id} {floor}: experiência");
 				}
 			}
 		}
@@ -67,7 +88,7 @@ namespace Sigilos.Tests
 
 			var reward = Dungeons.ApplyVictory(new Random(2), player, forge, last);
 			Assert.Equal(forge.Floor(last).ToolCount, reward.Tools.Count, "quantas pedras");
-			Assert.True(reward.Tools.All(t => (int)t.Grade == forge.Floor(last).ToolGrade), "grau do andar");
+			Assert.True(reward.Tools.All(t => forge.Floor(last).Rarities.ContainsKey(t.Grade)), "grau da tabela do andar");
 			Assert.Equal(reward.Tools.Count, player.Tools.Count, "guardadas");
 			Assert.Equal(null, reward.Rune, "a Forja não solta runa");
 		}

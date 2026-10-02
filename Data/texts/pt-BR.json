@@ -190,7 +190,7 @@
     },
     "Raido": {
       "name": "Raido",
-      "meaning": "Velocidade"
+      "meaning": "Dano crítico"
     },
     "Algiz": {
       "name": "Algiz",
@@ -226,7 +226,7 @@
     },
     "Sowilo": {
       "name": "Sowilo",
-      "meaning": "Dano crítico"
+      "meaning": "Velocidade"
     },
     "Tiwaz": {
       "name": "Tiwaz",
@@ -462,8 +462,7 @@
     "opens_at": "Abre depois da fase {0}",
     "drops_sets": "Solta runas de:",
     "drops_tools": "Solta:",
-    "sets_hint": "Toque num conjunto para ver o bônus dele.",
-    "rune_min": "Runa, pelo menos {0}"
+    "sets_hint": "Toque num conjunto para ver o bônus dele."
   },
 
   "summon": {
@@ -494,7 +493,7 @@
     "intro": "Troque o Ouro que você ganha jogando por Mana ou Pergaminhos.",
     "buy_button": "Comprar",
     "confirm_title": "Confirmar compra",
-    "reappraisal_info": "Devolve uma runa ao estado em que caiu: tira as melhoras, as Pedras de Afiar e o encantamento. Você tem {0}."
+    "reappraisal_info": "Devolve a runa ao estado original."
   },
 
   "monsters": {
@@ -686,7 +685,7 @@
     },
     "basic": {
       "campaign": { "title": "Campanha", "text": "50 fases em três regiões, com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Pergaminhos e sempre uma runa; as seguintes dão Essência e chance de runa. A Campanha apresenta o jogo aos poucos: cada parte do Santuário abre numa fase. Ela solta runas de até {0} estrelas; vencer a fase 50 pede cerca de nível 20 com runas, ou 6★ nível 40 sem." },
-      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas de 4 a 6 estrelas de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Elas vêm depois da Campanha, em ordem de dificuldade: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana; a primeira vitória em cada andar dá Ouro." },
+      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas Raras ou melhores de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada andar mostra a chance de cada estrela e raridade, e quanto mais fundo, maior a runa: 2 e 3 estrelas no andar 1, só 6 estrelas no andar 5. O andar 1 é igual de difícil em todas, e assim por diante, tão difícil quanto o que paga. Elas abrem durante a Campanha: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana; a primeira vitória em cada andar dá Ouro." },
       "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
       "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
@@ -729,7 +728,7 @@
       "sets": { "title": "Conjuntos", "text": "Duas ou quatro runas do mesmo conjunto dão o bônus dele. Com 6 espaços cabem um de 4 e um de 2, ou três de 2 (três iguais valem três vezes). Cada conjunto tem o seu Glifo." },
       "grind": { "title": "Pedra de Afiar", "text": "Soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo." },
       "gem": { "title": "Gema Encantada", "text": "Troca um subatributo de uma runa +{0} pelo da gema. Só um subatributo por runa pode ser encantado." },
-      "where": { "title": "Onde conseguir", "text": "A Campanha solta runas de até {0} estrelas (sempre na primeira vitória, {1} de chance depois). As Masmorras soltam as de 5 e 6 estrelas e as pedras." },
+      "where": { "title": "Onde conseguir", "text": "A Campanha solta runas de até {0} estrelas (sempre na primeira vitória, {1} de chance depois). As Masmorras soltam runas Raras ou melhores de 2 a 6 estrelas, maiores a cada andar, e as pedras." },
       "grimoire": { "title": "Tabelas", "text": "Os números de cada estrela, os custos de melhora e as faixas das pedras estão no Grimório." },
       "rarity": {
         "title": "Raridade das runas",
@@ -744,7 +743,7 @@
       "frame3": "Moldura de bronze",
       "frame4": "Moldura de prata",
       "frame5": "Moldura de ouro",
-      "awakened": "Desperto: aura e estrelas roxas"
+      "awakened": "Desperto: foil e estrelas roxas"
     }
   },
 

@@ -281,7 +281,7 @@ Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e
 | Estrelas e nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 10 de experiência); no nível máximo, Evolução com Essência e Fragmentos | Das estrelas naturais até 6★; nível máximo 10 + 5 por estrela (25 no 3★, 40 no 6★); Vida, Ataque e Defesa pela faixa de Summoners War de cada estrela |
 | Níveis de habilidade | Fundir cópias da mesma família | Cada cópia sobe uma habilidade sorteada: mais dano, cura, chance de efeito ou menos recarga |
 | Despertar | Essência pelas estrelas naturais: 25 000 (2★ e 3★), 50 000 (4★), 75 000 (5★) | Nome próprio, a aura do elemento, estrelas roxas, Vida, Ataque e Defesa maiores (os do orçamento desperto: cerca de 8% a 11% a mais) e +1 de Velocidade e, pelas estrelas naturais, uma habilidade nova (2★ e 3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
-| Runas | Campanha (até 4★) e Masmorras (4★ a 6★, conjuntos certos), melhoradas com Essência; Pedras de Afiar e Gemas da Forja | Atributos, conjuntos e o ajuste fino de Velocidade |
+| Runas | Campanha (até 4★) e Masmorras (2★ a 6★, Raras ou melhores, conjuntos certos), melhoradas com Essência; Pedras de Afiar e Gemas da Forja | Atributos, conjuntos e o ajuste fino de Velocidade |
 
 **A força da Campanha.** As habilidades das invocações têm multiplicadores contidos (30% abaixo dos de antes), para sobrar espaço para efeitos, elementos, runas e equipe; os inimigos têm 30% a mais de Vida, Ataque e Defesa. A Campanha é calibrada no simulador (`dotnet run --project Tests -- --simulate`) contra um time de referência, o típico (a 5★ garantida e quatro 3★), no ponto em que um jogador estaria em cada fase: o nível sobe até 20 na fase 40 e fica, e as runas são as que a Campanha solta até ali, melhoradas aos poucos até +12. Ele vence cada fase em 80% das lutas (70% nos chefes). A fase 50 pede nível 20 com runas ou 6★ nível 40 sem runas; nível 20 sem runas não vence: as runas são parte do poder, não um extra. Estrelas e nível das fases só sobem, e cada fase tem um multiplicador de Vida e Ataque que acerta o que as ondas pesam a mais ou a menos que o nível diz.
 
@@ -296,7 +296,7 @@ Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e
 | Loja | Fase 4 |
 | Batalha automática | Fase 5 |
 | Grimório | Fase 8 |
-| Masmorras | Fase 30 (a Golem; as outras nas fases 38, 44 e 50) |
+| Masmorras | Fase 15 (a Golem; a Serpe na 20, a Cripta na 25, o Afogado e a Forja na 30) |
 
 **Estrelas e nível, como em Summoners War.** Cada invocação nasce nas estrelas naturais, no nível 1, e sobe até o máximo da estrela (20 no 2★, 25 no 3★, 30 no 4★, 35 no 5★, 40 no 6★), com a experiência de cada nível da tabela de Summoners War. No máximo, a Evolução gasta Essência e Fragmentos (2 000 e 5 no 1★ até 100 000 e 80 no 5★), dá uma estrela e mantém o nível: diferente de Summoners War, o monstro não volta ao 1. Ele continua no nível em que estava, agora na faixa da estrela nova (um 3★ no 25 tem 40% dos atributos do máximo; evoluído, o 4★ no 25 tem 50%), e só faltam os 5 níveis novos. Os atributos de base do apêndice são os de 6★ nível 40; cada estrela tem a faixa de lá (2★: de 16% a 29% do máximo; 3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Quem nasce com menos estrelas chega ao 6★ nível 40 com menos: o orçamento de uma 2★ natural é 78% do de uma 5★, o de uma 3★, 85%, e o de uma 4★, 93%. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
 
@@ -357,15 +357,25 @@ flowchart LR
 | Modo | Inspiração | Controle | Para que serve | Entra em |
 | --- | --- | --- | --- | --- |
 | Campanha: 50 fases em 3 regiões (20, 20 e 10) | AFK | Automático | Ensina o jogo aos poucos, aumenta a ociosidade e prepara a conta para as Masmorras | MVP |
-| Masmorras de Runas, em ordem de dificuldade: Golem Rúnico (Vento), Ninho da Serpe (Fogo), Cripta do Rei Ossudo (Trevas), Santuário Afogado (Água) | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Batalha automática | 5 andares; cada uma solta runas de 4 a 6 estrelas de 4 conjuntos | MVP |
-| Forja Rachada (Luz), a mais difícil | Fenda de Summoners War | Automático ou Batalha automática | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
+| Masmorras de Runas: Golem Rúnico (Vento), Ninho da Serpe (Fogo), Cripta do Rei Ossudo (Trevas), Santuário Afogado (Água) | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Batalha automática | 5 andares; cada uma solta runas de 2 a 6 estrelas de 4 conjuntos, maiores a cada andar | MVP |
+| Forja Rachada (Luz) | Fenda de Summoners War | Automático ou Batalha automática | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
 | Torre dos Círculos: 60 andares com regras fixas | Torre de Summoners War e Abismo de Epic Seven | Manual | Pergaminhos, Ouro, Essência, desafio de montagem | v0.5 |
 | Provações: uma luta fixa por família | Despertar de Summoners War | Manual | Libera o Despertar | v0.5 |
 | Portais Secretos: surgem ao vencer Masmorras e ficam até você usar | Masmorras secretas de Summoners War | Automático | Três vitórias no mesmo portal dão uma invocação daquela família | v1.0 |
 | Arena dos Aprendizes: rivais gerados com poder parecido com o seu | Arenas de Summoners War e Epic Seven | Automático | Fragmentos e rivais recorrentes | v1.0 |
 | Espelho: exporta o time como código de texto para um amigo enfrentar | — | Automático | Social sem servidor | Depois da 1.0 |
 
-**Masmorras depois da Campanha.** Vencer a fase 50 é estar pronto para as Masmorras, e a dificuldade (não uma trava) leva o jogador pela ordem: o andar 5 da Golem logo depois da Campanha, depois o 5 da Serpe, da Cripta, do Afogado e, por último, o da Forja. Elas abrem durante a Campanha (a Golem na fase 30, a Serpe na 38, a Cripta na 44, o Afogado e a Forja na 50), e o andar 1 da Golem é como a fase 35. Cada uma é quase toda do seu elemento, então ganha quem leva a vantagem (Fogo na Golem, Água na Serpe, Luz na Cripta, Vento no Afogado, Trevas na Forja). Os inimigos vão do 6★ nível 20 ao 6★ nível 60, e o andar 5 de cada uma pede mais que o da anterior: o da Forja só cai com 6★ nível 40, runas 6★ +15, Despertar e habilidades no máximo.
+**A dificuldade é a recompensa.** Cada andar é tão difícil quanto o que paga, e por isso o andar N é igual de difícil em todas as Masmorras: elas se diferenciam pelos conjuntos (ou pelas pedras) e pelo elemento, não por uma escada entre elas. O andar pede o time que já usa runas como as que ele solta: o 1, quem está na fase 15 (runas 2★ e 3★); o 2, quem está na fase 30 (runas 4★); o 3, o fim da Campanha (nível 20, runas 4★ +12); o 4, 6★ nível 40 com runas 5★ +12; o 5, 6★ nível 40 com runas 6★ +15. Elas abrem durante a Campanha (a Golem na fase 15, a Serpe na 20, a Cripta na 25, o Afogado e a Forja na 30). Cada uma é quase toda do seu elemento, então ganha quem leva a vantagem (Fogo na Golem, Água na Serpe, Luz na Cripta, Vento no Afogado, Trevas na Forja). A escala de cada andar compensa as ondas e o elemento de cada Masmorra, para o mesmo andar pedir o mesmo time em todas.
+
+**Drop por andar.** Toda Masmorra de runas paga pela mesma tabela, e a Forja usa a de raridade para o grau de cada pedra (2 pedras no andar 5):
+
+| Andar | 2★ | 3★ | 4★ | 5★ | 6★ | Rara | Heroica | Lendária |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | 53,9% | 46,1% | — | — | — | 70,7% | 23,5% | 5,8% |
+| 2 | — | 30,7% | 54,5% | 14,7% | — | 69,3% | 25,7% | 5,0% |
+| 3 | — | — | 58,8% | 39,2% | 2,0% | 69,7% | 25,4% | 4,9% |
+| 4 | — | — | — | 28,2% | 71,8% | 46,5% | 23,1% | 30,4% |
+| 5 | — | — | — | — | 100% | 61,8% | 35,2% | 3,0% |
 
 **Mana.** Toda vitória custa Mana: de 2 a 6 por fase da Campanha e de 4 a 8 por andar de Masmorra. A derrota não custa nada, mas só começa a luta quem tem a Mana da vitória. A canalização recarrega 12 por hora até o máximo, que começa em 60 e sobe 1 por nível da conta até 120 no nível 60 (o último nível soma 2); o que passaria do máximo se perde. Subir de nível a conta enche a Mana, e a Mana comprada na Loja passa do máximo. Farmar runas é o centro do jogo, e o Ouro é a válvula para farmar mais.
 
