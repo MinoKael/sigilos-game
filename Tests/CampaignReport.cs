@@ -10,13 +10,14 @@ namespace Sigilos.Tests
 {
 	/// <summary>
 	/// Relatório, não teste: roda cada fase da Campanha e cada andar de Masmorra muitas vezes no
-	/// automático e mostra a taxa de vitória e a duração. É a "fase 0" do roadmap (GDD, seção 13):
-	/// testar a matemática sem nenhum gráfico. Uso: <c>dotnet run --project Tests -- --simular</c>.
+	/// automático e mostra a taxa de vitória. É a calibragem do GDD (seção 10), para conferir depois de
+	/// mexer em atributos, habilidades ou ondas. Uso: <c>dotnet run --project Tests -- --simulate</c>.
 	///
-	/// O time é o de quem joga sem sorte (<see cref="TestData.TypicalTeam"/>): a 5★ garantida e quatro
-	/// 3★, sem Despertar. Na Campanha, sem runas — o pior caso —, no nível dos inimigos e 3 níveis
-	/// abaixo. Nas Masmorras, sem runas e com seis runas 5★ +9 em cada monstro. O automático não usa
-	/// Éter, então o relatório mede o time sem aprimoramentos.
+	/// Na Campanha, cada fase contra quem chega a ela (<see cref="ReferenceTeams.AtStage"/>: vence de 80%
+	/// para cima, 70% nos chefes) e contra o 6★ nível 40 sem runas (o outro jeito de terminar a
+	/// Campanha). Nas Masmorras, cada andar contra o degrau que ele pede e contra o de baixo
+	/// (<see cref="ReferenceTeams.Tier"/>). O automático não usa Éter, então o relatório mede o time sem
+	/// aprimoramentos.
 	/// </summary>
 	internal static class CampaignReport
 	{
@@ -27,28 +28,27 @@ namespace Sigilos.Tests
 			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 			Console.WriteLine($"Team: {string.Join(", ", TestData.TypicalTeam)} | {Seeds} fights per row");
 			Console.WriteLine();
-			Console.WriteLine("Campaign, no runes");
-			Console.WriteLine("stage  enemies  team      wins   rounds      HP left");
+			Console.WriteLine("Campaign: reference team at the stage | 6★ level 40, no runes");
+			Console.WriteLine("stage  enemies         wins  rounds |     wins  rounds");
 			foreach (var stage in database.Stages)
 			{
-				foreach (var level in new[] { stage.Level, Math.Max(1, stage.Level - 3) })
-				{
-					var (wins, rounds, health) = Run(database, stage.Encounter, Team(database, stage.Stars, level, runed: false));
-					Console.WriteLine($"{stage.Number,5}  {stage.Stars + "★" + stage.Level,7}  {stage.Stars + "★" + level,4}  {wins,8:P0}  {rounds,7:F1}  {health,11:P0}");
-				}
+				var reference = Run(database, stage.Encounter, ReferenceTeams.AtStage(database, stage.Number));
+				var bare = Run(database, stage.Encounter, ReferenceTeams.Bare(database));
+				Console.WriteLine($"{stage.Number,5}  {stage.Stars + "★" + stage.Level + " ×" + stage.Scale.ToString("0.00"),-12}  {reference.Wins,6:P0}  {reference.Rounds,6:F1} | {bare.Wins,8:P0}  {bare.Rounds,6:F1}");
 			}
 
 			Console.WriteLine();
-			Console.WriteLine("Dungeons, team 6★ level 40: no runes | 5★ +9 runes");
-			Console.WriteLine("dungeon      floor   enemies      wins   rounds |     wins   rounds");
+			Console.WriteLine("Dungeons: the tier the floor asks for | the tier below");
+			Console.WriteLine("dungeon      floor   enemies        tier      wins | below wins");
 			foreach (var dungeon in database.Dungeons)
 			{
 				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
 				{
 					var encounter = dungeon.Floor(floor).Encounter;
-					var bare = Run(database, encounter, Team(database, 6, 40, runed: false));
-					var runed = Run(database, encounter, Team(database, 6, 40, runed: true));
-					Console.WriteLine($"{dungeon.Id,-12} {floor,5}  {encounter.Stars + "★" + encounter.Level,8}  {bare.Wins,8:P0}  {bare.Rounds,7:F1} | {runed.Wins,8:P0}  {runed.Rounds,7:F1}");
+					var tier = ReferenceTeams.FloorTiers.TryGetValue(dungeon.Id, out var tiers) ? tiers[floor - 1] : 7;
+					var asked = Run(database, encounter, ReferenceTeams.Tier(database, tier));
+					var below = Run(database, encounter, ReferenceTeams.Tier(database, Math.Max(1, tier - 1)));
+					Console.WriteLine($"{dungeon.Id,-12} {floor,5}   {encounter.Stars + "★" + encounter.Level + " ×" + encounter.Scale.ToString("0.00"),-12}  {tier,4}  {asked.Wins,8:P0} | {below.Wins,10:P0}");
 				}
 			}
 		}
@@ -57,7 +57,7 @@ namespace Sigilos.Tests
 		public static void PrintBattle(GameDatabase database, int stageNumber)
 		{
 			var stage = database.Stage(stageNumber);
-			var session = BattleFactory.Create(database, Team(database, stage.Stars, stage.Level, runed: false), stage.Encounter, seed: 1);
+			var session = BattleFactory.Create(database, ReferenceTeams.AtStage(database, stageNumber), stage.Encounter, seed: 1);
 			var log = new List<BattleEvent>(session.Start());
 			while (!session.IsOver)
 			{
@@ -82,28 +82,6 @@ namespace Sigilos.Tests
 					_ => $"     {e.GetType().Name}",
 				});
 			}
-		}
-
-		/// <summary>
-		/// O time típico nas estrelas e no nível pedidos (todos evoluídos até lá), sem Despertar e com as
-		/// habilidades no nível 1; com runas, seis runas 5★ +9 sorteadas em cada monstro.
-		/// </summary>
-		private static BattleTeam Team(GameDatabase database, int stars, int level, bool runed)
-		{
-			var random = new Random(11);
-			return new BattleTeam(TestData.TypicalTeam.Select(id =>
-			{
-				var runes = runed ? Enumerable.Range(1, RuneRules.Slots).Select(slot => Runed(random, slot)).ToList() : new List<Rune>();
-				return new TeamMember(database.Summon(id), stars, level, false, Array.Empty<int>(), runes);
-			}).ToList());
-		}
-
-		private static Rune Runed(Random random, int slot)
-		{
-			var rune = RuneForge.Generate(random, slot, 5, slot);
-			while (rune.Level < 9)
-				RuneForge.RaiseLevel(random, rune);
-			return rune;
 		}
 
 		private static (double Wins, double Rounds, double Health) Run(GameDatabase database, Encounter encounter, BattleTeam team)

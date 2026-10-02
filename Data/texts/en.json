@@ -39,7 +39,7 @@
     "dismiss": "Finish",
     "manage_runes": "Manage runes",
     "state_running": "Fighting fight {0}…",
-    "time_left_value": "Time left: {0}",
+    "time_left_value": "This fight: {0} · Time left: {1}",
     "rewards": "Rewards so far",
     "monsters": "Monsters ({0})",
     "runes_title": "Runes: {0} kept, {1} sold",
@@ -421,7 +421,9 @@
     "version_debug": "v{0} · debug",
     "account_named": "{0} · Level {1}",
     "offline": "Offline",
-    "offline_text": "The server didn't answer. You're playing with this device's progress, and it goes up to the cloud on its own when the connection comes back. If the account also changed on another device meanwhile, the game asks which progress stays."
+    "offline_text": "The server didn't answer. You're playing with this device's progress, and it goes up to the cloud on its own when the connection comes back. If the account also changed on another device meanwhile, the game asks which progress stays.",
+    "channel_opens": "The Channeling opens at stage {0}.",
+    "battle_detail_campaign": "Campaign (stage {0} of {1})"
   },
 
   "campaign": {
@@ -434,7 +436,15 @@
     "rune_always": "Rune (always)",
     "rune_chance_short": "Rune ({0} chance)",
     "monster_chance": "chance of a {0} monster",
-    "auto_locked": "Auto Battle opens after the first victory on this stage."
+    "auto_locked": "Auto Battle opens after the first victory on this stage.",
+    "region_tab": "Region {0}",
+    "region_stages": "Stages {0}–{1}",
+    "region_opens": "Opens at stage {0}",
+    "region": {
+      "1": "Plain of Menhirs",
+      "2": "Drowned Archipelago",
+      "3": "Citadel of the Broken Seal"
+    }
   },
 
   "dungeons": {
@@ -674,8 +684,8 @@
       "runes": "Runes"
     },
     "basic": {
-      "campaign": { "title": "Campaign", "text": "20 stages with up to 3 waves; each victory costs Mana. The first victory gives Scrolls and always a rune; later ones give Essence and a chance of a rune. The Campaign drops runes of up to {0} stars." },
-      "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors and drops what the Campaign doesn't: 4 to 6 star runes from four specific sets, or Grindstones and Gems (the Forge). Each victory costs Mana; the first victory on each floor gives Gold." },
+      "campaign": { "title": "Campaign", "text": "50 stages in three regions, with up to 3 waves; each victory costs Mana. The first victory gives Scrolls and always a rune; later ones give Essence and a chance of a rune. The Campaign introduces the game little by little: each part of the Sanctuary opens at a stage. It drops runes of up to {0} stars; beating stage 50 takes about level 20 with runes, or 6★ level 40 without." },
+      "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors, one element in most of its enemies, and drops what the Campaign doesn't: 4 to 6 star runes from four specific sets, or Grindstones and Gems (the Forge). They come after the Campaign, in order of difficulty: Golem (Wind), Wyvern (Fire), Crypt (Dark), Drowned (Water) and the Forge (Light); bring the element with the advantage. Each victory costs Mana; the first victory on each floor gives Gold." },
       "mana": { "title": "Mana and account level", "text": "Every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {2} per hour up to the maximum: {0} at account level 1, {1} at level {3}, the maximum. Every victory also gives experience to the account, and each level refills Mana." },
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Scrolls." },
       "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The first one is a guaranteed 5★, and the 5★ guarantee is always on display." },
@@ -683,7 +693,7 @@
       "teams": { "title": "Teams", "text": "A team of up to {0} monsters for the Campaign and one for each Dungeon. The first one is the Leader." },
       "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
       "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Essence and Fragments to gain a star: the monster keeps its level, its stats jump to the new star's and the max rises by 5. 3★ to 4★: {1} Essence and {2} Fragments; 4★ to 5★: {3} and {4}; 5★ to 6★: {5} and {6}." },
-      "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a duplicate copy raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
+      "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a copy of the same family (any element) raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
       "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, a living aura with the ring of its element, purple stars and higher HP, Attack and Defense (each monster has its own awakened stats: see the Grimoire), plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {3}, {4}, {5} or {6})." },
       "sanctuary": { "title": "Sanctuary and controls", "text": "The Sanctuary is the home screen. The Channeling gathers Essence, Gold and Mana while you are away, up to {0} hours: collect it there. Battle leads to the Campaign and the Dungeons; the bar at the bottom leads to Monsters, Runes, Teams, the Shop and the books. Touch a currency, a reward or a word you don't know to see what it is; hold a monster to see its summary." }
     },
@@ -821,7 +831,9 @@
     },
     "effects_help": "What the effects do",
     "effects_help_active": "The effects in play right now:",
-    "effects_help_all": "No effect in play right now; these are all of them:"
+    "effects_help_all": "No effect in play right now; these are all of them:",
+    "opened": "New in the Sanctuary:",
+    "opened_new": "new"
   },
 
   "destination": {
@@ -847,7 +859,8 @@
     "campaign_detail": "Next: stage {0} · {1}\n{2} of {3} stages cleared",
     "dungeons_detail": "{0} of {1} open\n{2} of {3} floors cleared",
     "tower": "Tower and Trials",
-    "tower_detail": "Coming later"
+    "tower_detail": "Coming later",
+    "dungeons_opens": "Opens at stage {0}"
   },
 
   "currency_info": {
@@ -891,7 +904,10 @@
     "rename": "Change name",
     "choose_name": "Choose a name",
     "no_name": "Unnamed account",
-    "offline_account": "No connection: you're playing with this device's progress. It goes up on its own when the connection comes back."
+    "offline_account": "No connection: you're playing with this device's progress. It goes up on its own when the connection comes back.",
+    "training": "Training",
+    "training_text": "The training fight teaches skills, elements and effects, one at a time.",
+    "training_button": "Redo the training fight"
   },
 
   "lock": {
@@ -987,6 +1003,25 @@
     "error_corrupt": "The downloaded file was different from the published one and was discarded.",
     "error_write": "The game's folder doesn't accept new files (no permission or no space). Move Sigilos to a folder of yours, like the Desktop, or download the new version in the browser.",
     "error_install": "Couldn't swap the game for the new version. Nothing changed: open the game again and try once more."
+  },
+
+  "tutorial": {
+    "title": "Training",
+    "battle_title": "Training fight",
+    "continue": "Continue",
+    "end_button": "To the Sanctuary",
+    "intro": "This is a training fight, Conjurer: nothing is lost here. Your monsters are at the bottom left; the enemies, at the top right.",
+    "order": "The column on the left is the turn order: whoever has more Speed acts first. Hold any monster, anywhere in the game, to see its summary.",
+    "basic": "{0}'s turn: its skills are at the bottom right. Tap the first one, the basic attack (always ready), then tap the lit enemy.",
+    "cooldown": "The other skills are stronger, but once used they wait a few turns: the number on the button says how many are left. Hold a skill to read what it does and when it helps.",
+    "elements": "Elements: Water beats Fire, Fire beats Wind and Wind beats Water; Light and Dark beat each other. With the advantage, a hit deals 25% more; against it, 25% less. Pick the team for the enemies of each fight.",
+    "element_pick": "Your monsters are Water: strike the Fire enemy, not the Wind one.",
+    "stun": "Effects change the fight. {1}'s {0} stuns: the target loses its next turn. Use it now, then tap the enemy.",
+    "status_seen": "The symbol next to the enemy is the effect, with the turns it has left. The Effects button, at the bottom left, lists every effect in the fight, and its ? explains each one.",
+    "support": "{0} is a support: its basic attack already heals the most wounded ally, and {1} heals everyone. Healing and shields keep the team standing while the others strike.",
+    "combo": "Combine effects: while the enemy is stunned, the others strike it without an answer. One monster opens the way for another; that is how a team is built.",
+    "auto": "Last, the Auto button, at the bottom left: the team fights on its own, using the strongest ready skill. Finish the fight as you like.",
+    "end": "Well done, Conjurer! Now summon your own monsters: your first summon brings a 5★. Then the Campaign awaits."
   },
 
   "names": {
@@ -1180,7 +1215,7 @@
     "Diabrete de Vento": "Wind Imp",
     "Rodamoinho": "Eddy",
     "Rodopio": "Spin",
-    "Redemoinho": "Whirlwind",
+    "Redemoinho": "Whirlpool",
     "Diabrete de Luz": "Light Imp",
     "Lampejo": "Glint",
     "Presságio Radiante": "Radiant Omen",
@@ -1458,6 +1493,39 @@
     "Cântaro de Mana": "Mana Jug",
     "Pergaminho Místico": "Mystic Scroll",
     "Maço de Pergaminhos": "Bundle of Scrolls",
-    "Gema de Reavaliação": "Reappraisal Gem"
+    "Gema de Reavaliação": "Reappraisal Gem",
+    "Cais Submerso": "Sunken Pier",
+    "Praia das Âncoras": "Anchor Beach",
+    "Recife dos Corvos": "Crow Reef",
+    "Farol Apagado": "Dark Lighthouse",
+    "Ilha das Gárgulas": "Gargoyle Isle",
+    "Estreito Enevoado": "Misty Strait",
+    "Gruta das Marés": "Tide Grotto",
+    "Naufrágio Antigo": "Old Shipwreck",
+    "Vila dos Pescadores": "Fishers' Village",
+    "Templo Inundado": "Flooded Temple",
+    "Mangue Sombrio": "Shadow Mangrove",
+    "Ilhota das Pixies": "Pixie Islet",
+    "Ponte de Coral": "Coral Bridge",
+    "Baía das Sereias": "Siren Bay",
+    "Torre da Maré": "Tide Tower",
+    "Abismo Raso": "Shallow Abyss",
+    "Ruínas Afogadas": "Drowned Ruins",
+    "Covil Profundo": "Deep Lair",
+    "A Serpe-Mãe": "The Mother Serpent",
+    "Portões da Cidadela": "Citadel Gates",
+    "Pátio dos Selos": "Seal Courtyard",
+    "Muralha Rachada": "Cracked Wall",
+    "Biblioteca Calada": "Hushed Library",
+    "Capela Sem Voz": "Voiceless Chapel",
+    "Corredor dos Ecos": "Hall of Echoes",
+    "Sala dos Arautos": "Heralds' Hall",
+    "Escadaria Partida": "Broken Stairway",
+    "Trono Vazio": "Empty Throne",
+    "O Arauto do Silêncio": "The Herald of Silence",
+    "Mordida das Profundezas": "Deep Bite",
+    "Maremoto": "Tidal Wave",
+    "Sussurro do Fim": "Whisper of the End",
+    "Silêncio": "Silence"
   }
 }

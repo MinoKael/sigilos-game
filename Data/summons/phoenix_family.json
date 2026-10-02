@@ -18,7 +18,7 @@
         {
           "name": "Chama Espiral",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
           ],
           "levels": [
@@ -32,7 +32,7 @@
           "name": "Voo Rubro",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
             {"kind": "Status", "target": "AllEnemies", "status": "Burn"}
           ],
           "levels": [
@@ -60,8 +60,8 @@
         {
           "name": "Orvalho",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -74,8 +74,8 @@
           "name": "Chuva Renovadora",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.2},
-            {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.07, "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -87,8 +87,8 @@
           "name": "Maré da Renovação",
           "cooldown": 5,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.3},
-            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.21},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2},
             {"kind": "Cleanse", "target": "AllAllies"}
           ],
           "levels": [
@@ -111,7 +111,7 @@
         {
           "name": "Rasante de Brasa",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Target", "power": -20}
           ],
           "levels": [
@@ -125,7 +125,7 @@
           "name": "Tempestade de Penas",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Impeto", "target": "AllAllies", "power": 20}
           ],
           "levels": [
@@ -138,7 +138,7 @@
           "name": "Furacão de Penas",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.85},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.69},
             {"kind": "Impeto", "target": "AllAllies", "power": 35},
             {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
           ],
@@ -162,7 +162,7 @@
         {
           "name": "Aurora",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
           ],
           "levels": [
@@ -176,7 +176,7 @@
           "name": "Coroa Solar",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
           ],
           "levels": [
@@ -204,7 +204,7 @@
         {
           "name": "Garra Velada",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -218,7 +218,7 @@
           "name": "Eclipse",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 7.7},
+            {"kind": "Damage", "target": "Target", "power": 5.39},
             {"kind": "Status", "target": "Self", "status": "Hidden"}
           ],
           "levels": [

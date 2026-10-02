@@ -100,5 +100,52 @@ namespace Sigilos.Tests
 
 			Assert.True(drops >= 12, "o monstro cai de vez em quando");
 		}
+
+		[Test]
+		private static void RegionsCoverEveryStage()
+		{
+			var database = TestData.LoadReal();
+			var covered = Enumerable.Range(0, Campaign.RegionStarts.Count)
+				.Select(region => Campaign.Region(region, database.Stages.Count))
+				.SelectMany(r => Enumerable.Range(r.First, r.Last - r.First + 1))
+				.ToList();
+			Assert.Equal(database.Stages.Count, covered.Count, "cada fase numa região só");
+			Assert.True(covered.SequenceEqual(database.Stages.Select(s => s.Number)), "as regiões seguem as fases em ordem");
+			Assert.Equal(0, Campaign.RegionOf(20), "a fase 20 fecha a Planície dos Menires");
+			Assert.Equal(1, Campaign.RegionOf(21), "e a 21 abre o Arquipélago Afogado");
+			Assert.Equal(2, Campaign.RegionOf(database.Stages.Count), "a última fase é da Cidadela");
+		}
+
+		/// <summary>
+		/// A calibragem (GDD, seção 10): a fase 50 se vence com nível 20 e runas, ou com 6★ nível 40 sem
+		/// runas, mas não com nível 20 sem runas; e a primeira fase é mansa para quem acabou de começar.
+		/// </summary>
+		[Test]
+		private static void CampaignEndsAtLevelTwentyWithRunesOrFortyWithout()
+		{
+			var database = TestData.LoadReal();
+			var last = database.Stages.Last();
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtStage(database, last.Number), last.Encounter, 20) >= 0.7, "nível 20 com runas vence a fase 50");
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Bare(database), last.Encounter, 20) >= 0.6, "6★ nível 40 sem runas também");
+			var noRunes = new BattleTeam(ReferenceTeams.AtStage(database, last.Number).Members.Select(m => m with { Runes = Array.Empty<Core.Runes.Rune>() }).ToList());
+			Assert.True(ReferenceTeams.WinRate(database, noRunes, last.Encounter, 20) < 0.3, "nível 20 sem runas não: as runas contam");
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtStage(database, 1), database.Stage(1).Encounter, 20) >= 0.9, "a fase 1 é mansa");
+		}
+
+		/// <summary>
+		/// As Masmorras vêm depois da Campanha e em ordem: o andar 5 da Golem já pede mais que o fim da
+		/// Campanha, e o andar 5 da Forja só cai com o degrau mais alto (6★, runas 6★ +15, Despertar).
+		/// </summary>
+		[Test]
+		private static void DungeonFloorsAskForTheirTier()
+		{
+			var database = TestData.LoadReal();
+			Assert.Equal("golem wyvern crypt sanctum forge", string.Join(" ", database.Dungeons.Select(d => d.Id)), "a ordem de dificuldade");
+			var golem = database.Dungeons.Single(d => d.Id == "golem").Floor(5).Encounter;
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtStage(database, 50), golem, 20) < 0.5, "o fim da Campanha ainda não vence a Golem 5");
+			var forge = database.Dungeons.Single(d => d.Id == "forge").Floor(5).Encounter;
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Tier(database, 9), forge, 20) < 0.5, "sem Despertar nem habilidades, a Forja 5 não cai");
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Tier(database, 10), forge, 20) >= 0.6, "com tudo, cai");
+		}
 	}
 }

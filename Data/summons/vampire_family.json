@@ -18,7 +18,7 @@
         {
           "name": "Mordida Escaldante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -32,7 +32,7 @@
           "name": "Sangue Fervente",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 6.3}
+            {"kind": "Damage", "target": "Target", "power": 4.41}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -40,7 +40,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 7},
+            {"kind": "Damage", "target": "Target", "power": 4.9},
             {"kind": "Status", "target": "Target", "status": "Burn", "turns": 2}
           ]
         },
@@ -63,7 +63,7 @@
         {
           "name": "Abraço Frio",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Impeto", "target": "Target", "power": -15}
           ],
           "levels": [
@@ -78,7 +78,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Hidden"},
-            {"kind": "Heal", "target": "Self", "power": 0.2}
+            {"kind": "Heal", "target": "Self", "power": 0.14}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -87,7 +87,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Status", "target": "Self", "status": "Hidden"},
-            {"kind": "Heal", "target": "Self", "power": 0.3},
+            {"kind": "Heal", "target": "Self", "power": 0.21},
             {"kind": "Status", "target": "Self", "status": "Aegis"}
           ]
         },
@@ -110,7 +110,7 @@
         {
           "name": "Presas Velozes",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Self", "power": 10}
           ],
           "levels": [
@@ -124,7 +124,7 @@
           "name": "Enxame de Morcegos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.4, "hits": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -132,7 +132,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.75, "hits": 2},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.22, "hits": 2},
             {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
           ]
         },
@@ -140,7 +140,7 @@
           "name": "Voo Noturno",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Damage", "target": "Target", "power": 3.92},
             {"kind": "Impeto", "target": "Self", "power": 50}
           ],
           "levels": [
@@ -163,8 +163,8 @@
         {
           "name": "Toque Pálido",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -177,7 +177,7 @@
           "name": "Transfusão",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.2}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -185,7 +185,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.21},
             {"kind": "Cleanse", "target": "LowestAlly"}
           ]
         },
@@ -215,7 +215,7 @@
         {
           "name": "Drenar Vida",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -229,7 +229,7 @@
           "name": "Banquete",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 5.6, "drain": 0.5}
+            {"kind": "Damage", "target": "Target", "power": 3.92, "drain": 0.5}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -237,7 +237,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 7, "drain": 0.5},
+            {"kind": "Damage", "target": "Target", "power": 4.9, "drain": 0.5},
             {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
           ]
         },

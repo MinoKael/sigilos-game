@@ -1,6 +1,11 @@
-// Region 1: Plain of Menhirs (GDD, section 4). No battle rule: teaches the basics.
+// The Campaign (GDD, section 4): region 1, Plain of Menhirs (stages 1-20, no battle rule: teaches the basics);
+// region 2, Drowned Archipelago (21-40, mostly Water: elements and effects, boss at 40); region 3, Citadel of the
+// Broken Seal (41-50, Light and Dark, boss at 50). Beating stage 50 is where an account is ready for the Dungeons:
+// it takes about level 20 with runes, or 6★ level 40 without them (Tests: dotnet run --project Tests -- --simulate).
 // Enemies at the stage stars and level ("stars", "level"): "summon" is a summon variant from Data/summons (buffed for the fight),
-// "enemy" a unique creature from Data/enemies.json with its "element". "mana" is the cost of each victory (a defeat costs nothing). Scrolls only
+// "enemy" a unique creature from Data/enemies.json with its "element". "scale" multiplies the enemies' HP and Attack:
+// it is the calibration of each stage, so that heavier waves don't need a level that lies about them.
+// "mana" is the cost of each victory (a defeat costs nothing). Scrolls only
 // on the first victory; Essence and experience (per team monster, on the Summoners War scale; the account gets the same) on every victory. The rune
 // (up to 4 stars) always drops on the first victory and with a 50% chance on later ones. 5 and 6 star
 // runes and the tools come from the Dungeons (Data/dungeons.json).
@@ -10,6 +15,7 @@
     "name": "Estrada dos Menires",
     "stars": 3,
     "level": 1,
+    "scale": 1.0,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 60,
@@ -25,7 +31,8 @@
     "number": 2,
     "name": "Pedras Caídas",
     "stars": 3,
-    "level": 3,
+    "level": 4,
+    "scale": 1.0,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 120,
@@ -41,7 +48,8 @@
     "number": 3,
     "name": "Trilha dos Pastores",
     "stars": 3,
-    "level": 5,
+    "level": 7,
+    "scale": 1.0,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 180,
@@ -57,7 +65,8 @@
     "number": 4,
     "name": "Uivos no Vale",
     "stars": 3,
-    "level": 8,
+    "level": 11,
+    "scale": 1.3,
     "mana": 2,
     "firstClearScrolls": 1,
     "firstClearEssence": 240,
@@ -74,7 +83,8 @@
     "number": 5,
     "name": "Ponte Velha",
     "stars": 3,
-    "level": 11,
+    "level": 14,
+    "scale": 1.25,
     "mana": 2,
     "firstClearScrolls": 3,
     "firstClearEssence": 300,
@@ -90,7 +100,8 @@
     "number": 6,
     "name": "Charco Parado",
     "stars": 3,
-    "level": 14,
+    "level": 17,
+    "scale": 1.1,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 360,
@@ -107,7 +118,8 @@
     "number": 7,
     "name": "Acampamento Queimado",
     "stars": 3,
-    "level": 17,
+    "level": 20,
+    "scale": 1.3,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 420,
@@ -123,7 +135,8 @@
     "number": 8,
     "name": "Menir Rachado",
     "stars": 3,
-    "level": 20,
+    "level": 23,
+    "scale": 1.25,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 480,
@@ -139,8 +152,9 @@
   {
     "number": 9,
     "name": "Toca dos Lobos",
-    "stars": 3,
-    "level": 23,
+    "stars": 4,
+    "level": 12,
+    "scale": 1.15,
     "mana": 3,
     "firstClearScrolls": 1,
     "firstClearEssence": 540,
@@ -155,8 +169,9 @@
   {
     "number": 10,
     "name": "Colina do Troll",
-    "stars": 3,
-    "level": 25,
+    "stars": 4,
+    "level": 16,
+    "scale": 1.0,
     "mana": 3,
     "firstClearScrolls": 3,
     "firstClearEssence": 600,
@@ -174,7 +189,8 @@
     "number": 11,
     "name": "Estrada Sem Placas",
     "stars": 4,
-    "level": 6,
+    "level": 19,
+    "scale": 1.05,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 660,
@@ -190,7 +206,8 @@
     "number": 12,
     "name": "Moinho Abandonado",
     "stars": 4,
-    "level": 10,
+    "level": 22,
+    "scale": 0.9,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 720,
@@ -207,7 +224,8 @@
     "number": 13,
     "name": "Vau do Rio",
     "stars": 4,
-    "level": 14,
+    "level": 22,
+    "scale": 1.3,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 780,
@@ -223,7 +241,8 @@
     "number": 14,
     "name": "Cemitério de Menires",
     "stars": 4,
-    "level": 18,
+    "level": 23,
+    "scale": 1.0,
     "mana": 4,
     "firstClearScrolls": 1,
     "firstClearEssence": 840,
@@ -240,8 +259,9 @@
   {
     "number": 15,
     "name": "Ninho de Cinzas",
-    "stars": 4,
-    "level": 22,
+    "stars": 5,
+    "level": 15,
+    "scale": 0.75,
     "mana": 4,
     "firstClearScrolls": 3,
     "firstClearEssence": 900,
@@ -258,8 +278,9 @@
   {
     "number": 16,
     "name": "Portão de Pedra",
-    "stars": 4,
-    "level": 26,
+    "stars": 5,
+    "level": 15,
+    "scale": 1.0,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 960,
@@ -274,8 +295,9 @@
   {
     "number": 17,
     "name": "Floresta de Correntes",
-    "stars": 4,
-    "level": 30,
+    "stars": 5,
+    "level": 16,
+    "scale": 0.95,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 1020,
@@ -292,7 +314,8 @@
     "number": 18,
     "name": "Guarda do Mestre",
     "stars": 5,
-    "level": 10,
+    "level": 16,
+    "scale": 1.1,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 1080,
@@ -309,7 +332,8 @@
     "number": 19,
     "name": "Salão dos Elos",
     "stars": 5,
-    "level": 20,
+    "level": 22,
+    "scale": 1.0,
     "mana": 5,
     "firstClearScrolls": 1,
     "firstClearEssence": 1140,
@@ -325,7 +349,8 @@
     "number": 20,
     "name": "O Mestre de Correntes",
     "stars": 5,
-    "level": 30,
+    "level": 23,
+    "scale": 0.9,
     "mana": 5,
     "firstClearScrolls": 3,
     "firstClearEssence": 1200,
@@ -337,6 +362,538 @@
       [{"summon": "bandit_fire"}, {"summon": "bandit_water"}, {"summon": "wolf_wind"}],
       [{"summon": "troll_water"}, {"summon": "wolf_fire"}],
       [{"summon": "bandit_wind"}, {"enemy": "chain_master", "element": "Dark"}, {"summon": "bandit_fire"}]
+    ]
+  },
+  {
+    "number": 21,
+    "name": "Cais Submerso",
+    "stars": 5,
+    "level": 30,
+    "scale": 1.15,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1260,
+    "essence": 599,
+    "experience": 1550,
+    "runeGrade": 4,
+    "lines": ["The sea took the islands one by one. The Silence came with the tide.", "Water beats Fire, Conjurer. Wind beats Water."],
+    "waves": [
+      [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "bandit_water"}],
+      [{"summon": "goblin_water"}, {"summon": "wolf_water"}, {"summon": "slime_fire"}]
+    ]
+  },
+  {
+    "number": 22,
+    "name": "Praia das Âncoras",
+    "stars": 5,
+    "level": 35,
+    "scale": 1.05,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1320,
+    "essence": 623,
+    "experience": 1580,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "bandit_water"}, {"summon": "goblin_water"}, {"summon": "wolf_wind"}],
+      [{"summon": "slime_water"}, {"summon": "bandit_fire"}, {"summon": "goblin_water"}]
+    ]
+  },
+  {
+    "number": 23,
+    "name": "Recife dos Corvos",
+    "stars": 5,
+    "level": 35,
+    "scale": 0.9,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1380,
+    "essence": 647,
+    "experience": 1610,
+    "runeGrade": 4,
+    "lines": ["The crows here curse whatever they touch."],
+    "waves": [
+      [{"summon": "crow_water"}, {"summon": "slime_water"}, {"summon": "wolf_water"}],
+      [{"summon": "crow_fire"}, {"summon": "crow_water"}, {"summon": "goblin_water"}]
+    ]
+  },
+  {
+    "number": 24,
+    "name": "Farol Apagado",
+    "stars": 5,
+    "level": 35,
+    "scale": 1.0,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1440,
+    "essence": 671,
+    "experience": 1640,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "bandit_dark"}, {"summon": "wolf_water"}, {"summon": "goblin_water"}],
+      [{"summon": "crow_water"}, {"summon": "bandit_water"}, {"summon": "slime_light"}]
+    ]
+  },
+  {
+    "number": 25,
+    "name": "Ilha das Gárgulas",
+    "stars": 5,
+    "level": 35,
+    "scale": 0.85,
+    "mana": 5,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 1500,
+    "essence": 695,
+    "experience": 1670,
+    "runeGrade": 4,
+    "lines": ["Stone wings. Hitting them hurts the hand that strikes."],
+    "waves": [
+      [{"summon": "gargoyle_water"}, {"summon": "slime_water"}, {"summon": "goblin_wind"}],
+      [{"summon": "gargoyle_water"}, {"summon": "gargoyle_fire"}, {"summon": "wolf_water"}],
+      [{"summon": "troll_water"}, {"summon": "crow_water"}]
+    ]
+  },
+  {
+    "number": 26,
+    "name": "Estreito Enevoado",
+    "stars": 6,
+    "level": 18,
+    "scale": 1.15,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1560,
+    "essence": 719,
+    "experience": 1700,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "bird_water"}, {"summon": "bird_wind"}, {"summon": "slime_water"}],
+      [{"summon": "wolf_water"}, {"summon": "bird_water"}, {"summon": "goblin_water"}]
+    ]
+  },
+  {
+    "number": 27,
+    "name": "Gruta das Marés",
+    "stars": 6,
+    "level": 21,
+    "scale": 0.9,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1620,
+    "essence": 743,
+    "experience": 1730,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "slime_water"}, {"summon": "slime_water"}, {"summon": "gargoyle_water"}],
+      [{"summon": "crow_water"}, {"summon": "wolf_water"}, {"summon": "bandit_wind"}]
+    ]
+  },
+  {
+    "number": 28,
+    "name": "Naufrágio Antigo",
+    "stars": 6,
+    "level": 21,
+    "scale": 0.95,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1680,
+    "essence": 767,
+    "experience": 1760,
+    "runeGrade": 4,
+    "lines": ["Something drinks from the drowned. It is still thirsty."],
+    "waves": [
+      [{"summon": "vampire_water"}, {"summon": "bandit_water"}, {"summon": "goblin_water"}],
+      [{"summon": "vampire_fire"}, {"summon": "wolf_water"}, {"summon": "crow_water"}]
+    ]
+  },
+  {
+    "number": 29,
+    "name": "Vila dos Pescadores",
+    "stars": 6,
+    "level": 21,
+    "scale": 1.0,
+    "mana": 5,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1740,
+    "essence": 791,
+    "experience": 1790,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "bandit_water"}, {"summon": "bandit_wind"}, {"summon": "goblin_water"}],
+      [{"summon": "troll_water"}, {"summon": "wolf_water"}, {"summon": "bird_water"}]
+    ]
+  },
+  {
+    "number": 30,
+    "name": "Templo Inundado",
+    "stars": 6,
+    "level": 22,
+    "scale": 0.8,
+    "mana": 5,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 1800,
+    "essence": 815,
+    "experience": 1820,
+    "runeGrade": 4,
+    "lines": ["The temple bell rings underwater.", "The dragon guarding it never learned to stop."],
+    "waves": [
+      [{"summon": "gargoyle_water"}, {"summon": "crow_water"}, {"summon": "slime_water"}],
+      [{"summon": "vampire_water"}, {"summon": "troll_water"}],
+      [{"summon": "dragon_water"}, {"summon": "wolf_water"}, {"summon": "goblin_water"}]
+    ]
+  },
+  {
+    "number": 31,
+    "name": "Mangue Sombrio",
+    "stars": 6,
+    "level": 23,
+    "scale": 1.05,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1860,
+    "essence": 839,
+    "experience": 1850,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "wolf_dark"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+      [{"summon": "crow_dark"}, {"summon": "bandit_water"}, {"summon": "wolf_water"}]
+    ]
+  },
+  {
+    "number": 32,
+    "name": "Ilhota das Pixies",
+    "stars": 6,
+    "level": 29,
+    "scale": 0.85,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1920,
+    "essence": 863,
+    "experience": 1880,
+    "runeGrade": 4,
+    "lines": ["The pixies wash away every curse you cast on their friends."],
+    "waves": [
+      [{"summon": "pixie_water"}, {"summon": "pixie_wind"}, {"summon": "wolf_water"}],
+      [{"summon": "gargoyle_water"}, {"summon": "pixie_water"}, {"summon": "bandit_water"}]
+    ]
+  },
+  {
+    "number": 33,
+    "name": "Ponte de Coral",
+    "stars": 6,
+    "level": 29,
+    "scale": 1.05,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 1980,
+    "essence": 887,
+    "experience": 1910,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "knight_water"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+      [{"summon": "knight_fire"}, {"summon": "crow_water"}, {"summon": "wolf_water"}]
+    ]
+  },
+  {
+    "number": 34,
+    "name": "Baía das Sereias",
+    "stars": 6,
+    "level": 31,
+    "scale": 1.0,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2040,
+    "essence": 911,
+    "experience": 1940,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "vampire_water"}, {"summon": "pixie_water"}, {"summon": "crow_water"}],
+      [{"summon": "bird_water"}, {"summon": "gargoyle_wind"}, {"summon": "wolf_water"}]
+    ]
+  },
+  {
+    "number": 35,
+    "name": "Torre da Maré",
+    "stars": 6,
+    "level": 31,
+    "scale": 0.7,
+    "mana": 6,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 2100,
+    "essence": 935,
+    "experience": 1970,
+    "runeGrade": 4,
+    "lines": ["Every three steps, the stairs fill with water."],
+    "waves": [
+      [{"summon": "knight_water"}, {"summon": "gargoyle_water"}, {"summon": "slime_water"}],
+      [{"summon": "troll_water"}, {"summon": "vampire_water"}, {"summon": "pixie_water"}],
+      [{"summon": "dragon_wind"}, {"summon": "crow_water"}, {"summon": "wolf_water"}]
+    ]
+  },
+  {
+    "number": 36,
+    "name": "Abismo Raso",
+    "stars": 6,
+    "level": 32,
+    "scale": 1.0,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2160,
+    "essence": 959,
+    "experience": 2000,
+    "runeGrade": 4,
+    "lines": ["The druids wear thorns. Strike them and bleed."],
+    "waves": [
+      [{"summon": "druid_water"}, {"summon": "slime_water"}, {"summon": "bandit_water"}],
+      [{"summon": "druid_fire"}, {"summon": "wolf_water"}, {"summon": "goblin_water"}]
+    ]
+  },
+  {
+    "number": 37,
+    "name": "Ruínas Afogadas",
+    "stars": 6,
+    "level": 32,
+    "scale": 0.95,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2220,
+    "essence": 983,
+    "experience": 2030,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "crow_water"}, {"summon": "vampire_water"}, {"summon": "knight_water"}],
+      [{"summon": "gargoyle_dark"}, {"summon": "pixie_water"}, {"summon": "wolf_water"}]
+    ]
+  },
+  {
+    "number": 38,
+    "name": "Redemoinho",
+    "stars": 6,
+    "level": 32,
+    "scale": 0.85,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2280,
+    "essence": 1007,
+    "experience": 2060,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "druid_water"}, {"summon": "bird_water"}, {"summon": "crow_water"}],
+      [{"summon": "troll_water"}, {"summon": "knight_water"}, {"summon": "vampire_water"}]
+    ]
+  },
+  {
+    "number": 39,
+    "name": "Covil Profundo",
+    "stars": 6,
+    "level": 32,
+    "scale": 0.8,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2340,
+    "essence": 1031,
+    "experience": 2090,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "vampire_water"}, {"summon": "gargoyle_water"}, {"summon": "pixie_water"}],
+      [{"summon": "druid_water"}, {"summon": "knight_water"}, {"summon": "crow_water"}],
+      [{"summon": "dragon_water"}, {"summon": "troll_water"}]
+    ]
+  },
+  {
+    "number": 40,
+    "name": "A Serpe-Mãe",
+    "stars": 6,
+    "level": 32,
+    "scale": 0.75,
+    "mana": 6,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 2400,
+    "essence": 1055,
+    "experience": 2120,
+    "runeGrade": 4,
+    "lines": ["Every tide that drowned an island was me breathing.", "The Silence promised me a sea with no shores.", "Sink, Conjurer. Down here it is quiet."],
+    "waves": [
+      [{"summon": "crow_water"}, {"summon": "gargoyle_water"}, {"summon": "wolf_water"}],
+      [{"summon": "vampire_water"}, {"summon": "druid_water"}],
+      [{"enemy": "mother_serpent", "element": "Water"}, {"summon": "pixie_water"}]
+    ]
+  },
+  {
+    "number": 41,
+    "name": "Portões da Cidadela",
+    "stars": 6,
+    "level": 33,
+    "scale": 0.9,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2460,
+    "essence": 1079,
+    "experience": 2150,
+    "runeGrade": 4,
+    "lines": ["The Citadel sealed the first Glyphs. The seal is broken now.", "Light beats Dark, and Dark beats Light. Bring both."],
+    "waves": [
+      [{"summon": "knight_light"}, {"summon": "bandit_dark"}, {"summon": "goblin_light"}],
+      [{"summon": "gargoyle_dark"}, {"summon": "wolf_light"}, {"summon": "crow_dark"}]
+    ]
+  },
+  {
+    "number": 42,
+    "name": "Pátio dos Selos",
+    "stars": 6,
+    "level": 33,
+    "scale": 0.9,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2520,
+    "essence": 1103,
+    "experience": 2180,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "vampire_dark"}, {"summon": "pixie_light"}, {"summon": "bandit_light"}],
+      [{"summon": "knight_dark"}, {"summon": "crow_light"}, {"summon": "wolf_dark"}]
+    ]
+  },
+  {
+    "number": 43,
+    "name": "Muralha Rachada",
+    "stars": 6,
+    "level": 33,
+    "scale": 0.8,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2580,
+    "essence": 1127,
+    "experience": 2210,
+    "runeGrade": 4,
+    "lines": ["The wizards here shorten their own spells. Strike them first."],
+    "waves": [
+      [{"summon": "wizard_dark"}, {"summon": "goblin_dark"}, {"summon": "gargoyle_light"}],
+      [{"summon": "wizard_light"}, {"summon": "troll_dark"}, {"summon": "bird_light"}]
+    ]
+  },
+  {
+    "number": 44,
+    "name": "Biblioteca Calada",
+    "stars": 6,
+    "level": 34,
+    "scale": 0.65,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2640,
+    "essence": 1151,
+    "experience": 2240,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "wizard_dark"}, {"summon": "crow_dark"}, {"summon": "pixie_light"}],
+      [{"summon": "vampire_light"}, {"summon": "knight_light"}, {"summon": "druid_dark"}]
+    ]
+  },
+  {
+    "number": 45,
+    "name": "Capela Sem Voz",
+    "stars": 6,
+    "level": 34,
+    "scale": 0.7,
+    "mana": 6,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 2700,
+    "essence": 1175,
+    "experience": 2270,
+    "runeGrade": 4,
+    "lines": ["The paladins heal each other every turn. Break their line."],
+    "waves": [
+      [{"summon": "paladin_light"}, {"summon": "knight_light"}, {"summon": "bandit_dark"}],
+      [{"summon": "paladin_dark"}, {"summon": "gargoyle_light"}, {"summon": "crow_dark"}],
+      [{"summon": "dragon_light"}, {"summon": "pixie_dark"}]
+    ]
+  },
+  {
+    "number": 46,
+    "name": "Corredor dos Ecos",
+    "stars": 6,
+    "level": 34,
+    "scale": 0.6,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2760,
+    "essence": 1199,
+    "experience": 2300,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "vampire_dark"}, {"summon": "wizard_light"}, {"summon": "druid_dark"}],
+      [{"summon": "paladin_light"}, {"summon": "crow_dark"}, {"summon": "troll_light"}]
+    ]
+  },
+  {
+    "number": 47,
+    "name": "Sala dos Arautos",
+    "stars": 6,
+    "level": 34,
+    "scale": 0.75,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2820,
+    "essence": 1223,
+    "experience": 2330,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "wizard_dark"}, {"summon": "vampire_dark"}, {"summon": "crow_dark"}],
+      [{"summon": "gargoyle_dark"}, {"summon": "knight_dark"}, {"summon": "pixie_dark"}]
+    ]
+  },
+  {
+    "number": 48,
+    "name": "Escadaria Partida",
+    "stars": 6,
+    "level": 34,
+    "scale": 0.65,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2880,
+    "essence": 1247,
+    "experience": 2360,
+    "runeGrade": 4,
+    "waves": [
+      [{"summon": "paladin_light"}, {"summon": "knight_light"}, {"summon": "wizard_light"}],
+      [{"summon": "druid_light"}, {"summon": "troll_light"}, {"summon": "pixie_light"}]
+    ]
+  },
+  {
+    "number": 49,
+    "name": "Trono Vazio",
+    "stars": 6,
+    "level": 35,
+    "scale": 0.6,
+    "mana": 6,
+    "firstClearScrolls": 1,
+    "firstClearEssence": 2940,
+    "essence": 1271,
+    "experience": 2390,
+    "runeGrade": 4,
+    "lines": ["No one has sat here in a hundred years. Someone is standing beside it."],
+    "waves": [
+      [{"summon": "wizard_dark"}, {"summon": "paladin_light"}, {"summon": "vampire_dark"}],
+      [{"summon": "druid_dark"}, {"summon": "knight_light"}, {"summon": "crow_dark"}],
+      [{"summon": "dragon_dark"}, {"summon": "dragon_light"}]
+    ]
+  },
+  {
+    "number": 50,
+    "name": "O Arauto do Silêncio",
+    "stars": 6,
+    "level": 35,
+    "scale": 0.5,
+    "mana": 6,
+    "firstClearScrolls": 3,
+    "firstClearEssence": 3000,
+    "essence": 1295,
+    "experience": 2420,
+    "runeGrade": 4,
+    "lines": ["I am not your enemy. I am what comes after every word.", "The Mother drowned. The Master let go. Only you still write.", "Put down the sigil, Conjurer. Listen to nothing with me."],
+    "waves": [
+      [{"summon": "wizard_light"}, {"summon": "bandit_dark"}, {"summon": "crow_dark"}],
+      [{"summon": "vampire_dark"}, {"summon": "knight_dark"}],
+      [{"summon": "wizard_dark"}, {"enemy": "silence_herald", "element": "Dark"}, {"summon": "paladin_light"}]
     ]
   }
 ]

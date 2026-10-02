@@ -14,7 +14,12 @@ namespace Sigilos.Core.Progression
 	/// </summary>
 	public static class Dungeons
 	{
-		public static bool IsUnlocked(PlayerState player, DungeonDefinition dungeon) => player.HighestStage >= dungeon.UnlockStage;
+		/// <summary>
+		/// Aberta depois da fase dela, ou se o jogador já venceu algum andar: o que já foi vencido nunca
+		/// fecha de novo, mesmo que a fase que abre a Masmorra mude nos dados.
+		/// </summary>
+		public static bool IsUnlocked(PlayerState player, DungeonDefinition dungeon) =>
+			player.HighestStage >= dungeon.UnlockStage || Cleared(player, dungeon) > 0;
 
 		/// <summary>Maior andar vencido. 0 = nenhum.</summary>
 		public static int Cleared(PlayerState player, DungeonDefinition dungeon) =>

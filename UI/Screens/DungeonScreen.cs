@@ -152,7 +152,11 @@ namespace Sigilos.UI.Screens
 			{
 				var locked = Layout.Row(10).Named("Locked");
 				locked.AddChild(Doodle.Icon(Art.Icon("lock"), 40, Palette.Gold));
-				locked.AddChild(Layout.Text(T("dungeons.locked", dungeon.Name, dungeon.UnlockStage)).Named("Text"));
+				// O texto quebra linha: numa fileira, ele precisa da largura que sobra, senão sai uma letra por linha.
+				var text = Layout.Text(T("dungeons.locked", dungeon.Name, dungeon.UnlockStage)).Named("Text");
+				text.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+				text.VerticalAlignment = VerticalAlignment.Center;
+				locked.AddChild(text);
 				_detail.AddChild(locked);
 				return;
 			}

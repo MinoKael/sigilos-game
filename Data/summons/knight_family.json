@@ -18,7 +18,7 @@
         {
           "name": "Lâmina Ardente",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85}
+            {"kind": "Damage", "target": "Target", "power": 2.69}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -31,7 +31,7 @@
           "name": "Carga Flamejante",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -39,14 +39,14 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 4.2, "ignoreDefense": 0.3}
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.94, "ignoreDefense": 0.3}
           ]
         },
         {
           "name": "Juramento em Chamas",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
             {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.4, "turns": 2}
           ],
           "levels": [
@@ -69,7 +69,7 @@
         {
           "name": "Golpe de Escudo",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -83,7 +83,7 @@
           "name": "Muralha de Maré",
           "cooldown": 4,
           "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
+            {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -91,7 +91,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.3, "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.21, "turns": 2},
             {"kind": "Cleanse", "target": "AllAllies"},
             {"kind": "Status", "target": "LowestAlly", "status": "Aegis"}
           ]
@@ -115,7 +115,7 @@
         {
           "name": "Estocada Veloz",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5}
+            {"kind": "Damage", "target": "Target", "power": 2.45}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -164,7 +164,7 @@
         {
           "name": "Juramento",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
           ],
           "levels": [
@@ -209,7 +209,7 @@
         {
           "name": "Lâmina Faminta",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5, "drain": 0.3}
+            {"kind": "Damage", "target": "Target", "power": 2.45, "drain": 0.3}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -222,7 +222,7 @@
           "name": "Juramento Sombrio",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.3}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "drain": 0.3}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -230,7 +230,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.5, "drain": 0.4},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.4},
             {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2}
           ]
         },

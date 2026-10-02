@@ -30,11 +30,16 @@ namespace Sigilos.UI.Screens
 	/// segurá-la abre o resumo dela, sem parar a luta. O painel de Efeitos abre no centro do círculo. No
 	/// fim avisa <see cref="Finished"/>; o GameRoot aplica a recompensa, grava o melhor tempo e chama
 	/// <see cref="ShowResult"/>, que mostra o <see cref="BattleResultPanel"/>.
+	///
+	/// Na luta de treino, o <see cref="TutorialCoach"/> fala no alto: a tela espera as explicações dele
+	/// antes de cada vez do jogador, acende só as habilidades e os alvos que ele deixa e lhe mostra cada
+	/// evento; o Automático fica desligado até a última lição.
 	/// </summary>
 	public partial class BattleScreen : Control
 	{
 		private readonly BattleSession _session;
 		private readonly string _title;
+		private readonly TutorialCoach? _coach;
 		private readonly Dictionary<BattleUnit, UnitView> _views = new();
 
 		/// <summary>Quantos próximos a ordem de turno mostra.</summary>
@@ -73,11 +78,13 @@ namespace Sigilos.UI.Screens
 		/// <summary>Quem está fora do lugar, na frente do alvo: dá o tranco a cada golpe até voltar.</summary>
 		private UnitView? _striker;
 
-		public BattleScreen(BattleSession session, string title, bool auto)
+		/// <param name="coach">O Mestre da luta de treino; nulo nas outras lutas.</param>
+		public BattleScreen(BattleSession session, string title, bool auto, TutorialCoach? coach = null)
 		{
 			_session = session;
 			_title = title;
-			_auto = auto;
+			_auto = auto && coach == null;
+			_coach = coach;
 		}
 
 		/// <summary>A luta acabou: verdadeiro na vitória.</summary>
@@ -119,6 +126,17 @@ namespace Sigilos.UI.Screens
 			AddChild(Pin(Controls(), LayoutPreset.BottomLeft));
 			AddChild(Pin(_actions, LayoutPreset.BottomRight));
 			AddChild(EffectsPanel());
+			if (_coach != null)
+			{
+				// A placa do Mestre fica no quarto de cima à esquerda do campo, o único sempre vazio: os
+				// aliados ficam embaixo à esquerda, e os inimigos, em cima à direita.
+				_coach.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
+				_coach.OffsetLeft = _coach.OffsetRight = ArenaLeft + 24;
+				_coach.OffsetTop = _coach.OffsetBottom = 72;
+				AddChild(_coach);
+				_autoButton.Disabled = true;
+			}
+
 			RefreshAuto();
 			_order.Show(_session.PredictOrder(TurnsShown));
 
@@ -410,6 +428,8 @@ namespace Sigilos.UI.Screens
 		private async void Run()
 		{
 			await Play(_session.Start());
+			if (_coach != null)
+				await _coach.Begin();
 			while (!_session.IsOver && !_closed)
 			{
 				var turn = _session.BeginTurn();
@@ -432,15 +452,26 @@ namespace Sigilos.UI.Screens
 
 		// Decisões ----------------------------------------------------------------------------------
 
-		private Task<UnitAction> DecideAlly(BattleUnit ally)
+		private async Task<UnitAction> DecideAlly(BattleUnit ally)
 		{
+			if (_coach != null)
+			{
+				await _coach.BeforeDecision(_session, ally);
+				_autoButton.Disabled = !_coach.AutoAllowed;
+			}
+
 			if (_auto)
-				return Task.FromResult(AutoPilot.ForAlly(_session, ally));
+			{
+				var chosen = AutoPilot.ForAlly(_session, ally);
+				_coach?.Acted(chosen.Skill);
+				return chosen;
+			}
 
 			var decision = new TaskCompletionSource<UnitAction>(TaskCreationOptions.RunContinuationsAsynchronously);
 			void Decide(UnitAction action)
 			{
 				ClearActions();
+				_coach?.Acted(action.Skill);
 				decision.TrySetResult(action);
 			}
 
@@ -456,7 +487,7 @@ namespace Sigilos.UI.Screens
 				var button = new SigilButton(null, 74, SigilShape.Square)
 				{
 					Name = "Button",
-					Disabled = !ready,
+					Disabled = !ready || _coach?.CanUse(index) == false,
 					Badge = ready ? "" : T("battle.cooldown_badge", ally.Cooldown(index)),
 				};
 				button.SetSymbol(Art.Skill(skill));
@@ -477,7 +508,7 @@ namespace Sigilos.UI.Screens
 				_actions.AddChild(slot);
 			}
 
-			return decision.Task;
+			return await decision.Task;
 		}
 
 		/// <summary>Os alvos possíveis acendem em azul; o sigilo da habilidade fica aceso até o toque no alvo.</summary>
@@ -490,7 +521,10 @@ namespace Sigilos.UI.Screens
 			_banner.Text = T("battle.pick_target");
 			_banner.AddThemeColorOverride("font_color", Palette.Arcane);
 
+			// Na luta de treino, o Mestre pode deixar só alguns alvos (os de Fogo, na lição dos elementos).
 			var choosable = _session.ChoosableTargets(actor);
+			if (_coach != null && choosable.Any(_coach.CanTarget))
+				choosable = choosable.Where(_coach.CanTarget).ToList();
 			foreach (var unit in choosable)
 				_views[unit].SetTargetable(true);
 
@@ -578,6 +612,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Aplica um evento na tela. Quanto esperar depois é do <see cref="BattlePace"/>.</summary>
 		private void Show(BattleEvent battleEvent)
 		{
+			_coach?.Saw(battleEvent);
 			switch (battleEvent)
 			{
 				case WaveStarted wave:

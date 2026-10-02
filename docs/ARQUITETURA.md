@@ -39,14 +39,14 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 
 | Quero... | Mexa em |
 | --- | --- |
-| Nova família ou nova variante | `docs/summon_family_builder.html` (abra no Chrome ou no Edge e use "Abrir pasta do projeto"): ele calcula os atributos e grava `Data/summons/<familia>_family.json`, um arquivo por família com até 5 variantes. Família nova pede também dois SVG em `Assets/Creatures/` (normal e desperto; ver "Novo símbolo"). Nenhum código, a não ser que a Passiva dela ainda não exista (ver "Nova Passiva") |
+| Nova família ou nova variante | `docs/summon_family_builder.html` (abra no Chrome ou no Edge e use "Abrir pasta do projeto"): ele calcula os atributos e grava `Data/summons/<familia>_family.json`, um arquivo por família com até 5 variantes. Família nova pede também um SVG em `Assets/Creatures/` (o desperto é o mesmo desenho com a aura; ver "Novo símbolo"). Nenhum código, a não ser que a Passiva dela ainda não exista (ver "Nova Passiva") |
 | Habilidades de uma variante | `"skills"` da variante, no construtor ou direto no arquivo da família: a primeira é a básica (sem `cooldown`), as outras ativas têm `cooldown`, no máximo uma é `passive`; `levels` são as melhorias por cópia fundida (`Damage`, `Recovery`, `EffectRate`, `Cooldown`); `awakenedEffects` troca os efeitos ao despertar |
 | Habilidade fora do padrão (golpes diferentes entre si) | só dados: os efeitos acontecem na ordem da lista, então "3 golpes comuns e um quarto que ignora a Defesa" são dois efeitos `Damage` (`{"hits": 3}` e `{"ignoreDefense": 1}`). Ver "Combate: regras como estratégias" |
 | O que o Despertar dá | `"awakening"` da variante: `stat` (bônus de atributo) ou `skill` (habilidade nova, que só existe desperta); os atributos maiores são os `"awakened_stats"`, que o construtor calcula |
 | Atributos de uma invocação ou de um chefe | ninguém escreve à mão: saem do modelo (`Data/stat_model.json`) pelas estrelas naturais e pelo papel. Para puxar uma variante para um lado, o viés dela ou o da família, no construtor. Ver "Atributos: o modelo de BVP" |
 | Recalibrar o jogo inteiro (orçamentos, perfis de papel, pesos, viés de elemento) | aba Modelo do construtor, "Salvar no projeto" e "Recalcular todas": regrava `Data/stat_model.json`, todas as famílias e os chefes. Depois, `dotnet run --project Tests` (confere) e `-- --simulate` (o efeito no balanceamento) |
-| Inimigos de fase ou andar | ondas em `Data/stages.json` e `Data/dungeons.json`: `"summon"` é uma variante de invocação, `"enemy"` um chefe de `Data/enemies.json`; `stars` e `level` de cada fase e andar |
-| Reforço dos inimigos-invocação | `BattleFactory.FoeScale` (por estrelas naturais) e `scale` do andar |
+| Inimigos de fase ou andar | ondas em `Data/stages.json` e `Data/dungeons.json`: `"summon"` é uma variante de invocação, `"enemy"` um chefe de `Data/enemies.json`; `stars`, `level` (no 6★, até 60) e `scale` (Vida e Ataque) de cada fase e andar. Depois, `dotnet run --project Tests -- --simulate`: cada fase contra o time de referência dela, cada andar contra o degrau que ele pede (`Tests/ReferenceTeams.cs`) |
+| Reforço dos inimigos | `BattleFactory.FoeScale` (invocação inimiga, por estrelas naturais), `BattleFactory.FoeBoost` (todo inimigo: Vida, Ataque e Defesa), `scale` da fase e do andar; acima do 6★ nível 40, `Growth.FoeFraction` (só inimigos, até `Growth.MaxFoeLevel`) |
 | Novo efeito de status | o nome em `Core/Content/StatusKind.cs`, a estratégia em `Core/Battle/Statuses/` (uma das prontas, `StatChange` e `DamageOverTime`, ou uma classe nova que herda de `StatusBehavior`), a linha em `StatusBehaviors`, os textos `effect.Nome.name` e `.info` em `Data/texts` e o símbolo em `Assets/Effects/` |
 | Nova Passiva | o nome em `Core/Content/PassiveKind.cs`, uma classe em `Core/Battle/Passives/` que herda de `UnitBehavior` e sobrescreve o momento dela, a linha em `PassiveBehaviors`, o texto `passive.Nome` em `Data/texts` e o símbolo em `Art.Skill`. Com a pasta do projeto aberta, o construtor já oferece o nome novo |
 | Novo tipo de efeito de habilidade | o nome em `Core/Content/EffectKind.cs`, uma classe em `Core/Battle/Effects/` que herda de `SkillEffect`, a linha em `SkillEffects`, a descrição em `UI/Texts.cs` e o texto em `Data/texts` |
@@ -83,7 +83,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Idiomas oferecidos na Configuração | um arquivo por idioma em `Data/texts`; `ContentLoader.Languages()` lista, `PlayerState.Language` guarda a escolha |
 | Traduzir | copie `Data/texts/pt-BR.json` com outro nome, troque os textos, ponha no grupo `names` o nome de cada coisa dos dados (pelo nome em português; o `check_texts.py` diz quais faltam) e rode com `-- --language=nome` |
 | Nome de invocação, habilidade, fase, Masmorra, chefe ou oferta da Loja | o `"name"` (ou `"base_name"`) no arquivo de `Data/`, em português, e a tradução no grupo `names` do `en.json` (a chave é o nome em português: renomear pede renomear lá também) |
-| Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simulate` |
+| Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simulate` (os times de referência em `Tests/ReferenceTeams.cs`; os testes `CampaignTests` conferem a fase 50 e as pontas das Masmorras) |
 | Atributos por papel e estrelas naturais | `Data/stat_model.json` (orçamento de BVP e perfis de papel), pelo construtor |
 | Atributos por estrelas e nível de agora | faixas por estrela em `Core/Progression/Growth.cs`: a fração do 6★ nível 40 |
 | Crítico, Dano crítico, Resistência e Precisão de base | `"base_stats"` em `Data/stat_model.json` |
@@ -100,6 +100,16 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Batalha automática por trás | `GameEntry/AutoBattleRunner.cs` (o nó que corre as lutas, mesmo com a tela trocada), `UI/AutoBattleRun.cs` (o estado que a interface lê, com o evento `Changed`), `UI/Components/AutoBattleBadge.cs` (o selo no alto) e `UI/Screens/AutoBattleDialog.cs` (a janela; as ações dela são o `AutoBattleActions` que o `GameRoot` monta) |
 | Atualização do executável do Windows | `GameEntry/Update/`: `UpdateManifest` (o `latest.json` assinado) e `Updater` (pergunta ao servidor, download conferido, troca do `.exe` e reabertura, com a chave pública em `Updater.PublicKey`). A janela é o `UpdateDialog`; o fluxo fica no `GameRoot` (seção "Atualização"). Publicar: `dotnet run --project Tools/release -- windows`. Tudo em `docs/ATUALIZACOES.md` |
 | Conta, login e save em nuvem | `GameEntry/Account/`: `AuthClient` (cadastro, login, tokens), `SessionLock` (um aparelho por vez: tomar, bater, soltar), `CloudSave` (baixar e enviar), `CloudSync` (quem ganha entre aparelho e nuvem), `AccountStore` (`user://nome.account.json`) e `AccountSession` (o nó que junta tudo, com o batimento e o envio periódico). As telas: `LoginScreen`, `SaveConflictDialog`, `AccountNameDialog` (o nome da conta, único no servidor e mostrado no Santuário) e a conta no `ConfigPanel`; o fluxo fica no `GameRoot` (seção "Conta"). O endereço do servidor é `AccountSession.DefaultServer` (`-- --server=url` troca). O servidor é outro repositório: `docs/SERVIDOR_PROPRIO.md` |
+| Regiões da Campanha | `Campaign.RegionStarts` (a primeira fase de cada uma; a última vai até o fim) e os textos `campaign.region.N`; o mapa mostra uma região por vez (`CampaignScreen`, abas `TextTabs`, `StagePath` com a primeira e a última fase) |
+| O que o Santuário mostra aos poucos | `Core/Progression/Features.cs`: a tabela parte → fase que abre (as Masmorras vêm de `Data/dungeons.json`). Quem pergunta: a barra do `HubScreen`, a Canalização, o botão Batalha automática da `CampaignScreen`, a porta das Masmorras no `MapScreen` e o Comprar Pergaminhos da `SummonScreen`; a vitória que abre avisa por `BattleOutcome.Opened`. Nada fica salvo: "nova" é a parte da última fase vencida |
+| Luta de treino | `Core/Progression/Tutorial.cs` (a equipe emprestada, o encontro e quando abre: `PlayerState.TutorialDone`), `UI/Components/TutorialCoach.cs` (as lições, na ordem, e o que cada uma deixa escolher) e o `coach` da `BattleScreen` (espera as explicações antes da vez do jogador, filtra habilidades e alvos, repassa os eventos). O fluxo é `GameRoot.ShowTutorial`; refazer fica nos Ajustes (`ConfigPanel`) |
+| Fundir cópias (a janela) | `UI/Screens/FusionDialog.cs` (só a mesma família; Marcar as do mesmo elemento; o que vai sumir e a confirmação); a regra em `Fusion.CanFuse` (mesma `FamilyId`) |
+| Favoritos | `OwnedSummon.Favorite` (salvo); o coração do `CreatureCard`; a ordem (favoritos primeiro) nas telas de Monstros, Equipes e no `MonsterPicker` |
+| Gema de Reavaliação | a regra em `Core/Runes/RuneReappraisal.cs` (o que sai e o que volta, com o subatributo original que `RuneForge.Enchant` guarda em `RuneSubstat.Original`), o estoque em `PlayerState.ReappraisalGems`, a oferta em `Data/shop.json` (`ReappraisalGems`) e o botão Reavaliar da `RuneScreen` |
+| Visual do Despertar | `Doodle` com `aura` (o elemento) usa `Assets/Shaders/doodle_awakened.gdshader`: borda acesa por dentro na cor do elemento, anel animado próprio de cada elemento e o brilho que corre; sem brilho por fora |
+| Ênfase das invocações raras | `UI/Screens/SummonScreen.cs` (a revelação) e `UI/Components/SummonHalo.cs` (raios e halo, nas cores do elemento) |
+| Conselhos da derrota | `Core/Player/DefeatAdvice.cs` (o que falta na equipe, na ordem do que mais rende) e a faixa `DefeatBand` do `BattleResultPanel` |
+| Envio para a nuvem | `AccountSession.SaveSoon` (dois segundos depois da última mudança; várias viram um envio) é chamado por `GameRoot.Save`; a invocação espera `Flush` antes de mostrar o resultado |
 | Coleção, Baú, equipes | `Core/Player/Roster.cs`, `Core/Player/Teams.cs`, `PlayerState.CollectionCapacity`/`TeamSize` |
 | Vagas do inventário de runas | `RuneInventory.Capacity` (runas equipadas, inclusive em monstro do Baú, não contam) |
 | Taxas do gacha | `Core/Summoning/SummonRates.cs` |
@@ -318,6 +328,18 @@ O que o contrato do projeto tem de diferente da especificação:
   estrela e nível (`Growth.Bands`) e a experiência de cada nível (`Leveling`) são as de lá. A
   diferença: evoluir mantém o nível (lá volta ao 1), então o monstro entra na faixa da estrela nova no
   mesmo nível, os atributos sobem na hora e só faltam os 5 níveis novos.
+- **Força da fase em dado, calibrada fora do jogo.** O nível mostrado de uma fase só sobe, então o que as
+  ondas pesam a mais ou a menos vai no `scale` da fase (Vida e Ataque), não num nível que mente. O
+  número sai do simulador contra o time de referência daquele ponto (`Tests/ReferenceTeams.cs`); o
+  jogo não sabe de calibragem.
+- **Só inimigo passa do 6★ nível 40.** `Growth.FoeFraction` continua a reta do 6★ até o 60 só para quem
+  luta do outro lado; o jogador, a validação dos dados e as tabelas de nível continuam parando no 40.
+- **O jogo aos poucos sem estado novo no save.** Cada parte abre pela fase mais alta vencida
+  (`Features`), e "nova" é a parte da última fase vencida. Conta antiga já tem tudo aberto, e não há
+  lista de "já vi" para migrar.
+- **A luta de treino é uma luta de verdade.** O `TutorialCoach` só olha e fala: a `BattleSession` é a
+  mesma de sempre, com uma equipe emprestada que não entra na conta, e a `BattleScreen` só pergunta a
+  ele antes da vez do jogador (o que mostrar e o que deixar escolher).
 - **Confere na entrada, cobra na vitória.** `Campaign.Check` e `Dungeons.Check` devolvem um
   `EntryProblem` (fechado, sem Mana, inventário de runas cheio) sem mudar nada; a Mana só sai no
   `ApplyVictory`, então a derrota (ou sair e recomeçar pela pausa) não custa nada.

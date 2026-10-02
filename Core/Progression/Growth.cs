@@ -45,10 +45,31 @@ namespace Sigilos.Core.Progression
 			return start + (end - start) * (clampedLevel - 1) / (max - 1);
 		}
 
-		/// <summary>Os atributos do 6★ nível 40 (<paramref name="full"/>) nas estrelas e no nível de agora.</summary>
-		public static StatBlock Stats(StatBlock full, int stars, int level)
+		/// <summary>O nível mais alto de um inimigo: só eles passam do 6★ nível 40.</summary>
+		public const int MaxFoeLevel = 60;
+
+		/// <summary>
+		/// A fração de um inimigo: a mesma do jogador até o 6★ nível 40; depois, a reta do 6★ continua até
+		/// o nível <see cref="MaxFoeLevel"/> (cerca de 121% no 60). O jogador para no 40.
+		/// </summary>
+		public static double FoeFraction(int stars, int level)
 		{
-			var factor = Fraction(stars, level);
+			if (stars < MaxStars || level <= MaxLevel(MaxStars))
+				return Fraction(stars, level);
+
+			var (start, end) = Bands[MaxStars - 1];
+			var step = (end - start) / (MaxLevel(MaxStars) - 1);
+			return end + step * (Math.Min(level, MaxFoeLevel) - MaxLevel(MaxStars));
+		}
+
+		/// <summary>Os atributos do 6★ nível 40 (<paramref name="full"/>) nas estrelas e no nível de agora.</summary>
+		public static StatBlock Stats(StatBlock full, int stars, int level) => Scale(full, Fraction(stars, level));
+
+		/// <summary>Os atributos de um inimigo: como <see cref="Stats"/>, mas passando do nível 40 (<see cref="FoeFraction"/>).</summary>
+		public static StatBlock FoeStats(StatBlock full, int stars, int level) => Scale(full, FoeFraction(stars, level));
+
+		private static StatBlock Scale(StatBlock full, double factor)
+		{
 			return full with
 			{
 				Health = Math.Round(full.Health * factor),

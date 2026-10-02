@@ -12,7 +12,8 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A região 1: à esquerda a trilha das 20 fases (<see cref="StagePath"/>); à direita a ficha da
+	/// A Campanha: à esquerda as abas das regiões e a trilha das fases da aberta (<see cref="StagePath"/>),
+	/// com o nome dela; uma região fechada diz em que fase abre. À direita a ficha da
 	/// escolhida, tudo escrito — o nome, os inimigos (nível e estrelas, onda por onda; tocar num abre o
 	/// resumo dele), o que a vitória rende, a equipe com o botão de editar, e embaixo os botões Lutar
 	/// (com o custo em Mana) e Batalha automática, que só abre em fase já vencida (GDD, seção 7).
@@ -24,16 +25,20 @@ namespace Sigilos.UI.Screens
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly CenterContainer _path = new() { Name = "Path" };
+		private readonly HBoxContainer _regions = new() { Name = "Regions", Alignment = BoxContainer.AlignmentMode.Center };
+		private readonly Label _regionName = new() { Name = "RegionName", HorizontalAlignment = HorizontalAlignment.Center };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
 		private readonly VBoxContainer _actions = new() { Name = "Actions" };
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private StageDefinition _selected;
+		private int _region;
 
 		public CampaignScreen(GameDatabase database, PlayerState player, int? selected = null)
 		{
 			_database = database;
 			_player = player;
 			_selected = database.Stage(selected ?? Math.Min(player.HighestStage + 1, database.Stages.Count));
+			_region = Campaign.RegionOf(_selected.Number);
 		}
 
 		public event Action<StageDefinition>? FightRequested;
@@ -63,7 +68,15 @@ namespace Sigilos.UI.Screens
 			page.AddChild(body);
 
 			var pathPanel = new PanelContainer { Name = "Stages", CustomMinimumSize = new Vector2(540, 0) };
-			pathPanel.AddChild(_path);
+			var pathColumn = new VBoxContainer { Name = "PathColumn" };
+			pathColumn.AddThemeConstantOverride("separation", 8);
+			pathColumn.AddChild(_regions);
+			_regionName.ThemeTypeVariation = GameTheme.Heading;
+			_regionName.AddThemeColorOverride("font_color", Palette.Gold);
+			pathColumn.AddChild(_regionName);
+			_path.SizeFlagsVertical = SizeFlags.ExpandFill;
+			pathColumn.AddChild(_path);
+			pathPanel.AddChild(pathColumn);
 			body.AddChild(pathPanel);
 
 			var panel = new PanelContainer { Name = "Stage", SizeFlagsHorizontal = SizeFlags.ExpandFill };
@@ -96,7 +109,10 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_path);
 			var unlocked = _database.Stages.Where(s => Campaign.IsUnlocked(_player, s.Number)).Select(s => s.Number).DefaultIfEmpty(1).Max();
-			var path = new StagePath(_database.Stages.Count, _player.HighestStage, unlocked, _selected.Number);
+			RefreshRegions(unlocked);
+			var (first, last) = Campaign.Region(_region, _database.Stages.Count);
+			_regionName.Text = T($"campaign.region.{_region + 1}");
+			var path = new StagePath(first, last, _player.HighestStage, unlocked, _selected.Number);
 			path.Chosen += number =>
 			{
 				_selected = _database.Stage(number);
@@ -104,6 +120,32 @@ namespace Sigilos.UI.Screens
 				Callable.From(Refresh).CallDeferred();
 			};
 			_path.AddChild(path.Named("Path"));
+		}
+
+		/// <summary>Uma aba por região: "Região 2", com as fases embaixo, ou a fase em que ela abre.</summary>
+		private void RefreshRegions(int unlocked)
+		{
+			Layout.Clear(_regions);
+			var tabs = new TextTabs(height: 48, compact: true) { Name = "Tabs" };
+			for (var region = 0; region < Campaign.RegionStarts.Count; region++)
+			{
+				var (first, last) = Campaign.Region(region, _database.Stages.Count);
+				var open = first <= unlocked;
+				var detail = open ? T("campaign.region_stages", first, last) : T("campaign.region_opens", first);
+				tabs.Add(T("campaign.region_tab", region + 1), detail, null, open).Name = $"Region{region + 1}";
+			}
+
+			tabs.Select(_region);
+			tabs.Changed += region =>
+			{
+				// A região nova abre na fase a vencer dela (ou na última aberta).
+				_region = region;
+				var (first, last) = Campaign.Region(region, _database.Stages.Count);
+				_selected = _database.Stage(Math.Clamp(Math.Min(_player.HighestStage + 1, last), first, last));
+				_message.Text = "";
+				Callable.From(Refresh).CallDeferred();
+			};
+			_regions.AddChild(tabs);
 		}
 
 		private void RefreshDetail()
@@ -177,11 +219,17 @@ namespace Sigilos.UI.Screens
 			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(stage), ButtonKind.Primary, "fight", 68).WithCost("mana", stage.Mana.ToString()).Named("Fight");
 			fight.Disabled = noTeam || problem != EntryProblem.None;
 			row2.AddChild(fight.Wide(220));
-			var repeat = GameButton.Of(T("common.auto_battle"), () => RepeatRequested?.Invoke(stage), ButtonKind.Secondary, "repeat", 68).Named("AutoBattle");
-			repeat.Disabled = !cleared || noTeam || problem != EntryProblem.None;
-			row2.AddChild(repeat.Wide(240));
+			// A Batalha automática só aparece quando a Campanha a apresenta (Features); depois, em fase já vencida.
+			var autoOpen = Features.IsOpen(_player, _database, Feature.AutoBattle);
+			if (autoOpen)
+			{
+				var repeat = GameButton.Of(T("common.auto_battle"), () => RepeatRequested?.Invoke(stage), ButtonKind.Secondary, "repeat", 68).Named("AutoBattle");
+				repeat.Disabled = !cleared || noTeam || problem != EntryProblem.None;
+				row2.AddChild(repeat.Wide(240));
+			}
+
 			_actions.AddChild(row2);
-			if (!cleared)
+			if (autoOpen && !cleared)
 				_actions.AddChild(Layout.Text(T("campaign.auto_locked"), GameTheme.Faded).Named("AutoHint"));
 		}
 

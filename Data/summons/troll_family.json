@@ -18,7 +18,7 @@
         {
           "name": "Porrete Ardente",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -32,7 +32,7 @@
           "name": "Esmagar",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.2}
           ],
           "levels": [
@@ -41,7 +41,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 4.2},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.94},
             {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
           ]
         },
@@ -49,7 +49,7 @@
           "name": "Pancada de Magma",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 6.3},
+            {"kind": "Damage", "target": "Target", "power": 4.41},
             {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35}
           ],
           "levels": [
@@ -72,7 +72,7 @@
         {
           "name": "Porrete",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -87,7 +87,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Heal", "target": "Self", "power": 0.15}
+            {"kind": "Heal", "target": "Self", "power": 0.1}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -96,7 +96,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Heal", "target": "Self", "power": 0.25},
+            {"kind": "Heal", "target": "Self", "power": 0.17},
             {"kind": "Status", "target": "Self", "status": "Aegis"}
           ]
         },
@@ -119,7 +119,7 @@
         {
           "name": "Arremesso de Pedra",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Target", "power": -20}
           ],
           "levels": [
@@ -133,7 +133,7 @@
           "name": "Tremor",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
             {"kind": "Impeto", "target": "AllEnemies", "power": -25}
           ],
           "levels": [
@@ -142,7 +142,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
             {"kind": "Impeto", "target": "AllEnemies", "power": -40}
           ]
         },
@@ -150,7 +150,7 @@
           "name": "Pedregulho Rolante",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Impeto", "target": "AllEnemies", "power": -20}
           ],
           "levels": [
@@ -173,8 +173,8 @@
         {
           "name": "Porrete Abençoado",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -187,7 +187,7 @@
           "name": "Rebrotar",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.2}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -195,7 +195,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.21},
             {"kind": "Cleanse", "target": "AllAllies"}
           ]
         },
@@ -218,7 +218,7 @@
         {
           "name": "Aperto Esmagador",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -243,7 +243,7 @@
           "awakenedEffects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-            {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
+            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
           ]
         },
         {

@@ -3,6 +3,7 @@ using Sigilos.Core.Player;
 using Sigilos.Core.Runes;
 using Sigilos.Core.Summoning;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sigilos.Core.Progression
@@ -15,6 +16,19 @@ namespace Sigilos.Core.Progression
 	/// </summary>
 	public static class Campaign
 	{
+		/// <summary>
+		/// As regiões (GDD, seção 4), pela primeira fase de cada uma: a Planície dos Menires (1 a 20), o
+		/// Arquipélago Afogado (21 a 40) e a Cidadela do Selo Partido (41 até a última fase).
+		/// </summary>
+		public static readonly IReadOnlyList<int> RegionStarts = new[] { 1, 21, 41 };
+
+		/// <summary>A região da fase, de 0 em diante.</summary>
+		public static int RegionOf(int stageNumber) => RegionStarts.Count(start => stageNumber >= start) - 1;
+
+		/// <summary>A primeira e a última fase da região, cortada no fim da Campanha.</summary>
+		public static (int First, int Last) Region(int region, int stageCount) =>
+			(RegionStarts[region], region + 1 < RegionStarts.Count ? RegionStarts[region + 1] - 1 : stageCount);
+
 		/// <summary>Chance de runa numa vitória repetida.</summary>
 		public const double RepeatRuneChance = 0.5;
 		public const double MonsterChance = 0.25;

@@ -6,9 +6,9 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// A trilha da Campanha: uma pedra por fase, em fileiras que vão e voltam (a primeira da esquerda
-	/// para a direita, a seguinte ao contrário), ligadas por um caminho. O trecho já vencido brilha em
-	/// verde; a fase escolhida fica acesa; as fechadas, apagadas.
+	/// A trilha de uma região da Campanha: uma pedra por fase, em fileiras que vão e voltam (a primeira
+	/// da esquerda para a direita, a seguinte ao contrário), ligadas por um caminho. O trecho já vencido
+	/// brilha em verde; a fase escolhida fica acesa; as fechadas, apagadas; a última (o chefe) é maior.
 	/// </summary>
 	public partial class StagePath : Control
 	{
@@ -16,20 +16,24 @@ namespace Sigilos.UI.Components
 		private const float Node = 64;
 
 		private readonly List<SigilButton> _nodes = new();
+		private readonly int _first;
 		private readonly int _cleared;
 
+		/// <param name="first">A primeira fase da região; <paramref name="last"/>, a última.</param>
 		/// <param name="cleared">Quantas fases já foram vencidas (o caminho brilha até aí).</param>
-		public StagePath(int count, int cleared, int unlocked, int selected)
+		public StagePath(int first, int last, int cleared, int unlocked, int selected)
 		{
+			_first = first;
 			_cleared = cleared;
+			var count = last - first + 1;
 			var rows = (count + PerRow - 1) / PerRow;
 			CustomMinimumSize = new Vector2(PerRow * 96 + 20, rows * 104 + 10);
 			MouseFilter = MouseFilterEnum.Ignore;
 
-			for (var number = 1; number <= count; number++)
+			for (var number = first; number <= last; number++)
 			{
 				var stage = number;
-				var node = new SigilButton(null, number == count ? Node + 12 : Node)
+				var node = new SigilButton(null, number == last ? Node + 12 : Node)
 				{
 					Name = $"Stage{number}",
 					Letters = number.ToString(),
@@ -59,7 +63,7 @@ namespace Sigilos.UI.Components
 			{
 				var a = Center(_nodes[i]);
 				var b = Center(_nodes[i + 1]);
-				var lit = i + 1 < _cleared;
+				var lit = _first + i + 1 <= _cleared;
 				DrawLine(a, b, new Color(0, 0, 0, 0.5f), 8, true);
 				DrawLine(a, b, lit ? new Color(Palette.Spirit, 0.7f) : new Color(Palette.GoldDark, 0.7f), lit ? 3 : 2, true);
 			}

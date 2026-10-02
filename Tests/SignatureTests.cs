@@ -284,8 +284,19 @@ namespace Sigilos.Tests
 			Assert.Equal(troll.Name, foe.Name, "a mesma variante que o jogador invoca");
 			Assert.Equal(troll.Element, foe.Element, "o elemento vem da variante");
 			Assert.Equal(troll.Skills.Single(s => s.IsPassive).Passive, foe.Passive, "com a Passiva da variante");
-			Assert.Near(basis.Health * health * 1.5, foe.MaxHealth, "Vida reforçada pelas estrelas e pelo encontro", 1e-6);
-			Assert.Near(basis.Attack * attack * 1.5, foe.Stats.Attack, "Ataque também", 1e-6);
+			Assert.Near(basis.Health * health * 1.5 * BattleFactory.FoeBoost, foe.MaxHealth, "Vida reforçada pelas estrelas, pelo encontro e pela força dos inimigos", 1e-6);
+			Assert.Near(basis.Attack * attack * 1.5 * BattleFactory.FoeBoost, foe.Stats.Attack, "Ataque também", 1e-6);
+			Assert.Near(basis.Defense * BattleFactory.FoeBoost, foe.Stats.Defense, "Defesa só pela força dos inimigos", 1e-6);
+		}
+
+		[Test]
+		private static void EnemiesGrowPastLevelForty()
+		{
+			var forty = Core.Progression.Growth.FoeFraction(6, 40);
+			var sixty = Core.Progression.Growth.FoeFraction(6, 60);
+			Assert.Near(1.0, forty, "no 6★ nível 40, o mesmo do jogador", 1e-9);
+			Assert.True(sixty > 1.2 && sixty < 1.22, $"no nível 60, a reta do 6★ continua (veio {sixty})");
+			Assert.Near(Core.Progression.Growth.Fraction(5, 35), Core.Progression.Growth.FoeFraction(5, 50), "abaixo do 6★, o nível para no máximo da estrela", 1e-9);
 		}
 
 		[Test]

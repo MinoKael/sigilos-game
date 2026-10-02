@@ -286,8 +286,11 @@ namespace Sigilos.Core.Content
 				: $"está {Text(stored)} (Vida/Ataque/Defesa/Velocidade) e o modelo dá {Text(expected)}: abra docs/summon_family_builder.html, carregue a pasta do projeto e use \"Recalcular todas\".";
 		}
 
-		/// <summary>Estrelas de 1 a 6, nível até o máximo delas (15 no 1★, +5 por estrela).</summary>
-		private static bool ValidLevel(int stars, int level) => stars is >= 1 and <= 6 && level >= 1 && level <= 10 + 5 * stars;
+		/// <summary>
+		/// Estrelas de 1 a 6, nível até o máximo delas (15 no 1★, +5 por estrela); no 6★, os inimigos vão
+		/// além do 40, até o 60 (Core/Progression/Growth.cs, MaxFoeLevel).
+		/// </summary>
+		private static bool ValidLevel(int stars, int level) => stars is >= 1 and <= 6 && level >= 1 && level <= (stars == 6 ? 60 : 10 + 5 * stars);
 
 		/// <summary>A primeira é ativa e sem recarga; as outras ativas têm recarga; no máximo uma passiva.</summary>
 		private static IEnumerable<string> ValidateSkills(IReadOnlyList<SkillDefinition> skills)

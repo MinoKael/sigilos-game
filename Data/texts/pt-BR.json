@@ -40,7 +40,7 @@
     "dismiss": "Encerrar",
     "manage_runes": "Gerenciar runas",
     "state_running": "Na luta {0}…",
-    "time_left_value": "Falta: {0}",
+    "time_left_value": "Esta luta: {0} · Falta: {1}",
     "rewards": "Recompensas até agora",
     "monsters": "Monstros ({0})",
     "runes_title": "Runas: {0} guardadas, {1} vendidas",
@@ -422,7 +422,9 @@
     "version_debug": "v{0} · depuração",
     "account_named": "{0} · Nível {1}",
     "offline": "Sem conexão",
-    "offline_text": "O servidor não respondeu. Você está jogando com o progresso deste aparelho, e ele sobe para a nuvem sozinho quando a conexão voltar. Se a conta também mudou em outro aparelho nesse meio tempo, o jogo pergunta qual progresso fica."
+    "offline_text": "O servidor não respondeu. Você está jogando com o progresso deste aparelho, e ele sobe para a nuvem sozinho quando a conexão voltar. Se a conta também mudou em outro aparelho nesse meio tempo, o jogo pergunta qual progresso fica.",
+    "channel_opens": "A Canalização abre na fase {0}.",
+    "battle_detail_campaign": "Campanha (fase {0} de {1})"
   },
 
   "campaign": {
@@ -435,7 +437,15 @@
     "rune_always": "Runa (sempre)",
     "rune_chance_short": "Runa ({0} de chance)",
     "monster_chance": "de chance de um monstro {0}",
-    "auto_locked": "A Batalha automática abre depois da primeira vitória nesta fase."
+    "auto_locked": "A Batalha automática abre depois da primeira vitória nesta fase.",
+    "region_tab": "Região {0}",
+    "region_stages": "Fases {0}–{1}",
+    "region_opens": "Abre na fase {0}",
+    "region": {
+      "1": "Planície dos Menires",
+      "2": "Arquipélago Afogado",
+      "3": "Cidadela do Selo Partido"
+    }
   },
 
   "dungeons": {
@@ -675,8 +685,8 @@
       "runes": "Runas"
     },
     "basic": {
-      "campaign": { "title": "Campanha", "text": "20 fases com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Pergaminhos e sempre uma runa; as seguintes dão Essência e chance de runa. A Campanha solta runas de até {0} estrelas." },
-      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares e solta o que a Campanha não solta: runas de 4 a 6 estrelas de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada vitória custa Mana; a primeira vitória em cada andar dá Ouro." },
+      "campaign": { "title": "Campanha", "text": "50 fases em três regiões, com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Pergaminhos e sempre uma runa; as seguintes dão Essência e chance de runa. A Campanha apresenta o jogo aos poucos: cada parte do Santuário abre numa fase. Ela solta runas de até {0} estrelas; vencer a fase 50 pede cerca de nível 20 com runas, ou 6★ nível 40 sem." },
+      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas de 4 a 6 estrelas de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Elas vêm depois da Campanha, em ordem de dificuldade: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana; a primeira vitória em cada andar dá Ouro." },
       "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
       "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
@@ -684,7 +694,7 @@
       "teams": { "title": "Equipes", "text": "Uma equipe de até {0} monstros para a Campanha e uma para cada Masmorra. A primeira é a Líder." },
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela: o monstro mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
-      "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia repetida sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
+      "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
       "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada monstro tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
       "sanctuary": { "title": "Santuário e controles", "text": "O Santuário é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Monstros, Runas, Equipes, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um monstro para ver o resumo dele." }
     },
@@ -822,7 +832,9 @@
     },
     "effects_help": "O que os efeitos fazem",
     "effects_help_active": "Os efeitos em jogo agora:",
-    "effects_help_all": "Nenhum efeito em jogo agora; estes são todos:"
+    "effects_help_all": "Nenhum efeito em jogo agora; estes são todos:",
+    "opened": "Abriu no Santuário:",
+    "opened_new": "novo"
   },
 
   "destination": {
@@ -848,7 +860,8 @@
     "campaign_detail": "Próxima: fase {0} · {1}\n{2} de {3} fases vencidas",
     "dungeons_detail": "{0} de {1} abertas\n{2} de {3} andares vencidos",
     "tower": "Torre e Provações",
-    "tower_detail": "Em breve"
+    "tower_detail": "Em breve",
+    "dungeons_opens": "Abre na fase {0}"
   },
 
   "currency_info": {
@@ -892,7 +905,10 @@
     "rename": "Trocar nome",
     "choose_name": "Escolher nome",
     "no_name": "Conta sem nome",
-    "offline_account": "Sem conexão: jogando com o progresso deste aparelho. Ele sobe sozinho quando a conexão voltar."
+    "offline_account": "Sem conexão: jogando com o progresso deste aparelho. Ele sobe sozinho quando a conexão voltar.",
+    "training": "Treino",
+    "training_text": "A luta de treino ensina habilidades, elementos e efeitos, um de cada vez.",
+    "training_button": "Refazer a luta de treino"
   },
 
   "lock": {
@@ -988,5 +1004,24 @@
     "error_corrupt": "O arquivo baixado veio diferente do publicado e foi descartado.",
     "error_write": "A pasta do jogo não aceita arquivos novos (sem permissão ou sem espaço). Mova o Sigilos para uma pasta sua, como a Área de Trabalho, ou baixe a versão nova no navegador.",
     "error_install": "Não deu para trocar o jogo pela versão nova. Nada mudou: abra o jogo de novo e tente outra vez."
+  },
+
+  "tutorial": {
+    "title": "Treino",
+    "battle_title": "Luta de treino",
+    "continue": "Continuar",
+    "end_button": "Ao Santuário",
+    "intro": "Esta é uma luta de treino, Conjurador: aqui nada se perde. Seus monstros estão embaixo, à esquerda; os inimigos, em cima, à direita.",
+    "order": "A coluna da esquerda é a ordem de turno: quem tem mais Velocidade age antes. Segure qualquer monstro, em qualquer lugar do jogo, para ver o resumo dele.",
+    "basic": "Vez de {0}: as habilidades aparecem embaixo, à direita. Toque na primeira, o básico (sempre pronto), e depois no inimigo aceso.",
+    "cooldown": "As outras habilidades são mais fortes, mas depois de usadas esperam alguns turnos: o número no botão diz quantos faltam. Segure uma habilidade para ler o que ela faz e quando ela ajuda.",
+    "elements": "Elementos: Água vence Fogo, Fogo vence Vento e Vento vence Água; Luz e Trevas vencem uma à outra. Com vantagem, o golpe tira 25% a mais; contra ela, 25% a menos. Monte a equipe pelos inimigos de cada luta.",
+    "element_pick": "Seus monstros são de Água: ataque o inimigo de Fogo, não o de Vento.",
+    "stun": "Efeitos mudam a luta. {0}, de {1}, atordoa: o alvo perde a próxima vez. Use agora e toque no inimigo.",
+    "status_seen": "O símbolo junto do inimigo é o efeito, com os turnos que faltam. O botão Efeitos, embaixo à esquerda, lista todos os efeitos da luta, e o ? dele explica cada um.",
+    "support": "{0} é de suporte: o básico já cura o aliado mais ferido, e {1} cura todos. Cura e escudo seguram a equipe enquanto os outros batem.",
+    "combo": "Combine os efeitos: com o inimigo atordoado, os outros batem nele sem resposta. Um monstro abre caminho para o outro; é assim que se monta uma equipe.",
+    "auto": "Por fim, o Automático, embaixo à esquerda: a equipe luta sozinha, usando a habilidade pronta mais forte. Termine a luta como quiser.",
+    "end": "Muito bem, Conjurador! Agora invoque os seus próprios monstros: a primeira invocação traz uma 5★. Depois, a Campanha espera."
   }
 }

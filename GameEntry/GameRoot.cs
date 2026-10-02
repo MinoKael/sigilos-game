@@ -202,8 +202,15 @@ namespace Sigilos.GameEntry
 				case "battle":
 					FightStage(_database.Stage(Math.Min(_player.HighestStage + 1, _database.Stages.Count)));
 					break;
+				case "tutorial":
+					ShowTutorial();
+					break;
 				default:
-					ShowHub();
+					// A conta nova começa pela luta de treino; depois, sempre pelo Santuário.
+					if (Tutorial.ShouldStart(_player))
+						ShowTutorial();
+					else
+						ShowHub();
 					break;
 			}
 		}
@@ -607,9 +614,43 @@ namespace Sigilos.GameEntry
 				Save();
 				UseLanguage(language);
 				ShowHub();
-			}, AccountSettings());
+			}, AccountSettings(), ShowTutorial);
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
 			Swap(hub, ShowHub);
+		}
+
+		/// <summary>
+		/// A luta de treino (<see cref="Tutorial"/>), com o Mestre ensinando: no fim, ou ao sair pela pausa,
+		/// conta como feita (não abre mais sozinha) e leva ao Santuário. Não cobra nem dá nada.
+		/// </summary>
+		private void ShowTutorial()
+		{
+			var coach = new TutorialCoach();
+			var session = BattleFactory.Create(_database, Tutorial.Team(_database), Tutorial.Encounter(), _random.Next());
+			var battle = new BattleScreen(session, T("tutorial.battle_title"), false, coach);
+			var done = false;
+			void Done()
+			{
+				if (done)
+					return;
+				done = true;
+				_player.TutorialDone = true;
+				Save();
+				ShowHub();
+			}
+
+			battle.Finished += async _ =>
+			{
+				await coach.End();
+				Done();
+			};
+			battle.Closed += _ => Done();
+			battle.RestartRequested += _ =>
+			{
+				done = true;
+				ShowTutorial();
+			};
+			Swap(battle, Done);
 		}
 
 		private void ShowMap()
@@ -819,7 +860,9 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage, _database), Back, () => FightStage(stage));
+			// A primeira vitória da fase avisa o que ela abriu no Santuário (Features).
+			var opened = repeat ? null : Features.OpenedBy(_database, stage.Number);
+			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage, _database), Back, () => FightStage(stage), opened);
 		}
 
 		private void FightFloor(DungeonDefinition dungeon, int floor)
@@ -871,7 +914,7 @@ namespace Sigilos.GameEntry
 		/// estava. Volta para <paramref name="back"/>; <paramref name="again"/> é a mesma luta de novo, pela
 		/// porta de entrada (confere Mana e equipe).
 		/// </summary>
-		private void Fight(string title, Encounter encounter, string content, string record, Func<VictoryReward> victoryReward, Action back, Action again)
+		private void Fight(string title, Encounter encounter, string content, string record, Func<VictoryReward> victoryReward, Action back, Action again, IReadOnlyList<Feature>? opened = null)
 		{
 			Save();
 			var team = PlayerTeam.Build(_player, _database, content);
@@ -892,7 +935,7 @@ namespace Sigilos.GameEntry
 				Save();
 				var result = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
 				var tips = victory ? null : DefeatAdvice.For(_player, _database, before.Select(b => b.Monster).ToList(), encounter);
-				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest, tips));
+				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest, tips, victory ? opened : null));
 			};
 			battle.RuneSellRequested += rune =>
 			{
@@ -918,7 +961,7 @@ namespace Sigilos.GameEntry
 				if (finished)
 					again();
 				else
-					Fight(title, encounter, content, record, victoryReward, back, again);
+					Fight(title, encounter, content, record, victoryReward, back, again, opened);
 			};
 			Swap(battle, back);
 		}

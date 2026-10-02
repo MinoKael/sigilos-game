@@ -119,5 +119,44 @@
         {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
       ] }
     ]
+  },
+  {
+    "id": "mother_serpent",
+    "name": "A Serpe-Mãe",
+    "role": "Attack",
+    "rarity": 3,
+    "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+    "healthScale": 6.4, "attackScale": 1.6,
+    "image": "mother_serpent",
+    "skills": [
+      { "name": "Mordida das Profundezas", "effects": [
+        {"kind": "Damage", "power": 3.6},
+        {"kind": "Impeto", "power": -25, "chance": 0.5}
+      ] },
+      { "name": "Maremoto", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.3},
+        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
+      ] }
+    ]
+  },
+  {
+    "id": "silence_herald",
+    "name": "O Arauto do Silêncio",
+    "role": "Support",
+    "rarity": 3,
+    "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+    "healthScale": 7.2, "attackScale": 1.7,
+    "image": "silence_herald",
+    "skills": [
+      { "name": "Sussurro do Fim", "effects": [
+        {"kind": "Damage", "power": 3.6},
+        {"kind": "Status", "status": "Curse", "chance": 0.4, "turns": 2}
+      ] },
+      { "name": "Silêncio", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.2}
+      ] }
+    ]
   }
 ]

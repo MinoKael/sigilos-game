@@ -30,6 +30,8 @@ Sep 23, 2026 · @Mikael
 
 > **Décima quinta revisão de 01/10/2026: conta e save em nuvem.** O jogo ganhou conta (e-mail, senha, convite e um nome único, sem espaço, que aparece no Santuário ao lado do nível), num servidor próprio. A conta leva o progresso entre aparelhos, mas fica aberta em um aparelho por vez: entrar num segundo pergunta antes e derruba o primeiro, que volta para a tela de login. O save do aparelho continua sendo o que vale, e a nuvem é a cópia, enviada a cada minuto, ao pausar e ao sair. Quando o aparelho e a nuvem mudaram os dois, o jogador escolhe qual fica, vendo os dois resumos, e o outro vira backup no aparelho. Jogar sem conta continua existindo, todo local; ao criar a conta, esse progresso sobe para ela. A primeira entrada num aparelho pede internet; depois, a conta lembrada abre sem ela, com o progresso do aparelho, e sincroniza quando a conexão voltar (perguntando qual fica, se a conta também mudou em outro aparelho nesse meio tempo). No Windows, o jogo avisa ao abrir quando sai uma versão nova e se atualiza sozinho (baixa, fecha e abre de novo); abaixo da versão mínima, é atualizar ou sair.
 
+> **Décima sexta revisão de 01/10/2026: a Campanha até a fase 50, o jogo aos poucos e a luta de treino.** Primeiro, a interface. A Fusão ganhou janela própria: só cópias da mesma família, de qualquer elemento (as do mesmo elemento se marcam com um toque), a lista do que vai sumir e a confirmação; a seleção de vários na tela de Monstros ficou só para liberar. Monstros podem ser favoritados (o coração no cartão) e vêm primeiro nas listas. A Loja vende a Gema de Reavaliação, que devolve uma runa ao estado em que caiu, sem melhoras, Pedras de Afiar nem encantamento, listando antes tudo o que desfaz (a Essência gasta não volta). O Despertar deixou de ter um segundo desenho: o monstro desperto é o mesmo desenho, com a borda acesa por dentro na cor do elemento e um anel animado próprio de cada elemento. Toda ação que muda a conta sobe para a nuvem dois segundos depois (várias seguidas viram um envio só), e a invocação sobe antes de o resultado aparecer. As invocações 4★ e 5★ aparecem com halo de raios (Luz e Trevas na cor delas), a derrota diz o que fazer para ficar mais forte, e o quadro de efeitos da luta ganhou o "?". Depois, o balanceamento: os multiplicadores de Dano, Cura e Escudo das habilidades de todas as invocações caíram 30% (arredondados para baixo), e todo inimigo da Campanha e das Masmorras ganhou 30% de Vida, Ataque e Defesa (a Velocidade ficou). Os inimigos passam do 6★ nível 40, até o nível 60, pela mesma reta do 6★; o jogador segue parando no 40. A Campanha vai até a fase 50, em três regiões (a Planície dos Menires, o Arquipélago Afogado e a Cidadela do Selo Partido), com estrelas e nível que só sobem e um multiplicador de força por fase, calibrado no simulador: a fase 50 se vence com nível 20 e runas, ou com 6★ nível 40 sem runas, mas não com nível 20 sem runas. As Masmorras viraram o passo seguinte, cada uma de um elemento e em ordem de dificuldade: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz). O jogo aparece aos poucos: uma conta nova começa por uma luta de treino com um Mestre que ensina enquanto o jogador luta, e o Santuário mostra cada parte quando a Campanha a abre. Por fim, a Batalha automática mostra quanto a luta de agora leva e estima o resto pelas lutas recentes, e melhorar uma runa por ela reabre a ficha com o que subiu em verde.
+
 > **Nona revisão de 27/09/2026: fontes, runas e menos botões.** A fonte do jogo é a SFC Wezards, e os Glifos passaram a ser escritos na fonte rúnica Kehdrai (nítidos em qualquer tamanho). A runa em miniatura é uma pedra quadrada de cantos redondos, com o espaço e as estrelas no alto e a melhora embaixo. O Resolver saiu: a Batalha automática pergunta quantas lutas seguidas (30 de início, até 100). A Canalização Rápida saiu. Os efeitos de batalha têm símbolos próprios, e toda arte é PNG renderizado do SVG, recortado no formato do componente.
 
 ## 1. Visão geral
@@ -90,6 +92,8 @@ Neste mundo tudo o que existe foi escrito com dezesseis Glifos primordiais, e co
 | 3 | Cidadela do Selo Partido | Glifos instáveis: as habilidades começam a luta em recarga | O Arauto do Silêncio |
 | Pós-jogo | Torre dos Círculos | Andares com regras fixas, uma por andar | — |
 
+A Campanha tem 50 fases: 1 a 20 na Planície dos Menires, 21 a 40 no Arquipélago Afogado (quase todo de Água, para ensinar os elementos e os efeitos; no fim, a Serpe-Mãe) e 41 a 50 na Cidadela do Selo Partido (Luz e Trevas; no fim, o Arauto do Silêncio). O mapa da Campanha tem uma aba por região, e uma região fechada diz em que fase abre. As regras de batalha de cada região ainda não entraram no jogo.
+
 **Tom.** Fantasia épica clássica, séria no mundo e com leveza nas falas. No máximo três falas por fase: a história é tempero, nunca obstáculo entre o jogador e a luta.
 
 ## 5. Direção de arte
@@ -100,7 +104,7 @@ A arte de personagem é rabiscada por escolha visual e de produção: é o que p
 | --- | --- |
 | Personagens | Traço solto, no papel (foto ou scan) ou no tablet, no máximo 15 minutos. As criaturas são tratadas com seriedade, não como piada |
 | Famílias | Um desenho por família, recolorido nos 5 elementos, como em Summoners War. 8 desenhos cobrem as 40 invocações |
-| Despertar | Um segundo desenho por família, mais detalhado e colorido: 16 desenhos de criatura na 1.0 |
+| Despertar | O mesmo desenho, com a borda acesa por dentro na cor do elemento e um anel animado próprio de cada elemento (um shader, sem desenho novo) |
 | Animação | Linha tremida: 3 versões do mesmo desenho alternando a cerca de 8 quadros por segundo. Movimento só por interpolação (avançar, recuar, tremer), nunca quadro a quadro |
 | Inimigos | Criaturas clássicas de RPG, como slime, goblin, lobo, bandido, troll, dragão, etc. Todos seriam as criaturas de 1 ou 2 estrelas da pool de invocações. |
 | Glifos e runas | Os 16 Glifos são símbolos de runa (futhark antigo, domínio público), um por conjunto; aparecem dourados nos textos ao lado do termo que querem dizer |
@@ -187,6 +191,10 @@ Toda luta pode ser automática: usa a habilidade pronta de maior número (a mais
 
 Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham a Batalha automática: o jogador escolhe quantas lutas seguidas (30 de início), e cada uma leva o tempo que levaria no automático em 2×. Ela corre por trás enquanto o jogador usa o resto do jogo: um selo no alto, no meio, mostra "4/30" e reabre a janela dela, onde dá para acompanhar, mudar o número de lutas, vender e melhorar as runas ganhas e parar. Fechar a janela não para; parar pede confirmação. Ela para sozinha sem Mana ou com o inventário de runas cheio, e aí pode ser retomada; a derrota só entra na conta e a próxima luta segue. Começar uma luta manual durante a Batalha automática pergunta antes, porque a para.
 
+### Luta de treino
+
+Uma conta nova começa por uma luta de treino, antes da primeira invocação: três monstros de Água emprestados (um que bate, um que atordoa, um que cura) contra inimigos fracos de Fogo e, na segunda onda, um de Vento. Um Mestre fala no canto de cima do campo, uma coisa de cada vez e só quando ela aparece na luta: o campo e a ordem de turno; o básico e o alvo; a recarga; os elementos (na segunda onda, mandando atacar o de Fogo, não o de Vento); o atordoar e o símbolo do efeito, com o botão Efeitos e o "?"; o suporte; combinar efeitos; e por fim o Automático, que só então liga. Explicação espera o Continuar; instrução fica na placa até o jogador agir e acende só a habilidade e os alvos certos. A luta não cobra nem dá nada, não se perde, e sair pela pausa conta como feita. Os Ajustes têm "Refazer a luta de treino".
+
 ## 8. Invocações
 
 A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Cada variante tem kit próprio e, depois do Despertar, um nome próprio, como os heróis de Epic Seven.
@@ -202,7 +210,7 @@ A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Ca
 | Ativas | Uma ou duas com recarga de 3 a 5 turnos |
 | Passiva | Nem todos têm: alguns têm uma terceira ativa no lugar; famílias de 4 e 5 estrelas também têm Liderança |
 | Níveis | Cada habilidade sobe com cópias fundidas |
-| Despertar | Nome próprio, desenho novo e, pelas estrelas naturais, uma habilidade nova (2★ e 3★), uma mais forte (4★) ou um atributo (5★) |
+| Despertar | Nome próprio, a aura do elemento e, pelas estrelas naturais, uma habilidade nova (2★ e 3★), uma mais forte (4★) ou um atributo (5★) |
 
 ### Famílias
 
@@ -243,7 +251,7 @@ Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocaçã
 | Luz e Trevas | Metade da chance das outras variantes da mesma raridade, como em Summoners War |
 | Garantia | 5★ após 60 invocações sem nenhuma, com contador na tela |
 | Coleção | 50 vagas; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele) |
-| Cópia repetida | Fundida em outra da mesma variante: sobe uma habilidade sorteada em um nível, até todas no máximo |
+| Cópia repetida | Fundida em outra da mesma família, de qualquer elemento, na janela Fundir: sobe uma habilidade sorteada em um nível, até todas no máximo |
 | Liberar | O monstro vira Fragmentos: 5 (2★ e 3★), 10 (4★) ou 20 (5★) |
 | Troca por Fragmentos | Qualquer invocação: 30, 60 ou 120 Fragmentos, conforme a raridade |
 
@@ -267,13 +275,28 @@ Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e
 | Eixo | Como sobe | O que dá |
 | --- | --- | --- |
 | Estrelas e nível | Experiência das vitórias (para quem lutou) e Essência infundida (1 Essência = 10 de experiência); no nível máximo, Evolução com Essência e Fragmentos | Das estrelas naturais até 6★; nível máximo 10 + 5 por estrela (25 no 3★, 40 no 6★); Vida, Ataque e Defesa pela faixa de Summoners War de cada estrela |
-| Níveis de habilidade | Fundir cópias da mesma variante | Cada cópia sobe uma habilidade sorteada: mais dano, cura, chance de efeito ou menos recarga |
-| Despertar | Essência pelas estrelas naturais: 25 000 (2★ e 3★), 50 000 (4★), 75 000 (5★) | Nome próprio, desenho novo, estrelas roxas, Vida, Ataque e Defesa maiores (os do orçamento desperto: cerca de 8% a 11% a mais) e +1 de Velocidade e, pelas estrelas naturais, uma habilidade nova (2★ e 3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
+| Níveis de habilidade | Fundir cópias da mesma família | Cada cópia sobe uma habilidade sorteada: mais dano, cura, chance de efeito ou menos recarga |
+| Despertar | Essência pelas estrelas naturais: 25 000 (2★ e 3★), 50 000 (4★), 75 000 (5★) | Nome próprio, a aura do elemento, estrelas roxas, Vida, Ataque e Defesa maiores (os do orçamento desperto: cerca de 8% a 11% a mais) e +1 de Velocidade e, pelas estrelas naturais, uma habilidade nova (2★ e 3★), uma habilidade mais forte (4★) ou o bônus de Summoners War da variante (5★): +15 de Velocidade, +15% de Crítico, +25% de Resistência ou +25% de Precisão |
 | Runas | Campanha (até 4★) e Masmorras (4★ a 6★, conjuntos certos), melhoradas com Essência; Pedras de Afiar e Gemas da Forja | Atributos, conjuntos e o ajuste fino de Velocidade |
+
+**A força da Campanha.** As habilidades das invocações têm multiplicadores contidos (30% abaixo dos de antes), para sobrar espaço para efeitos, elementos, runas e equipe; os inimigos têm 30% a mais de Vida, Ataque e Defesa. A Campanha é calibrada no simulador (`dotnet run --project Tests -- --simulate`) contra um time de referência, o típico (a 5★ garantida e quatro 3★), no ponto em que um jogador estaria em cada fase: o nível sobe até 20 na fase 40 e fica, e as runas são as que a Campanha solta até ali, melhoradas aos poucos até +12. Ele vence cada fase em 80% das lutas (70% nos chefes). A fase 50 pede nível 20 com runas ou 6★ nível 40 sem runas; nível 20 sem runas não vence: as runas são parte do poder, não um extra. Estrelas e nível das fases só sobem, e cada fase tem um multiplicador de Vida e Ataque que acerta o que as ondas pesam a mais ou a menos que o nível diz.
+
+**O jogo aos poucos.** Nada aparece antes da hora, e nada é trava artificial: a primeira vitória de uma fase abre uma parte do jogo, que nunca mais fecha. A vitória que abre avisa ("Abriu no Santuário: Runas"), e o botão novo pulsa até a fase seguinte.
+
+| Abre | Na |
+| --- | --- |
+| Monstros e Equipes | Primeira invocação |
+| Runas | Fase 1 (a primeira runa cai nela) |
+| Compêndio | Fase 2 |
+| Canalização | Fase 3 |
+| Loja | Fase 4 |
+| Batalha automática | Fase 5 |
+| Grimório | Fase 8 |
+| Masmorras | Fase 30 (a Golem; as outras nas fases 38, 44 e 50) |
 
 **Estrelas e nível, como em Summoners War.** Cada invocação nasce nas estrelas naturais, no nível 1, e sobe até o máximo da estrela (20 no 2★, 25 no 3★, 30 no 4★, 35 no 5★, 40 no 6★), com a experiência de cada nível da tabela de Summoners War. No máximo, a Evolução gasta Essência e Fragmentos (2 000 e 5 no 1★ até 100 000 e 80 no 5★), dá uma estrela e mantém o nível: diferente de Summoners War, o monstro não volta ao 1. Ele continua no nível em que estava, agora na faixa da estrela nova (um 3★ no 25 tem 40% dos atributos do máximo; evoluído, o 4★ no 25 tem 50%), e só faltam os 5 níveis novos. Os atributos de base do apêndice são os de 6★ nível 40; cada estrela tem a faixa de lá (2★: de 16% a 29% do máximo; 3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Quem nasce com menos estrelas chega ao 6★ nível 40 com menos: o orçamento de uma 2★ natural é 78% do de uma 5★, o de uma 3★, 85%, e o de uma 4★, 93%. A experiência de vitória vai para quem lutou; a Essência da ociosidade é o atalho para subir quem ficou para trás.
 
-**Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), um segundo desenho, estrelas roxas no lugar das douradas, atributos maiores e o que as estrelas naturais pedem: habilidade nova, habilidade mais forte ou atributo. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
+**Despertar.** A invocação ganha um nome próprio (o Diabrete de Selo de Fogo vira Fagulha), a aura do elemento (a borda acesa e o anel animado), estrelas roxas no lugar das douradas, atributos maiores e o que as estrelas naturais pedem: habilidade nova, habilidade mais forte ou atributo. É para sempre. Na v0.5 passa a pedir também a vitória na Provação da família.
 
 **Runas: as de Summoners War, sem falha na melhora.** Cada invocação tem 6 espaços dispostos em círculo, o próprio círculo de conjuração. Tudo segue Summoners War, com os números de lá:
 
@@ -285,6 +308,7 @@ Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e
 - **História.** Cada subatributo guarda os sorteios que recebeu, com o nível ("+5% de Ataque em +3"). Na tela, o que a runa ganhou desde que você abriu fica em verde.
 - **Inventário.** Até 800 runas soltas. Runa equipada não conta, nem a de monstro guardado no Baú: o Baú é o jeito de guardar runas sem ocupar vaga. Com o inventário cheio, lutas que soltam runa (Campanha e Masmorras de runas) esperam, e tirar runa de monstro também.
 - **Pedras.** A Pedra de Afiar soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade; uma pedra nova troca o bônus antigo. A Gema Encantada troca um subatributo de uma runa +12, e só um por runa. Graus de Mágica a Lendária, com as faixas de Summoners War; servem em qualquer conjunto, como as Imemoriais de lá.
+- **Reavaliação.** A Gema de Reavaliação, da Loja, devolve a runa ao estado em que caiu: saem as melhoras (e os subatributos que vieram delas), as Pedras de Afiar e o encantamento, e a runa volta a +0. Antes de gastar, a tela lista tudo o que vai ser desfeito; a Essência gasta nas melhoras não volta.
 - **Porcentagem sobre a base.** Toda porcentagem de runa, de conjunto e de Liderança é sobre o atributo de base, e o que não fecha número inteiro arredonda para cima.
 
 Os 16 conjuntos são os de Summoners War sem os da Fenda, cada um com o seu Glifo:
@@ -328,16 +352,18 @@ flowchart LR
 
 | Modo | Inspiração | Controle | Para que serve | Entra em |
 | --- | --- | --- | --- | --- |
-| Campanha: 3 regiões de 20 fases | AFK | Automático | Aumenta a ociosidade e o teto de nível | MVP (região 1) |
-| Masmorras de Runas: Golem Rúnico, Ninho da Serpe, Cripta do Rei Ossudo, Santuário Afogado | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Batalha automática | 5 andares; cada uma solta runas de 4 a 6 estrelas de 4 conjuntos | MVP |
-| Forja Rachada | Fenda de Summoners War | Automático ou Batalha automática | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
+| Campanha: 50 fases em 3 regiões (20, 20 e 10) | AFK | Automático | Ensina o jogo aos poucos, aumenta a ociosidade e prepara a conta para as Masmorras | MVP |
+| Masmorras de Runas, em ordem de dificuldade: Golem Rúnico (Vento), Ninho da Serpe (Fogo), Cripta do Rei Ossudo (Trevas), Santuário Afogado (Água) | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Batalha automática | 5 andares; cada uma solta runas de 4 a 6 estrelas de 4 conjuntos | MVP |
+| Forja Rachada (Luz), a mais difícil | Fenda de Summoners War | Automático ou Batalha automática | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
 | Torre dos Círculos: 60 andares com regras fixas | Torre de Summoners War e Abismo de Epic Seven | Manual | Pergaminhos, Ouro, Essência, desafio de montagem | v0.5 |
 | Provações: uma luta fixa por família | Despertar de Summoners War | Manual | Libera o Despertar | v0.5 |
 | Portais Secretos: surgem ao vencer Masmorras e ficam até você usar | Masmorras secretas de Summoners War | Automático | Três vitórias no mesmo portal dão uma invocação daquela família | v1.0 |
 | Arena dos Aprendizes: rivais gerados com poder parecido com o seu | Arenas de Summoners War e Epic Seven | Automático | Fragmentos e rivais recorrentes | v1.0 |
 | Espelho: exporta o time como código de texto para um amigo enfrentar | — | Automático | Social sem servidor | Depois da 1.0 |
 
-**Mana.** Toda vitória custa Mana: de 2 a 5 por fase da Campanha e de 4 a 8 por andar de Masmorra. A derrota não custa nada, mas só começa a luta quem tem a Mana da vitória. A canalização recarrega 12 por hora até o máximo, que começa em 60 e sobe 1 por nível da conta até 120 no nível 60 (o último nível soma 2); o que passaria do máximo se perde. Subir de nível a conta enche a Mana, e a Mana comprada na Loja passa do máximo. Farmar runas é o centro do jogo, e o Ouro é a válvula para farmar mais.
+**Masmorras depois da Campanha.** Vencer a fase 50 é estar pronto para as Masmorras, e a dificuldade (não uma trava) leva o jogador pela ordem: o andar 5 da Golem logo depois da Campanha, depois o 5 da Serpe, da Cripta, do Afogado e, por último, o da Forja. Elas abrem durante a Campanha (a Golem na fase 30, a Serpe na 38, a Cripta na 44, o Afogado e a Forja na 50), e o andar 1 da Golem é como a fase 35. Cada uma é quase toda do seu elemento, então ganha quem leva a vantagem (Fogo na Golem, Água na Serpe, Luz na Cripta, Vento no Afogado, Trevas na Forja). Os inimigos vão do 6★ nível 20 ao 6★ nível 60, e o andar 5 de cada uma pede mais que o da anterior: o da Forja só cai com 6★ nível 40, runas 6★ +15, Despertar e habilidades no máximo.
+
+**Mana.** Toda vitória custa Mana: de 2 a 6 por fase da Campanha e de 4 a 8 por andar de Masmorra. A derrota não custa nada, mas só começa a luta quem tem a Mana da vitória. A canalização recarrega 12 por hora até o máximo, que começa em 60 e sobe 1 por nível da conta até 120 no nível 60 (o último nível soma 2); o que passaria do máximo se perde. Subir de nível a conta enche a Mana, e a Mana comprada na Loja passa do máximo. Farmar runas é o centro do jogo, e o Ouro é a válvula para farmar mais.
 
 **Nível da conta.** Toda vitória dá a experiência da luta também à conta (300 × nível para o próximo), até o nível 60. Cada nível dá 20 de Ouro, enche a Mana e aumenta a Mana máxima.
 
@@ -353,7 +379,7 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Pergaminhos Místicos | Primeira vitória de cada fase, Loja, Torre, conquistas | Invocar |
 | Fragmentos | Monstros liberados, Arena | Evolução e troca por uma invocação escolhida |
 
-**Loja.** Troca Ouro por Mana (30 por 15, 120 por 50) ou Pergaminhos (1 por 20, 10 por 180). As ofertas moram em Data/shop.json.
+**Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180) ou a Gema de Reavaliação (40). As ofertas moram em Data/shop.json.
 
 ### Ritmo-alvo
 
@@ -494,5 +520,5 @@ Os números de cada variante ficam gravados no arquivo da família (Data/summons
 
 Velocidade é fixa desde o nível 1; os outros atributos seguem a faixa de Summoners War de cada estrela, em linha reta do nível 1 ao máximo dela (2★: 16% a 29%; 3★: 22% a 40%; 4★: 32% a 54%; 5★: 43% a 74%; 6★: 59% a 100%). Velocidade só muda por runas, Despertar, Tiques e Liderança, para o ajuste fino continuar importando.
 
-Os inimigos comuns são invocações (3★ a 5★ naturais), nas estrelas e no nível do encontro, com Vida e Ataque multiplicados pelas estrelas naturais e pela força do encontro; os chefes têm os atributos do papel e das estrelas deles, pelo mesmo modelo, e multiplicadores próprios (Data/enemies.json). Nenhum inimigo usa runas nem Despertar, e as habilidades ficam no nível 1.
+Os inimigos comuns são invocações (3★ a 5★ naturais), nas estrelas e no nível do encontro, com Vida e Ataque multiplicados pelas estrelas naturais e pela força do encontro; os chefes têm os atributos do papel e das estrelas deles, pelo mesmo modelo, e multiplicadores próprios (Data/enemies.json). Todo inimigo ainda tem 30% a mais de Vida, Ataque e Defesa, e passa do 6★ nível 40: a reta do 6★ continua até o nível 60 (cerca de 121% do 6★ nível 40). Nenhum inimigo usa runas nem Despertar, e as habilidades ficam no nível 1.
 

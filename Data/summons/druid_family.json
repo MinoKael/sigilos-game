@@ -18,7 +18,7 @@
         {
           "name": "Dilacerar",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.1, "hits": 2},
+            {"kind": "Damage", "target": "Target", "power": 1.47, "hits": 2},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
           ],
           "levels": [
@@ -32,7 +32,7 @@
           "name": "Fogo Selvagem",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.6, "turns": 2},
             {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}
           ],
@@ -61,8 +61,8 @@
         {
           "name": "Chuva Calmante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
-            {"kind": "Heal", "target": "AllAllies", "power": 0.04}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.02}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -75,7 +75,7 @@
           "name": "Rejuvenescer",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14},
             {"kind": "Cleanse", "target": "AllAllies"}
           ],
           "levels": [
@@ -88,7 +88,7 @@
           "name": "Maré da Primavera",
           "cooldown": 5,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.21},
             {"kind": "Impeto", "target": "AllAllies", "power": 20}
           ],
           "levels": [
@@ -111,7 +111,7 @@
         {
           "name": "Chicote de Espinhos",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.4, "turns": 2}
           ],
           "levels": [
@@ -125,7 +125,7 @@
           "name": "Raízes Enredantes",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
             {"kind": "Status", "target": "AllEnemies", "status": "Poison", "chance": 0.6, "turns": 2},
             {"kind": "Impeto", "target": "AllEnemies", "power": -20}
           ],
@@ -154,7 +154,7 @@
         {
           "name": "Investida de Galhada",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.35}
           ],
           "levels": [
@@ -169,8 +169,8 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7},
-            {"kind": "Shield", "target": "Self", "power": 0.25, "turns": 2},
-            {"kind": "Heal", "target": "Self", "power": 0.15}
+            {"kind": "Shield", "target": "Self", "power": 0.17, "turns": 2},
+            {"kind": "Heal", "target": "Self", "power": 0.1}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -197,7 +197,7 @@
         {
           "name": "Mordida Podre",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.5, "turns": 2}
           ],
           "levels": [
@@ -211,7 +211,7 @@
           "name": "Esporos da Praga",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "Poison", "chance": 0.8, "turns": 3}
           ],
           "levels": [
@@ -224,7 +224,7 @@
           "name": "Definhar",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 6.3},
+            {"kind": "Damage", "target": "Target", "power": 4.41},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "turns": 2}
           ],

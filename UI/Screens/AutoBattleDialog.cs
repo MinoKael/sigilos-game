@@ -247,12 +247,13 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>
 		/// A ficha da runa tocada, com Bloquear, Vender e Melhorar (a bloqueada não tem Vender); ela continua
-		/// lá se o jogador só fechar.
+		/// lá se o jogador só fechar. Depois de Melhorar, a ficha volta sozinha, com o que subiu em verde
+		/// (<paramref name="opened"/> é o nível de antes da melhora).
 		/// </summary>
-		private static void RuneActions(Dialog owner, RuneTile tile, PlayerState player, AutoBattleActions actions)
+		private static void RuneActions(Dialog owner, RuneTile tile, PlayerState player, AutoBattleActions actions, int? opened = null)
 		{
 			var rune = tile.Rune!;
-			var sheet = RuneDialog.Show(tile, rune);
+			var sheet = RuneDialog.Show(tile, rune, opened: opened);
 			if (!player.Runes.Contains(rune))
 				return;
 
@@ -267,14 +268,27 @@ namespace Sigilos.UI.Screens
 			{
 				var target = RuneRules.NextMilestone(rune.Level);
 				var cost = RuneRules.UpgradeCost(rune, target);
-				var upgrade = sheet.AddAction(T("runes.upgrade_button", target), () => RuneDialog.ConfirmUpgrade(owner, rune, target, player.Essence, () => actions.UpgradeRune(rune, target)),
+				var upgrade = sheet.AddAction(T("runes.upgrade_button", target), () => RuneDialog.ConfirmUpgrade(owner, rune, target, player.Essence, () =>
+					{
+						var before = rune.Level;
+						actions.UpgradeRune(rune, target);
+						// A janela foi remontada: a ficha reabre na runa nova, depois que ela ganha lugar na grade.
+						Callable.From(() =>
+						{
+							if (GodotObject.IsInstanceValid(owner) && owner.IsInsideTree() && owner.Body.FindChild($"Rune{rune.Id}", true, false) is RuneTile again)
+								RuneActions(owner, again, player, actions, before);
+						}).CallDeferred();
+					}),
 					ButtonKind.Primary, true, "essence").Named("Upgrade");
 				upgrade.WithCost("essence", Texts.Short(cost));
 				upgrade.Disabled = player.Essence < cost;
 			}
 		}
 
-		/// <summary>O relógio da luta de agora: a barra e o tempo que falta, lidos a cada quadro.</summary>
+		/// <summary>
+		/// O relógio da luta de agora: a barra, quanto esta luta leva (cada luta sai com a equipe do momento
+		/// em que começa: nível e runas novos encurtam a próxima) e o tempo que falta, lidos a cada quadro.
+		/// </summary>
 		private sealed partial class AutoClock : VBoxContainer
 		{
 			private readonly AutoBattleRun _run;
@@ -294,7 +308,7 @@ namespace Sigilos.UI.Screens
 			public override void _Process(double delta)
 			{
 				_bar.Value = _run.FightProgress;
-				_left.Text = T("auto.time_left_value", _run.TimeLeft.ToString(@"m\:ss"));
+				_left.Text = T("auto.time_left_value", TimeSpan.FromSeconds(_run.Duration).ToString(@"m\:ss"), _run.TimeLeft.ToString(@"m\:ss"));
 			}
 		}
 	}

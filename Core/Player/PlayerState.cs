@@ -77,6 +77,9 @@ namespace Sigilos.Core.Player
 		/// <summary>A última escolha de automático na tela de batalha: a próxima luta começa igual.</summary>
 		public bool AutoBattle { get; set; }
 
+		/// <summary>A luta de treino já foi feita (ou pulada): não abre mais sozinha (<see cref="Progression.Tutorial"/>).</summary>
+		public bool TutorialDone { get; set; }
+
 		/// <summary>O idioma escolhido na Configuração (Data/texts/{nome}.json); nulo = o padrão.</summary>
 		public string? Language { get; set; }
 

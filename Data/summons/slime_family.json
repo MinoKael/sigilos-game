@@ -23,7 +23,7 @@
         {
           "name": "Bolota Escaldante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -37,7 +37,7 @@
           "name": "Erupção",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
             {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -61,7 +61,7 @@
           "name": "Fortaleza de Gosma",
           "cooldown": 5,
           "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.17, "turns": 2},
             {"kind": "Cleanse", "target": "LowestAlly"}
           ],
           "levels": [
@@ -74,7 +74,7 @@
         {
           "name": "Bola de Gosma",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.15},
+            {"kind": "Damage", "target": "Target", "power": 0.8},
             {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.15, "turns": 2}
           ],
           "levels": [
@@ -87,7 +87,7 @@
           "name": "Engolfar",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
           ],
           "levels": [
@@ -117,7 +117,7 @@
         {
           "name": "Respingo Grudento",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Impeto", "target": "Target", "power": -15}
           ],
           "levels": [
@@ -131,7 +131,7 @@
           "name": "Estouro de Cola",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
             {"kind": "Impeto", "target": "AllEnemies", "power": -20}
           ],
           "levels": [
@@ -155,7 +155,7 @@
           "name": "Gel Radiante",
           "cooldown": 5,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.25},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.17},
             {"kind": "Cleanse", "target": "AllAllies"}
           ],
           "levels": [
@@ -168,8 +168,8 @@
         {
           "name": "Gosma Calmante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.15},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -182,7 +182,7 @@
           "name": "Gel Curativo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.15}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -210,7 +210,7 @@
         {
           "name": "Agarrão de Piche",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.15},
+            {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
           ],
           "levels": [
@@ -224,7 +224,7 @@
           "name": "Lodo Negro",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.75},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
             {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.35, "turns": 2}
           ],
           "levels": [

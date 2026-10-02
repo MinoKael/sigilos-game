@@ -18,7 +18,8 @@ namespace Sigilos.UI.Screens
 	/// Os Ajustes, numa janela:
 	/// - um botão por idioma, com o nome escrito no próprio idioma (o atual aceso). Trocar de idioma avisa o
 	///   GameRoot, que recarrega os textos e remonta a tela;
-	/// - a conta: o nome e o e-mail, Trocar nome e Sair da conta, ou, sem conta, Entrar ou criar conta.
+	/// - a conta: o nome e o e-mail, Trocar nome e Sair da conta, ou, sem conta, Entrar ou criar conta;
+	/// - a luta de treino, para refazer as lições do começo.
 	/// </summary>
 	public static class ConfigPanel
 	{
@@ -29,7 +30,7 @@ namespace Sigilos.UI.Screens
 			["pt-BR"] = "Português (Brasil)",
 		};
 
-		public static Dialog Open(Control from, IReadOnlyList<string> languages, string current, Action<string> chosen, ConfigAccount account)
+		public static Dialog Open(Control from, IReadOnlyList<string> languages, string current, Action<string> chosen, ConfigAccount account, Action training)
 		{
 			var dialog = Dialog.Open(from, T("destination.Config"), 520, null, "ConfigDialog");
 			dialog.Body.AddChild(new Label { Name = "LanguageTitle", Text = T("config.language"), ThemeTypeVariation = GameTheme.Heading });
@@ -51,6 +52,13 @@ namespace Sigilos.UI.Screens
 
 			dialog.Body.AddChild(column);
 			dialog.Body.AddChild(Account(dialog, account));
+			dialog.Body.AddChild(new Label { Name = "TrainingTitle", Text = T("config.training"), ThemeTypeVariation = GameTheme.Heading });
+			dialog.Body.AddChild(Layout.Text(T("config.training_text"), GameTheme.Faded, 470).Named("TrainingText"));
+			dialog.Body.AddChild(GameButton.Of(T("config.training_button"), () =>
+			{
+				dialog.Close();
+				training();
+			}, ButtonKind.Secondary, "fight").Named("Training"));
 			return dialog;
 		}
 

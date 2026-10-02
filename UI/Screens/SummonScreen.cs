@@ -6,6 +6,7 @@ using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Summoning;
+using Sigilos.Core.Progression;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -71,7 +72,9 @@ namespace Sigilos.UI.Screens
 			panel.AddChild(column);
 			column.AddChild(_single);
 			column.AddChild(_ten);
-			column.AddChild(GameButton.Of(T("summon.shop"), () => ShopRequested?.Invoke(), ButtonKind.Secondary, "shop", 52).Named("Shop"));
+			// A Loja só aparece quando a Campanha a apresenta (Features).
+			if (Features.IsOpen(_player, _database, Feature.Shop))
+				column.AddChild(GameButton.Of(T("summon.shop"), () => ShopRequested?.Invoke(), ButtonKind.Secondary, "shop", 52).Named("Shop"));
 			column.AddChild(new HSeparator { Name = "Line" });
 
 			var pityTitle = new Label { Name = "PityTitle", Text = T("summon.pity_title") };

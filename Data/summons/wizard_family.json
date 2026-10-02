@@ -18,7 +18,7 @@
         {
           "name": "Glifo de Brasa",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.25, "turns": 2}
           ],
           "levels": [
@@ -32,8 +32,8 @@
           "name": "Salva de Chamas",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.6, "hits": 3},
-            {"kind": "Damage", "target": "Target", "power": 1.6, "ignoreDefense": 1}
+            {"kind": "Damage", "target": "Target", "power": 1.12, "hits": 3},
+            {"kind": "Damage", "target": "Target", "power": 1.12, "ignoreDefense": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -60,7 +60,7 @@
         {
           "name": "Estilhaço de Gelo",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.35, "turns": 2}
           ],
           "levels": [
@@ -74,7 +74,7 @@
           "name": "Geada Quebradiça",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
           ],
           "levels": [
@@ -87,7 +87,7 @@
           "name": "Tumba Glacial",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Damage", "target": "Target", "power": 3.92},
             {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.8},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2}
           ],
@@ -111,7 +111,7 @@
         {
           "name": "Faísca Voltaica",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.45, "hits": 3}
+            {"kind": "Damage", "target": "Target", "power": 1.01, "hits": 3}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -124,8 +124,8 @@
           "name": "Relâmpago em Cadeia",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.1, "hits": 2},
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45}
+            {"kind": "Damage", "target": "Target", "power": 1.47, "hits": 2},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -152,7 +152,7 @@
         {
           "name": "Faísca da Aurora",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Cleanse", "target": "LowestAlly"}
           ],
           "levels": [
@@ -167,7 +167,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
-            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+            {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -193,7 +193,7 @@
         {
           "name": "Raio Maldito",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -207,7 +207,7 @@
           "name": "Glifo da Ruína",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
             {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.5, "turns": 2}
           ],
           "levels": [
@@ -220,7 +220,7 @@
           "name": "Aniquilar",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 7.7, "ignoreDefense": 0.3}
+            {"kind": "Damage", "target": "Target", "power": 5.39, "ignoreDefense": 0.3}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

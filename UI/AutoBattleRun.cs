@@ -87,15 +87,19 @@ namespace Sigilos.UI
 		/// <summary>Fração da luta em andamento, de 0 a 1.</summary>
 		public float FightProgress => Duration <= 0 ? 0 : (float)Math.Clamp(Elapsed / Duration, 0, 1);
 
-		/// <summary>O tempo que falta até a última luta, pela média das que já passaram.</summary>
+		/// <summary>
+		/// O tempo que falta até a última luta, pelo ritmo das lutas recentes: a de agora e as duas antes
+		/// dela. A equipe muda no meio (nível, runas) e cada luta já sai com ela, então as primeiras lutas
+		/// não dizem mais quanto as próximas levam.
+		/// </summary>
 		public TimeSpan TimeLeft
 		{
 			get
 			{
 				if (!Running)
 					return TimeSpan.Zero;
-				var average = _durations.Count == 0 ? Duration : _durations.Average();
-				var seconds = Math.Max(0, Duration - Elapsed) + average * Math.Max(0, Runs - Number);
+				var pace = _durations.TakeLast(2).Append(Duration).Average();
+				var seconds = Math.Max(0, Duration - Elapsed) + pace * Math.Max(0, Runs - Number);
 				return TimeSpan.FromSeconds(seconds);
 			}
 		}

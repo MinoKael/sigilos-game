@@ -21,7 +21,9 @@ namespace Sigilos.UI.Screens
 	/// - Embaixo, a barra com tudo o mais, cada botão com o nome escrito: Monstros, Runas, Equipes, Loja,
 	///   Grimório, Compêndio e Ajustes; no canto esquerdo dela, a versão do jogo.
 	///
-	/// Quem ainda não invocou vê Invocar pulsar; quem não venceu a primeira fase, Batalha.
+	/// Quem ainda não invocou vê Invocar pulsar; quem não venceu a primeira fase, Batalha. A barra de baixo
+	/// e a Canalização aparecem aos poucos, conforme a Campanha abre cada parte (<see cref="Features"/>):
+	/// o botão que acabou de abrir pulsa até a próxima fase vencida.
 	/// Só mostra e avisa: quem muda o <see cref="PlayerState"/> e salva é o GameRoot.
 	/// </summary>
 	public partial class HubScreen : Control
@@ -44,6 +46,7 @@ namespace Sigilos.UI.Screens
 		private readonly GameButton _collect;
 		private TileButton? _battle;
 		private TileButton? _summon;
+		private bool _channelOpen;
 
 		/// <param name="offline">Jogando a conta sem conexão com o servidor.</param>
 		public HubScreen(GameDatabase database, PlayerState player, string? accountName = null, bool offline = false)
@@ -79,6 +82,7 @@ namespace Sigilos.UI.Screens
 			_offline.AddThemeColorOverride("font_hover_color", Palette.Negative.Lightened(0.2f));
 			_offline.Pressed += () => Dialog.Info(_offline, T("hub.offline"), T("hub.offline_text"));
 
+			_channelOpen = Features.IsOpen(_player, _database, Feature.Channel);
 			var middle = Layout.Row(20).Named("Middle");
 			middle.SizeFlagsVertical = SizeFlags.ExpandFill;
 			middle.AddChild(Channel());
@@ -197,6 +201,17 @@ namespace Sigilos.UI.Screens
 			column.AddChild(_pending);
 			var actions = Layout.Row(0, true).Named("Actions");
 			column.AddChild(actions);
+			if (!_channelOpen)
+			{
+				// Fechada: a constelação apagada e, no lugar do tempo, a fase que abre a Canalização.
+				time.Visible = _pending.Visible = false;
+				_core.Disabled = true;
+				panel.Modulate = new Color(1, 1, 1, 0.55f);
+				var closed = Layout.Text(T("hub.channel_opens", Features.StageOf(_database, Feature.Channel)), GameTheme.Faded, 300).Named("Closed");
+				closed.HorizontalAlignment = HorizontalAlignment.Center;
+				column.AddChild(closed);
+			}
+
 			_constellation.Attach(plate);
 			return panel;
 		}
@@ -209,7 +224,9 @@ namespace Sigilos.UI.Screens
 			column.Alignment = BoxContainer.AlignmentMode.Center;
 
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
-			_battle = new TileButton(T("hub.battle"), T("hub.battle_detail", next, _database.Stages.Count), Art.Icon("fight"), new Vector2(380, 170), ButtonKind.Secondary, horizontal: true) { Name = "Battle" };
+			// Antes de abrirem, as Masmorras não aparecem nem no nome do caminho.
+			var detail = Features.IsOpen(_player, _database, Feature.Dungeons) ? T("hub.battle_detail", next, _database.Stages.Count) : T("hub.battle_detail_campaign", next, _database.Stages.Count);
+			_battle = new TileButton(T("hub.battle"), detail, Art.Icon("fight"), new Vector2(380, 170), ButtonKind.Secondary, horizontal: true) { Name = "Battle" };
 			_battle.Pressed += () => Requested?.Invoke(Destination.Map);
 			column.AddChild(_battle);
 
@@ -240,9 +257,17 @@ namespace Sigilos.UI.Screens
 				SizeFlagsHorizontal = SizeFlags.ExpandFill,
 				SizeFlagsVertical = SizeFlags.ShrinkEnd,
 			});
-			foreach (var destination in new[] { Destination.Monsters, Destination.Runes, Destination.Teams, Destination.Shop, Destination.Grimoire, Destination.Compendium })
+			var places = new[]
 			{
+				(Destination.Monsters, Feature.Monsters), (Destination.Runes, Feature.Runes), (Destination.Teams, Feature.Teams),
+				(Destination.Shop, Feature.Shop), (Destination.Grimoire, Feature.Grimoire), (Destination.Compendium, Feature.Compendium),
+			};
+			foreach (var (destination, feature) in places)
+			{
+				if (!Features.IsOpen(_player, _database, feature))
+					continue;
 				var button = TileButton.Nav(Destinations.Name(destination), Destinations.Icon(destination)).Named(destination.ToString());
+				button.Highlight = Features.IsNew(_player, _database, feature);
 				button.Pressed += () => Requested?.Invoke(destination);
 				row.AddChild(button);
 			}
@@ -256,6 +281,9 @@ namespace Sigilos.UI.Screens
 
 		private void RefreshIdle(DateTime now)
 		{
+			if (!_channelOpen)
+				return;
+
 			var preview = Idle.Preview(_player, now);
 			var pendingHours = Idle.PendingHours(_player, now);
 			var hours = TimeSpan.FromHours(pendingHours);

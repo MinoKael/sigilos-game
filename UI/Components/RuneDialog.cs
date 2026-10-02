@@ -14,11 +14,12 @@ namespace Sigilos.UI.Components
 	/// </summary>
 	public static class RuneDialog
 	{
-		public static Dialog Show(Control from, Rune rune, bool anchored = true, string? note = null)
+		/// <param name="opened">O nível de antes de uma melhora: o que a runa ganhou desde ele fica em verde.</param>
+		public static Dialog Show(Control from, Rune rune, bool anchored = true, string? note = null, int? opened = null)
 		{
 			var dialog = Dialog.Open(from, T("runes.dialog_title"), 440, anchored ? from : null, "RuneDialog");
 			dialog.SetCaption(Texts.Title(rune), Palette.Of(rune.Rarity));
-			dialog.Body.AddChild(new RuneCard(rune, 400, note: note, title: false));
+			dialog.Body.AddChild(new RuneCard(rune, 400, opened, note: note, title: false));
 			return dialog;
 		}
 

@@ -5,15 +5,16 @@ invocações, suba o nível e as estrelas delas até 6★ nível 40, desperte, e
 de Ímpeto. O design completo está em [SIGILOS — Game Design Document.md](SIGILOS%20—%20Game%20Design%20Document.md).
 
 Este repositório é o **MVP**: combate 5 contra 5 com Ímpeto e habilidades com recarga (básica, ativas
-e Passiva), gacha com garantia em que cada invocação é uma cópia nova, coleção com Baú, cópias fundidas
-sobem o nível de uma habilidade sorteada, uma equipe por conteúdo, ociosidade, estrelas e experiência
+e Passiva), uma luta de treino que ensina jogando, gacha com garantia em que cada invocação é uma cópia nova,
+coleção com Baú e favoritos, cópias da mesma família fundidas sobem o nível de uma habilidade sorteada, uma equipe por conteúdo, ociosidade, estrelas e experiência
 pela tabela de Summoners War (Evolução até 6★ com Essência e Fragmentos), Despertar que dá habilidade
 nova (2★ e 3★), habilidade mais forte (4★) ou atributo (5★), interface feita para o celular (botões
 com texto, nenhuma dica de mouse: toda explicação abre numa janela colada no que foi tocado, e segurar
 um monstro ou uma runa mostra o resumo), runas e atributos iguais aos de Summoners War (1 a 6
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
-melhora nunca falha), 17 famílias de invocação de 2★ a 5★ naturais (85 variantes; os inimigos comuns
-são invocações reforçadas), a região 1 (20 fases), cinco Masmorras, Batalha automática (30 lutas seguidas,
+melhora nunca falha; a Gema de Reavaliação desfaz o que foi feito numa runa), 17 famílias de invocação de 2★ a 5★ naturais (85 variantes; os inimigos comuns
+são invocações reforçadas), a Campanha de 50 fases em três regiões, que apresenta o jogo aos poucos,
+cinco Masmorras em ordem de dificuldade (inimigos até o nível 60), Batalha automática (30 lutas seguidas,
 correndo por trás enquanto se usa o resto do jogo), Mana para
 entrar nas lutas, nível da conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe), e conta com
 save em nuvem, aberta em um aparelho por vez (ou jogar sem conta, tudo local). O jogo nasce em português:
@@ -40,8 +41,10 @@ dotnet run --project Tests -- --simulate
 dotnet run --project Tests -- --fight=10
 ```
 
-`--simulate` roda cada fase e cada andar de Masmorra 40 vezes no automático e mostra vitórias,
-rodadas e vida que sobra: é a ferramenta de balanceamento. `--fight=N` imprime uma luta da fase N
+`--simulate` roda cada fase e cada andar de Masmorra 40 vezes no automático e mostra vitórias e
+rodadas: cada fase contra o time de referência de quem chega a ela e contra o 6★ nível 40 sem runas,
+cada andar contra o degrau que ele pede e o de baixo (`Tests/ReferenceTeams.cs`). É a ferramenta de
+balanceamento: a fase 50 tem de cair com nível 20 e runas, ou com 6★ nível 40 sem runas. `--fight=N` imprime uma luta da fase N
 turno a turno. `--digest` resume mais de mil lutas de semente fixa, uma por linha: rode antes e depois
 de mexer no código do combate para conferir que nenhuma luta mudou.
 
@@ -53,8 +56,9 @@ Argumentos de desenvolvimento do jogo (depois de `--`):
   [docs/SERVIDOR_PROPRIO.md](docs/SERVIDOR_PROPRIO.md)).
 - `--updates=url` procura versões novas em outra pasta (só no executável exportado do Windows; ver
   [docs/ATUALIZACOES.md](docs/ATUALIZACOES.md)).
-- `--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle` abre essa tela
-  direto, no save sem conta (`map` é a tela Batalha, com Campanha e Masmorras).
+- `--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle|tutorial` abre
+  essa tela direto, no save sem conta (`map` é a tela Batalha, com Campanha e Masmorras; `tutorial` é a
+  luta de treino, que uma conta nova abre sozinha).
 
 A primeira entrada na conta pede internet; depois, a conta lembrada abre sem ela e sincroniza quando a
 conexão voltar. Sem conta, o jogo segue todo local, como antes.

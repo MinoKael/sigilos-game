@@ -14,10 +14,18 @@ namespace Sigilos.Core.Battle
 	///
 	/// Inimigo que é invocação usa a mesma variante que o jogador invoca — os mesmos atributos do
 	/// arquivo —, com as habilidades no nível 1, sem runas e sem Despertar: por isso Vida e Ataque vêm
-	/// multiplicados (<see cref="FoeScale"/>), e depois pela força do encontro.
+	/// multiplicados (<see cref="FoeScale"/>), e depois pela força do encontro. Todo inimigo, comum ou
+	/// chefe, ainda leva <see cref="FoeBoost"/> em Vida, Ataque e Defesa, e passa do 6★ nível 40 até o
+	/// nível 60 (<see cref="Growth.FoeFraction"/>).
 	/// </summary>
 	public static class BattleFactory
 	{
+		/// <summary>
+		/// Quanto Vida, Ataque e Defesa de todo inimigo da Campanha e das Masmorras são multiplicados. A
+		/// Velocidade fica: 30% a mais nela tiraria o primeiro turno de qualquer equipe.
+		/// </summary>
+		public const double FoeBoost = 1.3;
+
 		/// <summary>Quanto Vida e Ataque de invocação inimiga são multiplicados, pelas estrelas naturais.</summary>
 		public static (double Health, double Attack) FoeScale(int rarity) => rarity switch
 		{
@@ -87,9 +95,9 @@ namespace Sigilos.Core.Battle
 
 		private static BattleUnit SummonFoe(SummonDefinition summon, Encounter encounter)
 		{
-			var stats = Growth.Stats(summon.Stats, encounter.Stars, encounter.Level);
+			var stats = Growth.FoeStats(summon.Stats, encounter.Stars, encounter.Level);
 			var (health, attack) = FoeScale(summon.Rarity);
-			stats = stats with { Health = stats.Health * health * encounter.Scale, Attack = stats.Attack * attack * encounter.Scale };
+			stats = Boosted(stats with { Health = stats.Health * health * encounter.Scale, Attack = stats.Attack * attack * encounter.Scale });
 			var (actives, passive) = Prepare(summon.Skills, System.Array.Empty<int>(), false);
 			return new BattleUnit(
 				summon.Id,
@@ -107,8 +115,8 @@ namespace Sigilos.Core.Battle
 
 		private static BattleUnit EnemyFoe(EnemyDefinition enemy, Element element, Encounter encounter)
 		{
-			var stats = Growth.Stats(enemy.Stats, encounter.Stars, encounter.Level);
-			stats = stats with { Health = stats.Health * enemy.HealthScale * encounter.Scale, Attack = stats.Attack * enemy.AttackScale * encounter.Scale };
+			var stats = Growth.FoeStats(enemy.Stats, encounter.Stars, encounter.Level);
+			stats = Boosted(stats with { Health = stats.Health * enemy.HealthScale * encounter.Scale, Attack = stats.Attack * enemy.AttackScale * encounter.Scale });
 			var (actives, passive) = Prepare(enemy.Skills, System.Array.Empty<int>(), false);
 			return new BattleUnit(
 				enemy.Id,
@@ -123,5 +131,13 @@ namespace Sigilos.Core.Battle
 				passive,
 				RuneSetEffects.None);
 		}
+
+		/// <summary>A força a mais de todo inimigo (<see cref="FoeBoost"/>).</summary>
+		private static StatBlock Boosted(StatBlock stats) => stats with
+		{
+			Health = stats.Health * FoeBoost,
+			Attack = stats.Attack * FoeBoost,
+			Defense = stats.Defense * FoeBoost,
+		};
 	}
 }

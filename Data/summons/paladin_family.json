@@ -18,7 +18,7 @@
         {
           "name": "Castigo",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.2},
+            {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -32,7 +32,7 @@
           "name": "Cruzada",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
           ],
           "levels": [
@@ -60,8 +60,8 @@
         {
           "name": "Martelo da Maré",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
-            {"kind": "Shield", "target": "LowestAlly", "power": 0.08, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Shield", "target": "LowestAlly", "power": 0.05, "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -74,7 +74,7 @@
           "name": "Bastião",
           "cooldown": 4,
           "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2},
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
           ],
           "levels": [
@@ -109,7 +109,7 @@
         {
           "name": "Golpe de Vendaval",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Self", "power": 15}
           ],
           "levels": [
@@ -149,8 +149,8 @@
         {
           "name": "Golpe Sagrado",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.1}
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.07}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -163,7 +163,7 @@
           "name": "Imposição de Mãos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.5},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.35},
             {"kind": "Cleanse", "target": "LowestAlly"},
             {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2}
           ],
@@ -192,7 +192,7 @@
         {
           "name": "Lâmina Temível",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85, "drain": 0.2},
+            {"kind": "Damage", "target": "Target", "power": 2.69, "drain": 0.2},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
           ],
           "levels": [
@@ -206,7 +206,7 @@
           "name": "Desafio Sinistro",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
             {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
           ],
@@ -220,8 +220,8 @@
           "name": "Juramento de Sangue",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 5.6, "drain": 0.5},
-            {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 3.92, "drain": 0.5},
+            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

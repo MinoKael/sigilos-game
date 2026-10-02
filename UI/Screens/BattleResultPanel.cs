@@ -52,8 +52,12 @@ namespace Sigilos.UI.Screens
 		}
 	}
 
-	/// <summary>O que o resultado recebe do GameRoot além do que a própria luta sabe. Na derrota, <paramref name="Tips"/> diz o que fazer para ficar mais forte.</summary>
-	public sealed record BattleOutcome(bool Victory, VictoryReward? Reward, IReadOnlyList<ResultMonster> Team, int AccountLevel, double? Best, bool NewBest, IReadOnlyList<DefeatTip>? Tips = null);
+	/// <summary>
+	/// O que o resultado recebe do GameRoot além do que a própria luta sabe. Na derrota, <paramref name="Tips"/>
+	/// diz o que fazer para ficar mais forte; na primeira vitória de uma fase, <paramref name="Opened"/> diz
+	/// o que ela abriu no Santuário.
+	/// </summary>
+	public sealed record BattleOutcome(bool Victory, VictoryReward? Reward, IReadOnlyList<ResultMonster> Team, int AccountLevel, double? Best, bool NewBest, IReadOnlyList<DefeatTip>? Tips = null, IReadOnlyList<Feature>? Opened = null);
 
 	/// <summary>
 	/// O fim da luta, por cima do campo: "Vitória" ou "Derrota" grande no alto; no canto, o tempo da luta
@@ -216,8 +220,13 @@ namespace Sigilos.UI.Screens
 				return band;
 			}
 
+			var lines = new VBoxContainer { Name = "Lines", MouseFilter = MouseFilterEnum.Ignore };
+			lines.AddThemeConstantOverride("separation", 10);
+			band.AddChild(lines);
 			var chips = Layout.Row(14, true).Named("Chips");
-			band.AddChild(chips);
+			lines.AddChild(chips);
+			if (outcome.Opened is { Count: > 0 } opened)
+				lines.AddChild(Opened(opened));
 			if (outcome.Reward is { } reward)
 			{
 				if (reward.Scrolls > 0)
@@ -250,6 +259,22 @@ namespace Sigilos.UI.Screens
 			}
 
 			return band;
+		}
+
+		/// <summary>O que a primeira vitória abriu: "Abriu no Santuário", e cada parte com o símbolo e o nome.</summary>
+		private static Control Opened(IReadOnlyList<Feature> opened)
+		{
+			var row = Layout.Row(14, true).Named("Opened");
+			var caption = new Label { Name = "Caption", Text = T("battle.opened"), VerticalAlignment = VerticalAlignment.Center };
+			caption.AddThemeColorOverride("font_color", Palette.Spirit);
+			row.AddChild(caption);
+			foreach (var feature in opened)
+			{
+				var (icon, name) = Destinations.Of(feature);
+				row.AddChild(Layout.Labeled(icon, name, T("battle.opened_new"), Palette.Spirit).Named(feature.ToString()));
+			}
+
+			return row;
 		}
 
 		/// <summary>

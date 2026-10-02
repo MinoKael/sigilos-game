@@ -18,7 +18,7 @@
         {
           "name": "Garra Dilacerante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.95, "hits": 2},
+            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.25, "turns": 2}
           ],
           "levels": [
@@ -32,7 +32,7 @@
           "name": "Mergulho Derretido",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 6.3}
+            {"kind": "Damage", "target": "Target", "power": 4.41}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -40,7 +40,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 7, "ignoreDefense": 0.3}
+            {"kind": "Damage", "target": "Target", "power": 4.9, "ignoreDefense": 0.3}
           ]
         },
         {
@@ -62,7 +62,7 @@
         {
           "name": "Punho de Pedra",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
+            {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
@@ -76,7 +76,7 @@
           "name": "Bica de Chuva",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
             {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
           ],
           "levels": [
@@ -85,7 +85,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
             {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.7, "turns": 2},
             {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.3, "turns": 2}
           ]
@@ -109,7 +109,7 @@
         {
           "name": "Rasante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Target", "power": -15}
           ],
           "levels": [
@@ -123,7 +123,7 @@
           "name": "Mergulho Explosivo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -131,7 +131,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
             {"kind": "Impeto", "target": "AllEnemies", "power": -20}
           ]
         },
@@ -139,7 +139,7 @@
           "name": "Asas da Tempestade",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.15},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
             {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
           ],
           "levels": [
@@ -162,8 +162,8 @@
         {
           "name": "Pedra Abençoada",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.5},
-            {"kind": "Heal", "target": "Self", "power": 0.05}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Heal", "target": "Self", "power": 0.03}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -177,7 +177,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Shield", "target": "AllAllies", "power": 0.12, "turns": 2}
+            {"kind": "Shield", "target": "AllAllies", "power": 0.08, "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -186,7 +186,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2},
             {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2}
           ]
         },
@@ -209,7 +209,7 @@
         {
           "name": "Garra Sinistra",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.85},
+            {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15}
           ],
           "levels": [
@@ -223,7 +223,7 @@
           "name": "Olhar Temível",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
             {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.3}
           ],
           "levels": [
@@ -232,7 +232,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.8},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.45},
             {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.4, "turns": 2}
           ]
@@ -241,7 +241,7 @@
           "name": "Desmoronar",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 5.6},
+            {"kind": "Damage", "target": "Target", "power": 3.92},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 3}
           ],
           "levels": [

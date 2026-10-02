@@ -13,6 +13,12 @@ namespace Sigilos.Core.Content
 
 		public int Level { get; init; }
 
+		/// <summary>
+		/// Multiplicador de Vida e Ataque dos inimigos: acerta a força da fase quando as ondas pesam mais ou
+		/// menos que o nível sozinho diz (a calibragem do simulador; GDD, seção 10).
+		/// </summary>
+		public double Scale { get; init; } = 1;
+
 		/// <summary>Mana de cada vitória. A derrota não custa nada.</summary>
 		public int Mana { get; init; }
 
@@ -35,6 +41,6 @@ namespace Sigilos.Core.Content
 		/// <summary>Até 3 falas antes da luta: "a história é tempero" (GDD, seção 4).</summary>
 		public IReadOnlyList<string> Lines { get; init; } = new List<string>();
 
-		public Encounter Encounter => new(Stars, Level, Waves);
+		public Encounter Encounter => new(Stars, Level, Waves, Scale);
 	}
 }
