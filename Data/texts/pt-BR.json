@@ -573,7 +573,12 @@
     "fusion_full": "Só cabem {0}: desmarque uma para escolher outra.",
     "fusion_locked": "Bloqueado: não vira material de fusão. Libere na ficha dele antes.",
     "fusion_confirm": "Fundir {0} em {1}? Estes somem para sempre: {2}. As runas deles voltam ao inventário.",
-    "fusion_level": "Nv {0}"
+    "fusion_level": "Nv {0}",
+    "store_marked": "Guardar {0} no Baú",
+    "retrieve_marked": "Tirar {0} do Baú",
+    "store_many_title": "Guardar no Baú",
+    "store_many_confirm": "Guardar {0} monstros no Baú? Os que estão em equipe ({1}) saem dela. No Baú eles guardam as runas, mas não lutam.",
+    "store_many_button": "Guardar"
   },
 
   "teams": {
@@ -848,7 +853,8 @@
     "focus_boss_off": "Focar o chefe no automático: desligado",
     "focus_boss_tip": "No automático (e na Batalha automática), a equipe inteira ataca o chefe sempre que ele puder ser alvo. Provocar ainda manda.",
     "focus_on": "Foco",
-    "focus_off": "Sem foco"
+    "focus_off": "Sem foco",
+    "leave": "Sair"
   },
 
   "destination": {

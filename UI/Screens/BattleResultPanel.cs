@@ -84,7 +84,13 @@ namespace Sigilos.UI.Screens
 
 		/// <param name="seconds">O tempo da luta na tela.</param>
 		/// <param name="defeat">Na derrota, o motivo e o símbolo dele (o tempo esgotado ou todos caídos).</param>
-		public BattleResultPanel(BattleOutcome outcome, double seconds, (string Icon, string Text)? defeat, Action onContinue, Action onRestart, Action<Rune> sell, Action<Rune> lockRune)
+		/// <param name="onClose">Sair do resultado, de volta para de onde a luta veio.</param>
+		/// <param name="next">
+		/// A luta seguinte, quando dá para entrar nela agora (a próxima fase da Campanha, com a Mana dela): o
+		/// Continuar já entra nela, mostrando a Mana que custa, e o Sair fica ao lado. Sem ela, o Continuar
+		/// sai.
+		/// </param>
+		public BattleResultPanel(BattleOutcome outcome, double seconds, (string Icon, string Text)? defeat, Action onClose, Action onRestart, Action<Rune> sell, Action<Rune> lockRune, (int Mana, Action Start)? next = null)
 		{
 			_outcome = outcome;
 			_sell = sell;
@@ -101,8 +107,18 @@ namespace Sigilos.UI.Screens
 			AddChild(Team(outcome.Team));
 
 			var actions = Layout.Row(20, true).Named("Actions");
-			actions.AddChild(GameButton.Of(T("battle.again"), onRestart, ButtonKind.Secondary, "repeat", 64).Named("Again").Wide(240));
-			actions.AddChild(GameButton.Of(T("common.continue"), onContinue, ButtonKind.Primary, "confirm", 64).Named("Continue").Wide(240));
+			if (next is { } following)
+			{
+				actions.AddChild(GameButton.Of(T("battle.leave"), onClose, ButtonKind.Secondary, "back", 64).Named("Leave").Wide(200));
+				actions.AddChild(GameButton.Of(T("battle.again"), onRestart, ButtonKind.Secondary, "repeat", 64).Named("Again").Wide(240));
+				actions.AddChild(GameButton.Of(T("common.continue"), following.Start, ButtonKind.Primary, "confirm", 64).WithCost("mana", following.Mana.ToString()).Named("Continue").Wide(240));
+			}
+			else
+			{
+				actions.AddChild(GameButton.Of(T("battle.again"), onRestart, ButtonKind.Secondary, "repeat", 64).Named("Again").Wide(240));
+				actions.AddChild(GameButton.Of(T("common.continue"), onClose, ButtonKind.Primary, "confirm", 64).Named("Continue").Wide(240));
+			}
+
 			actions.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
 			actions.GrowHorizontal = GrowDirection.Both;
 			actions.GrowVertical = GrowDirection.Begin;

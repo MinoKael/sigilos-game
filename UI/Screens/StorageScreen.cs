@@ -59,7 +59,7 @@ namespace Sigilos.UI.Screens
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly HBoxContainer _tools = Layout.Row(10).Named("Tools");
-		private readonly GridContainer _selection = Layout.Grid(3, 8).Named("Selection");
+		private readonly VBoxContainer _selection = new() { Name = "Selection" };
 		private readonly TileGrid _roster = new(10) { Name = "Roster" };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
 		private readonly TextTabs _pages = new(vertical: true, 64) { Name = "Pages" };
@@ -90,6 +90,12 @@ namespace Sigilos.UI.Screens
 		public event Action<int, IReadOnlyList<int>>? FuseRequested;
 
 		public event Action<IReadOnlyList<int>>? ReleaseRequested;
+
+		/// <summary>Os marcados da coleção vão para o Baú.</summary>
+		public event Action<IReadOnlyList<int>>? StoreManyRequested;
+
+		/// <summary>Os marcados do Baú voltam para a coleção (os que couberem).</summary>
+		public event Action<IReadOnlyList<int>>? RetrieveManyRequested;
 
 		/// <summary>Bloquear ou desbloquear o monstro (bloqueado não se libera nem vira material de fusão).</summary>
 		public event Action<int>? LockRequested;
@@ -137,10 +143,10 @@ namespace Sigilos.UI.Screens
 			side.AddChild(_pages);
 			_sideActions.AddThemeConstantOverride("separation", 10);
 			side.AddChild(_sideActions);
-			detailRow.AddChild(side);
 
 			_detail.AddThemeConstantOverride("separation", 12);
 			detailRow.AddChild(Layout.Scroll(_detail));
+			detailRow.AddChild(side);
 			detailPanel.AddChild(detailRow);
 			body.AddChild(detailPanel);
 
@@ -186,7 +192,10 @@ namespace Sigilos.UI.Screens
 			_tools.AddChild(select);
 		}
 
-		/// <summary>A faixa da seleção: o que fazer, quantos marcados, e os botões de desmarcar e liberar.</summary>
+		/// <summary>
+		/// A faixa da seleção: o que fazer e quantos marcados, numa linha; embaixo, Desmarcar, Guardar no Baú
+		/// (na aba do Baú, Tirar do Baú, até onde a coleção tiver vaga) e Liberar.
+		/// </summary>
 		private void RefreshSelection()
 		{
 			Layout.Clear(_selection);
@@ -195,7 +204,9 @@ namespace Sigilos.UI.Screens
 				return;
 
 			var marked = _marked.Select(_player.Monster).OfType<OwnedSummon>().ToList();
-			_selection.AddChild(new Label { Name = "Hint", Text = T("monsters.select_hint", marked.Count), VerticalAlignment = VerticalAlignment.Center });
+			_selection.AddChild(new Label { Name = "Hint", Text = T("monsters.select_hint", marked.Count), AutowrapMode = TextServer.AutowrapMode.WordSmart });
+			var buttons = Layout.Grid(3, 8).Named("Buttons");
+			_selection.AddChild(buttons);
 
 			var unmark = GameButton.Of(T("monsters.unmark"), () =>
 			{
@@ -203,7 +214,8 @@ namespace Sigilos.UI.Screens
 				Refresh();
 			}, ButtonKind.Secondary, null, 48).Named("Unmark");
 			unmark.Disabled = marked.Count == 0;
-			_selection.AddChild(unmark);
+			buttons.AddChild(unmark);
+			buttons.AddChild(_showStorage ? RetrieveMarked(marked) : StoreMarked(marked));
 
 			var fragments = marked.Sum(m => Fusion.FragmentsFor(_database.Summon(m.SummonId).Rarity));
 			var release = GameButton.Of(T("monsters.release_marked", marked.Count), () => Dialog.Confirm(this,
@@ -214,7 +226,42 @@ namespace Sigilos.UI.Screens
 			if (marked.Count > 0)
 				release.WithCost("fragments", $"+{fragments}");
 			release.Disabled = marked.Count == 0;
-			_selection.AddChild(release);
+			buttons.AddChild(release);
+		}
+
+		/// <summary>Guardar os marcados da coleção no Baú. Se algum está em equipe, pergunta antes (ele sai dela).</summary>
+		private GameButton StoreMarked(IReadOnlyList<OwnedSummon> marked)
+		{
+			var ids = marked.Where(m => !m.Stored).Select(m => m.Id).ToList();
+			void Store()
+			{
+				_marked.ExceptWith(ids);
+				StoreManyRequested?.Invoke(ids);
+			}
+
+			var inTeams = marked.Count(m => !m.Stored && MonsterNotes.Teams(_database, _player, m.Id).Count > 0);
+			var button = GameButton.Of(T("monsters.store_marked", ids.Count), () =>
+			{
+				if (inTeams == 0)
+					Store();
+				else
+					Dialog.Confirm(this, T("monsters.store_many_title"), T("monsters.store_many_confirm", ids.Count, inTeams), T("monsters.store_many_button"), Store);
+			}, ButtonKind.Secondary, "chest", 48).Named("StoreMarked");
+			button.Disabled = ids.Count == 0;
+			return button;
+		}
+
+		/// <summary>Tirar os marcados do Baú: só os que cabem na coleção (o botão diz quantos).</summary>
+		private GameButton RetrieveMarked(IReadOnlyList<OwnedSummon> marked)
+		{
+			var ids = marked.Where(m => m.Stored).Select(m => m.Id).Take(Roster.FreeSlots(_player)).ToList();
+			var button = GameButton.Of(T("monsters.retrieve_marked", ids.Count), () =>
+			{
+				_marked.ExceptWith(ids);
+				RetrieveManyRequested?.Invoke(ids);
+			}, ButtonKind.Secondary, "storage", 48).Named("RetrieveMarked");
+			button.Disabled = ids.Count == 0;
+			return button;
 		}
 
 		private void RefreshRoster()
@@ -312,7 +359,7 @@ namespace Sigilos.UI.Screens
 			}
 			else
 			{
-				var retrieve = Side(GameButton.Of(T("monsters.retrieve_short"), () => RetrieveRequested?.Invoke(id), ButtonKind.Secondary, "retrieve")).Named("Retrieve");
+				var retrieve = Side(GameButton.Of(T("monsters.retrieve_short"), () => RetrieveRequested?.Invoke(id), ButtonKind.Secondary, "storage")).Named("Retrieve");
 				retrieve.Disabled = Roster.IsFull(_player);
 				_sideActions.AddChild(retrieve);
 			}

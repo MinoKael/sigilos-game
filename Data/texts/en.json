@@ -572,7 +572,12 @@
     "fusion_full": "Only {0} fit: unmark one to choose another.",
     "fusion_locked": "Locked: it can't be used in a fusion. Unlock it on its sheet first.",
     "fusion_confirm": "Fuse {0} into {1}? These disappear for good: {2}. Their runes go back to the inventory.",
-    "fusion_level": "Lv {0}"
+    "fusion_level": "Lv {0}",
+    "store_marked": "Store {0} in the Vault",
+    "retrieve_marked": "Take {0} out",
+    "store_many_title": "Store in the Vault",
+    "store_many_confirm": "Store {0} monsters in the Vault? Those in a team ({1}) leave it. In the Vault they keep their runes, but they don't fight.",
+    "store_many_button": "Store"
   },
 
   "teams": {
@@ -847,7 +852,8 @@
     "focus_boss_off": "Focus the boss on Auto: off",
     "focus_boss_tip": "On Auto (and in the Auto Battle), the whole team strikes the boss whenever it can be targeted. Taunt still wins.",
     "focus_on": "Focus",
-    "focus_off": "Focus off"
+    "focus_off": "Focus off",
+    "leave": "Leave"
   },
 
   "destination": {

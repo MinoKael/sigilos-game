@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
 
@@ -11,6 +12,9 @@ namespace Sigilos.Core.Player
 	public static class Roster
 	{
 		public static bool IsFull(PlayerState player) => player.Collection.Count() >= PlayerState.CollectionCapacity;
+
+		/// <summary>Quantas vagas a coleção ainda tem.</summary>
+		public static int FreeSlots(PlayerState player) => System.Math.Max(0, PlayerState.CollectionCapacity - player.Collection.Count());
 
 		/// <summary>Uma cópia nova da variante, nas estrelas naturais e no nível 1: na coleção, ou no Baú se a coleção está cheia.</summary>
 		public static OwnedSummon Add(PlayerState player, SummonDefinition summon)
@@ -30,6 +34,14 @@ namespace Sigilos.Core.Player
 			monster.Stored = true;
 			return true;
 		}
+
+		/// <summary>Guarda vários no Baú (os que já estão lá ficam). Devolve quantos foram.</summary>
+		public static int StoreMany(PlayerState player, IEnumerable<int> monsterIds) =>
+			monsterIds.ToList().Count(id => Store(player, id));
+
+		/// <summary>Tira vários do Baú, na ordem, enquanto a coleção tiver vaga. Devolve quantos saíram.</summary>
+		public static int RetrieveMany(PlayerState player, IEnumerable<int> monsterIds) =>
+			monsterIds.ToList().Count(id => Retrieve(player, id));
 
 		/// <summary>Tira do Baú, se a coleção tem vaga.</summary>
 		public static bool Retrieve(PlayerState player, int monsterId)

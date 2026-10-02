@@ -34,6 +34,24 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void ManyGoToTheChestAndComeBackWhileThereIsRoom()
+		{
+			var player = TestData.PlayerWith("imp_fire", "imp_water", "imp_wind");
+			var ids = player.Monsters.Select(m => m.Id).ToList();
+
+			Assert.Equal(3, Roster.StoreMany(player, ids), "os três vão para o Baú");
+			Assert.Equal(0, Roster.StoreMany(player, ids), "quem já está lá fica");
+			Assert.True(player.Monsters.All(m => m.Stored), "todos no Baú");
+			Assert.False(ids.Any(id => Teams.Of(player, Teams.Campaign).Contains(id)), "e fora das equipes");
+
+			while (Roster.FreeSlots(player) > 2)
+				Roster.Add(player, TestData.Summon("imp_light"));
+			Assert.Equal(2, Roster.RetrieveMany(player, ids), "só os que cabem voltam");
+			Assert.Equal(0, Roster.FreeSlots(player), "a coleção enche");
+			Assert.True(player.Monster(ids[2])!.Stored, "o terceiro fica no Baú");
+		}
+
+		[Test]
 		private static void FusingACopyRaisesARandomSkill()
 		{
 			var database = TestData.Database;

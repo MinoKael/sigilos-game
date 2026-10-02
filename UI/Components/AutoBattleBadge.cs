@@ -85,7 +85,7 @@ namespace Sigilos.UI.Components
 		{
 			if (_run is not { Running: true } run)
 				return;
-			_icon.Rotation += (float)delta * 2.4f;
+			_icon.Rotation -= (float)delta * 2.4f;
 			_bar.Value = run.FightProgress;
 		}
 

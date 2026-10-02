@@ -118,6 +118,9 @@ namespace Sigilos.UI.Screens
 		/// <summary>O jogador ligou ou desligou, na pausa, o foco do automático no chefe.</summary>
 		public event Action<bool>? FocusBossChanged;
 
+		/// <summary>Do resultado, direto para a luta seguinte (<see cref="ShowResult"/> com a Mana dela). O valor é a preferência de automático.</summary>
+		public event Action<bool>? NextRequested;
+
 		private float Speed => BattlePace.Speeds[_speedIndex].Factor;
 
 		public override void _Ready()
@@ -172,7 +175,8 @@ namespace Sigilos.UI.Screens
 		/// Abre o resultado (<see cref="BattleResultPanel"/>) por cima do campo, com o tempo desta luta. O
 		/// motivo da derrota (tempo esgotado ou todos caídos) vem da própria luta.
 		/// </summary>
-		public void ShowResult(BattleOutcome outcome)
+		/// <param name="nextMana">A Mana da luta seguinte, quando dá para entrar nela agora: o Continuar vai para ela (<see cref="NextRequested"/>).</param>
+		public void ShowResult(BattleOutcome outcome, int? nextMana = null)
 		{
 			(string Icon, string Text)? defeat = outcome.Victory ? null
 				: _session.Round > BattleRules.RoundLimit ? ("resolve", T("battle.timeout", BattleRules.RoundLimit))
@@ -181,7 +185,8 @@ namespace Sigilos.UI.Screens
 			// O painel de Efeitos aberto ficaria por baixo do resultado, atrapalhando a leitura.
 			_effectsButton.ButtonPressed = false;
 			_bossBar.Clear();
-			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune), rune => RuneLockRequested?.Invoke(rune)));
+			var next = nextMana is { } mana ? (mana, (Action)Next) : ((int, Action)?)null;
+			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune), rune => RuneLockRequested?.Invoke(rune), next));
 		}
 
 		public override void _Process(double delta)
@@ -301,6 +306,14 @@ namespace Sigilos.UI.Screens
 				return;
 			_closed = true;
 			RestartRequested?.Invoke(_auto);
+		}
+
+		private void Next()
+		{
+			if (_closed)
+				return;
+			_closed = true;
+			NextRequested?.Invoke(_auto);
 		}
 
 		/// <summary>Prende um controle num canto da tela, a <see cref="Layout.ScreenMargin"/> das bordas, crescendo para dentro.</summary>

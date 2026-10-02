@@ -7,14 +7,15 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// Uma runa em miniatura, quadrada de cantos redondos: as estrelas no alto, o Glifo do conjunto grande
-	/// no meio (na fonte das runas, na cor da raridade) e, embaixo, numa linha só, o espaço à esquerda e a
-	/// melhora à direita. O espaço é o número dele por cima de uma seta que aponta para onde ele fica no
-	/// círculo das runas (o 1 no alto, os outros em volta, no sentido do relógio). Sem runa, só o espaço,
-	/// grande e apagado.
+	/// no meio (na fonte das runas, na cor da raridade) e, embaixo, numa linha só, o número do espaço à
+	/// esquerda e a melhora à direita. Atrás do Glifo, o selo do espaço: um hexágono entalhado em que cada
+	/// lado é um lugar do círculo das runas (o de cima é o 1, os outros seguem no sentido do relógio), e o
+	/// lado do espaço da runa fica aceso na cor da raridade (<see cref="DrawSeal"/>). Sem runa, só o selo,
+	/// maior e apagado, com o número no meio.
 	///
 	/// Toque curto é <see cref="Pressed"/>; toque longo abre a ficha da runa (<see cref="RuneCard"/>) numa
 	/// janela colada nela. Escolhida, fica azul arcano; marcada para vender, ganha o ✓ verde. Na lista, a
-	/// runa equipada mostra no lugar da seta o medalhão de quem a usa (apagado se ele está no Baú); a
+	/// runa equipada mostra no lugar do número o medalhão de quem a usa (apagado se ele está no Baú); a
 	/// bloqueada, um cadeado no meio da linha de baixo. O toque passa para cima, então arrastar rola a
 	/// lista.
 	/// </summary>
@@ -25,14 +26,19 @@ namespace Sigilos.UI.Components
 
 		public static readonly Vector2 TileSize = new(Side, Side);
 
-		/// <summary>A linha de baixo (seta, cadeado e melhora): a altura do centro dela acima da borda, na escala 1.</summary>
+		/// <summary>A linha de baixo (espaço, cadeado e melhora): a altura do centro dela acima da borda, na escala 1.</summary>
 		private const float BottomLine = 11;
 
-		/// <summary>A distância da seta e da melhora até a borda do lado, na escala 1.</summary>
+		/// <summary>A distância do número do espaço e da melhora até a borda do lado, na escala 1.</summary>
 		private const float Inset = 5;
 
-		/// <summary>O lado da seta do espaço na linha de baixo, na escala 1.</summary>
-		private const float ArrowSide = 18;
+		/// <summary>A largura reservada ao número do espaço (ao medalhão de quem usa a runa) e, espelhada, à melhora, na escala 1.</summary>
+		private const float SlotWidth = 18;
+
+		/// <summary>O raio do selo do espaço (até o vértice), na escala 1: atrás do Glifo, e maior sem runa.</summary>
+		private const float SealRadius = 20;
+
+		private const float EmptySealRadius = 22;
 
 		private readonly StyleBoxFlat _box;
 		private readonly Color _color;
@@ -40,7 +46,6 @@ namespace Sigilos.UI.Components
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly float _scale;
 		private readonly int _stars;
-		private readonly Control? _slotMark;
 		private readonly Press _press = new();
 		private bool _selected;
 		private bool _marked;
@@ -68,28 +73,22 @@ namespace Sigilos.UI.Components
 
 			if (rune == null)
 			{
-				var side = 32 * scale;
-				var mark = SlotMark(slot, side, new Color(Palette.GoldDark, 0.6f), new Color(Palette.Gold, 0.9f), 17);
-				mark.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
-				mark.OffsetLeft = mark.OffsetTop = -side / 2;
-				mark.OffsetRight = mark.OffsetBottom = side / 2;
-				_layer.AddChild(mark);
+				var number = Small(slot.ToString(), new Color(Palette.Gold, 0.85f), 18).Named("Slot");
+				number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+				_layer.AddChild(number);
 			}
 			else
 			{
 				// O Glifo ocupa o miolo, um pouco abaixo do centro para deixar a fileira de cima livre.
-				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(40 * scale), _color, outline: true) { Name = "Glyph" };
+				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(33 * scale), _color, outline: true) { Name = "Glyph" };
 				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				glyph.OffsetTop = 6 * scale;
 				_layer.AddChild(glyph);
 
 				// A linha de baixo: cada peça é centrada num ponto fixo dela, então o espaço, o cadeado e a
 				// melhora ficam no mesmo lugar em qualquer escala e com qualquer texto.
-				var side = ArrowSide * scale;
-				_slotMark = SlotMark(slot, side, Palette.GoldDark, Palette.Text, 11);
-				_layer.AddChild(OnBottomLine(_slotMark, 0, Inset * scale + side / 2, GrowDirection.Both));
-				var level = Small(rune.Level > 0 ? $"+{rune.Level}" : "", Palette.Text, 12, HorizontalAlignment.Right).Named("Level");
-				_layer.AddChild(OnBottomLine(level, 1, -Inset * scale, GrowDirection.Begin));
+				var level = Small(rune.Level > 0 ? $"+{rune.Level}" : "", Palette.Text, 12).Named("Level");
+				_layer.AddChild(OnBottomLine(level, 1, -(Inset + SlotWidth / 2) * scale, GrowDirection.Both));
 				if (rune.Locked)
 					LockBadge();
 			}
@@ -114,7 +113,7 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		/// <summary>Quem usa a runa: o medalhão do monstro no lugar do espaço (apagado se ele está no Baú).</summary>
+		/// <summary>Quem usa a runa: o medalhão do monstro no lugar do número do espaço (apagado se ele está no Baú).</summary>
 		public void SetOwner(Texture2D? creature, Color ink, bool stored)
 		{
 			var size = 18 * _scale;
@@ -122,16 +121,14 @@ namespace Sigilos.UI.Components
 			var medal = Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false);
 			medal.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			holder.AddChild(medal);
-			_layer.AddChild(OnBottomLine(holder, 0, (Inset + ArrowSide / 2) * _scale, GrowDirection.Both));
-			if (_slotMark != null)
-				_slotMark.Visible = false;
+			_layer.AddChild(OnBottomLine(holder, 0, (Inset + SlotWidth / 2) * _scale, GrowDirection.Both));
 		}
 
 		/// <summary>
-		/// Quanto a seta do espaço gira: o desenho aponta para baixo, e o espaço 1 fica no alto do círculo das
-		/// runas, os outros a cada 60°, no sentido do relógio (<see cref="SigilRing"/>).
+		/// Para onde o lado do espaço olha, em graus: o 1 para cima (como no círculo das runas, o
+		/// <see cref="SigilRing"/>), os outros a cada 60° no sentido do relógio.
 		/// </summary>
-		public static float SlotRotation(int slot) => Mathf.DegToRad(-180 + 60 * (slot - 1));
+		public static float SlotAngle(int slot) => -90 + 60 * (slot - 1);
 
 		/// <summary>
 		/// Uma faixa escrita por cima da runa ("Vendida"), no centro da pedra, e a runa apagada por baixo.
@@ -172,26 +169,7 @@ namespace Sigilos.UI.Components
 			_layer.AddChild(OnBottomLine(badge, 0.5f, 0, GrowDirection.Both));
 		}
 
-		/// <summary>
-		/// O espaço, num quadrado de <paramref name="side"/> px: a seta girada para ele e, por cima, o número
-		/// dele (de pé, com contorno escuro), em <paramref name="fontSize"/> na escala 1.
-		/// </summary>
-		private Control SlotMark(int slot, float side, Color arrowInk, Color numberInk, int fontSize)
-		{
-			var mark = new Control { Name = "Slot", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(side, side) };
-			var arrow = new Doodle(Art.Icon("arrow"), arrowInk, boil: false)
-			{
-				Name = "Arrow",
-				PivotOffset = new Vector2(side, side) / 2,
-				Rotation = SlotRotation(slot),
-			};
-			arrow.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			mark.AddChild(arrow);
-			var number = Small(slot.ToString(), numberInk, fontSize).Named("Number");
-			number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			mark.AddChild(number);
-			return mark;
-		}
+
 
 		/// <summary>
 		/// Prende o controle à linha de baixo pelo centro: na altura <see cref="BottomLine"/> e em
@@ -225,6 +203,7 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		public override void _Draw()
 		{
+			DrawSeal();
 			if (_stars == 0 || Art.IconInk("star") is not { } star)
 				return;
 
@@ -238,6 +217,34 @@ namespace Sigilos.UI.Components
 				DrawTextureRect(star, rect.Grow(1.2f), false, new Color(0, 0, 0, 0.85f));
 				DrawTextureRect(star, rect, false, Palette.Gold);
 			}
+		}
+
+		/// <summary>
+		/// O selo do espaço, atrás do Glifo: um hexágono de lados chatos em cima e embaixo, um pouco mais claro
+		/// que a pedra, com o contorno entalhado em ouro escuro. O lado que olha para o espaço da runa
+		/// (<see cref="SlotAngle"/>) vira uma barra acesa na cor da raridade.
+		/// </summary>
+		private void DrawSeal()
+		{
+			var empty = Rune == null;
+			var radius = (empty ? EmptySealRadius : SealRadius) * _scale;
+			// Com runa, o centro do Glifo: a pedra menos a fileira das estrelas, um pouco acima para não
+			// encostar na linha de baixo.
+			var center = new Vector2(Size.X / 2, Size.Y / 2 + (empty ? 0 : 2 * _scale));
+			var corners = new Vector2[7];
+			for (var i = 0; i < 6; i++)
+				corners[i] = center + Vector2.FromAngle(Mathf.DegToRad(60 * i)) * radius;
+			corners[6] = corners[0];
+
+			var lit = empty ? new Color(Palette.Gold, 0.55f) : _color;
+			DrawColoredPolygon(corners[..6], empty ? new Color(Palette.Inset.Lightened(0.04f), 0.9f) : Palette.Inset.Lightened(0.07f));
+
+			var facing = SlotAngle(Slot);
+			var from = center + Vector2.FromAngle(Mathf.DegToRad(facing - 30)) * radius;
+			var to = center + Vector2.FromAngle(Mathf.DegToRad(facing + 30)) * radius;
+			DrawPolyline(corners, new Color(Palette.GoldDark, empty ? 0.5f : 0.7f), 1.2f * _scale, true);
+			DrawLine(from, to, new Color(lit, 0.35f), 7 * _scale, true);
+			DrawLine(from, to, lit, 3 * _scale, true);
 		}
 
 		private void Restyle()

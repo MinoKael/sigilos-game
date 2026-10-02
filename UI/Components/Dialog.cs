@@ -29,7 +29,13 @@ namespace Sigilos.UI.Components
 		private const float Arrow = 12;
 
 		private readonly PanelContainer _panel = new() { Name = "Panel" };
-		private readonly ScrollContainer _scroll = new() { Name = "Scroll", HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, ScrollVerticalCustomStep = Layout.WheelStep };
+		/// <summary>
+		/// A rolagem do conteúdo guarda sempre o lugar da barra (<c>Reserve</c>): o conteúdo tem a mesma largura
+		/// com a barra ou sem ela. Sem isso, um texto no limite quebrava em mais linhas quando a barra
+		/// aparecia, em menos quando sumia, e a janela trocava de tamanho sem parar até o jogo cair (a
+		/// fusão de alguns monstros).
+		/// </summary>
+		private readonly ScrollContainer _scroll = new() { Name = "Scroll", HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, VerticalScrollMode = ScrollContainer.ScrollMode.Reserve, ScrollVerticalCustomStep = Layout.WheelStep };
 		private readonly HBoxContainer _actions = new() { Name = "Actions", Alignment = BoxContainer.AlignmentMode.End, Visible = false };
 		private readonly SigilButton _close;
 

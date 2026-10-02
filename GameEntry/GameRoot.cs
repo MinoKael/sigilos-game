@@ -49,6 +49,9 @@ namespace Sigilos.GameEntry
 	{
 		private const string DefaultSlot = "sigilos";
 
+		/// <summary>De quanto em quanto tempo a coleta de lixo completa passa (<see cref="Collect"/>).</summary>
+		private const double CollectSeconds = 10;
+
 		private readonly Random _random = new();
 		private readonly AutoBattleRunner _runner = new();
 		private readonly AutoBattleBadge _badge = new();
@@ -95,6 +98,9 @@ namespace Sigilos.GameEntry
 			_storageBack = _summonBack = ShowHub;
 			_account = new AccountSession(Argument("--save=") ?? DefaultSlot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
 			AddChild(_account);
+			var collector = new Timer { Name = "Collector", WaitTime = CollectSeconds, Autostart = true };
+			collector.Timeout += Collect;
+			AddChild(collector);
 			_account.Lost += (reason, backedUp) => ShowLogin(T(reason switch
 			{
 				LossReason.Expired => "account.error_expired",
@@ -881,6 +887,8 @@ namespace Sigilos.GameEntry
 			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), storage.Refresh);
 			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), storage.Refresh);
 			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), storage.Refresh);
+			storage.StoreManyRequested += ids => Change(() => Roster.StoreMany(_player, ids), storage.Refresh);
+			storage.RetrieveManyRequested += ids => Change(() => Roster.RetrieveMany(_player, ids), storage.Refresh);
 			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), storage.Refresh);
 			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), storage.Refresh);
 			storage.LockRequested += id => Change(() => _player.Monster(id)!.Locked = !_player.Monster(id)!.Locked, storage.Refresh);
@@ -958,7 +966,16 @@ namespace Sigilos.GameEntry
 
 			// A primeira vitória da fase avisa o que ela abriu no Santuário (Features).
 			var opened = repeat ? null : Features.OpenedBy(_database, stage.Number);
-			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage, _database), Back, () => FightStage(stage), opened);
+			Fight(T("battle.title_stage", stage.Number, stage.Name), stage.Encounter, Teams.Campaign, Records.StageKey(stage.Number), () => Campaign.ApplyVictory(_random, _player, stage, _database), Back, () => FightStage(stage), opened, NextStage);
+
+			// Vencida, com Mana para a fase seguinte (e vaga para a runa): o Continuar do resultado já entra nela.
+			(int Mana, Action Start)? NextStage()
+			{
+				if (stage.Number >= _database.Stages.Count)
+					return null;
+				var following = _database.Stage(stage.Number + 1);
+				return Campaign.Check(_player, following) == EntryProblem.None ? (following.Mana, () => FightStage(following)) : null;
+			}
 		}
 
 		private void FightFloor(DungeonDefinition dungeon, int floor)
@@ -1008,15 +1025,17 @@ namespace Sigilos.GameEntry
 		/// A luta na tela: a vitória cobra a Mana, entrega a recompensa e grava o tempo no recorde
 		/// <paramref name="record"/>; o resultado mostra a experiência de cada monstro subindo do ponto em que
 		/// estava. Volta para <paramref name="back"/>; <paramref name="again"/> é a mesma luta de novo, pela
-		/// porta de entrada (confere Mana e equipe).
+		/// porta de entrada (confere Mana e equipe). <paramref name="next"/>, depois da vitória, diz se dá para
+		/// seguir direto para a luta seguinte (a Mana dela e como entrar).
 		/// </summary>
-		private void Fight(string title, Encounter encounter, string content, string record, Func<VictoryReward> victoryReward, Action back, Action again, IReadOnlyList<Feature>? opened = null)
+		private void Fight(string title, Encounter encounter, string content, string record, Func<VictoryReward> victoryReward, Action back, Action again, IReadOnlyList<Feature>? opened = null, Func<(int Mana, Action Start)?>? next = null)
 		{
 			Save();
 			var team = PlayerTeam.Build(_player, _database, content);
 			var session = BattleFactory.Create(_database, team, encounter, _random.Next());
 			var battle = new BattleScreen(session, title, _player.AutoBattle, focusBoss: _player.FocusBoss);
 			var finished = false;
+			(int Mana, Action Start)? following = null;
 			battle.Finished += victory =>
 			{
 				finished = true;
@@ -1031,7 +1050,8 @@ namespace Sigilos.GameEntry
 				Save();
 				var result = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
 				var tips = victory ? null : DefeatAdvice.For(_player, _database, before.Select(b => b.Monster).ToList(), encounter);
-				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest, tips, victory ? opened : null));
+				following = victory ? next?.Invoke() : null;
+				battle.ShowResult(new BattleOutcome(victory, reward, result, _player.AccountLevel, Records.Best(_player, record), newBest, tips, victory ? opened : null), following?.Mana);
 			};
 			battle.FocusBossChanged += on =>
 			{
@@ -1054,6 +1074,12 @@ namespace Sigilos.GameEntry
 				Save();
 				back();
 			};
+			battle.NextRequested += auto =>
+			{
+				_player.AutoBattle = auto;
+				Save();
+				following?.Start();
+			};
 			battle.RestartRequested += auto =>
 			{
 				// A Mana só sai na vitória: recomeçar no meio é abrir a mesma luta, com outra semente; depois
@@ -1062,7 +1088,7 @@ namespace Sigilos.GameEntry
 				if (finished)
 					again();
 				else
-					Fight(title, encounter, content, record, victoryReward, back, again, opened);
+					Fight(title, encounter, content, record, victoryReward, back, again, opened, next);
 			};
 			Swap(battle, back);
 		}
@@ -1186,6 +1212,14 @@ namespace Sigilos.GameEntry
 				Monster = monster,
 			};
 		}
+
+		/// <summary>
+		/// Uma coleta de lixo completa, em segundo plano. Cada objeto do Godot criado pelo C# (estilo, tween,
+		/// temporizador) fica vivo até o coletor soltar o lado C# dele, e o coletor quase não faz a coleta
+		/// completa: a memória do C# é pequena, então ele não vê pressa. Numa luta, que refaz ícones e números a
+		/// cada ação, isso juntava milhares de objetos por minuto e a memória crescia sem parar.
+		/// </summary>
+		private static void Collect() => GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: false);
 
 		/// <summary>Grava no aparelho e, jogando na conta, manda para a nuvem logo em seguida (as ações seguidas viram um envio só).</summary>
 		private void Save()

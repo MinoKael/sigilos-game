@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using Sigilos.Core.Content;
 using Sigilos.UI.Style;
@@ -17,11 +18,24 @@ namespace Sigilos.UI.Components
 	/// Desperto (<c>aura</c> com o elemento), o desenho é o mesmo, mas pelo
 	/// Assets/Shaders/doodle_awakened.gdshader: a silhueta um pouco menor, com a borda acesa por dentro
 	/// na cor do elemento e o anel dele por cima, cada elemento mexendo do seu jeito.
+	///
+	/// Os desenhos dividem o material (<see cref="Shared"/>): um por tinta, tremor e elemento, e os que
+	/// tremem sorteiam uma de <see cref="Seeds"/> sementes, para vizinhos não tremerem juntos. Um material
+	/// por desenho custava um buffer na placa de vídeo cada um, e a luta, que refaz ícones a cada ação,
+	/// juntava dezenas de milhares deles até o coletor de lixo do C# soltar (a memória passava de 20 GB).
+	/// Quem troca a tinta depois (<see cref="SetInk"/>) ganha um material só dele.
 	/// </summary>
 	public partial class Doodle : TextureRect
 	{
+		/// <summary>Quantas sementes de tremor os desenhos que tremem dividem.</summary>
+		private const int Seeds = 6;
+
+		private static readonly Dictionary<(Color Ink, bool Boil, Element? Aura, int Seed), ShaderMaterial> Cache = new();
 		private static Shader? _shader;
 		private static Shader? _awakenedShader;
+
+		/// <summary>O material é deste desenho (já trocou de tinta): pode mudar sem mexer nos outros.</summary>
+		private bool _ownMaterial;
 
 		/// <param name="aura">O elemento do monstro desperto: troca o traço pelo do desperto (aura e anel).</param>
 		public Doodle(Texture2D? texture, Color ink, bool boil = true, Element? aura = null)
@@ -31,6 +45,29 @@ namespace Sigilos.UI.Components
 			StretchMode = StretchModeEnum.KeepAspectCentered;
 			MouseFilter = MouseFilterEnum.Ignore;
 			TextureFilter = TextureFilterEnum.LinearWithMipmaps;
+
+			Material = Shared(ink, boil, aura, boil ? (int)(GD.Randi() % Seeds) : 0);
+			Resized += Refine;
+		}
+
+		/// <summary>Troca a tinta: na primeira vez, o desenho passa a ter o material só dele.</summary>
+		public void SetInk(Color ink)
+		{
+			if (!_ownMaterial)
+			{
+				Material = (ShaderMaterial)Material.Duplicate();
+				_ownMaterial = true;
+			}
+
+			((ShaderMaterial)Material).SetShaderParameter("ink_color", ink);
+		}
+
+		/// <summary>O material dividido de uma tinta, tremor, elemento (desperto) e semente; criado na primeira vez.</summary>
+		private static ShaderMaterial Shared(Color ink, bool boil, Element? aura, int seed)
+		{
+			var key = (ink, boil, aura, seed);
+			if (Cache.TryGetValue(key, out var cached))
+				return cached;
 
 			_shader ??= GD.Load<Shader>("res://Assets/Shaders/doodle.gdshader");
 			var material = new ShaderMaterial { Shader = _shader };
@@ -44,12 +81,10 @@ namespace Sigilos.UI.Components
 
 			material.SetShaderParameter("ink_color", ink);
 			material.SetShaderParameter("boil_strength", boil ? 0.006f : 0f);
-			material.SetShaderParameter("seed", GD.Randf() * 100f);
-			Material = material;
-			Resized += Refine;
+			material.SetShaderParameter("seed", seed * 17.3f);
+			Cache[key] = material;
+			return material;
 		}
-
-		public void SetInk(Color ink) => ((ShaderMaterial)Material).SetShaderParameter("ink_color", ink);
 
 		/// <summary>Troca o desenho, já na resolução do tamanho atual.</summary>
 		public void SetArt(Texture2D? texture)

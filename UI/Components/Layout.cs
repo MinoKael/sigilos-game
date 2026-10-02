@@ -208,7 +208,11 @@ namespace Sigilos.UI.Components
 			return flow;
 		}
 
-		/// <summary>Rolagem vertical: a gema do tema, sem trilho. Arrastar com o mouse também rola (<see cref="DragScroll"/>).</summary>
+		/// <summary>
+		/// Rolagem vertical: a gema do tema, sem trilho. Arrastar com o mouse também rola (<see cref="DragScroll"/>).
+		/// O lugar da barra fica sempre guardado (<c>Reserve</c>): o conteúdo tem a mesma largura com a barra ou
+		/// sem ela, e um texto no limite não fica quebrando linha ora sim, ora não, sem parar.
+		/// </summary>
 		public static ScrollContainer Scroll(Control content)
 		{
 			var scroll = new ScrollContainer
@@ -217,6 +221,7 @@ namespace Sigilos.UI.Components
 				SizeFlagsVertical = Control.SizeFlags.ExpandFill,
 				SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
 				HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled,
+				VerticalScrollMode = ScrollContainer.ScrollMode.Reserve,
 				// A roda do mouse anda um bom pedaço por clique (o padrão, um oitavo da altura, se arrasta).
 				ScrollVerticalCustomStep = WheelStep,
 			};
