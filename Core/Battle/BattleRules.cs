@@ -28,10 +28,14 @@ namespace Sigilos.Core.Battle
 		/// <summary>Resistência efetiva nunca fica abaixo de 5%.</summary>
 		public const double MinResistChance = 0.05;
 
-		public const double BurnFraction = 0.05;
-		public const double PoisonFraction = 0.03;
-        public const int MaxBurnStacks = 0;
-		public const int MaxPoisonStacks = 7;
+		/// <summary>Aflição: fração da Vida máxima que cada cópia tira no começo do turno do dono.</summary>
+		public const double AfflictionFraction = 0.05;
+
+		/// <summary>
+		/// Quantos efeitos de status cabem num monstro, somando todos (positivos, negativos, escudo e cada cópia
+		/// da Aflição). Cheio, um efeito novo não pega; o que ele já tem ainda se renova.
+		/// </summary>
+		public const int MaxStatuses = 10;
         public const double CurseBonus = 0.25;
 		public const double BlindMissChance = 0.5;
 		public const double AttackUpBonus = 0.5;
@@ -42,6 +46,23 @@ namespace Sigilos.Core.Battle
         public const double SpeedUpBonus = 0.3;
 		public const double BombDamageMultiplier = 2.5;
 
+		/// <summary>A Bomba que explode atordoa o alvo por estes turnos.</summary>
+		public const int BombStunTurns = 1;
+
+		public const double SpeedDownPenalty = 0.3;
+
+		/// <summary>Crítico+: pontos somados à chance de Crítico (0,3 = +30%).</summary>
+		public const double CritUpBonus = 0.3;
+
+		/// <summary>Resistir Crítico: a chance de Crítico de quem bate no dono é multiplicada por isto.</summary>
+		public const double CritResistFactor = 0.5;
+
+		/// <summary>Bênção: fração da Vida máxima recuperada no começo de cada turno.</summary>
+		public const double BlessingFraction = 0.15;
+
+		/// <summary>Reviver: com que fração da Vida máxima o dono volta.</summary>
+		public const double ReviveHealth = 0.3;
+
 		/// <summary>Duração do escudo que a Passiva dos Cavaleiros dá ao cair.</summary>
 		public const int DeathShieldTurns = 2;
 
@@ -49,7 +70,7 @@ namespace Sigilos.Core.Battle
 		public const double WoundedFraction = 0.5;
 
 		/// <summary>Duração da Queimadura que a Passiva dos Dragões põe.</summary>
-		public const int BurnOnHitTurns = 2;
+		public const int AfflictionOnHitTurns = 2;
 
 		/// <summary>Duração da Maldição que a Passiva dos Corvos põe.</summary>
 		public const int CurseOnHitTurns = 2;

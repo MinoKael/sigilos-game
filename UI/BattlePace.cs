@@ -101,6 +101,9 @@ namespace Sigilos.UI
 			StatusApplied => 0.1,
 			Resisted => 0.08,
 			Immune => 0.08,
+			StatusBlocked => 0.08,
+			DurationChanged => 0.08,
+			HealthLeveled => 0.12,
 			ImpetoChanged => 0.05,
 			TurnSkipped => 0.4,
 			Died => 0.3,
@@ -114,6 +117,7 @@ namespace Sigilos.UI
 		{
 			SkillUsed used => used.Actor,
 			Counterattack counter => counter.Unit,
+			JointAttack joint => joint.Unit,
 			_ => null,
 		};
 

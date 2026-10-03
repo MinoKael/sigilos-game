@@ -7,8 +7,8 @@ namespace Sigilos.Core.Content
 		/// <summary>Absorve dano até o valor guardado.</summary>
 		Shield,
 
-		/// <summary>Perde uma fração da Vida no começo de cada turno. Não acumula.</summary>
-		Burn,
+		/// <summary>Aflição: perde uma fração da Vida no começo de cada turno, por cópia. Acumula até o limite de efeitos do monstro.</summary>
+		Affliction,
 
 		/// <summary>Perde o próximo turno.</summary>
 		Stun,
@@ -42,8 +42,39 @@ namespace Sigilos.Core.Content
         DefenseBreak,
         /// <summary>Depois de 1 turno, recebe dano ignorando defesa.</summary>
         Bomb,
-        /// <summary>Perde uma fração da Vida no começo de cada turno. Acumula.</summary>
-        Poison,
+
+		/// <summary>Velocidade−: diminui a Velocidade.</summary>
+		SpeedDown,
+
+		/// <summary>Crítico+: soma pontos à chance de Crítico.</summary>
+		CritUp,
+
+		/// <summary>Resistir Crítico: os golpes recebidos têm menos chance de ser críticos.</summary>
+		CritResist,
+
+		/// <summary>Bênção: recupera uma fração da Vida máxima no começo de cada turno.</summary>
+		Blessing,
+
+		/// <summary>Contragolpe: revida com a básica toda vez que é atingido.</summary>
+		Counter,
+
+		/// <summary>Reviver: ao cair, volta na hora com uma fração da Vida máxima (e o efeito se gasta).</summary>
+		Revive,
+
+		/// <summary>Karma: nenhum efeito positivo pega.</summary>
+		Karma,
+
+		/// <summary>Sono: perde os turnos até a duração acabar ou até ser atingido.</summary>
+		Sleep,
+
+		/// <summary>Ferida: não recebe cura.</summary>
+		Unrecoverable,
+
+		/// <summary>Silêncio: só usa habilidades sem recarga.</summary>
+		Silence,
+
+		/// <summary>Esquecimento: a Passiva para de funcionar.</summary>
+		Oblivion,
 
 	}
 }

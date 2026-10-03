@@ -36,6 +36,21 @@ namespace Sigilos.Core.Battle
 		/// <summary>O dono só pode mirar nesta unidade enquanto ela estiver viva (Provocação).</summary>
 		public virtual BattleUnit? ForcedTarget(UnitRule rule) => null;
 
+		/// <summary>Nenhum efeito positivo pega no dono (Karma).</summary>
+		public virtual bool BlocksBeneficial => false;
+
+		/// <summary>O dono não recebe cura (Ferida).</summary>
+		public virtual bool BlocksHealing => false;
+
+		/// <summary>O dono só usa habilidades sem recarga (Silêncio).</summary>
+		public virtual bool BlocksCooldownSkills => false;
+
+		/// <summary>A Passiva do dono para de funcionar (Esquecimento).</summary>
+		public virtual bool SuppressesPassive => false;
+
+		/// <summary>Multiplica a chance de Crítico dos golpes que o dono recebe (1 = não muda; Resistir Crítico).</summary>
+		public virtual double CritTaken(UnitRule rule) => 1;
+
 		// Momentos da luta --------------------------------------------------------------------------
 
 		/// <summary>Começou uma onda e o dono está vivo.</summary>

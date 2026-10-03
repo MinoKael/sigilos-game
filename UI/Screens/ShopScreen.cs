@@ -25,10 +25,15 @@ namespace Sigilos.UI.Screens
 		private readonly HBoxContainer _offers = Layout.Row(24).Named("Offers");
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
-		public ShopScreen(GameDatabase database, PlayerState player)
+		/// <summary>A troca de nome só vale para quem joga numa conta que já tem nome.</summary>
+		private readonly bool _canRename;
+
+		/// <param name="canRename">Jogando numa conta com nome: a oferta de troca de nome fica liberada.</param>
+		public ShopScreen(GameDatabase database, PlayerState player, bool canRename = false)
 		{
 			_database = database;
 			_player = player;
+			_canRename = canRename;
 		}
 
 		public event Action<ShopOffer>? BuyRequested;
@@ -83,6 +88,7 @@ namespace Sigilos.UI.Screens
 			{
 				ShopItem.Mana => Doodle.Icon(Art.Icon("mana"), 100, Palette.Gold),
 				ShopItem.ReappraisalGems => Doodle.Icon(Art.Icon("gem"), 100, Palette.Arcane),
+				ShopItem.RenameAccount => Doodle.Icon(Art.Icon("avatar"), 100, Palette.Gold),
 				_ => Doodle.Icon(Art.Icon("scroll"), 100, Palette.Gold),
 			};
 			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
@@ -95,17 +101,25 @@ namespace Sigilos.UI.Screens
 			what.HorizontalAlignment = HorizontalAlignment.Center;
 			content.AddChild(what);
 
-			var canBuy = Shop.CanBuy(_player, offer);
-			var buy = GameButton.Of(T("shop.buy_button"), () => Dialog.Confirm(this,
-				T("shop.confirm_title"),
-				T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
-				T("shop.buy_button"),
-				() => BuyRequested?.Invoke(offer)), ButtonKind.Primary).WithCost("gold", offer.Price.ToString()).Named("Buy");
+			// A troca de nome pede uma conta com nome; a janela do nome já é a confirmação (ela diz o preço).
+			var rename = offer.Item == ShopItem.RenameAccount;
+			var canBuy = Shop.CanBuy(_player, offer) && (!rename || _canRename);
+			var buy = GameButton.Of(T("shop.buy_button"), () =>
+			{
+				if (rename)
+					BuyRequested?.Invoke(offer);
+				else
+					Dialog.Confirm(this,
+						T("shop.confirm_title"),
+						T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
+						T("shop.buy_button"),
+						() => BuyRequested?.Invoke(offer));
+			}, ButtonKind.Primary).WithCost("gold", Texts.Number(offer.Price)).Named("Buy");
 			buy.Disabled = !canBuy;
 			content.AddChild(buy);
 			if (!canBuy)
 			{
-				var missing = new Label { Name = "Short", Text = T("shop.no_gold", offer.Price - _player.Gold), HorizontalAlignment = HorizontalAlignment.Center };
+				var missing = new Label { Name = "Short", Text = rename && !_canRename ? T("shop.rename_no_account") : T("shop.no_gold", Texts.Number(offer.Price - _player.Gold)), HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(220, 0) };
 				missing.AddThemeColorOverride("font_color", Palette.Negative);
 				missing.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
 				content.AddChild(missing);

@@ -24,7 +24,7 @@
           "name": "Facada de Tocha",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -38,7 +38,7 @@
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.67},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

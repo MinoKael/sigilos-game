@@ -24,7 +24,7 @@ namespace Sigilos.Core.Battle.Passives
 			[PassiveKind.BonusVsWounded] = new BonusVsWoundedPassive(),
 			[PassiveKind.ImpetoAtWaveStart] = new ImpetoAtWaveStartPassive(),
 			[PassiveKind.RegenEachTurn] = new RegenEachTurnPassive(),
-			[PassiveKind.BurnOnHit] = new StatusOnHitPassive(StatusKind.Burn, BattleRules.BurnOnHitTurns),
+			[PassiveKind.AfflictionOnHit] = new StatusOnHitPassive(StatusKind.Affliction, BattleRules.AfflictionOnHitTurns),
 			[PassiveKind.CooldownEachTurn] = new CooldownEachTurnPassive(),
 			[PassiveKind.HealAllyEachTurn] = new HealAllyEachTurnPassive(),
 			[PassiveKind.Thorns] = new ThornsPassive(),

@@ -12,8 +12,7 @@ namespace Sigilos.Core.Battle.Statuses
 		private static readonly Dictionary<StatusKind, StatusBehavior> Table = new()
 		{
 			[StatusKind.Shield] = new ShieldStatus(),
-			[StatusKind.Burn] = new DamageOverTime(BattleRules.BurnFraction, BattleRules.MaxBurnStacks),
-			[StatusKind.Poison] = new DamageOverTime(BattleRules.PoisonFraction, BattleRules.MaxPoisonStacks),
+			[StatusKind.Affliction] = new DamageOverTime(BattleRules.AfflictionFraction, BattleRules.MaxStatuses),
 			[StatusKind.Bomb] = new BombStatus(),
 			[StatusKind.Stun] = new StunStatus(),
 			[StatusKind.Taunt] = new TauntStatus(),
@@ -28,6 +27,17 @@ namespace Sigilos.Core.Battle.Statuses
 			[StatusKind.DefenseUp] = new StatChange(Stat.Defense, BattleRules.DefenseUpBonus),
 			[StatusKind.DefenseBreak] = new StatChange(Stat.Defense, -BattleRules.DefenseDownPenalty),
 			[StatusKind.SpeedUp] = new StatChange(Stat.Speed, BattleRules.SpeedUpBonus),
+			[StatusKind.SpeedDown] = new StatChange(Stat.Speed, -BattleRules.SpeedDownPenalty),
+			[StatusKind.CritUp] = new StatChange(Stat.Crit, BattleRules.CritUpBonus, additive: true),
+			[StatusKind.CritResist] = new CritResistStatus(),
+			[StatusKind.Blessing] = new HealOverTime(BattleRules.BlessingFraction),
+			[StatusKind.Counter] = new CounterStatus(),
+			[StatusKind.Revive] = new ReviveStatus(),
+			[StatusKind.Karma] = new KarmaStatus(),
+			[StatusKind.Sleep] = new SleepStatus(),
+			[StatusKind.Unrecoverable] = new UnrecoverableStatus(),
+			[StatusKind.Silence] = new SilenceStatus(),
+			[StatusKind.Oblivion] = new OblivionStatus(),
 		};
 
 		public static StatusBehavior Of(StatusKind kind) => Table[kind];

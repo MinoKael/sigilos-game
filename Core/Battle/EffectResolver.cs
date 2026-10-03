@@ -43,11 +43,13 @@ namespace Sigilos.Core.Battle
 		/// que a habilidade inteira dispara em quem lançou e em quem apanhou.
 		/// </summary>
 		/// <param name="counter">É um contra-ataque: dano reduzido e não provoca outro contra-ataque.</param>
-		public void Resolve(BattleUnit caster, IReadOnlyList<EffectDefinition> effects, BattleUnit? chosen, bool counter = false)
+		/// <param name="joint">É a básica de um aliado chamado por um ataque conjunto: não chama outros.</param>
+		/// <returns>A habilidade resolvida: o que ela fez (quem derrubou, a recarga a menos).</returns>
+		public Cast Resolve(BattleUnit caster, IReadOnlyList<EffectDefinition> effects, BattleUnit? chosen, bool counter = false, bool joint = false)
 		{
 			var allies = _session.SideOf(caster.Side);
 			var opponents = _session.SideOf(caster.Side == Side.Allies ? Side.Enemies : Side.Allies);
-			var cast = new Cast(this, caster, Targeting.PickMain(caster, chosen, opponents), allies, opponents, counter);
+			var cast = new Cast(this, caster, Targeting.PickMain(caster, chosen, opponents), allies, opponents, counter, joint);
 
 			foreach (var effect in effects)
 			{
@@ -67,13 +69,15 @@ namespace Sigilos.Core.Battle
 				rule.Behavior.AfterSkill(rule, cast);
 
 			if (counter)
-				return;
+				return cast;
 
 			foreach (var target in cast.Dealt.Keys.ToList())
 			{
 				foreach (var rule in target.Rules())
 					rule.Behavior.AfterStruck(rule, cast);
 			}
+
+			return cast;
 		}
 
 		/// <summary>
@@ -111,7 +115,7 @@ namespace Sigilos.Core.Battle
 				}
 			}
 
-			var crit = strike.Crit ?? Random.NextDouble() < attacker.Stats.Crit;
+			var crit = strike.Crit ?? Random.NextDouble() < attacker.Current(Stat.Crit) * target.CritTaken();
 			strike.Crit = crit;
 			strike.Amount = DamageFormula.Compute(attacker, target, strike.Power, strike.IgnoreDefense, crit);
 			strike.Absorbed = Absorb(target, strike.Amount);
@@ -126,8 +130,9 @@ namespace Sigilos.Core.Battle
 
 			if (!target.IsAlive)
 			{
-				strike.Cast.Killed = true;
 				KnockOut(target);
+				// Quem voltou na hora (Reviver) não conta como derrubado.
+				strike.Cast.Killed |= !target.IsAlive;
 				return;
 			}
 
@@ -146,6 +151,13 @@ namespace Sigilos.Core.Battle
 		{
 			Emit(new Counterattack(unit));
 			Resolve(unit, unit.Skill(0).Effects, attacker, counter: true);
+		}
+
+		/// <summary>O ataque conjunto: a básica de <paramref name="ally"/> em <paramref name="target"/>, com o dano inteiro.</summary>
+		public Cast JointAttack(BattleUnit ally, BattleUnit? target)
+		{
+			Emit(new JointAttack(ally));
+			return Resolve(ally, ally.Skill(0).Effects, target, joint: true);
 		}
 
 		// Vida ----------------------------------------------------------------------------------------
@@ -169,9 +181,10 @@ namespace Sigilos.Core.Battle
 				KnockOut(target);
 		}
 
+		/// <summary>Cura, até a Vida máxima. Quem está com Ferida não recebe nada.</summary>
 		public void Heal(BattleUnit target, double amount)
 		{
-			if (!target.IsAlive)
+			if (!target.IsAlive || target.Any(behavior => behavior.BlocksHealing))
 				return;
 
 			var healed = Math.Min(target.MaxHealth - target.Health, Math.Round(amount));
@@ -193,7 +206,35 @@ namespace Sigilos.Core.Battle
 			Emit(new Died(unit));
 
 			foreach (var rule in rules)
+			{
 				rule.Behavior.OnDeath(rule, this);
+				// Voltou na hora (Reviver): as outras regras não viram a queda.
+				if (unit.IsAlive)
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Nivela a Vida: sobe pela cura (a Ferida barra) ou desce direto, sem passar por dano nem escudo.
+		/// Nunca derruba: fica pelo menos 1.
+		/// </summary>
+		public void SetHealth(BattleUnit target, double health)
+		{
+			if (!target.IsAlive)
+				return;
+
+			health = Math.Clamp(Math.Round(health), 1, target.MaxHealth);
+			if (health > target.Health)
+			{
+				Heal(target, health - target.Health);
+				return;
+			}
+
+			var lost = target.Health - health;
+			if (lost <= 0)
+				return;
+			target.Health = health;
+			Emit(new HealthLeveled(target, (int)lost));
 		}
 
 		/// <summary>A unidade caída que estava para voltar (<see cref="BattleUnit.RevivalHealth"/>) volta agora.</summary>
@@ -257,6 +298,35 @@ namespace Sigilos.Core.Battle
 				Emit(new StatusRemoved(owner, status.Kind));
 		}
 
+		/// <summary>
+		/// Soma <paramref name="turns"/> à duração do efeito (negativo encurta). O que chega a 0 sai; o
+		/// recebido no turno do dono continua contando o turno de agora como dele.
+		/// </summary>
+		public void ChangeDuration(StatusEffect status, int turns)
+		{
+			if (turns == 0 || !status.Owner.Holds(status))
+				return;
+
+			status.Turns += turns;
+			if (status.Turns <= 0)
+				Remove(status);
+			else
+				Emit(new DurationChanged(status.Owner, status.Kind, turns));
+		}
+
+		/// <summary>
+		/// Rouba o efeito: ele sai de quem tinha e entra em <paramref name="thief"/> com os turnos e o valor
+		/// que sobravam (o Karma de quem rouba barra, e o efeito se perde).
+		/// </summary>
+		public void Steal(StatusEffect status, BattleUnit thief)
+		{
+			if (!thief.IsAlive || !status.Owner.Holds(status))
+				return;
+
+			Remove(status);
+			Attach(thief, thief, status.Kind, status.Turns, status.Value);
+		}
+
 		/// <summary>Remove um efeito negativo do alvo: o mais antigo.</summary>
 		public void Cleanse(BattleUnit target)
 		{
@@ -267,11 +337,26 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>
 		/// Põe o efeito, sem sorteio. Se o alvo já tem todas as cópias que cabem
-		/// (<see cref="StatusBehavior.MaxStacks"/>), renova a primeira: fica a maior duração e o maior valor.
+		/// (<see cref="StatusBehavior.MaxStacks"/>), ou já está com o limite de efeitos
+		/// (<see cref="BattleRules.MaxStatuses"/>) e tem este, renova a primeira: fica a maior duração e o maior
+		/// valor. Cheio e sem este efeito, o efeito novo não pega.
 		/// </summary>
 		private void Attach(BattleUnit? source, BattleUnit target, StatusKind status, int turns, double value)
 		{
-			var existing = target.Count(status) < StatusBehaviors.Of(status).MaxStacks ? null : target.Find(status);
+			if (!StatusBehaviors.Of(status).Harmful && target.Any(behavior => behavior.BlocksBeneficial))
+			{
+				Emit(new StatusBlocked(target, status));
+				return;
+			}
+
+			var full = target.Statuses.Count >= BattleRules.MaxStatuses;
+			var existing = !full && target.Count(status) < StatusBehaviors.Of(status).MaxStacks ? null : target.Find(status);
+			if (existing == null && full)
+			{
+				Emit(new StatusBlocked(target, status));
+				return;
+			}
+
 			if (existing == null)
 			{
 				target.AddStatus(new StatusEffect(status, turns, value, source) { Fresh = IsActing(target) });

@@ -263,9 +263,9 @@
       "name": "Escudo",
       "info": "Absorve dano até o valor do escudo."
     },
-    "Burn": {
-      "name": "Queimadura",
-      "info": "Perde {0} da Vida máxima no começo de cada turno. Não acumula."
+    "Affliction": {
+      "name": "Aflição",
+      "info": "Perde {0} da Vida máxima no começo de cada turno, por cópia. Acumula até {1} (um monstro tem no máximo {1} efeitos)."
     },
     "Stun": {
       "name": "Atordoamento",
@@ -321,11 +321,51 @@
     },
     "Bomb": {
       "name": "Bomba",
-      "info": "Explode ao expirar, com {0} do Ataque de quem pôs. Ignora a Defesa, mas não escudo e não multiplica crítico."
+      "info": "Explode ao expirar, com {0} do Ataque de quem pôs, e atordoa. Ignora a Defesa, mas não escudo e não multiplica crítico."
     },
-    "Poison": {
-      "name": "Veneno",
-      "info": "Perde {0} da Vida máxima no começo de cada turno. Acumula até {1}."
+    "SpeedDown": {
+      "name": "Velocidade−",
+      "info": "−{0} de Velocidade."
+    },
+    "CritUp": {
+      "name": "Crítico+",
+      "info": "+{0} de chance de Crítico."
+    },
+    "CritResist": {
+      "name": "Resistir Crítico",
+      "info": "Os golpes recebidos têm {0} menos chance de ser críticos."
+    },
+    "Blessing": {
+      "name": "Bênção",
+      "info": "Recupera {0} da Vida máxima no começo de cada turno."
+    },
+    "Counter": {
+      "name": "Contragolpe",
+      "info": "Revida com a básica ({0} do dano) toda vez que é atingido."
+    },
+    "Revive": {
+      "name": "Reviver",
+      "info": "Ao cair, volta na hora com {0} da Vida máxima. Serve uma vez."
+    },
+    "Karma": {
+      "name": "Karma",
+      "info": "Nenhum efeito positivo pega."
+    },
+    "Sleep": {
+      "name": "Sono",
+      "info": "Perde os turnos até o efeito acabar ou até ser atingido."
+    },
+    "Unrecoverable": {
+      "name": "Ferida",
+      "info": "Não recebe cura."
+    },
+    "Silence": {
+      "name": "Silêncio",
+      "info": "Só usa habilidades sem recarga."
+    },
+    "Oblivion": {
+      "name": "Esquecimento",
+      "info": "A Passiva para de funcionar."
     }
   },
 
@@ -363,7 +403,23 @@
     },
     "passive_name": "Passiva · {0}",
     "cooldown_short": "Recarga {0}",
-    "passive_only": "Passiva"
+    "passive_only": "Passiva",
+    "steal": "{0}rouba um {1} {2}",
+    "steal_impetus": "; sem nenhum, rouba {0}% de {1}",
+    "steal_all_impetus": "; sem nenhum, rouba todo o {0}",
+    "bonus": {
+      "Damage": "+{0} de dano nos golpes seguintes",
+      "Heal": "+{0} de cura e escudo nos efeitos seguintes",
+      "Impeto": "+{0}% de {1} {2}"
+    },
+    "per_status": "{0} para cada {1} {2}",
+    "prolong": "{0}prolonga em {1} {2} {3}",
+    "shorten": "{0}encurta em {1} {2} {3}",
+    "equalize": "nivela a Vida {0} na mesma fração",
+    "heal_team": "cura {0} da Vida dos {1} mais feridos {2}",
+    "joint": "{0} aliados atacam junto, com a básica",
+    "joint_all": "todos os aliados atacam junto, com a básica",
+    "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}"
   },
 
   "passive": {
@@ -375,7 +431,7 @@
     "BonusVsWounded": "+{0} de dano em alvos abaixo de {1} da Vida.",
     "ImpetoAtWaveStart": "Começa cada onda com pelo menos {0} de {1}.",
     "RegenEachTurn": "Recupera {0} da Vida máxima no começo de cada turno dele.",
-    "BurnOnHit": "{0} de chance de causar {1} em cada alvo atingido, uma vez por habilidade.",
+    "AfflictionOnHit": "{0} de chance de causar {1} em cada alvo atingido, uma vez por habilidade.",
     "CooldownEachTurn": "{0} de chance, no começo do turno, de encurtar as próprias recargas em 1 turno.",
     "HealAllyEachTurn": "No começo do turno, cura {0} da Vida máxima do aliado mais ferido.",
     "Thorns": "Quem o atinge recebe {0} do dano que causou.",
@@ -486,7 +542,8 @@
     "item": {
       "Mana": "{0} Mana",
       "Scrolls": "{0} Pergaminhos",
-      "ReappraisalGems": "{0} Gema de Reavaliação"
+      "ReappraisalGems": "{0} Gema de Reavaliação",
+      "RenameAccount": "Nome novo"
     },
     "no_gold": "Faltam {0} de Ouro.",
     "confirm": "Comprar {0} ({1}) por {2} Ouro?",
@@ -498,8 +555,11 @@
     "info": {
       "Mana": "Paga as vitórias: cada luta vencida, na Campanha ou numa Masmorra, custa Mana (a derrota não custa nada). A Canalização recarrega com o tempo; a Mana comprada aqui pode passar do máximo.",
       "Scrolls": "Invocam monstros: cada Pergaminho é uma invocação, e toda invocação conta para a garantia de 5★.",
-      "ReappraisalGems": "Devolve a runa ao estado original."
-    }
+      "ReappraisalGems": "Devolve a runa ao estado original.",
+      "RenameAccount": "Troca o nome da conta, mostrado no Santuário. O nome segue as regras de sempre e precisa estar livre; o Ouro só sai se o servidor aceitar."
+    },
+    "rename_no_account": "Precisa de uma conta com nome.",
+    "renamed": "Nome trocado: {0}."
   },
 
   "monsters": {
@@ -855,7 +915,10 @@
     "focus_boss_tip": "No automático (e na Batalha automática), a equipe inteira ataca o chefe sempre que ele puder ser alvo. Provocar ainda manda.",
     "focus_on": "Foco",
     "focus_off": "Sem foco",
-    "leave": "Sair"
+    "leave": "Sair",
+    "joint_attack": "Ataque conjunto!",
+    "blocked": "{0} barrado",
+    "duration": "{0} {1}"
   },
 
   "destination": {
@@ -923,13 +986,13 @@
     "offline": "Jogando sem conta: o progresso fica só neste aparelho. Crie uma conta e ele vai junto.",
     "synced": "Tudo salvo na nuvem (última vez às {0}).",
     "pending": "Há progresso que ainda não chegou à nuvem; ele sobe sozinho em até um minuto, ou assim que houver conexão.",
-    "rename": "Trocar nome",
     "choose_name": "Escolher nome",
     "no_name": "Conta sem nome",
     "offline_account": "Sem conexão: jogando com o progresso deste aparelho. Ele sobe sozinho quando a conexão voltar.",
     "training": "Treino",
     "training_text": "A luta de treino ensina habilidades, elementos e efeitos, um de cada vez.",
-    "training_button": "Refazer a luta de treino"
+    "training_button": "Refazer a luta de treino",
+    "rename_in_shop": "Para trocar o nome da conta, procure na Loja."
   },
 
   "lock": {
@@ -1005,7 +1068,21 @@
     "saving": "Salvando…",
     "error_name": "O nome precisa de {0} a {1} caracteres, sem espaço: letras, números, _ . ou -, começando e terminando em letra ou número.",
     "error_name_taken": "Esse nome já é de outra conta. Escolha outro.",
-    "lost_away": "Sua conta está aberta em outro aparelho. O que você jogou aqui sem conexão ficou neste aparelho: ele vai para a conta na próxima vez que você entrar aqui (se a conta também mudou lá, o jogo pergunta qual progresso fica)."
+    "lost_away": "Sua conta está aberta em outro aparelho. O que você jogou aqui sem conexão ficou neste aparelho: ele vai para a conta na próxima vez que você entrar aqui (se a conta também mudou lá, o jogo pergunta qual progresso fica).",
+    "forgot": "Esqueci a senha",
+    "reset_title": "Nova senha",
+    "reset_text": "Escreva o e-mail da conta, a chave de recuperação dela (as quatro palavras mostradas quando a conta foi criada) e a senha nova.",
+    "reset_password": "Senha nova (8 caracteres ou mais)",
+    "reset_button": "Trocar senha",
+    "reset_done": "Senha trocada. Entre com a nova.",
+    "name_cost": "Custa {0} de Ouro, que só saem se o nome for aceito.",
+    "reset_key": "Chave de recuperação (PALAVRA-PALAVRA-PALAVRA-PALAVRA)",
+    "error_recovery_key": "Chave de recuperação inválida. Depois de 5 chaves erradas a recuperação trava: peça ao suporte para destravar.",
+    "recovery_title": "Chave de recuperação",
+    "recovery_text": "Esta é a chave de recuperação da sua conta. Ela é o único jeito de trocar uma senha esquecida, e aparece [b]só agora[/b]: anote ou copie num lugar seguro.",
+    "recovery_copy": "Copiar",
+    "recovery_copied": "Copiada para a área de transferência.",
+    "recovery_saved": "Já guardei"
   },
 
   "update": {
@@ -1066,6 +1143,12 @@
       "Essence": "Essência",
       "Fragments": "Fragmentos",
       "ReappraisalGems": "Gemas de Reavaliação"
+    },
+    "gift": {
+      "rune": "Runa {0}",
+      "any_rarity": "de qualquer raridade",
+      "avatar": "Retrato: {0}",
+      "unknown": "Um presente que esta versão não conhece"
     }
   },
 
@@ -1074,5 +1157,20 @@
     "change": "Trocar retrato",
     "hint": "Escolha um dos seus monstros. A forma desperta aparece quando você tem uma cópia desperta.",
     "empty": "Invoque monstros para escolher entre eles o retrato da conta."
+  },
+
+  "scope": {
+    "All": {
+      "one": "efeito",
+      "many": "os efeitos"
+    },
+    "Buffs": {
+      "one": "efeito positivo",
+      "many": "os efeitos positivos"
+    },
+    "Debuffs": {
+      "one": "efeito negativo",
+      "many": "os efeitos negativos"
+    }
   }
 }

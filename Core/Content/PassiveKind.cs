@@ -22,7 +22,7 @@ namespace Sigilos.Core.Content
 		/// <summary>Trolls: recupera Vida no começo de cada turno dele.</summary>
 		RegenEachTurn,
 		/// <summary>Dragões: chance de Queimadura em cada alvo atingido, uma vez por habilidade.</summary>
-		BurnOnHit,
+		AfflictionOnHit,
 
 		/// <summary>Magos: chance de encurtar as próprias recargas no começo de cada turno.</summary>
 		CooldownEachTurn,

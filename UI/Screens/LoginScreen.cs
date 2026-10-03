@@ -22,7 +22,8 @@ namespace Sigilos.UI.Screens
 	public partial class LoginScreen : Control
 	{
 		private const float CardWidth = 520;
-		private const int MinPassword = 8;
+		/// <summary>O mínimo da senha (o mesmo do servidor): no cadastro e na senha nova do "Esqueci a senha".</summary>
+		public const int MinPassword = 8;
 
 		private readonly string? _email;
 		private readonly string? _name;
@@ -66,6 +67,9 @@ namespace Sigilos.UI.Screens
 		public event Action? ForgetRequested;
 
 		public event Action? OfflineRequested;
+
+		/// <summary>"Esqueci a senha", com o e-mail que já está no campo (pode vir vazio).</summary>
+		public event Action<string>? PasswordResetRequested;
 
 		public override void _Ready()
 		{
@@ -195,6 +199,18 @@ namespace Sigilos.UI.Screens
 			_emailField.TextSubmitted += _ => _passwordField.GrabFocus();
 			_submit = GameButton.Of(_register ? T("account.register") : T("account.sign_in"), Submit, ButtonKind.Primary).Named("Submit");
 			_card.AddChild(_submit);
+			if (_register)
+				return;
+
+			// Sem botão grande: é o caminho de exceção, discreto embaixo de Entrar.
+			var forgot = new Button { Name = "Forgot", Text = T("account.forgot"), Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
+			forgot.AddThemeColorOverride("font_color", Palette.Gold);
+			forgot.Pressed += () =>
+			{
+				if (!_busy)
+					PasswordResetRequested?.Invoke(_emailField?.Text.Trim() ?? "");
+			};
+			_card.AddChild(forgot);
 		}
 
 		/// <summary>Um campo com o nome em cima; o nó leva <paramref name="name"/> (o campo é <c>{name}Field</c>).</summary>

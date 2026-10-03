@@ -112,9 +112,28 @@ namespace Sigilos.GameEntry.Account
 				_data.Save();
 			};
 			_auth.Expired += () => Lose(LossReason.Expired);
+			_auth.RecoveryKeyIssued += key =>
+			{
+				_data.RecoveryKey = key;
+				_data.Save();
+				RecoveryKeyIssued?.Invoke();
+			};
 			_lock = new SessionLock(_auth, _data.DeviceId, DeviceName());
 			_cloud = new CloudSave(_auth);
 			_mail = new CloudMail(_auth);
+		}
+
+		/// <summary>Chegou a chave de recuperação da conta (<see cref="PendingRecoveryKey"/>): o GameRoot mostra.</summary>
+		public event Action? RecoveryKeyIssued;
+
+		/// <summary>A chave de recuperação que o jogador ainda não confirmou ter guardado; nula sem nenhuma.</summary>
+		public string? PendingRecoveryKey => _data.RecoveryKey;
+
+		/// <summary>O jogador guardou a chave: o aparelho a esquece.</summary>
+		public void ConfirmRecoveryKey()
+		{
+			_data.RecoveryKey = null;
+			_data.Save();
 		}
 
 		/// <summary>A conta caiu durante o jogo: o GameRoot volta para o login com o aviso. O segundo valor diz se o progresso que não subiu virou backup.</summary>
@@ -193,6 +212,9 @@ namespace Sigilos.GameEntry.Account
 		public override void _ExitTree() => _http.Dispose();
 
 		/// <summary>Cria a conta (com o convite e o nome) e já entra nela.</summary>
+		/// <summary>Esqueci a senha: troca a senha com a chave de recuperação da conta.</summary>
+		public Task<ApiResponse> ResetPassword(string email, string recoveryKey, string password) => _auth.ResetPassword(email.Trim(), recoveryKey.Trim(), password);
+
 		public async Task<ApiResponse> Register(string email, string password, string invite, string name)
 		{
 			var response = await _auth.Register(email.Trim(), password, invite.Trim(), name);

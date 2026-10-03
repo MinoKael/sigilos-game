@@ -19,7 +19,8 @@ namespace Sigilos.Core.Battle.Statuses
 
 		/// <summary>
 		/// Quantas cópias cabem no mesmo alvo. O comum é uma só: aplicar de novo renova a duração. Com
-		/// mais (Veneno), cada aplicação entra como uma cópia até o limite, e daí em diante renova a primeira.
+		/// mais (Aflição), cada aplicação entra como uma cópia até o limite, e daí em diante renova a primeira.
+		/// Acima disso vale o limite de efeitos do monstro (<see cref="BattleRules.MaxStatuses"/>).
 		/// </summary>
 		public virtual int MaxStacks => 1;
 	}

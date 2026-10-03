@@ -47,7 +47,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
-            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

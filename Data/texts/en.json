@@ -262,9 +262,9 @@
       "name": "Shield",
       "info": "Absorbs damage up to the shield's value."
     },
-    "Burn": {
-      "name": "Burn",
-      "info": "Loses {0} of max HP at the start of each turn. Cannot stack."
+    "Affliction": {
+      "name": "Affliction",
+      "info": "Loses {0} of max HP at the start of each turn, per copy. Stacks up to {1} (a monster holds at most {1} effects)."
     },
     "Stun": {
       "name": "Stun",
@@ -320,11 +320,51 @@
     },
     "Bomb": {
       "name": "Bomb",
-      "info": "Explodes at the start of its last turn for {0} of the Attack of whoever planted it. The blast ignores Defense and is never critical; shields absorb it."
+      "info": "Explodes at the start of its last turn for {0} of the Attack of whoever planted it, and stuns. The blast ignores Defense and is never critical; shields absorb it."
     },
-    "Poison": {
-      "name": "Poison",
-      "info": "Loses {0} of max HP at the start of each turn. Stacks up to {1}."
+    "SpeedDown": {
+      "name": "Speed−",
+      "info": "−{0} Speed."
+    },
+    "CritUp": {
+      "name": "Crit+",
+      "info": "+{0} Critical Rate."
+    },
+    "CritResist": {
+      "name": "Crit Resist",
+      "info": "Hits taken are {0} less likely to be critical."
+    },
+    "Blessing": {
+      "name": "Blessing",
+      "info": "Recovers {0} of max HP at the start of each turn."
+    },
+    "Counter": {
+      "name": "Counter",
+      "info": "Strikes back with the basic skill ({0} of the damage) every time it is hit."
+    },
+    "Revive": {
+      "name": "Revive",
+      "info": "On falling, comes right back with {0} of max HP. Works once."
+    },
+    "Karma": {
+      "name": "Karma",
+      "info": "No beneficial effect takes hold."
+    },
+    "Sleep": {
+      "name": "Sleep",
+      "info": "Loses its turns until the effect ends or it is hit."
+    },
+    "Unrecoverable": {
+      "name": "Wound",
+      "info": "Cannot be healed."
+    },
+    "Silence": {
+      "name": "Silence",
+      "info": "Can only use skills without a cooldown."
+    },
+    "Oblivion": {
+      "name": "Oblivion",
+      "info": "Its Passive stops working."
     }
   },
 
@@ -362,7 +402,23 @@
     },
     "passive_name": "Passive · {0}",
     "cooldown_short": "Cooldown {0}",
-    "passive_only": "Passive"
+    "passive_only": "Passive",
+    "steal": "{0}steals one {1} {2}",
+    "steal_impetus": "; without one, steals {0}% {1}",
+    "steal_all_impetus": "; without one, steals all its {0}",
+    "bonus": {
+      "Damage": "+{0} damage on the next hits",
+      "Heal": "+{0} healing and shield on the next effects",
+      "Impeto": "+{0}% {1} {2}"
+    },
+    "per_status": "{0} for each {1} {2}",
+    "prolong": "{0}extends {2} {3} by {1}",
+    "shorten": "{0}shortens {2} {3} by {1}",
+    "equalize": "levels the HP {0} to the same share",
+    "heal_team": "heals {0} HP of the {1} most injured {2}",
+    "joint": "{0} allies attack along with their basic skill",
+    "joint_all": "all allies attack along with their basic skill",
+    "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}"
   },
 
   "passive": {
@@ -374,7 +430,7 @@
     "BonusVsWounded": "+{0} damage against targets below {1} HP.",
     "ImpetoAtWaveStart": "Starts each wave with at least {0} {1}.",
     "RegenEachTurn": "Recovers {0} of max HP at the start of each of its turns.",
-    "BurnOnHit": "{0} chance to inflict {1} on each target hit, once per skill.",
+    "AfflictionOnHit": "{0} chance to inflict {1} on each target hit, once per skill.",
     "CooldownEachTurn": "{0} chance at the start of its turn to shorten its own cooldowns by 1 turn.",
     "HealAllyEachTurn": "At the start of its turn, heals the most injured ally for {0} of max HP.",
     "Thorns": "Whoever hits it takes {0} of the damage dealt.",
@@ -485,7 +541,8 @@
     "item": {
       "Mana": "{0} Mana",
       "Scrolls": "{0} Scrolls",
-      "ReappraisalGems": "{0} Reappraisal Gem"
+      "ReappraisalGems": "{0} Reappraisal Gem",
+      "RenameAccount": "New name"
     },
     "no_gold": "{0} Gold short.",
     "confirm": "Buy {0} ({1}) for {2} Gold?",
@@ -497,8 +554,11 @@
     "info": {
       "Mana": "Pays for victories: every fight won, in the Campaign or in a Dungeon, costs Mana (a defeat costs nothing). Channeling refills it over time; Mana bought here can go past the maximum.",
       "Scrolls": "Summon monsters: each Scroll is one summon, and every summon counts toward the 5★ guarantee.",
-      "ReappraisalGems": "Returns a rune to the state it dropped in: removes upgrades, Grindstones and the enchantment. You have {0}."
-    }
+      "ReappraisalGems": "Returns a rune to the state it dropped in: removes upgrades, Grindstones and the enchantment. You have {0}.",
+      "RenameAccount": "Changes the account name shown in the Sanctuary. The name follows the usual rules and must be free; the Gold is only taken if the server accepts it."
+    },
+    "rename_no_account": "Needs an account with a name.",
+    "renamed": "Name changed: {0}."
   },
 
   "monsters": {
@@ -854,7 +914,10 @@
     "focus_boss_tip": "On Auto (and in the Auto Battle), the whole team strikes the boss whenever it can be targeted. Taunt still wins.",
     "focus_on": "Focus",
     "focus_off": "Focus off",
-    "leave": "Leave"
+    "leave": "Leave",
+    "joint_attack": "Joint attack!",
+    "blocked": "{0} blocked",
+    "duration": "{0} {1}"
   },
 
   "destination": {
@@ -922,13 +985,13 @@
     "offline": "Playing without an account: progress stays on this device only. Create an account and it comes along.",
     "synced": "Everything saved to the cloud (last time at {0}).",
     "pending": "Some progress hasn't reached the cloud yet; it goes up on its own within a minute, or as soon as there's a connection.",
-    "rename": "Change name",
     "choose_name": "Choose a name",
     "no_name": "Unnamed account",
     "offline_account": "No connection: you're playing with this device's progress. It goes up on its own when the connection comes back.",
     "training": "Training",
     "training_text": "The training fight teaches skills, elements and effects, one at a time.",
-    "training_button": "Redo the training fight"
+    "training_button": "Redo the training fight",
+    "rename_in_shop": "To change the account name, look in the Shop."
   },
 
   "lock": {
@@ -1004,7 +1067,21 @@
     "saving": "Saving…",
     "error_name": "The name needs {0} to {1} characters, no spaces: letters, numbers, _ . or -, starting and ending with a letter or number.",
     "error_name_taken": "That name belongs to another account. Pick another one.",
-    "lost_away": "Your account is open on another device. What you played here without a connection stayed on this device: it goes to the account the next time you sign in here (if the account also changed there, the game asks which progress stays)."
+    "lost_away": "Your account is open on another device. What you played here without a connection stayed on this device: it goes to the account the next time you sign in here (if the account also changed there, the game asks which progress stays).",
+    "forgot": "Forgot my password",
+    "reset_title": "New password",
+    "reset_text": "Type the account e-mail, its recovery key (the four words shown when the account was created) and the new password.",
+    "reset_password": "New password (8 characters or more)",
+    "reset_button": "Change password",
+    "reset_done": "Password changed. Sign in with the new one.",
+    "name_cost": "Costs {0} Gold, taken only if the name is accepted.",
+    "reset_key": "Recovery key (WORD-WORD-WORD-WORD)",
+    "error_recovery_key": "Invalid recovery key. After 5 wrong keys recovery locks: ask support to unlock it.",
+    "recovery_title": "Recovery key",
+    "recovery_text": "This is your account recovery key. It is the only way to change a forgotten password, and it is shown [b]only now[/b]: write it down or copy it somewhere safe.",
+    "recovery_copy": "Copy",
+    "recovery_copied": "Copied to the clipboard.",
+    "recovery_saved": "I saved it"
   },
 
   "update": {
@@ -1065,6 +1142,12 @@
       "Essence": "Essence",
       "Fragments": "Fragments",
       "ReappraisalGems": "Reappraisal Gems"
+    },
+    "gift": {
+      "rune": "Rune {0}",
+      "any_rarity": "of any rarity",
+      "avatar": "Portrait: {0}",
+      "unknown": "A gift this version does not know"
     }
   },
 
@@ -1073,6 +1156,21 @@
     "change": "Change portrait",
     "hint": "Pick one of your monsters. The awakened form shows up once you own an awakened copy.",
     "empty": "Summon monsters to pick the account portrait from them."
+  },
+
+  "scope": {
+    "All": {
+      "one": "effect",
+      "many": "all effects"
+    },
+    "Buffs": {
+      "one": "beneficial effect",
+      "many": "beneficial effects"
+    },
+    "Debuffs": {
+      "one": "harmful effect",
+      "many": "harmful effects"
+    }
   },
 
   "names": {
@@ -1577,6 +1675,7 @@
     "Mordida das Profundezas": "Deep Bite",
     "Maremoto": "Tidal Wave",
     "Sussurro do Fim": "Whisper of the End",
-    "Silêncio": "Silence"
+    "Silêncio": "Silence",
+    "Troca de nome": "Name change"
   }
 }

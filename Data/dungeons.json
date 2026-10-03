@@ -86,7 +86,7 @@
           [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_fire"}, {"summon": "goblin_fire"}]
         ]
       },
-      {"stars": 6, "level": 55, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.05, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
+      {"stars": 6, "level": 55, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.0, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
         "waves": [
           [{"summon": "crow_fire"}, {"summon": "wolf_fire"}, {"summon": "goblin_fire"}, {"summon": "wolf_light"}],
           [{"summon": "dragon_fire"}, {"summon": "crow_fire"}, {"summon": "goblin_fire"}, {"summon": "wolf_wind"}],

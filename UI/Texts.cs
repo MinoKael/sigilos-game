@@ -48,7 +48,7 @@ namespace Sigilos.UI
 
 		public static string Explain(StatusKind status) => status switch
 		{
-			StatusKind.Burn => T("effect.Burn.info", Percent(BattleRules.BurnFraction), BattleRules.MaxBurnStacks),
+			StatusKind.Affliction => T("effect.Affliction.info", Percent(BattleRules.AfflictionFraction), BattleRules.MaxStatuses),
 			StatusKind.Curse => T("effect.Curse.info", Percent(BattleRules.CurseBonus)),
 			StatusKind.Blind => T("effect.Blind.info", Percent(BattleRules.BlindMissChance)),
 			StatusKind.AttackUp => T("effect.AttackUp.info", Percent(BattleRules.AttackUpBonus)),
@@ -57,7 +57,12 @@ namespace Sigilos.UI
 			StatusKind.SpeedUp => T("effect.SpeedUp.info", Percent(BattleRules.SpeedUpBonus)),
 			StatusKind.DefenseBreak => T("effect.DefenseBreak.info", Percent(BattleRules.DefenseDownPenalty)),
 			StatusKind.Bomb => T("effect.Bomb.info", Percent(BattleRules.BombDamageMultiplier)),
-            StatusKind.Poison => T("effect.Poison.info", Percent(BattleRules.PoisonFraction), BattleRules.MaxPoisonStacks),
+			StatusKind.SpeedDown => T("effect.SpeedDown.info", Percent(BattleRules.SpeedDownPenalty)),
+			StatusKind.CritUp => T("effect.CritUp.info", Percent(BattleRules.CritUpBonus)),
+			StatusKind.CritResist => T("effect.CritResist.info", Percent(1 - BattleRules.CritResistFactor)),
+			StatusKind.Blessing => T("effect.Blessing.info", Percent(BattleRules.BlessingFraction)),
+			StatusKind.Counter => T("effect.Counter.info", Percent(RuneSets.CounterDamage)),
+			StatusKind.Revive => T("effect.Revive.info", Percent(BattleRules.ReviveHealth)),
             _ => T($"effect.{status}.info"),
 		};
 
@@ -236,7 +241,7 @@ namespace Sigilos.UI
 			{
 				PassiveKind.ShieldOnDeath => T("passive.ShieldOnDeath", Term(StatusKind.Shield), value),
 				PassiveKind.ImpetoAtWaveStart => T("passive.ImpetoAtWaveStart", value, Impeto),
-				PassiveKind.BurnOnHit => T("passive.BurnOnHit", value, Term(StatusKind.Burn)),
+				PassiveKind.AfflictionOnHit => T("passive.AfflictionOnHit", value, Term(StatusKind.Affliction)),
 				PassiveKind.CurseOnHit => T("passive.CurseOnHit", value, Term(StatusKind.Curse)),
 				PassiveKind.StunAttacker => T("passive.StunAttacker", value, Term(StatusKind.Stun)),
 				PassiveKind.BonusVsWounded => T("passive.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
@@ -315,10 +320,43 @@ namespace Sigilos.UI
 				EffectKind.Status => T("skill.effect", chance, Term(effect.Status), where, Turns(effect.Turns)),
 				EffectKind.Impeto => T("skill.impetus", effect.Power >= 0 ? "+" : "−", Math.Abs(effect.Power), Impeto, where),
 				EffectKind.Cleanse => T("skill.cleanse", where),
+				EffectKind.StealBuff => StealText(effect, chance, where),
+				EffectKind.BonusPerStatus => BonusText(effect, where),
+				EffectKind.ChangeDuration => T(effect.Turns >= 0 ? "skill.prolong" : "skill.shorten", chance, Turns(Math.Abs(effect.Turns)), Statuses(effect, many: true), where),
+				EffectKind.EqualizeHealth => T("skill.equalize", where),
+				EffectKind.HealTeam => effect.Count > 0 ? T("skill.heal_team", Percent(effect.Power), effect.Count, where) : T("skill.heal", Percent(effect.Power), where),
+				EffectKind.JointAttack => effect.Count > 0 ? T("skill.joint", effect.Count) : T("skill.joint_all"),
+				EffectKind.ExtraTurnOnKill => T("skill.extra_turn_on_kill", Turns(effect.Turns)),
 				_ => effect.Kind.ToString(),
 			};
 			return effect.OnKill ? T("skill.on_kill", text) : text;
 		}
+
+		/// <summary>"rouba um efeito positivo do alvo; sem nenhum, rouba 20% de Ímpeto".</summary>
+		private static string StealText(EffectDefinition effect, string chance, string where)
+		{
+			var what = effect.OnlyStatus is { } only ? Term(only) : T("scope.Buffs.one");
+			var text = T("skill.steal", chance, what, where);
+			if (effect.Fallback)
+				text += effect.Power > 0 ? T("skill.steal_impetus", Math.Abs(effect.Power), Impeto) : T("skill.steal_all_impetus", Impeto);
+			return text;
+		}
+
+		/// <summary>"+20% de dano nos golpes seguintes para cada efeito negativo no alvo".</summary>
+		private static string BonusText(EffectDefinition effect, string where)
+		{
+			var bonus = effect.Bonus switch
+			{
+				BonusKind.Damage => T("skill.bonus.Damage", Percent(effect.Power)),
+				BonusKind.Heal => T("skill.bonus.Heal", Percent(effect.Power)),
+				_ => T("skill.bonus.Impeto", effect.Power, Impeto, where),
+			};
+			return T("skill.per_status", bonus, Statuses(effect, many: false), T($"target.{effect.From}"));
+		}
+
+		/// <summary>Os efeitos que o efeito olha: o escolhido (<see cref="EffectDefinition.OnlyStatus"/>) ou os do escopo.</summary>
+		private static string Statuses(EffectDefinition effect, bool many) =>
+			effect.OnlyStatus is { } only ? Term(only) : T($"scope.{effect.Scope}.{(many ? "many" : "one")}");
 
 		private static string DamageText(EffectDefinition effect, string where)
 		{

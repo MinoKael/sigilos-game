@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 
 namespace Sigilos.Core.Progression
@@ -8,7 +10,9 @@ namespace Sigilos.Core.Progression
 	/// O correio do Santuário: cartas que o servidor manda com recompensas. Coletar soma as recompensas e
 	/// anota a carta no save (<see cref="PlayerState.ClaimedMail"/>) antes de o servidor saber: se a conexão
 	/// cair no meio, a recompensa não se perde, e a mesma carta nunca é coletada duas vezes. A Mana pode
-	/// passar do máximo, como a da Loja.
+	/// passar do máximo, como a da Loja. Os presentes (<see cref="Mail.Gifts"/>) entram junto: monstros novos
+	/// na coleção (ou no Baú), runas no inventário (mesmo cheio, como as da vitória) e retratos liberados
+	/// (<see cref="Account.UnlockAvatar"/>). Monstro que o jogo não conhece não entra.
 	/// </summary>
 	public static class Mailbox
 	{
@@ -16,16 +20,44 @@ namespace Sigilos.Core.Progression
 		public static IReadOnlyList<Mail> Unclaimed(PlayerState player, IEnumerable<Mail> mail) =>
 			mail.Where(m => !player.ClaimedMail.Contains(m.Id)).ToList();
 
-		/// <summary>Soma as recompensas e anota a carta. Falso se ela já tinha sido coletada: nada muda.</summary>
-		public static bool Claim(PlayerState player, Mail mail)
+		/// <summary>
+		/// Soma as recompensas e anota a carta. Falso se ela já tinha sido coletada: nada muda. Sem
+		/// <paramref name="database"/>, os presentes não entram (só as moedas).
+		/// </summary>
+		public static bool Claim(PlayerState player, Mail mail, GameDatabase? database = null, Random? random = null)
 		{
 			if (player.ClaimedMail.Contains(mail.Id))
 				return false;
 
 			foreach (var (item, amount) in mail.Rewards)
 				Give(player, item, amount);
+			if (database != null)
+			{
+				random ??= new Random();
+				foreach (var gift in mail.Gifts)
+					Give(random, database, player, gift);
+			}
+
 			player.ClaimedMail.Add(mail.Id);
 			return true;
+		}
+
+		private static void Give(Random random, GameDatabase database, PlayerState player, MailGift gift)
+		{
+			switch (gift.Kind)
+			{
+				case MailGiftKind.Monster when database.HasSummon(gift.Id):
+					for (var i = 0; i < gift.Count; i++)
+						Roster.Add(player, database.Summon(gift.Id));
+					break;
+				case MailGiftKind.Rune:
+					for (var i = 0; i < gift.Count; i++)
+						RuneInventory.Create(random, player, gift.Grade, gift.Set is { } set ? new[] { set } : null, gift.Rarity);
+					break;
+				case MailGiftKind.Avatar when database.HasSummon(gift.Id):
+					Account.UnlockAvatar(player, gift.Id, gift.Awakened);
+					break;
+			}
 		}
 
 		private static void Give(PlayerState player, MailItem item, int amount)

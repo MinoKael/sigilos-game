@@ -332,6 +332,14 @@ namespace Sigilos.Core.Content
 					yield return $"'{skill.Name}': chance {effect.Chance} fora de 0 a 1.";
 				if (effect.Kind == EffectKind.Status && effect.Turns < 1)
 					yield return $"'{skill.Name}': efeito de status sem duração.";
+				if (!EffectTargets.Allows(effect.Kind, effect.Target))
+					yield return $"'{skill.Name}': {effect.Kind} não vale com o alvo {effect.Target}.";
+				if (effect.Kind == EffectKind.ChangeDuration && effect.Turns == 0)
+					yield return $"'{skill.Name}': mudança de duração de 0 turnos.";
+				if (effect.Kind == EffectKind.BonusPerStatus && effect.Power <= 0)
+					yield return $"'{skill.Name}': bônus por efeito sem valor.";
+				if (effect.Count < 0)
+					yield return $"'{skill.Name}': quantidade {effect.Count} negativa.";
 			}
 
 		}

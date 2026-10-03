@@ -111,13 +111,16 @@ namespace Sigilos.Core.Content
 			return Complete(new StatBlock { Health = hp, Attack = atk, Defense = def, Speed = speed });
 		}
 
-		/// <summary>Os atributos que o modelo dá a esta variante, com os vieses dela, da família e do elemento.</summary>
+		/// <summary>
+		/// Os atributos que o modelo dá a esta variante, nas estrelas dela, com os vieses dela, da família e do
+		/// elemento. A variante com estrelas próprias não leva o viés da família: o ajuste fino dela decide.
+		/// </summary>
 		public StatBlock Compute(SummonDefinition summon, bool awakened) => Compute(
 			summon.Rarity,
 			summon.Role,
 			awakened,
 			Elements.GetValueOrDefault(summon.Element),
-			summon.Family.Bias,
+			summon.OwnStars ? null : summon.Family.Bias,
 			summon.Bias,
 			summon.AwakeningSpeed);
 

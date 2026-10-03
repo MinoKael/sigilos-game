@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using Sigilos.Core.Content;
 using Sigilos.Core.Progression;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
@@ -22,8 +23,12 @@ namespace Sigilos.UI.Screens
 		private readonly Dialog _dialog;
 		private readonly VBoxContainer _letters = new() { Name = "Letters" };
 
-		private MailboxDialog(Control from)
+		/// <summary>Para os presentes: o nome e o desenho de cada monstro.</summary>
+		private readonly GameDatabase? _database;
+
+		private MailboxDialog(Control from, GameDatabase? database)
 		{
+			_database = database;
 			_dialog = Dialog.Open(from, T("mail.title"), Width, null, "MailboxDialog");
 			_letters.AddThemeConstantOverride("separation", 12);
 			_dialog.Body.AddChild(_letters);
@@ -35,7 +40,7 @@ namespace Sigilos.UI.Screens
 		public event Action? ClaimAllRequested;
 		public event Action? Closed;
 
-		public static MailboxDialog Open(Control from) => new(from);
+		public static MailboxDialog Open(Control from, GameDatabase? database = null) => new(from, database);
 
 		/// <summary>Um aviso no lugar das cartas: buscando, sem conta, sem conexão, erro.</summary>
 		public void ShowMessage(string text)
@@ -78,11 +83,13 @@ namespace Sigilos.UI.Screens
 			if (mail.Text.Length > 0)
 				column.AddChild(Layout.Text(mail.Text, null, Width - 80).Named("Text"));
 
-			if (mail.Rewards.Count > 0)
+			if (mail.Rewards.Count > 0 || mail.Gifts.Count > 0)
 			{
 				var rewards = Layout.Flow(6).Named("Rewards");
 				foreach (var (item, amount) in mail.Rewards)
 					rewards.AddChild(Layout.Labeled(Icon(item), Texts.Number(amount), T($"mail.item.{item}")).Named(item.ToString()));
+				for (var i = 0; i < mail.Gifts.Count; i++)
+					rewards.AddChild(Gift(mail.Gifts[i]).Named($"Gift{i + 1}"));
 				column.AddChild(rewards);
 			}
 
@@ -99,6 +106,25 @@ namespace Sigilos.UI.Screens
 			foot.AddChild(GameButton.Of(T("mail.claim"), () => ClaimRequested?.Invoke(mail), ButtonKind.Primary, "collect", 48).Wide(200).Named("Claim"));
 			column.AddChild(foot);
 			return panel;
+		}
+
+		/// <summary>Um presente: o monstro (desenho, ×quantos, nome), a runa (estrelas, raridade e conjunto) ou o retrato.</summary>
+		private Control Gift(MailGift gift)
+		{
+			if (gift.Kind == MailGiftKind.Rune)
+			{
+				var what = gift.Rarity is { } rarity ? Texts.Name(rarity) : T("mail.gift.any_rarity");
+				if (gift.Set is { } set)
+					what += $" · {Texts.Name(set)}";
+				return Layout.Labeled("rune", $"{gift.Count}× {Texts.Stars(gift.Grade)}", T("mail.gift.rune", what));
+			}
+
+			var summon = _database is { } database && database.HasSummon(gift.Id) ? database.Summon(gift.Id) : null;
+			if (summon == null)
+				return Layout.Labeled("monster", gift.Kind == MailGiftKind.Avatar ? "" : $"×{gift.Count}", T("mail.gift.unknown"));
+			return gift.Kind == MailGiftKind.Avatar
+				? Layout.Labeled(Art.Creature(summon.Image), "", T("mail.gift.avatar", summon.NameFor(gift.Awakened)), Palette.Of(summon.Element))
+				: Layout.Labeled(Art.Creature(summon.Image), $"×{gift.Count}", summon.Name, Palette.Of(summon.Element));
 		}
 
 		private static string Icon(MailItem item) => item switch

@@ -28,10 +28,12 @@ namespace Sigilos.UI.Screens
 		private readonly Label _message = new() { Name = "Message", AutowrapMode = TextServer.AutowrapMode.WordSmart, Visible = false };
 		private readonly GameButton _save;
 
-		private AccountNameDialog(Control from, string? current, bool prompt)
+		private AccountNameDialog(Control from, string? current, bool prompt, string? note)
 		{
 			_dialog = Dialog.Open(from, T("account.name"), Width, null, "AccountNameDialog");
 			_dialog.Body.AddChild(RichText.Label(T(prompt ? "account.name_prompt" : "account.name_text"), Width - 40).Named("Text"));
+			if (note != null)
+				_dialog.Body.AddChild(Layout.Text(note, GameTheme.Faded, Width - 40).Named("Note"));
 			_field = new LineEdit
 			{
 				Name = "NameField",
@@ -59,7 +61,8 @@ namespace Sigilos.UI.Screens
 		/// <summary>O nome escrito, sem espaço, que passou na conferência de tamanho.</summary>
 		public event Action<string>? Submitted;
 
-		public static AccountNameDialog Open(Control from, string? current, bool prompt) => new(from, current, prompt);
+		/// <param name="note">Uma linha a mais embaixo do texto (o preço, quando a troca é comprada na Loja).</param>
+		public static AccountNameDialog Open(Control from, string? current, bool prompt, string? note = null) => new(from, current, prompt, note);
 
 		/// <summary>O nome sem espaço nenhum; nulo fora do tamanho.</summary>
 		public static string? Clean(string text)

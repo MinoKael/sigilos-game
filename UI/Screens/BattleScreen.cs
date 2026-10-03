@@ -732,6 +732,24 @@ namespace Sigilos.UI.Screens
 					_views[counter.Unit].Float(T("battle.counterattack"), Palette.Gold, 14);
 					return;
 
+				case JointAttack joint:
+					_views[joint.Unit].Float(T("battle.joint_attack"), Palette.Gold, 14);
+					return;
+
+				case StatusBlocked blocked:
+					_views[blocked.Target].Float(T("battle.blocked", Texts.Name(blocked.Status)), Palette.TextFaded);
+					return;
+
+				case DurationChanged duration:
+					_views[duration.Target].Float(T("battle.duration", Texts.Name(duration.Status), duration.Turns > 0 ? $"+{duration.Turns}" : $"−{-duration.Turns}"), BattleRules.IsNegative(duration.Status) == duration.Turns > 0 ? Palette.Negative : Palette.Positive);
+					_views[duration.Target].Refresh();
+					return;
+
+				case HealthLeveled leveled:
+					_views[leveled.Target].Float($"-{leveled.Amount}", Palette.TextFaded, 14);
+					_views[leveled.Target].Refresh();
+					return;
+
 				case MaxHealthReduced reduced:
 					_views[reduced.Target].Float(T("battle.max_hp", reduced.Amount), Palette.Negative);
 					_views[reduced.Target].Refresh();
@@ -783,7 +801,7 @@ namespace Sigilos.UI.Screens
 					return;
 
 				case TurnSkipped skipped:
-					_views[skipped.Unit].Float(T("battle.stunned"), Palette.Negative);
+					_views[skipped.Unit].Float(skipped.Cause is { } cause ? Texts.Name(cause) : T("battle.stunned"), Palette.Negative);
 					_banner.Text = T("battle.loses_turn", skipped.Unit.Name);
 					return;
 

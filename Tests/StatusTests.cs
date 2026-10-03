@@ -119,18 +119,19 @@ namespace Sigilos.Tests
 			session.Start();
 
 			var resolver = new EffectResolver(session);
-			for (var i = 0; i < BattleRules.MaxPoisonStacks + 2; i++)
-				resolver.ApplyStatus(hero, foe, StatusKind.Poison, 1, 2, resistible: false);
 			for (var i = 0; i < 3; i++)
-				resolver.ApplyStatus(hero, foe, StatusKind.Burn, 1, 2, resistible: false);
-			Assert.Equal(BattleRules.MaxPoisonStacks, foe.Count(StatusKind.Poison), "o Veneno acumula até o limite");
-			Assert.Equal(1, foe.Count(StatusKind.Burn), "a Queimadura não acumula");
+				resolver.ApplyStatus(hero, foe, StatusKind.Affliction, 1, 2, resistible: false);
+			Assert.Equal(3, foe.Count(StatusKind.Affliction), "a Aflição acumula");
 
 			var turn = session.BeginTurn();
 			Assert.Equal(foe, turn.Actor, "o inimigo é o mais rápido");
-			var poison = BattleRules.MaxPoisonStacks * Math.Round(1000 * BattleRules.PoisonFraction);
-			var burn = Math.Round(1000 * BattleRules.BurnFraction);
-			Assert.Near(1000 - poison - burn, foe.Health, "cada cópia tira a sua fração no começo do turno");
+			Assert.Near(1000 - 3 * Math.Round(1000 * BattleRules.AfflictionFraction), foe.Health, "cada cópia tira a sua fração no começo do turno");
+
+			for (var i = 0; i < BattleRules.MaxStatuses + 2; i++)
+				resolver.ApplyStatus(hero, foe, StatusKind.Affliction, 1, 2, resistible: false);
+			Assert.Equal(BattleRules.MaxStatuses, foe.Statuses.Count, "acumula até o limite de efeitos do monstro");
+			resolver.ApplyStatus(hero, foe, StatusKind.Stun, 1, 1, resistible: false);
+			Assert.False(foe.Has(StatusKind.Stun), "cheio, um efeito novo não pega");
 		}
 
 		[Test]
@@ -151,7 +152,9 @@ namespace Sigilos.Tests
 			Assert.False(blast.Crit, "a explosão nunca é crítica");
 			Assert.Near(9850, foe.Health, "a Vida depois da explosão");
 			Assert.False(foe.Has(StatusKind.Bomb), "a bomba some ao explodir");
-			Assert.True(turn.NeedsDecision, "e o alvo ainda age");
+			Assert.False(turn.NeedsDecision, "e o alvo, atordoado pela explosão, perde este turno");
+			Assert.Equal(StatusKind.Stun, turn.Events.OfType<TurnSkipped>().Single().Cause, "pelo Atordoamento");
+			Assert.False(foe.Has(StatusKind.Stun), "que acaba no fim deste turno");
 		}
 
 		[Test]

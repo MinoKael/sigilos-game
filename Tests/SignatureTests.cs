@@ -76,14 +76,14 @@ namespace Sigilos.Tests
 			var burned = 0;
 			for (var seed = 1; seed <= 20; seed++)
 			{
-				var dragon = TestData.Unit("dragão", Side.Allies, speed: 300, passive: Passive(PassiveKind.BurnOnHit, 1));
+				var dragon = TestData.Unit("dragão", Side.Allies, speed: 300, passive: Passive(PassiveKind.AfflictionOnHit, 1));
 				var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 				var session = TestData.Session(new[] { dragon }, new[] { foe }, seed);
 				session.Start();
 				TestData.RunUntilTurnOf(session, dragon);
 				var events = session.Act(new UnitAction(0, foe));
-				Assert.True(events.OfType<StatusApplied>().Count(e => e.Status == StatusKind.Burn) + events.OfType<Resisted>().Count() == 1, "um sorteio por alvo");
-				if (foe.Has(StatusKind.Burn))
+				Assert.True(events.OfType<StatusApplied>().Count(e => e.Status == StatusKind.Affliction) + events.OfType<Resisted>().Count() == 1, "um sorteio por alvo");
+				if (foe.Has(StatusKind.Affliction))
 					burned++;
 			}
 

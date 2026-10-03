@@ -49,7 +49,7 @@ namespace Sigilos.UI.Style
 					PassiveKind.SpeedWhenLowest => new Symbol(Effect(StatusKind.SpeedUp)),
 					PassiveKind.ShieldOnDeath => new Symbol(Effect(StatusKind.Shield)),
 					PassiveKind.DamageReduction => new Symbol(Effect(StatusKind.DefenseUp)),
-					PassiveKind.BurnOnHit => new Symbol(Effect(StatusKind.Burn)),
+					PassiveKind.AfflictionOnHit => new Symbol(Effect(StatusKind.Affliction)),
 					PassiveKind.CurseOnHit => new Symbol(Effect(StatusKind.Curse)),
 					PassiveKind.StunAttacker => new Symbol(Effect(StatusKind.Stun)),
 					PassiveKind.CleanseAllyEachTurn => new Symbol(Effect(StatusKind.Immunity)),
@@ -84,6 +84,14 @@ namespace Sigilos.UI.Style
 						return new Symbol(Effect(StatusKind.Immunity));
 					case EffectKind.Damage when effect.Drain > 0:
 						return Symbol.Of(RuneSets.For(RuneSet.Siphon).Glyph);
+					case EffectKind.HealTeam or EffectKind.EqualizeHealth:
+						return Symbol.Of(Texts.GlyphOf(Stat.Health));
+					case EffectKind.StealBuff:
+						return Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph);
+					case EffectKind.ExtraTurnOnKill:
+						return Symbol.Of(RuneSets.For(RuneSet.Frenzy).Glyph);
+					case EffectKind.JointAttack:
+						return new Symbol(Effect(StatusKind.Counter));
 				}
 			}
 

@@ -19,7 +19,7 @@
           "name": "Garra",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -33,7 +33,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -43,7 +43,7 @@
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "BurnOnHit", "value": 0.2}
+          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
         }
       ]
     },
@@ -186,7 +186,7 @@
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "BurnOnHit", "value": 0.2}
+          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
         }
       ]
     },
@@ -227,7 +227,7 @@
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "BurnOnHit", "value": 0.2}
+          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
         }
       ]
     }

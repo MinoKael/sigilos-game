@@ -119,7 +119,7 @@ namespace Sigilos.Core.Battle
 
 			if (unit.Any(behavior => behavior.SkipsTurn))
 			{
-				Emit(new TurnSkipped(unit));
+				Emit(new TurnSkipped(unit, unit.Statuses.FirstOrDefault(status => status.Behavior.SkipsTurn)?.Kind));
 				FinishTurn(unit);
 				return new TurnStart(unit, false, Flush());
 			}
@@ -140,8 +140,8 @@ namespace Sigilos.Core.Battle
 			var skill = unit.Skill(index);
 
 			Emit(new SkillUsed(unit, skill));
-			_effects.Resolve(unit, skill.Effects, action.Target);
-			unit.SetCooldown(index, skill.Cooldown);
+			var cast = _effects.Resolve(unit, skill.Effects, action.Target);
+			unit.SetCooldown(index, Math.Max(0, skill.Cooldown - cast.CooldownReduction));
 
 			foreach (var rule in unit.Rules())
 				rule.Behavior.AfterAction(rule, _effects);

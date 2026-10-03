@@ -73,19 +73,29 @@ namespace Sigilos.UI.Screens
 				column.AddChild(new Label { Name = "Email", Text = account.Email, ThemeTypeVariation = GameTheme.Faded });
 				if (account.Status.Length > 0)
 					column.AddChild(Layout.Text(account.Status, GameTheme.Faded, 470).Named("Status"));
-				var rename = GameButton.Of(T(account.Name != null ? "config.rename" : "config.choose_name"), () =>
-				{
-					dialog.Close();
-					account.Rename();
-				}).Named("Rename");
 				var signOut = GameButton.Of(T("config.sign_out"), () =>
 				{
 					dialog.Close();
 					account.SignOut();
 				}).Named("SignOut");
-				rename.SizeFlagsHorizontal = signOut.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+				signOut.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 				var buttons = Layout.Row(10).Named("Buttons");
-				buttons.AddChild(rename);
+				// Trocar o nome é na Loja; aqui só a conta que ainda não tem nome escolhe o primeiro, de graça.
+				if (account.Name == null)
+				{
+					var choose = GameButton.Of(T("config.choose_name"), () =>
+					{
+						dialog.Close();
+						account.Rename();
+					}).Named("ChooseName");
+					choose.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+					buttons.AddChild(choose);
+				}
+				else
+				{
+					column.AddChild(Layout.Text(T("config.rename_in_shop"), GameTheme.Faded, 470).Named("RenameHint"));
+				}
+
 				buttons.AddChild(signOut);
 				column.AddChild(buttons);
 			}

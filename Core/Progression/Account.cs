@@ -17,13 +17,25 @@ namespace Sigilos.Core.Progression
 
 		/// <summary>
 		/// Os retratos que a conta pode usar: cada variante que ela tem (na coleção ou no Baú) e, de quem
-		/// ela tem uma cópia desperta, também a forma desperta. Na ordem em que chegaram à conta.
+		/// ela tem uma cópia desperta, também a forma desperta; depois, os liberados pelo correio
+		/// (<see cref="PlayerState.AvatarUnlocks"/>). Na ordem em que chegaram à conta.
 		/// </summary>
 		public static IReadOnlyList<(string Summon, bool Awakened)> Avatars(PlayerState player) => player.Monsters
 			.OrderBy(m => m.Id)
 			.SelectMany(m => m.Awakened ? new[] { (m.SummonId, false), (m.SummonId, true) } : new[] { (m.SummonId, false) })
+			.Concat(player.AvatarUnlocks.Select(key => key.EndsWith(AwakenedSuffix) ? (key[..^AwakenedSuffix.Length], true) : (key, false)))
 			.Distinct()
 			.ToList();
+
+		private const string AwakenedSuffix = ":awakened";
+
+		/// <summary>Libera um retrato sem ter o monstro (presente do correio). Repetir não faz nada.</summary>
+		public static void UnlockAvatar(PlayerState player, string summonId, bool awakened)
+		{
+			var key = awakened ? summonId + AwakenedSuffix : summonId;
+			if (!player.AvatarUnlocks.Contains(key))
+				player.AvatarUnlocks.Add(key);
+		}
 
 		/// <summary>Troca o retrato da conta por um de <see cref="Avatars"/>; outro qualquer é recusado.</summary>
 		public static bool SetAvatar(PlayerState player, string summonId, bool awakened)

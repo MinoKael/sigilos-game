@@ -19,7 +19,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
-            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -45,7 +45,7 @@
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.15},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.6, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.6, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

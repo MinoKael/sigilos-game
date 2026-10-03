@@ -19,7 +19,7 @@
           "name": "Mordida Escaldante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -41,7 +41,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Damage", "target": "Target", "power": 4.9},
-            {"kind": "Status", "target": "Target", "status": "Burn", "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "turns": 2}
           ]
         },
         {

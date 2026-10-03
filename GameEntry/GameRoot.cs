@@ -108,6 +108,7 @@ namespace Sigilos.GameEntry
 				_ => backedUp ? "account.lost_taken_backup" : "account.lost_taken",
 			}));
 			_account.SyncNeeded += Resync;
+			_account.RecoveryKeyIssued += ShowRecoveryKey;
 			_account.ConnectionChanged += () =>
 			{
 				if (_screen is HubScreen hub)
@@ -179,6 +180,8 @@ namespace Sigilos.GameEntry
 			_player = player;
 			_playing = true;
 			UiSession.Player = player;
+			// A chave que chegou no cadastro ou na entrada aparece por cima da primeira tela.
+			Callable.From(ShowRecoveryKey).CallDeferred();
 			if (Argument("--language=") == null)
 				UseLanguage(player.Language ?? _language);
 
@@ -252,6 +255,7 @@ namespace Sigilos.GameEntry
 			login.RegisterRequested += (email, password, invite, name) => SignIn(login, () => _account.Register(email, password, invite, name), false);
 			login.ResumeRequested += () => SignIn(login, _account.Resume, true);
 			login.ForgetRequested += _account.Forget;
+			login.PasswordResetRequested += email => ResetPassword(login, email);
 			login.OfflineRequested += () =>
 			{
 				_account.Offline = true;
@@ -409,12 +413,52 @@ namespace Sigilos.GameEntry
 		}
 
 		/// <summary>
-		/// A janela do nome da conta: trocar (Ajustes) ou, com <paramref name="prompt"/>, pedir um à conta que
-		/// ainda não tem. Com o nome aceito, o Santuário se remonta com ele.
+		/// "Esqueci a senha": troca a senha com a chave de recuperação da conta. Depois, o jogador entra pelo
+		/// login com a senha nova (os acessos lembrados da conta deixaram de valer no servidor).
 		/// </summary>
-		private void ChooseName(bool prompt)
+		private void ResetPassword(LoginScreen login, string email)
 		{
-			var dialog = AccountNameDialog.Open(_ui, _account.AccountName, prompt);
+			var dialog = PasswordResetDialog.Open(_ui, email.Length > 0 ? email : _account.Email);
+			dialog.ResetSubmitted += async (address, key, password) =>
+			{
+				dialog.SetBusy();
+				var response = await _account.ResetPassword(address, key, password);
+				if (!response.Ok)
+				{
+					dialog.ShowError(AccountError(response));
+					return;
+				}
+
+				dialog.Close();
+				login.ShowMessage(T("account.reset_done"), false);
+			};
+		}
+
+		private Dialog? _recoveryDialog;
+
+		/// <summary>
+		/// A chave de recuperação que o jogador ainda não guardou, por cima de qualquer tela, até o "Já
+		/// guardei" (fechar o jogo antes não a perde: ela fica no arquivo da conta).
+		/// </summary>
+		private void ShowRecoveryKey()
+		{
+			if (!_playing || _account.PendingRecoveryKey is not { } key || (_recoveryDialog != null && IsInstanceValid(_recoveryDialog)))
+				return;
+
+			_recoveryDialog = RecoveryKeyDialog.Open(_ui, key, _account.ConfirmRecoveryKey);
+			_recoveryDialog.Closed += () => _recoveryDialog = null;
+		}
+
+		/// <summary>
+		/// A janela do nome da conta: dar o primeiro nome (Ajustes) ou, com <paramref name="prompt"/>, pedir um à
+		/// conta que ainda não tem. Com o nome aceito, o Santuário se remonta com ele. Trocar um nome que já
+		/// existe é comprado na Loja: <paramref name="price"/> vai na janela e <paramref name="accepted"/> cobra,
+		/// só depois que o servidor aceitou o nome.
+		/// </summary>
+		private void ChooseName(bool prompt, int? price = null, Action? accepted = null)
+		{
+			var note = price is { } gold ? T("account.name_cost", Texts.Number(gold)) : null;
+			var dialog = AccountNameDialog.Open(_ui, _account.AccountName, prompt, note);
 			dialog.Submitted += async name =>
 			{
 				dialog.SetBusy();
@@ -426,6 +470,7 @@ namespace Sigilos.GameEntry
 				}
 
 				dialog.Close();
+				accepted?.Invoke();
 				if (_screen is HubScreen)
 					_current();
 			};
@@ -477,6 +522,8 @@ namespace Sigilos.GameEntry
 			{ Error: "invalid_name" } => T("account.error_name", AccountNameDialog.MinLength, AccountNameDialog.MaxLength),
 			{ Error: "name_taken" } => T("account.error_name_taken"),
 			{ Error: "cloud_unreadable" } => T("account.error_cloud"),
+			{ Error: "invalid_key" } => T("account.error_recovery_key"),
+			{ Error: "invalid_password" } => T("account.error_password", LoginScreen.MinPassword),
 			{ Status: 401 } => T(login ? "account.error_login" : "account.error_expired"),
 			_ => T("account.error_server", response.Status),
 		};
@@ -673,7 +720,7 @@ namespace Sigilos.GameEntry
 		/// <summary>A janela do correio: as cartas já buscadas na hora e, depois, as da busca nova.</summary>
 		private void OpenMailbox(HubScreen hub)
 		{
-			var mailbox = MailboxDialog.Open(hub);
+			var mailbox = MailboxDialog.Open(hub, _database);
 			if (!_account.Playing)
 			{
 				mailbox.ShowMessage(T("mail.no_account"));
@@ -705,7 +752,7 @@ namespace Sigilos.GameEntry
 		/// </summary>
 		private void ClaimMail(IEnumerable<Mail> letters)
 		{
-			var claimed = letters.Where(mail => Mailbox.Claim(_player, mail)).ToList();
+			var claimed = letters.Where(mail => Mailbox.Claim(_player, mail, _database, _random)).ToList();
 			if (claimed.Count == 0)
 				return;
 
@@ -903,13 +950,27 @@ namespace Sigilos.GameEntry
 
 		private void ShowShop(Action back)
 		{
-			var shop = new ShopScreen(_database, _player);
+			var shop = new ShopScreen(_database, _player, _account.Playing && _account.AccountName != null);
 			shop.BackRequested += back;
-			shop.BuyRequested += offer => Change(() =>
+			shop.BuyRequested += offer =>
 			{
-				if (Shop.Buy(_player, offer))
-					shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
-			}, shop.Refresh);
+				// Trocar o nome: o servidor aceita o nome primeiro; o Ouro só sai depois.
+				if (offer.Item == ShopItem.RenameAccount)
+				{
+					ChooseName(false, offer.Price, () => Change(() =>
+					{
+						if (Shop.Buy(_player, offer))
+							shop.ShowMessage(T("shop.renamed", _account.AccountName ?? ""));
+					}, shop.Refresh));
+					return;
+				}
+
+				Change(() =>
+				{
+					if (Shop.Buy(_player, offer))
+						shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
+				}, shop.Refresh);
+			};
 			Swap(shop, () => ShowShop(back));
 		}
 

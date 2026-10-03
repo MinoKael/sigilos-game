@@ -15,7 +15,7 @@ namespace Sigilos.Core.Battle
 		private readonly IReadOnlyList<BattleUnit> _opponents;
 		private readonly HashSet<(UnitRule Rule, BattleUnit Target)> _once = new();
 
-		public Cast(EffectResolver resolver, BattleUnit caster, BattleUnit? main, IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> opponents, bool counter)
+		public Cast(EffectResolver resolver, BattleUnit caster, BattleUnit? main, IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> opponents, bool counter, bool joint = false)
 		{
 			Resolver = resolver;
 			Caster = caster;
@@ -23,6 +23,7 @@ namespace Sigilos.Core.Battle
 			_allies = allies;
 			_opponents = opponents;
 			IsCounter = counter;
+			IsJoint = joint;
 		}
 
 		public EffectResolver Resolver { get; }
@@ -37,8 +38,23 @@ namespace Sigilos.Core.Battle
 		/// <summary>Contra-ataque: dano reduzido, e quem apanha não contra-ataca de volta.</summary>
 		public bool IsCounter { get; }
 
-		/// <summary>Multiplica o dano de todo golpe desta habilidade.</summary>
-		public double Scale => IsCounter ? RuneSets.CounterDamage : 1;
+		/// <summary>A básica de um aliado chamado por um ataque conjunto: ela não chama outros.</summary>
+		public bool IsJoint { get; }
+
+		/// <summary>Multiplica o dano de todo golpe desta habilidade (contra-ataque e o bônus por efeitos).</summary>
+		public double Scale => (IsCounter ? RuneSets.CounterDamage : 1) * (1 + DamageBonus);
+
+		/// <summary>Dano a mais nos golpes seguintes desta habilidade (0,2 = +20%), somado pelo BonusPerStatus.</summary>
+		public double DamageBonus { get; set; }
+
+		/// <summary>Cura e escudo a mais nos efeitos seguintes desta habilidade, somados pelo BonusPerStatus.</summary>
+		public double HealBonus { get; set; }
+
+		/// <summary>Turnos a menos na recarga desta habilidade (o ExtraTurnOnKill).</summary>
+		public int CooldownReduction { get; set; }
+
+		/// <summary>Esta habilidade já deu um turno extra: outro efeito igual nela não dá de novo.</summary>
+		public bool ExtraTurnGranted { get; set; }
 
 		/// <summary>Algum golpe desta habilidade derrubou o alvo: libera os efeitos "ao derrubar".</summary>
 		public bool Killed { get; set; }

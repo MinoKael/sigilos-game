@@ -38,6 +38,12 @@ namespace Sigilos.GameEntry.Account
 
 		public string? RefreshToken { get; set; }
 
+		/// <summary>
+		/// A chave de recuperação que o servidor acabou de mandar e o jogador ainda não confirmou ter
+		/// guardado: fica aqui até o "Já guardei", para não se perder se o jogo fechar antes.
+		/// </summary>
+		public string? RecoveryKey { get; set; }
+
 		/// <summary>O último ponto de sincronização, pelo id da conta.</summary>
 		public Dictionary<string, SyncPoint> Synced { get; set; } = new();
 

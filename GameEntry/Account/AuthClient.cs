@@ -50,6 +50,12 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>O servidor recusou a renovação: o token venceu ou foi trocado em outro lugar.</summary>
 		public event Action? Expired;
 
+		/// <summary>
+		/// O servidor mandou a chave de recuperação da conta (no cadastro, ou na primeira entrada de uma conta
+		/// de antes da chave): é a única vez que ela vem.
+		/// </summary>
+		public event Action<string>? RecoveryKeyIssued;
+
 		/// <summary>Volta com o token guardado de uma vez anterior; o de acesso vem na primeira pergunta.</summary>
 		public void Restore(string refreshToken, Guid userId)
 		{
@@ -58,8 +64,17 @@ namespace Sigilos.GameEntry.Account
 			_accessToken = null;
 		}
 
-		public Task<ApiResponse> Register(string email, string password, string invite, string name) =>
-			Send(HttpMethod.Post, "auth/register", new { email, password, inviteCode = invite, name }, null);
+		public async Task<ApiResponse> Register(string email, string password, string invite, string name)
+		{
+			var response = await Send(HttpMethod.Post, "auth/register", new { email, password, inviteCode = invite, name }, null);
+			if (response.Ok)
+				TakeRecoveryKey(response);
+			return response;
+		}
+
+		/// <summary>Troca a senha com a chave de recuperação da conta. Os acessos lembrados da conta deixam de valer.</summary>
+		public Task<ApiResponse> ResetPassword(string email, string recoveryKey, string password) =>
+			Send(HttpMethod.Post, "auth/reset", new { email, recoveryKey, password }, null);
 
 		public async Task<ApiResponse> Login(string email, string password, string deviceId)
 		{
@@ -140,6 +155,13 @@ namespace Sigilos.GameEntry.Account
 			Name = response.Text("name");
 			RefreshToken = response.Text("refreshToken");
 			RefreshTokenChanged?.Invoke(RefreshToken);
+			TakeRecoveryKey(response);
+		}
+
+		private void TakeRecoveryKey(ApiResponse response)
+		{
+			if (response.Text("recoveryKey") is { Length: > 0 } key)
+				RecoveryKeyIssued?.Invoke(key);
 		}
 
 		private async Task<ApiResponse> Send(HttpMethod method, string path, object? body, string? token)

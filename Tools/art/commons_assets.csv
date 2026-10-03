@@ -84,7 +84,6 @@ Icons/region.svg,Castle - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
 Icons/tower.svg,Tower-flag - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
 Icons/collect.svg,Sparkles - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
 Effects/shield.svg,Vibrating-shield - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
-Effects/burn.svg,Small-fire - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Effects/stun.svg,Star-swirl - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Effects/taunt.svg,Target-arrows - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Effects/hidden.svg,Hood - Lorc - game-icons.svg,Lorc,CC BY 3.0
@@ -101,7 +100,7 @@ Icons/pause.svg,Pause-button - Guard13007 - game-icons.svg,Guard13007,CC BY 3.0
 Icons/play.svg,Play-button - Guard13007 - game-icons.svg,Guard13007,CC BY 3.0
 Effects/bomb.svg,Unlit-bomb - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Effects/defensebreak.svg,Cracked-shield - Lorc - game-icons.svg,Lorc,CC BY 3.0
-Effects/poison.svg,Poison-gas - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/affliction.svg,Poison-gas - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Icons/star.svg,Round-star - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
 Creatures/wizard.svg,Pointy-hat - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Creatures/paladin.svg,Templar-shield - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
@@ -119,3 +118,14 @@ Creatures/silence_herald.svg,Spectre - Lorc - game-icons.svg,Lorc,CC BY 3.0
 Icons/target.svg,Crosshair - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
 Icons/arrow.svg,Plain-arrow - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
 Icons/mail.svg,Envelope - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/speeddown.svg,Snail - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/critup.svg,Bullseye - Skoll - game-icons.svg,Skoll,CC BY 3.0
+Effects/critresist.svg,Shield-reflect - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/blessing.svg,Angel-wings - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/counter.svg,Sword-spin - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/revive.svg,Ankh - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/karma.svg,Yin-yang - Delapouite - game-icons.svg,Delapouite,CC BY 3.0
+Effects/sleep.svg,Sleepy - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/unrecoverable.svg,Bleeding-wound - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/silence.svg,Silence - Lorc - game-icons.svg,Lorc,CC BY 3.0
+Effects/oblivion.svg,Brain-freeze - Lorc - game-icons.svg,Lorc,CC BY 3.0

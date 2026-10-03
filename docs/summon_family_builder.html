@@ -173,6 +173,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 
       <section class="tabcontent" id="tab-model"></section>
       <section class="tabcontent" id="tab-formula"></section>
+      <section class="tabcontent" id="tab-reference"></section>
       <section class="tabcontent" id="tab-issues"></section>
 
       <section class="tabcontent" id="tab-preview">
@@ -236,10 +237,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 {
   "roles": ["HP", "Attack", "Defense", "Support"],
   "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
-  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse"],
+  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill"],
   "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies"],
-  "statuses": ["Shield", "Burn", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "Poison"],
-  "passives": ["SpeedWhenLowest", "ShieldOnDeath", "RebirthOnce", "DamageReduction", "BonusVsDebuffed", "BonusVsWounded", "ImpetoAtWaveStart", "RegenEachTurn", "BurnOnHit", "CooldownEachTurn", "HealAllyEachTurn", "Thorns", "StunAttacker", "Lifesteal", "CurseOnHit", "Dodge", "CleanseAllyEachTurn"],
+  "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
+  "scopes": ["All", "Buffs", "Debuffs"],
+  "bonuses": ["Damage", "Heal", "Impeto"],
+  "passives": ["SpeedWhenLowest", "ShieldOnDeath", "RebirthOnce", "DamageReduction", "BonusVsDebuffed", "BonusVsWounded", "ImpetoAtWaveStart", "RegenEachTurn", "AfflictionOnHit", "CooldownEachTurn", "HealAllyEachTurn", "Thorns", "StunAttacker", "Lifesteal", "CurseOnHit", "Dodge", "CleanseAllyEachTurn"],
   "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"]
 }
 </script>
@@ -267,7 +270,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
           "name": "Garra",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -281,7 +284,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -291,7 +294,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "BurnOnHit", "value": 0.2}
+          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
         }
       ]
     },
@@ -434,7 +437,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "BurnOnHit", "value": 0.2}
+          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
         }
       ]
     },
@@ -475,7 +478,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "BurnOnHit", "value": 0.2}
+          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
         }
       ]
     }
@@ -495,9 +498,112 @@ const Core = (() => {
   // O nome do elemento em português: os nomes dos dados nascem em português ("Dragão de Fogo").
   const ELEMENT_NAMES = {Fire: "Fogo", Water: "Água", Wind: "Vento", Light: "Luz", Dark: "Trevas"};
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count"];
+  // Efeitos e status ---------------------------------------------------------------------------------
+  // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
+  // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
+  // onKill, e o modelo que o botão do tipo insere.
+  const COMMON_FIELDS = ["kind", "target", "onKill"];
+  const TARGET_DOCS = {
+    Target: "o inimigo escolhido (o alvo da habilidade)",
+    AllEnemies: "todos os inimigos de pé",
+    Self: "quem lança",
+    LowestAlly: "o aliado com a menor fração de Vida",
+    AllAllies: "todos os aliados de pé (a equipe, com quem lança)",
+  };
+  const SCOPE_DOCS = {All: "todos os efeitos", Buffs: "só os positivos", Debuffs: "só os negativos"};
+  const BONUS_DOCS = {
+    Damage: "+power de dano por efeito nos golpes seguintes da mesma habilidade (0.2 = +20%)",
+    Heal: "+power de cura e escudo por efeito nos efeitos seguintes da mesma habilidade",
+    Impeto: "+power pontos de Ímpeto por efeito, na hora, para os alvos do efeito",
+  };
+  const EFFECT_DOCS = {
+    Damage: {label: "Dano", targets: null,
+      text: "Golpes de power × ATK. Cada efeito de dano é um golpe à parte: \"3 golpes e um quarto que ignora a Defesa\" são dois efeitos.",
+      fields: {power: "multiplicador do ATK (3.5 = 350%)", hits: "golpes (cada rodada acerta todos os alvos)", ignoreDefense: "fração da Defesa ignorada (0 a 1)", drain: "fração do dano que volta como Vida (0 a 1)"},
+      template: {kind: "Damage", target: "Target", power: 2.45}},
+    Heal: {label: "Cura", targets: null,
+      text: "Cura power da Vida máxima de cada alvo. A Ferida barra.",
+      fields: {power: "fração da Vida máxima do alvo (0.15 = 15%)", count: "só os N alvos mais feridos (0 ou ausente = todos)"},
+      template: {kind: "Heal", target: "LowestAlly", power: 0.07}},
+    Shield: {label: "Escudo", targets: null,
+      text: "Escudo de power da Vida máxima de quem lança. Escudos não somam: fica o maior. O Karma barra.",
+      fields: {power: "fração da Vida máxima de quem lança", turns: "duração"},
+      template: {kind: "Shield", target: "AllAllies", power: 0.07, turns: 2}},
+    Status: {label: "Efeito de status", targets: null,
+      text: "Põe status com chance, por turns. Negativo no outro lado: a Imunidade e a Resistência barram. Positivo: o Karma barra.",
+      fields: {status: "o efeito (veja a lista de status)", chance: "0 a 1", turns: "duração em turnos do alvo"},
+      template: {kind: "Status", target: "Target", status: "Affliction", chance: 0.3, turns: 2}},
+    Impeto: {label: "Ímpeto", targets: null,
+      text: "Soma power pontos de Ímpeto (negativo atrasa). Atrasar inimigo passa pela chance e pela Resistência.",
+      fields: {power: "pontos (negativo atrasa)", chance: "0 a 1 (só ao atrasar inimigo)"},
+      template: {kind: "Impeto", target: "Target", power: -20}},
+    Cleanse: {label: "Purificar", targets: null,
+      text: "Remove um efeito negativo de cada alvo (o mais antigo).",
+      fields: {},
+      template: {kind: "Cleanse", target: "LowestAlly"}},
+    StealBuff: {label: "Roubar efeito", targets: ["Target", "AllEnemies"],
+      text: "Com chance, rouba de cada alvo um efeito positivo (o mais novo) e o põe em quem lança com os turnos que sobravam. Sem nenhum e com fallback, rouba Ímpeto.",
+      fields: {chance: "0 a 1", onlyStatus: "só rouba este status (opcional)", fallback: "true: sem efeito positivo, rouba Ímpeto", power: "Ímpeto roubado no fallback (0 = todo o do alvo)"},
+      template: {kind: "StealBuff", target: "Target", chance: 1, fallback: true, power: 0}},
+    BonusPerStatus: {label: "Bônus por efeitos", targets: null,
+      text: "Conta os efeitos de scope (ou só onlyStatus) nas unidades de from e dá bonus × power por efeito. Dano e cura valem para os efeitos que vêm depois na lista; o Ímpeto vai na hora para os alvos (target).",
+      fields: {from: "em quem contar (um alvo: Target, Self, AllEnemies...)", scope: "All, Buffs ou Debuffs", onlyStatus: "só conta este status (opcional)", bonus: "Damage, Heal ou Impeto", power: "valor por efeito"},
+      template: {kind: "BonusPerStatus", target: "Self", from: "Target", scope: "Debuffs", bonus: "Damage", power: 0.2}},
+    ChangeDuration: {label: "Alterar duração", targets: null,
+      text: "Com chance, soma turns à duração dos efeitos de scope (ou só onlyStatus) de cada alvo. Negativo encurta; o que chega a 0 sai.",
+      fields: {turns: "turnos somados (negativo encurta; nunca 0)", scope: "All, Buffs ou Debuffs", onlyStatus: "só este status (opcional)", chance: "0 a 1"},
+      template: {kind: "ChangeDuration", target: "AllAllies", scope: "Buffs", turns: 1}},
+    EqualizeHealth: {label: "Nivelar Vida", targets: ["AllAllies"],
+      text: "Os aliados de pé ficam todos com a média da fração de Vida deles: quem tinha mais desce (sem cair), quem tinha menos sobe pela cura (a Ferida barra).",
+      fields: {},
+      template: {kind: "EqualizeHealth", target: "AllAllies"}},
+    HealTeam: {label: "Recuperar Vida da equipe", targets: ["AllAllies", "LowestAlly", "Self"],
+      text: "A cura de sempre nos count aliados mais feridos (pela fração de Vida).",
+      fields: {power: "fração da Vida máxima de cada um", count: "quantos (0 = todos)"},
+      template: {kind: "HealTeam", target: "AllAllies", power: 0.15, count: 2}},
+    JointAttack: {label: "Ataque conjunto", targets: ["AllAllies"],
+      text: "count aliados sorteados (0 = todos) atacam o alvo da habilidade com a básica, com o dano inteiro. Quem perde o turno não vem; a básica deles não chama outros. O que eles derrubam conta para a habilidade.",
+      fields: {count: "quantos aliados (0 = todos)"},
+      template: {kind: "JointAttack", target: "AllAllies", count: 2}},
+    ExtraTurnOnKill: {label: "Turno extra ao derrubar", targets: ["Self"],
+      text: "Se a habilidade derrubou alguém até aqui (ponha depois do dano), quem lança ganha um turno extra na hora e esta recarga cai turns. Uma vez por habilidade.",
+      fields: {turns: "turnos a menos na recarga (1 por padrão)"},
+      template: {kind: "ExtraTurnOnKill", target: "Self", turns: 1}},
+  };
+  // Cada status: o nome no jogo, se é negativo e o que faz (os números de Core/Battle/BattleRules.cs).
+  const STATUS_DOCS = {
+    Shield: ["Escudo", false, "Absorve dano até o valor (posto pelo efeito Shield)."],
+    Affliction: ["Aflição", true, "Perde 5% da Vida máxima no começo de cada turno, por cópia; acumula até 10 (o limite de efeitos de um monstro)."],
+    Stun: ["Atordoamento", true, "Perde o turno."],
+    Taunt: ["Provocação", true, "Só pode mirar em quem provocou."],
+    Hidden: ["Oculto", false, "Não pode ser alvo de ataques únicos."],
+    Curse: ["Maldição", true, "Recebe 25% a mais de dano."],
+    Blind: ["Cegueira", true, "Cada golpe tem 50% de chance de errar."],
+    Aegis: ["Égide", false, "Anula o próximo golpe recebido."],
+    Foresight: ["Presságio", false, "O próximo golpe causado é crítico."],
+    Immunity: ["Imunidade", false, "Nenhum efeito negativo pega."],
+    AttackUp: ["Ataque+", false, "+50% de Ataque."],
+    AttackDown: ["Ataque−", true, "−50% de Ataque."],
+    DefenseUp: ["Defesa+", false, "+70% de Defesa."],
+    SpeedUp: ["Velocidade+", false, "+30% de Velocidade."],
+    DefenseBreak: ["Defesa−", true, "−70% de Defesa."],
+    Bomb: ["Bomba", true, "Explode no fim da contagem com 250% do ATK de quem pôs (ignora Defesa) e atordoa."],
+    SpeedDown: ["Velocidade−", true, "−50% de Velocidade."],
+    CritUp: ["Crítico+", false, "+30% de chance de Crítico (pontos somados)."],
+    CritResist: ["Resistir Crítico", false, "Os golpes recebidos têm metade da chance de ser críticos."],
+    Blessing: ["Bênção", false, "Recupera 15% da Vida máxima no começo de cada turno (a Ferida barra)."],
+    Counter: ["Contragolpe", false, "Revida com a básica, a 75% do dano, toda vez que uma habilidade inimiga o atinge."],
+    Revive: ["Reviver", false, "Ao cair, volta na hora com 30% da Vida máxima; o efeito se gasta."],
+    Karma: ["Karma", true, "Nenhum efeito positivo pega (nem escudo, nem efeito roubado)."],
+    Sleep: ["Sono", true, "Perde os turnos até a duração acabar ou até levar um golpe."],
+    Unrecoverable: ["Ferida", true, "Não recebe cura (nem dreno, nem Bênção)."],
+    Silence: ["Silêncio", true, "Só usa habilidades sem recarga."],
+    Oblivion: ["Esquecimento", true, "A Passiva para de funcionar (os conjuntos de runas seguem)."],
+  };
+
   const FAMILY_KEYS = ["family_id", "base_name", "name", "star_grade", "image", "family_bias", "variations"];
-  const VARIATION_KEYS = ["variation_id", "name", "element", "role", "stats", "awakened_stats", "bias", "awakening_spd", "leader", "awakening", "skills"];
+  const VARIATION_KEYS = ["variation_id", "name", "element", "role", "star_grade", "stats", "awakened_stats", "bias", "awakening_spd", "leader", "awakening", "skills"];
   const SKILL_KEYS = ["name", "cooldown", "effects", "levels", "awakenedEffects", "passive"];
   const NEUTRAL = Object.freeze({hp: 1, atk: 1, def: 1, spd: 0});
 
@@ -641,12 +747,21 @@ const Core = (() => {
     return {hp, atk, def, spd};
   }
 
+  /** As estrelas naturais da variante: as dela, se tem ("star_grade" na variante); senão, as da família. */
+  const variationStar = (family, variation) => isBlank(variation.star_grade) ? num(family.star_grade) : num(variation.star_grade);
+
+  /** A variante com estrelas próprias, diferentes das da família. Igual a SummonDefinition.OwnStars. */
+  const ownStars = (family, variation) => variationStar(family, variation) !== num(family.star_grade);
+
+  /** O viés da família para esta variante: neutro quando ela tem estrelas próprias (só o ajuste fino dela reparte). */
+  const familyBiasFor = (family, variation) => ownStars(family, variation) ? {...NEUTRAL} : weights(family.family_bias);
+
   /** A conta passo a passo, para a aba Fórmula. */
   function explain(model, family, variation, element, awakened) {
-    const star = family.star_grade, profile = model.role_profiles[star]?.[variation.role];
+    const star = variationStar(family, variation), profile = model.role_profiles[star]?.[variation.role];
     const budget = budgetOf(model, star, awakened);
     if (budget === undefined || !profile) return null;
-    const e = model.element_bias[element] || NEUTRAL, f = weights(family.family_bias), m = weights(variation.bias);
+    const e = model.element_bias[element] || NEUTRAL, f = familyBiasFor(family, variation), m = weights(variation.bias);
     const awakeningSpd = isBlank(variation.awakening_spd) ? model.awakening_spd : num(variation.awakening_spd);
     const stats = computeStats(model, star, variation.role, awakened, e, f, m, awakeningSpd);
     const shares = {hp: profile.hp * e.hp * f.hp * m.hp, atk: profile.atk * e.atk * f.atk * m.atk, def: profile.def * e.def * f.def * m.def};
@@ -656,8 +771,8 @@ const Core = (() => {
 
   function variationStats(model, family, variation, element, awakened) {
     const awakeningSpd = isBlank(variation.awakening_spd) ? undefined : num(variation.awakening_spd);
-    return computeStats(model, family.star_grade, variation.role, awakened,
-      model.element_bias[element], weights(family.family_bias), weights(variation.bias), awakeningSpd);
+    return computeStats(model, variationStar(family, variation), variation.role, awakened,
+      model.element_bias[element], familyBiasFor(family, variation), weights(variation.bias), awakeningSpd);
   }
 
   function validateModel(model, roles) {
@@ -750,6 +865,7 @@ const Core = (() => {
       variation_id: `${family.family_id}_${keyOf(element)}`,
       name: `${family.base_name} de ${ELEMENT_NAMES[element]}`,
       role: "Attack",
+      star_grade: "",
       bias: {...NEUTRAL},
       awakening_spd: "",
       leader: {stat: "", value: ""},
@@ -795,6 +911,7 @@ const Core = (() => {
         variation_id: item.variation_id || `${family.family_id}_${key}`,
         name: item.name || "",
         role: item.role || "Attack",
+        star_grade: item.star_grade ?? "",
         bias: weights(item.bias),
         awakening_spd: item.awakening_spd ?? "",
         leader: {stat: item.leader?.stat || "", value: item.leader?.value ?? ""},
@@ -828,9 +945,12 @@ const Core = (() => {
         name: v.name,
         element,
         role: v.role,
+      };
+      if (ownStars(family, v)) item.star_grade = variationStar(family, v);
+      Object.assign(item, {
         stats: variationStats(model, family, v, element, false) || {hp: 0, atk: 0, def: 0, spd: 0},
         awakened_stats: variationStats(model, family, v, element, true) || {hp: 0, atk: 0, def: 0, spd: 0},
-      };
+      });
       const bias = weights(v.bias);
       if (!isNeutral(bias)) item.bias = bias;
       if (!isBlank(v.awakening_spd)) item.awakening_spd = num(v.awakening_spd);
@@ -888,12 +1008,14 @@ const Core = (() => {
       if (isBlank(v.name)) add("error", where, "Falta o nome.");
       if (!enums.roles.includes(v.role)) add("error", where, `Papel desconhecido: "${v.role}".`);
 
+      const vStar = variationStar(family, v);
+      if (budgetOf(model, vStar, false) === undefined) add("error", where, `${vStar}★ (estrelas da variante) não tem orçamento no modelo.`);
       const base = variationStats(model, family, v, element, false), awakened = variationStats(model, family, v, element, true);
-      if (!base || !awakened) add("error", where, `O modelo não tem perfil para ${star}★ ${v.role}.`);
+      if (!base || !awakened) add("error", where, `O modelo não tem perfil para ${vStar}★ ${v.role}.`);
       else for (const [stats, isAwakened, label] of [[base, false, "stats"], [awakened, true, "awakened_stats"]]) {
-        const difference = bvp(model, stats) - budgetOf(model, star, isAwakened);
+        const difference = bvp(model, stats) - budgetOf(model, vStar, isAwakened);
         if (stats.spd <= 0) add("error", where, `${label}: SPD tem de ser maior que zero.`);
-        if (Math.abs(difference) > model.tolerance + 1e-9) add("error", where, `${label}: BVP ${+bvp(model, stats).toFixed(1)} fora do orçamento de ${budgetOf(model, star, isAwakened)} (tolerância ${model.tolerance}).`);
+        if (Math.abs(difference) > model.tolerance + 1e-9) add("error", where, `${label}: BVP ${+bvp(model, stats).toFixed(1)} fora do orçamento de ${budgetOf(model, vStar, isAwakened)} (tolerância ${model.tolerance}).`);
       }
 
       if (v.leader.stat) {
@@ -958,6 +1080,22 @@ const Core = (() => {
       if (effect.hits !== undefined && !(effect.hits >= 1)) add("error", where, `Efeito com ${effect.hits} golpes.`);
       if (effect.chance !== undefined && !(effect.chance >= 0 && effect.chance <= 1)) add("error", where, `Chance ${effect.chance} fora de 0 a 1.`);
       if (effect.kind === "Status" && effect.turns !== undefined && !(effect.turns >= 1)) add("error", where, "Efeito de status sem duração.");
+      const doc = EFFECT_DOCS[effect.kind];
+      if (doc) {
+        const target = effect.target ?? "Target";
+        if (doc.targets && !doc.targets.includes(target)) add("error", where, `${effect.kind} não vale com o alvo ${target} (vale: ${doc.targets.join(", ")}).`);
+        for (const key of Object.keys(effect)) {
+          if (EFFECT_FIELDS.includes(key) && !COMMON_FIELDS.includes(key) && !(key in doc.fields)) add("warn", where, `${effect.kind} não lê o campo "${key}".`);
+        }
+      }
+      if (effect.onlyStatus !== undefined && !enums.statuses.includes(effect.onlyStatus)) add("error", where, `Status desconhecido em onlyStatus: "${effect.onlyStatus}".`);
+      if (effect.scope !== undefined && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(effect.scope)) add("error", where, `scope desconhecido: "${effect.scope}" (vale: All, Buffs, Debuffs).`);
+      if (effect.bonus !== undefined && !(enums.bonuses || Object.keys(BONUS_DOCS)).includes(effect.bonus)) add("error", where, `bonus desconhecido: "${effect.bonus}" (vale: Damage, Heal, Impeto).`);
+      if (effect.from !== undefined && !enums.targets.includes(effect.from)) add("error", where, `from desconhecido: "${effect.from}".`);
+      if (effect.kind === "ChangeDuration" && !(Number.isInteger(effect.turns) && effect.turns !== 0)) add("error", where, "ChangeDuration precisa de turns inteiro e diferente de 0 (negativo encurta).");
+      if (effect.kind === "BonusPerStatus" && !(num(effect.power) > 0)) add("error", where, "BonusPerStatus sem valor por efeito (power).");
+      if (effect.count !== undefined && !(Number.isInteger(effect.count) && effect.count >= 0)) add("error", where, `count ${effect.count}: tem de ser inteiro, 0 ou mais.`);
+      if (effect.fallback !== undefined && typeof effect.fallback !== "boolean") add("error", where, "fallback é true ou false.");
       for (const key of Object.keys(effect)) if (!EFFECT_FIELDS.includes(key)) add("warn", where, `Campo "${key}" que o jogo não lê.`);
     }
   }
@@ -989,10 +1127,11 @@ const Core = (() => {
 
   return {
     ELEMENTS, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
+    EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
     stripJsonc, parseJsonc, leadingComments, format,
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
     parseList, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
-    validateFamily, rewriteEnemies, parseEnum,
+    validateFamily, rewriteEnemies, parseEnum, variationStar, ownStars,
   };
 })();
 
@@ -1010,17 +1149,11 @@ if (typeof module !== "undefined") module.exports = Core;
   const fmt = (n, d = 0) => Number(n).toLocaleString("pt-BR", {maximumFractionDigits: d});
   const readJson = id => JSON.parse($(id).textContent);
   const DRAFT_KEY = "sigilos.family_builder.draft";
-  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind"};
-  const EFFECT_TEMPLATES = {
-    Damage: {kind: "Damage", target: "Target", power: 2.45},
-    Heal: {kind: "Heal", target: "LowestAlly", power: 0.07},
-    Shield: {kind: "Shield", target: "AllAllies", power: 0.07, turns: 2},
-    Status: {kind: "Status", target: "Target", status: "Burn", chance: 0.3, turns: 2},
-    Impeto: {kind: "Impeto", target: "Target", power: -20},
-    Cleanse: {kind: "Cleanse", target: "LowestAlly"},
-  };
+  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind", scopes: "StatusScope", bonuses: "BonusKind"};
+  // O botão de cada tipo de efeito insere o modelo da documentação (Core.EFFECT_DOCS).
+  const EFFECT_TEMPLATES = Object.fromEntries(Object.entries(C.EFFECT_DOCS).map(([kind, doc]) => [kind, doc.template]));
   const LEVEL_TEMPLATES = {Damage: 0.1, Recovery: 0.1, EffectRate: 0.1, Cooldown: 1};
-  const TABS = [["variations", "Variações"], ["model", "Modelo"], ["formula", "Fórmula"], ["issues", "Validação"], ["preview", "JSON final"]];
+  const TABS = [["variations", "Variações"], ["model", "Modelo"], ["formula", "Fórmula"], ["reference", "Efeitos e status"], ["issues", "Validação"], ["preview", "JSON final"]];
 
   const ui = {
     model: C.normalizeModel(readJson("default-model")),
@@ -1181,6 +1314,7 @@ if (typeof module !== "undefined") module.exports = Core;
         ${field("Nome", text(`${base}.name`, v.name))}
         ${field("Elemento", `<input value="${element}" disabled>`)}
         ${field("Papel", select(`${base}.role`, v.role, ui.enums.roles))}
+        ${field("Estrelas da variante", `<select data-path="${base}.star_grade" data-type="optional"><option value="">da família (${esc(ui.family.star_grade)}★)</option>${C.stars(ui.model).filter(s => s !== Number(ui.family.star_grade)).map(s => `<option value="${s}" ${String(s) === String(v.star_grade) ? "selected" : ""}>${s}★</option>`).join("")}</select>`)}
         ${field("Liderança: atributo", select(`${base}.leader.stat`, v.leader.stat, ui.enums.stats, "sem Liderança"))}
         ${field("Liderança: valor", number(`${base}.leader.value`, v.leader.value, "0.01", `placeholder="0.18 = 18%"`))}
         ${field("Nome de Despertar", text(`${base}.awakening.name`, v.awakening.name))}
@@ -1189,7 +1323,9 @@ if (typeof module !== "undefined") module.exports = Core;
 
       <hr>
       <h3>Ajuste fino desta variante</h3>
-      <p class="note">1.00 é neutro. Soma-se ao viés do elemento (aba Modelo) e ao da família; a conta normaliza depois, então o BVP não muda.</p>
+      <p class="note">${C.ownStars(ui.family, v)
+        ? `Esta variante tem estrelas próprias (${C.variationStar(ui.family, v)}★): o orçamento de BVP é o dessas estrelas, e o viés da família não vale para ela. Só este ajuste fino (e o do elemento) reparte o orçamento.`
+        : "1.00 é neutro. Soma-se ao viés do elemento (aba Modelo) e ao da família; a conta normaliza depois, então o BVP não muda."}</p>
       <div class="four">
         ${field("Viés HP", number(`${base}.bias.hp`, v.bias.hp, "0.01"))}
         ${field("Viés ATK", number(`${base}.bias.atk`, v.bias.atk, "0.01"))}
@@ -1209,7 +1345,7 @@ if (typeof module !== "undefined") module.exports = Core;
   function renderVariationStats() {
     const node = $("variationStats");
     if (!node) return;
-    const v = variation(), element = elementOf(ui.active), star = Number(ui.family.star_grade);
+    const v = variation(), element = elementOf(ui.active), star = C.variationStar(ui.family, v);
     const base = C.variationStats(ui.model, ui.family, v, element, false), awakened = C.variationStats(ui.model, ui.family, v, element, true);
     if (!base || !awakened) {
       node.innerHTML = `<p class="bad" style="margin-top:10px">O modelo não tem perfil para ${star}★ ${esc(v.role)}.</p>`;
@@ -1276,16 +1412,16 @@ if (typeof module !== "undefined") module.exports = Core;
   }
 
   function renderSummary() {
-    const star = Number(ui.family.star_grade);
     $("familySummary").innerHTML = C.ELEMENTS.map(e => {
       const v = ui.family.variations[C.keyOf(e)];
       if (!v.enabled) return `<div style="padding:9px 0;border-bottom:1px solid var(--line)" class="note">${e}: sem variante</div>`;
+      const star = C.variationStar(ui.family, v);
       const base = C.variationStats(ui.model, ui.family, v, e, false), awakened = C.variationStats(ui.model, ui.family, v, e, true);
       if (!base || !awakened) return `<div style="padding:9px 0;border-bottom:1px solid var(--line)"><strong>${esc(v.name)}</strong> <span class="badge bad">sem perfil</span></div>`;
       const ok = [[base, false], [awakened, true]].every(([s, a]) => Math.abs(C.bvp(ui.model, s) - C.budgetOf(ui.model, star, a)) <= ui.model.tolerance + 1e-9);
       return `<div style="padding:9px 0;border-bottom:1px solid var(--line)">
         <div class="spread"><strong>${esc(v.name)}</strong><span class="row"><span class="badge">${esc(v.role)}</span><span class="badge ${ok ? "ok" : "bad"}">BVP ${fmt(C.bvp(ui.model, base), 1)}</span></span></div>
-        <div class="small" style="color:var(--muted)">${e} · Base ${fmt(base.hp)}/${fmt(base.atk)}/${fmt(base.def)}/${fmt(base.spd)} · Desperto ${fmt(awakened.hp)}/${fmt(awakened.atk)}/${fmt(awakened.def)}/${fmt(awakened.spd)}</div>
+        <div class="small" style="color:var(--muted)">${e} · ${star}★ · Base ${fmt(base.hp)}/${fmt(base.atk)}/${fmt(base.def)}/${fmt(base.spd)} · Desperto ${fmt(awakened.hp)}/${fmt(awakened.atk)}/${fmt(awakened.def)}/${fmt(awakened.spd)}</div>
       </div>`;
     }).join("");
   }
@@ -1300,6 +1436,8 @@ if (typeof module !== "undefined") module.exports = Core;
       <code>status</code>: ${e.statuses.join(", ")}<br>
       Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
       Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém).<br>
+      Os tipos novos leem também <code>fallback</code>, <code>scope</code>, <code>onlyStatus</code>, <code>from</code>, <code>bonus</code> e <code>count</code>:
+      o que cada tipo faz, os campos e os alvos que ele aceita estão na aba <b>Efeitos e status</b>.<br>
       Os efeitos acontecem na ordem da lista. "4 golpes, o último ignorando a Defesa" são dois efeitos:
       <code>{"kind": "Damage", "power": 0.84, "hits": 3}</code> e <code>{"kind": "Damage", "power": 0.84, "ignoreDefense": 1}</code>.`;
   }
@@ -1377,7 +1515,7 @@ if (typeof module !== "undefined") module.exports = Core;
       if (!x) return "Esta variante não tem perfil no modelo.";
       const share = k => `${fmt(x.profile[k] * 100, 1)}% × ${fmt(x.element[k], 3)} × ${fmt(x.family[k], 3)} × ${fmt(x.manual[k], 3)} = ${fmt(x.shares[k] * 100, 2)}`;
       const part = k => fmt(x.room * x.shares[k] / x.total, 2);
-      return `Orçamento ${ui.family.star_grade}★${awakened ? " desperto" : ""} = ${fmt(x.budget, 1)} BVP
+      return `Orçamento ${C.variationStar(ui.family, v)}★${awakened ? " desperto" : ""} = ${fmt(x.budget, 1)} BVP${C.ownStars(ui.family, v) ? " (estrelas da variante: sem o viés da família)" : ""}
 
 1. SPD = papel ${fmt(x.profile.spd, 1)} + família ${fmt(x.family.spd)} + elemento ${fmt(x.element.spd)} + variante ${fmt(x.manual.spd)}${awakened ? ` + Despertar ${fmt(x.awakeningSpd)}` : ""} = ${fmt(x.stats.spd)}
 2. Sobra = ${fmt(x.budget, 1)} − ${fmt(x.stats.spd)} × ${fmt(m.spd_weight, 2)} = ${fmt(x.room, 1)} BVP
@@ -1407,6 +1545,37 @@ if (typeof module !== "undefined") module.exports = Core;
 Usar SPD para dar poder: cada ponto custa ${fmt(m.spd_weight, 2)} de BVP.
 Dar mais BVP a um papel: o papel só escolhe onde o orçamento é gasto.
 Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`;
+  }
+
+  /** A referência: cada alvo, cada tipo de efeito (campos, alvos aceitos, modelo) e cada status. */
+  function renderReference() {
+    const e = ui.enums;
+    const code = value => `<code>${esc(value)}</code>`;
+    const targets = Object.entries(C.TARGET_DOCS).filter(([id]) => e.targets.includes(id))
+      .map(([id, text]) => `<tr><td>${code(id)}</td><td>${esc(text)}</td></tr>`).join("");
+    const effects = e.effectKinds.map(kind => {
+      const doc = C.EFFECT_DOCS[kind];
+      if (!doc) return `<tr><td>${code(kind)}</td><td colspan="4" class="note">Sem documentação no construtor.</td></tr>`;
+      const fields = Object.entries(doc.fields).map(([field, text]) => `${code(field)}: ${esc(text)}`).join("<br>") || `<span class="note">nenhum além de target</span>`;
+      const allowed = (doc.targets || e.targets).map(code).join(" ");
+      return `<tr><td>${code(kind)}<br><b>${esc(doc.label)}</b></td><td>${esc(doc.text)}</td><td>${allowed}</td><td>${fields}</td><td>${code(JSON.stringify(doc.template))}</td></tr>`;
+    }).join("");
+    const statuses = e.statuses.map(status => {
+      const [name, harmful, text] = C.STATUS_DOCS[status] || [status, null, "Sem documentação no construtor."];
+      const kind = harmful === null ? "" : harmful ? `<span class="bad">negativo</span>` : `<span class="ok">positivo</span>`;
+      return `<tr><td>${code(status)}</td><td>${esc(name)}</td><td>${kind}</td><td>${esc(text)}</td></tr>`;
+    }).join("");
+    const option = docs => Object.entries(docs).map(([id, text]) => `${code(id)}: ${esc(text)}`).join("<br>");
+    $("tab-reference").innerHTML = `
+      <h2>Efeitos e status</h2>
+      <p class="note">Uma habilidade é uma lista de efeitos, na ordem. Todo efeito tem ${code("kind")}, ${code("target")} (em quem cai)
+        e pode ter ${code("onKill")} (só acontece se a habilidade já derrubou alguém). Qualquer tipo combina com qualquer status e com os alvos
+        que ele aceita; a aba Validação acusa alvo que o tipo não aceita e campo que ele não lê. Os botões dos tipos, nas habilidades, inserem o modelo.</p>
+      <h3>Alvos</h3><div class="table-wrap"><table><tr><th>target</th><th>Quem</th></tr>${targets}</table></div>
+      <h3>Tipos de efeito</h3><div class="table-wrap"><table><tr><th>kind</th><th>O que faz</th><th>Alvos aceitos</th><th>Campos</th><th>Modelo</th></tr>${effects}</table></div>
+      <h3>Opções</h3><p>${code("scope")}<br>${option(C.SCOPE_DOCS)}</p><p>${code("bonus")}<br>${option(C.BONUS_DOCS)}</p>
+      <h3>Status</h3><p class="note">Use em ${code("status")} (efeito Status) ou em ${code("onlyStatus")}. Negativo: a Resistência e a Imunidade barram, a Purificação tira. Positivo: o Karma barra, o Roubar efeito leva.</p>
+      <div class="table-wrap"><table><tr><th>status</th><th>Nome</th><th>Tipo</th><th>O que faz</th></tr>${statuses}</table></div>`;
   }
 
   function renderIssues() {
@@ -1440,6 +1609,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     renderSummary();
     renderModelSummary();
     if (ui.tab === "formula") renderFormula();
+    if (ui.tab === "reference") renderReference();
     if (ui.tab === "issues") renderIssues();
     if (ui.tab === "preview") renderPreview();
     const save = document.querySelector('[data-action="save-family"]');

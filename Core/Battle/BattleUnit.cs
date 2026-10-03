@@ -21,6 +21,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>As regras que valem a luta inteira: os conjuntos de runas e, por último, a Passiva.</summary>
 		private readonly List<UnitRule> _innate = new();
 
+		/// <summary>A regra da Passiva (também em <see cref="_innate"/>): o Esquecimento a cala.</summary>
+		private readonly UnitRule? _passive;
+
 		private readonly int[] _cooldowns;
 
 		public BattleUnit(
@@ -52,7 +55,10 @@ namespace Sigilos.Core.Battle
 
 			_innate.AddRange(SetBehaviors.RulesFor(runeEffects));
 			if (passive != null)
-				_innate.Add(new UnitRule(PassiveBehaviors.Of(passive.Kind), PassiveValue));
+			{
+				_passive = new UnitRule(PassiveBehaviors.Of(passive.Kind), PassiveValue);
+				_innate.Add(_passive);
+			}
 			foreach (var rule in _innate)
 				rule.Owner = this;
 		}
@@ -110,8 +116,15 @@ namespace Sigilos.Core.Battle
 				_cooldowns[index] = turns;
 		}
 
-		/// <summary>A básica está sempre pronta; as outras, fora da recarga.</summary>
-		public bool IsReady(int index) => index >= 0 && index < Skills.Count && Cooldown(index) == 0;
+		/// <summary>
+		/// A básica está sempre pronta; as outras, fora da recarga. Com Silêncio, nenhuma habilidade que
+		/// tem recarga fica pronta.
+		/// </summary>
+		public bool IsReady(int index) =>
+			index >= 0 && index < Skills.Count && Cooldown(index) == 0 && !(Skills[index].Cooldown > 0 && Any(behavior => behavior.BlocksCooldownSkills));
+
+		/// <summary>A Passiva está calada (Esquecimento): ela não é avisada nem muda atributos.</summary>
+		public bool PassiveSuppressed => _passive != null && _statuses.Any(status => status.Behavior.SuppressesPassive);
 
 		/// <summary>Ganhou um turno extra: o próximo turno desta unidade é ele.</summary>
 		public bool ExtraTurnPending { get; set; }
@@ -143,7 +156,7 @@ namespace Sigilos.Core.Battle
 			var value = Stats.Get(stat);
 			foreach (var status in _statuses)
 				value = status.Behavior.Modify(status, stat, value);
-			foreach (var rule in _innate)
+			foreach (var rule in Innates())
 				value = rule.Behavior.Modify(rule, stat, value);
 			return value;
 		}
@@ -177,7 +190,7 @@ namespace Sigilos.Core.Battle
 		{
 			var rules = new List<UnitRule>(_statuses.Count + _innate.Count);
 			rules.AddRange(_statuses);
-			rules.AddRange(_innate);
+			rules.AddRange(Innates());
 
 			foreach (var rule in rules)
 			{
@@ -198,7 +211,7 @@ namespace Sigilos.Core.Battle
 					return true;
 			}
 
-			foreach (var rule in _innate)
+			foreach (var rule in Innates())
 			{
 				if (trait(rule.Behavior))
 					return true;
@@ -206,6 +219,9 @@ namespace Sigilos.Core.Battle
 
 			return false;
 		}
+
+		/// <summary>As regras da luta inteira em vigor agora: sem a Passiva, se ela está calada.</summary>
+		private IEnumerable<UnitRule> Innates() => PassiveSuppressed ? _innate.Where(rule => rule != _passive) : _innate;
 
 		/// <summary>A regra desta estratégia que vale a luta inteira (conjunto de runas ou Passiva), se a unidade tem.</summary>
 		internal UnitRule? Innate(UnitBehavior behavior) => _innate.FirstOrDefault(rule => rule.Behavior == behavior);
@@ -216,8 +232,17 @@ namespace Sigilos.Core.Battle
 			double factor = 1;
 			foreach (var status in _statuses)
 				factor *= status.Behavior.DamageTaken(status);
-			foreach (var rule in _innate)
+			foreach (var rule in Innates())
 				factor *= rule.Behavior.DamageTaken(rule);
+			return factor;
+		}
+
+		/// <summary>Quanto as regras da unidade multiplicam a chance de Crítico dos golpes que ela recebe.</summary>
+		internal double CritTaken()
+		{
+			double factor = 1;
+			foreach (var rule in Rules())
+				factor *= rule.Behavior.CritTaken(rule);
 			return factor;
 		}
 
@@ -227,7 +252,7 @@ namespace Sigilos.Core.Battle
 			double factor = 1;
 			foreach (var status in _statuses)
 				factor *= status.Behavior.DamageDealt(status, target);
-			foreach (var rule in _innate)
+			foreach (var rule in Innates())
 				factor *= rule.Behavior.DamageDealt(rule, target);
 			return factor;
 		}

@@ -19,7 +19,7 @@
           "name": "Porrete Ardente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

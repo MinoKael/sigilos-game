@@ -38,6 +38,18 @@ namespace Sigilos.Core.Content
 		[JsonPropertyName("awakened_stats")]
 		public StatBlock AwakenedStats { get; internal set; } = new();
 
+		/// <summary>
+		/// Estrelas naturais desta variante, quando são outras que as da família ("star_grade" na variante);
+		/// nulo = as da família. Com estrelas próprias, o viés da família não vale para ela: o orçamento é o
+		/// das estrelas dela e só o ajuste fino (<see cref="Bias"/>) e o elemento o repartem.
+		/// </summary>
+		[JsonPropertyName("star_grade")]
+		public int? StarGrade { get; init; }
+
+		/// <summary>A variante tem estrelas naturais próprias, diferentes das da família.</summary>
+		[JsonIgnore]
+		public bool OwnStars => StarGrade is { } stars && stars != Family.Rarity;
+
 		/// <summary>O ajuste fino desta variante na distribuição dos atributos; sem ele, neutro. Só o construtor usa.</summary>
 		public StatWeights? Bias { get; init; }
 
@@ -60,9 +72,9 @@ namespace Sigilos.Core.Content
 		[JsonIgnore]
 		public string FamilyId => Family.Id;
 
-		/// <summary>Estrelas naturais: com quantas a invocação nasce. Todas podem evoluir até 6.</summary>
+		/// <summary>Estrelas naturais: com quantas a invocação nasce (as da variante, se ela tem; senão, as da família). Todas podem evoluir até 6.</summary>
 		[JsonIgnore]
-		public int Rarity => Family.Rarity;
+		public int Rarity => StarGrade ?? Family.Rarity;
 
 		/// <summary>
 		/// Todas as habilidades que a variante pode ter, com a do Despertar no fim. Os níveis de

@@ -395,11 +395,11 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (2% de chance a cada vitória, em todo andar), Loja, Torre, conquistas | Invocar |
 | Fragmentos | Monstros soltos, Arena | Evolução e troca por uma invocação escolhida |
 
-**Correio.** No alto do Santuário, numa cápsula como as das moedas e ao lado delas, o Correio traz as cartas que o servidor manda (presentes, compensações, avisos), para uma conta ou para todas, com prazo ou sem; o selo vermelho diz quantas faltam coletar. Coletar soma as recompensas (qualquer das cinco moedas e a Gema de Reavaliação; a Mana pode passar do máximo) e anota a carta no save antes de avisar o servidor: nada se perde se a conexão cair, e nenhuma carta é coletada duas vezes. Sem conta, ou sem conexão, a janela explica por que não há cartas.
+**Correio.** No alto do Santuário, numa cápsula como as das moedas e ao lado delas, o Correio traz as cartas que o servidor manda (presentes, compensações, avisos), para uma conta ou para todas, com prazo ou sem; o selo vermelho diz quantas faltam coletar. Coletar soma as recompensas (qualquer das cinco moedas e a Gema de Reavaliação; a Mana pode passar do máximo) e anota a carta no save antes de avisar o servidor: nada se perde se a conexão cair, e nenhuma carta é coletada duas vezes. Sem conta, ou sem conexão, a janela explica por que não há cartas. Além das moedas, uma carta pode trazer presentes: monstros (cópias novas), runas (das estrelas, da raridade e do conjunto escolhidos) e retratos da conta, que ficam liberados mesmo sem o monstro.
 
 **Retrato da conta.** Tocar na conta, no alto do Santuário, abre o nível e o botão Trocar retrato: o retrato pode ser qualquer monstro que a conta tem, e a forma desperta de quem ela tem uma cópia desperta.
 
-**Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180) ou a Gema de Reavaliação (40). As ofertas moram em Data/shop.json.
+**Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180), a Gema de Reavaliação (40) ou a troca do nome da conta (10.000; o Ouro só sai se o nome novo for aceito). As ofertas moram em Data/shop.json. Trocar o nome é só na Loja: nos Ajustes fica apenas escolher o primeiro nome, para quem ainda não tem. Toda conta tem uma chave de recuperação de quatro palavras (RUNA-FAROL-GRIFO-SELO), mostrada uma vez só: no cadastro, ou na primeira entrada de uma conta criada antes dela. No login, "Esqueci a senha" troca a senha com o e-mail e essa chave; cinco chaves erradas travam a recuperação até o suporte destravar (o servidor tem a rota de admin que destrava e refaz senha e chave).
 
 ### Ritmo-alvo
 

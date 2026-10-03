@@ -56,11 +56,11 @@
     "skills": [
       { "name": "Mordida Ardente", "effects": [
         {"kind": "Damage", "power": 3.8},
-        {"kind": "Status", "status": "Burn", "chance": 0.4, "turns": 2}
+        {"kind": "Status", "status": "Affliction", "chance": 0.4, "turns": 2}
       ] },
       { "name": "Sopro de Cinzas", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.6},
-        {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.5, "turns": 2}
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
       ] }
     ]
   },
@@ -116,7 +116,7 @@
       { "name": "Brasa da Bigorna", "cooldown": 4, "effects": [
         {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
         {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-        {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.3, "turns": 2}
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
       ] }
     ]
   },

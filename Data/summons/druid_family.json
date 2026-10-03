@@ -19,7 +19,7 @@
           "name": "Dilacerar",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.47, "hits": 2},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -33,7 +33,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
-            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.6, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2},
             {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}
           ],
           "levels": [
@@ -112,7 +112,7 @@
           "name": "Chicote de Espinhos",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -126,7 +126,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
-            {"kind": "Status", "target": "AllEnemies", "status": "Poison", "chance": 0.6, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2},
             {"kind": "Impeto", "target": "AllEnemies", "power": -20}
           ],
           "levels": [
@@ -198,7 +198,7 @@
           "name": "Mordida Podre",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
-            {"kind": "Status", "target": "Target", "status": "Poison", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -212,7 +212,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
-            {"kind": "Status", "target": "AllEnemies", "status": "Poison", "chance": 0.8, "turns": 3}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 3}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

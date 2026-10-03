@@ -49,16 +49,22 @@ namespace Sigilos.GameEntry.Account
 				return null;
 
 			var rewards = new Dictionary<MailItem, int>();
+			var gifts = new List<MailGift>();
 			if (item.TryGetProperty("rewards", out var list) && list.ValueKind == JsonValueKind.Object)
 			{
 				foreach (var reward in list.EnumerateObject())
 				{
-					if (Enum.TryParse<MailItem>(reward.Name, true, out var kind) && reward.Value.ValueKind == JsonValueKind.Number && reward.Value.TryGetInt32(out var amount) && amount > 0)
+					if (reward.Value.ValueKind != JsonValueKind.Number || !reward.Value.TryGetInt32(out var amount) || amount <= 0)
+						continue;
+					// Moeda pelo nome ("gold"); presente pela chave com dois-pontos ("monster:knight_fire").
+					if (!reward.Name.Contains(':') && Enum.TryParse<MailItem>(reward.Name, true, out var kind))
 						rewards[kind] = amount;
+					else if (MailGift.Parse(reward.Name, amount) is { } gift)
+						gifts.Add(gift);
 				}
 			}
 
-			return new Mail(id, Text(item, "title") ?? "", Text(item, "text") ?? "", rewards, sent, Time(item, "expiresAt"));
+			return new Mail(id, Text(item, "title") ?? "", Text(item, "text") ?? "", rewards, sent, Time(item, "expiresAt")) { Gifts = gifts };
 		}
 
 		private static string? Text(JsonElement item, string property) =>

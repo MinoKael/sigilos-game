@@ -7,14 +7,19 @@ namespace Sigilos.Core.Battle.Sets
 	/// </summary>
 	internal sealed class CounterSet : UnitBehavior
 	{
-		public override void AfterStruck(UnitRule rule, Cast cast)
+		public override void AfterStruck(UnitRule rule, Cast cast) => Retaliate(rule.Owner, cast, rule.Value);
+
+		/// <summary>
+		/// O revide com a <paramref name="chance"/>: só de pé, contra quem é do outro lado e ainda vive, e não
+		/// para quem perde o turno. É o do conjunto e o do efeito Contragolpe.
+		/// </summary>
+		public static void Retaliate(BattleUnit owner, Cast cast, double chance)
 		{
-			var owner = rule.Owner;
 			var attacker = cast.Caster;
 			if (!attacker.IsAlive || !owner.IsAlive || owner.Side == attacker.Side || owner.Any(behavior => behavior.SkipsTurn))
 				return;
 
-			if (cast.Resolver.Random.NextDouble() < rule.Value)
+			if (chance >= 1 || cast.Resolver.Random.NextDouble() < chance)
 				cast.Resolver.Counterattack(owner, attacker);
 		}
 	}

@@ -98,6 +98,12 @@ namespace Sigilos.Core.Player
 		/// <summary>O retrato é a forma desperta da variante.</summary>
 		public bool AvatarAwakened { get; set; }
 
+		/// <summary>
+		/// Retratos liberados sem ter o monstro (presente do correio): o id da variante, com ":awakened" na
+		/// forma desperta (<see cref="Progression.Account.UnlockAvatar"/>).
+		/// </summary>
+		public List<string> AvatarUnlocks { get; set; } = new();
+
 		public DateTime LastIdleCollect { get; set; }
 
 		/// <summary>Frações que a ociosidade ainda não fechou numa unidade.</summary>

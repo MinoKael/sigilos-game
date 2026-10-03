@@ -19,7 +19,7 @@
           "name": "Bicada de Brasa",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 0.91, "hits": 3},
-            {"kind": "Status", "target": "Target", "status": "Burn", "chance": 0.2, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -33,7 +33,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
-            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -42,7 +42,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Burn", "chance": 0.6, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2}
           ]
         },
         {

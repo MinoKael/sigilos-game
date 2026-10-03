@@ -40,14 +40,26 @@ namespace Sigilos.Core.Battle
 
 	public sealed record ImpetoChanged(BattleUnit Target, double Amount) : BattleEvent;
 
-	/// <summary>A unidade perdeu o turno atordoada.</summary>
-	public sealed record TurnSkipped(BattleUnit Unit) : BattleEvent;
+	/// <summary>A unidade perdeu o turno: <paramref name="Cause"/> é o efeito que tirou (Atordoamento, Sono).</summary>
+	public sealed record TurnSkipped(BattleUnit Unit, StatusKind? Cause = null) : BattleEvent;
 
 	/// <summary>O conjunto deu mais um turno.</summary>
 	public sealed record ExtraTurn(BattleUnit Unit) : BattleEvent;
 
 	/// <summary>O conjunto contra-ataca com o básico.</summary>
 	public sealed record Counterattack(BattleUnit Unit) : BattleEvent;
+
+	/// <summary>Um aliado foi chamado para um ataque conjunto: ataca com a básica.</summary>
+	public sealed record JointAttack(BattleUnit Unit) : BattleEvent;
+
+	/// <summary>Um efeito positivo não pegou: o alvo está com Karma.</summary>
+	public sealed record StatusBlocked(BattleUnit Target, StatusKind Status) : BattleEvent;
+
+	/// <summary>A duração de um efeito mudou em <paramref name="Turns"/> turnos (negativo encurtou).</summary>
+	public sealed record DurationChanged(BattleUnit Target, StatusKind Status, int Turns) : BattleEvent;
+
+	/// <summary>A Vida do alvo desceu ao nivelar a Vida da equipe (o que sobe é cura).</summary>
+	public sealed record HealthLeveled(BattleUnit Target, int Amount) : BattleEvent;
 
 	/// <summary>O conjunto tirou Vida máxima do alvo.</summary>
 	public sealed record MaxHealthReduced(BattleUnit Target, int Amount) : BattleEvent;
