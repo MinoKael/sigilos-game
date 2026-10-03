@@ -344,55 +344,24 @@ namespace Sigilos.UI.Screens
 			(_filter.Set != null ? 1 : 0) + (_filter.Slot != null ? 1 : 0) + (_filter.Main != null ? 1 : 0) + (_filter.Substats.Count > 0 ? 1 : 0)
 			+ (_filter.MinGrade > 1 ? 1 : 0) + (_filter.MinRarity > RuneRarity.Normal ? 1 : 0) + (_filter.MinLevel > 0 ? 1 : 0);
 
-		/// <summary>A janela dos filtros: um campo por linha, cada um abre a lista das opções. Muda na hora.</summary>
-		private void OpenFilters()
+		/// <summary>A janela dos filtros (<see cref="FilterDialog"/>): um campo por linha. Muda na hora.</summary>
+		private void OpenFilters() => FilterDialog.Open(this, T("filter.title"), dialog =>
 		{
-			var dialog = Dialog.Open(this, T("filter.title"), 560, null, "FilterDialog");
-			void Build()
-			{
-				Layout.Clear(dialog.Body);
-				var column = new VBoxContainer { Name = "Fields" };
-				column.AddThemeConstantOverride("separation", 10);
-				column.AddChild(Field("Set", T("filter.set"), Enum.GetValues<RuneSet>().Select(s => (new Choice(Texts.Name(s), Rune: RuneSets.For(s).Glyph), (int)s)), _filter.Set is { } set ? (int)set : -1,
-					value => _filter = _filter with { Set = value < 0 ? null : (RuneSet)value }));
-				column.AddChild(Field("Slot", T("filter.slot"), Enumerable.Range(1, RuneRules.Slots).Select(s => (new Choice(T("filter.slot_n", s)), s)), _filter.Slot ?? -1,
-					value => _filter = _filter with { Slot = value < 0 ? null : value }));
-				column.AddChild(Field("Main", T("filter.main"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Main is { } main ? (int)main : -1,
-					value => _filter = _filter with { Main = value < 0 ? null : (RuneStat)value }));
-				column.AddChild(Field("Substat", T("filter.substat"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Substats.Count > 0 ? (int)_filter.Substats[0] : -1,
-					value => _filter = _filter with { Substats = value < 0 ? Array.Empty<RuneStat>() : new[] { (RuneStat)value } }));
-				column.AddChild(Field("Stars", T("filter.stars"), Enumerable.Range(2, RuneRules.MaxGrade - 1).Select(g => (new Choice(T("filter.at_least", Texts.Stars(g))), g)), _filter.MinGrade > 1 ? _filter.MinGrade : -1,
-					value => _filter = _filter with { MinGrade = Math.Max(1, value) }));
-				column.AddChild(Field("Rarity", T("filter.rarity"), Enum.GetValues<RuneRarity>().Skip(1).Select(r => (new Choice(T("filter.at_least", Texts.Name(r)), Art.Icon("gem"), Palette.Of(r)), (int)r)), _filter.MinRarity > RuneRarity.Normal ? (int)_filter.MinRarity : -1,
-					value => _filter = _filter with { MinRarity = value < 0 ? RuneRarity.Normal : (RuneRarity)value }));
-				column.AddChild(Field("Upgrade", T("filter.upgrade"), new[] { 3, 6, 9, 12, 15 }.Select(l => (new Choice(T("filter.at_least", $"+{l}")), l)), _filter.MinLevel > 0 ? _filter.MinLevel : -1,
-					value => _filter = _filter with { MinLevel = Math.Max(0, value) }));
-				dialog.Body.AddChild(column);
-			}
-
-			// Um campo: o botão com o valor de agora; a primeira opção é "Todos" (-1).
-			ChoiceButton Field(string name, string title, IEnumerable<(Choice Choice, int Value)> options, int current, Action<int> changed)
-			{
-				var list = new List<(Choice Choice, int Value)> { (new Choice(T("filter.all")), -1) };
-				list.AddRange(options);
-				var field = new ChoiceButton(title, list, current, 52) { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-				field.Changed += value =>
-				{
-					changed(value);
-					Refresh();
-					Callable.From(Build).CallDeferred();
-				};
-				return field;
-			}
-
-			Build();
-			dialog.AddAction(T("filter.clear"), () =>
-			{
-				_filter = new RuneFilter { Sort = _filter.Sort };
-				Refresh();
-			}, ButtonKind.Secondary, true, "cancel").Named("Clear");
-			dialog.AddAction(T("filter.done"), null, ButtonKind.Primary).Named("Done");
-		}
+			dialog.Field("Set", T("filter.set"), Enum.GetValues<RuneSet>().Select(s => (new Choice(Texts.Name(s), Rune: RuneSets.For(s).Glyph), (int)s)), _filter.Set is { } set ? (int)set : FilterDialog.All,
+				value => _filter = _filter with { Set = value < 0 ? null : (RuneSet)value });
+			dialog.Field("Slot", T("filter.slot"), Enumerable.Range(1, RuneRules.Slots).Select(s => (new Choice(T("filter.slot_n", s)), s)), _filter.Slot ?? FilterDialog.All,
+				value => _filter = _filter with { Slot = value < 0 ? null : value });
+			dialog.Field("Main", T("filter.main"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Main is { } main ? (int)main : FilterDialog.All,
+				value => _filter = _filter with { Main = value < 0 ? null : (RuneStat)value });
+			dialog.Field("Substat", T("filter.substat"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Substats.Count > 0 ? (int)_filter.Substats[0] : FilterDialog.All,
+				value => _filter = _filter with { Substats = value < 0 ? Array.Empty<RuneStat>() : new[] { (RuneStat)value } });
+			dialog.Field("Stars", T("filter.stars"), Enumerable.Range(2, RuneRules.MaxGrade - 1).Select(g => (new Choice(T("filter.at_least", Texts.Stars(g))), g)), _filter.MinGrade > 1 ? _filter.MinGrade : FilterDialog.All,
+				value => _filter = _filter with { MinGrade = Math.Max(1, value) });
+			dialog.Field("Rarity", T("filter.rarity"), Enum.GetValues<RuneRarity>().Skip(1).Select(r => (new Choice(T("filter.at_least", Texts.Name(r)), Art.Icon("gem"), Palette.Of(r)), (int)r)), _filter.MinRarity > RuneRarity.Normal ? (int)_filter.MinRarity : FilterDialog.All,
+				value => _filter = _filter with { MinRarity = value < 0 ? RuneRarity.Normal : (RuneRarity)value });
+			dialog.Field("Upgrade", T("filter.upgrade"), new[] { 3, 6, 9, 12, 15 }.Select(l => (new Choice(T("filter.at_least", $"+{l}")), l)), _filter.MinLevel > 0 ? _filter.MinLevel : FilterDialog.All,
+				value => _filter = _filter with { MinLevel = Math.Max(0, value) });
+		}, Refresh, () => _filter = new RuneFilter { Sort = _filter.Sort });
 
 		/// <summary>A faixa da seleção: a explicação numa linha só dela (quebra em vez de alargar a tela) e os botões embaixo.</summary>
 		private Control SelectionBar(IReadOnlyList<Rune> visible)

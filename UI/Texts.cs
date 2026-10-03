@@ -39,6 +39,7 @@ namespace Sigilos.UI
 		public static string Name(StatusKind status) => T($"effect.{status}.name");
 		public static string Name(DungeonKind kind) => T($"dungeons.kind.{kind}");
 		public static string Name(RuneSort sort) => T($"filter.order.{sort}");
+		public static string Name(MonsterSort sort) => T($"filter.monster_order.{sort}");
 
 		/// <summary>"30 Mana", "10 Pergaminhos", "1 Pergaminho".</summary>
 		public static string Amount(ShopItem item, int amount) => item == ShopItem.Scrolls ? Scrolls(amount) : T($"shop.item.{item}", amount);
@@ -393,6 +394,8 @@ namespace Sigilos.UI
 				.Concat(Keys<RuneToolKind>("tool.{0}"))
 				.Concat(Keys<DungeonKind>("dungeons.kind.{0}"))
 				.Concat(Keys<RuneSort>("filter.order.{0}"))
+				.Concat(Keys<MonsterSort>("filter.monster_order.{0}").Where(k => !k.EndsWith(".Stat")))
+				.Concat(Keys<MonsterCondition>("filter.condition_kind.{0}"))
 				.Concat(Keys<ShopItem>("shop.item.{0}"))
 				.Concat(Keys<EntryProblem>("entry.{0}").Where(k => !k.EndsWith("None")))
 				.Concat(Keys<RuneSetEffect>("set_effect.{0}").Where(k => !k.EndsWith("None")))

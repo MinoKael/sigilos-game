@@ -638,7 +638,8 @@
     "store_many_title": "Store in the Vault",
     "store_many_confirm": "Store {0} monsters in the Vault? Those in a team ({1}) leave it. In the Vault they keep their runes, but they don't fight.",
     "store_many_button": "Store",
-    "release_many_locked": "Locked ones ({0}) stay."
+    "release_many_locked": "Locked ones ({0}) stay.",
+    "filter_empty": "No monster here matches these filters."
   },
 
   "teams": {
@@ -742,7 +743,31 @@
     "button": "Filters",
     "button_active": "Filters ({0})",
     "title": "Filter runes",
-    "done": "Done"
+    "done": "Done",
+    "title_monsters": "Filter monsters",
+    "element": "Element",
+    "role": "Role",
+    "natural": "Natural stars",
+    "awakening": "Awakening",
+    "awakened": "Awakened",
+    "not_awakened": "Not awakened",
+    "condition": "Condition",
+    "condition_kind": {
+      "Favorite": "Favorites",
+      "Locked": "Locked",
+      "InTeam": "In a team",
+      "MaxLevel": "Max level",
+      "Runed": "With runes",
+      "Unruned": "Without runes"
+    },
+    "monster_order": {
+      "Stars": "stars",
+      "Level": "level",
+      "Rarity": "natural stars",
+      "Element": "element",
+      "Name": "name",
+      "Newest": "newest"
+    }
   },
 
   "compendium": {

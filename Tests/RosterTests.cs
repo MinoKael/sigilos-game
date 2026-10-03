@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 
@@ -181,6 +182,43 @@ namespace Sigilos.Tests
 
 			Assert.Equal(5, PlayerTeam.Build(player, database, Teams.Campaign).Members.Count, "cinco na Campanha");
 			Assert.Equal("knight_fire", PlayerTeam.Build(player, database, "golem").Members.Single().Summon.Id, "um no Golem");
+		}
+
+		[Test]
+		private static void MonsterFilterFindsAndSorts()
+		{
+			var database = TestData.Database;
+			var player = TestData.PlayerWith();
+			var fire = Roster.Add(player, TestData.Summon("imp_fire"));
+			var water = Roster.Add(player, TestData.Summon("imp_water"));
+			var phoenix = Roster.Add(player, TestData.Summon("phoenix_fire"));
+			var light = Roster.Add(player, TestData.Summon("imp_light"));
+			var all = new[] { fire, water, phoenix, light };
+			string Ids(MonsterFilter filter) => string.Join(",", filter.Apply(all, database, player).Select(m => m.Id));
+
+			Assert.Equal(string.Join(",", new[] { fire, phoenix }.OrderByDescending(m => m.Stars).ThenBy(m => m.Id).Select(m => m.Id)),
+				Ids(new MonsterFilter { Element = Element.Fire }), "elemento, mais estrelas primeiro");
+
+			fire.Level = 20;
+			light.Favorite = true;
+			var byLevel = Ids(new MonsterFilter { Sort = MonsterSort.Level }).Split(',');
+			Assert.Equal($"{light.Id},{fire.Id}", $"{byLevel[0]},{byLevel[1]}", "o favorito antes, depois o maior nível");
+
+			water.Awakened = true;
+			Assert.Equal($"{water.Id}", Ids(new MonsterFilter { Awakened = true }), "só o desperto");
+			Assert.Equal(3, new MonsterFilter { Awakened = false }.Apply(all, database, player).Count(), "os não despertos");
+
+			RuneInventory.Equip(player, RuneInventory.Create(new Random(2), player, 6), phoenix.Id);
+			Assert.Equal($"{phoenix.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Runed }), "com runas");
+			Assert.Equal(3, new MonsterFilter { Condition = MonsterCondition.Unruned }.Apply(all, database, player).Count(), "sem runas");
+			Assert.Equal($"{light.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Favorite }), "favoritos");
+
+			var speeds = new MonsterFilter { Sort = MonsterSort.Stat, SortStat = Stat.Speed }.Apply(all, database, player)
+				.Where(m => !m.Favorite)
+				.Select(m => MonsterFilter.Value(m, database.Summon(m.SummonId), player, Stat.Speed))
+				.ToList();
+			Assert.True(speeds.Zip(speeds.Skip(1)).All(pair => pair.First >= pair.Second), "por Velocidade, a maior primeiro");
+			Assert.Equal(2, new MonsterFilter { Element = Element.Fire, Awakened = false }.Active, "dois campos filtrando");
 		}
 	}
 }

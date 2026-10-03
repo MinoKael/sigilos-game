@@ -639,7 +639,8 @@
     "store_many_title": "Guardar no Baú",
     "store_many_confirm": "Guardar {0} monstros no Baú? Os que estão em equipe ({1}) saem dela. No Baú eles guardam as runas, mas não lutam.",
     "store_many_button": "Guardar",
-    "release_many_locked": "Os bloqueados ({0}) ficam."
+    "release_many_locked": "Os bloqueados ({0}) ficam.",
+    "filter_empty": "Nenhum monstro daqui passa nestes filtros."
   },
 
   "teams": {
@@ -743,7 +744,31 @@
     "button": "Filtros",
     "button_active": "Filtros ({0})",
     "title": "Filtrar runas",
-    "done": "Pronto"
+    "done": "Pronto",
+    "title_monsters": "Filtrar monstros",
+    "element": "Elemento",
+    "role": "Papel",
+    "natural": "Estrelas naturais",
+    "awakening": "Despertar",
+    "awakened": "Despertos",
+    "not_awakened": "Não despertos",
+    "condition": "Situação",
+    "condition_kind": {
+      "Favorite": "Favoritos",
+      "Locked": "Bloqueados",
+      "InTeam": "Em equipe",
+      "MaxLevel": "Nível máximo",
+      "Runed": "Com runas",
+      "Unruned": "Sem runas"
+    },
+    "monster_order": {
+      "Stars": "estrelas",
+      "Level": "nível",
+      "Rarity": "estrelas naturais",
+      "Element": "elemento",
+      "Name": "nome",
+      "Newest": "mais novo"
+    }
   },
 
   "compendium": {

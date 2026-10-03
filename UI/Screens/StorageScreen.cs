@@ -25,22 +25,32 @@ namespace Sigilos.UI.Screens
 	/// - Despertar: o desenho de agora e o desperto, o que ganha e o botão Despertar com o custo.
 	/// - Runas: as 6 no círculo, os conjuntos ativos e o botão que abre a tela de Runas.
 	///
+	/// Embaixo das abas, Filtros e Ordem (<see cref="MonsterFilter"/>): elemento, papel, estrelas, estrelas
+	/// naturais, Despertar e situação; a ordem por estrelas, nível, elemento, nome, chegada ou por um
+	/// atributo (com as runas), que então aparece escrito em cada cartão. Os favoritos vêm antes em
+	/// qualquer ordem. O GameRoot guarda a busca enquanto o jogo está aberto (<see cref="FilterChanged"/>).
+	///
 	/// Selecionar vários marca cartões (nas duas abas, qualquer monstro, bloqueado ou não) para guardar no
 	/// Baú, tirar dele ou soltar de uma vez; soltar deixa de fora os bloqueados. Fundir é só pela janela
-	/// da fusão, para uma escolha não se confundir com a outra. Favoritos vêm primeiro na grade. Toque
-	/// longo em qualquer cartão abre o resumo. Cada botão vira um evento; o GameRoot aplica a regra e
+	/// da fusão, para uma escolha não se confundir com a outra. Mudar o filtro desmarca os que somem da
+	/// grade, para não soltar nada que não se vê. Toque longo em qualquer cartão abre o resumo. Cada botão vira um evento; o GameRoot aplica a regra e
 	/// chama <see cref="Refresh"/>.
 	/// </summary>
 	public partial class StorageScreen : Control
 	{
-		private const float DetailWidth = 580;
-		private const float SideWidth = 150;
+		private const float DetailWidth = 610;
+
+		/// <summary>Cabe o botão mais comprido (Desfavoritar): a ficha não muda de largura ao favoritar.</summary>
+		private const float SideWidth = 180;
 
 		/// <summary>Os cartões da grade: cinco por linha ao lado da ficha.</summary>
 		private const float CardWidth = 98;
 
 		/// <summary>A largura do texto das habilidades na coluna larga da ficha.</summary>
 		private const float TextWidth = 300;
+
+		/// <summary>Na lista da Ordem, as por atributo valem isto mais o atributo; as outras, a própria <see cref="MonsterSort"/>.</summary>
+		private const int StatOrder = 100;
 
 		private enum Page
 		{
@@ -56,10 +66,12 @@ namespace Sigilos.UI.Screens
 		private bool _showStorage;
 		private bool _selecting;
 		private Page _page;
+		private MonsterFilter _filter;
 		private readonly HashSet<int> _marked = new();
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly HBoxContainer _tools = Layout.Row(10).Named("Tools");
+		private readonly GridContainer _search = Layout.Grid(2, 8).Named("Search");
 		private readonly VBoxContainer _selection = new() { Name = "Selection" };
 		private readonly TileGrid _roster = new(10) { Name = "Roster" };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
@@ -70,10 +82,12 @@ namespace Sigilos.UI.Screens
 		/// <summary>O cartão que o jogador acabou de tocar: a rolagem o mostra inteiro.</summary>
 		private int? _touched;
 
-		public StorageScreen(GameDatabase database, PlayerState player, int? selected)
+		/// <param name="filter">A busca da última vez (nula: sem filtro, por estrelas).</param>
+		public StorageScreen(GameDatabase database, PlayerState player, int? selected, MonsterFilter? filter = null)
 		{
 			_database = database;
 			_player = player;
+			_filter = filter ?? new MonsterFilter();
 			_selected = player.Monster(selected ?? -1)?.Id ?? player.Collection.FirstOrDefault()?.Id;
 			_showStorage = player.Monster(_selected ?? -1)?.Stored ?? false;
 		}
@@ -106,6 +120,9 @@ namespace Sigilos.UI.Screens
 
 		public event Action? BackRequested;
 
+		/// <summary>O jogador mudou o filtro ou a ordem.</summary>
+		public event Action<MonsterFilter>? FilterChanged;
+
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -122,6 +139,7 @@ namespace Sigilos.UI.Screens
 			rosterColumn.AddThemeConstantOverride("separation", 10);
 			rosterPanel.AddChild(rosterColumn);
 			rosterColumn.AddChild(_tools);
+			rosterColumn.AddChild(_search);
 			rosterColumn.AddChild(_selection);
 			_rosterScroll = Layout.Scroll(_roster);
 			rosterColumn.AddChild(_rosterScroll);
@@ -191,6 +209,48 @@ namespace Sigilos.UI.Screens
 				Callable.From(Refresh).CallDeferred();
 			}, _selecting ? ButtonKind.Primary : ButtonKind.Secondary, "select", 52).Named("Select");
 			_tools.AddChild(select);
+
+			Layout.Clear(_search);
+			var active = _filter.Active;
+			_search.AddChild(GameButton.Of(active == 0 ? T("filter.button") : T("filter.button_active", active), OpenFilters, active == 0 ? ButtonKind.Secondary : ButtonKind.Primary, "search", 44).Named("Filters"));
+			var current = _filter.Sort == MonsterSort.Stat ? StatOrder + (int)_filter.SortStat : (int)_filter.Sort;
+			var sort = new ChoiceButton(T("filter.sort"), SortOptions(), current, 44) { Name = "Sort" };
+			sort.Changed += value => Filter(value >= StatOrder
+				? _filter with { Sort = MonsterSort.Stat, SortStat = (Stat)(value - StatOrder) }
+				: _filter with { Sort = (MonsterSort)value });
+			_search.AddChild(sort);
+		}
+
+		/// <summary>As ordens da grade e, depois, uma por atributo.</summary>
+		private static IReadOnlyList<(Choice Choice, int Value)> SortOptions() =>
+			Enum.GetValues<MonsterSort>().Where(s => s != MonsterSort.Stat).Select(s => (new Choice(Texts.Name(s)), (int)s))
+				.Concat(Enum.GetValues<Stat>().Select(s => (new Choice(Texts.Name(s).ToLower(Culture), Rune: Texts.GlyphOf(s)), StatOrder + (int)s)))
+				.ToList();
+
+		/// <summary>A janela dos filtros (<see cref="FilterDialog"/>): um campo por linha. Muda na hora.</summary>
+		private void OpenFilters() => FilterDialog.Open(this, T("filter.title_monsters"), dialog =>
+		{
+			dialog.Field("Element", T("filter.element"), Enum.GetValues<Element>().Select(e => (new Choice(Texts.Name(e), Art.Element(e), Palette.Of(e)), (int)e)), _filter.Element is { } element ? (int)element : FilterDialog.All,
+				value => _filter = _filter with { Element = value < 0 ? null : (Element)value });
+			dialog.Field("Role", T("filter.role"), Enum.GetValues<Role>().Select(r => (new Choice(Texts.Name(r)), (int)r)), _filter.Role is { } role ? (int)role : FilterDialog.All,
+				value => _filter = _filter with { Role = value < 0 ? null : (Role)value });
+			dialog.Field("Stars", T("filter.stars"), Enumerable.Range(1, Growth.MaxStars).Select(s => (new Choice(Texts.Stars(s)), s)), _filter.Stars ?? FilterDialog.All,
+				value => _filter = _filter with { Stars = value < 0 ? null : value });
+			dialog.Field("Rarity", T("filter.natural"), _database.Summons.Select(s => s.Rarity).Distinct().OrderBy(r => r).Select(r => (new Choice(Texts.Stars(r)), r)), _filter.Rarity ?? FilterDialog.All,
+				value => _filter = _filter with { Rarity = value < 0 ? null : value });
+			dialog.Field("Awakening", T("filter.awakening"), new[] { (new Choice(T("filter.awakened")), 1), (new Choice(T("filter.not_awakened")), 0) }, _filter.Awakened is { } awakened ? (awakened ? 1 : 0) : FilterDialog.All,
+				value => _filter = _filter with { Awakened = value < 0 ? null : value == 1 });
+			dialog.Field("Condition", T("filter.condition"), Enum.GetValues<MonsterCondition>().Select(c => (new Choice(T($"filter.condition_kind.{c}")), (int)c)), _filter.Condition is { } condition ? (int)condition : FilterDialog.All,
+				value => _filter = _filter with { Condition = value < 0 ? null : (MonsterCondition)value });
+		}, () => Filter(_filter), () => _filter = new MonsterFilter { Sort = _filter.Sort, SortStat = _filter.SortStat });
+
+		/// <summary>A busca nova: desmarca quem saiu da grade, avisa o GameRoot e refaz a tela.</summary>
+		private void Filter(MonsterFilter filter)
+		{
+			_filter = filter;
+			_marked.RemoveWhere(id => _player.Monster(id) is not { } m || !_database.HasSummon(m.SummonId) || !filter.Matches(m, _database.Summon(m.SummonId), _player));
+			FilterChanged?.Invoke(filter);
+			Callable.From(Refresh).CallDeferred();
 		}
 
 		/// <summary>
@@ -278,20 +338,16 @@ namespace Sigilos.UI.Screens
 		private void RefreshRoster()
 		{
 			Layout.Clear(_roster);
-			var monsters = (_showStorage ? _player.Storage : _player.Collection)
-				.Where(m => _database.HasSummon(m.SummonId))
-				.OrderByDescending(m => m.Favorite)
-				.ThenByDescending(m => m.Stars)
-				.ThenByDescending(m => _database.Summon(m.SummonId).Rarity)
-				.ThenByDescending(m => m.Level)
-				.ThenBy(m => _database.Summon(m.SummonId).Element)
-				.ThenBy(m => m.Id)
-				.ToList();
+			var place = (_showStorage ? _player.Storage : _player.Collection).ToList();
+			var monsters = _filter.Apply(place, _database, _player).ToList();
 
 			foreach (var monster in monsters)
 			{
+				var summon = _database.Summon(monster.SummonId);
 				var inTeam = MonsterNotes.Teams(_database, _player, monster.Id).Count > 0;
-				var card = new CreatureCard(_database.Summon(monster.SummonId), monster, CardWidth, inTeam ? "team" : null) { Name = $"Monster{monster.Id}" };
+				// Na ordem por atributo, o valor dele (com as runas) fica escrito no cartão.
+				var value = _filter.Sort == MonsterSort.Stat ? Texts.Value(_filter.SortStat, MonsterFilter.Value(monster, summon, _player, _filter.SortStat)) : null;
+				var card = new CreatureCard(summon, monster, CardWidth, inTeam ? "team" : null, value) { Name = $"Monster{monster.Id}" };
 				card.SetSelected(monster.Id == _selected);
 				card.SetMarked(_marked.Contains(monster.Id));
 				card.Pressed += c =>
@@ -318,7 +374,10 @@ namespace Sigilos.UI.Screens
 			_touched = null;
 
 			if (monsters.Count == 0)
-				_roster.AddChild(Layout.Text(T(_showStorage ? "monsters.vault_empty" : "monsters.collection_empty"), GameTheme.Faded, 400).Named("Empty"));
+			{
+				var empty = place.Count > 0 ? "monsters.filter_empty" : _showStorage ? "monsters.vault_empty" : "monsters.collection_empty";
+				_roster.AddChild(Layout.Text(T(empty), GameTheme.Faded, 400).Named("Empty"));
+			}
 		}
 
 		// Ficha ------------------------------------------------------------------------------------

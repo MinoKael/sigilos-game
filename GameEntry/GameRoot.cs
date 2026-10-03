@@ -90,6 +90,9 @@ namespace Sigilos.GameEntry
 		private Action _campaignBack = null!;
 		private Action _dungeonsBack = null!;
 		private Action _storageBack = null!;
+
+		/// <summary>A busca da tela de Monstros, que fica enquanto o jogo está aberto.</summary>
+		private MonsterFilter _monsterFilter = new();
 		private Action _summonBack = null!;
 
 		public override void _Ready()
@@ -179,6 +182,7 @@ namespace Sigilos.GameEntry
 			_store = store;
 			_player = player;
 			_playing = true;
+			_monsterFilter = new MonsterFilter();
 			UiSession.Player = player;
 			// A chave que chegou no cadastro ou na entrada aparece por cima da primeira tela.
 			Callable.From(ShowRecoveryKey).CallDeferred();
@@ -927,8 +931,9 @@ namespace Sigilos.GameEntry
 
 		private void ShowStorage(int? selected)
 		{
-			var storage = new StorageScreen(_database, _player, selected);
+			var storage = new StorageScreen(_database, _player, selected, _monsterFilter);
 			storage.BackRequested += () => _storageBack();
+			storage.FilterChanged += filter => _monsterFilter = filter;
 			storage.RunesRequested += id => ShowRunes(id, () => ShowStorage(id));
 			storage.InfuseRequested += (id, toMax) => Change(() =>
 			{
