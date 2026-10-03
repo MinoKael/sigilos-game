@@ -423,8 +423,7 @@
     "offline": "Offline",
     "offline_text": "The server didn't answer. You're playing with this device's progress, and it goes up to the cloud on its own when the connection comes back. If the account also changed on another device meanwhile, the game asks which progress stays.",
     "channel_opens": "The Channeling opens at stage {0}.",
-    "battle_detail_campaign": "Campaign (stage {0} of {1})",
-    "mail": "Mail"
+    "battle_detail_campaign": "Campaign (stage {0} of {1})"
   },
 
   "campaign": {
@@ -462,7 +461,8 @@
     "opens_at": "Opens after stage {0}",
     "drops_sets": "Drops runes of:",
     "drops_tools": "Drops:",
-    "sets_hint": "Touch a set to see its bonus."
+    "sets_hint": "Touch a set to see its bonus.",
+    "scroll_chance": "chance of a Mystic Scroll"
   },
 
   "summon": {
@@ -535,7 +535,7 @@
       "awaken": "Awakening"
     },
     "select_done": "Done selecting",
-    "select_hint": "Touch monsters to mark them; locked ones stay out ({0} marked):",
+    "select_hint": "Touch monsters to mark them; locked ones move too, but are not released ({0} marked):",
     "release_title": "Release monsters?",
     "release_button": "Release",
     "fuse_title": "Fuse copies?",
@@ -577,7 +577,8 @@
     "retrieve_marked": "Take {0} out",
     "store_many_title": "Store in the Vault",
     "store_many_confirm": "Store {0} monsters in the Vault? Those in a team ({1}) leave it. In the Vault they keep their runes, but they don't fight.",
-    "store_many_button": "Store"
+    "store_many_button": "Store",
+    "release_many_locked": "Locked ones ({0}) stay."
   },
 
   "teams": {
@@ -695,7 +696,7 @@
     },
     "basic": {
       "campaign": { "title": "Campaign", "text": "50 stages in three regions, with up to 3 waves; each victory costs Mana. The first victory gives Scrolls and always a rune; later ones give Essence and a chance of a rune. The Campaign introduces the game little by little: each part of the Sanctuary opens at a stage. It drops runes of up to {0} stars; beating stage 50 takes about level 20 with runes, or 6★ level 40 without." },
-      "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors, one element in most of its enemies, and drops what the Campaign doesn't: Rare or better runes from four specific sets, or Grindstones and Gems (the Forge). Every floor shows the chance of each star and rarity, and the deeper the floor, the bigger the runes: 2 and 3 stars on floor 1, only 6 stars on floor 5. Floor 1 is as hard in every Dungeon, and so on, as hard as what it pays. They open during the Campaign: Golem (Wind), Wyvern (Fire), Crypt (Dark), Drowned (Water) and the Forge (Light); bring the element with the advantage. Each victory costs Mana; the first victory on each floor gives Gold." },
+      "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors, one element in most of its enemies, and drops what the Campaign doesn't: Rare or better runes from four specific sets, or Grindstones and Gems (the Forge). Every floor shows the chance of each star and rarity, and the deeper the floor, the bigger the runes: 2 and 3 stars on floor 1, only 6 stars on floor 5. Floor 1 is as hard in every Dungeon, and so on, as hard as what it pays. They open during the Campaign: Golem (Wind), Wyvern (Fire), Crypt (Dark), Drowned (Water) and the Forge (Light); bring the element with the advantage. Each victory costs Mana and may also drop a Mystic Scroll; the first victory on each floor gives Gold." },
       "mana": { "title": "Mana and account level", "text": "Every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {2} per hour up to the maximum: {0} at account level 1, {1} at level {3}, the maximum. Every victory also gives experience to the account, and each level refills Mana." },
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Scrolls." },
       "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The first one is a guaranteed 5★, and the 5★ guarantee is always on display." },
@@ -1041,7 +1042,10 @@
     "support": "{0} is a support: its basic attack already heals the most wounded ally, and {1} heals everyone. Healing and shields keep the team standing while the others strike.",
     "combo": "Combine effects: while the enemy is stunned, the others strike it without an answer. One monster opens the way for another; that is how a team is built.",
     "auto": "Last, the Auto button, at the bottom left: the team fights on its own, using the strongest ready skill. Finish the fight as you like.",
-    "end": "Well done, Conjurer! Now summon your own monsters: your first summon brings a 5★. Then the Campaign awaits."
+    "end": "Well done, Conjurer! Now summon your own monsters. Then the Campaign awaits.",
+    "to_summon": "Summon",
+    "summon": "Your own monsters, at last. Touch Summon ×10: ten summons for {0} Scrolls, and the first summon of the account brings the {1} and a 5★.",
+    "summon_done": "Your first monsters! The strongest, the {0} and the 5★ among them, already joined the Campaign team. Touch {1} to meet them, or go back to the Sanctuary: the Campaign awaits."
   },
 
   "mail": {
@@ -1062,6 +1066,13 @@
       "Fragments": "Fragments",
       "ReappraisalGems": "Reappraisal Gems"
     }
+  },
+
+  "avatar": {
+    "title": "Account portrait",
+    "change": "Change portrait",
+    "hint": "Pick one of your monsters. The awakened form shows up once you own an awakened copy.",
+    "empty": "Summon monsters to pick the account portrait from them."
   },
 
   "names": {

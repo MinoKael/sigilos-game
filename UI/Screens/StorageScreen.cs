@@ -18,14 +18,15 @@ namespace Sigilos.UI.Screens
 	///
 	/// A ficha tem duas colunas. Na estreita, à esquerda, a régua de abas escritas em pé (Atributos,
 	/// Habilidades, Despertar, Runas) e, embaixo dela, o que se faz com o monstro em qualquer aba:
-	/// Favoritar, Bloquear, Baú e Liberar. Na larga, o retrato, as estrelas, o elemento, o nível e a aba:
+	/// Favoritar, Bloquear, Baú e Soltar. Na larga, o retrato, as estrelas, o elemento, o nível e a aba:
 	/// - Atributos: subir nível (ou evoluir), cada botão dizendo quanto custa, e a ficha (base + runas).
 	/// - Habilidades: cada uma com a recarga, o nível e o que os próximos níveis dão; a Liderança; e
 	///   Fundir cópias, que abre a janela própria da fusão (<see cref="FusionDialog"/>).
 	/// - Despertar: o desenho de agora e o desperto, o que ganha e o botão Despertar com o custo.
 	/// - Runas: as 6 no círculo, os conjuntos ativos e o botão que abre a tela de Runas.
 	///
-	/// Selecionar vários marca cartões (nas duas abas) para liberar de uma vez; fundir é só pela janela
+	/// Selecionar vários marca cartões (nas duas abas, qualquer monstro, bloqueado ou não) para guardar no
+	/// Baú, tirar dele ou soltar de uma vez; soltar deixa de fora os bloqueados. Fundir é só pela janela
 	/// da fusão, para uma escolha não se confundir com a outra. Favoritos vêm primeiro na grade. Toque
 	/// longo em qualquer cartão abre o resumo. Cada botão vira um evento; o GameRoot aplica a regra e
 	/// chama <see cref="Refresh"/>.
@@ -97,7 +98,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Os marcados do Baú voltam para a coleção (os que couberem).</summary>
 		public event Action<IReadOnlyList<int>>? RetrieveManyRequested;
 
-		/// <summary>Bloquear ou desbloquear o monstro (bloqueado não se libera nem vira material de fusão).</summary>
+		/// <summary>Bloquear ou desbloquear o monstro (bloqueado não se solta nem vira material de fusão).</summary>
 		public event Action<int>? LockRequested;
 
 		/// <summary>Favoritar ou desfavoritar o monstro (favorito aparece antes nas listas).</summary>
@@ -157,7 +158,7 @@ namespace Sigilos.UI.Screens
 		{
 			if (_selected is { } id && _player.Monster(id) == null)
 				_selected = _player.Collection.FirstOrDefault()?.Id;
-			_marked.RemoveWhere(marked => _player.Monster(marked) is not { Locked: false });
+			_marked.RemoveWhere(marked => _player.Monster(marked) == null);
 
 			_currencies.Refresh(_player);
 			RefreshTools();
@@ -194,7 +195,7 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>
 		/// A faixa da seleção: o que fazer e quantos marcados, numa linha; embaixo, Desmarcar, Guardar no Baú
-		/// (na aba do Baú, Tirar do Baú, até onde a coleção tiver vaga) e Liberar.
+		/// (na aba do Baú, Tirar do Baú, até onde a coleção tiver vaga) e Soltar, só dos desbloqueados.
 		/// </summary>
 		private void RefreshSelection()
 		{
@@ -217,16 +218,26 @@ namespace Sigilos.UI.Screens
 			buttons.AddChild(unmark);
 			buttons.AddChild(_showStorage ? RetrieveMarked(marked) : StoreMarked(marked));
 
-			var fragments = marked.Sum(m => Fusion.FragmentsFor(_database.Summon(m.SummonId).Rarity));
-			var release = GameButton.Of(T("monsters.release_marked", marked.Count), () => Dialog.Confirm(this,
+			buttons.AddChild(ReleaseMarked(marked));
+		}
+
+		/// <summary>Soltar os marcados desbloqueados: os bloqueados ficam (o botão conta só os que vão).</summary>
+		private GameButton ReleaseMarked(IReadOnlyList<OwnedSummon> marked)
+		{
+			var released = marked.Where(m => !m.Locked).ToList();
+			var fragments = released.Sum(m => Fusion.FragmentsFor(_database.Summon(m.SummonId).Rarity));
+			var text = T("monsters.release_many_confirm", released.Count, fragments);
+			if (released.Count < marked.Count)
+				text += " " + T("monsters.release_many_locked", marked.Count - released.Count);
+			var button = GameButton.Of(T("monsters.release_marked", released.Count), () => Dialog.Confirm(this,
 				T("monsters.release_title"),
-				T("monsters.release_many_confirm", marked.Count, fragments) + MonsterNotes.Warning(_database, _player, marked),
+				text + MonsterNotes.Warning(_database, _player, released),
 				T("monsters.release_button"),
-				() => ReleaseRequested?.Invoke(marked.Select(m => m.Id).ToList()), ButtonKind.Danger), ButtonKind.Danger, "release", 48).Named("ReleaseMarked");
-			if (marked.Count > 0)
-				release.WithCost("fragments", $"+{fragments}");
-			release.Disabled = marked.Count == 0;
-			buttons.AddChild(release);
+				() => ReleaseRequested?.Invoke(released.Select(m => m.Id).ToList()), ButtonKind.Danger), ButtonKind.Danger, "release", 48).Named("ReleaseMarked");
+			if (released.Count > 0)
+				button.WithCost("fragments", $"+{fragments}");
+			button.Disabled = released.Count == 0;
+			return button;
 		}
 
 		/// <summary>Guardar os marcados da coleção no Baú. Se algum está em equipe, pergunta antes (ele sai dela).</summary>
@@ -287,7 +298,7 @@ namespace Sigilos.UI.Screens
 				{
 					var clicked = c.Monster!.Id;
 					_touched = clicked;
-					if (_selecting && clicked != _selected && !c.Monster.Locked)
+					if (_selecting)
 					{
 						if (!_marked.Remove(clicked))
 							_marked.Add(clicked);
@@ -346,7 +357,7 @@ namespace Sigilos.UI.Screens
 			}
 		}
 
-		/// <summary>Embaixo das abas, o que vale em qualquer aba: Favoritar, Bloquear, Baú e Liberar.</summary>
+		/// <summary>Embaixo das abas, o que vale em qualquer aba: Favoritar, Bloquear, Baú e Soltar.</summary>
 		private void SideActions(SummonDefinition summon, OwnedSummon monster)
 		{
 			var id = monster.Id;
@@ -465,11 +476,11 @@ namespace Sigilos.UI.Screens
 			if (!Leveling.IsMaxLevel(monster))
 			{
 				var (next, full) = Leveling.InfuseCosts(monster);
-				var one = GameButton.Of(T("monsters.level_up"), () => InfuseRequested?.Invoke(id, false), ButtonKind.Primary, "essence").WithCost("essence", Texts.Short(next)).Named("LevelUp");
+				var one = GameButton.Of(T("monsters.level_up"), () => InfuseRequested?.Invoke(id, false), ButtonKind.Primary, "essence").WithCost("essence", Texts.Number(next)).Named("LevelUp");
 				one.Disabled = _player.Essence < next;
 				one.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 				actions.AddChild(one);
-				var all = GameButton.Of(T("monsters.max_level_button", Leveling.MaxLevel(monster)), () => ConfirmLevelMax(summon, monster, full), ButtonKind.Secondary, "level_max").WithCost("essence", Texts.Short(full)).Named("LevelMax");
+				var all = GameButton.Of(T("monsters.max_level_button", Leveling.MaxLevel(monster)), () => ConfirmLevelMax(summon, monster, full), ButtonKind.Secondary, "level_max").WithCost("essence", Texts.Number(full)).Named("LevelMax");
 				all.Disabled = _player.Essence <= 0;
 				all.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 				actions.AddChild(all);
@@ -478,7 +489,7 @@ namespace Sigilos.UI.Screens
 			{
 				var (essenceCost, fragmentCost) = Evolution.Cost(monster.Stars);
 				var evolve = GameButton.Of(T("monsters.evolve", Texts.Stars(monster.Stars + 1)), () => EvolveRequested?.Invoke(id), ButtonKind.Primary, "evolve")
-					.WithCost("essence", $"{Texts.Short(essenceCost)} · {fragmentCost} {T("currency.fragments")}").Named("Evolve");
+					.WithCost("essence", $"{Texts.Number(essenceCost)} · {fragmentCost} {T("currency.fragments")}").Named("Evolve");
 				evolve.Disabled = !Evolution.CanEvolve(_player, monster);
 				evolve.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 				actions.AddChild(evolve);
@@ -602,7 +613,7 @@ namespace Sigilos.UI.Screens
 				T("monsters.awaken_title"),
 				T("monsters.awaken_confirm", summon.Name, summon.Awakening.Name, cost),
 				T("monsters.awaken_button"),
-				() => AwakenRequested?.Invoke(monster.Id)), ButtonKind.Primary, "awaken", 64).WithCost("essence", Texts.Short(cost)).Named("Awaken");
+				() => AwakenRequested?.Invoke(monster.Id)), ButtonKind.Primary, "awaken", 64).WithCost("essence", Texts.Number(cost)).Named("Awaken");
 			awaken.Disabled = !Awakening.CanAwaken(_player, monster, summon);
 			row.AddChild(awaken.Wide(260));
 			_detail.AddChild(row);

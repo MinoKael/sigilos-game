@@ -47,7 +47,7 @@ namespace Sigilos.UI.Style
 
 		public static readonly Color PrimaryDark = Color.Color8(112, 58, 20);
 
-		/// <summary>O botão do que não tem volta (liberar, vender, parar).</summary>
+		/// <summary>O botão do que não tem volta (soltar, vender, parar).</summary>
 		public static readonly Color Danger = Color.Color8(166, 64, 48);
 
 		public static readonly Color DangerDark = Color.Color8(86, 28, 20);

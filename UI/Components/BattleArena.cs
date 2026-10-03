@@ -17,7 +17,8 @@ namespace Sigilos.UI.Components
 	/// As unidades são filhas diretas, em posição absoluta. <see cref="Arrange"/> as recoloca a cada
 	/// mudança de tamanho: o espaço entre vizinhas é medido ao longo da elipse, e o grupo fica centrado no
 	/// seu arco, tenha ele 1 ou 5 unidades. Numa onda com chefe, ele fica no meio do arco (o cartão dele é
-	/// maior) e os outros em volta, um de cada lado, com mais folga junto dele.
+	/// maior) e os outros em volta, um de cada lado, com mais folga junto dele; quem ficaria com os efeitos
+	/// embaixo da barra do chefe (<see cref="Ceiling"/>) desce o bastante para eles aparecerem.
 	/// </summary>
 	public partial class BattleArena : Control
 	{
@@ -48,6 +49,13 @@ namespace Sigilos.UI.Components
 			AddChild(_impacts);
 			Resized += Arrange;
 		}
+
+		/// <summary>
+		/// A altura, no campo, de onde termina a barra do chefe (zero sem ela): nenhum inimigo fica com a
+		/// fileira de efeitos acima dela (<see cref="UnitView.Headroom"/>). Vale a partir do próximo
+		/// <see cref="SetEnemies"/>, para ninguém pular de lugar no meio de um golpe.
+		/// </summary>
+		public float Ceiling { get; set; }
 
 		/// <summary>O centro do oval, um pouco abaixo do meio.</summary>
 		public Vector2 Middle => new(Size.X * 0.5f, Size.Y * 0.52f);
@@ -172,15 +180,16 @@ namespace Sigilos.UI.Components
 		private void Arrange()
 		{
 			Place(_allies, AllyFrom, AllyTo);
-			Place(_enemies, EnemyFrom, EnemyTo, _boss);
+			Place(_enemies, EnemyFrom, EnemyTo, _boss, Ceiling);
 			QueueRedraw();
 		}
 
 		/// <summary>
 		/// Põe o grupo no arco: vizinhas à mesma distância ao longo da elipse, o grupo no meio do arco. Com
 		/// <paramref name="center"/> (o chefe), ele fica no meio e os outros se alternam dos dois lados.
+		/// Quem ficaria com os efeitos acima de <paramref name="ceiling"/> desce até eles caberem.
 		/// </summary>
-		private void Place(List<Control> group, float from, float to, Control? center = null)
+		private void Place(List<Control> group, float from, float to, Control? center = null, float ceiling = 0)
 		{
 			if (group.Count == 0 || Size.X <= 0)
 				return;
@@ -229,6 +238,9 @@ namespace Sigilos.UI.Components
 
 				unit.Size = unit.CustomMinimumSize;
 				unit.Position = point - unit.Size / 2;
+				var headroom = unit is UnitView view ? view.Headroom : 0;
+				if (unit.Position.Y - headroom < ceiling)
+					unit.Position = new Vector2(unit.Position.X, ceiling + headroom);
 				_homes[unit] = unit.Position;
 			}
 		}

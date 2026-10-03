@@ -12,7 +12,7 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Fundir cópias num monstro, separado da seleção de vários da tela de Monstros (que só libera): a
+	/// Fundir cópias num monstro, separado da seleção de vários da tela de Monstros (que guarda no Baú e solta): a
 	/// janela mostra só as cópias da mesma família, de qualquer elemento (as do Baú também). Um botão
 	/// marca as do mesmo elemento; as outras se marcam tocando. Embaixo, a lista do que vai sumir; Fundir
 	/// pergunta de novo, com a lista e os avisos, e só então funde. Cada cópia sobe uma habilidade

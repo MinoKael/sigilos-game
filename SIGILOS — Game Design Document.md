@@ -199,6 +199,8 @@ Campanha e Masmorras são desenhadas para o automático; Torre e Provações, pa
 
 Uma conta nova começa por uma luta de treino, antes da primeira invocação: três monstros de Água emprestados (um que bate, um que atordoa, um que cura) contra inimigos fracos de Fogo e, na segunda onda, um de Vento. Um Mestre fala no canto de cima do campo, uma coisa de cada vez e só quando ela aparece na luta: o campo e a ordem de turno; o básico e o alvo; a recarga; os elementos (na segunda onda, mandando atacar o de Fogo, não o de Vento); o atordoar e o símbolo do efeito, com o botão Efeitos e o "?"; o suporte; combinar efeitos; e por fim o Automático, que só então liga. Explicação espera o Continuar; instrução fica na placa até o jogador agir e acende só a habilidade e os alvos certos. A luta não cobra nem dá nada, não se perde, e sair pela pausa conta como feita. Os Ajustes têm "Refazer a luta de treino".
 
+Depois dela vem a primeira invocação: a tela de Invocação abre com o Mestre pedindo a Invocar ×10 (a ×1 fica apagada até lá). A primeira invocação da conta é sempre o Cavaleiro de Fogo, e a segunda, uma 5★: os dois chegam juntos nessa ×10. Com os cartões na tela, o Mestre apresenta os primeiros monstros, que já entram na equipe da Campanha.
+
 ## 8. Invocações
 
 A 1.0 tem 40 invocações: 8 famílias em 5 elementos, como em Summoners War. Cada variante tem kit próprio e, depois do Despertar, um nome próprio, como os heróis de Epic Seven.
@@ -253,10 +255,10 @@ Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocaçã
 | Custo | 1 Pergaminho Místico por invocação; 10 por dez |
 | Taxas | 3★ 65%, 4★ 28%, 5★ 7% (as 2★ não saem do Pergaminho Místico) |
 | Luz e Trevas | Metade da chance das outras variantes da mesma raridade, como em Summoners War |
-| Garantia | 5★ após 60 invocações sem nenhuma, com contador na tela |
-| Coleção | 50 vagas; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele) |
+| Garantia | 5★ após 60 invocações sem nenhuma, com contador na tela; na conta nova, a primeira invocação é o Cavaleiro de Fogo e a segunda, uma 5★ |
+| Coleção | 50 vagas; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele). Selecionar vários, na tela de Monstros, leva ao Baú ou tira dele vários de uma vez, bloqueados também |
 | Cópia repetida | Fundida em outra da mesma família, de qualquer elemento, na janela Fundir: sobe uma habilidade sorteada em um nível, até todas no máximo |
-| Liberar | O monstro vira Fragmentos: 5 (2★ e 3★), 10 (4★) ou 20 (5★) |
+| Soltar | O monstro vira Fragmentos: 5 (2★ e 3★), 10 (4★) ou 20 (5★) |
 | Troca por Fragmentos | Qualquer invocação: 30, 60 ou 120 Fragmentos, conforme a raridade |
 
 **O traçado.** Você desenha o sigilo com o mouse ou o dedo, e um reconhecedor de gestos simples (como o $1 Unistroke Recognizer, cerca de 100 linhas de código) avalia o desenho. Não muda as taxas: um traçado limpo só dá 50 de Essência. Invocações de dez usam traçado automático.
@@ -390,10 +392,12 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Mana | Canalização (até o máximo), nível da conta, Loja | Cada vitória (a derrota não custa nada) |
 | Essência | Canalização, fases, Masmorras, runas desfeitas | Nível e Evolução das invocações, Despertar e melhora de runas |
 | Ouro | Canalização, nível da conta, primeira vitória em cada andar de Masmorra, Torre, conquistas | Loja: Mana e Pergaminhos |
-| Pergaminhos Místicos | Primeira vitória de cada fase, Loja, Torre, conquistas | Invocar |
-| Fragmentos | Monstros liberados, Arena | Evolução e troca por uma invocação escolhida |
+| Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (2% de chance a cada vitória, em todo andar), Loja, Torre, conquistas | Invocar |
+| Fragmentos | Monstros soltos, Arena | Evolução e troca por uma invocação escolhida |
 
-**Correio.** No alto do Santuário, o Correio traz as cartas que o servidor manda (presentes, compensações, avisos), para uma conta ou para todas, com prazo ou sem; o selo vermelho diz quantas faltam coletar. Coletar soma as recompensas (qualquer das cinco moedas e a Gema de Reavaliação; a Mana pode passar do máximo) e anota a carta no save antes de avisar o servidor: nada se perde se a conexão cair, e nenhuma carta é coletada duas vezes. Sem conta, ou sem conexão, a janela explica por que não há cartas.
+**Correio.** No alto do Santuário, numa cápsula como as das moedas e ao lado delas, o Correio traz as cartas que o servidor manda (presentes, compensações, avisos), para uma conta ou para todas, com prazo ou sem; o selo vermelho diz quantas faltam coletar. Coletar soma as recompensas (qualquer das cinco moedas e a Gema de Reavaliação; a Mana pode passar do máximo) e anota a carta no save antes de avisar o servidor: nada se perde se a conexão cair, e nenhuma carta é coletada duas vezes. Sem conta, ou sem conexão, a janela explica por que não há cartas.
+
+**Retrato da conta.** Tocar na conta, no alto do Santuário, abre o nível e o botão Trocar retrato: o retrato pode ser qualquer monstro que a conta tem, e a forma desperta de quem ela tem uma cópia desperta.
 
 **Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180) ou a Gema de Reavaliação (40). As ofertas moram em Data/shop.json.
 

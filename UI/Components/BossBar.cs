@@ -132,7 +132,7 @@ namespace Sigilos.UI.Components
 			_shield.Value = shield;
 			_shield.Visible = shield > 0;
 			_healthText.Text = unit.IsAlive
-				? T("battle.boss_health", Texts.Short((int)Math.Ceiling(unit.Health)), Texts.Short((int)Math.Ceiling(unit.MaxHealth)))
+				? T("battle.boss_health", Texts.Number((int)Math.Ceiling(unit.Health)), Texts.Number((int)Math.Ceiling(unit.MaxHealth)))
 				: T("battle.fallen");
 
 			Layout.Clear(_statuses);

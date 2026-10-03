@@ -82,7 +82,7 @@ namespace Sigilos.UI.Screens
 			{
 				var rewards = Layout.Flow(6).Named("Rewards");
 				foreach (var (item, amount) in mail.Rewards)
-					rewards.AddChild(Layout.Labeled(Icon(item), Texts.Short(amount), T($"mail.item.{item}")).Named(item.ToString()));
+					rewards.AddChild(Layout.Labeled(Icon(item), Texts.Number(amount), T($"mail.item.{item}")).Named(item.ToString()));
 				column.AddChild(rewards);
 			}
 

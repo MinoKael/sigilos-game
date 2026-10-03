@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Sigilos.Core.Player;
 
 namespace Sigilos.Core.Progression
@@ -12,6 +14,26 @@ namespace Sigilos.Core.Progression
 	{
 		public const int LevelUpGold = 20;
 		public const int MaxLevel = 60;
+
+		/// <summary>
+		/// Os retratos que a conta pode usar: cada variante que ela tem (na coleção ou no Baú) e, de quem
+		/// ela tem uma cópia desperta, também a forma desperta. Na ordem em que chegaram à conta.
+		/// </summary>
+		public static IReadOnlyList<(string Summon, bool Awakened)> Avatars(PlayerState player) => player.Monsters
+			.OrderBy(m => m.Id)
+			.SelectMany(m => m.Awakened ? new[] { (m.SummonId, false), (m.SummonId, true) } : new[] { (m.SummonId, false) })
+			.Distinct()
+			.ToList();
+
+		/// <summary>Troca o retrato da conta por um de <see cref="Avatars"/>; outro qualquer é recusado.</summary>
+		public static bool SetAvatar(PlayerState player, string summonId, bool awakened)
+		{
+			if (!Avatars(player).Contains((summonId, awakened)))
+				return false;
+			player.Avatar = summonId;
+			player.AvatarAwakened = awakened;
+			return true;
+		}
 
 		/// <summary>Experiência para sair de <paramref name="level"/> e chegar ao próximo (a conta ganha o mesmo que cada monstro).</summary>
 		public static int ExperienceToNext(int level) => 300 * level;

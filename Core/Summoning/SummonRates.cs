@@ -12,6 +12,12 @@ namespace Sigilos.Core.Summoning
 		/// <summary>Luz e Trevas têm um terço da chance das outras variantes da mesma raridade.</summary>
 		public const double LightDarkWeight = 0.33;
 
+		/// <summary>
+		/// A primeira invocação da conta traz sempre esta variante; a segunda, uma 5★. As duas cabem na
+		/// primeira ×10, a que o tutorial ensina.
+		/// </summary>
+		public const string FirstSummon = "knight_fire";
+
 		public const int SingleCost = 1;
 		public const int TenCost = 10;
 	}

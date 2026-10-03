@@ -36,6 +36,9 @@ namespace Sigilos.Core.Content
 		/// </summary>
 		public IReadOnlyDictionary<RuneRarity, double> Rarities { get; init; } = new Dictionary<RuneRarity, double>();
 
+		/// <summary>A chance, em %, de a vitória soltar também um Pergaminho Místico.</summary>
+		public double ScrollChance { get; init; }
+
 		/// <summary>Masmorra de pedras: quantas saem.</summary>
 		public int ToolCount { get; init; } = 1;
 

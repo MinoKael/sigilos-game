@@ -46,7 +46,7 @@ namespace Sigilos.Core.Player
 		public bool Stored { get; set; }
 
 		/// <summary>
-		/// Bloqueado pelo jogador: não se libera nem vira material de fusão (Core/Progression/Fusion).
+		/// Bloqueado pelo jogador: não se solta nem vira material de fusão (Core/Progression/Fusion).
 		/// Receber uma fusão, evoluir e o resto seguem livres.
 		/// </summary>
 		public bool Locked { get; set; }

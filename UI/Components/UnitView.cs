@@ -19,7 +19,7 @@ namespace Sigilos.UI.Components
 	///
 	/// O chefe tem o cartão <see cref="BossScale"/> vezes maior (desenho, marcas e barras juntos) e a
 	/// moldura vermelha acesa; a barra grande no alto da tela (<see cref="BossBar"/>) acompanha
-	/// <see cref="Refreshed"/>.
+	/// <see cref="Refreshed"/> e é ela que mostra os efeitos dele: o cartão do chefe não tem a fileira.
 	/// </summary>
 	public partial class UnitView : PanelContainer
 	{
@@ -68,14 +68,14 @@ namespace Sigilos.UI.Components
 			if (unit.Awakened)
 				level.AddThemeColorOverride("font_color", Palette.Awakened);
 			art.AddChild(level);
-			// Os efeitos em cima do cartão, por fora da moldura, crescendo para a direita.
-			var chip = ChipSide;
+			// Os efeitos em cima do cartão, por fora da moldura, crescendo para a direita (os do chefe ficam na barra dele).
 			// O selo dos turnos sai um pouco do canto de cada quadradinho: o espaço entre eles não deixa cobrir o vizinho.
 			_statuses.AddThemeConstantOverride("separation", 9);
 			_statuses.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
-			_statuses.OffsetTop = _statuses.OffsetBottom = -(chip + 10);
+			_statuses.OffsetTop = _statuses.OffsetBottom = -(StatusChip.Side + 10);
 			_statuses.OffsetLeft = _statuses.OffsetRight = -4;
-			art.AddChild(_statuses);
+			if (!unit.IsBoss)
+				art.AddChild(_statuses);
 			art.AddChild(Corner(_cooldown, LayoutPreset.BottomRight, (int)(11 * _scale)));
 
 			// A mira do foco, no meio do desenho, por cima: só no inimigo que o jogador marcou.
@@ -118,6 +118,12 @@ namespace Sigilos.UI.Components
 
 		public BattleUnit Unit { get; }
 
+		/// <summary>
+		/// Quanto a fileira dos efeitos (com o selo dos turnos) sobe acima da borda do cartão; zero no chefe,
+		/// que não tem a fileira.
+		/// </summary>
+		public float Headroom => Unit.IsBoss ? 0 : StatusChip.Side + 14;
+
 		public void Refresh()
 		{
 			_health.MaxValue = Unit.MaxHealth;
@@ -134,8 +140,11 @@ namespace Sigilos.UI.Components
 
 			// Um quadradinho por efeito; vários do mesmo (o Veneno acumula) mostram o prazo mais longo.
 			Layout.Clear(_statuses);
-			foreach (var group in Unit.Statuses.Where(s => s.Kind != StatusKind.Shield).GroupBy(s => s.Kind))
-				_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns), ChipSide));
+			if (!Unit.IsBoss)
+			{
+				foreach (var group in Unit.Statuses.Where(s => s.Kind != StatusKind.Shield).GroupBy(s => s.Kind))
+					_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns)));
+			}
 
 			_cooldown.Text = string.Join(" ", Enumerable.Range(1, Math.Max(0, Unit.Skills.Count - 1))
 				.Where(i => Unit.Cooldown(i) > 0)
@@ -150,9 +159,6 @@ namespace Sigilos.UI.Components
 			_active = active;
 			Restyle();
 		}
-
-		/// <summary>O lado dos quadradinhos de efeito: maiores no chefe.</summary>
-		private int ChipSide => _scale > 1 ? 28 : StatusChip.Side;
 
 		/// <summary>O inimigo marcado como foco do automático: a mira dourada por cima do desenho.</summary>
 		public void SetFocused(bool focused) => _focusMark.Visible = focused;

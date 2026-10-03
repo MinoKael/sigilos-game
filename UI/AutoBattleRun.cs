@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
 using Sigilos.Core.Summoning;
@@ -53,11 +54,8 @@ namespace Sigilos.UI
 		public int LevelUps { get; set; }
 		public int AccountLevels { get; set; }
 
-		/// <summary>As runas que caíram, na ordem; as vendidas continuam aqui, marcadas em <see cref="Sold"/>.</summary>
+		/// <summary>As runas que caíram, na ordem; as vendidas continuam aqui (<see cref="IsSold"/>).</summary>
 		public List<Rune> Runes { get; } = new();
-
-		/// <summary>Ids das runas que o jogador vendeu pela janela da Batalha automática.</summary>
-		public HashSet<int> Sold { get; } = new();
 
 		public List<RuneTool> Tools { get; } = new();
 
@@ -103,6 +101,12 @@ namespace Sigilos.UI
 				return TimeSpan.FromSeconds(seconds);
 			}
 		}
+
+		/// <summary>
+		/// A runa que caiu já saiu da conta: vendida pela janela da Batalha automática, pelo inventário ou
+		/// pelo resultado de uma luta. Vender é o único jeito de uma runa sair da conta.
+		/// </summary>
+		public static bool IsSold(PlayerState player, Rune rune) => !player.Runes.Contains(rune);
 
 		/// <summary>Soma a luta que acabou de passar na tela à média do tempo.</summary>
 		public void Record(double seconds) => _durations.Add(seconds);

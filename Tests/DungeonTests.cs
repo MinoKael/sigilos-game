@@ -79,6 +79,32 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void EveryFloorSometimesDropsAMysticScroll()
+		{
+			const int victories = 6000;
+			var database = TestData.LoadReal();
+			Assert.True(database.Dungeons.All(d => d.Floors.All(f => f.ScrollChance == 2)), "2% em todo andar de toda Masmorra");
+
+			var random = new Random(9);
+			foreach (var dungeon in new[] { database.Dungeon("golem"), database.Dungeons.First(d => d.Kind == DungeonKind.Tools) })
+			{
+				var player = TestData.PlayerWith("phoenix_fire");
+				var before = player.Scrolls;
+				var scrolls = 0;
+				for (var i = 0; i < victories; i++)
+				{
+					player.Runes.Clear();
+					var reward = Dungeons.ApplyVictory(random, player, dungeon, 1);
+					Assert.True(reward.Scrolls is 0 or 1, "um Pergaminho, no máximo");
+					scrolls += reward.Scrolls;
+				}
+
+				Assert.Equal(before + scrolls, player.Scrolls, $"{dungeon.Id}: os Pergaminhos vão para a conta");
+				Assert.True(Math.Abs(100.0 * scrolls / victories - 2) < 0.6, $"{dungeon.Id}: perto de 2% ({scrolls} em {victories})");
+			}
+		}
+
+		[Test]
 		private static void ForgeDropsTools()
 		{
 			var database = TestData.LoadReal();

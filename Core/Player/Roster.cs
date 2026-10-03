@@ -53,7 +53,7 @@ namespace Sigilos.Core.Player
 			return true;
 		}
 
-		/// <summary>Tira o monstro da conta (fundido ou liberado): sai das equipes e as runas voltam ao inventário.</summary>
+		/// <summary>Tira o monstro da conta (fundido ou solto): sai das equipes e as runas voltam ao inventário.</summary>
 		public static bool Remove(PlayerState player, int monsterId)
 		{
 			if (player.Monster(monsterId) is not { } monster)

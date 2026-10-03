@@ -6,20 +6,33 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// O aviso flutuante da Batalha automática, no alto e no centro da tela, por cima de qualquer tela:
-	/// o símbolo girando, "Batalha automática 4/30" e, embaixo, a barra da luta em andamento. Pequeno,
-	/// para não tapar nada. Acabada ou parada, diz isso e fica até o jogador abrir a janela e dispensar.
-	/// Tocar abre a janela da Batalha automática (<see cref="Pressed"/>); fechar a janela não para nada.
+	/// O aviso flutuante da Batalha automática, por cima de qualquer tela: o símbolo girando, "Batalha
+	/// automática 4/30" e, embaixo, a barra da luta em andamento. Fica no alto, colado à esquerda do canto
+	/// das moedas (<see cref="CornerGroup"/>: as cápsulas e, no Santuário, o correio), para não cobrir
+	/// nenhuma; numa tela sem moedas (a luta), no alto e no centro. Acabada ou parada, diz isso e fica até
+	/// o jogador abrir a janela e dispensar. Tocar abre a janela da Batalha automática (<see cref="Pressed"/>);
+	/// fechar a janela não para nada.
 	/// </summary>
 	public partial class AutoBattleBadge : Button
 	{
 		private const float Height = 50;
+
+		/// <summary>O grupo dos nós do canto de cima à direita (as moedas, o correio): o aviso fica à esquerda deles.</summary>
+		public const string CornerGroup = "TopCorner";
+
+		/// <summary>O espaço entre o aviso e o canto das moedas.</summary>
+		private const float Gap = 10;
+
+		/// <summary>De quanto em quanto tempo o aviso confere onde está o canto (a tela pode ter trocado).</summary>
+		private const double PlaceSeconds = 0.2;
 
 		private readonly Doodle _icon = Doodle.Icon(Art.Icon("repeat"), 30, Palette.Arcane);
 		private readonly Label _text = new() { Name = "Text", MouseFilter = MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
 		private readonly ProgressBar _bar = Layout.Energy(Palette.Arcane, 5).Named("Progress");
 		private readonly StyleBoxFlat _box;
 		private AutoBattleRun? _run;
+		private float _width;
+		private double _sincePlaced;
 
 		public AutoBattleBadge()
 		{
@@ -63,11 +76,8 @@ namespace Sigilos.UI.Components
 			_bar.MouseFilter = MouseFilterEnum.Ignore;
 			column.AddChild(_bar);
 
-			// Preso no alto, no centro, crescendo para os dois lados.
-			SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
-			GrowHorizontal = GrowDirection.Both;
-			OffsetTop = 6;
-			OffsetBottom = 6 + Height;
+			// A posição é de Place: preso no canto de cima à esquerda e movido para o lugar certo.
+			SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
 		}
 
 		/// <summary>Mostra esta Batalha automática (nula esconde o aviso).</summary>
@@ -83,6 +93,9 @@ namespace Sigilos.UI.Components
 
 		public override void _Process(double delta)
 		{
+			_sincePlaced += delta;
+			if (Visible && _sincePlaced >= PlaceSeconds)
+				Place();
 			if (_run is not { Running: true } run)
 				return;
 			_icon.Rotation -= (float)delta * 2.4f;
@@ -108,9 +121,30 @@ namespace Sigilos.UI.Components
 			_bar.Value = run.FightProgress;
 
 			// O botão não mede os filhos: a largura acompanha o texto.
-			var width = _text.GetCombinedMinimumSize().X + 30 + 10 + 32;
-			OffsetLeft = -width / 2;
-			OffsetRight = width / 2;
+			_width = _text.GetCombinedMinimumSize().X + 30 + 10 + 32;
+			Place();
+		}
+
+		/// <summary>
+		/// À esquerda do nó mais à esquerda do canto das moedas, centrado na altura dele; sem canto na tela,
+		/// no alto e no centro.
+		/// </summary>
+		private void Place()
+		{
+			_sincePlaced = 0;
+			if (!IsInsideTree())
+				return;
+			Rect2? corner = null;
+			foreach (var node in GetTree().GetNodesInGroup(CornerGroup))
+			{
+				if (node is Control control && control.IsVisibleInTree() && (corner == null || control.GetGlobalRect().Position.X < corner.Value.Position.X))
+					corner = control.GetGlobalRect();
+			}
+
+			Size = new Vector2(_width, Height);
+			GlobalPosition = corner is { } rect
+				? new Vector2(Mathf.Max(Layout.ScreenMargin, rect.Position.X - Gap - _width), rect.GetCenter().Y - Height / 2)
+				: new Vector2((GetViewportRect().Size.X - _width) / 2, 6);
 		}
 	}
 }

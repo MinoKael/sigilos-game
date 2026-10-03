@@ -503,7 +503,7 @@ namespace Sigilos.UI.Screens
 			if (rune.Level < RuneRules.MaxLevel)
 			{
 				var next = RuneRules.UpgradeCost(rune);
-				var up = GameButton.Of(T("runes.upgrade_one", 1), () => UpgradeRequested?.Invoke(rune.Id, rune.Level + 1), ButtonKind.Primary, "level_max").WithCost("essence", Texts.Short(next)).Named("Upgrade");
+				var up = GameButton.Of(T("runes.upgrade_one", 1), () => UpgradeRequested?.Invoke(rune.Id, rune.Level + 1), ButtonKind.Primary, "level_max").WithCost("essence", Texts.Number(next)).Named("Upgrade");
 				up.Disabled = _player.Essence < next;
 				_actions.AddChild(up);
 
@@ -512,7 +512,7 @@ namespace Sigilos.UI.Screens
 				{
 					var total = RuneRules.UpgradeCost(rune, milestone);
 					var jump = GameButton.Of(T("runes.upgrade_button", milestone), () => RuneDialog.ConfirmUpgrade(this, rune, milestone, _player.Essence, () => UpgradeRequested?.Invoke(rune.Id, milestone)),
-						ButtonKind.Secondary, "level_max").WithCost("essence", Texts.Short(total)).Named("UpgradeToMilestone");
+						ButtonKind.Secondary, "level_max").WithCost("essence", Texts.Number(total)).Named("UpgradeToMilestone");
 					jump.Disabled = _player.Essence < total;
 					_actions.AddChild(jump);
 				}

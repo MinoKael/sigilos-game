@@ -40,7 +40,7 @@ namespace Sigilos.Core.Player
 			return true;
 		}
 
-		/// <summary>Tira o monstro de todas as equipes (foi para o Baú, fundido ou liberado).</summary>
+		/// <summary>Tira o monstro de todas as equipes (foi para o Baú, fundido ou solto).</summary>
 		public static void Leave(PlayerState player, int monsterId)
 		{
 			foreach (var team in player.Teams.Values)

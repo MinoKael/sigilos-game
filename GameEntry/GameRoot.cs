@@ -632,6 +632,7 @@ namespace Sigilos.GameEntry
 			}, AccountSettings(), ShowTutorial);
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
 			hub.MailRequested += () => OpenMailbox(hub);
+			hub.AvatarRequested += (summon, awakened) => Change(() => Core.Progression.Account.SetAvatar(_player, summon, awakened), () => hub.Refresh(DateTime.Now));
 			Swap(hub, ShowHub);
 			hub.SetMail(_mail?.Count);
 			RefreshMail();
@@ -723,7 +724,8 @@ namespace Sigilos.GameEntry
 
 		/// <summary>
 		/// A luta de treino (<see cref="Tutorial"/>), com o Mestre ensinando: no fim, ou ao sair pela pausa,
-		/// conta como feita (não abre mais sozinha) e leva ao Santuário. Não cobra nem dá nada.
+		/// conta como feita (não abre mais sozinha) e leva à primeira invocação, se a conta ainda não invocou
+		/// (o Mestre segue lá, <see cref="Tutorial.GuidesFirstSummon"/>); senão, ao Santuário. Não cobra nem dá nada.
 		/// </summary>
 		private void ShowTutorial()
 		{
@@ -738,12 +740,15 @@ namespace Sigilos.GameEntry
 				done = true;
 				_player.TutorialDone = true;
 				Save();
-				ShowHub();
+				if (Tutorial.GuidesFirstSummon(_player, _database))
+					Go(Destination.Summon, ShowHub);
+				else
+					ShowHub();
 			}
 
 			battle.Finished += async _ =>
 			{
-				await coach.End();
+				await coach.End(Tutorial.GuidesFirstSummon(_player, _database) ? T("tutorial.to_summon") : T("tutorial.end_button"));
 				Done();
 			};
 			battle.Closed += _ => Done();
@@ -850,7 +855,7 @@ namespace Sigilos.GameEntry
 
 		private void ShowSummon()
 		{
-			var summon = new SummonScreen(_database, _player);
+			var summon = new SummonScreen(_database, _player, Tutorial.GuidesFirstSummon(_player, _database) ? new TutorialCoach(330) : null);
 			summon.BackRequested += () => _summonBack();
 			summon.ShopRequested += () => ShowShop(ShowSummon);
 			summon.MonstersRequested += () =>
@@ -1147,8 +1152,7 @@ namespace Sigilos.GameEntry
 				SetRuns = _runner.SetRuns,
 				SellRune = rune =>
 				{
-					if (RuneInventory.Sell(_player, rune) > 0)
-						run.Sold.Add(rune.Id);
+					RuneInventory.Sell(_player, rune);
 					Save();
 					run.Notify();
 					RefreshCurrent();

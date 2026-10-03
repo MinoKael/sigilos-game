@@ -10,8 +10,8 @@ namespace Sigilos.Core.Progression
 	/// <summary>
 	/// Regras das Masmorras (GDD, seção 11): a Masmorra abre depois de uma fase da Campanha, e cada andar
 	/// depois do anterior. Toda vitória custa a Mana do andar (a derrota não custa nada) e dá Essência,
-	/// experiência para a equipe da Masmorra e para a conta e o drop dela — sempre. A primeira vitória
-	/// de cada andar dá Ouro.
+	/// experiência para a equipe da Masmorra e para a conta e o drop dela — sempre —, e tem a chance do
+	/// andar de soltar também um Pergaminho Místico. A primeira vitória de cada andar dá Ouro.
 	/// </summary>
 	public static class Dungeons
 	{
@@ -64,7 +64,11 @@ namespace Sigilos.Core.Progression
 				}
 			}
 
-			return new VictoryReward(mana, 0, gold, floor.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, accountLevels);
+			// Sorteado depois do drop, para o Pergaminho não mudar as runas e pedras que cada semente dá.
+			var scrolls = random.NextDouble() * 100 < floor.ScrollChance ? 1 : 0;
+			player.Scrolls += scrolls;
+
+			return new VictoryReward(mana, scrolls, gold, floor.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, accountLevels);
 		}
 
 		/// <summary>Sorteia pela tabela de chances do andar (em %), na ordem das chaves.</summary>

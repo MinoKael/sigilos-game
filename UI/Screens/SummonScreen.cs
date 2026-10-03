@@ -19,6 +19,10 @@ namespace Sigilos.UI.Screens
 	/// faltam, com a barra) e as chances. O círculo gira e brilha antes do resultado (e espera a invocação
 	/// chegar à nuvem); cada cartão novo diz embaixo se é novo, cópia ou se foi para o Baú, e segurar um
 	/// abre o resumo do monstro. 4★ e 5★ aparecem com destaque, e Luz e Trevas com o deles.
+	///
+	/// Na primeira invocação da conta, a placa do Mestre (<see cref="TutorialCoach"/>) fica embaixo à
+	/// esquerda, por cima da garantia e das chances: pede a ×10 (a ×1 fica apagada) e, com os cartões na
+	/// tela, apresenta os primeiros monstros.
 	/// </summary>
 	public partial class SummonScreen : Control
 	{
@@ -40,10 +44,18 @@ namespace Sigilos.UI.Screens
 		private Doodle? _sigil;
 		private Control? _idle;
 
-		public SummonScreen(GameDatabase database, PlayerState player)
+		/// <summary>O Mestre, enquanto a primeira invocação da conta não acontece; nulo fora do tutorial.</summary>
+		private readonly TutorialCoach? _coach;
+
+		/// <summary>A lição ainda espera a ×10: a ×1 fica apagada.</summary>
+		private bool _lesson;
+
+		public SummonScreen(GameDatabase database, PlayerState player, TutorialCoach? coach = null)
 		{
 			_database = database;
 			_player = player;
+			_coach = coach;
+			_lesson = coach != null;
 			_single = GameButton.Of(T("summon.pull_one"), () => SummonRequested?.Invoke(1), ButtonKind.Primary, "summon", 68).Named("Single");
 			_ten = GameButton.Of(T("summon.pull_ten"), () => SummonRequested?.Invoke(10), ButtonKind.Primary, "summon", 68).Named("Ten");
 		}
@@ -122,6 +134,16 @@ namespace Sigilos.UI.Screens
 			_idle = idle;
 			_stage.AddChild(idle);
 
+			if (_coach != null)
+			{
+				_coach.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
+				_coach.GrowVertical = GrowDirection.Begin;
+				_coach.OffsetLeft = _coach.OffsetRight = Layout.ScreenMargin;
+				_coach.OffsetTop = _coach.OffsetBottom = -Layout.ScreenMargin;
+				AddChild(_coach);
+				_coach.Hint(T("tutorial.summon", SummonRitual.CostFor(10), _database.Summon(SummonRates.FirstSummon).Name));
+			}
+
 			Refresh();
 		}
 
@@ -134,6 +156,8 @@ namespace Sigilos.UI.Screens
 			_pityText.Text = T("summon.pity", left);
 			Cost(_single, 1);
 			Cost(_ten, 10);
+			if (_lesson)
+				_single.Disabled = true;
 		}
 
 		/// <summary>Quanto o resultado espera, no máximo, a invocação chegar à nuvem.</summary>
@@ -149,6 +173,7 @@ namespace Sigilos.UI.Screens
 			Layout.Clear(_cards);
 			_results.Visible = false;
 			_single.Disabled = _ten.Disabled = true;
+			_coach?.Clear();
 
 			if (_idle != null)
 				_idle.Visible = false;
@@ -189,7 +214,8 @@ namespace Sigilos.UI.Screens
 			_sigil?.QueueFree();
 			_sigil = null;
 			_cards.Columns = Math.Min(5, results.Count);
-			_results.Visible = true;
+			_cards.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
+            _results.Visible = true;
 			var width = results.Count == 1 ? 180 : 124;
 
 			for (var i = 0; i < results.Count; i++)
@@ -228,6 +254,12 @@ namespace Sigilos.UI.Screens
 
 			// Espera o grid medir os cartões antes de centralizar.
 			Callable.From(Center).CallDeferred();
+			if (_lesson)
+			{
+				_lesson = false;
+				_coach!.Say(T("tutorial.summon_done", _database.Summon(SummonRates.FirstSummon).Name, T("summon.view_monsters")));
+			}
+
 			Refresh();
 		}
 

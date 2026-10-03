@@ -24,6 +24,24 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void AccountPortraitIsAMonsterTheAccountHas()
+		{
+			var player = TestData.PlayerWith("imp_fire", "imp_fire", "knight_fire");
+			Assert.Equal(2, Account.Avatars(player).Count, "uma vez cada variante");
+			Assert.False(Account.SetAvatar(player, "phoenix_fire", false), "quem a conta não tem não vira retrato");
+			Assert.False(Account.SetAvatar(player, "imp_fire", true), "nem o desperto sem uma cópia desperta");
+
+			player.Monsters[1].Awakened = true;
+			Assert.True(Account.SetAvatar(player, "imp_fire", true), "com uma cópia desperta, o desperto vale");
+			Assert.Equal("imp_fire", player.Avatar, "o retrato fica na conta");
+			Assert.True(player.AvatarAwakened, "na forma desperta");
+			Assert.True(Account.SetAvatar(player, "imp_fire", false), "e a forma comum continua valendo");
+
+			var saved = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
+			Assert.Equal("imp_fire", saved.Avatar, "o retrato vai no save");
+		}
+
+		[Test]
 		private static void AccountLevelUpGivesGoldAndFillsMana()
 		{
 			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), TestData.Database);

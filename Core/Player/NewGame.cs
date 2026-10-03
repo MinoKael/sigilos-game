@@ -5,8 +5,9 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Player
 {
 	/// <summary>
-	/// O começo de uma conta: 60 Pergaminhos para as primeiras invocações — uma 5★ garantida (GDD,
-	/// seção 12) —, Essência para os primeiros níveis, um pouco de Ouro e a Mana cheia.
+	/// O começo de uma conta: 60 Pergaminhos para as primeiras invocações — o Cavaleiro de Fogo e uma 5★
+	/// garantidos na primeira ×10 (GDD, seção 12; Core/Summoning/SummonRitual) —, Essência para os
+	/// primeiros níveis, um pouco de Ouro e a Mana cheia.
 	/// </summary>
 	public static class NewGame
 	{

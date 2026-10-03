@@ -7,7 +7,7 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O que as telas de monstros dizem antes de um monstro sumir (liberar, fundir): em que equipes ele
+	/// O que as telas de monstros dizem antes de um monstro sumir (soltar, fundir): em que equipes ele
 	/// está e o aviso quando a escolha leva alguém que deu trabalho.
 	/// </summary>
 	public static class MonsterNotes

@@ -28,7 +28,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Bloqueia ou desbloqueia a runa (bloqueada não se vende).</summary>
 		public Action<Rune> LockRune { get; init; } = _ => { };
 
-		/// <summary>Bloqueia ou desbloqueia o monstro que caiu (bloqueado não se libera nem vira material de fusão).</summary>
+		/// <summary>Bloqueia ou desbloqueia o monstro que caiu (bloqueado não se solta nem vira material de fusão).</summary>
 		public Action<OwnedSummon> LockMonster { get; init; } = _ => { };
 
 		/// <summary>Abre a tela de Runas sem parar nada.</summary>
@@ -202,8 +202,8 @@ namespace Sigilos.UI.Screens
 				column.AddChild(monsters);
 			}
 
-			var runes = run.Runes.Where(r => !run.Sold.Contains(r.Id)).ToList();
-			column.AddChild(new Label { Name = "RunesTitle", Text = T("auto.runes_title", runes.Count, run.Sold.Count) });
+			var sold = run.Runes.Count(r => AutoBattleRun.IsSold(player, r));
+			column.AddChild(new Label { Name = "RunesTitle", Text = T("auto.runes_title", run.Runes.Count - sold, sold) });
 			if (run.Runes.Count == 0)
 			{
 				column.AddChild(Layout.Text(T("auto.no_runes"), GameTheme.Faded).Named("NoRunes"));
@@ -214,9 +214,8 @@ namespace Sigilos.UI.Screens
 			var grid = Layout.Flow(8).Named("Runes");
 			foreach (var rune in run.Runes)
 			{
-				var sold = run.Sold.Contains(rune.Id);
 				var tile = new RuneTile(rune, rune.Slot, 1.1f) { Name = $"Rune{rune.Id}" };
-				if (sold)
+				if (AutoBattleRun.IsSold(player, rune))
 					tile.SetStamp(T("auto.sold"));
 				else
 					tile.Pressed += t => RuneActions(dialog, t, player, actions);
@@ -229,7 +228,7 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>
 		/// O monstro que caiu, tocado: uma janela colada nele com Ver resumo e Bloquear (ou Desbloquear). Um
-		/// monstro que já saiu da conta (liberado, fundido) só abre o resumo.
+		/// monstro que já saiu da conta (solto, fundido) só abre o resumo.
 		/// </summary>
 		private static void MonsterActions(CreatureCard card, PlayerState player, AutoBattleActions actions)
 		{
@@ -280,7 +279,7 @@ namespace Sigilos.UI.Screens
 						}).CallDeferred();
 					}),
 					ButtonKind.Primary, true, "essence").Named("Upgrade");
-				upgrade.WithCost("essence", Texts.Short(cost));
+				upgrade.WithCost("essence", Texts.Number(cost));
 				upgrade.Disabled = player.Essence < cost;
 			}
 		}

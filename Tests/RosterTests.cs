@@ -100,7 +100,7 @@ namespace Sigilos.Tests
 
 			Assert.False(Fusion.CanFuse(player, database, target.Id, copy.Id), "bloqueado não vira material");
 			Assert.Equal(-1, Fusion.Fuse(new Random(1), player, database, target.Id, copy.Id), "e a fusão não acontece");
-			Assert.Equal(0, Fusion.Release(player, database, copy.Id), "bloqueado não se libera");
+			Assert.Equal(0, Fusion.Release(player, database, copy.Id), "bloqueado não se solta");
 			Assert.Equal(0, Fusion.ReleaseMany(player, database, new[] { copy.Id }), "nem em lote");
 			Assert.Equal(2, player.Monsters.Count, "os dois ficam");
 
@@ -120,7 +120,7 @@ namespace Sigilos.Tests
 			Assert.Equal(20, Fusion.Release(player, database, player.Monsters[0].Id), "5★ vale 20");
 			Assert.Equal(5, Fusion.Release(player, database, player.Monsters[0].Id), "3★ vale 5");
 			Assert.Equal(25, player.Fragments, "Fragmentos na conta");
-			Assert.Equal(0, player.Monsters.Count, "os dois liberados");
+			Assert.Equal(0, player.Monsters.Count, "os dois soltos");
 		}
 
 		[Test]
@@ -137,7 +137,7 @@ namespace Sigilos.Tests
 			var left = copies.Where(id => player.Monster(id) != null).ToList();
 			Assert.Equal(2, left.Count, "as que não couberam ficam");
 
-			Assert.Equal(2 * Fusion.FragmentsFor(5), Fusion.ReleaseMany(player, database, left), "libera as que sobraram");
+			Assert.Equal(2 * Fusion.FragmentsFor(5), Fusion.ReleaseMany(player, database, left), "solta as que sobraram");
 			Assert.Equal(1, player.Monsters.Count, "só o alvo fica");
 		}
 

@@ -686,6 +686,8 @@ namespace Sigilos.UI.Screens
 						_views.Remove(old);
 					var enemies = wave.Enemies.Select((enemy, i) => (Control)ViewFor(enemy, $"Enemy{i + 1}")).ToList();
 					var boss = wave.Enemies.FirstOrDefault(enemy => enemy.IsBoss);
+					// Os inimigos do alto do arco descem para os efeitos deles não ficarem embaixo da barra do chefe.
+					_arena.Ceiling = boss != null ? _bossBar.OffsetTop + _bossBar.GetCombinedMinimumSize().Y + 4 - _arena.OffsetTop : 0;
 					_arena.SetEnemies(enemies, boss != null ? _views[boss] : null);
 					_wave = $"{wave.Wave}/{wave.WaveCount}";
 					RefreshCounters();

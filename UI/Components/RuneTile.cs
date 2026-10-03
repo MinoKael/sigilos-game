@@ -83,6 +83,7 @@ namespace Sigilos.UI.Components
 				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(33 * scale), _color, outline: true) { Name = "Glyph" };
 				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				glyph.OffsetTop = 6 * scale;
+				glyph.OffsetLeft = 2.5f;
 				_layer.AddChild(glyph);
 
 				// A linha de baixo: cada peça é centrada num ponto fixo dela, então o espaço, o cadeado e a

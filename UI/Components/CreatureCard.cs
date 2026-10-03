@@ -15,8 +15,8 @@ namespace Sigilos.UI.Components
 	/// precisa saber na hora ("Novo!", "Líder").
 	///
 	/// Toque curto é <see cref="Pressed"/> (escolher, marcar); toque longo abre o resumo do monstro
-	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado para fundir
-	/// ou liberar, ganha o ✓ verde. O toque passa para cima, então arrastar rola a lista.
+	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado na seleção
+	/// de vários (fundir, soltar, mudar de lugar), ganha o ✓ verde. O toque passa para cima, então arrastar rola a lista.
 	/// </summary>
 	public partial class CreatureCard : PanelContainer
 	{
@@ -123,7 +123,7 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		/// <summary>Marcado para fundir ou liberar em massa: ✓ verde e fundo esverdeado.</summary>
+		/// <summary>Marcado na seleção de vários (fundir, soltar, mudar de lugar): ✓ verde e fundo esverdeado.</summary>
 		public void SetMarked(bool marked)
 		{
 			_marked = marked;

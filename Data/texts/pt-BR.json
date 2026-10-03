@@ -57,7 +57,7 @@
     "replace_confirm": "Encerrar e começar",
     "sold": "Vendida",
     "monsters_hint": "Toque num monstro para bloquear; segure para ver o resumo.",
-    "monster_lock_text": "Bloqueado, ele não pode ser liberado nem fundido em outro."
+    "monster_lock_text": "Bloqueado, ele não pode ser solto nem fundido em outro."
   },
 
   "entry": {
@@ -424,8 +424,7 @@
     "offline": "Sem conexão",
     "offline_text": "O servidor não respondeu. Você está jogando com o progresso deste aparelho, e ele sobe para a nuvem sozinho quando a conexão voltar. Se a conta também mudou em outro aparelho nesse meio tempo, o jogo pergunta qual progresso fica.",
     "channel_opens": "A Canalização abre na fase {0}.",
-    "battle_detail_campaign": "Campanha (fase {0} de {1})",
-    "mail": "Correio"
+    "battle_detail_campaign": "Campanha (fase {0} de {1})"
   },
 
   "campaign": {
@@ -463,7 +462,8 @@
     "opens_at": "Abre depois da fase {0}",
     "drops_sets": "Solta runas de:",
     "drops_tools": "Solta:",
-    "sets_hint": "Toque num conjunto para ver o bônus dele."
+    "sets_hint": "Toque num conjunto para ver o bônus dele.",
+    "scroll_chance": "de chance de um Pergaminho Místico"
   },
 
   "summon": {
@@ -520,14 +520,14 @@
     "evolve": "Evoluir para {0}",
     "awaken_button": "Despertar",
     "runes_button": "Gerenciar runas",
-    "collection_full": "A coleção está cheia: guarde monstros no Baú ou libere alguns antes.",
+    "collection_full": "A coleção está cheia: guarde monstros no Baú ou solte alguns antes.",
     "fuse_full": "Todas as habilidades no nível máximo.",
-    "release": "Liberar",
-    "release_confirm": "Liberar {0} (Nv {1}) por {2} Fragmentos? Não dá para desfazer.",
+    "release": "Soltar",
+    "release_confirm": "Soltar {0} (Nv {1}) por {2} Fragmentos? Não dá para desfazer.",
     "select": "Selecionar vários",
     "unmark": "Desmarcar",
-    "release_marked": "Liberar {0}",
-    "release_many_confirm": "Liberar {0} monstros por {1} Fragmentos? Eles somem para sempre; as runas voltam ao inventário.",
+    "release_marked": "Soltar {0}",
+    "release_many_confirm": "Soltar {0} monstros por {1} Fragmentos? Eles somem para sempre; as runas voltam ao inventário.",
     "valuable_warning": "Atenção: a seleção tem monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas.",
     "page": {
       "stats": "Atributos",
@@ -536,9 +536,9 @@
       "awaken": "Despertar"
     },
     "select_done": "Terminar seleção",
-    "select_hint": "Selecione os monstros; ignora bloqueados ({0} marcados):",
-    "release_title": "Liberar monstros?",
-    "release_button": "Liberar",
+    "select_hint": "Toque nos monstros para marcar; os bloqueados também mudam de lugar, mas não são soltos ({0} marcados):",
+    "release_title": "Soltar monstros?",
+    "release_button": "Soltar",
     "fuse_title": "Fundir cópias?",
     "fuse_button": "Fundir",
     "fuse_hint": "Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. Faltam {0} níveis de habilidade; você tem {1} cópias livres.",
@@ -556,7 +556,7 @@
     "max_confirm_title": "Subir até o nível {0}?",
     "max_confirm": "Gastar {0} de Essência para levar {1} ao nível {2}? Você tem {3}.",
     "locked": "Bloqueado",
-    "locked_note": "Bloqueado: não pode ser liberado nem fundido em outro. Libere antes.",
+    "locked_note": "Bloqueado: não pode ser solto nem fundido em outro. Libere antes.",
     "favorite": "Favoritar",
     "unfavorite": "Desfavoritar",
     "store_short": "Baú",
@@ -578,7 +578,8 @@
     "retrieve_marked": "Tirar {0} do Baú",
     "store_many_title": "Guardar no Baú",
     "store_many_confirm": "Guardar {0} monstros no Baú? Os que estão em equipe ({1}) saem dela. No Baú eles guardam as runas, mas não lutam.",
-    "store_many_button": "Guardar"
+    "store_many_button": "Guardar",
+    "release_many_locked": "Os bloqueados ({0}) ficam."
   },
 
   "teams": {
@@ -696,15 +697,15 @@
     },
     "basic": {
       "campaign": { "title": "Campanha", "text": "50 fases em três regiões, com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Pergaminhos e sempre uma runa; as seguintes dão Essência e chance de runa. A Campanha apresenta o jogo aos poucos: cada parte do Santuário abre numa fase. Ela solta runas de até {0} estrelas; vencer a fase 50 pede cerca de nível 20 com runas, ou 6★ nível 40 sem." },
-      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas Raras ou melhores de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada andar mostra a chance de cada estrela e raridade, e quanto mais fundo, maior a runa: 2 e 3 estrelas no andar 1, só 6 estrelas no andar 5. O andar 1 é igual de difícil em todas, e assim por diante, tão difícil quanto o que paga. Elas abrem durante a Campanha: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana; a primeira vitória em cada andar dá Ouro." },
+      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas Raras ou melhores de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada andar mostra a chance de cada estrela e raridade, e quanto mais fundo, maior a runa: 2 e 3 estrelas no andar 1, só 6 estrelas no andar 5. O andar 1 é igual de difícil em todas, e assim por diante, tão difícil quanto o que paga. Elas abrem durante a Campanha: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana e pode soltar também um Pergaminho Místico; a primeira vitória em cada andar dá Ouro." },
       "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
       "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
-      "monsters": { "title": "Monstros e Baú", "text": "A coleção tem {0} vagas; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas. Bloqueie um monstro ou uma runa (o cadeado) para nunca liberar, fundir ou vender por engano; desbloqueie para fazer isso." },
+      "monsters": { "title": "Monstros e Baú", "text": "A coleção tem {0} vagas; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas. Bloqueie um monstro ou uma runa (o cadeado) para nunca soltar, fundir ou vender por engano; desbloqueie para fazer isso." },
       "teams": { "title": "Equipes", "text": "Uma equipe de até {0} monstros para a Campanha e uma para cada Masmorra. A primeira é a Líder." },
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Essência e Fragmentos para ganhar uma estrela: o monstro mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} de Essência e {2} Fragmentos; de 4★ para 5★: {3} e {4}; de 5★ para 6★: {5} e {6}." },
-      "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser liberadas em Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
+      "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser soltas em troca de Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
       "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada monstro tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
       "sanctuary": { "title": "Santuário e controles", "text": "O Santuário é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Monstros, Runas, Equipes, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um monstro para ver o resumo dele." }
     },
@@ -889,7 +890,7 @@
     "essence": "A Essência sobe o nível dos monstros ({0} de experiência por Essência) e paga o Despertar, a evolução e a melhora de runas. Vem das vitórias, da Canalização e de runas vendidas.",
     "gold": "O Ouro é a moeda rara: vem da Canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. A Loja troca Ouro por Mana ou Pergaminhos.",
     "scrolls": "Os Pergaminhos Místicos invocam monstros: 1 por invocação, 10 por dez. Vêm da primeira vitória em cada fase da Campanha e da Loja.",
-    "fragments": "Os Fragmentos pagam a evolução (o monstro no nível máximo ganha uma estrela). Vêm de liberar monstros que você não quer."
+    "fragments": "Os Fragmentos pagam a evolução (o monstro no nível máximo ganha uma estrela). Vêm de soltar monstros que você não quer."
   },
 
   "picker": {
@@ -1042,7 +1043,10 @@
     "support": "{0} é de suporte: o básico já cura o aliado mais ferido, e {1} cura todos. Cura e escudo seguram a equipe enquanto os outros batem.",
     "combo": "Combine os efeitos: com o inimigo atordoado, os outros batem nele sem resposta. Um monstro abre caminho para o outro; é assim que se monta uma equipe.",
     "auto": "Por fim, o Automático, embaixo à esquerda: a equipe luta sozinha, usando a habilidade pronta mais forte. Termine a luta como quiser.",
-    "end": "Muito bem, Conjurador! Agora invoque os seus próprios monstros: a primeira invocação traz uma 5★. Depois, a Campanha espera."
+    "end": "Muito bem, Conjurador! Agora invoque os seus próprios monstros. Depois, a Campanha espera.",
+    "to_summon": "Invocar",
+    "summon": "Agora, os seus próprios monstros. Toque em Invocar ×10: são dez invocações por {0} Pergaminhos, e a primeira invocação da conta traz o {1} e uma 5★.",
+    "summon_done": "Os seus primeiros monstros! Os mais fortes, o {0} e a 5★ entre eles, já entraram na equipe da Campanha. Toque em {1} para conhecê-los, ou volte ao Santuário: a Campanha espera."
   },
 
   "mail": {
@@ -1063,5 +1067,12 @@
       "Fragments": "Fragmentos",
       "ReappraisalGems": "Gemas de Reavaliação"
     }
+  },
+
+  "avatar": {
+    "title": "Retrato da conta",
+    "change": "Trocar retrato",
+    "hint": "Escolha um dos seus monstros. A forma desperta aparece quando você tem uma cópia desperta.",
+    "empty": "Invoque monstros para escolher entre eles o retrato da conta."
   }
 }

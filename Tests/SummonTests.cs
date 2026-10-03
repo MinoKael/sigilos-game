@@ -10,12 +10,20 @@ namespace Sigilos.Tests
 		private static PlayerState Player(int scrolls = 1000) => new() { Scrolls = scrolls, TotalPulls = 1 };
 
 		[Test]
-		private static void FirstSummonEverIsFiveStars()
+		private static void FirstTenBringTheFireKnightAndAFiveStar()
 		{
 			var database = TestData.LoadReal();
-			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), TestData.Database);
-			var results = SummonRitual.Perform(new Random(7), database, player, 1);
-			Assert.Equal(5, results.Single().Summon.Rarity, "primeira invocação");
+			for (var seed = 1; seed <= 5; seed++)
+			{
+				var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), database);
+				var results = SummonRitual.Perform(new Random(seed), database, player, 10);
+				Assert.Equal(SummonRates.FirstSummon, results[0].Summon.Id, $"a primeira é o Cavaleiro de Fogo, semente {seed}");
+				Assert.Equal(5, results[1].Summon.Rarity, $"a segunda, uma 5★, semente {seed}");
+			}
+
+			var single = NewGame.Create(DateTime.UnixEpoch, new Random(1), database);
+			SummonRitual.Perform(new Random(7), database, single, 1);
+			Assert.Equal(5, SummonRitual.Perform(new Random(7), database, single, 1).Single().Summon.Rarity, "uma a uma, a 5★ vem logo depois do Cavaleiro");
 		}
 
 		[Test]

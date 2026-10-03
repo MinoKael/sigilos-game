@@ -89,6 +89,15 @@ namespace Sigilos.Core.Player
 		/// <summary>O idioma escolhido na Configuração (Data/texts/{nome}.json); nulo = o padrão.</summary>
 		public string? Language { get; set; }
 
+		/// <summary>
+		/// O retrato da conta, no Santuário: a variante de um monstro que a conta tem; nulo = o sigilo padrão.
+		/// Quem troca é <see cref="Progression.Account.SetAvatar"/>.
+		/// </summary>
+		public string? Avatar { get; set; }
+
+		/// <summary>O retrato é a forma desperta da variante.</summary>
+		public bool AvatarAwakened { get; set; }
+
 		public DateTime LastIdleCollect { get; set; }
 
 		/// <summary>Frações que a ociosidade ainda não fechou numa unidade.</summary>

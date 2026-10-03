@@ -13,7 +13,7 @@ namespace Sigilos.UI.Components
 		/// <summary>As outras ações: madeira com moldura de ouro.</summary>
 		Secondary,
 
-		/// <summary>O que não tem volta: vermelho (Liberar, Vender, Parar).</summary>
+		/// <summary>O que não tem volta: vermelho (Soltar, Vender, Parar).</summary>
 		Danger,
 	}
 

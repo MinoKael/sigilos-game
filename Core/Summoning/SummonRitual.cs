@@ -8,7 +8,8 @@ namespace Sigilos.Core.Summoning
 {
 	/// <summary>
 	/// Invocação ritual (GDD, seção 9): paga Pergaminhos, sorteia raridade e variante, respeita a
-	/// garantia e entrega uma cópia nova à coleção (ou ao Baú, se a coleção está cheia).
+	/// garantia e entrega uma cópia nova à coleção (ou ao Baú, se a coleção está cheia). A conta começa
+	/// com duas invocações certas: a primeira é o <see cref="SummonRates.FirstSummon"/>, e a segunda, uma 5★.
 	///
 	/// O sorteio recebe o <see cref="Random"/> de fora: com a mesma semente, o mesmo resultado.
 	/// </summary>
@@ -40,10 +41,17 @@ namespace Sigilos.Core.Summoning
 		/// <summary>Sorteia uma invocação e atualiza os contadores de garantia. Não mexe na coleção.</summary>
 		public static SummonDefinition Roll(Random random, GameDatabase database, PlayerState player)
 		{
-			var rarity = RollRarity(random, player, database);
-			var pool = database.Summons.Where(s => s.Rarity == rarity).ToList();
+			SummonDefinition summon;
+			if (player.TotalPulls == 0 && database.HasSummon(SummonRates.FirstSummon))
+			{
+				summon = database.Summon(SummonRates.FirstSummon);
+			}
+			else
+			{
+				var rarity = RollRarity(random, player, database);
+				summon = WeightedPick(random, database.Summons.Where(s => s.Rarity == rarity).ToList());
+			}
 
-			var summon = WeightedPick(random, pool);
 			player.TotalPulls++;
 			player.PullsSinceFiveStar = summon.Rarity == 5 ? 0 : player.PullsSinceFiveStar + 1;
 			return summon;
@@ -59,7 +67,9 @@ namespace Sigilos.Core.Summoning
 		private static int RollRarity(Random random, PlayerState player, GameDatabase database)
 		{
 			int rarity;
-			if (player.TotalPulls == 0 || player.PullsSinceFiveStar >= SummonRates.Pity - 1)
+			// A segunda invocação da conta, logo depois da primeira sem 5★, é a 5★ garantida.
+			var firstFiveStar = player.TotalPulls <= 1 && player.PullsSinceFiveStar == player.TotalPulls;
+			if (firstFiveStar || player.PullsSinceFiveStar >= SummonRates.Pity - 1)
 				rarity = 5;
 			else
 			{

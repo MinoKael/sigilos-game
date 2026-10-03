@@ -60,6 +60,11 @@ namespace Sigilos.Tests
 			var veteran = TestData.PlayerWith(TestData.TypicalTeam);
 			veteran.TotalPulls = 10;
 			Assert.False(Tutorial.ShouldStart(veteran), "quem já invocou não vê a luta de treino ao abrir");
+
+			Assert.True(Tutorial.GuidesFirstSummon(player, database), "depois da luta, a primeira invocação é ensinada");
+			player.Scrolls = 9;
+			Assert.False(Tutorial.GuidesFirstSummon(player, database), "sem Pergaminhos para a ×10, não");
+			Assert.False(Tutorial.GuidesFirstSummon(veteran, database), "nem para quem já invocou");
 		}
 
 		/// <summary>A luta de treino não se perde: nem no automático, nem só com o básico no primeiro alvo.</summary>

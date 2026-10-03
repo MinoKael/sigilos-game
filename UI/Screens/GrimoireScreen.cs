@@ -242,7 +242,7 @@ namespace Sigilos.UI.Screens
 			var awaken = Layout.Flow(8).Named("Awakening");
 			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
 				awaken.AddChild(Layout.Labeled(Texts.GlyphOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
-			awaken.AddChild(Layout.Labeled("essence", Texts.Short(Awakening.Cost(summon.Rarity)), T("grimoire.awaken_cost")).Named("Cost"));
+			awaken.AddChild(Layout.Labeled("essence", Texts.Number(Awakening.Cost(summon.Rarity)), T("grimoire.awaken_cost")).Named("Cost"));
 			_sheet.AddChild(awaken);
 		}
 

@@ -172,13 +172,8 @@ namespace Sigilos.UI
 
 		public static string Percent(double fraction) => string.Format(Culture, "{0:0.#}%", fraction * 100);
 
-		/// <summary>Número curto para cápsula e plaquinha de sigilo: 12345 → 12.3k, 1500000 → 1.5M.</summary>
-		public static string Short(int value) => value switch
-		{
-			>= 1_000_000 => string.Format(Culture, "{0:0.#}M", value / 1_000_000.0),
-			>= 10_000 => string.Format(Culture, "{0:0.#}k", value / 1000.0),
-			_ => value.ToString(Culture),
-		};
+		/// <summary>O número inteiro, sem arredondar, com o separador de milhar do idioma: 12345 → 12.345 (12,345 em inglês).</summary>
+		public static string Number(int value) => value.ToString("N0", Culture);
 
 		// Termos e Glifos --------------------------------------------------------------------------
 

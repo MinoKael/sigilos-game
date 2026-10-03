@@ -222,6 +222,8 @@ namespace Sigilos.Core.Content
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: chances de raridade inválidas ou sem somar 100.";
 					if (dungeon.Kind == DungeonKind.Tools && floor.ToolCount < 1)
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: nenhuma pedra.";
+					if (floor.ScrollChance is < 0 or > 100)
+						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: chance de Pergaminho fora de 0% a 100%.";
 				}
 			}
 

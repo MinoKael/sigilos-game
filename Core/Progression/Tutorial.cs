@@ -12,6 +12,9 @@ namespace Sigilos.Core.Progression
 	/// bate, um que atordoa e um que cura — contra inimigos fracos de Fogo e um de Vento, para ensinar
 	/// jogando o básico, a recarga, os elementos, os efeitos, o suporte e o Automático. Os monstros não
 	/// entram na conta, e a luta não cobra nem dá nada.
+	///
+	/// Depois da luta vem a primeira invocação, a ×10 (<see cref="GuidesFirstSummon"/>): é nela que chegam
+	/// o Cavaleiro de Fogo e a 5★ garantidos (<see cref="Summoning.SummonRitual"/>).
 	/// </summary>
 	public static class Tutorial
 	{
@@ -27,6 +30,13 @@ namespace Sigilos.Core.Progression
 
 		/// <summary>Abre sozinha numa conta que ainda não invocou nem lutou, e só uma vez.</summary>
 		public static bool ShouldStart(PlayerState player) => !player.TutorialDone && player.TotalPulls == 0 && player.HighestStage == 0;
+
+		/// <summary>
+		/// A tela de Invocação ensina a primeira invocação da conta (a ×10) enquanto a conta não invocou nada e
+		/// tem Pergaminhos para ela.
+		/// </summary>
+		public static bool GuidesFirstSummon(PlayerState player, GameDatabase database) =>
+			player.TotalPulls == 0 && player.Scrolls >= Summoning.SummonRitual.CostFor(10) && database.HasSummon(Summoning.SummonRates.FirstSummon);
 
 		public static BattleTeam Team(GameDatabase database) => new(new[] { Striker, Stunner, Healer }
 			.Select(id => database.Summon(id))

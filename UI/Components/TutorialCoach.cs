@@ -20,10 +20,13 @@ namespace Sigilos.UI.Components
 	/// A ordem: o campo e a ordem de turno; o básico e o alvo; a recarga; os elementos (na segunda onda,
 	/// com um inimigo de Fogo e um de Vento); o efeito (o atordoar) e o símbolo dele; o suporte (a cura);
 	/// combinar efeitos; e por fim o Automático, que só então liga.
+	///
+	/// A mesma placa ensina depois a primeira invocação, na tela de Invocação (<see cref="Screens.SummonScreen"/>),
+	/// com <see cref="Hint"/>, <see cref="Clear"/> e <see cref="Say"/>.
 	/// </summary>
 	public partial class TutorialCoach : PanelContainer
 	{
-		private readonly RichTextLabel _text = RichText.Label("", 440).Named("Text");
+		private readonly RichTextLabel _text;
 		private readonly GameButton _continue;
 		private readonly Queue<string> _queue = new();
 		private TaskCompletionSource? _idle;
@@ -43,10 +46,12 @@ namespace Sigilos.UI.Components
 		private int? _onlySkill;
 		private Element? _onlyElement;
 
-		public TutorialCoach()
+		/// <param name="textWidth">A largura do texto da placa: menor onde o espaço é estreito.</param>
+		public TutorialCoach(float textWidth = 440)
 		{
 			Name = "TutorialCoach";
 			MouseFilter = MouseFilterEnum.Stop;
+			_text = RichText.Label("", textWidth).Named("Text");
 			AddThemeStyleboxOverride("panel", Ornament.Panel(new Color(Palette.Panel, 0.96f), Palette.Gold, 10));
 			_continue = GameButton.Of(T("tutorial.continue"), Next, ButtonKind.Primary, "confirm", 48).Named("Continue");
 
@@ -180,17 +185,24 @@ namespace Sigilos.UI.Components
 			}
 		}
 
-		/// <summary>A luta acabou: a última fala, com o botão que leva ao Santuário.</summary>
-		public Task End()
+		/// <summary>A luta acabou: a última fala, com o botão que leva adiante (<paramref name="button"/>: à Invocação ou ao Santuário).</summary>
+		public Task End(string button)
 		{
 			_queue.Clear();
-			_continue.Text = T("tutorial.end_button");
+			_continue.Text = button;
 			Say(T("tutorial.end"));
 			return Idle();
 		}
 
+		/// <summary>A instrução foi seguida fora da luta (a primeira invocação): ela sai da placa.</summary>
+		public void Clear()
+		{
+			if (!_showing)
+				Visible = false;
+		}
+
 		/// <summary>Uma explicação: entra na fila e espera o Continuar.</summary>
-		private void Say(string text)
+		public void Say(string text)
 		{
 			_queue.Enqueue(text);
 			if (!_showing)
@@ -198,7 +210,7 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Uma instrução: fica na placa, sem botão, até o jogador agir.</summary>
-		private void Hint(string text)
+		public void Hint(string text)
 		{
 			_text.Text = text;
 			_continue.Visible = false;

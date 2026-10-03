@@ -20,6 +20,9 @@ namespace Sigilos.UI.Components
 		private readonly Label _fragments = new();
 		private int _maxMana;
 
+		/// <summary>A altura de cada cápsula.</summary>
+		public const float Height = 44;
+
 		public CurrencyBar()
 		{
 			Name = "Currencies";
@@ -31,7 +34,12 @@ namespace Sigilos.UI.Components
 			Add("Fragments", "fragments", _fragments, () => T("currency_info.fragments"), T("currency.fragments"));
 		}
 
-		public override void _EnterTree() => UiSession.Changed += RefreshFromSession;
+		public override void _EnterTree()
+		{
+			UiSession.Changed += RefreshFromSession;
+			// O aviso da Batalha automática fica à esquerda das moedas.
+			AddToGroup(AutoBattleBadge.CornerGroup);
+		}
 
 		public override void _ExitTree() => UiSession.Changed -= RefreshFromSession;
 
@@ -39,10 +47,10 @@ namespace Sigilos.UI.Components
 		{
 			_maxMana = Mana.Max(player);
 			_mana.Text = T("currency.mana_of", player.Mana, _maxMana);
-			_essence.Text = Texts.Short(player.Essence);
-			_gold.Text = Texts.Short(player.Gold);
-			_scrolls.Text = Texts.Short(player.Scrolls);
-			_fragments.Text = Texts.Short(player.Fragments);
+			_essence.Text = Texts.Number(player.Essence);
+			_gold.Text = Texts.Number(player.Gold);
+			_scrolls.Text = Texts.Number(player.Scrolls);
+			_fragments.Text = Texts.Number(player.Fragments);
 		}
 
 		private void RefreshFromSession()
@@ -58,20 +66,7 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		private void Add(string name, string icon, Label label, System.Func<string> explain, string title)
 		{
-			var capsule = new Button { Name = name, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand };
-			var box = GameTheme.Carved(Palette.Inset, 4);
-			box.SetCornerRadiusAll(18);
-			box.ContentMarginLeft = 6;
-			box.ContentMarginRight = 12;
-			capsule.AddThemeStyleboxOverride("normal", box);
-			var lit = (StyleBoxFlat)box.Duplicate();
-			lit.BorderColor = Palette.Gold;
-			lit.SetBorderWidthAll(1);
-			capsule.AddThemeStyleboxOverride("hover", lit);
-			capsule.AddThemeStyleboxOverride("pressed", lit);
-			capsule.AddThemeStyleboxOverride("hover_pressed", lit);
-			capsule.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
-			capsule.CustomMinimumSize = new Vector2(0, 44);
+			var capsule = Capsule(name);
 
 			var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore };
 			row.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -89,11 +84,31 @@ namespace Sigilos.UI.Components
 			capsule.AddChild(row);
 
 			// O botão não mede os filhos: a largura acompanha o número.
-			void Fit() => capsule.CustomMinimumSize = new Vector2(row.GetCombinedMinimumSize().X + 18, 44);
+			void Fit() => capsule.CustomMinimumSize = new Vector2(row.GetCombinedMinimumSize().X + 18, Height);
 			label.Resized += Fit;
 			row.MinimumSizeChanged += Fit;
 			capsule.Pressed += () => Dialog.Info(capsule, title, explain());
 			AddChild(capsule);
+		}
+
+		/// <summary>A cápsula vazia, de pedra entalhada, com a borda de ouro no toque; a altura é <see cref="Height"/>.</summary>
+		public static Button Capsule(string name)
+		{
+			var capsule = new Button { Name = name, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand };
+			var box = GameTheme.Carved(Palette.Inset, 4);
+			box.SetCornerRadiusAll(18);
+			box.ContentMarginLeft = 6;
+			box.ContentMarginRight = 12;
+			capsule.AddThemeStyleboxOverride("normal", box);
+			var lit = (StyleBoxFlat)box.Duplicate();
+			lit.BorderColor = Palette.Gold;
+			lit.SetBorderWidthAll(1);
+			capsule.AddThemeStyleboxOverride("hover", lit);
+			capsule.AddThemeStyleboxOverride("pressed", lit);
+			capsule.AddThemeStyleboxOverride("hover_pressed", lit);
+			capsule.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
+			capsule.CustomMinimumSize = new Vector2(0, Height);
+			return capsule;
 		}
 	}
 }
