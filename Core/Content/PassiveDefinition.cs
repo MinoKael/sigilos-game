@@ -30,6 +30,7 @@ namespace Sigilos.Core.Content
 		public bool UsesEffects => Kind is PassiveKind.StatusOrEffectOnHit or PassiveKind.StatusOrEffectOnAttacker
 			or PassiveKind.StatusOrEffectEachTurn or PassiveKind.StatusOrEffectOnWaveStart or PassiveKind.StatusOrEffectOnDeath
 			or PassiveKind.StatusOrEffectWhenLowest or PassiveKind.ForEachStatusOrEffectAppliedDo
-			or PassiveKind.ForEachStatusOrEffectReceivedDo or PassiveKind.StatusOrEffectOnTargetEachTurn;
+			or PassiveKind.ForEachStatusOrEffectReceivedDo or PassiveKind.StatusOrEffectOnTargetEachTurn
+			or PassiveKind.Undying;
 	}
 }

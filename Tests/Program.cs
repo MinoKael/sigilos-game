@@ -18,7 +18,9 @@ namespace Sigilos.Tests
 	///   dotnet run --project Tests                  roda os testes
 	///   dotnet run --project Tests -- --only=Summon só os testes com "Summon" no nome
 	///   dotnet run --project Tests -- --simulate    relatório de balanceamento da campanha
+	///   dotnet run --project Tests -- --dungeons    relatório das Masmorras de especialização
 	///   dotnet run --project Tests -- --fight=10    uma luta da fase 10, turno a turno
+	///   dotnet run --project Tests -- --fight=golem5:powerful   o andar 5 do Golem contra o time forte genérico
 	///   dotnet run --project Tests -- --digest      impressão digital do combate, para refatorar sem mudar a regra
 	/// </summary>
 	internal static class Program
@@ -28,6 +30,12 @@ namespace Sigilos.Tests
 
 		private static int Main(string[] args)
 		{
+			if (args.Contains("--dungeons"))
+			{
+				CampaignReport.PrintDungeons(TestData.LoadReal());
+				return 0;
+			}
+
 			if (args.Contains("--simulate"))
 			{
 				CampaignReport.Print(TestData.LoadReal());
@@ -44,7 +52,7 @@ namespace Sigilos.Tests
 			var battle = args.FirstOrDefault(a => a.StartsWith("--fight=", StringComparison.Ordinal));
 			if (battle != null)
 			{
-				CampaignReport.PrintBattle(TestData.LoadReal(), int.Parse(battle["--fight=".Length..]));
+				CampaignReport.PrintBattle(TestData.LoadReal(), battle["--fight=".Length..]);
 				return 0;
 			}
 

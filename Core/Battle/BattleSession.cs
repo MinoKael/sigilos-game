@@ -243,7 +243,8 @@ namespace Sigilos.Core.Battle
 				return;
 			}
 
-			if (Enemies.Any(u => u.IsAlive))
+			// Quem caiu para voltar (o Rei Ossudo) segura a onda, como segura o time aliado.
+			if (Enemies.Any(u => u.CanTakeTurn))
 				return;
 
 			if (_waveIndex + 1 < _waves.Count)

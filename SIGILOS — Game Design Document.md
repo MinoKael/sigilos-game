@@ -180,7 +180,7 @@ Como em Summoners War: a primeira habilidade é a básica, sempre pronta; as out
 
 ### Chefes
 
-O chefe (as criaturas únicas: o Mestre de Correntes, a Serpe-Mãe, o Arauto do Silêncio e os guardiões das Masmorras) é a luta grande. Na onda dele, ele fica no meio dos inimigos, com o cartão 50% maior e a moldura vermelha acesa, os outros dos dois lados; o meio do círculo anuncia "Onda 3 · Chefe: nome", e uma barra grande no alto da tela mostra o nome, o elemento, o nível, a Vida (com um rastro dourado que desce atrás do dano), o escudo e os efeitos dele.
+O chefe (as criaturas únicas: o Mestre de Correntes, a Serpe-Mãe, o Arauto do Silêncio e os guardiões das Masmorras) é a luta grande. Na onda dele, ele fica no meio dos inimigos, com o cartão 50% maior e a moldura vermelha acesa, os outros dos dois lados; o meio do círculo anuncia "Onda 3 · Chefe: nome", e uma barra grande no alto da tela mostra o nome, o elemento, o nível, a Vida (com um rastro dourado que desce atrás do dano), o escudo e os efeitos dele. A Vida do chefe vale a de várias unidades, então cada cópia da Aflição tira dele só 30% do que tiraria de outro monstro: dano em fração da Vida máxima não passa por cima da mecânica de um chefe. Alguns chefes de Masmorra têm lacaios, criaturas únicas que não são chefes (os pilares do Golem): ficam ao lado dele, no tamanho comum.
 
 ### Vitória e derrota
 
@@ -368,7 +368,25 @@ flowchart LR
 | Arena dos Aprendizes: rivais gerados com poder parecido com o seu | Arenas de Summoners War e Epic Seven | Automático | Fragmentos e rivais recorrentes | v1.0 |
 | Espelho: exporta o time como código de texto para um amigo enfrentar | — | Automático | Social sem servidor | Depois da 1.0 |
 
-**A dificuldade é a recompensa.** Cada andar é tão difícil quanto o que paga, e por isso o andar N é igual de difícil em todas as Masmorras: elas se diferenciam pelos conjuntos (ou pelas pedras) e pelo elemento, não por uma escada entre elas. O andar pede o time que já usa runas como as que ele solta: o 1, quem está na fase 15 (runas 2★ e 3★); o 2, quem está na fase 30 (runas 4★); o 3, o fim da Campanha (nível 20, runas 4★ +12); o 4, 6★ nível 40 com runas 5★ +12; o 5, 6★ nível 40 com runas 6★ +15. Elas abrem durante a Campanha (a Golem na fase 15, a Serpe na 20, a Cripta na 25, o Afogado e a Forja na 30). Cada uma é quase toda do seu elemento, então ganha quem leva a vantagem (Fogo na Golem, Água na Serpe, Luz na Cripta, Vento no Afogado, Trevas na Forja). A escala de cada andar compensa as ondas e o elemento de cada Masmorra, para o mesmo andar pedir o mesmo time em todas.
+**Masmorras de especialização.** O Golem, a Serpe e a Cripta não são uma escada que qualquer time bem evoluído sobe: são conteúdo de especialização e estudo de mecânica. Cada chefe tem uma identidade que obriga o jogador a entender as ameaças, os efeitos que importam, as funções que o time precisa cumprir, os monstros que combinam com ela e as runas e atributos a priorizar. Um time ótimo para uma pode ser mediano ou inútil em outra: o jogador não pensa "meu time está forte o bastante para todas", e sim "meu time está preparado para esta".
+
+| Andar | O que ensina |
+| --- | --- |
+| 1 | O conceito do chefe, claro desde a primeira luta |
+| 2 | A vantagem e a desvantagem de elemento |
+| 3 | Um mínimo de estratégia e de composição |
+| 4 | Runas e build: o ponto doce (5★, habilidades no máximo e os conjuntos certos) domina o andar, ainda sem força para o 5 |
+| 5 | Tudo junto, bem distribuído no time: 6★, Despertar, runas 6★ fortes nas funções certas, bons subatributos e sinergia |
+
+O andar 5 não é o 4 com números maiores: é o primeiro objetivo de fim de jogo da Masmorra. A referência é que o jogador leve cerca de 20 dias de jogo até estar pronto para o Golem 5, evoluindo, despertando, subindo habilidades, juntando e melhorando runas, testando composições e direcionando recursos para um time feito para ele; chegar lá é uma conquista de progressão, não um nível. Sobreviver não basta: o time precisa de dano para terminar em tempo razoável (o Golem se regenera e o Rei Ossudo se escuda a cada ação), então o andar 5 pede o equilíbrio entre sobrevivência, controle, efeitos, dano, velocidade, consistência e runas. Mesmo um time forte, sem as ferramentas daquele chefe, perde.
+
+- **Golem Rúnico.** Muita Vida, Defesa enorme (Defesa+ a cada golpe dele) e um núcleo que regenera a cada turno. Os Bastiões ao lado dão Defesa+, Imunidade e escudo a todos e, ao cair, enfurecem os aliados (Ataque+, Velocidade+, Crítico+); o Vigia quebra a Defesa e o Ataque do time. Pede Quebra de Defesa (ou dano que ignore Defesa), roubar os efeitos positivos, cura, Ataque− e decidir quando derrubar os pilares: levar o maior dano possível não basta.
+- **Serpe Anciã.** Todo inimigo aflige, e a Serpe aflige o time inteiro a cada turno dela; os golpes dela crescem a cada efeito negativo no time. Pede Purificação, Imunidade, Resistência, cura e controle de quantos efeitos o time carrega, sem perder o dano.
+- **Rei Ossudo.** Não recebe Ímpeto, ganha escudo a cada ação e volta toda vez que cai, a não ser que esteja com Esquecimento (que cala a Passiva inteira). Pede Esquecimento com Precisão (o Diabrete das Trevas e a Fênix de Luz o aplicam), o turno do Rei sob controle, quebrar o escudo e dano constante para derrubá-lo esquecido.
+
+O simulador mede isso (`dotnet run --project Tests -- --dungeons`): cada andar contra o time típico, a equipe de especialista em cada degrau, o ponto doce, a preparação do andar 5 e o time forte genérico com o mesmo investimento, a matriz de cada especialista nas outras Masmorras e o custo de cada equipe em dias de Essência.
+
+**A dificuldade é a recompensa.** No Santuário e na Forja, cada andar é tão difícil quanto o que paga: elas se diferenciam pelos conjuntos (ou pelas pedras) e pelo elemento, não por uma escada entre elas. O andar pede o time que já usa runas como as que ele solta: o 1, quem está na fase 15 (runas 2★ e 3★); o 2, quem está na fase 30 (runas 4★); o 3, o fim da Campanha (nível 20, runas 4★ +12); o 4, 6★ nível 40 com runas 5★ +12; o 5, 6★ nível 40 com runas 6★ +15. Todas abrem durante a Campanha (a Golem na fase 15, a Serpe na 20, a Cripta na 25, o Afogado e a Forja na 30). Cada uma é quase toda do seu elemento, então ganha quem leva a vantagem (Fogo na Golem, Água na Serpe, Luz na Cripta, Vento no Afogado, Trevas na Forja).
 
 **Drop por andar.** Toda Masmorra de runas paga pela mesma tabela, e a Forja usa a de raridade para o grau de cada pedra (2 pedras no andar 5):
 

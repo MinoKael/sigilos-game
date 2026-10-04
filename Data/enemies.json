@@ -4,8 +4,17 @@
 // "stats" are the stats at 6★ level 40 that Data/stat_model.json gives to the boss's "rarity" (natural
 // stars) and "role", with no bias. Don't edit them by hand: docs/summon_family_builder.html rewrites
 // them ("Recalcular todas"), and the game checks them against the model.
-// "healthScale" and "attackScale" multiply HP and Attack: enemies have no runes or enhancements, and
-// bosses get more HP.
+// "healthScale", "attackScale" and "defenseScale" multiply HP, Attack and Defense: enemies have no runes or
+// enhancements, and bosses get more HP.
+// "minion": true is a unique creature that escorts a boss (the Golem's pillars): it fights at its side, normal
+// size, and isn't a boss itself.
+// The Dungeon bosses are specialization content (GDD, section 11): each one has a mechanic that a generic
+// team can't overpower, and floor 5 is only consistent for a team built and invested for that boss.
+// - runic_golem: huge HP and Defense; the Bastion buffs it (Defense+, shield) and enrages it when it falls,
+//   the Warden breaks the team's Defense and Attack. Defense Break, buff stealing and timing beat it.
+// - elder_wyvern: every enemy afflicts, and its skills hit harder for each debuff on the team (BonusPerStatus).
+// - bone_king: "Undying" passive: no Impeto, a shield after every action and it always comes back, unless
+//   Oblivion silences the passive.
 [
   {
     "id": "chain_master",
@@ -29,19 +38,68 @@
   {
     "id": "runic_golem",
     "name": "Golem Rúnico",
-    "role": "HP",
+    "role": "Defense",
     "rarity": 3,
-    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
-    "healthScale": 9.0, "attackScale": 1.6,
+    "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+    "healthScale": 9.0, "attackScale": 1.5, "defenseScale": 3.5,
     "image": "rock_golem",
     "skills": [
       { "name": "Punho de Pedra", "effects": [
         {"kind": "Damage", "power": 3.5},
-        {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 1.0, "turns": 3}
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 1.0, "turns": 2}
       ] },
       { "name": "Terremoto", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 3.2},
-        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.75}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.0},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.5}
+      ] },
+      { "name": "Núcleo Rúnico", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [
+        {"kind": "Heal", "target": "Self", "power": 0.06}
+      ] }
+    ]
+  },
+  {
+    "id": "golem_bastion",
+    "name": "Bastião Rúnico",
+    "minion": true,
+    "role": "HP",
+    "rarity": 3,
+    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+    "healthScale": 3.0, "attackScale": 1.2,
+    "image": "golem_head",
+    "skills": [
+      { "name": "Pulso Rúnico", "effects": [
+        {"kind": "Damage", "power": 2.0}
+      ] },
+      { "name": "Égide Rúnica", "cooldown": 3, "effects": [
+        {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+        {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
+        {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+      ] },
+      { "name": "Runa Partida", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [
+        {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 4},
+        {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 4},
+        {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 4}
+      ] }
+    ]
+  },
+  {
+    "id": "golem_warden",
+    "name": "Vigia Rúnico",
+    "minion": true,
+    "role": "Support",
+    "rarity": 3,
+    "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+    "healthScale": 2.5, "attackScale": 1.3,
+    "image": "gargoyle",
+    "skills": [
+      { "name": "Olhar Rúnico", "effects": [
+        {"kind": "Damage", "power": 2.4},
+        {"kind": "Status", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+      ] },
+      { "name": "Selo Partido", "cooldown": 3, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.4},
+        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.6, "turns": 2},
+        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
       ] }
     ]
   },
@@ -51,16 +109,21 @@
     "role": "Attack",
     "rarity": 3,
     "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-    "healthScale": 5.4, "attackScale": 1.45,
+    "healthScale": 10, "attackScale": 1.3,
     "image": "wyvern",
     "skills": [
       { "name": "Mordida Ardente", "effects": [
-        {"kind": "Damage", "power": 3.8},
+        {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "scope": "Debuffs", "bonus": "Damage", "power": 0.5},
+        {"kind": "Damage", "power": 3.4},
         {"kind": "Status", "status": "Affliction", "chance": 0.6, "turns": 2}
       ] },
       { "name": "Sopro de Cinzas", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.6},
+        {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "scope": "Debuffs", "bonus": "Damage", "power": 0.06},
+        {"kind": "Damage", "target": "AllEnemies", "power": 0.4},
         {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 2}
+      ] },
+      { "name": "Ninho em Chamas", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 3}
       ] }
     ]
   },
@@ -70,7 +133,7 @@
     "role": "Defense",
     "rarity": 3,
     "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-    "healthScale": 6.8, "attackScale": 1.6,
+    "healthScale": 5.0, "attackScale": 1.6,
     "image": "crowned_skull",
     "skills": [
       { "name": "Toque do Túmulo", "effects": [
@@ -79,6 +142,9 @@
       { "name": "Coroa de Pó", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 3.0},
         {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
+      ] },
+      { "name": "Coroa Imortal", "passive": {"kind": "Undying", "value": 0.3}, "effects": [
+        {"kind": "Shield", "target": "Self", "power": 0.12, "turns": 2}
       ] }
     ]
   },

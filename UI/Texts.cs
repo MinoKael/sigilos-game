@@ -239,6 +239,10 @@ namespace Sigilos.UI
 		public static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects = null)
 		{
 			var value = Percent(passive.ValueFor(awakened));
+			// O número do Rei Ossudo é a Vida com que ele volta, não a chance de disparar.
+			if (passive.Kind == PassiveKind.Undying)
+				return Sentence(T("passive.Undying", Clause(effects ?? passive.Effects), value, Impeto, Term(StatusKind.Oblivion)));
+
 			if (passive.UsesEffects)
 			{
 				// "No começo de cada turno dele: cura 5% da Vida máxima em si (50% de chance)."

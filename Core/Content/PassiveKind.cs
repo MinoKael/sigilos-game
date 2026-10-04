@@ -66,5 +66,14 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Os efeitos no alvo da habilidade, depois de cada turno do dono.</summary>
 		StatusOrEffectOnTargetEachTurn,
+
+		// Chefes ------------------------------------------------------------------------------------
+
+		/// <summary>
+		/// Rei Ossudo: não recebe Ímpeto (nem ganha, nem perde), os efeitos depois de cada ação dele (o
+		/// escudo) e, ao cair, volta no turno seguinte com o número da Passiva em Vida, toda vez. O
+		/// Esquecimento cala tudo: quem cai esquecido não volta.
+		/// </summary>
+		Undying,
 	}
 }

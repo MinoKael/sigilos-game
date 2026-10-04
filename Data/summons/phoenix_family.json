@@ -163,7 +163,8 @@
           "name": "Aurora",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2},
+            {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

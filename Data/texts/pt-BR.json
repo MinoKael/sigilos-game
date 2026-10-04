@@ -457,6 +457,7 @@
     "ForEachStatusOrEffectAppliedDo": "para cada {1} que põe: {0}",
     "ForEachStatusOrEffectReceivedDo": "para cada {1} que recebe: {0}",
     "StatusOrEffectOnTargetEachTurn": "depois de agir, no alvo da habilidade: {0}",
+    "Undying": "Não recebe {2}. Depois de cada ação: {0}. Ao cair, volta no turno seguinte com {1} da Vida, a não ser que esteja com {3} (que também cala o resto desta Passiva).",
     "chance": "{0} ({1} de chance)"
   },
 

@@ -32,7 +32,16 @@ namespace Sigilos.Core.Content
 		/// <summary>Multiplica o Ataque. Compensa a raridade baixa: inimigo não tem runa nem aprimoramento.</summary>
 		public double AttackScale { get; init; } = 1;
 
+		/// <summary>Multiplica a Defesa. O Golem usa: a Defesa enorme dele pede Quebra de Defesa.</summary>
+		public double DefenseScale { get; init; } = 1;
+
 		public string Image { get; init; } = "";
+
+		/// <summary>
+		/// Lacaio: criatura única que acompanha o chefe na Masmorra (os pilares do Golem). Não é chefe: fica
+		/// ao lado dele, no tamanho comum, e o foco do automático não mira nele.
+		/// </summary>
+		public bool Minion { get; init; }
 
 		/// <summary>Como nas invocações: a primeira sem recarga, as outras com recarga ou passivas.</summary>
 		public IReadOnlyList<SkillDefinition> Skills { get; init; } = new List<SkillDefinition>();

@@ -133,16 +133,16 @@ namespace Sigilos.Tests
 		}
 
 		/// <summary>
-		/// A dificuldade do andar acompanha o drop, igual em todas as Masmorras: o time que já usa runas
-		/// como as do andar vence, e o do andar de baixo ainda não (ReferenceTeams.AtFloor). Elas abrem
-		/// durante a Campanha, a Golem primeiro.
+		/// A dificuldade do andar acompanha o drop: o time que já usa runas como as do andar vence, e o do
+		/// andar de baixo ainda não (ReferenceTeams.AtFloor). Elas abrem durante a Campanha, a Golem
+		/// primeiro. As de especialização têm o teste delas (<see cref="SpecializedDungeonsAskForTheTeamBuiltForThem"/>).
 		/// </summary>
 		[Test]
 		private static void DungeonFloorsAskForTheTeamTheirDropFits()
 		{
 			var database = TestData.LoadReal();
 			Assert.Equal("golem wyvern crypt sanctum forge", string.Join(" ", database.Dungeons.OrderBy(d => d.UnlockStage).Select(d => d.Id)), "a ordem em que abrem");
-			foreach (var dungeon in database.Dungeons)
+			foreach (var dungeon in database.Dungeons.Where(d => !ReferenceTeams.Specialists.ContainsKey(d.Id)))
 			{
 				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
 				{
@@ -150,6 +150,40 @@ namespace Sigilos.Tests
 					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtFloor(database, floor), encounter, 10) >= 0.6, $"{dungeon.Id} {floor}: o time do andar vence");
 					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtFloor(database, floor - 1), encounter, 10) < 0.5, $"{dungeon.Id} {floor}: o de baixo ainda não");
 				}
+			}
+		}
+
+		/// <summary>
+		/// As Masmorras de especialização (GDD, seção 11): cada andar se vence com a equipe montada para o
+		/// chefe, no degrau do andar (ReferenceTeams.Specialist), e não com o time típico do degrau de baixo;
+		/// do andar 3 em diante, nem com a equipe certa ainda pouco investida. O ponto doce (5★, habilidades
+		/// no máximo, runas 5★ +12) domina o andar 4 e não o 5. O andar 5 pede a preparação de cerca de 20
+		/// dias (6★ desperta, runas 6★), e o time forte genérico com o mesmo investimento não passa. Cada
+		/// equipe preparada falha no andar 5 de outra Masmorra: o time certo para uma não serve para todas.
+		/// </summary>
+		[Test]
+		private static void SpecializedDungeonsAskForTheTeamBuiltForThem()
+		{
+			const int fights = 10;
+			var database = TestData.LoadReal();
+			var powerful = ReferenceTeams.Powerful(database);
+			foreach (var id in ReferenceTeams.Specialists.Keys)
+			{
+				var dungeon = database.Dungeon(id);
+				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
+				{
+					var encounter = dungeon.Floor(floor).Encounter;
+					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Specialist(database, id, floor), encounter, fights) >= 0.7, $"{id} {floor}: a equipe montada para ele vence");
+					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtFloor(database, floor - 1), encounter, fights) < 0.5, $"{id} {floor}: o time típico de baixo não");
+					if (floor >= 3)
+						Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Specialist(database, id, floor - 1), encounter, fights) < 0.5, $"{id} {floor}: a equipe certa, ainda sem o investimento, não");
+				}
+
+				var last = dungeon.Floor(dungeon.Floors.Count).Encounter;
+				Assert.True(ReferenceTeams.WinRate(database, powerful, last, fights) < 0.3, $"{id} 5: o time forte genérico não passa");
+				var prepared = ReferenceTeams.Specialist(database, id, dungeon.Floors.Count);
+				Assert.True(ReferenceTeams.Specialists.Keys.Where(other => other != id).Any(other =>
+					ReferenceTeams.WinRate(database, prepared, database.Dungeon(other).Floor(5).Encounter, fights) < 0.3), $"{id}: a equipe preparada falha em outra Masmorra");
 			}
 		}
 	}

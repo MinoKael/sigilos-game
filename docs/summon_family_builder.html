@@ -175,6 +175,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
       <section class="tabcontent" id="tab-formula"></section>
       <section class="tabcontent" id="tab-reference"></section>
       <section class="tabcontent" id="tab-issues"></section>
+      <section class="tabcontent" id="tab-bosses"></section>
 
       <section class="tabcontent" id="tab-preview">
         <div class="toolbar" style="margin-bottom:10px" id="previewBadges"></div>
@@ -243,7 +244,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "bonuses": ["Damage", "Heal", "Impeto"],
-  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn"],
+  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying"],
   "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"]
 }
 </script>
@@ -519,7 +520,7 @@ const Core = (() => {
     RandomEnemy: "um inimigo de pé sorteado, oculto ou não (uma vez por habilidade)",
   };
   // As Passivas genéricas que disparam os efeitos da habilidade (PassiveDefinition.UsesEffects).
-  const PASSIVE_EFFECTS = ["StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn"];
+  const PASSIVE_EFFECTS = ["StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying"];
   const PASSIVE_DOCS = {
     SpeedWhenLowest: "value: Velocidade a mais enquanto for o aliado com menos Vida",
     RebirthOnce: "value: Vida com que renasce na primeira queda",
@@ -541,6 +542,7 @@ const Core = (() => {
     ForEachStatusOrEffectAppliedDo: "effects para cada efeito que conta que o dono põe, novo ou renovado (Target = quem recebeu)",
     ForEachStatusOrEffectReceivedDo: "effects para cada efeito que conta que o dono recebe (Target = quem pôs)",
     StatusOrEffectOnTargetEachTurn: "effects no alvo da habilidade, depois de cada turno do dono (Target = o alvo)",
+    Undying: "Chefe (Rei Ossudo): não recebe Ímpeto; effects depois de cada ação dele (o escudo); value: Vida com que volta, toda vez que cai. O Esquecimento cala tudo e quem cai esquecido não volta",
   };
   const RANK_DOCS = {
     Health: "a fração de Vida (o padrão)", Attack: "o Ataque de agora", Defense: "a Defesa de agora", Speed: "a Velocidade de agora",
@@ -1155,6 +1157,98 @@ const Core = (() => {
 
   // Chefes e enums do projeto -----------------------------------------------------------------------
 
+  // Os números do inimigo na luta: iguais a Core/Progression/Growth.cs (Bands, FoeFraction) e a
+  // Core/Battle/BattleFactory.cs (FoeBoost). Mudou lá, muda aqui.
+  const FOE_BOOST = 1.3;
+  const GROWTH_BANDS = [[0.114, 0.206], [0.159, 0.286], [0.221, 0.398], [0.318, 0.541], [0.433, 0.736], [0.587, 1.000]];
+  const maxLevel = stars => 10 + 5 * Math.min(6, Math.max(1, stars));
+
+  /** A fração do 6★ nível 40 que o inimigo tem nestas estrelas e neste nível (passa do 40 até o 60 no 6★). */
+  function foeFraction(stars, level) {
+    const s = Math.min(6, Math.max(1, stars)), [start, end] = GROWTH_BANDS[s - 1], max = maxLevel(s);
+    if (s < 6 || level <= max) return start + (end - start) * (Math.min(Math.max(level, 1), max) - 1) / (max - 1);
+    return end + (end - start) / (max - 1) * (Math.min(level, 60) - max);
+  }
+
+  /** Vida, Ataque, Defesa e Velocidade de um inimigo único no encontro (estrelas, nível e escala do andar). */
+  function foeStats(model, enemy, stars, level, scale) {
+    const base = computeStats(model, num(enemy.rarity), enemy.role, false);
+    if (!base) return null;
+    const f = foeFraction(stars, level);
+    return {
+      hp: Math.round(base.hp * f) * num(enemy.healthScale, 1) * scale * FOE_BOOST,
+      atk: Math.round(base.atk * f) * num(enemy.attackScale, 1) * scale * FOE_BOOST,
+      def: Math.round(base.def * f) * num(enemy.defenseScale, 1) * FOE_BOOST,
+      spd: base.spd,
+    };
+  }
+
+  const ENEMY_KEYS = ["id", "name", "minion", "role", "rarity", "stats", "healthScale", "attackScale", "defenseScale", "image", "skills"];
+
+  /** Um inimigo de Data/enemies.json no formato do editor (as habilidades como as das famílias). */
+  function importEnemy(source) {
+    return {
+      id: source.id || "", name: source.name || "", kind: source.minion ? "Lacaio" : "Chefe", role: source.role || "", rarity: source.rarity ?? 3,
+      healthScale: source.healthScale ?? 1, attackScale: source.attackScale ?? 1, defenseScale: source.defenseScale ?? 1,
+      image: source.image || "", skills: (source.skills || []).map(importSkill), extra: rest(source, ENEMY_KEYS),
+    };
+  }
+
+  /** De volta ao arquivo, com os "stats" do modelo (o jogo confere). */
+  function exportEnemy(model, enemy) {
+    const out = {id: enemy.id, name: enemy.name};
+    if (enemy.kind === "Lacaio") out.minion = true;
+    Object.assign(out, {role: enemy.role, rarity: num(enemy.rarity)});
+    out.stats = computeStats(model, num(enemy.rarity), enemy.role, false) || {};
+    out.healthScale = num(enemy.healthScale, 1);
+    out.attackScale = num(enemy.attackScale, 1);
+    if (num(enemy.defenseScale, 1) !== 1) out.defenseScale = num(enemy.defenseScale, 1);
+    out.image = enemy.image;
+    out.skills = enemy.skills.map(exportSkill);
+    return Object.assign(out, enemy.extra);
+  }
+
+  const formatEnemies = (model, enemies, header) => [...header, format(enemies.map(e => exportEnemy(model, e)))].join("\n") + "\n";
+
+  /** Os problemas dos inimigos únicos, com as regras do jogo (Core/Content/GameDatabase.cs). */
+  function validateEnemies(model, enemies, enums, used) {
+    const list = [];
+    const add = (level, where, text) => list.push({level, where, text});
+    const ids = enemies.map(e => e.id);
+    enemies.forEach(enemy => {
+      const where = enemy.id || enemy.name || "inimigo";
+      if (!/^[a-z0-9_]+$/.test(enemy.id)) add("error", where, "id só com minúsculas, números e _.");
+      if (ids.filter(id => id === enemy.id).length > 1) add("error", where, "id repetido.");
+      if (!computeStats(model, num(enemy.rarity), enemy.role, false)) add("error", where, `O modelo não tem ${enemy.rarity}★ ${enemy.role}.`);
+      for (const key of ["healthScale", "attackScale", "defenseScale"]) if (!(num(enemy[key], 1) > 0)) add("error", where, `${key} tem de ser maior que 0.`);
+      const skills = enemy.skills.map(exportSkill);
+      if (skills.length === 0 || skills[0].passive || num(skills[0].cooldown) !== 0) add("error", where, "A primeira habilidade é ativa e sem recarga.");
+      if (skills.slice(1).some(s => !s.passive && !(num(s.cooldown) > 0))) add("error", where, "Habilidade ativa além da primeira sem recarga.");
+      if (skills.filter(s => s.passive).length > 1) add("error", where, "Mais de uma passiva.");
+      // Inimigo luta com as habilidades no nível 1: o aviso de quem não sobe de nível não vale para ele.
+      const skillAdd = (level, at, text) => text.startsWith("Não sobe de nível") || add(level, at, text);
+      skills.forEach((skill, i) => validateSkill(skill, enemy.skills[i], `${where} · ${skill.name || "habilidade " + (i + 1)}`, enums, skillAdd));
+      if (!used.has(enemy.id)) add("warn", where, "Não luta em nenhuma fase nem andar.");
+    });
+    for (const id of used.keys()) if (!ids.includes(id)) add("error", id, `Fase ou andar usa "${id}", que não existe em Data/enemies.json.`);
+    return list;
+  }
+
+  /** Data/dungeons.json com a escala de um andar trocada, sem mexer no resto do arquivo. */
+  function setFloorScale(text, dungeon, floor, scale) {
+    const start = text.indexOf(`"id": "${dungeon}"`);
+    if (start < 0) throw new Error(`Data/dungeons.json: masmorra ${dungeon} não encontrada.`);
+    let at = start;
+    for (let i = 0; i < floor; i++) {
+      at = text.indexOf('{"stars"', at + 1);
+      if (at < 0) throw new Error(`Data/dungeons.json: ${dungeon} não tem o andar ${floor}.`);
+    }
+    const end = text.indexOf('"waves"', at);
+    const head = text.slice(at, end);
+    const next = /"scale"\s*:\s*[-\d.]+/.test(head) ? head.replace(/"scale"\s*:\s*[-\d.]+/, `"scale": ${scale}`) : head.replace(/("level"\s*:\s*\d+,)/, `$1 "scale": ${scale},`);
+    return text.slice(0, at) + next + text.slice(end);
+  }
+
   /** Data/enemies.json com os "stats" de cada chefe refeitos pelo modelo (papel e estrelas, sem viés). */
   function rewriteEnemies(text, model) {
     const enemies = parseJsonc(text);
@@ -1185,6 +1279,7 @@ const Core = (() => {
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
     parseList, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
     validateFamily, rewriteEnemies, parseEnum, variationStar, ownStars,
+    FOE_BOOST, foeFraction, foeStats, importEnemy, exportEnemy, formatEnemies, validateEnemies, setFloorScale,
   };
 })();
 
@@ -1206,7 +1301,7 @@ if (typeof module !== "undefined") module.exports = Core;
   // O botão de cada tipo de efeito insere o modelo da documentação (Core.EFFECT_DOCS).
   const EFFECT_TEMPLATES = Object.fromEntries(Object.entries(C.EFFECT_DOCS).map(([kind, doc]) => [kind, doc.template]));
   const LEVEL_TEMPLATES = {Damage: 0.1, Recovery: 0.1, EffectRate: 0.1, Cooldown: 1};
-  const TABS = [["variations", "Variações"], ["model", "Modelo"], ["formula", "Fórmula"], ["reference", "Efeitos e status"], ["issues", "Validação"], ["preview", "JSON final"]];
+  const TABS = [["variations", "Variações"], ["model", "Modelo"], ["formula", "Fórmula"], ["reference", "Efeitos e status"], ["issues", "Validação"], ["preview", "JSON final"], ["bosses", "Chefes"]];
 
   const ui = {
     model: C.normalizeModel(readJson("default-model")),
@@ -1222,6 +1317,8 @@ if (typeof module !== "undefined") module.exports = Core;
     tab: "variations",
     project: null,
     remembered: null,
+    // Aba Chefes: os inimigos únicos de Data/enemies.json, com os andares e fases em que lutam.
+    bosses: null,
   };
 
   // Estado -----------------------------------------------------------------------------------------
@@ -1236,6 +1333,13 @@ if (typeof module !== "undefined") module.exports = Core;
   function getPath(root, path) {
     return path.split(".").reduce((node, part) => node?.[part], root);
   }
+
+  // Os campos da aba Chefes usam caminhos com "@b." (o inimigo aberto); os outros, a família.
+  const isBossPath = path => path.startsWith("@b.");
+  const boss = () => ui.bosses.list[ui.bosses.active];
+  const setAt = (path, value) => isBossPath(path) ? setPath(boss(), path.slice(3), value) : setPath(ui.family, path, value);
+  const getAt = path => isBossPath(path) ? getPath(boss(), path.slice(3)) : getPath(ui.family, path);
+  const touchAt = path => isBossPath(path) ? touchBosses() : touch();
 
   const variation = () => ui.family.variations[ui.active];
   const elementOf = key => C.ELEMENTS.find(e => C.keyOf(e) === key);
@@ -1420,7 +1524,8 @@ if (typeof module !== "undefined") module.exports = Core;
   const rowsOf = content => Math.min(16, Math.max(2, String(content || "").split("\n").length));
   const area = (path, content) => `<textarea data-path="${path}" data-json spellcheck="false" rows="${rowsOf(content)}">${esc(content)}</textarea>`;
 
-  function skillCard(skill, path, title, badge, controls, awakening) {
+  /** Com foe, a habilidade é de inimigo único: luta no nível 1 e não desperta, então não mostra níveis nem Despertar. */
+  function skillCard(skill, path, title, badge, controls, awakening, foe = false) {
     const isPassive = !!skill.passive;
     const bad = f => C.parseList(skill[f]).error ? "bad" : "";
     const generic = isPassive && C.PASSIVE_EFFECTS.includes(skill.passive.kind);
@@ -1434,18 +1539,18 @@ if (typeof module !== "undefined") module.exports = Core;
           ${isPassive ? "<div></div>" : field("Recarga", `<input data-path="${path}.cooldown" data-type="optional" type="number" step="1" min="0" value="${esc(skill.cooldown)}" placeholder="0">`)}
           ${isPassive ? `
             ${field("Passiva", select(`${path}.passive.kind`, skill.passive.kind, ui.enums.passives))}
-            ${field(generic ? "Chance de disparar (0 = sempre)" : "Valor", number(`${path}.passive.value`, skill.passive.value, "0.01", `placeholder="0.2 = 20%"`))}
-            ${field("Valor desperto", `<input data-path="${path}.passive.awakenedValue" data-type="optional" type="number" step="0.01" value="${esc(skill.passive.awakenedValue)}" placeholder="não muda">`)}
+            ${field(skill.passive.kind === "Undying" ? "Vida com que volta" : generic ? "Chance de disparar (0 = sempre)" : "Valor", number(`${path}.passive.value`, skill.passive.value, "0.01", `placeholder="0.2 = 20%"`))}
+            ${foe ? "<div></div>" : field("Valor desperto", `<input data-path="${path}.passive.awakenedValue" data-type="optional" type="number" step="0.01" value="${esc(skill.passive.awakenedValue)}" placeholder="não muda">`)}
             <p class="note wide">${esc(C.PASSIVE_DOCS[skill.passive.kind] || "")}</p>
             ${field("Efeitos de status que contam (BonusVs, ForEach)", select(`${path}.passive.scope`, skill.passive.scope, ui.enums.scopes || ["All", "Buffs", "Debuffs"], "All (padrão)"))}
             ${field("Só estes status (vírgula; vazio = todos do escopo)", text(`${path}.passive.statuses`, skill.passive.statuses, `placeholder="Affliction, Curse"`))}
             ${generic ? `
             ${field("Efeitos da Passiva (JSON): o que ela faz ao disparar", `${area(`${path}.effects`, skill.effects)}${chips("add-effect", ui.enums.effectKinds)}`, `wide ${bad("effects")}`)}
-            ${awakening ? "" : field("Efeitos depois do Despertar (JSON): vazio quando não muda", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}` : ""}
+            ${awakening || foe ? "" : field("Efeitos depois do Despertar (JSON): vazio quando não muda", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}` : ""}
           ` : `
             ${field("Efeitos (JSON): um por linha, na ordem em que acontecem", `${area(`${path}.effects`, skill.effects)}${chips("add-effect", ui.enums.effectKinds)}`, `wide ${bad("effects")}`)}
-            ${field("Níveis (JSON): o primeiro é o nível 2", `${area(`${path}.levels`, skill.levels)}${chips("add-level", ui.enums.levelKinds)}`, bad("levels"))}
-            ${awakening ? "" : field("Efeitos depois do Despertar (JSON): vazio quando o Despertar não muda a habilidade", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}
+            ${foe ? "" : field("Níveis (JSON): o primeiro é o nível 2", `${area(`${path}.levels`, skill.levels)}${chips("add-level", ui.enums.levelKinds)}`, bad("levels"))}
+            ${awakening || foe ? "" : field("Efeitos depois do Despertar (JSON): vazio quando o Despertar não muda a habilidade", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}
           `}
         </div>
       </div>`;
@@ -1662,6 +1767,168 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     $("jsonPreview").textContent = C.formatFamily(ui.model, ui.family);
   }
 
+  // Chefes ---------------------------------------------------------------------------------------------
+
+  /** Os inimigos únicos do projeto no editor, e onde cada um luta (andares de Masmorra e fases). */
+  function loadBosses() {
+    const p = ui.project;
+    if (!p || p.enemies === null) { ui.bosses = null; return; }
+    const list = C.parseJsonc(p.enemies).map(C.importEnemy);
+    const active = ui.bosses ? Math.min(ui.bosses.active, Math.max(0, list.length - 1)) : 0;
+    ui.bosses = {list, active, dirty: false, scales: new Map(), header: C.leadingComments(p.enemies)};
+  }
+
+  /** Nome de quem luta numa onda: a invocação pelo nome da variante, o inimigo único pelo dele. */
+  function foeName(slot) {
+    if (slot.enemy) return ui.bosses.list.find(e => e.id === slot.enemy)?.name || slot.enemy;
+    for (const entry of ui.project.families.values())
+      for (const v of Object.values(entry.data.variations || {})) if (v.variation_id === slot.summon) return v.name;
+    return slot.summon;
+  }
+
+  /** id → cada encontro em que o inimigo único luta, com estrelas, nível, escala e a onda dele. */
+  function bossUses() {
+    const uses = new Map(), p = ui.project;
+    const add = (id, use) => { if (!uses.has(id)) uses.set(id, []); uses.get(id).push(use); };
+    const scan = (where, key, encounter) => (encounter.waves || []).forEach((wave, w) => wave.forEach(slot => {
+      if (slot.enemy) add(slot.enemy, {where, key, stars: encounter.stars, level: encounter.level, scale: encounter.scale ?? 1, wave: w + 1, waves: encounter.waves.length, others: wave.filter(o => o !== slot).map(foeName)});
+    }));
+    if (p.dungeons) for (const d of C.parseJsonc(p.dungeons)) (d.floors || []).forEach((floor, i) => {
+      const key = `${d.id}:${i + 1}`;
+      scan(`${d.name} · andar ${i + 1}`, key, ui.bosses.scales.has(key) ? {...floor, scale: ui.bosses.scales.get(key)} : floor);
+    });
+    if (p.stages) for (const stage of C.parseJsonc(p.stages)) scan(`Fase ${stage.number}`, null, stage);
+    return uses;
+  }
+
+  function touchBosses() {
+    ui.bosses.dirty = true;
+    renderBossList();
+    renderBossNumbers();
+  }
+
+  function renderBossList() {
+    if (!ui.bosses) return;
+    const uses = bossUses(), list = C.validateEnemies(ui.model, ui.bosses.list, ui.enums, uses), errors = list.filter(i => i.level === "error").length;
+    $("bossList").innerHTML = ui.bosses.list.map((enemy, i) => {
+      const where = (uses.get(enemy.id) || []).map(u => u.key ? u.key.replace(":", " ") : u.where.replace("Fase ", "fase ")).join(", ");
+      return `<button data-action="boss" data-index="${i}" class="${i === ui.bosses.active ? "active" : ""}"><span>${esc(enemy.name || enemy.id)} <span class="note">${esc(enemy.rarity)}★ ${esc(enemy.role)} · ${esc(where || "não luta")}</span></span><span class="badge ${enemy.kind === "Lacaio" ? "" : "warn"}">${enemy.kind}</span></button>`;
+    }).join("");
+    $("bossIssues").innerHTML = list.length === 0 ? `<p class="ok">Nada a corrigir nos inimigos únicos.</p>`
+      : `<div class="issues">${list.map(i => `<div class="issue ${i.level}"><div class="where">${i.level === "error" ? "Erro" : "Aviso"} · ${esc(i.where)}</div>${esc(i.text)}</div>`).join("")}</div>`;
+    const save = document.querySelector('[data-action="boss-save"]');
+    if (save) save.textContent = "Salvar chefes" + (ui.bosses.dirty ? " •" : "") + (errors ? ` (${errors} erro${errors > 1 ? "s" : ""})` : "");
+  }
+
+  /** Uma linha por efeito: o que a habilidade faz, para ler a mecânica sem abrir o JSON. */
+  function effectLine(e) {
+    const who = e.target && e.target !== "Target" ? ` em ${e.target}` : "";
+    const chance = e.chance !== undefined && e.chance < 1 ? ` ${fmt(e.chance * 100)}%` : "";
+    const turns = e.turns ? ` ${e.turns}t` : "";
+    if (e.kind === "Status") return `${e.status}${chance}${turns}${who}`;
+    if (e.kind === "BonusPerStatus") return `+${fmt(e.power * 100)}% de ${e.bonus || "Damage"} por efeito ${e.onlyStatus || e.scope || "All"} em ${e.from || "Target"}`;
+    return `${e.kind}${e.power !== undefined ? " " + e.power : ""}${chance}${turns}${who}`;
+  }
+
+  function renderBossNumbers() {
+    if (!ui.bosses || !boss()) return;
+    const enemy = boss(), base = C.computeStats(ui.model, C.num(enemy.rarity), enemy.role, false), uses = bossUses().get(enemy.id) || [];
+    const mechanic = enemy.skills.map(C.exportSkill).map(skill => {
+      const head = skill.passive ? `Passiva ${skill.passive.kind}${skill.passive.value ? " " + skill.passive.value : ""}` : skill.cooldown ? `recarga ${skill.cooldown}` : "básica";
+      return `<li><b>${esc(skill.name)}</b> <span class="note">(${esc(head)})</span>: ${esc((skill.effects || []).map(effectLine).join(" · ") || C.PASSIVE_DOCS[skill.passive?.kind] || "")}</li>`;
+    }).join("");
+    const rows = uses.map(u => {
+      const st = C.foeStats(ui.model, enemy, u.stars, u.level, u.scale);
+      const scale = u.key ? `<input data-floor="${u.key}" data-encounter="${u.stars}:${u.level}" data-type="number" type="number" step="0.05" min="0.05" value="${esc(u.scale)}" title="Escala do andar em Data/dungeons.json (Vida e Ataque de todos os inimigos dele)">` : fmt(u.scale, 2);
+      return `<tr><td>${esc(u.where)}</td><td>${u.stars}★ ${u.level}</td><td>${scale}</td><td data-stat="hp">${st ? fmt(st.hp) : "—"}</td><td data-stat="atk">${st ? fmt(st.atk) : "—"}</td><td data-stat="def">${st ? fmt(st.def) : "—"}</td><td data-stat="spd">${st ? fmt(st.spd) : "—"}</td><td class="note">onda ${u.wave}/${u.waves}${u.others.length ? " com " + esc(u.others.join(", ")) : ""}</td></tr>`;
+    }).join("");
+    $("bossNumbers").innerHTML = `
+      <h3>Atributos</h3>
+      <p class="note">Do modelo, no 6★ nível 40 (${esc(enemy.rarity)}★ ${esc(enemy.role)}, sem viés): ${base ? `Vida ${fmt(base.hp)} · Ataque ${fmt(base.atk)} · Defesa ${fmt(base.def)} · Velocidade ${fmt(base.spd)}` : "o modelo não tem este perfil"}.
+        Na luta: estrelas e nível do encontro, ×${esc(enemy.healthScale)} Vida, ×${esc(enemy.attackScale)} Ataque, ×${esc(enemy.defenseScale)} Defesa, a escala do andar (Vida e Ataque) e ×${C.FOE_BOOST} de todo inimigo.</p>
+      <div class="table-wrap"><table class="edit"><tr><th>Onde</th><th>Inimigos</th><th>Escala</th><th>Vida</th><th>Ataque</th><th>Defesa</th><th>Veloc.</th><th>Onda</th></tr>${rows || `<tr><td colspan="8" class="note">Não luta em nenhuma fase nem andar.</td></tr>`}</table></div>
+      <h3>Mecânica</h3><ul class="small">${mechanic}</ul>`;
+  }
+
+  function renderBossEditor() {
+    const enemy = boss();
+    if (!enemy) { $("bossEditor").innerHTML = ""; return; }
+    const cards = enemy.skills.map((skill, i) => skillCard(skill, `@b.skills.${i}`, `Habilidade ${i + 1}`, i === 0 ? "básica" : skill.passive ? "passiva" : "ativa", `
+        <button class="btn small" data-action="boss-move-skill" data-index="${i}" data-step="-1" ${i === 0 ? "disabled" : ""} title="Subir">↑</button>
+        <button class="btn small" data-action="boss-move-skill" data-index="${i}" data-step="1" ${i === enemy.skills.length - 1 ? "disabled" : ""} title="Descer">↓</button>
+        <button class="btn small" data-action="boss-remove-skill" data-index="${i}" title="Remover">✕</button>`, false, true));
+    $("bossEditor").innerHTML = `
+      <div class="spread"><h3 style="margin:0">${esc(enemy.name || enemy.id)}</h3><button class="btn small" data-action="boss-remove">Remover</button></div>
+      <div class="skill-grid">
+        ${field("id", text("@b.id", enemy.id))}
+        ${field("Nome", text("@b.name", enemy.name))}
+        ${field("Tipo", select("@b.kind", enemy.kind, ["Chefe", "Lacaio"]))}
+        ${field("Papel", select("@b.role", enemy.role, ui.enums.roles))}
+        ${field("Estrelas naturais", number("@b.rarity", enemy.rarity, "1"))}
+        ${field("Imagem", text("@b.image", enemy.image))}
+        ${field("Vida × (healthScale)", number("@b.healthScale", enemy.healthScale, "0.1"))}
+        ${field("Ataque × (attackScale)", number("@b.attackScale", enemy.attackScale, "0.05"))}
+        ${field("Defesa × (defenseScale)", number("@b.defenseScale", enemy.defenseScale, "0.05"))}
+      </div>
+      <div class="spread" style="margin-top:10px"><h3 style="margin:0">Habilidades</h3><button class="btn small" data-action="boss-add-skill">+ habilidade</button></div>
+      <div class="skills">${cards.join("")}</div>`;
+  }
+
+  function renderBosses() {
+    const tab = $("tab-bosses");
+    if (!ui.bosses) {
+      tab.innerHTML = `<h2>Chefes</h2><p class="note">Abra a pasta do projeto para trabalhar com <code>Data/enemies.json</code>: os chefes, os lacaios, onde cada um luta e com que números.</p>`;
+      return;
+    }
+    tab.innerHTML = `
+      <div class="spread"><h2 style="margin:0">Chefes e lacaios</h2>
+        <div class="row">
+          <button class="btn small" data-action="boss-add">+ inimigo único</button>
+          <button class="btn small" data-action="boss-reload">Recarregar</button>
+          <button class="btn small good" data-action="boss-save">Salvar chefes</button>
+        </div>
+      </div>
+      <div class="hint small" style="margin-top:8px">
+        <b>Masmorras de especialização</b> (GDD, seção 11): o chefe tem uma mecânica que um time genérico não vence na força; só a equipe montada para ele passa.
+        Andar 1 mostra a mecânica, 2 faz o elemento contar, 3 pede composição, 4 pede runas (o ponto doce — 5★, habilidades no máximo, os conjuntos certos — domina o 4, não o 5)
+        e o 5 pede tudo junto: 6★, Despertar, runas 6★ e a equipe certa, cerca de 20 dias até o Golem 5. Sobreviver não basta: a equipe precisa de dano para terminar.
+        Depois de mexer, confira no simulador: <code>dotnet run --project Tests -- --dungeons</code> (e <code>--fight=golem5:prepared</code> para ver uma luta).
+      </div>
+      <div class="two" style="margin-top:10px;grid-template-columns:minmax(200px,0.7fr) minmax(0,2fr)">
+        <div class="list" id="bossList" style="max-height:640px;align-content:start"></div>
+        <div style="min-width:0"><div id="bossNumbers"></div><h3>Validação</h3><div id="bossIssues"></div></div>
+      </div>
+      <hr><div id="bossEditor"></div>`;
+    renderBossEditor();
+    renderBossList();
+    renderBossNumbers();
+  }
+
+  async function saveBosses() {
+    const p = ui.project, b = ui.bosses;
+    const errors = C.validateEnemies(ui.model, b.list, ui.enums, bossUses()).filter(i => i.level === "error");
+    if (errors.length && !confirm(`Os inimigos únicos têm ${errors.length} erro(s). Gravar assim mesmo?`)) return;
+    const content = C.formatEnemies(ui.model, b.list, b.header);
+    await writeText(p.data, "enemies.json", content);
+    p.enemies = content;
+    let floors = "";
+    if (b.scales.size && p.dungeons) {
+      let text = p.dungeons;
+      for (const [key, scale] of b.scales) {
+        const [dungeon, floor] = key.split(":");
+        text = C.setFloorScale(text, dungeon, Number(floor), scale);
+      }
+      await writeText(p.data, "dungeons.json", text);
+      p.dungeons = text;
+      floors = ` e ${b.scales.size} escala(s) de andar em Data/dungeons.json`;
+    }
+    b.scales.clear();
+    b.dirty = false;
+    markStale();
+    renderBosses();
+    toast(`Gravado Data/enemies.json${floors}.\nRode os testes e o simulador: dotnet run --project Tests -- --dungeons`, 9);
+  }
+
   /** Tudo o que depende dos números, sem refazer os campos em que a pessoa está digitando. */
   function refresh() {
     renderTabs();
@@ -1685,6 +1952,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     renderFormula();
     renderIssues();
     renderPreview();
+    renderBosses();
     refresh();
   }
 
@@ -1699,12 +1967,20 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
   document.addEventListener("input", event => {
     const node = event.target;
     if (node.dataset.path) {
-      setPath(ui.family, node.dataset.path, readInput(node));
+      setAt(node.dataset.path, readInput(node));
       if (node.hasAttribute("data-json")) {
         node.closest(".field").classList.toggle("bad", !!C.parseList(node.value).error);
         node.rows = rowsOf(node.value);
       }
-      touch();
+      touchAt(node.dataset.path);
+    } else if (node.dataset.floor) {
+      // Só a linha do andar muda: refazer a tabela tiraria o foco de quem está digitando nela.
+      const scale = C.num(node.value, 1), [stars, level] = node.dataset.encounter.split(":").map(Number);
+      ui.bosses.scales.set(node.dataset.floor, scale);
+      ui.bosses.dirty = true;
+      const st = C.foeStats(ui.model, boss(), stars, level, scale);
+      if (st) node.closest("tr").querySelectorAll("[data-stat]").forEach(cell => cell.textContent = fmt(st[cell.dataset.stat]));
+      renderBossList();
     } else if (node.dataset.model) {
       const scale = C.num(node.dataset.scale, 1);
       setPath(ui.model, node.dataset.model, scale === 1 ? C.num(node.value, 0) : Number((C.num(node.value, 0) / scale).toFixed(8)));
@@ -1717,18 +1993,18 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
   document.addEventListener("change", event => {
     const node = event.target;
     if (node.dataset.action === "skill-type") {
-      const skill = getPath(ui.family, node.dataset.skill);
+      const skill = getAt(node.dataset.skill);
       skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", extra: {}} : null;
-      renderSkills();
-      touch();
+      if (isBossPath(node.dataset.skill)) renderBosses(); else renderSkills();
+      touchAt(node.dataset.skill);
     } else if (node.hasAttribute?.("data-json")) {
       // Ao sair do campo, o JSON válido é arrumado: um efeito por linha.
       const {list, error} = C.parseList(node.value);
       if (!error && node.value.trim() !== "") {
         node.value = list.length ? C.format(list) : "[]";
         node.rows = rowsOf(node.value);
-        setPath(ui.family, node.dataset.path, node.value);
-        touch();
+        setAt(node.dataset.path, node.value);
+        touchAt(node.dataset.path);
       }
     } else if (node.dataset.model) {
       renderModelTab();
@@ -1737,12 +2013,12 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
   });
 
   function appendJson(path, field, item) {
-    const skill = getPath(ui.family, path);
+    const skill = getAt(path);
     const {list, error} = C.parseList(skill[field]);
     if (error) return toast("Corrija o JSON do campo antes de acrescentar.");
     skill[field] = C.format([...list, item]);
-    renderSkills();
-    touch();
+    if (isBossPath(path)) renderBosses(); else renderSkills();
+    touchAt(path);
   }
 
   const actions = {
@@ -1835,6 +2111,36 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     "save-family": () => saveFamily(),
     "save-model": () => saveModel(),
     "recalc-all": () => recalcAll(),
+    boss: node => { ui.bosses.active = Number(node.dataset.index); renderBosses(); },
+    "boss-add": () => {
+      const enemy = C.importEnemy({id: "new_boss", name: "Novo chefe", role: ui.enums.roles[0], rarity: 3, image: "", skills: []});
+      enemy.skills.push(Object.assign(C.blankSkill("Golpe"), {effects: C.format([EFFECT_TEMPLATES.Damage])}));
+      ui.bosses.list.push(enemy);
+      ui.bosses.active = ui.bosses.list.length - 1;
+      ui.bosses.dirty = true; renderBosses();
+    },
+    "boss-remove": () => {
+      if (!confirm(`Tirar ${boss().name || boss().id} de Data/enemies.json?`)) return;
+      ui.bosses.list.splice(ui.bosses.active, 1);
+      ui.bosses.active = Math.max(0, ui.bosses.active - 1);
+      ui.bosses.dirty = true; renderBosses();
+    },
+    "boss-add-skill": () => {
+      boss().skills.push(Object.assign(C.blankSkill("Nova habilidade"), {cooldown: 4, effects: C.format([EFFECT_TEMPLATES.Damage])}));
+      ui.bosses.dirty = true; renderBosses();
+    },
+    "boss-remove-skill": node => { boss().skills.splice(Number(node.dataset.index), 1); ui.bosses.dirty = true; renderBosses(); },
+    "boss-move-skill": node => {
+      const list = boss().skills, from = Number(node.dataset.index), to = from + Number(node.dataset.step);
+      if (to < 0 || to >= list.length) return;
+      [list[from], list[to]] = [list[to], list[from]];
+      ui.bosses.dirty = true; renderBosses();
+    },
+    "boss-save": () => saveBosses(),
+    "boss-reload": () => {
+      if (ui.bosses.dirty && !confirm("Descartar as mudanças dos chefes?")) return;
+      loadBosses(); renderBosses();
+    },
   };
 
   document.addEventListener("click", event => {
@@ -1955,6 +2261,8 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     }
     ui.modelDirty = false;
     try { project.enemies = await readText(data, "enemies.json"); } catch { project.enemies = null; }
+    try { project.dungeons = await readText(data, "dungeons.json"); } catch { project.dungeons = null; }
+    try { project.stages = await readText(data, "stages.json"); } catch { project.stages = null; }
 
     // Os nomes válidos vêm dos enums do jogo: status novo no código já aparece aqui.
     const content = data === root ? null : await child(await child(root, "Core") || root, "Content");
@@ -1970,6 +2278,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     }
 
     ui.project = project;
+    loadBosses();
     markStale();
     remember(root);
     const first = project.families.keys().next().value;
@@ -2041,6 +2350,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         await writeText(p.data, "enemies.json", content);
         p.enemies = content;
         enemies = " Chefes atualizados em Data/enemies.json.";
+        if (!ui.bosses?.dirty) loadBosses();
       }
     }
     markStale();

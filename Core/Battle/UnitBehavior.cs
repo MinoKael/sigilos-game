@@ -48,6 +48,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>A Passiva do dono para de funcionar (Esquecimento).</summary>
 		public virtual bool SuppressesPassive => false;
 
+		/// <summary>O Ímpeto do dono não muda por efeito: nem ganha, nem perde (o Rei Ossudo).</summary>
+		public virtual bool BlocksImpeto => false;
+
 		/// <summary>Multiplica a chance de Crítico dos golpes que o dono recebe (1 = não muda; Resistir Crítico).</summary>
 		public virtual double CritTaken(UnitRule rule) => 1;
 

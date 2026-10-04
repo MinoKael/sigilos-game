@@ -431,6 +431,9 @@ namespace Sigilos.Core.Battle
 
 		public void GainImpeto(BattleUnit target, double amount)
 		{
+			if (target.Any(behavior => behavior.BlocksImpeto))
+				return;
+
 			var before = target.Impeto;
 			target.Impeto = Math.Clamp(target.Impeto + amount, 0, BattleRules.FullImpeto);
 			if (target.Impeto != before)

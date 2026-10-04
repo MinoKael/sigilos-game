@@ -32,6 +32,12 @@ namespace Sigilos.Core.Battle
 		public const double AfflictionFraction = 0.05;
 
 		/// <summary>
+		/// No chefe, cada cópia da Aflição tira só esta parte do que tiraria: a Vida dele vale a de várias
+		/// unidades, e dano em fração da Vida máxima derreteria qualquer chefe, passando por cima da mecânica dele.
+		/// </summary>
+		public const double BossAfflictionShare = 0.3;
+
+		/// <summary>
 		/// Quantos efeitos de status cabem num monstro, somando todos (positivos, negativos, escudo e cada cópia
 		/// da Aflição). Cheio, um efeito novo não pega; o que ele já tem ainda se renova.
 		/// </summary>
