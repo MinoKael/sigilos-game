@@ -191,18 +191,23 @@ namespace Sigilos.UI.Screens
 		{
 			column.AddChild(Layout.Text(T("compendium.effects.intro", Texts.Percent(BattleRules.MinResistChance)), GameTheme.Faded).Named("Intro"));
 			var grid = Cards(column);
-			foreach (var status in Enum.GetValues<StatusKind>())
-			{
-				var tag = BattleRules.IsNegative(status) ? T("compendium.effects.negative") : T("compendium.effects.positive");
-				var panel = new PanelContainer { Name = status.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
-				var row = new HBoxContainer { Name = "Row" };
-				row.AddThemeConstantOverride("separation", 10);
-				row.AddChild(Doodle.Icon(Art.Effect(status), 44, BattleRules.IsNegative(status) ? Palette.Negative : Palette.Positive).Named("Icon"));
-				row.AddChild(RichText.Label($"{Texts.Term(status)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(status)}", CardWidth - 80).Named("Text"));
-				panel.AddChild(row);
-				grid.AddChild(panel);
-			}
-		}
+            var index = 0;
+            foreach (var status in Enum.GetValues<StatusKind>())
+            {
+                index++;
+                var isNegative = index % 2 == 0;
+                var tag = isNegative ? T("compendium.effects.negative") : T("compendium.effects.positive");
+                var panel = new PanelContainer { Name = status.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
+
+                var row = new HBoxContainer { Name = "Row" };
+                row.AddThemeConstantOverride("separation", 10);
+                row.AddChild(Doodle.Icon(Art.Effect(status), 44, isNegative ? Palette.Negative : Palette.Positive).Named("Icon"));
+                row.AddChild(RichText.Label($"{Texts.Term(status)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(status)}", CardWidth - 80).Named("Text"));
+
+                panel.AddChild(row);
+                grid.AddChild(panel);
+            }
+        }
 
 		private static void Runes(VBoxContainer column)
 		{
