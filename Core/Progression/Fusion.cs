@@ -56,9 +56,10 @@ namespace Sigilos.Core.Progression
 
 		public static int FragmentsFor(int rarity) => rarity switch
 		{
-			>= 5 => 20,
-			4 => 10,
-			_ => 5,
+			>= 5 => 50,
+			4 => 30,
+			3 => 15,
+            _ => 7,
 		};
 
 		/// <summary>Solta o monstro em troca de Fragmentos (o bloqueado fica). Devolve quantos.</summary>

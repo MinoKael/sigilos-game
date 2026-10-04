@@ -12,13 +12,13 @@ namespace Sigilos.Core.Progression
 	public static class Evolution
 	{
 		/// <summary>O preço de sair de <paramref name="stars"/> para a próxima estrela.</summary>
-		public static (int Essence, int Fragments) Cost(int stars) => stars switch
+		public static int Cost(int stars) => stars switch
 		{
-			1 => (2_000, 5),
-			2 => (5_000, 10),
-			3 => (15_000, 20),
-			4 => (40_000, 40),
-			_ => (100_000, 80),
+			1 => 10,
+			2 => 20,
+			3 => 30,
+			4 => 60,
+			_ => 120,
 		};
 
 		/// <summary>Está no nível máximo e ainda não é 6★ (sem olhar o preço).</summary>
@@ -26,8 +26,8 @@ namespace Sigilos.Core.Progression
 
 		public static bool CanEvolve(PlayerState player, OwnedSummon monster)
 		{
-			var (essence, fragments) = Cost(monster.Stars);
-			return IsReady(monster) && player.Essence >= essence && player.Fragments >= fragments;
+			var fragments = Cost(monster.Stars);
+			return IsReady(monster) && player.Fragments >= fragments;
 		}
 
 		public static bool Evolve(PlayerState player, OwnedSummon monster)
@@ -35,8 +35,7 @@ namespace Sigilos.Core.Progression
 			if (!CanEvolve(player, monster))
 				return false;
 
-			var (essence, fragments) = Cost(monster.Stars);
-			player.Essence -= essence;
+			var fragments = Cost(monster.Stars);
 			player.Fragments -= fragments;
 			monster.Stars++;
 			return true;
