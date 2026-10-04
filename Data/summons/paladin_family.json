@@ -44,7 +44,9 @@
         {
           "name": "Devoção",
           "passive": {"kind": "StatusOrEffectEachTurn"},
-          "effects": [{"kind": "Heal", "target": "LowestAlly", "power": 0.06}]
+          "effects": [
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ]
         }
       ]
     },
@@ -134,7 +136,9 @@
         {
           "name": "Devoção",
           "passive": {"kind": "StatusOrEffectEachTurn"},
-          "effects": [{"kind": "Heal", "target": "LowestAlly", "power": 0.06}]
+          "effects": [
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ]
         }
       ]
     },
@@ -178,7 +182,9 @@
         {
           "name": "Devoção",
           "passive": {"kind": "StatusOrEffectEachTurn"},
-          "effects": [{"kind": "Heal", "target": "LowestAlly", "power": 0.06}]
+          "effects": [
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ]
         }
       ]
     },

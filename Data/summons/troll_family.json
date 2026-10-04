@@ -103,8 +103,12 @@
         {
           "name": "Regeneração",
           "passive": {"kind": "StatusOrEffectEachTurn"},
-          "effects": [{"kind": "Heal", "target": "Self", "power": 0.05}],
-          "awakenedEffects": [{"kind": "Heal", "target": "Self", "power": 0.08}]
+          "effects": [
+            {"kind": "Heal", "target": "Self", "power": 0.05}
+          ],
+          "awakenedEffects": [
+            {"kind": "Heal", "target": "Self", "power": 0.08}
+          ]
         }
       ]
     },
@@ -204,8 +208,12 @@
         {
           "name": "Regeneração",
           "passive": {"kind": "StatusOrEffectEachTurn"},
-          "effects": [{"kind": "Heal", "target": "Self", "power": 0.05}],
-          "awakenedEffects": [{"kind": "Heal", "target": "Self", "power": 0.08}]
+          "effects": [
+            {"kind": "Heal", "target": "Self", "power": 0.05}
+          ],
+          "awakenedEffects": [
+            {"kind": "Heal", "target": "Self", "power": 0.08}
+          ]
         }
       ]
     },
@@ -253,8 +261,12 @@
         {
           "name": "Regeneração",
           "passive": {"kind": "StatusOrEffectEachTurn"},
-          "effects": [{"kind": "Heal", "target": "Self", "power": 0.05}],
-          "awakenedEffects": [{"kind": "Heal", "target": "Self", "power": 0.08}]
+          "effects": [
+            {"kind": "Heal", "target": "Self", "power": 0.05}
+          ],
+          "awakenedEffects": [
+            {"kind": "Heal", "target": "Self", "power": 0.08}
+          ]
         }
       ]
     }

@@ -31,7 +31,7 @@
     "name": "Golem Rúnico",
     "role": "HP",
     "rarity": 3,
-    "stats": {"hp": 9010, "atk": 506, "def": 727, "spd": 99},
+    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
     "healthScale": 9.0, "attackScale": 1.6,
     "image": "rock_golem",
     "skills": [

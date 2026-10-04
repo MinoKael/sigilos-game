@@ -44,7 +44,9 @@
         {
           "name": "Fogo de Dragão",
           "passive": {"kind": "StatusOrEffectOnHit"},
-          "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}]
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ]
         }
       ]
     },
@@ -188,7 +190,9 @@
         {
           "name": "Fogo de Dragão",
           "passive": {"kind": "StatusOrEffectOnHit"},
-          "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}]
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ]
         }
       ]
     },
@@ -230,7 +234,9 @@
         {
           "name": "Fogo de Dragão",
           "passive": {"kind": "StatusOrEffectOnHit"},
-          "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}]
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ]
         }
       ]
     }
