@@ -21,5 +21,6 @@ namespace Sigilos.Core.Progression
 		SummonResult? SummonResult,
 		IReadOnlyList<RuneTool> Tools,
 		IReadOnlyList<int> LevelUps,
-		int AccountLevels);
+		int AccountLevels,
+		Prize? Prize = null);
 }

@@ -9,5 +9,10 @@ namespace Sigilos.Core.Progression
 		Essence,
 		Fragments,
 		ReappraisalGems,
+		LightDarkScrolls,
+		LegendaryScrolls,
+
+		/// <summary>Núcleos de Infusão: chegam à coleção (ou ao Baú) como monstros.</summary>
+		InfusionCores,
 	}
 }

@@ -41,7 +41,7 @@
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.67},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.5, "turns": 2}
+            {"kind": "StealBuff", "target": "Target", "chance": 0.6}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

@@ -54,6 +54,9 @@ namespace Sigilos.UI
 		public int LevelUps { get; set; }
 		public int AccountLevels { get; set; }
 
+		/// <summary>Os prêmios de marco somados: Pergaminhos especiais e Núcleos de Infusão.</summary>
+		public Prize Prize { get; set; } = Prize.None;
+
 		/// <summary>As runas que caíram, na ordem; as vendidas continuam aqui (<see cref="IsSold"/>).</summary>
 		public List<Rune> Runes { get; } = new();
 
@@ -122,6 +125,7 @@ namespace Sigilos.UI
 			Experience += reward.Experience;
 			LevelUps += reward.LevelUps.Count;
 			AccountLevels += reward.AccountLevels;
+			Prize += reward.Prize ?? Prize.None;
 			if (reward.Rune is { } rune)
 				Runes.Add(rune);
 			Tools.AddRange(reward.Tools);

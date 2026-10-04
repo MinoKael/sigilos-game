@@ -69,13 +69,17 @@ namespace Sigilos.UI.Screens
 		public static FusionDialog Open(Control from, GameDatabase database, PlayerState player, OwnedSummon target, Action<IReadOnlyList<int>> fuse) =>
 			new(from, database, player, target, fuse);
 
-		/// <summary>As cópias da família: as da mesma variante primeiro, depois as mais fracas (as que menos custam perder); bloqueadas no fim.</summary>
+		/// <summary>
+		/// As cópias da família (as da mesma variante primeiro, depois as mais fracas: as que menos custam
+		/// perder) e, depois delas, os Núcleos de Infusão, que servem a qualquer família; bloqueadas no fim.
+		/// </summary>
 		public static List<OwnedSummon> Candidates(GameDatabase database, PlayerState player, OwnedSummon target)
 		{
 			var family = database.Summon(target.SummonId).FamilyId;
 			return player.Monsters
-				.Where(m => m.Id != target.Id && database.HasSummon(m.SummonId) && database.Summon(m.SummonId).FamilyId == family)
+				.Where(m => m.Id != target.Id && database.HasSummon(m.SummonId) && (m.IsInfusionCore || database.Summon(m.SummonId).FamilyId == family))
 				.OrderBy(m => m.Locked)
+				.ThenBy(m => m.IsInfusionCore)
 				.ThenByDescending(m => m.SummonId == target.SummonId)
 				.ThenBy(m => database.Summon(m.SummonId).Element)
 				.ThenBy(m => m.Awakened)

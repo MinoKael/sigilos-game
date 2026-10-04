@@ -35,7 +35,7 @@ namespace Sigilos.Core.Progression
 		};
 
 		public static bool CanAwaken(PlayerState player, OwnedSummon monster, SummonDefinition summon) =>
-			!monster.Awakened && player.Essence >= Cost(summon.Rarity);
+			!monster.Awakened && !monster.IsInfusionCore && player.Essence >= Cost(summon.Rarity);
 
 		public static bool Awaken(PlayerState player, OwnedSummon monster, SummonDefinition summon)
 		{

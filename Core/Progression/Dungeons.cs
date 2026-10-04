@@ -44,8 +44,11 @@ namespace Sigilos.Core.Progression
 
 			player.Gold += gold;
 			player.Essence += floor.Essence;
+			var prize = firstClear ? Milestones.ForFirstClear(floor) : Prize.None;
 			var levelUps = Leveling.GiveExperience(player, Teams.Of(player, dungeon.Id), floor.Experience);
+			var level = player.AccountLevel;
 			var accountLevels = Account.GiveExperience(player, floor.Experience);
+			prize += Milestones.ForAccountLevels(level, player.AccountLevel);
 
 			Rune? rune = null;
 			var tools = new List<RuneTool>();
@@ -68,7 +71,12 @@ namespace Sigilos.Core.Progression
 			var scrolls = random.NextDouble() * 100 < floor.ScrollChance ? 1 : 0;
 			player.Scrolls += scrolls;
 
-			return new VictoryReward(mana, scrolls, gold, floor.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, accountLevels);
+			// O Núcleo de toda vitória é sorteado por último, e só nos andares que têm chance dele.
+			var core = floor.CoreChance > 0 && random.NextDouble() * 100 < floor.CoreChance ? new Prize(InfusionCores: 1) : Prize.None;
+			Milestones.Grant(player, (firstClear ? Milestones.ForFirstClear(floor) : Prize.None) + core);
+			prize += core;
+
+			return new VictoryReward(mana, scrolls, gold, floor.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, accountLevels, prize);
 		}
 
 		/// <summary>Sorteia pela tabela de chances do andar (em %), na ordem das chaves.</summary>

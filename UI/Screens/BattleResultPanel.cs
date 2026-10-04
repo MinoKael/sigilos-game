@@ -256,6 +256,7 @@ namespace Sigilos.UI.Screens
 				chips.AddChild(Layout.Labeled("level_max", $"+{reward.Experience}", T("reward.experience")).Named("Experience"));
 				if (reward.AccountLevels > 0)
 					chips.AddChild(Layout.Labeled("avatar", outcome.AccountLevel.ToString(), T("battle.account", reward.AccountLevels * Account.LevelUpGold), Palette.Arcane).Named("AccountLevel"));
+				AddPrize(chips, reward.Prize);
 				if (reward.SummonResult is { } summon)
 				{
 					var caption = summon.Monster.Stored ? T("summon.sent_to_vault") : summon.FirstCopy ? T("battle.monster_drop") : T("battle.monster_copy");
@@ -461,6 +462,19 @@ namespace Sigilos.UI.Screens
 			_essenceShown += value;
 			if (_essence != null)
 				_essence.Text = $"+{_essenceShown}";
+		}
+
+		/// <summary>O prêmio de marco (Pergaminhos especiais e Núcleos de Infusão), um selo por item que veio.</summary>
+		public static void AddPrize(Container row, Prize? prize)
+		{
+			if (prize is not { IsEmpty: false })
+				return;
+			if (prize.LegendaryScrolls > 0)
+				row.AddChild(Layout.Labeled("scroll", $"+{prize.LegendaryScrolls}", T("summon.scroll.Legendary"), Palette.Gold).Named("Legendary"));
+			if (prize.LightDarkScrolls > 0)
+				row.AddChild(Layout.Labeled("scroll", $"+{prize.LightDarkScrolls}", T("summon.scroll.LightDark"), Palette.Arcane).Named("LightDark"));
+			if (prize.InfusionCores > 0)
+				row.AddChild(Layout.Labeled("monster", $"+{prize.InfusionCores}", T("reward.infusion_cores"), Palette.Arcane).Named("InfusionCores"));
 		}
 	}
 }

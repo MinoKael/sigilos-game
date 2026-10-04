@@ -39,6 +39,18 @@ namespace Sigilos.Core.Content
 		/// <summary>A chance, em %, de a vitória soltar também um Pergaminho Místico.</summary>
 		public double ScrollChance { get; init; }
 
+		/// <summary>Marco: Pergaminhos Lendários da primeira vitória do andar.</summary>
+		public int FirstClearLegendary { get; init; }
+
+		/// <summary>Marco: Pergaminhos de Luz e Trevas da primeira vitória do andar.</summary>
+		public int FirstClearLightDark { get; init; }
+
+		/// <summary>Marco: Núcleos de Infusão da primeira vitória do andar.</summary>
+		public int FirstClearCores { get; init; }
+
+		/// <summary>A chance, em %, de qualquer vitória soltar também um Núcleo de Infusão.</summary>
+		public double CoreChance { get; init; }
+
 		/// <summary>Masmorra de pedras: quantas saem.</summary>
 		public int ToolCount { get; init; } = 1;
 

@@ -63,6 +63,8 @@ namespace Sigilos.Core.Content
 
 			Summons = summons;
 			_summonsById = summons.GroupBy(s => s.Id).ToDictionary(g => g.Key, g => g.First());
+			// O Núcleo de Infusão é guardado como monstro, mas não é invocação: só o id o encontra.
+			_summonsById[InfusionCore.Id] = InfusionCore.Summon;
 			_enemiesById = enemies.GroupBy(e => e.Id).ToDictionary(g => g.Key, g => g.First());
 		}
 
@@ -196,6 +198,8 @@ namespace Sigilos.Core.Content
 					yield return $"Fase {stage.Number}: inimigos {stage.Stars}★ nível {stage.Level}.";
 				if (stage.RuneGrade is < 1 or > MaxCampaignRuneGrade)
 					yield return $"Fase {stage.Number}: runa de {stage.RuneGrade} estrelas (a Campanha solta de 1 a {MaxCampaignRuneGrade}; as maiores vêm das Masmorras).";
+				if (stage.FirstClearLegendary < 0 || stage.FirstClearCores < 0)
+					yield return $"Fase {stage.Number}: prêmio de marco negativo.";
 				foreach (var problem in ValidateWaves(stage.Waves))
 					yield return $"Fase {stage.Number}: {problem}";
 			}
@@ -224,6 +228,10 @@ namespace Sigilos.Core.Content
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: nenhuma pedra.";
 					if (floor.ScrollChance is < 0 or > 100)
 						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: chance de Pergaminho fora de 0% a 100%.";
+					if (floor.CoreChance is < 0 or > 100)
+						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: chance de Núcleo de Infusão fora de 0% a 100%.";
+					if (floor.FirstClearLegendary < 0 || floor.FirstClearLightDark < 0 || floor.FirstClearCores < 0)
+						yield return $"Masmorra {dungeon.Id}, andar {i + 1}: prêmio de marco negativo.";
 				}
 			}
 

@@ -134,6 +134,8 @@ namespace Sigilos.UI.Screens
 			MailItem.Scrolls => "scroll",
 			MailItem.Essence => "essence",
 			MailItem.Fragments => "fragments",
+			MailItem.LightDarkScrolls or MailItem.LegendaryScrolls => "scroll",
+			MailItem.InfusionCores => "monster",
 			_ => "gem",
 		};
 	}

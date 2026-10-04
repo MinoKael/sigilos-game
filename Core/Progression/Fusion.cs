@@ -7,8 +7,8 @@ using Sigilos.Core.Player;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// O destino das cópias repetidas. Fundir uma cópia em outra da mesma família (de qualquer elemento)
-	/// sobe uma habilidade sorteada em um nível, entre as que ainda não estão no máximo (a do Despertar
+	/// O destino das cópias repetidas. Fundir uma cópia em outra da mesma família (de qualquer elemento),
+	/// ou um Núcleo de Infusão em qualquer monstro, sobe uma habilidade sorteada em um nível, entre as que ainda não estão no máximo (a do Despertar
 	/// só entra depois de despertar); soltar devolve Fragmentos, que pagam a evolução. Nos dois casos o monstro some e as
 	/// runas dele voltam ao inventário. Monstro bloqueado (<see cref="OwnedSummon.Locked"/>) não some:
 	/// não se solta nem vira material (pode receber a fusão).
@@ -33,7 +33,7 @@ namespace Sigilos.Core.Progression
 			targetId != materialId &&
 			player.Monster(targetId) is { } target &&
 			player.Monster(materialId) is { Locked: false } material &&
-			database.Summon(target.SummonId).FamilyId == database.Summon(material.SummonId).FamilyId &&
+			(material.IsInfusionCore || database.Summon(target.SummonId).FamilyId == database.Summon(material.SummonId).FamilyId) &&
 			Upgradable(database, target).Count > 0;
 
 		/// <summary>O material some; uma habilidade sorteada do alvo sobe. Devolve o índice dela, ou -1.</summary>
@@ -61,10 +61,10 @@ namespace Sigilos.Core.Progression
 			_ => 5,
 		};
 
-		/// <summary>Solta o monstro em troca de Fragmentos (o bloqueado fica). Devolve quantos.</summary>
+		/// <summary>Solta o monstro em troca de Fragmentos (o bloqueado fica, e o Núcleo de Infusão só se funde). Devolve quantos.</summary>
 		public static int Release(PlayerState player, GameDatabase database, int monsterId)
 		{
-			if (player.Monster(monsterId) is not { Locked: false } monster)
+			if (player.Monster(monsterId) is not { Locked: false, IsInfusionCore: false } monster)
 				return 0;
 
 			var fragments = FragmentsFor(database.Summon(monster.SummonId).Rarity);

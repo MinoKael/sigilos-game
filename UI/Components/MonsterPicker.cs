@@ -23,7 +23,7 @@ namespace Sigilos.UI.Components
 			grid.AddThemeConstantOverride("h_separation", 10);
 			grid.AddThemeConstantOverride("v_separation", 10);
 			IEnumerable<OwnedSummon> monsters = player.Monsters
-				.Where(m => database.HasSummon(m.SummonId))
+				.Where(m => database.HasSummon(m.SummonId) && !m.IsInfusionCore)
 				.OrderBy(m => m.Stored)
 				.ThenByDescending(m => m.Favorite)
 				.ThenByDescending(m => m.Stars)

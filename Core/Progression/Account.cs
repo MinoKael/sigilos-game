@@ -27,6 +27,7 @@ namespace Sigilos.Core.Progression
 		/// (<see cref="PlayerState.AvatarUnlocks"/>). Na ordem em que chegaram à conta.
 		/// </summary>
 		public static IReadOnlyList<(string Summon, bool Awakened)> Avatars(PlayerState player) => player.Monsters
+			.Where(m => !m.IsInfusionCore)
 			.OrderBy(m => m.Id)
 			.SelectMany(m => m.Awakened ? new[] { (m.SummonId, false), (m.SummonId, true) } : new[] { (m.SummonId, false) })
 			.Concat(player.AvatarUnlocks.Select(key => key.EndsWith(AwakenedSuffix) ? (key[..^AwakenedSuffix.Length], true) : (key, false)))
@@ -56,7 +57,10 @@ namespace Sigilos.Core.Progression
 		/// <summary>Experiência para sair de <paramref name="level"/> e chegar ao próximo (a conta ganha o mesmo que cada monstro).</summary>
 		public static int ExperienceToNext(int level) => 300 * level;
 
-		/// <summary>Soma experiência; cada nível ganho dá Ouro, e a Mana enche. Devolve os níveis ganhos.</summary>
+		/// <summary>
+		/// Soma experiência; cada nível ganho dá Ouro e o prêmio de marco dele (<see cref="Milestones.ForAccountLevel"/>),
+		/// e a Mana enche. Devolve os níveis ganhos.
+		/// </summary>
 		public static int GiveExperience(PlayerState player, int amount)
 		{
 			if (player.AccountLevel >= MaxLevel) return 0;
@@ -67,6 +71,7 @@ namespace Sigilos.Core.Progression
 				player.AccountExperience -= ExperienceToNext(player.AccountLevel);
 				player.AccountLevel++;
 				player.Gold += LevelUpGold;
+				Milestones.Grant(player, Milestones.ForAccountLevel(player.AccountLevel));
 				gained++;
 			}
 

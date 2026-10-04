@@ -82,13 +82,14 @@ namespace Sigilos.Tests
 
 		/// <summary>
 		/// As Masmorras de especialização (GDD, seção 11): cada chefe pede ferramentas que um time genérico
-		/// não tem. Estas são as equipes montadas para cada uma, com as runas de cada função. A líder (a
-		/// primeira) dá a Liderança.
-		/// - Golem: Quebra de Defesa contra a Defesa enorme, roubo de efeito positivo contra os pilares, a
-		///   Bomba que ignora Defesa e cura.
+		/// não tem. Estas são as equipes que um jogador consegue montar com as taxas de invocação (GDD, seção
+		/// 9): 2★ a 4★ de Fogo, Água e Vento (as 2★ caem na Campanha, até as de Luz e Trevas), as habilidades
+		/// subidas com cópias e Núcleos de Infusão, e no máximo uma 5★, do elemento que tem vantagem. A
+		/// líder (a primeira) dá a Liderança.
+		/// - Golem: Quebra de Defesa contra a Defesa enorme, roubar efeito positivo contra os pilares, cura.
 		/// - Serpe: Purificação, Imunidade e Resistência contra as Aflições que alimentam o dano do dragão.
-		/// - Cripta: Esquecimento (com Precisão) para o Rei não voltar, controle de turno e dano constante.
-		/// - Santuário: atordoar e Ataque− contra os contragolpes, cura e golpes únicos fortes de Vento.
+		/// - Cripta: Esquecimento (com Precisão) para o Rei não voltar, e dano constante.
+		/// - Santuário: dano de Vento, Égide, Purificação e cura para aguentar os contragolpes.
 		/// </summary>
 		public static readonly IReadOnlyDictionary<string, IReadOnlyList<Member>> Specialists = new Dictionary<string, IReadOnlyList<Member>>
 		{
@@ -96,33 +97,33 @@ namespace Sigilos.Tests
 			{
 				new("paladin_fire", Sets(RuneSet.Vigor, RuneSet.Haste, RuneSet.Ward)),
 				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("wizard_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("bandit_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy),
+				new("crow_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("goblin_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy),
 				new("imp_fire", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
 			},
 			["wyvern"] = new Member[]
 			{
 				new("phoenix_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
-				new("crow_light", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
-				new("wizard_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
-				new("wizard_dark", Sets(RuneSet.Lethal, RuneSet.Sustain), RuneStat.Resistance),
+				new("wolf_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
+				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
 				new("imp_water", Sets(RuneSet.Lethal, RuneSet.Sustain)),
+				new("vampire_fire", Sets(RuneSet.Lethal, RuneSet.Sustain)),
 			},
 			["crypt"] = new Member[]
 			{
-				new("phoenix_light", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Ward), RuneStat.Accuracy),
-				new("imp_dark", Sets(RuneSet.Lethal, RuneSet.Finesse), RuneStat.Accuracy),
-				new("crow_dark", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("dragon_dark", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("vampire_light", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Bulwark)),
+				new("paladin_fire", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Bulwark)),
+				new("crow_water", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Ward), RuneStat.Accuracy),
+				new("bird_dark", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Ward), RuneStat.Accuracy),
+				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("vampire_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 			},
 			["sanctum"] = new Member[]
 			{
-				new("paladin_wind", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
-				new("wizard_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Finesse), RuneStat.Accuracy),
-				new("gargoyle_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Finesse), RuneStat.Accuracy),
-				new("wizard_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("dragon_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("vampire_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("gargoyle_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("knight_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
+				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
 			},
 		};
 

@@ -284,7 +284,8 @@ namespace Sigilos.UI.Screens
 		/// <summary>Soltar os marcados desbloqueados: os bloqueados ficam (o botão conta só os que vão).</summary>
 		private GameButton ReleaseMarked(IReadOnlyList<OwnedSummon> marked)
 		{
-			var released = marked.Where(m => !m.Locked).ToList();
+			// O Núcleo de Infusão não se solta: só se funde.
+			var released = marked.Where(m => !m.Locked && !m.IsInfusionCore).ToList();
 			var fragments = released.Sum(m => Fusion.FragmentsFor(_database.Summon(m.SummonId).Rarity));
 			var text = T("monsters.release_many_confirm", released.Count, fragments);
 			if (released.Count < marked.Count)
@@ -398,6 +399,14 @@ namespace Sigilos.UI.Screens
 			var monster = _player.Monster(_selected!.Value)!;
 			var summon = _database.Summon(monster.SummonId);
 			SideActions(summon, monster);
+			if (monster.IsInfusionCore)
+			{
+				// O Núcleo não tem atributos, runas, habilidades nem Despertar: só o que ele é e como usar.
+				_pages.Visible = false;
+				_detail.AddChild(CoreDetail(summon, monster));
+				return;
+			}
+
 			_detail.AddChild(Identity(summon, monster));
 			switch (_page)
 			{
@@ -434,6 +443,9 @@ namespace Sigilos.UI.Screens
 				_sideActions.AddChild(retrieve);
 			}
 
+			if (monster.IsInfusionCore)
+				return;
+
 			var fragments = Fusion.FragmentsFor(summon.Rarity);
 			var release = GameButton.Of(T("monsters.release"), () => Dialog.Confirm(this,
 				T("monsters.release_title"),
@@ -442,6 +454,31 @@ namespace Sigilos.UI.Screens
 				() => ReleaseRequested?.Invoke(new[] { id }), ButtonKind.Danger), ButtonKind.Danger, "release").WithCost("fragments", $"+{fragments}");
 			release.Disabled = monster.Locked;
 			_sideActions.AddChild(Side(release).Named("Release"));
+		}
+
+		/// <summary>O Núcleo de Infusão: retrato, nome, onde está e para que serve (fundir em qualquer monstro).</summary>
+		private Control CoreDetail(SummonDefinition summon, OwnedSummon monster)
+		{
+			var column = new VBoxContainer { Name = "Core" };
+			column.AddThemeConstantOverride("separation", 10);
+			var row = Layout.Row(14).Named("Row");
+			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(112, 112) };
+			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Arcane, 3, 10, 8));
+			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Arcane, MaskShape.Rounded, 6));
+			row.AddChild(frame);
+			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
+			info.AddChild(new Label { Name = "Name", Text = summon.Name, ThemeTypeVariation = GameTheme.Heading });
+			var where = new List<string>();
+			if (monster.Stored)
+				where.Add(T("monsters.in_vault"));
+			if (monster.Locked)
+				where.Add(T("monsters.locked"));
+			where.Add(T("monsters.core_count", _player.Monsters.Count(m => m.IsInfusionCore)));
+			info.AddChild(Layout.Text(string.Join(" · ", where), GameTheme.Faded).Named("Where"));
+			row.AddChild(info);
+			column.AddChild(row);
+			column.AddChild(Layout.Text(T("monsters.core_info"), null, 560).Named("Info"));
+			return column;
 		}
 
 		/// <summary>Os botões da coluna estreita ocupam a largura dela inteira.</summary>

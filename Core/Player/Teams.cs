@@ -23,7 +23,7 @@ namespace Sigilos.Core.Player
 			if (team.Remove(monsterId))
 				return true;
 
-			if (team.Count >= PlayerState.TeamSize || player.Monster(monsterId) is not { Stored: false })
+			if (team.Count >= PlayerState.TeamSize || player.Monster(monsterId) is not { Stored: false, IsInfusionCore: false })
 				return false;
 
 			team.Add(monsterId);
@@ -50,7 +50,7 @@ namespace Sigilos.Core.Player
 		/// <summary>Monstros novos entram na equipe da Campanha se ainda há vaga: a primeira luta não espera o jogador achar a tela de Equipes.</summary>
 		public static void FillCampaign(PlayerState player, IEnumerable<OwnedSummon> monsters)
 		{
-			foreach (var monster in monsters.Where(m => !m.Stored))
+			foreach (var monster in monsters.Where(m => !m.Stored && !m.IsInfusionCore))
 			{
 				var team = Get(player, Campaign);
 				if (team.Count >= PlayerState.TeamSize)

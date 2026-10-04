@@ -58,6 +58,7 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Creatures/crowned_skull.svg` | [Crowned-skull - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Crowned-skull_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Creatures/kraken.svg` | [Kraken-tentacle - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Kraken-tentacle_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Creatures/golem_head.svg` | [Golem-head - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Golem-head_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/infusion_core.svg` | Desenho próprio do Sigilos (o Núcleo de Infusão), no estilo das silhuetas de game-icons.net | Sigilos | a mesma do jogo |
 | `Icons/chest.svg` | [Locked-chest - game-icons.svg](https://commons.wikimedia.org/wiki/File:Locked-chest_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/team.svg` | [Meeple-group - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Meeple-group_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/dungeon.svg` | [Dungeon-gate - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Dungeon-gate_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
