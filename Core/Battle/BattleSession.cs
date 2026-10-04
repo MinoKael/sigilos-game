@@ -67,6 +67,12 @@ namespace Sigilos.Core.Battle
 		public bool? Victory { get; private set; }
 		public bool IsOver => Victory != null;
 
+		/// <summary>
+		/// Ninguém ganha nem perde Ímpeto por efeito: alguém em campo (o Rei Ossudo, mesmo caído para voltar)
+		/// tem uma regra que trava (<see cref="UnitBehavior.BlocksImpeto"/>). O Esquecimento nele destrava.
+		/// </summary>
+		public bool ImpetoLocked => _allies.Concat(Enemies).Any(u => u.CanTakeTurn && u.Any(behavior => behavior.BlocksImpeto));
+
 		internal Random Random { get; }
 
 		/// <summary>O turno atual é um turno extra: ele não dá outro.</summary>

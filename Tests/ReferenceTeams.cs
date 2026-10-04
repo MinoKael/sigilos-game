@@ -88,6 +88,7 @@ namespace Sigilos.Tests
 		///   Bomba que ignora Defesa e cura.
 		/// - Serpe: Purificação, Imunidade e Resistência contra as Aflições que alimentam o dano do dragão.
 		/// - Cripta: Esquecimento (com Precisão) para o Rei não voltar, controle de turno e dano constante.
+		/// - Santuário: atordoar e Ataque− contra os contragolpes, cura e golpes únicos fortes de Vento.
 		/// </summary>
 		public static readonly IReadOnlyDictionary<string, IReadOnlyList<Member>> Specialists = new Dictionary<string, IReadOnlyList<Member>>
 		{
@@ -114,6 +115,14 @@ namespace Sigilos.Tests
 				new("crow_dark", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("dragon_dark", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("vampire_light", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Bulwark)),
+			},
+			["sanctum"] = new Member[]
+			{
+				new("paladin_wind", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
+				new("wizard_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Finesse), RuneStat.Accuracy),
+				new("gargoyle_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Finesse), RuneStat.Accuracy),
+				new("wizard_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("dragon_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
 			},
 		};
 

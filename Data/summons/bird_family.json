@@ -219,7 +219,8 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -10}
+            {"kind": "Impeto", "target": "AllEnemies", "power": -10},
+            {"kind": "Status", "target": "AllEnemies", "status": "Oblivion", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

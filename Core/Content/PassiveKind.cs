@@ -70,9 +70,9 @@ namespace Sigilos.Core.Content
 		// Chefes ------------------------------------------------------------------------------------
 
 		/// <summary>
-		/// Rei Ossudo: não recebe Ímpeto (nem ganha, nem perde), os efeitos depois de cada ação dele (o
-		/// escudo) e, ao cair, volta no turno seguinte com o número da Passiva em Vida, toda vez. O
-		/// Esquecimento cala tudo: quem cai esquecido não volta.
+		/// Rei Ossudo: enquanto ele está em campo, ninguém (aliado ou inimigo) ganha nem perde Ímpeto; os
+		/// efeitos depois de cada ação dele (o escudo) e, ao cair, volta no turno seguinte com o número da
+		/// Passiva em Vida, toda vez. O Esquecimento cala tudo: quem cai esquecido não volta.
 		/// </summary>
 		Undying,
 	}

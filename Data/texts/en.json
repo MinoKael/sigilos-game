@@ -456,7 +456,7 @@
     "ForEachStatusOrEffectAppliedDo": "for each {1} it inflicts: {0}",
     "ForEachStatusOrEffectReceivedDo": "for each {1} it receives: {0}",
     "StatusOrEffectOnTargetEachTurn": "after acting, on the skill target: {0}",
-    "Undying": "Cannot receive {2}. After each action: {0}. When it falls, it comes back on its next turn with {1} HP, unless it has {3} (which also silences the rest of this Passive).",
+    "Undying": "While it is on the field, nobody gains or loses {2}. After each action: {0}. When it falls, it comes back on its next turn with {1} HP, unless it has {3} (which also silences the rest of this Passive).",
     "chance": "{0} ({1} chance)"
   },
 

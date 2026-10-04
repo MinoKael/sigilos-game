@@ -51,7 +51,7 @@ namespace Sigilos.Tests
 
 		/// <summary>
 		/// Um Rei Ossudo de teste (volta com 30% da Vida, escudo de 10% depois de agir) contra um herói
-		/// rápido: a básica dele empurra o Ímpeto do alvo, a especial derruba qualquer um.
+		/// rápido: a básica dele empurra o Ímpeto do alvo e o do próprio time, a especial derruba qualquer um.
 		/// </summary>
 		private static (BattleSession Session, BattleUnit Hero, BattleUnit King) Crypt()
 		{
@@ -63,7 +63,15 @@ namespace Sigilos.Tests
 			};
 			var stats = new StatBlock { Health = 1000, Attack = 1, Speed = 100 };
 			var king = new BattleUnit("rei", "rei", "", Side.Enemies, Element.Dark, 1, false, stats, new[] { TestData.Strike }, passive, Core.Runes.RuneSetEffects.None) { IsBoss = true };
-			var push = new SkillDefinition { Name = "Empurrão", Effects = new[] { new EffectDefinition { Kind = EffectKind.Impeto, Power = 40 } } };
+			var push = new SkillDefinition
+			{
+				Name = "Empurrão",
+				Effects = new[]
+				{
+					new EffectDefinition { Kind = EffectKind.Impeto, Power = 40 },
+					new EffectDefinition { Kind = EffectKind.Impeto, Target = TargetKind.AllAllies, Power = 40 },
+				},
+			};
 			var hero = TestData.Unit("herói", Side.Allies, speed: 300, attack: 100_000, basic: push, special: TestData.Strike);
 			var session = TestData.Session(new[] { hero }, new[] { king });
 			session.Start();
@@ -77,7 +85,8 @@ namespace Sigilos.Tests
 			TestData.RunUntilTurnOf(session, hero);
 			var impeto = king.Impeto;
 			session.Act(new UnitAction(0, king));
-			Assert.Equal(impeto, king.Impeto, "o Rei não recebe Ímpeto");
+			Assert.Equal(impeto, king.Impeto, "com o Rei em campo, o inimigo não ganha Ímpeto");
+			Assert.Equal(0.0, hero.Impeto, "nem o aliado");
 
 			TestData.RunUntilTurnOf(session, king);
 			session.Act(new UnitAction(0, hero));
@@ -99,7 +108,8 @@ namespace Sigilos.Tests
 			TestData.RunUntilTurnOf(session, hero);
 			var impeto = king.Impeto;
 			session.Act(new UnitAction(0, king));
-			Assert.Near(impeto + 40, king.Impeto, "esquecido, recebe Ímpeto");
+			Assert.Near(impeto + 40, king.Impeto, "esquecido, o Rei destrava o Ímpeto do inimigo");
+			Assert.Near(40, hero.Impeto, "e do aliado");
 			TestData.RunUntilTurnOf(session, hero);
 			session.Act(new UnitAction(1, king));
 			Assert.False(king.Reviving, "com Esquecimento, não volta");

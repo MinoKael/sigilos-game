@@ -13,8 +13,11 @@
 // - runic_golem: huge HP and Defense; the Bastion buffs it (Defense+, shield) and enrages it when it falls,
 //   the Warden breaks the team's Defense and Attack. Defense Break, buff stealing and timing beat it.
 // - elder_wyvern: every enemy afflicts, and its skills hit harder for each debuff on the team (BonusPerStatus).
-// - bone_king: "Undying" passive: no Impeto, a shield after every action and it always comes back, unless
-//   Oblivion silences the passive.
+// - bone_king: "Undying" passive: while it's on the field nobody (ally or foe) gains or loses Impeto, a shield
+//   after every action and it always comes back, unless Oblivion silences the passive.
+// - drowned_guardian: its wave starts with Counter on every enemy, and its skills keep it up: AoE damage and
+//   many attacks get punished. Stun (stunned units don't counter), Blind, Attack Down, stealing the buff and
+//   strong single hits beat it; Oblivion doesn't help.
 [
   {
     "id": "chain_master",
@@ -159,11 +162,16 @@
     "skills": [
       { "name": "Tentáculo", "effects": [
         {"kind": "Damage", "power": 3.5},
-        {"kind": "Impeto", "power": -20, "chance": 0.5}
+        {"kind": "Impeto", "power": -20, "chance": 0.5},
+        {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
       ] },
-      { "name": "Maré Negra", "cooldown": 4, "effects": [
+      { "name": "Maré Negra", "cooldown": 3, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
+        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
+        {"kind": "Status", "target": "AllAllies", "status": "Counter", "turns": 3}
+      ] },
+      { "name": "Maré Revolta", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [
+        {"kind": "Status", "target": "AllAllies", "status": "Counter", "turns": 3}
       ] }
     ]
   },
