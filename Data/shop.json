@@ -9,6 +9,6 @@
   {"id": "scroll", "name": "Pergaminho Místico", "item": "Scrolls", "amount": 1, "price": 30},
   {"id": "scrolls_10", "name": "Maço de Pergaminhos", "item": "Scrolls", "amount": 10, "price": 250},
   {"id": "reappraisal_gem", "name": "Gema de Reavaliação", "item": "ReappraisalGems", "amount": 1, "price": 500},
-  {"id": "collection_expansion", "name": "Expansão de Coleção", "item": "CollectionExpander", "amount": 10, "price": 100},
+  {"id": "collection_expansion", "name": "Expansão de Coleção", "item": "CollectionExpander", "amount": 50, "price": 100},
   {"id": "rename", "name": "Troca de nome", "item": "RenameAccount", "amount": 1, "price": 10000}
 ]
