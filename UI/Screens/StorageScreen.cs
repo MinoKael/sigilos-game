@@ -583,9 +583,9 @@ namespace Sigilos.UI.Screens
 			}
 			else if (Evolution.IsReady(monster))
 			{
-				var (essenceCost, fragmentCost) = Evolution.Cost(monster.Stars);
+				var fragmentCost = Evolution.Cost(monster.Stars);
 				var evolve = GameButton.Of(T("monsters.evolve", Texts.Stars(monster.Stars + 1)), () => EvolveRequested?.Invoke(id), ButtonKind.Primary, "evolve")
-					.WithCost("essence", $"{Texts.Number(essenceCost)} · {fragmentCost} {T("currency.fragments")}").Named("Evolve");
+					.WithCost("essence", $"{fragmentCost} {T("currency.fragments")}").Named("Evolve");
 				evolve.Disabled = !Evolution.CanEvolve(_player, monster);
 				evolve.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 				actions.AddChild(evolve);

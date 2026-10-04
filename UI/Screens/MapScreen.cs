@@ -54,13 +54,12 @@ namespace Sigilos.UI.Screens
 			var open = _database.Dungeons.Count(d => Core.Progression.Dungeons.IsUnlocked(_player, d));
 			var cleared = _database.Dungeons.Sum(d => Core.Progression.Dungeons.Cleared(_player, d));
 			var floors = _database.Dungeons.Sum(d => d.Floors.Count);
-			var shown = _database.Dungeons.Where(d => Core.Progression.Dungeons.IsUnlocked(_player, d)).LastOrDefault() ?? _database.Dungeons[0];
 			// As Masmorras aparecem na fase que abre a primeira (Features); antes, a porta diz qual é.
 			var dungeonsOpen = Core.Progression.Features.IsOpen(_player, _database, Core.Progression.Feature.Dungeons);
 			var detail = dungeonsOpen
 				? T("map.dungeons_detail", open, _database.Dungeons.Count, cleared, floors)
 				: T("map.dungeons_opens", Core.Progression.Features.StageOf(_database, Core.Progression.Feature.Dungeons));
-			var dungeons = new TileButton(T("destination.Dungeons"), detail, Art.Creature(shown.Image), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Dungeons", Disabled = !dungeonsOpen };
+			var dungeons = new TileButton(T("destination.Dungeons"), detail, Art.Creature("crowned_skull"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Dungeons", Disabled = !dungeonsOpen };
 			dungeons.Highlight = Core.Progression.Features.IsNew(_player, _database, Core.Progression.Feature.Dungeons);
 			dungeons.Pressed += () => Requested?.Invoke(Destination.Dungeons);
 			row.AddChild(dungeons);
