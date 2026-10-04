@@ -29,6 +29,12 @@ namespace Sigilos.Core.Content
 
 		public int FirstClearEssence { get; init; }
 
+		/// <summary>Marco: Pergaminhos Lendários da primeira vitória (as fases que fecham uma região).</summary>
+		public int FirstClearLegendary { get; init; }
+
+		/// <summary>Marco: Núcleos de Infusão da primeira vitória.</summary>
+		public int FirstClearCores { get; init; }
+
 		/// <summary>Toda vitória, inclusive a primeira.</summary>
 		public int Essence { get; init; }
 

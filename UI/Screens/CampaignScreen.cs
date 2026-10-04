@@ -189,6 +189,7 @@ namespace Sigilos.UI.Screens
 				rewards.AddChild(Layout.Labeled("scroll", stage.FirstClearScrolls.ToString(), T("currency.scrolls_name")));
 				rewards.AddChild(Layout.Labeled("essence", (stage.Essence + stage.FirstClearEssence).ToString(), T("currency.essence")));
 				rewards.AddChild(Layout.Labeled("rune", Texts.Stars(stage.RuneGrade), T("campaign.rune_always")));
+				BattleResultPanel.AddPrize(rewards, Milestones.ForFirstClear(stage));
 			}
 			else
 			{

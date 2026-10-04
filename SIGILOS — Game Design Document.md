@@ -49,7 +49,7 @@ Em uma frase: Summoners War: Sky Arena como base mecânica e visual (coleção, 
 | Plataforma | PC primeiro; Android depois, com o mesmo código |
 | Sessão típica | 5 a 15 min, 1 ou 2 vezes por dia |
 | Equipe | 1 pessoa, cerca de 8 a 10 h por semana (premissa a confirmar) |
-| Tamanho da 1.0 | 40 invocações (8 famílias em 5 elementos), 3 regiões (60 fases), Torre de 60 andares |
+| Tamanho da 1.0 | 40 invocações (8 famílias em 5 elementos), 3 regiões (60 fases), Torre de 100 andares |
 | Prazo estimado | MVP jogável em cerca de 3 meses; 1.0 em 9 a 12 meses |
 
 **O que o jogo não é.** Sem monetização, servidor, PvP online, stamina, eventos com prazo, cutscenes ou dublagem. Esses sistemas existem para reter pagantes e custam meses; num projeto pessoal só atrapalham.
@@ -249,18 +249,20 @@ As melhores Passivas nascem do conceito da família: a fênix renasce, o menir n
 
 ## 9. O gacha: Invocação ritual
 
-Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocação é um monstro novo, nas estrelas naturais, no nível 1 e sem Despertar, mesmo que você já tenha outro igual. As taxas são generosas e a garantia é sempre visível, porque não há ninguém para vender nada.
+Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocação é um monstro novo, nas estrelas naturais, no nível 1 e sem Despertar, mesmo que você já tenha outro igual. A garantia é sempre visível, mas a 5★ é rara de verdade: os testers reclamavam que 4★ e 5★ saíam fácil demais e que Luz e Trevas não eram especiais. Agora uma 5★ é um acontecimento, e uma de Luz ou Trevas, o orgulho da conta.
 
-| Regra | Valor inicial |
+| Regra | Valor |
 | --- | --- |
-| Custo | 1 Pergaminho Místico por invocação; 10 por dez |
-| Taxas | 3★ 65%, 4★ 28%, 5★ 7% (as 2★ não saem do Pergaminho Místico) |
-| Luz e Trevas | Metade da chance das outras variantes da mesma raridade, como em Summoners War |
-| Garantia | 5★ após 60 invocações sem nenhuma, com contador na tela; na conta nova, a primeira invocação é o Cavaleiro de Fogo e a segunda, uma 5★ |
+| Custo | 1 Pergaminho por invocação; 10 por dez, de qualquer tipo |
+| Pergaminho Místico | 3★ 90%, 4★ 9%, 5★ 1%, só Fogo, Água e Vento. O comum: fases, Masmorras, Loja |
+| Pergaminho de Luz e Trevas | 3★ 92%, 4★ 7%, 5★ 1%, só Luz e Trevas. Só de marcos (seção 12) |
+| Pergaminho Lendário | 4★ 93%, 5★ 7%, Fogo, Água e Vento. Só de marcos |
+| Garantia | Só no Místico: 5★ após 150 invocações sem nenhuma, com contador na tela (com 60, a garantia viraria a fonte principal de 5★ e a chance real passaria de 1% para 2,2%); na conta nova, a primeira invocação é o Cavaleiro de Fogo e a segunda, uma 5★. As 2★ não saem de pergaminho: caem na Campanha, onde as de Luz e Trevas têm um terço da chance |
 | Coleção | 50 vagas numa conta nova, até 500 com a Expansão de Coleção da Loja; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele). Selecionar vários, na tela de Monstros, leva ao Baú ou tira dele vários de uma vez, bloqueados também |
 | Cópia repetida | Fundida em outra da mesma família, de qualquer elemento, na janela Fundir: sobe uma habilidade sorteada em um nível, até todas no máximo |
+| Núcleo de Infusão | O material de fusão de qualquer família: sobe uma habilidade sorteada de qualquer monstro. Ocupa vaga na coleção ou no Baú, mas não luta, não entra em equipe, não usa runas, não sobe de nível e não se solta. Vem dos marcos (seção 12): sem ele, subir as habilidades de uma 4★ pediria umas 670 invocações |
 | Soltar | O monstro vira Fragmentos: 5 (2★ e 3★), 10 (4★) ou 20 (5★) |
-| Troca por Fragmentos | Qualquer invocação: 30, 60 ou 120 Fragmentos, conforme a raridade |
+| Troca por Fragmentos | Uma 4★ escolhida, de Fogo, Água ou Vento, por 300 Fragmentos: o caminho certo para a peça que falta na equipe. Luz e Trevas e 5★ não se trocam |
 
 **O traçado.** Você desenha o sigilo com o mouse ou o dedo, e um reconhecedor de gestos simples (como o $1 Unistroke Recognizer, cerca de 100 linhas de código) avalia o desenho. Não muda as taxas: um traçado limpo só dá 50 de Essência. Invocações de dez usam traçado automático.
 
@@ -362,7 +364,7 @@ flowchart LR
 | Campanha: 50 fases em 3 regiões (20, 20 e 10) | AFK | Automático | Ensina o jogo aos poucos, aumenta a ociosidade e prepara a conta para as Masmorras | MVP |
 | Masmorras de Runas: Golem Rúnico (Vento), Ninho da Serpe (Fogo), Cripta do Rei Ossudo (Trevas), Santuário Afogado (Água) | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Batalha automática | 5 andares; cada uma solta runas de 2 a 6 estrelas de 4 conjuntos, maiores a cada andar | MVP |
 | Forja Rachada (Luz) | Fenda de Summoners War | Automático ou Batalha automática | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
-| Torre dos Círculos: 60 andares com regras fixas | Torre de Summoners War e Abismo de Epic Seven | Manual | Pergaminhos, Ouro, Essência, desafio de montagem | v0.5 |
+| Torre dos Círculos: 100 andares com regras fixas | Torre de Summoners War e Abismo de Epic Seven | Manual | Pergaminhos, Ouro, Essência, desafio de montagem | v0.5 |
 | Provações: uma luta fixa por família | Despertar de Summoners War | Manual | Libera o Despertar | v0.5 |
 | Portais Secretos: surgem ao vencer Masmorras e ficam até você usar | Masmorras secretas de Summoners War | Automático | Três vitórias no mesmo portal dão uma invocação daquela família | v1.0 |
 | Arena dos Aprendizes: rivais gerados com poder parecido com o seu | Arenas de Summoners War e Epic Seven | Automático | Fragmentos e rivais recorrentes | v1.0 |
@@ -385,7 +387,7 @@ O andar 5 não é o 4 com números maiores: é o primeiro objetivo de fim de jog
 - **Rei Ossudo.** Enquanto ele está em campo, ninguém (aliado ou inimigo) ganha nem perde Ímpeto; ganha escudo a cada ação e volta toda vez que cai, a não ser que esteja com Esquecimento (que cala a Passiva inteira e destrava o Ímpeto). Pede Esquecimento com Precisão (o Diabrete das Trevas, a Fênix de Luz, o Pássaro das Trevas no Grito Noturno e o Corvo de Água no Mau Agouro o aplicam), o turno do Rei sob controle, quebrar o escudo e dano constante para derrubá-lo esquecido.
 - **Guardião Afogado.** Contra-ataque: a onda dele começa com Contragolpe em todos os inimigos, e as habilidades do Guardião o renovam. Dano em área e muitos golpes viram muitos revides. Pede atordoar (quem perde o turno não revida), Cegueira, Ataque−, roubar o efeito, golpes únicos fortes e Vida e Defesa para aguentar o que vier; o Esquecimento não ajuda.
 
-O simulador mede isso (`dotnet run --project Tests -- --dungeons`): cada andar contra o time típico, a equipe de especialista em cada degrau, o ponto doce, a preparação do andar 5 e o time forte genérico com o mesmo investimento, a matriz de cada especialista nas outras Masmorras e o custo de cada equipe em dias de Essência.
+As equipes de referência são as que um jogador consegue montar com essas taxas (seção 9): 2★ a 4★ de Fogo, Água e Vento (as 2★ caem na Campanha, até as de Luz e Trevas), as habilidades subidas com cópias e Núcleos de Infusão, e no máximo uma 5★. Para elas existirem, algumas habilidades repetidas viraram ferramentas: o Goblin de Fogo rouba efeito positivo, o Limo de Fogo baixa o Ataque, o Corvo de Fogo quebra a Defesa ao acertar, o Limo de Água purifica e cura o time e o Lobo de Água dá Imunidade. O simulador mede isso (`dotnet run --project Tests -- --dungeons`): cada andar contra o time típico, a equipe de especialista em cada degrau, o ponto doce, a preparação do andar 5 e o time forte genérico com o mesmo investimento, a matriz de cada especialista nas outras Masmorras e o custo de cada equipe em dias de Essência.
 
 **A dificuldade é a recompensa.** Na Forja, cada andar é tão difícil quanto o que paga: ela se diferencia pelas pedras e pelo elemento, não por uma mecânica de chefe. O andar pede o time que já usa runas como as que ele solta: o 1, quem está na fase 15 (runas 2★ e 3★); o 2, quem está na fase 30 (runas 4★); o 3, o fim da Campanha (nível 20, runas 4★ +12); o 4, 6★ nível 40 com runas 5★ +12; o 5, 6★ nível 40 com runas 6★ +15. Todas abrem durante a Campanha (a Golem na fase 15, a Serpe na 20, a Cripta na 25, o Afogado e a Forja na 30). Cada uma é quase toda do seu elemento, então ganha quem leva a vantagem (Fogo na Golem, Água na Serpe, Luz na Cripta, Vento no Afogado, Trevas na Forja).
 
@@ -412,8 +414,21 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Mana | Canalização (até o máximo), nível da conta, Loja | Cada vitória (a derrota não custa nada) |
 | Essência | Canalização, fases, Masmorras, runas desfeitas | Nível e Evolução das invocações, Despertar e melhora de runas |
 | Ouro | Canalização, nível da conta, primeira vitória em cada andar de Masmorra, Torre, conquistas | Loja: Mana e Pergaminhos |
-| Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (2% de chance a cada vitória, em todo andar), Loja, Torre, conquistas | Invocar |
-| Fragmentos | Monstros soltos, Arena | Evolução e troca por uma invocação escolhida |
+| Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (1%, 2% e 3% de chance a cada vitória nos andares 3, 4 e 5, as mesmas do Núcleo de Infusão), Loja, Torre, conquistas | Invocar |
+| Fragmentos | Monstros soltos, Arena | Evolução e troca por uma 4★ escolhida |
+
+Os Pergaminhos Lendários e de Luz e Trevas e os Núcleos de Infusão não são moedas do dia a dia: vêm dos marcos, o que é especial vem de chegar lá. O orçamento conta o conteúdo que ainda vem (a Torre de 100 andares, depois Provações e Arena): os marcos de hoje não podem crescer sem tirar da parte reservada.
+
+| Marco | Lendário | Luz e Trevas | Núcleos de Infusão |
+| --- | --- | --- | --- |
+| Fim das regiões (primeira vitória das fases 20, 40 e 50) | 3 | — | 6 (2 por região) |
+| Primeira vitória dos andares de Masmorra (as cinco) | 5 (andar 4) | 5 (andar 5) | 55 (1, 1, 2, 3 e 4 por Masmorra) |
+| Repetir os andares 3, 4 e 5 | — | — | 1%, 2% e 3% de chance a cada vitória |
+| Níveis da conta, até o 60 | — | 5 (níveis 20, 30, 40, 50 e 60) | 12 (a cada 5 níveis) |
+| Torre dos Círculos, 100 andares (reservado) | 10 (a cada 10 andares) | 4 (andares 25, 50, 75 e 100) | 20 (a cada 5 andares) |
+| Total sem a Torre | 8 | 10 | 73, mais as repetições |
+
+Com isso, perto dos 20 dias em que o jogador se prepara para o Golem 5, ele tem uma 5★ garantida, duas ou três do Místico, perto de metade de chance de uma do Lendário e uns 35 Núcleos: o bastante para montar uma equipe de 2★ a 4★ com uma 5★ e subir as habilidades dela. As Masmorras são calibradas para essa equipe (seção 11).
 
 **Correio.** No alto do Santuário, numa cápsula como as das moedas e ao lado delas, o Correio traz as cartas que o servidor manda (presentes, compensações, avisos), para uma conta ou para todas, com prazo ou sem; o selo vermelho diz quantas faltam coletar. Coletar soma as recompensas (qualquer das cinco moedas e a Gema de Reavaliação; a Mana pode passar do máximo) e anota a carta no save antes de avisar o servidor: nada se perde se a conexão cair, e nenhuma carta é coletada duas vezes. Sem conta, ou sem conexão, a janela explica por que não há cartas. Além das moedas, uma carta pode trazer presentes: monstros (cópias novas), runas (das estrelas, da raridade e do conjunto escolhidos) e retratos da conta, que ficam liberados mesmo sem o monstro.
 
@@ -430,7 +445,7 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Região 1 completa | Cerca de 2 semanas |
 | As 40 invocações coletadas | Cerca de 8 semanas |
 | Primeira 6★ com as habilidades no máximo | Cerca de 3 meses |
-| Torre no andar 60 | Cerca de 4 meses |
+| Torre no andar 100 | Cerca de 4 meses |
 
 Se o jogo ficar chato no teste, a primeira alavanca é dar mais Ouro ou baratear a Loja. Aqui a generosidade não tem custo comercial.
 
@@ -456,7 +471,7 @@ Cada fase termina num jogo que você já consegue jogar; se o projeto parar em q
 | 1. Núcleo de combate | 6 a 8 semanas | Tela de batalha, ondas, 8 invocações, IA automática, 10 fases | O automático é bom de assistir e o manual é bom de jogar? |
 | 2. MVP: loop AFK e gacha | 4 a 6 semanas | Ociosidade, nível 1–40, Despertar, runas, invocação com garantia, Baú e Ecos, equipes por conteúdo, 3 famílias (15 invocações), região 1, 4 Masmorras de Runas e a Forja | Dá vontade de voltar no dia seguinte? |
 | 3. v0.5: profundidade | 8 a 10 semanas | Provações, Torre até 30, traçado, mais andares de Masmorra, 5 famílias (25) | Existe teorização para semanas? |
-| 4. v1.0: conteúdo | 10 a 12 semanas | 8 famílias (40), regiões 2 e 3, Torre 60, Arena, Portais Secretos, Tiques | Você joga 90 dias seguidos? |
+| 4. v1.0: conteúdo | 10 a 12 semanas | 8 famílias (40), regiões 2 e 3, Torre 100, Arena, Portais Secretos, Tiques | Você joga 90 dias seguidos? |
 | Depois | Contínuo | Uma família nova (5 invocações) quando der vontade, Convidados, Espelho | — |
 
 A fase 0 é a mais barata e a mais importante: combate por turnos com velocidade é quase só matemática, então dá para testar sem nenhum gráfico.

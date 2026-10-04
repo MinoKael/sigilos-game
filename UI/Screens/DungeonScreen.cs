@@ -211,8 +211,14 @@ namespace Sigilos.UI.Screens
 			chips.AddChild(Layout.Labeled("level_max", floor.Experience.ToString(), T("reward.experience")).Named("Experience"));
 			if (floor.ScrollChance > 0)
 				chips.AddChild(Layout.Labeled("scroll", Texts.Percent(floor.ScrollChance / 100), T("dungeons.scroll_chance")).Named("Scroll"));
+			if (floor.CoreChance > 0)
+				chips.AddChild(Layout.Labeled("monster", Texts.Percent(floor.CoreChance / 100), T("dungeons.core_chance"), Palette.Arcane).Named("Core"));
 			if (!cleared)
+			{
 				chips.AddChild(Layout.Labeled("gold", floor.FirstClearGold.ToString(), T("dungeons.first_gold"), Palette.Spirit).Named("FirstClearGold"));
+				BattleResultPanel.AddPrize(chips, Milestones.ForFirstClear(floor));
+			}
+
 			info.AddChild(chips);
 
 			var problem = Dungeons.Check(_player, dungeon, number);

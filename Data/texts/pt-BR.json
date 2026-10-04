@@ -538,7 +538,8 @@
     "drops_sets": "Solta runas de:",
     "drops_tools": "Solta:",
     "sets_hint": "Toque num conjunto para ver o bônus dele.",
-    "scroll_chance": "de chance de um Pergaminho Místico"
+    "scroll_chance": "de chance de um Pergaminho Místico",
+    "core_chance": "de chance de um Núcleo de Infusão"
   },
 
   "summon": {
@@ -551,7 +552,22 @@
     "pull_ten": "Invocar ×10",
     "pity_title": "Garantia de 5★",
     "rates": "Chances de cada invocação:",
-    "note": "Cada invocação é uma cópia nova, no nível 1. Cópias do mesmo monstro sobem as habilidades dele.",
+    "note": "Cada invocação é uma cópia nova, no nível 1. Cópias da mesma família e Núcleos de Infusão sobem as habilidades dele.",
+    "scroll": {
+      "Mystic": "Místico",
+      "LightDark": "Luz e Trevas",
+      "Legendary": "Lendário"
+    },
+    "elements": {
+      "Mystic": "· Fogo, Água e Vento",
+      "LightDark": "· só Luz e Trevas",
+      "Legendary": "· Fogo, Água e Vento"
+    },
+    "exchange": "Trocar Fragmentos",
+    "exchange_title": "Troca de Fragmentos",
+    "exchange_hint": "Escolha uma 4★ de Fogo, Água ou Vento: ela vem por {0} Fragmentos, sem sorte. Você tem {1}.",
+    "exchange_confirm": "Trocar {1} Fragmentos por {0}?",
+    "exchange_button": "Trocar",
     "view_monsters": "Ver meus monstros",
     "rare": "{0}★!",
     "special": "{0} · {1}★!"
@@ -623,7 +639,9 @@
     "release_button": "Soltar",
     "fuse_title": "Fundir cópias?",
     "fuse_button": "Fundir",
-    "fuse_hint": "Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. Faltam {0} níveis de habilidade; você tem {1} cópias livres.",
+    "fuse_hint": "Fundir uma cópia da mesma família (de qualquer elemento) ou um Núcleo de Infusão sobe uma habilidade sorteada em um nível. Faltam {0} níveis de habilidade; você tem {1} cópias e Núcleos livres.",
+    "core_info": "O Núcleo de Infusão sobe uma habilidade de qualquer monstro, de qualquer família: abra o monstro, Habilidades, Fundir, e escolha o Núcleo. Ele ocupa uma vaga na coleção ou no Baú, mas não luta, não entra em equipe, não usa runas e não se solta. Vem dos marcos: o fim de cada região, os andares de Masmorra e os níveis da conta.",
+    "core_count": "{0} na conta",
     "none_selected": "Escolha um monstro à esquerda.",
     "level_hint": "Sobe de nível infundindo Essência: {0} de experiência por Essência. Vitórias também dão experiência a quem lutou.",
     "fully_grown": "No máximo: 6★ e nível máximo.",
@@ -807,7 +825,7 @@
       "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas Raras ou melhores de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada andar mostra a chance de cada estrela e raridade, e quanto mais fundo, maior a runa: 2 e 3 estrelas no andar 1, só 6 estrelas no andar 5. O andar 1 é igual de difícil em todas, e assim por diante, tão difícil quanto o que paga. Elas abrem durante a Campanha: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana e pode soltar também um Pergaminho Místico; a primeira vitória em cada andar dá Ouro." },
       "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
-      "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. A primeira é uma 5★ garantida, e a garantia de 5★ está sempre à vista." },
+      "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. O Místico tira Fogo, Água e Vento, com a garantia de 5★ sempre à vista; o de Luz e Trevas, só Luz e Trevas; o Lendário, só 4★ e 5★. Os dois especiais vêm dos marcos do jogo. A primeira 5★ da conta é garantida, e Fragmentos trocam por uma 4★ escolhida." },
       "monsters": { "title": "Monstros e Baú", "text": "A coleção começa com {0} vagas e cresce na Loja, com a Expansão de Coleção, até {2}; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas. Bloqueie um monstro ou uma runa (o cadeado) para nunca soltar, fundir ou vender por engano; desbloqueie para fazer isso." },
       "teams": { "title": "Equipes", "text": "Uma equipe de até {0} monstros para a Campanha e uma para cada Masmorra. A primeira é a Líder." },
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
@@ -984,7 +1002,8 @@
   },
 
   "reward": {
-    "experience": "Experiência"
+    "experience": "Experiência",
+    "infusion_cores": "Núcleos de Infusão"
   },
 
   "map": {
@@ -1189,7 +1208,10 @@
       "Scrolls": "Pergaminhos",
       "Essence": "Essência",
       "Fragments": "Fragmentos",
-      "ReappraisalGems": "Gemas de Reavaliação"
+      "ReappraisalGems": "Gemas de Reavaliação",
+      "LightDarkScrolls": "Pergaminhos de Luz e Trevas",
+      "LegendaryScrolls": "Pergaminhos Lendários",
+      "InfusionCores": "Núcleos de Infusão"
     },
     "gift": {
       "rune": "Runa {0}",

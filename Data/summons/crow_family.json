@@ -49,10 +49,10 @@
           "name": "Mau Agouro",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.2, "turns": 2}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
           ]
         }
       ]

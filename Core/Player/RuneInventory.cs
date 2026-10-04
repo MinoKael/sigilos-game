@@ -46,7 +46,7 @@ namespace Sigilos.Core.Player
 		/// </summary>
 		public static bool Equip(PlayerState player, Rune rune, int monsterId)
 		{
-			if (player.Monster(monsterId) == null || rune.EquippedOn == monsterId)
+			if (player.Monster(monsterId) is not { IsInfusionCore: false } || rune.EquippedOn == monsterId)
 				return false;
 
 			var occupant = Occupant(player, rune, monsterId);

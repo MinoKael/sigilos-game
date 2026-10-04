@@ -66,6 +66,10 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Custo em Mana de fase | `Data/stages.json` (`mana`) |
 | Mana máxima e recarga | `Core/Progression/Mana.cs`; a recarga entra pela canalização em `Core/Progression/Idle.cs` |
 | Nível da conta e Ouro por nível | `Core/Progression/Account.cs` |
+| Invocação | `Core/Summoning`: os pergaminhos (`ScrollKind`: Místico, Luz e Trevas, Lendário), as taxas e os elementos de cada um e a garantia do Místico em `SummonRates`, o sorteio em `SummonRitual` (`Perform(..., kind)`); a tela escolhe o pergaminho nas abas (`SummonScreen`) |
+| Marcos (Pergaminhos especiais e Núcleos de Infusão) | `Core/Progression/Milestones.cs`: o `Prize` da primeira vitória vem dos dados (`firstClearLegendary`, `firstClearLightDark`, `firstClearCores` e `coreChance` em `Data/stages.json` e `Data/dungeons.json`), o dos níveis da conta da tabela de lá (`Account.GiveExperience` entrega). A vitória traz o prêmio em `VictoryReward.Prize`, e a tela mostra (`BattleResultPanel.AddPrize`). A parte da Torre está reservada no GDD, seção 12 |
+| Núcleo de Infusão | `Core/Content/InfusionCore.cs`: guardado como monstro (`OwnedSummon.IsInfusionCore`), mas fora de `Data/summons` e da invocação (o `GameDatabase` só o acha pelo id). Funde em qualquer família (`Fusion.CanFuse`); equipe, runas, nível, evolução, Despertar e soltar recusam. Na tela de Monstros, o detalhe dele é `StorageScreen.CoreDetail`, e a fusão o oferece depois das cópias da família (`FusionDialog.Candidates`) |
+| Troca de Fragmentos | `Core/Progression/FragmentExchange.cs` (uma 4★ de Fogo, Água ou Vento escolhida); o botão e a grade ficam na tela de invocação |
 | Loja | ofertas em `Data/shop.json`; regra em `Core/Progression/Shop.cs`. A Expansão de Coleção (`CollectionExpander`) soma vagas a `PlayerState.CollectionCapacity` (salvo na conta; 50 numa conta nova) até `Account.MaxCollectionCapacity` e esgota lá (`Shop.IsSoldOut`, o aviso na `ShopScreen`). A troca de nome (`RenameAccount`, 10.000 de Ouro) é a única que depende do servidor: o `GameRoot.ShowShop` abre a janela do nome e só chama `Shop.Buy` (que tira o Ouro) depois que o servidor aceitou; nos Ajustes fica só o primeiro nome, de graça |
 | Chave de recuperação e "Esqueci a senha" | o servidor cria a chave (quatro palavras) no cadastro e, numa conta de antes dela, na primeira entrada ou renovação, e guarda só o hash. O jogo recebe em `AuthClient` (`RecoveryKeyIssued`), guarda em `AccountStore.RecoveryKey` até o "Já guardei" e mostra pelo `RecoveryKeyDialog` (`GameRoot.ShowRecoveryKey`). A troca de senha é a `PasswordResetDialog` (e-mail, chave, senha nova). Socorro: `POST /admin/accounts/recovery` no servidor (docs/api.md de lá) |
 | Qualquer texto da interface | `Data/texts/pt-BR.json` (a base) e a mesma chave em `Data/texts/en.json`, depois `py Tools/texts/check_texts.py`. Chave nova não pode ter o nome de um grupo que já existe (`filter.order` apagaria `filter.order.*`) |
@@ -364,7 +368,7 @@ O que o contrato do projeto tem de diferente da especificação:
 
 - Passivas simples (dezessete tipos, uma por família), habilidades novas do Despertar só nas 2★ e nas 3★.
 - Viés de elemento neutro: os cinco elementos repartem o orçamento igual (o modelo aceita o viés).
-- Sem Tiques, traçado do sigilo, troca por Fragmentos, regras de região, Torre, Provações e Portais
+- Sem Tiques, traçado do sigilo, regras de região, Torre, Provações e Portais
   Secretos (o Despertar ainda não pede Provação: só Essência).
 - Masmorras com 5 andares cada; chefes reaproveitam o desenho de criaturas do Commons.
 

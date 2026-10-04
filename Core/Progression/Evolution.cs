@@ -22,7 +22,7 @@ namespace Sigilos.Core.Progression
 		};
 
 		/// <summary>Está no nível máximo e ainda não é 6★ (sem olhar o preço).</summary>
-		public static bool IsReady(OwnedSummon monster) => monster.Stars < Growth.MaxStars && Leveling.IsMaxLevel(monster);
+		public static bool IsReady(OwnedSummon monster) => !monster.IsInfusionCore && monster.Stars < Growth.MaxStars && Leveling.IsMaxLevel(monster);
 
 		public static bool CanEvolve(PlayerState player, OwnedSummon monster)
 		{

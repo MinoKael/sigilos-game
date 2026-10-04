@@ -537,7 +537,8 @@
     "drops_sets": "Drops runes of:",
     "drops_tools": "Drops:",
     "sets_hint": "Touch a set to see its bonus.",
-    "scroll_chance": "chance of a Mystic Scroll"
+    "scroll_chance": "chance of a Mystic Scroll",
+    "core_chance": "chance of an Infusion Core"
   },
 
   "summon": {
@@ -550,7 +551,22 @@
     "pull_ten": "Summon ×10",
     "pity_title": "5★ guarantee",
     "rates": "Chances of each summon:",
-    "note": "Every summon is a new copy, at level 1. Copies of the same monster raise its skills.",
+    "note": "Every summon is a new copy, at level 1. Copies of the same family and Infusion Cores raise its skills.",
+    "scroll": {
+      "Mystic": "Mystic",
+      "LightDark": "Light and Dark",
+      "Legendary": "Legendary"
+    },
+    "elements": {
+      "Mystic": "· Fire, Water and Wind",
+      "LightDark": "· Light and Dark only",
+      "Legendary": "· Fire, Water and Wind"
+    },
+    "exchange": "Trade Fragments",
+    "exchange_title": "Fragment Trade",
+    "exchange_hint": "Pick a Fire, Water or Wind 4★: it comes for {0} Fragments, no luck involved. You have {1}.",
+    "exchange_confirm": "Trade {1} Fragments for {0}?",
+    "exchange_button": "Trade",
     "view_monsters": "See my monsters",
     "rare": "{0}★!",
     "special": "{0} · {1}★!"
@@ -622,7 +638,9 @@
     "release_button": "Release",
     "fuse_title": "Fuse copies?",
     "fuse_button": "Fuse",
-    "fuse_hint": "Fusing a copy of the same family (any element) raises a random skill by one level. {0} skill levels left; you have {1} free copies.",
+    "fuse_hint": "Fusing a copy of the same family (any element) or an Infusion Core raises a random skill by one level. {0} skill levels left; you have {1} free copies and Cores.",
+    "core_info": "The Infusion Core raises a skill of any monster, of any family: open the monster, Skills, Fuse, and pick the Core. It takes a slot in the collection or the Vault, but it doesn't fight, join teams, use runes or get released. It comes from milestones: the end of each region, Dungeon floors and account levels.",
+    "core_count": "{0} on the account",
     "none_selected": "Choose a monster on the left.",
     "level_hint": "Levels up by infusing Essence: {0} experience per Essence. Victories also give experience to the team that fought.",
     "fully_grown": "At the maximum: 6★ and max level.",
@@ -806,7 +824,7 @@
       "dungeons": { "title": "Dungeons", "text": "Each Dungeon has 5 floors, one element in most of its enemies, and drops what the Campaign doesn't: Rare or better runes from four specific sets, or Grindstones and Gems (the Forge). Every floor shows the chance of each star and rarity, and the deeper the floor, the bigger the runes: 2 and 3 stars on floor 1, only 6 stars on floor 5. Floor 1 is as hard in every Dungeon, and so on, as hard as what it pays. They open during the Campaign: Golem (Wind), Wyvern (Fire), Crypt (Dark), Drowned (Water) and the Forge (Light); bring the element with the advantage. Each victory costs Mana and may also drop a Mystic Scroll; the first victory on each floor gives Gold." },
       "mana": { "title": "Mana and account level", "text": "Every victory costs Mana; a defeat costs nothing, but you need the victory's Mana to fight. Channeling refills {2} per hour up to the maximum: {0} at account level 1, {1} at level {3}, the maximum. Every victory also gives experience to the account, and each level refills Mana." },
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Scrolls." },
-      "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The first one is a guaranteed 5★, and the 5★ guarantee is always on display." },
+      "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The Mystic one brings Fire, Water and Wind, with the 5★ guarantee always on display; the Light and Dark one, only Light and Dark; the Legendary one, only 4★ and 5★. The two special ones come from game milestones. The account's first 5★ is guaranteed, and Fragments trade for a chosen 4★." },
       "monsters": { "title": "Monsters and Vault", "text": "The collection starts with {0} slots and grows in the Shop, with the Collection Expansion, up to {2}; the Vault keeps whatever goes past that, with no limit. A monster in the Vault doesn't fight, but keeps its runes: they don't take any of the {1} slots of the rune inventory. Lock a monster or a rune (the padlock) so it is never released, fused away or sold by mistake; unlock it to do so." },
       "teams": { "title": "Teams", "text": "A team of up to {0} monsters for the Campaign and one for each Dungeon. The first one is the Leader." },
       "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
@@ -983,7 +1001,8 @@
   },
 
   "reward": {
-    "experience": "Experience"
+    "experience": "Experience",
+    "infusion_cores": "Infusion Cores"
   },
 
   "map": {
@@ -1188,7 +1207,10 @@
       "Scrolls": "Scrolls",
       "Essence": "Essence",
       "Fragments": "Fragments",
-      "ReappraisalGems": "Reappraisal Gems"
+      "ReappraisalGems": "Reappraisal Gems",
+      "LightDarkScrolls": "Light and Dark Scrolls",
+      "LegendaryScrolls": "Legendary Scrolls",
+      "InfusionCores": "Infusion Cores"
     },
     "gift": {
       "rune": "Rune {0}",
@@ -1690,6 +1712,8 @@
     "Pergaminho Místico": "Mystic Scroll",
     "Maço de Pergaminhos": "Bundle of Scrolls",
     "Gema de Reavaliação": "Reappraisal Gem",
+    "Núcleo de Infusão": "Infusion Core",
+    "Maré Purificadora": "Cleansing Tide",
     "Expansão de Coleção": "Collection Expansion",
     "Bastião Rúnico": "Runic Bastion",
     "Vigia Rúnico": "Runic Warden",

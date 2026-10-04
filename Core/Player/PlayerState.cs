@@ -25,7 +25,15 @@ namespace Sigilos.Core.Player
 		public int Version { get; set; }
 
 		// Moedas (GDD, seção 12).
+
+		/// <summary>Pergaminhos Místicos: o comum (fases, Masmorras, Loja).</summary>
 		public int Scrolls { get; set; }
+
+		/// <summary>Pergaminhos de Luz e Trevas: só de marcos (Core/Progression/Milestones).</summary>
+		public int LightDarkScrolls { get; set; }
+
+		/// <summary>Pergaminhos Lendários (4★ ou 5★): só de marcos.</summary>
+		public int LegendaryScrolls { get; set; }
 
 		/// <summary>Sobe o nível dos monstros, paga o Despertar e melhora runas.</summary>
 		public int Essence { get; set; }

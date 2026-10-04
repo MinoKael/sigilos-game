@@ -78,29 +78,37 @@ namespace Sigilos.Tests
 			}
 		}
 
+		/// <summary>O Pergaminho Místico cai com as chances do Núcleo de Infusão: nada nos andares 1 e 2; 1%, 2% e 3% nos andares 3, 4 e 5.</summary>
 		[Test]
-		private static void EveryFloorSometimesDropsAMysticScroll()
+		private static void DeepFloorsSometimesDropAMysticScroll()
 		{
 			const int victories = 6000;
 			var database = TestData.LoadReal();
-			Assert.True(database.Dungeons.All(d => d.Floors.All(f => f.ScrollChance == 2)), "2% em todo andar de toda Masmorra");
+			var chances = new double[] { 0, 0, 1, 2, 3 };
+			Assert.True(database.Dungeons.All(d => d.Floors.Select(f => f.ScrollChance).SequenceEqual(chances)), "0, 0, 1%, 2% e 3% em toda Masmorra");
+			Assert.True(database.Dungeons.All(d => d.Floors.All(f => f.ScrollChance == f.CoreChance)), "as mesmas chances do Núcleo de Infusão");
 
 			var random = new Random(9);
 			foreach (var dungeon in new[] { database.Dungeon("golem"), database.Dungeons.First(d => d.Kind == DungeonKind.Tools) })
 			{
-				var player = TestData.PlayerWith("phoenix_fire");
-				var before = player.Scrolls;
-				var scrolls = 0;
-				for (var i = 0; i < victories; i++)
+				foreach (var floor in new[] { 1, 5 })
 				{
-					player.Runes.Clear();
-					var reward = Dungeons.ApplyVictory(random, player, dungeon, 1);
-					Assert.True(reward.Scrolls is 0 or 1, "um Pergaminho, no máximo");
-					scrolls += reward.Scrolls;
-				}
+					var player = TestData.PlayerWith("phoenix_fire");
+					player.DungeonFloors[dungeon.Id] = dungeon.Floors.Count;
+					var before = player.Scrolls;
+					var scrolls = 0;
+					for (var i = 0; i < victories; i++)
+					{
+						player.Runes.Clear();
+						var reward = Dungeons.ApplyVictory(random, player, dungeon, floor);
+						Assert.True(reward.Scrolls is 0 or 1, "um Pergaminho, no máximo");
+						scrolls += reward.Scrolls;
+					}
 
-				Assert.Equal(before + scrolls, player.Scrolls, $"{dungeon.Id}: os Pergaminhos vão para a conta");
-				Assert.True(Math.Abs(100.0 * scrolls / victories - 2) < 0.6, $"{dungeon.Id}: perto de 2% ({scrolls} em {victories})");
+					var chance = dungeon.Floor(floor).ScrollChance;
+					Assert.Equal(before + scrolls, player.Scrolls, $"{dungeon.Id} {floor}: os Pergaminhos vão para a conta");
+					Assert.True(Math.Abs(100.0 * scrolls / victories - chance) < 0.7, $"{dungeon.Id} {floor}: perto de {chance}% ({scrolls} em {victories})");
+				}
 			}
 		}
 

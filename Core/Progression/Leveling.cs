@@ -94,6 +94,8 @@ namespace Sigilos.Core.Progression
 		/// </summary>
 		public static int Infuse(PlayerState player, OwnedSummon monster, int essence)
 		{
+			if (monster.IsInfusionCore)
+				return 0;
 			var spent = Math.Min(Math.Min(essence, player.Essence), EssenceFor(MissingToMax(monster)));
 			if (spent <= 0)
 				return 0;

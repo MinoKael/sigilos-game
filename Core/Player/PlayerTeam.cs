@@ -15,7 +15,7 @@ namespace Sigilos.Core.Player
 		{
 			var members = Teams.Of(player, content)
 				.Select(player.Monster)
-				.Where(m => m is { Stored: false } && database.HasSummon(m.SummonId))
+				.Where(m => m is { Stored: false, IsInfusionCore: false } && database.HasSummon(m.SummonId))
 				.Select(m => Member(database.Summon(m!.SummonId), m, player))
 				.ToList();
 

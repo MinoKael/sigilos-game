@@ -53,5 +53,9 @@ namespace Sigilos.Core.Player
 
 		/// <summary>Favorito do jogador: aparece antes dos outros nas listas de monstros. Não muda regra nenhuma.</summary>
 		public bool Favorite { get; set; }
+
+		/// <summary>É um Núcleo de Infusão: ocupa vaga, mas só serve de material de fusão (<see cref="Content.InfusionCore"/>).</summary>
+		[System.Text.Json.Serialization.JsonIgnore]
+		public bool IsInfusionCore => Content.InfusionCore.Is(SummonId);
 	}
 }

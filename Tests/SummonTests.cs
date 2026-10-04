@@ -27,13 +27,13 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void PityGuaranteesFiveStarsOnSixtiethPull()
+		private static void PityGuaranteesAFiveStar()
 		{
 			var database = TestData.LoadReal();
 			var player = Player();
 			player.PullsSinceFiveStar = SummonRates.Pity - 1;
 			var summon = SummonRitual.Roll(new Random(1), database, player);
-			Assert.Equal(5, summon.Rarity, "60ª invocação sem 5★");
+			Assert.Equal(5, summon.Rarity, "a invocação da garantia, sem 5★ antes, é 5★");
 			Assert.Equal(0, player.PullsSinceFiveStar, "contador zera");
 		}
 
@@ -42,19 +42,25 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = Player();
-			var random = new Random(42);
-			var counts = new int[6];
 			const int pulls = 20_000;
-			for (var i = 0; i < pulls; i++)
+			foreach (var kind in Enum.GetValues<ScrollKind>())
 			{
-				player.PullsSinceFiveStar = 0;
-				counts[SummonRitual.Roll(random, database, player).Rarity]++;
-			}
+				var random = new Random(42);
+				var counts = new int[6];
+				for (var i = 0; i < pulls; i++)
+				{
+					player.PullsSinceFiveStar = 0;
+					var summon = SummonRitual.Roll(random, database, player, kind);
+					Assert.True(SummonRates.Allows(kind, summon.Element), $"{kind}: {summon.Id} é de um elemento que o pergaminho não tira");
+					counts[summon.Rarity]++;
+				}
 
-			// As taxas da tabela (SummonRates); o que sobra é 3★.
-			Assert.Near(1 - SummonRates.FourStar - SummonRates.FiveStar, counts[3] / (double)pulls, "taxa de 3★", 0.02);
-			Assert.Near(SummonRates.FourStar, counts[4] / (double)pulls, "taxa de 4★", 0.02);
-			Assert.Near(SummonRates.FiveStar, counts[5] / (double)pulls, "taxa de 5★", 0.01);
+				// As taxas da tabela (SummonRates); o que sobra é 3★.
+				var (five, four) = SummonRates.Of(kind);
+				Assert.Near(1 - four - five, counts[3] / (double)pulls, $"{kind}: taxa de 3★", 0.02);
+				Assert.Near(four, counts[4] / (double)pulls, $"{kind}: taxa de 4★", 0.02);
+				Assert.Near(five, counts[5] / (double)pulls, $"{kind}: taxa de 5★", 0.01);
+			}
 		}
 
 		[Test]

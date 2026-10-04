@@ -914,9 +914,9 @@ namespace Sigilos.GameEntry
 				_storageBack = ShowSummon;
 				ShowStorage(null);
 			};
-			summon.SummonRequested += count =>
+			summon.SummonRequested += (count, kind) =>
 			{
-				var results = SummonRitual.Perform(_random, _database, _player, count);
+				var results = SummonRitual.Perform(_random, _database, _player, count, kind);
 				if (results.Count == 0)
 					return;
 
@@ -925,6 +925,14 @@ namespace Sigilos.GameEntry
 				// O gasto de Pergaminhos e os monstros sobem para a nuvem antes de o resultado aparecer: fechar
 				// o jogo na hora não desfaz a invocação. O envio corre durante o ritual.
 				summon.ShowResults(results, _account.Connected ? _account.Flush() : null);
+			};
+			summon.ExchangeRequested += id =>
+			{
+				if (FragmentExchange.Exchange(_player, _database, id) is not { } result)
+					return;
+
+				Save();
+				summon.ShowResults(new[] { result }, _account.Connected ? _account.Flush() : null);
 			};
 			Swap(summon, ShowSummon);
 		}

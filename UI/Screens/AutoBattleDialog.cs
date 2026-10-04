@@ -176,6 +176,7 @@ namespace Sigilos.UI.Screens
 				totals.AddChild(Layout.Labeled("gold", $"+{run.Gold}", T("currency.gold")).Named("Gold"));
 			if (run.Scrolls > 0)
 				totals.AddChild(Layout.Labeled("scroll", $"+{run.Scrolls}", T("currency.scrolls_name")).Named("Scrolls"));
+			BattleResultPanel.AddPrize(totals, run.Prize);
 			totals.AddChild(Layout.Labeled("level_max", $"+{run.Experience}", T("reward.experience")).Named("Experience"));
 			if (run.LevelUps > 0)
 				totals.AddChild(Layout.Labeled("stats", run.LevelUps.ToString(), T("auto.level_ups")).Named("LevelUps"));

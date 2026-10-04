@@ -82,6 +82,15 @@ namespace Sigilos.Core.Progression
 				case MailItem.ReappraisalGems:
 					player.ReappraisalGems += amount;
 					break;
+				case MailItem.LightDarkScrolls:
+					player.LightDarkScrolls += amount;
+					break;
+				case MailItem.LegendaryScrolls:
+					player.LegendaryScrolls += amount;
+					break;
+				case MailItem.InfusionCores:
+					Milestones.Grant(player, new Prize(InfusionCores: amount));
+					break;
 			}
 		}
 	}

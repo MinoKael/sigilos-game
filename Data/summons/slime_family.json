@@ -37,7 +37,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -83,13 +83,14 @@
           ]
         },
         {
-          "name": "Entoxicar",
+          "name": "Maré Purificadora",
           "cooldown": 5,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.35, "turns": 2}
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.06}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Recovery", "value": 0.15},
             {"kind": "Cooldown", "value": 1}
           ]
         }

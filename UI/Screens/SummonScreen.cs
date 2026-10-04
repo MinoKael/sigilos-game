@@ -14,9 +14,10 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Invocação ritual (GDD, seção 9): o portal no centro; à esquerda, tudo escrito — os botões
-	/// Invocar ×1 e Invocar ×10 com o custo em Pergaminhos, Comprar Pergaminhos, a garantia de 5★ (quantas
-	/// faltam, com a barra) e as chances. O círculo gira e brilha antes do resultado (e espera a invocação
+	/// Invocação ritual (GDD, seção 9): o portal no centro; à esquerda, tudo escrito — o pergaminho (Místico,
+	/// Luz e Trevas ou Lendário, com quantos a conta tem), os botões Invocar ×1 e Invocar ×10 com o custo,
+	/// Comprar Pergaminhos, a troca de Fragmentos por uma 4★ escolhida, a garantia de 5★ do Místico (quantas
+	/// faltam, com a barra) e as chances do pergaminho escolhido. O círculo gira e brilha antes do resultado (e espera a invocação
 	/// chegar à nuvem); cada cartão novo diz embaixo se é novo, cópia ou se foi para o Baú, e segurar um
 	/// abre o resumo do monstro. 4★ e 5★ aparecem com destaque, e Luz e Trevas com o deles.
 	///
@@ -39,6 +40,13 @@ namespace Sigilos.UI.Screens
 		private readonly Label _pityText = new() { Name = "PityText", AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private readonly ProgressBar _pityBar = Layout.Energy(Palette.Awakened, 10).Named("PityBar");
 		private readonly Control _stage = new() { Name = "Stage", SizeFlagsVertical = SizeFlags.ExpandFill, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+		private readonly HBoxContainer _kindRow = Layout.Row(0).Named("Scrolls");
+		private readonly HBoxContainer _rates = Layout.Row(14).Named("Rates");
+		private readonly VBoxContainer _pityBox = new() { Name = "Pity" };
+		private readonly GameButton _exchange;
+
+		/// <summary>O pergaminho escolhido nas abas.</summary>
+		private ScrollKind _kind = ScrollKind.Mystic;
 		private readonly VBoxContainer _results = new() { Name = "Results", Visible = false };
 		private readonly GridContainer _cards = new() { Name = "Cards", Columns = 5 };
 		private Doodle? _sigil;
@@ -56,12 +64,16 @@ namespace Sigilos.UI.Screens
 			_player = player;
 			_coach = coach;
 			_lesson = coach != null;
-			_single = GameButton.Of(T("summon.pull_one"), () => SummonRequested?.Invoke(1), ButtonKind.Primary, "summon", 68).Named("Single");
-			_ten = GameButton.Of(T("summon.pull_ten"), () => SummonRequested?.Invoke(10), ButtonKind.Primary, "summon", 68).Named("Ten");
+			_single = GameButton.Of(T("summon.pull_one"), () => SummonRequested?.Invoke(1, _kind), ButtonKind.Primary, "summon", 68).Named("Single");
+			_ten = GameButton.Of(T("summon.pull_ten"), () => SummonRequested?.Invoke(10, _kind), ButtonKind.Primary, "summon", 68).Named("Ten");
+			_exchange = GameButton.Of(T("summon.exchange"), OpenExchange, ButtonKind.Secondary, "fragments", 52).Named("Exchange");
 		}
 
-		/// <summary>Quantidade: 1 ou 10.</summary>
-		public event Action<int>? SummonRequested;
+		/// <summary>Quantidade (1 ou 10) e o pergaminho.</summary>
+		public event Action<int, ScrollKind>? SummonRequested;
+
+		/// <summary>A troca de Fragmentos pela variante 4★ escolhida (o id).</summary>
+		public event Action<string>? ExchangeRequested;
 
 		public event Action? ShopRequested;
 		public event Action? MonstersRequested;
@@ -82,31 +94,26 @@ namespace Sigilos.UI.Screens
 			var column = new VBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Center };
 			column.AddThemeConstantOverride("separation", 14);
 			panel.AddChild(column);
+			column.AddChild(_kindRow);
 			column.AddChild(_single);
 			column.AddChild(_ten);
 			// A Loja só aparece quando a Campanha a apresenta (Features).
 			if (Features.IsOpen(_player, _database, Feature.Shop))
 				column.AddChild(GameButton.Of(T("summon.shop"), () => ShopRequested?.Invoke(), ButtonKind.Secondary, "shop", 52).Named("Shop"));
+			column.AddChild(_exchange);
 			column.AddChild(new HSeparator { Name = "Line" });
 
+			// A garantia é só do Místico: nos outros pergaminhos o bloco some.
 			var pityTitle = new Label { Name = "PityTitle", Text = T("summon.pity_title") };
 			pityTitle.AddThemeColorOverride("font_color", Palette.Awakened);
-			column.AddChild(pityTitle);
+			_pityBox.AddChild(pityTitle);
 			_pityBar.MaxValue = SummonRates.Pity;
-			column.AddChild(_pityBar);
-			column.AddChild(_pityText);
+			_pityBox.AddChild(_pityBar);
+			_pityBox.AddChild(_pityText);
+			column.AddChild(_pityBox);
 
-			var threeStar = 1 - SummonRates.FiveStar - SummonRates.FourStar;
 			column.AddChild(new Label { Name = "RatesTitle", Text = T("summon.rates") });
-			var rates = Layout.Row(14).Named("Rates");
-			foreach (var (stars, chance) in new[] { (3, threeStar), (4, SummonRates.FourStar), (5, SummonRates.FiveStar) })
-			{
-				var rate = new Label { Name = $"Rate{stars}", Text = $"{Texts.Stars(stars)} {Texts.Percent(chance)}" };
-				rate.AddThemeColorOverride("font_color", Palette.Frame(stars));
-				rates.AddChild(rate);
-			}
-
-			column.AddChild(rates);
+			column.AddChild(_rates);
 			column.AddChild(Layout.Text(T("summon.note"), GameTheme.Faded).Named("Note"));
 			body.AddChild(panel);
 
@@ -154,10 +161,72 @@ namespace Sigilos.UI.Screens
 			_pity.Progress = 1 - left / (float)SummonRates.Pity;
 			_pityBar.Value = SummonRates.Pity - left;
 			_pityText.Text = T("summon.pity", left);
+			_pityBox.Visible = _kind == ScrollKind.Mystic;
+			Kinds();
+			Rates();
 			Cost(_single, 1);
 			Cost(_ten, 10);
+			_exchange.WithCost("fragments", Texts.Number(FragmentExchange.Cost));
+			_exchange.Disabled = _lesson || _player.Fragments < FragmentExchange.Cost;
 			if (_lesson)
 				_single.Disabled = true;
+		}
+
+		/// <summary>As abas dos pergaminhos, com quantos a conta tem de cada; o tutorial só mostra o Místico.</summary>
+		private void Kinds()
+		{
+			Layout.Clear(_kindRow);
+			var tabs = new TextTabs(false, 52, compact: true) { Name = "Tabs" };
+			foreach (var kind in Enum.GetValues<ScrollKind>())
+				tabs.Add(T($"summon.scroll.{kind}"), Texts.Number(SummonRitual.Scrolls(_player, kind)), "scroll", !_lesson || kind == ScrollKind.Mystic).Name = kind.ToString();
+			tabs.Select((int)_kind);
+			tabs.Changed += index =>
+			{
+				_kind = (ScrollKind)index;
+				Refresh();
+			};
+			_kindRow.AddChild(tabs);
+		}
+
+		/// <summary>As chances do pergaminho escolhido: o que não é 5★ nem 4★ é 3★ (o Lendário não tem).</summary>
+		private void Rates()
+		{
+			Layout.Clear(_rates);
+			var (five, four) = SummonRates.Of(_kind);
+			foreach (var (stars, chance) in new[] { (3, 1 - five - four), (4, four), (5, five) })
+			{
+				if (chance <= 1e-9)
+					continue;
+				var rate = new Label { Name = $"Rate{stars}", Text = $"{Texts.Stars(stars)} {Texts.Percent(chance)}" };
+				rate.AddThemeColorOverride("font_color", Palette.Frame(stars));
+				_rates.AddChild(rate);
+			}
+
+			_rates.AddChild(new Label { Name = "Elements", Text = T($"summon.elements.{_kind}") });
+		}
+
+		/// <summary>A troca de Fragmentos: as 4★ de Fogo, Água e Vento numa grade; tocar pede confirmação.</summary>
+		private void OpenExchange()
+		{
+			var dialog = Dialog.Open(this, T("summon.exchange_title"), 820, null, "ExchangeDialog");
+			dialog.Body.AddChild(Layout.Text(T("summon.exchange_hint", FragmentExchange.Cost, _player.Fragments), GameTheme.Faded).Named("Hint"));
+			var grid = new GridContainer { Name = "Options", Columns = 5 };
+			grid.AddThemeConstantOverride("h_separation", 10);
+			grid.AddThemeConstantOverride("v_separation", 10);
+			foreach (var summon in FragmentExchange.Options(_database))
+			{
+				var card = new CreatureCard(summon, null, 112) { Name = summon.Id };
+				card.Pressed += _ => Dialog.Confirm(this, T("summon.exchange_title"),
+					T("summon.exchange_confirm", summon.Name, FragmentExchange.Cost),
+					T("summon.exchange_button"), () =>
+					{
+						dialog.Close();
+						ExchangeRequested?.Invoke(summon.Id);
+					});
+				grid.AddChild(card);
+			}
+
+			dialog.Body.AddChild(grid);
 		}
 
 		/// <summary>Quanto o resultado espera, no máximo, a invocação chegar à nuvem.</summary>
@@ -329,7 +398,7 @@ namespace Sigilos.UI.Screens
 		{
 			var cost = SummonRitual.CostFor(count);
 			button.WithCost("scroll", Texts.Scrolls(cost));
-			button.Disabled = _player.Scrolls < cost;
+			button.Disabled = SummonRitual.Scrolls(_player, _kind) < cost;
 		}
 	}
 }
