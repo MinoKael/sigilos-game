@@ -27,7 +27,7 @@ namespace Sigilos.Tests
 			Assert.True(Roster.Retrieve(player, id), "volta do Baú");
 			Assert.False(player.Monster(id)!.Stored, "na coleção");
 
-			for (var i = player.Collection.Count(); i < PlayerState.CollectionCapacity; i++)
+			for (var i = player.Collection.Count(); i < player.CollectionCapacity; i++)
 				Roster.Add(player, TestData.Summon("imp_light"));
 			Roster.Store(player, id);
 			Roster.Add(player, TestData.Summon("imp_light"));

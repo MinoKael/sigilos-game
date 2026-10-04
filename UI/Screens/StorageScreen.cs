@@ -191,7 +191,7 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_tools);
 			var tabs = new TextTabs { Name = "Places" };
-			tabs.Add(T("monsters.collection"), $"{_player.Collection.Count()}/{PlayerState.CollectionCapacity}").Name = "Collection";
+			tabs.Add(T("monsters.collection"), $"{_player.Collection.Count()}/{_player.CollectionCapacity}").Name = "Collection";
 			tabs.Add(T("monsters.vault"), _player.Storage.Count().ToString()).Name = "Vault";
 			tabs.Select(_showStorage ? 1 : 0);
 			tabs.Changed += index =>

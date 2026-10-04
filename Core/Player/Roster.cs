@@ -5,16 +5,16 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Player
 {
 	/// <summary>
-	/// A coleção de monstros e o Baú. A coleção tem <see cref="PlayerState.CollectionCapacity"/> vagas;
+	/// A coleção de monstros e o Baú. A coleção tem <see cref="PlayerState.CollectionCapacity"/> vagas (cresce na Loja);
 	/// o que passa disso vai para o Baú, que não tem limite. No Baú o monstro não luta, mas guarda as
 	/// runas dele — que assim não ocupam o inventário de runas.
 	/// </summary>
 	public static class Roster
 	{
-		public static bool IsFull(PlayerState player) => player.Collection.Count() >= PlayerState.CollectionCapacity;
+		public static bool IsFull(PlayerState player) => player.Collection.Count() >= player.CollectionCapacity;
 
 		/// <summary>Quantas vagas a coleção ainda tem.</summary>
-		public static int FreeSlots(PlayerState player) => System.Math.Max(0, PlayerState.CollectionCapacity - player.Collection.Count());
+		public static int FreeSlots(PlayerState player) => System.Math.Max(0, player.CollectionCapacity - player.Collection.Count());
 
 		/// <summary>Uma cópia nova da variante, nas estrelas naturais e no nível 1: na coleção, ou no Baú se a coleção está cheia.</summary>
 		public static OwnedSummon Add(PlayerState player, SummonDefinition summon)

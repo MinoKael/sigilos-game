@@ -15,8 +15,8 @@ namespace Sigilos.Core.Player
 		/// <summary>Monstros por equipe, em qualquer luta.</summary>
 		public const int TeamSize = 5;
 
-		/// <summary>Monstros fora do Baú. O que passa disso vai para o Baú, que não tem limite.</summary>
-		public const int CollectionCapacity = 50;
+		/// <summary>As vagas da coleção numa conta nova (e num save de antes do campo existir).</summary>
+		public const int StartingCollectionCapacity = 50;
 
 		/// <summary>Formato do save. Um save de formato mais antigo não é lido: a conta recomeça.</summary>
 		public const int CurrentVersion = 8;
@@ -37,6 +37,12 @@ namespace Sigilos.Core.Player
 
 		/// <summary>Gemas de Reavaliação, compradas na Loja: cada uma devolve uma runa ao estado em que caiu.</summary>
 		public int ReappraisalGems { get; set; }
+
+		/// <summary>
+		/// Monstros fora do Baú. O que passa disso vai para o Baú, que não tem limite. Cresce com a Expansão de
+		/// Coleção da Loja, até <see cref="Progression.Account.MaxCollectionCapacity"/>.
+		/// </summary>
+		public int CollectionCapacity { get; set; } = StartingCollectionCapacity;
 
 		/// <summary>Paga cada vitória; a derrota não custa nada. A ociosidade recarrega até o máximo (Core/Progression/Mana).</summary>
 		public int Mana { get; set; }

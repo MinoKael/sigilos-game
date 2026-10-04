@@ -112,5 +112,37 @@ namespace Sigilos.Tests
 			Assert.True(Shop.Buy(player, scrolls), "com Ouro, compra");
 			Assert.Equal(scrolls.Amount, player.Scrolls, "Pergaminhos na conta");
 		}
+
+		/// <summary>
+		/// A Expansão de Coleção dá vagas à coleção até o máximo da conta (Account.MaxCollectionCapacity); lá
+		/// a oferta esgota e não cobra mais. Save de antes do campo existir começa com as vagas de sempre.
+		/// </summary>
+		[Test]
+		private static void CollectionExpansionGrowsTheCollectionUpToTheMaximum()
+		{
+			var database = TestData.LoadReal();
+			var offer = database.Shop.Single(o => o.Item == ShopItem.CollectionExpander);
+			Assert.Equal(100, offer.Price, "custa 100 de Ouro");
+			var player = new PlayerState { Version = PlayerState.CurrentVersion, Gold = 10_000 };
+			Assert.Equal(PlayerState.StartingCollectionCapacity, player.CollectionCapacity, "conta nova: as vagas de sempre");
+
+			Assert.True(Shop.Buy(player, offer), "compra");
+			Assert.Equal(PlayerState.StartingCollectionCapacity + offer.Amount, player.CollectionCapacity, "vagas a mais");
+			Assert.Equal(10_000 - offer.Price, player.Gold, "paga em Ouro");
+
+			player.CollectionCapacity = Account.MaxCollectionCapacity - 1;
+			Assert.True(Shop.Buy(player, offer), "a última compra");
+			Assert.Equal(Account.MaxCollectionCapacity, player.CollectionCapacity, "para no máximo da conta");
+			Assert.True(Shop.IsSoldOut(player, offer), "no máximo, esgota");
+			var gold = player.Gold;
+			Assert.False(Shop.Buy(player, offer), "esgotada, não compra");
+			Assert.Equal(gold, player.Gold, "nem cobra");
+			Assert.False(Shop.IsSoldOut(player, database.Shop.First(o => o.Item == ShopItem.Mana)), "as outras ofertas não esgotam");
+
+			var json = PlayerSave.ToJson(player);
+			Assert.Equal(Account.MaxCollectionCapacity, PlayerSave.FromJson(json)!.CollectionCapacity, "o save guarda as vagas");
+			var old = System.Text.RegularExpressions.Regex.Replace(json, @"\s*""CollectionCapacity"":\s*\d+,", "");
+			Assert.Equal(PlayerState.StartingCollectionCapacity, PlayerSave.FromJson(old)!.CollectionCapacity, "save sem o campo: as vagas de sempre");
+		}
 	}
 }

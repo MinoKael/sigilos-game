@@ -89,12 +89,14 @@ namespace Sigilos.UI.Screens
 				ShopItem.Mana => Doodle.Icon(Art.Icon("mana"), 100, Palette.Gold),
 				ShopItem.ReappraisalGems => Doodle.Icon(Art.Icon("gem"), 100, Palette.Arcane),
 				ShopItem.RenameAccount => Doodle.Icon(Art.Icon("avatar"), 100, Palette.Gold),
+				ShopItem.CollectionExpander => Doodle.Icon(Art.Icon("monster"), 100, Palette.Gold),
 				_ => Doodle.Icon(Art.Icon("scroll"), 100, Palette.Gold),
 			};
 			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
 			icon.MouseDefaultCursorShape = CursorShape.PointingHand;
-			// O símbolo explica a oferta (a Gema diz quantas o jogador já tem: ela não está em nenhuma barra).
-			void Explain() => Dialog.Info(icon, offer.Name, T($"shop.info.{offer.Item}", _player.ReappraisalGems));
+			// O símbolo explica a oferta (a Gema diz quantas o jogador já tem, a Expansão as vagas de agora e o
+			// máximo: nada disso está em alguma barra).
+			void Explain() => Dialog.Info(icon, offer.Name, T($"shop.info.{offer.Item}", _player.ReappraisalGems, _player.CollectionCapacity, Account.MaxCollectionCapacity));
 			Press.On(icon, Explain, Explain);
 			content.AddChild(icon);
 			var what = Layout.Text(offer.Name, GameTheme.Faded, 220).Named("What");
@@ -119,7 +121,10 @@ namespace Sigilos.UI.Screens
 			content.AddChild(buy);
 			if (!canBuy)
 			{
-				var missing = new Label { Name = "Short", Text = rename && !_canRename ? T("shop.rename_no_account") : T("shop.no_gold", Texts.Number(offer.Price - _player.Gold)), HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(220, 0) };
+				var message = rename && !_canRename ? T("shop.rename_no_account")
+					: Shop.IsSoldOut(_player, offer) ? T("shop.sold_out", Texts.Number(Account.MaxCollectionCapacity))
+					: T("shop.no_gold", Texts.Number(offer.Price - _player.Gold));
+				var missing = new Label { Name = "Short", Text = message, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(220, 0) };
 				missing.AddThemeColorOverride("font_color", Palette.Negative);
 				missing.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
 				content.AddChild(missing);

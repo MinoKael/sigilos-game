@@ -257,7 +257,7 @@ Invocar é um ritual: você gasta Pergaminhos e traça o sigilo. Cada invocaçã
 | Taxas | 3★ 65%, 4★ 28%, 5★ 7% (as 2★ não saem do Pergaminho Místico) |
 | Luz e Trevas | Metade da chance das outras variantes da mesma raridade, como em Summoners War |
 | Garantia | 5★ após 60 invocações sem nenhuma, com contador na tela; na conta nova, a primeira invocação é o Cavaleiro de Fogo e a segunda, uma 5★ |
-| Coleção | 50 vagas; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele). Selecionar vários, na tela de Monstros, leva ao Baú ou tira dele vários de uma vez, bloqueados também |
+| Coleção | 50 vagas numa conta nova, até 500 com a Expansão de Coleção da Loja; o que passar vai para o Baú, que não tem limite (monstro no Baú não luta, mas guarda as runas dele). Selecionar vários, na tela de Monstros, leva ao Baú ou tira dele vários de uma vez, bloqueados também |
 | Cópia repetida | Fundida em outra da mesma família, de qualquer elemento, na janela Fundir: sobe uma habilidade sorteada em um nível, até todas no máximo |
 | Soltar | O monstro vira Fragmentos: 5 (2★ e 3★), 10 (4★) ou 20 (5★) |
 | Troca por Fragmentos | Qualquer invocação: 30, 60 ou 120 Fragmentos, conforme a raridade |
@@ -419,7 +419,7 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 
 **Retrato da conta.** Tocar na conta, no alto do Santuário, abre o nível e o botão Trocar retrato: o retrato pode ser qualquer monstro que a conta tem, e a forma desperta de quem ela tem uma cópia desperta.
 
-**Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180), a Gema de Reavaliação (40) ou a troca do nome da conta (10.000; o Ouro só sai se o nome novo for aceito). As ofertas moram em Data/shop.json. Trocar o nome é só na Loja: nos Ajustes fica apenas escolher o primeiro nome, para quem ainda não tem. Toda conta tem uma chave de recuperação de quatro palavras (RUNA-FAROL-GRIFO-SELO), mostrada uma vez só: no cadastro, ou na primeira entrada de uma conta criada antes dela. No login, "Esqueci a senha" troca a senha com o e-mail e essa chave; cinco chaves erradas travam a recuperação até o suporte destravar (o servidor tem a rota de admin que destrava e refaz senha e chave).
+**Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180), a Gema de Reavaliação (40), a Expansão de Coleção (10 vagas por 100, até a coleção chegar a 500 vagas, quando esgota) ou a troca do nome da conta (10.000; o Ouro só sai se o nome novo for aceito). As ofertas moram em Data/shop.json. Trocar o nome é só na Loja: nos Ajustes fica apenas escolher o primeiro nome, para quem ainda não tem. Toda conta tem uma chave de recuperação de quatro palavras (RUNA-FAROL-GRIFO-SELO), mostrada uma vez só: no cadastro, ou na primeira entrada de uma conta criada antes dela. No login, "Esqueci a senha" troca a senha com o e-mail e essa chave; cinco chaves erradas travam a recuperação até o suporte destravar (o servidor tem a rota de admin que destrava e refaz senha e chave).
 
 ### Ritmo-alvo
 

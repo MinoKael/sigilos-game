@@ -1,5 +1,6 @@
-// The Shop (GDD, section 12): trades Gold for Mana, Scrolls, Reappraisal Gems or a new account name. "item" is Mana, Scrolls,
-// ReappraisalGems or RenameAccount (the server must accept the name before the Gold is taken), "amount" the
+// The Shop (GDD, section 12): trades Gold for Mana, Scrolls, Reappraisal Gems, collection slots or a new account name.
+// "item" is Mana, Scrolls, ReappraisalGems, CollectionExpander (collection slots, up to Account.MaxCollectionCapacity;
+// sold out there) or RenameAccount (the server must accept the name before the Gold is taken), "amount" the
 // quantity and "price" the price in Gold. Gold only comes from playing: channeling, account levels and
 // the first victory on each Dungeon floor. Bought Mana can go past the maximum.
 [
@@ -8,5 +9,6 @@
   {"id": "scroll", "name": "Pergaminho Místico", "item": "Scrolls", "amount": 1, "price": 30},
   {"id": "scrolls_10", "name": "Maço de Pergaminhos", "item": "Scrolls", "amount": 10, "price": 250},
   {"id": "reappraisal_gem", "name": "Gema de Reavaliação", "item": "ReappraisalGems", "amount": 1, "price": 500},
+  {"id": "collection_expansion", "name": "Expansão de Coleção", "item": "CollectionExpander", "amount": 10, "price": 100},
   {"id": "rename", "name": "Troca de nome", "item": "RenameAccount", "amount": 1, "price": 10000}
 ]

@@ -82,12 +82,12 @@ namespace Sigilos.Tests
 			var database = TestData.LoadReal();
 			var player = Player();
 			var summon = database.Summon("imp_fire");
-			for (var i = 0; i < PlayerState.CollectionCapacity; i++)
+			for (var i = 0; i < player.CollectionCapacity; i++)
 				SummonRitual.Receive(player, summon);
 
 			var extra = SummonRitual.Receive(player, summon);
 			Assert.True(extra.Monster.Stored, "a coleção cheia manda para o Baú");
-			Assert.Equal(PlayerState.CollectionCapacity, player.Collection.Count(), "a coleção não passa do limite");
+			Assert.Equal(player.CollectionCapacity, player.Collection.Count(), "a coleção não passa do limite");
 		}
 
 		[Test]

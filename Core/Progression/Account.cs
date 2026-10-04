@@ -16,6 +16,12 @@ namespace Sigilos.Core.Progression
 		public const int MaxLevel = 60;
 
 		/// <summary>
+		/// Até onde a coleção cresce com a Expansão de Coleção da Loja (começa em
+		/// <see cref="PlayerState.StartingCollectionCapacity"/>). Chegou aqui, a oferta esgota.
+		/// </summary>
+		public const int MaxCollectionCapacity = 500;
+
+		/// <summary>
 		/// Os retratos que a conta pode usar: cada variante que ela tem (na coleção ou no Baú) e, de quem
 		/// ela tem uma cópia desperta, também a forma desperta; depois, os liberados pelo correio
 		/// (<see cref="PlayerState.AvatarUnlocks"/>). Na ordem em que chegaram à conta.
