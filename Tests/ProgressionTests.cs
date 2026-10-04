@@ -67,7 +67,7 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void EvolutionNeedsMaxLevelEssenceAndFragments()
+		private static void EvolutionNeedsMaxLevelAndFragments()
 		{
 			var player = NewPlayer();
 			var monster = Roster.Add(player, TestData.Summon("imp_fire"));
@@ -77,8 +77,7 @@ namespace Sigilos.Tests
 
 			monster.Level = 25;
 			Assert.False(Evolution.CanEvolve(player, monster), "sem Fragmentos não evolui");
-			var (essence, fragments) = Evolution.Cost(3);
-			player.Fragments = fragments;
+			player.Fragments = Evolution.Cost(3);
 			Assert.True(Evolution.Evolve(player, monster), "evolui");
 			Assert.Equal(4, monster.Stars, "ganha uma estrela");
 			Assert.Equal(25, monster.Level, "mantém o nível");
@@ -87,8 +86,8 @@ namespace Sigilos.Tests
 			Assert.True(Growth.Fraction(4, 25) > Growth.Fraction(3, 25), "no mesmo nível, a estrela nova tem mais atributos");
 			Assert.False(Evolution.IsReady(monster), "só evolui de novo no nível 30");
 			Assert.True(Leveling.ExperienceToNext(monster) > 0, "e volta a ganhar experiência");
-			Assert.Equal(1_000_000 - essence, player.Essence, "paga a Essência");
-			Assert.Equal(0, player.Fragments, "e os Fragmentos");
+			Assert.Equal(1_000_000, player.Essence, "não gasta Essência");
+			Assert.Equal(0, player.Fragments, "paga os Fragmentos");
 
 			monster.Stars = 6;
 			monster.Level = 40;

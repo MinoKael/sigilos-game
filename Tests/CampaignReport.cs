@@ -101,7 +101,7 @@ namespace Sigilos.Tests
 				* RuneRules.SellValue(new Rune { Grade = g.Key, Substats = Enumerable.Range(0, (int)r.Key).Select(_ => new RuneSubstat()).ToList() })));
 			var perDay = Idle.EssencePerHour(database.Stages.Count) * 24 + Mana.PerHour * 24 / floor4.Mana * (floor4.Essence + sold);
 			Console.WriteLine();
-			Console.WriteLine($"Investment (evolutions, Awakenings, rune upgrades) at {perDay:0} Essence a day");
+			Console.WriteLine($"Investment (Awakenings, rune upgrades) at {perDay:0} Essence a day");
 			foreach (var dungeon in dungeons)
 			{
 				var sweet = Investment(ReferenceTeams.Specialist(database, dungeon.Id, 4));
@@ -113,10 +113,9 @@ namespace Sigilos.Tests
 		private static string Cell((double Wins, double Rounds, double Health) result) =>
 			$"{result.Wins,4:P0} ({result.Rounds,4:F0})".PadRight(12);
 
-		/// <summary>A Essência que a equipe custou desde as estrelas naturais: evoluções, Despertar e a melhora das runas.</summary>
+		/// <summary>A Essência que a equipe custou além do nível: Despertar e a melhora das runas (evoluir só gasta Fragmentos).</summary>
 		private static double Investment(BattleTeam team) => team.Members.Sum(member =>
-			Enumerable.Range(member.Summon.Rarity, Math.Max(0, member.Stars - member.Summon.Rarity)).Sum(stars => Evolution.Cost(stars).Essence)
-			+ (member.Awakened ? Awakening.Cost(member.Summon.Rarity) : 0)
+			(member.Awakened ? Awakening.Cost(member.Summon.Rarity) : 0)
 			+ member.Runes.Sum(rune => Enumerable.Range(0, rune.Level).Sum(level => RuneRules.UpgradeCost(rune.Grade, level))));
 
 		/// <summary>

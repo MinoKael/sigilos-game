@@ -118,9 +118,9 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = TestData.PlayerWith("phoenix_fire", "imp_fire");
-			Assert.Equal(20, Fusion.Release(player, database, player.Monsters[0].Id), "5★ vale 20");
-			Assert.Equal(5, Fusion.Release(player, database, player.Monsters[0].Id), "3★ vale 5");
-			Assert.Equal(25, player.Fragments, "Fragmentos na conta");
+			Assert.Equal(50, Fusion.Release(player, database, player.Monsters[0].Id), "5★ vale 50");
+			Assert.Equal(15, Fusion.Release(player, database, player.Monsters[0].Id), "3★ vale 15");
+			Assert.Equal(65, player.Fragments, "Fragmentos na conta");
 			Assert.Equal(0, player.Monsters.Count, "os dois soltos");
 		}
 
