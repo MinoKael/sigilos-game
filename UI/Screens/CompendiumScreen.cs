@@ -69,10 +69,10 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Monsters", "monster", T("compendium.basic.monsters.title"), T("compendium.basic.monsters.text", PlayerState.StartingCollectionCapacity, RuneInventory.Capacity, Account.MaxCollectionCapacity));
 			Card(grid, "Teams", "team", T("compendium.basic.teams.title"), T("compendium.basic.teams.text", PlayerState.TeamSize));
 			Card(grid, "Level", "essence", T("compendium.basic.level.title"), T("compendium.basic.level.text", Growth.MaxLevel(3), Growth.MaxLevel(Growth.MaxStars), Leveling.ExperiencePerEssence));
-			var (e3, f3) = Evolution.Cost(3);
-			var (e4, f4) = Evolution.Cost(4);
-			var (e5, f5) = Evolution.Cost(5);
-			Card(grid, "Stars", "summon", T("compendium.basic.stars.title"), T("compendium.basic.stars.text", Growth.MaxStars, e3, f3, e4, f4, e5, f5));
+			var f3 = Evolution.Cost(3);
+			var f4 = Evolution.Cost(4);
+			var f5 = Evolution.Cost(5);
+			Card(grid, "Stars", "summon", T("compendium.basic.stars.title"), T("compendium.basic.stars.text", Growth.MaxStars, f3, f4, f5));
 			Card(grid, "Skills", "fragments", T("compendium.basic.skills.title"), T("compendium.basic.skills.text"));
 			Card(grid, "Awaken", "grimoire", T("compendium.basic.awaken.title"), T("compendium.basic.awaken.text",
 				Awakening.Cost(3), Awakening.Cost(4), Awakening.Cost(5),
