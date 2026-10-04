@@ -414,7 +414,7 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | Mana | Canalização (até o máximo), nível da conta, Loja | Cada vitória (a derrota não custa nada) |
 | Essência | Canalização, fases, Masmorras, runas desfeitas | Nível e Evolução das invocações, Despertar e melhora de runas |
 | Ouro | Canalização, nível da conta, primeira vitória em cada andar de Masmorra, Torre, conquistas | Loja: Mana e Pergaminhos |
-| Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (2% de chance a cada vitória, em todo andar), Loja, Torre, conquistas | Invocar |
+| Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (1%, 2% e 3% de chance a cada vitória nos andares 3, 4 e 5, as mesmas do Núcleo de Infusão), Loja, Torre, conquistas | Invocar |
 | Fragmentos | Monstros soltos, Arena | Evolução e troca por uma 4★ escolhida |
 
 Os Pergaminhos Lendários e de Luz e Trevas e os Núcleos de Infusão não são moedas do dia a dia: vêm dos marcos, o que é especial vem de chegar lá. O orçamento conta o conteúdo que ainda vem (a Torre de 100 andares, depois Provações e Arena): os marcos de hoje não podem crescer sem tirar da parte reservada.
