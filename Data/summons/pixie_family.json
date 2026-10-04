@@ -9,20 +9,20 @@
       "variation_id": "pixie_fire",
       "name": "Pixie de Fogo",
       "element": "Fire",
-      "role": "Attack",
-      "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
-      "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
         "name": "Acendalha",
         "skill": {
-          "name": "Pó de Incêndio",
+          "name": "Fogo-fátuo",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "chance": 1, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "chance": 1, "turns": 2}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ]
         }
@@ -31,26 +31,26 @@
         {
           "name": "Pó de Faísca",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 0.77, "hits": 3}
+            {"kind": "Damage", "target": "Target", "power": 0.77, "hits": 3},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
+            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Fogo-Fátuo",
+          "name": "Cura, cura, cura!",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.15},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.6, "turns": 2}
+            {"kind": "Heal", "target": "Target", "power": 0.15},
+            {"kind": "ChangeDuration", "target": "Target", "scope": "Buffs", "turns": 1}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Recovery", "value": 0.15},
+            {"kind": "Recovery", "value": 0.1}
           ]
         }
       ]

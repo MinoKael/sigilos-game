@@ -7,7 +7,7 @@ namespace Sigilos.Core.Battle.Effects
 	{
 		public override void Apply(Cast cast, EffectDefinition effect)
 		{
-			foreach (var target in cast.Targets(effect.Target))
+			foreach (var target in cast.Targets(effect))
 				cast.Resolver.Cleanse(target);
 		}
 	}

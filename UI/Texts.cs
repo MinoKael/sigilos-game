@@ -235,20 +235,30 @@ namespace Sigilos.UI
 			return T("set_effect.pieces", set.Pieces, bonus);
 		}
 
-		public static string Describe(PassiveDefinition passive, bool awakened)
+		/// <param name="effects">Os efeitos da genérica (nulo: os da definição, já prontos na luta).</param>
+		public static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects = null)
 		{
 			var value = Percent(passive.ValueFor(awakened));
+			if (passive.UsesEffects)
+			{
+				// "No começo de cada turno dele: cura 5% da Vida máxima em si (50% de chance)."
+				var text = T($"passive.{passive.Kind}", Clause(effects ?? passive.Effects), Counted(passive));
+				return Sentence((passive.ValueFor(awakened) > 0 ? T("passive.chance", text, value) : text) + ".");
+			}
+
 			return passive.Kind switch
 			{
-				PassiveKind.ShieldOnDeath => T("passive.ShieldOnDeath", Term(StatusKind.Shield), value),
 				PassiveKind.ImpetoAtWaveStart => T("passive.ImpetoAtWaveStart", value, Impeto),
-				PassiveKind.AfflictionOnHit => T("passive.AfflictionOnHit", value, Term(StatusKind.Affliction)),
-				PassiveKind.CurseOnHit => T("passive.CurseOnHit", value, Term(StatusKind.Curse)),
-				PassiveKind.StunAttacker => T("passive.StunAttacker", value, Term(StatusKind.Stun)),
 				PassiveKind.BonusVsWounded => T("passive.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
+				PassiveKind.BonusVsStatusOrEffect => T("passive.BonusVsStatusOrEffect", value, Counted(passive)),
 				_ => T($"passive.{passive.Kind}", value),
 			};
 		}
+
+		/// <summary>Os efeitos que a Passiva olha: os escolhidos ("Aflição ou Maldição") ou os do escopo ("efeito negativo").</summary>
+		private static string Counted(PassiveDefinition passive) => passive.Statuses.Count > 0
+			? string.Join(T("common.or"), passive.Statuses.Select(s => Term(s)))
+			: T($"scope.{passive.Scope}.one");
 
 		/// <summary>
 		/// O que a habilidade faz, desperta ou não. Sem despertar, a versão do Despertar (quando existe)
@@ -258,8 +268,10 @@ namespace Sigilos.UI
 		{
 			if (skill.Passive is { } passive)
 			{
-				var text = Describe(passive, awakened);
-				return !awakened && passive.AwakenedValue > 0 ? $"{text}\n{T("skill.awakened", Describe(passive, true))}" : text;
+				var effects = awakened && skill.AwakenedEffects.Count > 0 ? skill.AwakenedEffects : skill.Effects;
+				var text = Describe(passive, awakened, effects);
+				var changes = passive.AwakenedValue > 0 || skill.AwakenedEffects.Count > 0;
+				return !awakened && changes ? $"{text}\n{T("skill.awakened", Describe(passive, true, skill.AwakenedEffects.Count > 0 ? skill.AwakenedEffects : skill.Effects))}" : text;
 			}
 
 			if (awakened && skill.AwakenedEffects.Count > 0)
@@ -303,7 +315,10 @@ namespace Sigilos.UI
 			? T("skill.level_up.Cooldown", (int)up.Value)
 			: T($"skill.level_up.{up.Kind}", Percent(up.Value));
 
-		public static string Describe(IEnumerable<EffectDefinition> effects) => Sentence(string.Join("; ", effects.Select(Describe)) + ".");
+		public static string Describe(IEnumerable<EffectDefinition> effects) => Sentence(Clause(effects) + ".");
+
+		/// <summary>Os efeitos numa frase só, sem maiúscula nem ponto ("cura 5%…; põe Aflição…").</summary>
+		private static string Clause(IEnumerable<EffectDefinition> effects) => string.Join("; ", effects.Select(Describe));
 
 		/// <summary>A frase começa com maiúscula ("remove um efeito…" vira "Remove um efeito…").</summary>
 		private static string Sentence(string text) =>
@@ -311,7 +326,7 @@ namespace Sigilos.UI
 
 		private static string Describe(EffectDefinition effect)
 		{
-			var where = T($"target.{effect.Target}");
+			var where = Where(effect.Target, effect.By);
 			var chance = effect.Chance < 1 ? T("skill.chance", Percent(effect.Chance)) : "";
 			var text = effect.Kind switch
 			{
@@ -326,7 +341,8 @@ namespace Sigilos.UI
 				EffectKind.ChangeDuration => T(effect.Turns >= 0 ? "skill.prolong" : "skill.shorten", chance, Turns(Math.Abs(effect.Turns)), Statuses(effect, many: true), where),
 				EffectKind.EqualizeHealth => T("skill.equalize", where),
 				EffectKind.HealTeam => effect.Count > 0 ? T("skill.heal_team", Percent(effect.Power), effect.Count, where) : T("skill.heal", Percent(effect.Power), where),
-				EffectKind.JointAttack => effect.Count > 0 ? T("skill.joint", effect.Count) : T("skill.joint_all"),
+				EffectKind.JointAttack => effect.Target != TargetKind.AllAllies ? T("skill.joint_one", Ally(effect.Target, effect.By))
+					: effect.Count > 0 ? T("skill.joint", effect.Count) : T("skill.joint_all"),
 				EffectKind.ExtraTurnOnKill => T("skill.extra_turn_on_kill", Turns(effect.Turns)),
 				_ => effect.Kind.ToString(),
 			};
@@ -352,8 +368,19 @@ namespace Sigilos.UI
 				BonusKind.Heal => T("skill.bonus.Heal", Percent(effect.Power)),
 				_ => T("skill.bonus.Impeto", effect.Power, Impeto, where),
 			};
-			return T("skill.per_status", bonus, Statuses(effect, many: false), T($"target.{effect.From}"));
+			return T("skill.per_status", bonus, Statuses(effect, many: false), Where(effect.From, effect.By));
 		}
+
+		/// <summary>"no aliado com mais Ataque": o alvo, com o valor que escolhe o aliado quando não é a Vida.</summary>
+		private static string Where(TargetKind kind, TargetRank by) => Ranked(kind, by) ? T($"target.{kind}_by", Name(by)) : T($"target.{kind}");
+
+		/// <summary>"o aliado com mais Ataque": quem o ataque conjunto chama.</summary>
+		private static string Ally(TargetKind kind, TargetRank by) => Ranked(kind, by) ? T($"target.ally.{kind}_by", Name(by)) : T($"target.ally.{kind}");
+
+		private static bool Ranked(TargetKind kind, TargetRank by) => by != TargetRank.Health && kind is TargetKind.LowestAlly or TargetKind.HighestAlly;
+
+		/// <summary>O nome do valor que LowestAlly e HighestAlly comparam.</summary>
+		public static string Name(TargetRank by) => Targeting.StatOf(by) is { } stat ? Name(stat) : Impeto;
 
 		/// <summary>Os efeitos que o efeito olha: o escolhido (<see cref="EffectDefinition.OnlyStatus"/>) ou os do escopo.</summary>
 		private static string Statuses(EffectDefinition effect, bool many) =>

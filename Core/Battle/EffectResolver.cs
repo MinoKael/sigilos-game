@@ -80,6 +80,41 @@ namespace Sigilos.Core.Battle
 			return cast;
 		}
 
+		private bool _triggering;
+
+		/// <summary>
+		/// Os efeitos de uma Passiva genérica, como se <paramref name="owner"/> os lançasse mirando em
+		/// <paramref name="main"/> (o "Target" deles; nulo: "Target" não acerta ninguém). Não é habilidade: as
+		/// regras de depois do efeito, da habilidade e de quem apanhou não são avisadas. O que acontece dentro
+		/// dela não dispara outra Passiva genérica, para uma não alimentar a outra sem fim;
+		/// <paramref name="force"/> (a queda, que acontece uma vez só) dispara mesmo assim.
+		/// </summary>
+		public void Trigger(BattleUnit owner, IReadOnlyList<EffectDefinition> effects, BattleUnit? main, bool force = false)
+		{
+			if (effects.Count == 0 || (_triggering && !force))
+				return;
+
+			var outer = _triggering;
+			_triggering = true;
+			try
+			{
+				var allies = _session.SideOf(owner.Side);
+				var opponents = _session.SideOf(owner.Side == Side.Allies ? Side.Enemies : Side.Allies);
+				var cast = new Cast(this, owner, main, allies, opponents, counter: false);
+				foreach (var effect in effects)
+				{
+					if (effect.OnKill && !cast.Killed)
+						continue;
+
+					SkillEffects.Of(effect.Kind).Apply(cast, effect);
+				}
+			}
+			finally
+			{
+				_triggering = outer;
+			}
+		}
+
 		/// <summary>
 		/// Um golpe, na ordem: quem ataca pode errar; quem apanha pode esquivar ou anular; o crítico; o
 		/// dano; o escudo; o dreno; a queda; e, se o alvo ficou de pé, o que o golpe dispara nos dois.
@@ -369,6 +404,16 @@ namespace Sigilos.Core.Battle
 			}
 
 			Emit(new StatusApplied(target, status, turns));
+
+			// "Para cada efeito posto / recebido": as Passivas de quem pôs e de quem recebeu.
+			if (source != null)
+			{
+				foreach (var rule in source.Rules().ToList())
+					rule.Behavior.OnStatusGiven(rule, this, target, status);
+			}
+
+			foreach (var rule in target.Rules().ToList())
+				rule.Behavior.OnStatusReceived(rule, this, source, status);
 		}
 
 		/// <summary>O que as regras do alvo seguram deste dano (o escudo).</summary>

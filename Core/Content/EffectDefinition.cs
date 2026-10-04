@@ -26,6 +26,8 @@ namespace Sigilos.Core.Content
 	/// - ExtraTurnOnKill: se a habilidade derrubou alguém até aqui, turno extra para quem lança e
 	///   <see cref="Turns"/> turnos a menos na recarga dela.
 	///
+	/// <see cref="By"/> diz o que LowestAlly e HighestAlly comparam (em qualquer tipo, e no <see cref="From"/>).
+	///
 	/// <see cref="OnKill"/> faz o efeito só acontecer se o dano anterior da mesma habilidade derrubou o alvo.
 	/// </summary>
 	public sealed record EffectDefinition
@@ -58,5 +60,8 @@ namespace Sigilos.Core.Content
 
 		/// <summary>HealTeam e JointAttack: quantos alvos (0 = todos).</summary>
 		public int Count { get; init; }
+
+		/// <summary>LowestAlly e HighestAlly: o valor comparado (o padrão é a fração de Vida).</summary>
+		public TargetRank By { get; init; }
 	}
 }

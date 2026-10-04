@@ -56,7 +56,7 @@ namespace Sigilos.Core.Battle
 			_innate.AddRange(SetBehaviors.RulesFor(runeEffects));
 			if (passive != null)
 			{
-				_passive = new UnitRule(PassiveBehaviors.Of(passive.Kind), PassiveValue);
+				_passive = new UnitRule(PassiveBehaviors.Of(passive), PassiveValue);
 				_innate.Add(_passive);
 			}
 			foreach (var rule in _innate)

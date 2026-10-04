@@ -13,7 +13,7 @@ namespace Sigilos.Core.Battle.Effects
 		public override void Apply(Cast cast, EffectDefinition effect)
 		{
 			var resolver = cast.Resolver;
-			foreach (var target in cast.Targets(effect.Target))
+			foreach (var target in cast.Targets(effect))
 			{
 				if (!target.IsAlive || resolver.Random.NextDouble() >= effect.Chance)
 					continue;

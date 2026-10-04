@@ -20,28 +20,28 @@
     "unlockStage": 15,
     "sets": ["Vigor", "Lethal", "Haste", "Strike"],
     "floors": [
-      {"stars": 4, "level": 16, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
+      {"stars": 4, "level": 21, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
         "waves": [
           [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}],
           [{"summon": "goblin_wind"}, {"summon": "troll_wind"}, {"summon": "slime_light"}],
           [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_wind"}]
         ]
       },
-      {"stars": 5, "level": 16, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 0.95, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
+      {"stars": 5, "level": 34, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 0.95, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
         "waves": [
           [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "gargoyle_wind"}],
           [{"summon": "goblin_dark"}, {"summon": "troll_wind"}, {"summon": "slime_wind"}],
           [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_wind"}, {"summon": "goblin_wind"}]
         ]
       },
-      {"stars": 5, "level": 23, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 1.0, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
+      {"stars": 5, "level": 46, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 1.0, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
         "waves": [
           [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "gargoyle_wind"}, {"summon": "slime_water"}],
           [{"summon": "goblin_wind"}, {"summon": "troll_wind"}, {"summon": "slime_wind"}, {"summon": "gargoyle_light"}],
           [{"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_wind"}, {"summon": "goblin_wind"}]
         ]
       },
-      {"stars": 6, "level": 55, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.1, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
+      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.1, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
         "waves": [
           [{"summon": "gargoyle_wind"}, {"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "slime_dark"}],
           [{"summon": "troll_wind"}, {"summon": "gargoyle_wind"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}],
@@ -65,28 +65,28 @@
     "unlockStage": 20,
     "sets": ["Frenzy", "Finesse", "Sustain", "Bulwark"],
     "floors": [
-      {"stars": 4, "level": 16, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 0.85, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
+      {"stars": 4, "level": 21, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 0.85, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
         "waves": [
           [{"summon": "wolf_fire"}, {"summon": "goblin_fire"}, {"summon": "wolf_wind"}],
           [{"summon": "goblin_fire"}, {"summon": "dragon_fire"}, {"summon": "wolf_dark"}],
           [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_fire"}]
         ]
       },
-      {"stars": 5, "level": 16, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 0.85, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
+      {"stars": 5, "level": 34, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 0.85, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
         "waves": [
           [{"summon": "wolf_fire"}, {"summon": "goblin_fire"}, {"summon": "crow_fire"}],
           [{"summon": "goblin_light"}, {"summon": "dragon_fire"}, {"summon": "wolf_fire"}],
           [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_fire"}, {"summon": "goblin_fire"}]
         ]
       },
-      {"stars": 5, "level": 23, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 0.85, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
+      {"stars": 5, "level": 46, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 0.85, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
         "waves": [
           [{"summon": "wolf_fire"}, {"summon": "goblin_fire"}, {"summon": "crow_fire"}, {"summon": "wolf_wind"}],
           [{"summon": "goblin_fire"}, {"summon": "dragon_fire"}, {"summon": "wolf_fire"}, {"summon": "crow_dark"}],
           [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "wolf_fire"}, {"summon": "goblin_fire"}]
         ]
       },
-      {"stars": 6, "level": 55, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.0, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
+      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.0, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
         "waves": [
           [{"summon": "crow_fire"}, {"summon": "wolf_fire"}, {"summon": "goblin_fire"}, {"summon": "wolf_light"}],
           [{"summon": "dragon_fire"}, {"summon": "crow_fire"}, {"summon": "goblin_fire"}, {"summon": "wolf_wind"}],
@@ -110,28 +110,28 @@
     "unlockStage": 25,
     "sets": ["Siphon", "Oblivion", "Bane", "Tenacity"],
     "floors": [
-      {"stars": 4, "level": 16, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
+      {"stars": 4, "level": 21, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.0, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
         "waves": [
           [{"summon": "bandit_dark"}, {"summon": "wolf_dark"}, {"summon": "bandit_water"}],
           [{"summon": "wolf_dark"}, {"summon": "vampire_dark"}, {"summon": "bandit_fire"}],
           [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_dark"}]
         ]
       },
-      {"stars": 5, "level": 16, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 1.0, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
+      {"stars": 5, "level": 34, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 1.0, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
         "waves": [
           [{"summon": "bandit_dark"}, {"summon": "wolf_dark"}, {"summon": "gargoyle_dark"}],
           [{"summon": "wolf_light"}, {"summon": "vampire_dark"}, {"summon": "bandit_dark"}],
           [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_dark"}, {"summon": "wolf_dark"}]
         ]
       },
-      {"stars": 5, "level": 23, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 1.0, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
+      {"stars": 5, "level": 46, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 1.0, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
         "waves": [
           [{"summon": "bandit_dark"}, {"summon": "wolf_dark"}, {"summon": "gargoyle_dark"}, {"summon": "bandit_water"}],
           [{"summon": "wolf_dark"}, {"summon": "vampire_dark"}, {"summon": "bandit_dark"}, {"summon": "gargoyle_fire"}],
           [{"enemy": "bone_king", "element": "Dark"}, {"summon": "bandit_dark"}, {"summon": "wolf_dark"}]
         ]
       },
-      {"stars": 6, "level": 55, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.3, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
+      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.3, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
         "waves": [
           [{"summon": "gargoyle_dark"}, {"summon": "bandit_dark"}, {"summon": "wolf_dark"}, {"summon": "bandit_light"}],
           [{"summon": "vampire_dark"}, {"summon": "gargoyle_dark"}, {"summon": "wolf_dark"}, {"summon": "bandit_water"}],
@@ -155,28 +155,28 @@
     "unlockStage": 30,
     "sets": ["Wrath", "Ward", "Torment", "Counter"],
     "floors": [
-      {"stars": 4, "level": 16, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.05, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
+      {"stars": 4, "level": 21, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 1.05, "scrollChance": 2, "grades": {"2": 53.9, "3": 46.1}, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8},
         "waves": [
           [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
           [{"summon": "pixie_water"}, {"summon": "druid_water"}, {"summon": "slime_wind"}],
           [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_water"}]
         ]
       },
-      {"stars": 5, "level": 16, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 1.05, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
+      {"stars": 5, "level": 34, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 1.05, "scrollChance": 2, "grades": {"3": 30.7, "4": 54.5, "5": 14.7}, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0},
         "waves": [
           [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "knight_water"}],
           [{"summon": "pixie_light"}, {"summon": "druid_water"}, {"summon": "slime_water"}],
           [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_water"}, {"summon": "pixie_water"}]
         ]
       },
-      {"stars": 5, "level": 23, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 1.1, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
+      {"stars": 5, "level": 46, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 1.1, "scrollChance": 2, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
         "waves": [
           [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "knight_water"}, {"summon": "slime_fire"}],
           [{"summon": "pixie_water"}, {"summon": "druid_water"}, {"summon": "slime_water"}, {"summon": "knight_wind"}],
           [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_water"}, {"summon": "pixie_water"}]
         ]
       },
-      {"stars": 6, "level": 55, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.3, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
+      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.3, "scrollChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
         "waves": [
           [{"summon": "knight_water"}, {"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_light"}],
           [{"summon": "druid_water"}, {"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
@@ -199,28 +199,28 @@
     "image": "golem_head",
     "unlockStage": 30,
     "floors": [
-      {"stars": 4, "level": 16, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 0.85, "scrollChance": 2, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8}, "toolCount": 1,
+      {"stars": 4, "level": 21, "mana": 4, "essence": 340, "firstClearGold": 10, "experience": 1300, "scale": 0.85, "scrollChance": 2, "rarities": {"Rare": 70.7, "Hero": 23.5, "Legendary": 5.8}, "toolCount": 1,
         "waves": [
           [{"summon": "goblin_light"}, {"summon": "bandit_light"}, {"summon": "goblin_fire"}],
           [{"summon": "bandit_light"}, {"summon": "paladin_light"}, {"summon": "goblin_dark"}],
           [{"enemy": "forge_guardian", "element": "Light"}, {"summon": "goblin_light"}]
         ]
       },
-      {"stars": 5, "level": 16, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 0.9, "scrollChance": 2, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0}, "toolCount": 1,
+      {"stars": 5, "level": 34, "mana": 5, "essence": 450, "firstClearGold": 20, "experience": 2300, "scale": 0.9, "scrollChance": 2, "rarities": {"Rare": 69.3, "Hero": 25.7, "Legendary": 5.0}, "toolCount": 1,
         "waves": [
           [{"summon": "goblin_light"}, {"summon": "bandit_light"}, {"summon": "wizard_light"}],
           [{"summon": "bandit_wind"}, {"summon": "paladin_light"}, {"summon": "goblin_light"}],
           [{"enemy": "forge_guardian", "element": "Light"}, {"summon": "goblin_light"}, {"summon": "bandit_light"}]
         ]
       },
-      {"stars": 5, "level": 23, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 0.9, "scrollChance": 2, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9}, "toolCount": 1,
+      {"stars": 5, "level": 46, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 0.9, "scrollChance": 2, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9}, "toolCount": 1,
         "waves": [
           [{"summon": "goblin_light"}, {"summon": "bandit_light"}, {"summon": "wizard_light"}, {"summon": "goblin_fire"}],
           [{"summon": "bandit_light"}, {"summon": "paladin_light"}, {"summon": "goblin_light"}, {"summon": "wizard_dark"}],
           [{"enemy": "forge_guardian", "element": "Light"}, {"summon": "goblin_light"}, {"summon": "bandit_light"}]
         ]
       },
-      {"stars": 6, "level": 55, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.0, "scrollChance": 2, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4}, "toolCount": 1,
+      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.0, "scrollChance": 2, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4}, "toolCount": 1,
         "waves": [
           [{"summon": "wizard_light"}, {"summon": "goblin_light"}, {"summon": "bandit_light"}, {"summon": "goblin_wind"}],
           [{"summon": "paladin_light"}, {"summon": "wizard_light"}, {"summon": "bandit_light"}, {"summon": "goblin_fire"}],

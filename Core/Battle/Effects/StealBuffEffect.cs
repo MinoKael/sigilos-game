@@ -16,7 +16,7 @@ namespace Sigilos.Core.Battle.Effects
 		{
 			var resolver = cast.Resolver;
 			var thief = cast.Caster;
-			foreach (var target in cast.Targets(effect.Target))
+			foreach (var target in cast.Targets(effect))
 			{
 				if (!target.IsAlive || target == thief || resolver.Random.NextDouble() >= effect.Chance)
 					continue;

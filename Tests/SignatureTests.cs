@@ -14,6 +14,11 @@ namespace Sigilos.Tests
 	{
 		private static PassiveDefinition Passive(PassiveKind kind, double value) => new() { Kind = kind, Value = value };
 
+		/// <summary>Uma Passiva genérica que sempre dispara, com os efeitos dados.</summary>
+		private static PassiveDefinition Generic(PassiveKind kind, params EffectDefinition[] effects) => new() { Kind = kind, Effects = effects };
+
+		private static EffectDefinition Inflict(StatusKind status, int turns) => new() { Kind = EffectKind.Status, Status = status, Chance = 1, Turns = turns };
+
 		private static double Hit(BattleUnit attacker, BattleUnit target) => DamageFormula.Compute(attacker, target, 1, 0, false);
 
 		[Test]
@@ -28,7 +33,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void GoblinsHitDebuffedTargetsHarder()
 		{
-			var goblin = TestData.Unit("goblin", Side.Allies, passive: Passive(PassiveKind.BonusVsDebuffed, 0.3));
+			var goblin = TestData.Unit("goblin", Side.Allies, passive: new PassiveDefinition { Kind = PassiveKind.BonusVsStatusOrEffect, Value = 0.3, Scope = StatusScope.Debuffs });
 			var target = TestData.Unit("alvo", Side.Enemies);
 			var clean = Hit(goblin, target);
 			target.AddStatus(new StatusEffect(StatusKind.AttackDown, 2, 0, null));
@@ -59,7 +64,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void TrollsRegenerateAtTheStartOfTheirTurn()
 		{
-			var troll = TestData.Unit("troll", Side.Allies, speed: 300, health: 1000, passive: Passive(PassiveKind.RegenEachTurn, 0.05));
+			var troll = TestData.Unit("troll", Side.Allies, speed: 300, health: 1000, passive: Generic(PassiveKind.StatusOrEffectEachTurn, new EffectDefinition { Kind = EffectKind.Heal, Target = TargetKind.Self, Power = 0.05 }));
 			var foe = TestData.Unit("inimigo", Side.Enemies, attack: 1);
 			var session = TestData.Session(new[] { troll }, new[] { foe });
 			session.Start();
@@ -76,7 +81,7 @@ namespace Sigilos.Tests
 			var burned = 0;
 			for (var seed = 1; seed <= 20; seed++)
 			{
-				var dragon = TestData.Unit("dragão", Side.Allies, speed: 300, passive: Passive(PassiveKind.AfflictionOnHit, 1));
+				var dragon = TestData.Unit("dragão", Side.Allies, speed: 300, passive: Generic(PassiveKind.StatusOrEffectOnHit, Inflict(StatusKind.Affliction, 2)));
 				var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 				var session = TestData.Session(new[] { dragon }, new[] { foe }, seed);
 				session.Start();
@@ -116,7 +121,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void PaladinsMendTheMostInjuredAlly()
 		{
-			var paladin = TestData.Unit("paladino", Side.Allies, speed: 300, passive: Passive(PassiveKind.HealAllyEachTurn, 0.06));
+			var paladin = TestData.Unit("paladino", Side.Allies, speed: 300, passive: Generic(PassiveKind.StatusOrEffectEachTurn, new EffectDefinition { Kind = EffectKind.Heal, Target = TargetKind.LowestAlly, Power = 0.06 }));
 			var friend = TestData.Unit("amigo", Side.Allies, speed: 1, health: 1000);
 			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 1, attack: 1);
 			var session = TestData.Session(new[] { paladin, friend }, new[] { foe });
@@ -176,7 +181,7 @@ namespace Sigilos.Tests
 			var stunned = 0;
 			for (var seed = 1; seed <= 20; seed++)
 			{
-				var gargoyle = TestData.Unit("gárgula", Side.Enemies, health: 1_000_000, attack: 1, passive: Passive(PassiveKind.StunAttacker, 1));
+				var gargoyle = TestData.Unit("gárgula", Side.Enemies, health: 1_000_000, attack: 1, passive: Generic(PassiveKind.StatusOrEffectOnAttacker, Inflict(StatusKind.Stun, 1)));
 				var hero = TestData.Unit("herói", Side.Allies, speed: 300, basic: triple);
 				var session = TestData.Session(new[] { hero }, new[] { gargoyle }, seed);
 				session.Start();
@@ -216,7 +221,7 @@ namespace Sigilos.Tests
 			var cursed = 0;
 			for (var seed = 1; seed <= 20; seed++)
 			{
-				var crow = TestData.Unit("corvo", Side.Allies, speed: 300, passive: Passive(PassiveKind.CurseOnHit, 1));
+				var crow = TestData.Unit("corvo", Side.Allies, speed: 300, passive: Generic(PassiveKind.StatusOrEffectOnHit, Inflict(StatusKind.Curse, 2)));
 				var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000);
 				var session = TestData.Session(new[] { crow }, new[] { foe }, seed);
 				session.Start();

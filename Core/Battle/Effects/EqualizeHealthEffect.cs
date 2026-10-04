@@ -11,7 +11,7 @@ namespace Sigilos.Core.Battle.Effects
 	{
 		public override void Apply(Cast cast, EffectDefinition effect)
 		{
-			var team = cast.Targets(effect.Target).Where(unit => unit.IsAlive).ToList();
+			var team = cast.Targets(effect).Where(unit => unit.IsAlive).ToList();
 			if (team.Count < 2)
 				return;
 

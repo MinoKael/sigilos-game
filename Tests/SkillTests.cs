@@ -107,7 +107,7 @@ namespace Sigilos.Tests
 			foreach (var kind in Enum.GetValues<StatusKind>())
 				Assert.True(Has(() => StatusBehaviors.Of(kind)), $"falta a estratégia do status {kind} em Core/Battle/Statuses/StatusBehaviors.cs");
 			foreach (var kind in Enum.GetValues<PassiveKind>())
-				Assert.True(Has(() => PassiveBehaviors.Of(kind)), $"falta a estratégia da Passiva {kind} em Core/Battle/Passives/PassiveBehaviors.cs");
+				Assert.True(Has(() => PassiveBehaviors.Of(new PassiveDefinition { Kind = kind })), $"falta a estratégia da Passiva {kind} em Core/Battle/Passives/PassiveBehaviors.cs");
 
 			static bool Has(Func<object> find)
 			{

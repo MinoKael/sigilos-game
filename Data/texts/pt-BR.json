@@ -16,7 +16,8 @@
     "auto_short": "Automática",
     "edit_team": "Editar equipe",
     "cancel": "Cancelar",
-    "buy_mana": "Comprar Mana na Loja"
+    "buy_mana": "Comprar Mana na Loja",
+    "or": " ou "
   },
 
   "auto": {
@@ -374,7 +375,19 @@
     "AllEnemies": "em todos os inimigos",
     "Self": "em si",
     "LowestAlly": "no aliado mais ferido",
-    "AllAllies": "em todos os aliados"
+    "AllAllies": "em todos os aliados",
+    "HighestAlly": "no aliado menos ferido",
+    "RandomAlly": "num aliado ao acaso",
+    "RandomEnemy": "num inimigo ao acaso",
+    "LowestAlly_by": "no aliado com menos {0}",
+    "HighestAlly_by": "no aliado com mais {0}",
+    "ally": {
+      "LowestAlly": "o aliado mais ferido",
+      "HighestAlly": "o aliado menos ferido",
+      "RandomAlly": "um aliado ao acaso",
+      "LowestAlly_by": "o aliado com menos {0}",
+      "HighestAlly_by": "o aliado com mais {0}"
+    }
   },
 
   "skill": {
@@ -419,27 +432,32 @@
     "heal_team": "cura {0} da Vida dos {1} mais feridos {2}",
     "joint": "{0} aliados atacam junto, com a básica",
     "joint_all": "todos os aliados atacam junto, com a básica",
-    "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}"
+    "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}",
+    "joint_one": "{0} ataca junto, com a básica"
   },
 
   "passive": {
     "SpeedWhenLowest": "+{0} de Velocidade enquanto for o aliado com menos Vida.",
-    "ShieldOnDeath": "Ao cair, dá {0} de {1} da própria Vida a todos os aliados.",
     "RebirthOnce": "Na primeira vez que cai, renasce com {0} da Vida no turno seguinte dela.",
     "DamageReduction": "Recebe {0} menos de dano de todo golpe.",
-    "BonusVsDebuffed": "+{0} de dano em alvos com efeito negativo.",
     "BonusVsWounded": "+{0} de dano em alvos abaixo de {1} da Vida.",
     "ImpetoAtWaveStart": "Começa cada onda com pelo menos {0} de {1}.",
-    "RegenEachTurn": "Recupera {0} da Vida máxima no começo de cada turno dele.",
-    "AfflictionOnHit": "{0} de chance de causar {1} em cada alvo atingido, uma vez por habilidade.",
     "CooldownEachTurn": "{0} de chance, no começo do turno, de encurtar as próprias recargas em 1 turno.",
-    "HealAllyEachTurn": "No começo do turno, cura {0} da Vida máxima do aliado mais ferido.",
     "Thorns": "Quem o atinge recebe {0} do dano que causou.",
-    "StunAttacker": "{0} de chance de causar {1} em quem o atinge, uma vez por habilidade.",
     "Lifesteal": "Drena {0} de todo dano que causa como Vida.",
-    "CurseOnHit": "{0} de chance de causar {1} em cada alvo atingido, uma vez por habilidade.",
     "Dodge": "{0} de chance de esquivar de cada golpe.",
-    "CleanseAllyEachTurn": "{0} de chance, no começo do turno, de remover um efeito negativo de um aliado."
+    "CleanseAllyEachTurn": "{0} de chance, no começo do turno, de remover um efeito negativo de um aliado.",
+    "BonusVsStatusOrEffect": "+{0} de dano em alvos com {1}.",
+    "StatusOrEffectOnHit": "em cada alvo atingido, uma vez por habilidade: {0}",
+    "StatusOrEffectOnAttacker": "em quem o atinge, uma vez por habilidade: {0}",
+    "StatusOrEffectEachTurn": "no começo de cada turno dele: {0}",
+    "StatusOrEffectOnWaveStart": "no começo de cada onda: {0}",
+    "StatusOrEffectOnDeath": "ao cair: {0}",
+    "StatusOrEffectWhenLowest": "no começo do turno, se for o aliado com menos Vida: {0}",
+    "ForEachStatusOrEffectAppliedDo": "para cada {1} que põe: {0}",
+    "ForEachStatusOrEffectReceivedDo": "para cada {1} que recebe: {0}",
+    "StatusOrEffectOnTargetEachTurn": "depois de agir, no alvo da habilidade: {0}",
+    "chance": "{0} ({1} de chance)"
   },
 
   "awaken": {

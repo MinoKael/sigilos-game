@@ -12,7 +12,7 @@ namespace Sigilos.Core.Battle.Effects
 	{
 		public override void Apply(Cast cast, EffectDefinition effect)
 		{
-			var targets = cast.Targets(effect.Target).AsEnumerable();
+			var targets = cast.Targets(effect).AsEnumerable();
 			if (effect.Count > 0)
 				targets = targets.OrderBy(t => t.HealthFraction).Take(effect.Count);
 

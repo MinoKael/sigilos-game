@@ -65,6 +65,12 @@ namespace Sigilos.Core.Battle
 		/// <summary>O dono caiu. Os efeitos de status dele já saíram, mas ainda são avisados.</summary>
 		public virtual void OnDeath(UnitRule rule, EffectResolver resolver) { }
 
+		/// <summary>Um efeito de status que o dono pôs acabou de pegar (novo ou renovado) em <paramref name="target"/>.</summary>
+		public virtual void OnStatusGiven(UnitRule rule, EffectResolver resolver, BattleUnit target, StatusKind status) { }
+
+		/// <summary>Um efeito de status acabou de pegar no dono (novo ou renovado); <paramref name="source"/> é quem pôs (nulo no escudo).</summary>
+		public virtual void OnStatusReceived(UnitRule rule, EffectResolver resolver, BattleUnit? source, StatusKind status) { }
+
 		// Momentos de um golpe, na ordem em que acontecem -------------------------------------------
 
 		/// <summary>O dono vai dar um golpe: pode errar, garantir o crítico, somar dreno.</summary>

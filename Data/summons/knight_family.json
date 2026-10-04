@@ -1,7 +1,7 @@
 {
   "family_id": "knight",
   "base_name": "Cavaleiro",
-  "name": "Cavaleiros Juramentados",
+  "name": "Cavaleiros",
   "star_grade": 4,
   "image": "knight",
   "variations": {
@@ -18,13 +18,14 @@
         {
           "name": "Lâmina Ardente",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.69}
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
+            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {"kind": "EffectRate", "value": 0.1}
           ]
         },
         {
@@ -36,6 +37,7 @@
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
@@ -51,6 +53,8 @@
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
           ]
         }
@@ -98,7 +102,13 @@
         },
         {
           "name": "Último Voto",
-          "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
+          "passive": {"kind": "StatusOrEffectOnDeath"},
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2}
+          ]
         }
       ]
     },
@@ -192,7 +202,13 @@
         },
         {
           "name": "Último Voto",
-          "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
+          "passive": {"kind": "StatusOrEffectOnDeath"},
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2}
+          ]
         }
       ]
     },
@@ -236,7 +252,13 @@
         },
         {
           "name": "Último Voto",
-          "passive": {"kind": "ShieldOnDeath", "value": 0.15, "awakenedValue": 0.25}
+          "passive": {"kind": "StatusOrEffectOnDeath"},
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2}
+          ]
         }
       ]
     }

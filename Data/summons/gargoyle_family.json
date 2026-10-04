@@ -45,7 +45,9 @@
         },
         {
           "name": "Olhar de Pedra",
-          "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
+          "passive": {"kind": "StatusOrEffectOnAttacker"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15, "turns": 1}],
+          "awakenedEffects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}]
         }
       ]
     },
@@ -92,7 +94,9 @@
         },
         {
           "name": "Olhar de Pedra",
-          "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
+          "passive": {"kind": "StatusOrEffectOnAttacker"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15, "turns": 1}],
+          "awakenedEffects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}]
         }
       ]
     },
@@ -192,7 +196,9 @@
         },
         {
           "name": "Olhar de Pedra",
-          "passive": {"kind": "StunAttacker", "value": 0.15, "awakenedValue": 0.25}
+          "passive": {"kind": "StatusOrEffectOnAttacker"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15, "turns": 1}],
+          "awakenedEffects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}]
         }
       ]
     },

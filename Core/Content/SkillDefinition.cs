@@ -10,7 +10,7 @@ namespace Sigilos.Core.Content
 	///
 	/// Cada habilidade sobe de nível com cópias da mesma invocação (<see cref="Levels"/>: o nível 2 é o
 	/// primeiro item). Algumas mudam no Despertar: <see cref="AwakenedEffects"/> troca a lista de efeitos
-	/// inteira, não soma.
+	/// inteira, não soma. Nas Passivas genéricas, os efeitos são o que a Passiva faz ao disparar.
 	/// </summary>
 	public sealed record SkillDefinition
 	{
@@ -55,17 +55,20 @@ namespace Sigilos.Core.Content
 			var rate = Bonus(SkillLevelKind.EffectRate, level);
 			var cooldown = Cooldown > 0 ? Math.Max(1, Cooldown - (int)Math.Round(Bonus(SkillLevelKind.Cooldown, level))) : 0;
 
+			var prepared = effects.Select(e => e.Kind switch
+			{
+				EffectKind.Damage => e with { Power = e.Power * damage },
+				EffectKind.Heal or EffectKind.Shield => e with { Power = e.Power * recovery },
+				EffectKind.Status when e.Chance < 1 => e with { Chance = Math.Min(1, e.Chance + rate) },
+				_ => e,
+			}).ToList();
+
 			return this with
 			{
 				Cooldown = cooldown,
-				Effects = effects.Select(e => e.Kind switch
-				{
-					EffectKind.Damage => e with { Power = e.Power * damage },
-					EffectKind.Heal or EffectKind.Shield => e with { Power = e.Power * recovery },
-					EffectKind.Status when e.Chance < 1 => e with { Chance = Math.Min(1, e.Chance + rate) },
-					_ => e,
-				}).ToList(),
+				Effects = prepared,
 				AwakenedEffects = new List<EffectDefinition>(),
+				Passive = Passive is { } passive ? passive with { Effects = prepared } : null,
 			};
 		}
 	}

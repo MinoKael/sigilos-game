@@ -13,7 +13,7 @@ namespace Sigilos.Core.Battle.Effects
 		{
 			var resolver = cast.Resolver;
 			var caster = cast.Caster;
-			foreach (var target in cast.Targets(effect.Target))
+			foreach (var target in cast.Targets(effect))
 			{
 				if (!target.IsAlive)
 					continue;

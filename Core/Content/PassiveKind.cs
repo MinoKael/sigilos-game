@@ -1,51 +1,70 @@
 namespace Sigilos.Core.Content
 {
-	/// <summary>As Passivas que o MVP implementa. Cada uma nasce do conceito de uma família.</summary>
+	/// <summary>
+	/// As Passivas. As genéricas (do <see cref="BonusVsStatusOrEffect"/> em diante) recebem os efeitos da
+	/// habilidade passiva (<see cref="PassiveDefinition.Effects"/>) e, as que olham efeitos de status, o filtro
+	/// (<see cref="PassiveDefinition.Statuses"/>, <see cref="PassiveDefinition.Scope"/>); as outras são regras
+	/// próprias de uma família.
+	/// </summary>
 	public enum PassiveKind
 	{
 		/// <summary>Diabretes: mais Velocidade enquanto for o aliado com menos Vida.</summary>
 		SpeedWhenLowest,
 
-		/// <summary>Cavaleiros: ao cair, dão escudo a todos os aliados.</summary>
-		ShieldOnDeath,
-
 		/// <summary>Fênix: na primeira vez que cai, renasce no turno seguinte dela.</summary>
 		RebirthOnce,
 		/// <summary>Limos: recebe menos dano de todo golpe.</summary>
 		DamageReduction,
-		/// <summary>Goblins: mais dano em quem está com efeito negativo.</summary>
-		BonusVsDebuffed,
 		/// <summary>Lobos: mais dano em quem está abaixo da metade da Vida máxima.</summary>
 		BonusVsWounded,
 		/// <summary>Bandidos: começa cada onda com Ímpeto.</summary>
 		ImpetoAtWaveStart,
-		/// <summary>Trolls: recupera Vida no começo de cada turno dele.</summary>
-		RegenEachTurn,
-		/// <summary>Dragões: chance de Queimadura em cada alvo atingido, uma vez por habilidade.</summary>
-		AfflictionOnHit,
 
 		/// <summary>Magos: chance de encurtar as próprias recargas no começo de cada turno.</summary>
 		CooldownEachTurn,
 
-		/// <summary>Paladinos: curam o aliado mais ferido no começo de cada turno.</summary>
-		HealAllyEachTurn,
-
 		/// <summary>Druidas: quem os atinge recebe de volta parte do dano que causou.</summary>
 		Thorns,
 
-		/// <summary>Gárgulas: chance de atordoar quem as atinge, uma vez por habilidade.</summary>
-		StunAttacker,
-
 		/// <summary>Vampiros: drenam parte de todo dano que causam.</summary>
 		Lifesteal,
-
-		/// <summary>Corvos: chance de Maldição em cada alvo atingido, uma vez por habilidade.</summary>
-		CurseOnHit,
 
 		/// <summary>Pássaros: chance de esquivar de cada golpe.</summary>
 		Dodge,
 
 		/// <summary>Pixies: chance de tirar um efeito negativo de um aliado no começo de cada turno.</summary>
 		CleanseAllyEachTurn,
+
+		// Genéricas ---------------------------------------------------------------------------------
+
+		/// <summary>Mais dano (o número) em quem tem algum efeito que conta. Não usa efeitos.</summary>
+		BonusVsStatusOrEffect,
+
+		/// <summary>Os efeitos em cada alvo atingido que ficou de pé, uma vez por habilidade.</summary>
+		StatusOrEffectOnHit,
+
+		/// <summary>Os efeitos em quem atinge o dono, uma vez por habilidade.</summary>
+		StatusOrEffectOnAttacker,
+
+		/// <summary>Os efeitos no começo de cada turno do dono.</summary>
+		StatusOrEffectEachTurn,
+
+		/// <summary>Os efeitos no começo de cada onda.</summary>
+		StatusOrEffectOnWaveStart,
+
+		/// <summary>Os efeitos quando o dono cai.</summary>
+		StatusOrEffectOnDeath,
+
+		/// <summary>Os efeitos no começo do turno do dono, se ele é o aliado com menos Vida.</summary>
+		StatusOrEffectWhenLowest,
+
+		/// <summary>Os efeitos para cada efeito que conta que o dono põe.</summary>
+		ForEachStatusOrEffectAppliedDo,
+
+		/// <summary>Os efeitos para cada efeito que conta que o dono recebe.</summary>
+		ForEachStatusOrEffectReceivedDo,
+
+		/// <summary>Os efeitos no alvo da habilidade, depois de cada turno do dono.</summary>
+		StatusOrEffectOnTargetEachTurn,
 	}
 }

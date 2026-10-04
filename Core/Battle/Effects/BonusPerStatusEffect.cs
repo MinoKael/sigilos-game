@@ -13,7 +13,7 @@ namespace Sigilos.Core.Battle.Effects
 	{
 		public override void Apply(Cast cast, EffectDefinition effect)
 		{
-			var count = cast.Targets(effect.From).Sum(unit => StatusFilter.Of(unit, effect).Count);
+			var count = cast.Targets(effect.From, effect.By).Sum(unit => StatusFilter.Of(unit, effect).Count);
 			if (count == 0)
 				return;
 
@@ -27,7 +27,7 @@ namespace Sigilos.Core.Battle.Effects
 					cast.HealBonus += bonus;
 					break;
 				default:
-					foreach (var target in cast.Targets(effect.Target))
+					foreach (var target in cast.Targets(effect))
 						cast.Resolver.GainImpeto(target, bonus);
 					break;
 			}

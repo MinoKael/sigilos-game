@@ -18,11 +18,11 @@
     "skills": [
       { "name": "Corrente", "effects": [
         {"kind": "Damage", "power": 3.5},
-        {"kind": "Status", "status": "Taunt", "chance": 0.3}
+        {"kind": "Status", "status": "Taunt", "chance": 0.8}
       ] },
       { "name": "Grilhões", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
-        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35}
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.55}
       ] }
     ]
   },
@@ -31,17 +31,17 @@
     "name": "Golem Rúnico",
     "role": "HP",
     "rarity": 3,
-    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
-    "healthScale": 8.0, "attackScale": 1.6,
+    "stats": {"hp": 9010, "atk": 506, "def": 727, "spd": 99},
+    "healthScale": 9.0, "attackScale": 1.6,
     "image": "rock_golem",
     "skills": [
       { "name": "Punho de Pedra", "effects": [
         {"kind": "Damage", "power": 3.5},
-        {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 0.3, "turns": 2}
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 1.0, "turns": 3}
       ] },
       { "name": "Terremoto", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.25}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.75}
       ] }
     ]
   },
@@ -56,11 +56,11 @@
     "skills": [
       { "name": "Mordida Ardente", "effects": [
         {"kind": "Damage", "power": 3.8},
-        {"kind": "Status", "status": "Affliction", "chance": 0.4, "turns": 2}
+        {"kind": "Status", "status": "Affliction", "chance": 0.6, "turns": 2}
       ] },
       { "name": "Sopro de Cinzas", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.6},
-        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 2}
       ] }
     ]
   },
@@ -74,10 +74,10 @@
     "image": "crowned_skull",
     "skills": [
       { "name": "Toque do Túmulo", "effects": [
-        {"kind": "Damage", "power": 3.5, "drain": 0.3}
+        {"kind": "Damage", "power": 3.5, "drain": 0.4}
       ] },
       { "name": "Coroa de Pó", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.0},
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.0},
         {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
       ] }
     ]
@@ -115,14 +115,14 @@
       ] },
       { "name": "Brasa da Bigorna", "cooldown": 4, "effects": [
         {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.7},
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.7, "turns": 2}
       ] }
     ]
   },
   {
     "id": "mother_serpent",
-    "name": "A Serpe-Mãe",
+    "name": "A Serpente-Mãe",
     "role": "Attack",
     "rarity": 3,
     "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
@@ -135,7 +135,7 @@
       ] },
       { "name": "Maremoto", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.3},
-        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
+        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.6, "turns": 2}
       ] }
     ]
   },
@@ -155,7 +155,7 @@
       { "name": "Silêncio", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
         {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
-        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.2}
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
       ] }
     ]
   }

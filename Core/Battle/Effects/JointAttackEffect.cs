@@ -5,7 +5,7 @@ namespace Sigilos.Core.Battle.Effects
 {
 	/// <summary>
 	/// Ataque conjunto: <see cref="EffectDefinition.Count"/> aliados de pé entre os alvos do efeito (0 =
-	/// todos), sorteados, atacam com a básica o alvo da habilidade, com o dano inteiro; quem perde o turno
+	/// todos; o alvo escolhe entre os aliados sem quem lança: LowestAlly, HighestAlly, RandomAlly), sorteados, atacam com a básica o alvo da habilidade, com o dano inteiro; quem perde o turno
 	/// (atordoado, dormindo) não vem. A básica de quem foi chamado não chama outros, e um contra-ataque não
 	/// chama ninguém. O que eles derrubam conta para a habilidade (o turno extra ao derrubar, os efeitos
 	/// "ao derrubar").
@@ -18,7 +18,7 @@ namespace Sigilos.Core.Battle.Effects
 				return;
 
 			var resolver = cast.Resolver;
-			var callers = cast.Targets(effect.Target)
+			var callers = cast.Targets(effect.Target, effect.By, exceptCaster: true)
 				.Where(ally => ally != cast.Caster && ally.IsAlive && ally.Side == cast.Caster.Side && !ally.Any(behavior => behavior.SkipsTurn))
 				.OrderBy(_ => resolver.Random.Next())
 				.ToList();

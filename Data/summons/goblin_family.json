@@ -16,7 +16,10 @@
         "name": "Resmungo",
         "skill": {
           "name": "Golpe Baixo",
-          "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+          "passive": {"kind": "ForEachStatusOrEffectAppliedDo", "scope": "Debuffs"},
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 10}
+          ]
         }
       },
       "skills": [
@@ -110,7 +113,7 @@
         "name": "Zás",
         "skill": {
           "name": "Golpe Baixo",
-          "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.35, "scope": "Debuffs"}
         }
       },
       "skills": [
@@ -198,7 +201,7 @@
         "name": "Espreita",
         "skill": {
           "name": "Golpe Baixo",
-          "passive": {"kind": "BonusVsDebuffed", "value": 0.35}
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.35, "scope": "Debuffs"}
         }
       },
       "skills": [

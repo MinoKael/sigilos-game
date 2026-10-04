@@ -10,7 +10,7 @@ namespace Sigilos.Core.Battle.Passives
 			stat == Stat.Speed && IsLowestInTeam(rule.Owner) ? value * (1 + rule.Value) : value;
 
 		/// <summary>Estritamente a menos Vida: empate (todos cheios no começo da luta) não conta.</summary>
-		private static bool IsLowestInTeam(BattleUnit unit)
+		public static bool IsLowestInTeam(BattleUnit unit)
 		{
 			var others = unit.Team.Where(u => u.IsAlive && u != unit).ToList();
 			return others.Count > 0 && others.All(u => u.HealthFraction > unit.HealthFraction);

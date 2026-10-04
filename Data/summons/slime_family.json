@@ -9,32 +9,31 @@
       "variation_id": "slime_fire",
       "name": "Limo de Fogo",
       "element": "Fire",
-      "role": "Attack",
-      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
         "name": "Magmalodo",
         "skill": {
-          "name": "Corpo Gelatinoso",
-          "passive": {"kind": "DamageReduction", "value": 0.2}
+          "name": "Corpo Escaldante",
+          "passive": {"kind": "Thorns", "value": 0.5}
         }
       },
       "skills": [
         {
-          "name": "Bolota Escaldante",
+          "name": "Gosma Escaldante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Erupção",
+          "name": "Disparo de Magma",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
@@ -72,29 +71,26 @@
       },
       "skills": [
         {
-          "name": "Bola de Gosma",
+          "name": "Gosma Gelada",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 0.8},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.15, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Engolfar",
-          "cooldown": 3,
+          "name": "Entoxicar",
+          "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.35, "turns": 2}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -103,28 +99,35 @@
       "variation_id": "slime_wind",
       "name": "Limo de Vento",
       "element": "Wind",
-      "role": "Defense",
-      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Espuma",
+        "name": "Poeirinha",
         "skill": {
-          "name": "Corpo Gelatinoso",
-          "passive": {"kind": "DamageReduction", "value": 0.2}
+          "name": "Vendaval de Meleca",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
         }
       },
       "skills": [
         {
-          "name": "Respingo Grudento",
+          "name": "Gosma Arenosa",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Impeto", "target": "Target", "power": -15}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -150,7 +153,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Geleluz",
+        "name": "Limuz",
         "skill": {
           "name": "Gel Radiante",
           "cooldown": 5,
@@ -166,15 +169,14 @@
       },
       "skills": [
         {
-          "name": "Gosma Calmante",
+          "name": "Gosma Brilhante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Recovery", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1}
           ]
         },
@@ -196,26 +198,36 @@
       "variation_id": "slime_dark",
       "name": "Limo de Trevas",
       "element": "Dark",
-      "role": "Defense",
-      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
         "name": "Piche",
         "skill": {
-          "name": "Corpo Gelatinoso",
-          "passive": {"kind": "DamageReduction", "value": 0.2}
+          "name": "Toque Amaldiçoado",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.45},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1}
+          ]
         }
       },
       "skills": [
         {
-          "name": "Agarrão de Piche",
+          "name": "Gosma Pétrea",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1}
           ]

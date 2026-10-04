@@ -15,7 +15,7 @@ namespace Sigilos.Core.Battle.Effects
 	{
 		public override void Apply(Cast cast, EffectDefinition effect)
 		{
-			var targets = cast.Targets(effect.Target).ToList();
+			var targets = cast.Targets(effect).ToList();
 			for (var round = 0; round < effect.Hits; round++)
 			{
 				foreach (var target in targets.Where(t => t.IsAlive))

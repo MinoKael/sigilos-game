@@ -342,6 +342,9 @@ namespace Sigilos.Core.Content
 					yield return $"'{skill.Name}': quantidade {effect.Count} negativa.";
 			}
 
+			if (skill.Passive is { UsesEffects: true } && skill.Effects.Count == 0)
+				yield return $"'{skill.Name}': a Passiva {skill.Passive.Kind} não tem efeitos.";
+
 		}
 	}
 }

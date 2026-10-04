@@ -1,7 +1,7 @@
 {
   "family_id": "imp",
   "base_name": "Diabrete",
-  "name": "Diabretes de Selo",
+  "name": "Diabretes",
   "star_grade": 3,
   "image": "imp",
   "variations": {
@@ -9,9 +9,9 @@
       "variation_id": "imp_fire",
       "name": "Diabrete de Fogo",
       "element": "Fire",
-      "role": "Attack",
-      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
         "name": "Fagulha",
         "skill": {
@@ -21,28 +21,29 @@
       },
       "skills": [
         {
-          "name": "Faísca",
+          "name": "Traquinagem Infernal",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.35, "hits": 2}
+            {"kind": "Damage", "target": "Target", "power": 1.35, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
+            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.15}
           ]
         },
         {
-          "name": "Selo Rompido",
+          "name": "Pacto Profano",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.41},
-            {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+            {"kind": "EqualizeHealth", "target": "AllAllies"},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Recovery", "value": 0.1}
           ]
         }
       ]

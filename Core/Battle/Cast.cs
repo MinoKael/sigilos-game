@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Runes;
 
@@ -14,6 +15,7 @@ namespace Sigilos.Core.Battle
 		private readonly IReadOnlyList<BattleUnit> _allies;
 		private readonly IReadOnlyList<BattleUnit> _opponents;
 		private readonly HashSet<(UnitRule Rule, BattleUnit Target)> _once = new();
+		private readonly Dictionary<(TargetKind Kind, bool ExceptCaster), IReadOnlyList<BattleUnit>> _drawn = new();
 
 		public Cast(EffectResolver resolver, BattleUnit caster, BattleUnit? main, IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> opponents, bool counter, bool joint = false)
 		{
@@ -63,7 +65,23 @@ namespace Sigilos.Core.Battle
 		public Dictionary<BattleUnit, double> Dealt { get; } = new();
 
 		/// <summary>As unidades que um efeito atinge, do ponto de vista de quem lança.</summary>
-		public IReadOnlyList<BattleUnit> Targets(TargetKind kind) => Targeting.Resolve(kind, Caster, Main, _allies, _opponents);
+		public IReadOnlyList<BattleUnit> Targets(EffectDefinition effect) => Targets(effect.Target, effect.By);
+
+		/// <summary>
+		/// As unidades de <paramref name="kind"/>, do ponto de vista de quem lança. O sorteio dos ao acaso vale
+		/// para a habilidade inteira, como o alvo principal: o efeito seguinte cai no mesmo sorteado.
+		/// </summary>
+		/// <param name="exceptCaster">Os aliados sem quem lança (o ataque conjunto chama os outros).</param>
+		public IReadOnlyList<BattleUnit> Targets(TargetKind kind, TargetRank by, bool exceptCaster = false)
+		{
+			var allies = exceptCaster ? _allies.Where(unit => unit != Caster).ToList() : _allies;
+			if (kind is not (TargetKind.RandomAlly or TargetKind.RandomEnemy))
+				return Targeting.Resolve(kind, by, Caster, Main, allies, _opponents, Resolver.Random);
+
+			if (!_drawn.TryGetValue((kind, exceptCaster), out var drawn))
+				_drawn[(kind, exceptCaster)] = drawn = Targeting.Resolve(kind, by, Caster, Main, allies, _opponents, Resolver.Random);
+			return drawn;
+		}
 
 		/// <summary>
 		/// Verdadeiro só na primeira vez que a regra pergunta por este alvo: é o "um sorteio por alvo a

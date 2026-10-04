@@ -238,11 +238,12 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "roles": ["HP", "Attack", "Defense", "Support"],
   "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
   "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill"],
-  "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies"],
+  "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy"],
+  "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "bonuses": ["Damage", "Heal", "Impeto"],
-  "passives": ["SpeedWhenLowest", "ShieldOnDeath", "RebirthOnce", "DamageReduction", "BonusVsDebuffed", "BonusVsWounded", "ImpetoAtWaveStart", "RegenEachTurn", "AfflictionOnHit", "CooldownEachTurn", "HealAllyEachTurn", "Thorns", "StunAttacker", "Lifesteal", "CurseOnHit", "Dodge", "CleanseAllyEachTurn"],
+  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn"],
   "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"]
 }
 </script>
@@ -294,7 +295,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}]
         }
       ]
     },
@@ -437,7 +439,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}]
         }
       ]
     },
@@ -478,7 +481,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
         },
         {
           "name": "Fogo de Dragão",
-          "passive": {"kind": "AfflictionOnHit", "value": 0.2}
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}]
         }
       ]
     }
@@ -498,18 +502,49 @@ const Core = (() => {
   // O nome do elemento em português: os nomes dos dados nascem em português ("Dragão de Fogo").
   const ELEMENT_NAMES = {Fire: "Fogo", Water: "Água", Wind: "Vento", Light: "Luz", Dark: "Trevas"};
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by"];
   // Efeitos e status ---------------------------------------------------------------------------------
   // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
   // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
   // onKill, e o modelo que o botão do tipo insere.
-  const COMMON_FIELDS = ["kind", "target", "onKill"];
+  const COMMON_FIELDS = ["kind", "target", "onKill", "by"];
   const TARGET_DOCS = {
     Target: "o inimigo escolhido (o alvo da habilidade)",
     AllEnemies: "todos os inimigos de pé",
     Self: "quem lança",
-    LowestAlly: "o aliado com a menor fração de Vida",
+    LowestAlly: "o aliado com o menor valor de by (padrão: a menor fração de Vida)",
     AllAllies: "todos os aliados de pé (a equipe, com quem lança)",
+    HighestAlly: "o aliado com o maior valor de by (padrão: a maior fração de Vida)",
+    RandomAlly: "um aliado de pé sorteado (uma vez por habilidade: o efeito seguinte cai no mesmo)",
+    RandomEnemy: "um inimigo de pé sorteado, oculto ou não (uma vez por habilidade)",
+  };
+  // As Passivas genéricas que disparam os efeitos da habilidade (PassiveDefinition.UsesEffects).
+  const PASSIVE_EFFECTS = ["StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn"];
+  const PASSIVE_DOCS = {
+    SpeedWhenLowest: "value: Velocidade a mais enquanto for o aliado com menos Vida",
+    RebirthOnce: "value: Vida com que renasce na primeira queda",
+    DamageReduction: "value: dano a menos de todo golpe",
+    BonusVsWounded: "value: dano a mais em alvos abaixo de 50% da Vida",
+    ImpetoAtWaveStart: "value: Ímpeto mínimo no começo de cada onda (0.5 = 50)",
+    CooldownEachTurn: "value: chance de encurtar as recargas no começo do turno",
+    Thorns: "value: fração do dano devolvida a quem atinge",
+    Lifesteal: "value: fração de todo dano que volta como Vida",
+    Dodge: "value: chance de esquivar de cada golpe",
+    CleanseAllyEachTurn: "value: chance de tirar um efeito negativo de um aliado no começo do turno",
+    BonusVsStatusOrEffect: "value: dano a mais em quem tem algum efeito que conta (statuses, ou o scope)",
+    StatusOrEffectOnHit: "effects em cada alvo atingido que ficou de pé, uma vez por habilidade (Target = o atingido)",
+    StatusOrEffectOnAttacker: "effects em quem atinge o dono, uma vez por habilidade (Target = quem atacou)",
+    StatusOrEffectEachTurn: "effects no começo de cada turno do dono",
+    StatusOrEffectOnWaveStart: "effects no começo de cada onda",
+    StatusOrEffectOnDeath: "effects quando o dono cai (os aliados de pé recebem)",
+    StatusOrEffectWhenLowest: "effects no começo do turno do dono, se ele é o aliado com menos Vida",
+    ForEachStatusOrEffectAppliedDo: "effects para cada efeito que conta que o dono põe, novo ou renovado (Target = quem recebeu)",
+    ForEachStatusOrEffectReceivedDo: "effects para cada efeito que conta que o dono recebe (Target = quem pôs)",
+    StatusOrEffectOnTargetEachTurn: "effects no alvo da habilidade, depois de cada turno do dono (Target = o alvo)",
+  };
+  const RANK_DOCS = {
+    Health: "a fração de Vida (o padrão)", Attack: "o Ataque de agora", Defense: "a Defesa de agora", Speed: "a Velocidade de agora",
+    Crit: "a Chance Crítico", CritDamage: "o Dano Crítico", Resistance: "a Resistência", Accuracy: "a Precisão", Impeto: "o Ímpeto acumulado",
   };
   const SCOPE_DOCS = {All: "todos os efeitos", Buffs: "só os positivos", Debuffs: "só os negativos"};
   const BONUS_DOCS = {
@@ -518,19 +553,19 @@ const Core = (() => {
     Impeto: "+power pontos de Ímpeto por efeito, na hora, para os alvos do efeito",
   };
   const EFFECT_DOCS = {
-    Damage: {label: "Dano", targets: null,
+    Damage: {label: "Dano", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
       text: "Golpes de power × ATK. Cada efeito de dano é um golpe à parte: \"3 golpes e um quarto que ignora a Defesa\" são dois efeitos.",
       fields: {power: "multiplicador do ATK (3.5 = 350%)", hits: "golpes (cada rodada acerta todos os alvos)", ignoreDefense: "fração da Defesa ignorada (0 a 1)", drain: "fração do dano que volta como Vida (0 a 1)"},
       template: {kind: "Damage", target: "Target", power: 2.45}},
-    Heal: {label: "Cura", targets: null,
+    Heal: {label: "Cura", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
       text: "Cura power da Vida máxima de cada alvo. A Ferida barra.",
       fields: {power: "fração da Vida máxima do alvo (0.15 = 15%)", count: "só os N alvos mais feridos (0 ou ausente = todos)"},
       template: {kind: "Heal", target: "LowestAlly", power: 0.07}},
-    Shield: {label: "Escudo", targets: null,
+    Shield: {label: "Escudo", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
       text: "Escudo de power da Vida máxima de quem lança. Escudos não somam: fica o maior. O Karma barra.",
       fields: {power: "fração da Vida máxima de quem lança", turns: "duração"},
       template: {kind: "Shield", target: "AllAllies", power: 0.07, turns: 2}},
-    Status: {label: "Efeito de status", targets: null,
+    Status: {label: "Efeito de status", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
       text: "Põe status com chance, por turns. Negativo no outro lado: a Imunidade e a Resistência barram. Positivo: o Karma barra.",
       fields: {status: "o efeito (veja a lista de status)", chance: "0 a 1", turns: "duração em turnos do alvo"},
       template: {kind: "Status", target: "Target", status: "Affliction", chance: 0.3, turns: 2}},
@@ -538,15 +573,15 @@ const Core = (() => {
       text: "Soma power pontos de Ímpeto (negativo atrasa). Atrasar inimigo passa pela chance e pela Resistência.",
       fields: {power: "pontos (negativo atrasa)", chance: "0 a 1 (só ao atrasar inimigo)"},
       template: {kind: "Impeto", target: "Target", power: -20}},
-    Cleanse: {label: "Purificar", targets: null,
+    Cleanse: {label: "Purificar", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
       text: "Remove um efeito negativo de cada alvo (o mais antigo).",
       fields: {},
       template: {kind: "Cleanse", target: "LowestAlly"}},
-    StealBuff: {label: "Roubar efeito", targets: ["Target", "AllEnemies"],
+    StealBuff: {label: "Roubar efeito", targets: ["Target", "AllEnemies", "RandomEnemy"],
       text: "Com chance, rouba de cada alvo um efeito positivo (o mais novo) e o põe em quem lança com os turnos que sobravam. Sem nenhum e com fallback, rouba Ímpeto.",
       fields: {chance: "0 a 1", onlyStatus: "só rouba este status (opcional)", fallback: "true: sem efeito positivo, rouba Ímpeto", power: "Ímpeto roubado no fallback (0 = todo o do alvo)"},
       template: {kind: "StealBuff", target: "Target", chance: 1, fallback: true, power: 0}},
-    BonusPerStatus: {label: "Bônus por efeitos", targets: null,
+    BonusPerStatus: {label: "Bônus por efeitos", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly"],
       text: "Conta os efeitos de scope (ou só onlyStatus) nas unidades de from e dá bonus × power por efeito. Dano e cura valem para os efeitos que vêm depois na lista; o Ímpeto vai na hora para os alvos (target).",
       fields: {from: "em quem contar (um alvo: Target, Self, AllEnemies...)", scope: "All, Buffs ou Debuffs", onlyStatus: "só conta este status (opcional)", bonus: "Damage, Heal ou Impeto", power: "valor por efeito"},
       template: {kind: "BonusPerStatus", target: "Self", from: "Target", scope: "Debuffs", bonus: "Damage", power: 0.2}},
@@ -562,8 +597,8 @@ const Core = (() => {
       text: "A cura de sempre nos count aliados mais feridos (pela fração de Vida).",
       fields: {power: "fração da Vida máxima de cada um", count: "quantos (0 = todos)"},
       template: {kind: "HealTeam", target: "AllAllies", power: 0.15, count: 2}},
-    JointAttack: {label: "Ataque conjunto", targets: ["AllAllies"],
-      text: "count aliados sorteados (0 = todos) atacam o alvo da habilidade com a básica, com o dano inteiro. Quem perde o turno não vem; a básica deles não chama outros. O que eles derrubam conta para a habilidade.",
+    JointAttack: {label: "Ataque conjunto", targets: ["AllAllies", "LowestAlly", "HighestAlly", "RandomAlly"],
+      text: "count aliados sorteados (0 = todos; com LowestAlly, HighestAlly ou RandomAlly, um aliado sem quem lança) atacam o alvo da habilidade com a básica, com o dano inteiro. Quem perde o turno não vem; a básica deles não chama outros. O que eles derrubam conta para a habilidade.",
       fields: {count: "quantos aliados (0 = todos)"},
       template: {kind: "JointAttack", target: "AllAllies", count: 2}},
     ExtraTurnOnKill: {label: "Turno extra ao derrubar", targets: ["Self"],
@@ -831,7 +866,7 @@ const Core = (() => {
     return {
       name: source?.name || "",
       cooldown: source?.cooldown ?? "",
-      passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", extra: rest(source.passive, ["kind", "value", "awakenedValue"])} : null,
+      passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", scope: source.passive.scope ?? "", statuses: (source.passive.statuses || []).join(", "), extra: rest(source.passive, ["kind", "value", "awakenedValue", "scope", "statuses"])} : null,
       effects: listText(source?.effects),
       awakenedEffects: source?.awakenedEffects?.length ? format(source.awakenedEffects) : "",
       levels: listText(source?.levels),
@@ -842,9 +877,18 @@ const Core = (() => {
   function exportSkill(skill) {
     const out = {name: skill.name};
     if (skill.passive) {
-      const passive = {kind: skill.passive.kind, value: num(skill.passive.value)};
+      const passive = {kind: skill.passive.kind};
+      if (num(skill.passive.value) > 0 || !PASSIVE_EFFECTS.includes(skill.passive.kind)) passive.value = num(skill.passive.value);
       if (num(skill.passive.awakenedValue) > 0) passive.awakenedValue = num(skill.passive.awakenedValue);
+      if (skill.passive.scope) passive.scope = skill.passive.scope;
+      const statuses = String(skill.passive.statuses || "").split(",").map(s => s.trim()).filter(Boolean);
+      if (statuses.length) passive.statuses = statuses;
       out.passive = Object.assign(passive, skill.passive.extra);
+      if (PASSIVE_EFFECTS.includes(skill.passive.kind)) {
+        out.effects = parseList(skill.effects).list;
+        const awakened = parseList(skill.awakenedEffects).list;
+        if (awakened.length) out.awakenedEffects = awakened;
+      }
     } else {
       if (num(skill.cooldown) > 0) out.cooldown = num(skill.cooldown);
       out.effects = parseList(skill.effects).list;
@@ -1056,8 +1100,13 @@ const Core = (() => {
     if (isBlank(skill.name)) add("error", where, "Habilidade sem nome.");
     if (skill.passive) {
       if (!enums.passives.includes(skill.passive.kind)) add("error", where, `Passiva desconhecida: "${skill.passive.kind}".`);
-      if (!(num(skill.passive.value) > 0)) add("warn", where, "Passiva com valor zero.");
-      return;
+      const generic = PASSIVE_EFFECTS.includes(skill.passive.kind);
+      if (!generic && !(num(skill.passive.value) > 0)) add("warn", where, "Passiva com valor zero.");
+      if (generic && num(skill.passive.value) > 1) add("error", where, "Nas Passivas genéricas o value é a chance de disparar (0 a 1; 0 = sempre).");
+      for (const status of skill.passive.statuses || []) if (!enums.statuses.includes(status)) add("error", where, `Status desconhecido em statuses: "${status}".`);
+      if (skill.passive.scope !== undefined && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(skill.passive.scope)) add("error", where, `scope desconhecido: "${skill.passive.scope}".`);
+      if (!generic) return;
+      if ((skill.effects || []).length === 0) add("error", where, `A Passiva ${skill.passive.kind} precisa de efeitos (effects).`);
     }
 
     for (const [field, label] of [["effects", "Effects"], ["awakenedEffects", "Awakened effects"], ["levels", "Levels"]]) {
@@ -1065,11 +1114,13 @@ const Core = (() => {
       if (error) add("error", where, `${label}: JSON inválido (${error}).`);
     }
 
-    if ((skill.effects || []).length === 0) add("error", where, "Habilidade ativa sem efeitos.");
-    if ((skill.levels || []).length === 0) add("warn", where, "Não sobe de nível: toda habilidade ativa tem \"levels\".");
-    for (const level of skill.levels || []) {
-      if (!enums.levelKinds.includes(level.kind)) add("error", where, `Nível desconhecido: "${level.kind}".`);
-      if (!(num(level.value) > 0)) add("error", where, "Nível que não melhora nada (value tem de ser maior que zero).");
+    if (!skill.passive) {
+      if ((skill.effects || []).length === 0) add("error", where, "Habilidade ativa sem efeitos.");
+      if ((skill.levels || []).length === 0) add("warn", where, "Não sobe de nível: toda habilidade ativa tem \"levels\".");
+      for (const level of skill.levels || []) {
+        if (!enums.levelKinds.includes(level.kind)) add("error", where, `Nível desconhecido: "${level.kind}".`);
+        if (!(num(level.value) > 0)) add("error", where, "Nível que não melhora nada (value tem de ser maior que zero).");
+      }
     }
 
     for (const effect of [...(skill.effects || []), ...(skill.awakenedEffects || [])]) {
@@ -1092,6 +1143,8 @@ const Core = (() => {
       if (effect.scope !== undefined && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(effect.scope)) add("error", where, `scope desconhecido: "${effect.scope}" (vale: All, Buffs, Debuffs).`);
       if (effect.bonus !== undefined && !(enums.bonuses || Object.keys(BONUS_DOCS)).includes(effect.bonus)) add("error", where, `bonus desconhecido: "${effect.bonus}" (vale: Damage, Heal, Impeto).`);
       if (effect.from !== undefined && !enums.targets.includes(effect.from)) add("error", where, `from desconhecido: "${effect.from}".`);
+      if (effect.by !== undefined && !(enums.ranks || Object.keys(RANK_DOCS)).includes(effect.by)) add("error", where, `by desconhecido: "${effect.by}" (vale: ${Object.keys(RANK_DOCS).join(", ")}).`);
+      if (effect.by !== undefined && ![effect.target, effect.from].some(t => t === "LowestAlly" || t === "HighestAlly")) add("warn", where, "by só vale com LowestAlly ou HighestAlly.");
       if (effect.kind === "ChangeDuration" && !(Number.isInteger(effect.turns) && effect.turns !== 0)) add("error", where, "ChangeDuration precisa de turns inteiro e diferente de 0 (negativo encurta).");
       if (effect.kind === "BonusPerStatus" && !(num(effect.power) > 0)) add("error", where, "BonusPerStatus sem valor por efeito (power).");
       if (effect.count !== undefined && !(Number.isInteger(effect.count) && effect.count >= 0)) add("error", where, `count ${effect.count}: tem de ser inteiro, 0 ou mais.`);
@@ -1127,7 +1180,7 @@ const Core = (() => {
 
   return {
     ELEMENTS, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
-    EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
+    EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
     stripJsonc, parseJsonc, leadingComments, format,
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
     parseList, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
@@ -1149,7 +1202,7 @@ if (typeof module !== "undefined") module.exports = Core;
   const fmt = (n, d = 0) => Number(n).toLocaleString("pt-BR", {maximumFractionDigits: d});
   const readJson = id => JSON.parse($(id).textContent);
   const DRAFT_KEY = "sigilos.family_builder.draft";
-  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind", scopes: "StatusScope", bonuses: "BonusKind"};
+  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind", scopes: "StatusScope", bonuses: "BonusKind", ranks: "TargetRank"};
   // O botão de cada tipo de efeito insere o modelo da documentação (Core.EFFECT_DOCS).
   const EFFECT_TEMPLATES = Object.fromEntries(Object.entries(C.EFFECT_DOCS).map(([kind, doc]) => [kind, doc.template]));
   const LEVEL_TEMPLATES = {Damage: 0.1, Recovery: 0.1, EffectRate: 0.1, Cooldown: 1};
@@ -1369,7 +1422,8 @@ if (typeof module !== "undefined") module.exports = Core;
 
   function skillCard(skill, path, title, badge, controls, awakening) {
     const isPassive = !!skill.passive;
-    const bad = f => !isPassive && C.parseList(skill[f]).error ? "bad" : "";
+    const bad = f => C.parseList(skill[f]).error ? "bad" : "";
+    const generic = isPassive && C.PASSIVE_EFFECTS.includes(skill.passive.kind);
     const chips = (action, names) => `<div class="chips">${names.map(n => `<button class="chip" data-action="${action}" data-skill="${path}" data-kind="${esc(n)}">+ ${esc(n)}</button>`).join("")}</div>`;
     return `
       <div class="skill-card ${awakening ? "awakening" : ""}">
@@ -1380,8 +1434,14 @@ if (typeof module !== "undefined") module.exports = Core;
           ${isPassive ? "<div></div>" : field("Recarga", `<input data-path="${path}.cooldown" data-type="optional" type="number" step="1" min="0" value="${esc(skill.cooldown)}" placeholder="0">`)}
           ${isPassive ? `
             ${field("Passiva", select(`${path}.passive.kind`, skill.passive.kind, ui.enums.passives))}
-            ${field("Valor", number(`${path}.passive.value`, skill.passive.value, "0.01", `placeholder="0.2 = 20%"`))}
+            ${field(generic ? "Chance de disparar (0 = sempre)" : "Valor", number(`${path}.passive.value`, skill.passive.value, "0.01", `placeholder="0.2 = 20%"`))}
             ${field("Valor desperto", `<input data-path="${path}.passive.awakenedValue" data-type="optional" type="number" step="0.01" value="${esc(skill.passive.awakenedValue)}" placeholder="não muda">`)}
+            <p class="note wide">${esc(C.PASSIVE_DOCS[skill.passive.kind] || "")}</p>
+            ${field("Efeitos de status que contam (BonusVs, ForEach)", select(`${path}.passive.scope`, skill.passive.scope, ui.enums.scopes || ["All", "Buffs", "Debuffs"], "All (padrão)"))}
+            ${field("Só estes status (vírgula; vazio = todos do escopo)", text(`${path}.passive.statuses`, skill.passive.statuses, `placeholder="Affliction, Curse"`))}
+            ${generic ? `
+            ${field("Efeitos da Passiva (JSON): o que ela faz ao disparar", `${area(`${path}.effects`, skill.effects)}${chips("add-effect", ui.enums.effectKinds)}`, `wide ${bad("effects")}`)}
+            ${awakening ? "" : field("Efeitos depois do Despertar (JSON): vazio quando não muda", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}` : ""}
           ` : `
             ${field("Efeitos (JSON): um por linha, na ordem em que acontecem", `${area(`${path}.effects`, skill.effects)}${chips("add-effect", ui.enums.effectKinds)}`, `wide ${bad("effects")}`)}
             ${field("Níveis (JSON): o primeiro é o nível 2", `${area(`${path}.levels`, skill.levels)}${chips("add-level", ui.enums.levelKinds)}`, bad("levels"))}
@@ -1436,7 +1496,7 @@ if (typeof module !== "undefined") module.exports = Core;
       <code>status</code>: ${e.statuses.join(", ")}<br>
       Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
       Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém).<br>
-      Os tipos novos leem também <code>fallback</code>, <code>scope</code>, <code>onlyStatus</code>, <code>from</code>, <code>bonus</code> e <code>count</code>:
+      Os tipos novos leem também <code>fallback</code>, <code>scope</code>, <code>onlyStatus</code>, <code>from</code>, <code>bonus</code>, <code>count</code> e <code>by</code>:
       o que cada tipo faz, os campos e os alvos que ele aceita estão na aba <b>Efeitos e status</b>.<br>
       Os efeitos acontecem na ordem da lista. "4 golpes, o último ignorando a Defesa" são dois efeitos:
       <code>{"kind": "Damage", "power": 0.84, "hits": 3}</code> e <code>{"kind": "Damage", "power": 0.84, "ignoreDefense": 1}</code>.`;
@@ -1573,7 +1633,8 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         que ele aceita; a aba Validação acusa alvo que o tipo não aceita e campo que ele não lê. Os botões dos tipos, nas habilidades, inserem o modelo.</p>
       <h3>Alvos</h3><div class="table-wrap"><table><tr><th>target</th><th>Quem</th></tr>${targets}</table></div>
       <h3>Tipos de efeito</h3><div class="table-wrap"><table><tr><th>kind</th><th>O que faz</th><th>Alvos aceitos</th><th>Campos</th><th>Modelo</th></tr>${effects}</table></div>
-      <h3>Opções</h3><p>${code("scope")}<br>${option(C.SCOPE_DOCS)}</p><p>${code("bonus")}<br>${option(C.BONUS_DOCS)}</p>
+      <h3>Passivas</h3><p class="note">${code("passive.kind")} e ${code("value")}; as genéricas leem os ${code("effects")} (e ${code("awakenedEffects")}) da habilidade passiva, e as que olham efeitos de status, ${code("passive.scope")} e ${code("passive.statuses")}.</p><p>${option(C.PASSIVE_DOCS)}</p>
+      <h3>Opções</h3><p>${code("by")} (LowestAlly e HighestAlly)<br>${option(C.RANK_DOCS)}</p><p>${code("scope")}<br>${option(C.SCOPE_DOCS)}</p><p>${code("bonus")}<br>${option(C.BONUS_DOCS)}</p>
       <h3>Status</h3><p class="note">Use em ${code("status")} (efeito Status) ou em ${code("onlyStatus")}. Negativo: a Resistência e a Imunidade barram, a Purificação tira. Positivo: o Karma barra, o Roubar efeito leva.</p>
       <div class="table-wrap"><table><tr><th>status</th><th>Nome</th><th>Tipo</th><th>O que faz</th></tr>${statuses}</table></div>`;
   }
@@ -1657,7 +1718,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     const node = event.target;
     if (node.dataset.action === "skill-type") {
       const skill = getPath(ui.family, node.dataset.skill);
-      skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", extra: {}} : null;
+      skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", extra: {}} : null;
       renderSkills();
       touch();
     } else if (node.hasAttribute?.("data-json")) {

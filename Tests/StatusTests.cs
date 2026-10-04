@@ -180,7 +180,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void KnightShieldsAlliesWhenFalling()
 		{
-			var passive = new PassiveDefinition { Kind = PassiveKind.ShieldOnDeath, Value = 0.15 };
+			var passive = new PassiveDefinition { Kind = PassiveKind.StatusOrEffectOnDeath, Effects = new[] { new EffectDefinition { Kind = EffectKind.Shield, Target = TargetKind.AllAllies, Power = 0.15, Turns = 2 } } };
 			var knight = TestData.Unit("knight", Side.Allies, health: 1000, passive: passive);
 			var friend = TestData.Unit("amigo", Side.Allies);
 			var foe = TestData.Unit("inimigo", Side.Enemies, speed: 300, attack: 10_000);

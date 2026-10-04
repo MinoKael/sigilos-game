@@ -63,20 +63,8 @@ namespace Sigilos.Core.Battle
 		/// <summary>Reviver: com que fração da Vida máxima o dono volta.</summary>
 		public const double ReviveHealth = 0.3;
 
-		/// <summary>Duração do escudo que a Passiva dos Cavaleiros dá ao cair.</summary>
-		public const int DeathShieldTurns = 2;
-
 		/// <summary>Abaixo desta fração da Vida máxima o alvo conta como ferido (Passiva dos Lobos).</summary>
 		public const double WoundedFraction = 0.5;
-
-		/// <summary>Duração da Queimadura que a Passiva dos Dragões põe.</summary>
-		public const int AfflictionOnHitTurns = 2;
-
-		/// <summary>Duração da Maldição que a Passiva dos Corvos põe.</summary>
-		public const int CurseOnHitTurns = 2;
-
-		/// <summary>Duração do Atordoamento que a Passiva das Gárgulas põe em quem as atinge.</summary>
-		public const int StunAttackerTurns = 1;
 
 		/// <summary>
 		/// Efeitos negativos: a Resistência do alvo pode barrar, a Imunidade barra sempre e a Purificação

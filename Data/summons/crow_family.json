@@ -47,7 +47,9 @@
         },
         {
           "name": "Mau Agouro",
-          "passive": {"kind": "CurseOnHit", "value": 0.2, "awakenedValue": 0.3}
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}],
+          "awakenedEffects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}]
         }
       ]
     },
@@ -94,7 +96,9 @@
         },
         {
           "name": "Mau Agouro",
-          "passive": {"kind": "CurseOnHit", "value": 0.2, "awakenedValue": 0.3}
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}],
+          "awakenedEffects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}]
         }
       ]
     },
@@ -244,7 +248,9 @@
         },
         {
           "name": "Mau Agouro",
-          "passive": {"kind": "CurseOnHit", "value": 0.2, "awakenedValue": 0.3}
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}],
+          "awakenedEffects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}]
         }
       ]
     }

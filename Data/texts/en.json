@@ -15,7 +15,8 @@
     "auto_short": "Auto Battle",
     "edit_team": "Edit team",
     "cancel": "Cancel",
-    "buy_mana": "Buy Mana at the Shop"
+    "buy_mana": "Buy Mana at the Shop",
+    "or": " or "
   },
 
   "auto": {
@@ -373,7 +374,19 @@
     "AllEnemies": "on all enemies",
     "Self": "on self",
     "LowestAlly": "on the most injured ally",
-    "AllAllies": "on all allies"
+    "AllAllies": "on all allies",
+    "HighestAlly": "on the least injured ally",
+    "RandomAlly": "on a random ally",
+    "RandomEnemy": "on a random enemy",
+    "LowestAlly_by": "on the ally with the least {0}",
+    "HighestAlly_by": "on the ally with the most {0}",
+    "ally": {
+      "LowestAlly": "the most injured ally",
+      "HighestAlly": "the least injured ally",
+      "RandomAlly": "a random ally",
+      "LowestAlly_by": "the ally with the least {0}",
+      "HighestAlly_by": "the ally with the most {0}"
+    }
   },
 
   "skill": {
@@ -418,27 +431,32 @@
     "heal_team": "heals {0} HP of the {1} most injured {2}",
     "joint": "{0} allies attack along with their basic skill",
     "joint_all": "all allies attack along with their basic skill",
-    "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}"
+    "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}",
+    "joint_one": "{0} attacks along with their basic skill"
   },
 
   "passive": {
     "SpeedWhenLowest": "+{0} Speed while it is the ally with the least HP.",
-    "ShieldOnDeath": "When it falls, gives every ally a {0} worth {1} of its own HP.",
     "RebirthOnce": "The first time it falls, it revives with {0} HP on its next turn.",
     "DamageReduction": "Takes {0} less damage from every hit.",
-    "BonusVsDebuffed": "+{0} damage against targets with a harmful effect.",
     "BonusVsWounded": "+{0} damage against targets below {1} HP.",
     "ImpetoAtWaveStart": "Starts each wave with at least {0} {1}.",
-    "RegenEachTurn": "Recovers {0} of max HP at the start of each of its turns.",
-    "AfflictionOnHit": "{0} chance to inflict {1} on each target hit, once per skill.",
     "CooldownEachTurn": "{0} chance at the start of its turn to shorten its own cooldowns by 1 turn.",
-    "HealAllyEachTurn": "At the start of its turn, heals the most injured ally for {0} of max HP.",
     "Thorns": "Whoever hits it takes {0} of the damage dealt.",
-    "StunAttacker": "{0} chance to inflict {1} on whoever hits it, once per skill.",
     "Lifesteal": "Drains {0} of all the damage it deals as HP.",
-    "CurseOnHit": "{0} chance to inflict {1} on each target hit, once per skill.",
     "Dodge": "{0} chance to dodge each hit.",
-    "CleanseAllyEachTurn": "{0} chance at the start of its turn to remove one harmful effect from an ally."
+    "CleanseAllyEachTurn": "{0} chance at the start of its turn to remove one harmful effect from an ally.",
+    "BonusVsStatusOrEffect": "+{0} damage on targets with {1}.",
+    "StatusOrEffectOnHit": "on each target hit, once per skill: {0}",
+    "StatusOrEffectOnAttacker": "on whoever hits it, once per skill: {0}",
+    "StatusOrEffectEachTurn": "at the start of each of its turns: {0}",
+    "StatusOrEffectOnWaveStart": "at the start of each wave: {0}",
+    "StatusOrEffectOnDeath": "when it falls: {0}",
+    "StatusOrEffectWhenLowest": "at the start of its turn, if it is the ally with the least HP: {0}",
+    "ForEachStatusOrEffectAppliedDo": "for each {1} it inflicts: {0}",
+    "ForEachStatusOrEffectReceivedDo": "for each {1} it receives: {0}",
+    "StatusOrEffectOnTargetEachTurn": "after acting, on the skill target: {0}",
+    "chance": "{0} ({1} chance)"
   },
 
   "awaken": {

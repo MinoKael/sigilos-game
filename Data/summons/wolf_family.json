@@ -13,7 +13,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Presa de Brasa",
+        "name": "Prasa",
         "skill": {
           "name": "Instinto de Caça",
           "passive": {"kind": "BonusVsWounded", "value": 0.4}
@@ -55,13 +55,13 @@
       "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
       "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
       "awakening": {
-        "name": "Juba de Gelo",
+        "name": "Geluba",
         "skill": {
-          "name": "Matilha de Ferro",
+          "name": "Rasga-Ferro",
           "cooldown": 5,
           "effects": [
-            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseBreak", "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -99,26 +99,35 @@
       "variation_id": "wolf_wind",
       "name": "Lobo de Vento",
       "element": "Wind",
-      "role": "Attack",
-      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Pata de Rajada",
+        "name": "Rajada",
         "skill": {
           "name": "Instinto de Caça",
-          "passive": {"kind": "BonusVsWounded", "value": 0.4}
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "JointAttack", "target": "LowestAlly", "count": 1, "by": "Impeto"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
         }
       },
       "skills": [
         {
           "name": "Mordida",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
             {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.15}
           ]
         },
@@ -129,7 +138,8 @@
             {"kind": "Impeto", "target": "AllAllies", "power": 25}
           ],
           "levels": [
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Damage", "value": 0.1}
           ]
         }
       ]
@@ -142,9 +152,9 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Pelo de Lua",
+        "name": "Peloar",
         "skill": {
-          "name": "Lua Cheia",
+          "name": "Luz da Lua",
           "cooldown": 5,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.17},
@@ -193,36 +203,44 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Bocarra da Noite",
+        "name": "Bonoti",
         "skill": {
-          "name": "Instinto de Caça",
-          "passive": {"kind": "BonusVsWounded", "value": 0.4}
+          "name": "Caçador Noturno",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.92},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
         }
       },
       "skills": [
         {
           "name": "Mordida Sombria",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45, "drain": 0.2}
+            {"kind": "Damage", "target": "Target", "power": 2.35},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1}
           ]
         },
         {
-          "name": "Caçada",
+          "name": "Presa Fácil",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.92},
-            {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
+            {"kind": "Damage", "target": "Target", "power": 3},
+            {"kind": "BonusPerStatus", "target": "Self", "from": "Target", "scope": "Debuffs", "bonus": "Damage", "power": 0.2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Damage", "value": 0.1}
           ]
         }
       ]
