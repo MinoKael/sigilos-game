@@ -1,13 +1,13 @@
 # Changelog — Sigilos
 
 ## 04/10/2026
-- **Masmorras de especialização:** cada chefe pede um time feito para ele. O Golem regenera a cada turno, o Rei Ossudo (Cripta) impede que qualquer monstro ganhe ou perca Ímpeto, o Santuário Afogado contra-ataca. O andar 5 só cai para uma equipe preparada. A Forja foi recalibrada.
+- **Masmorras de especialização:** cada chefe pede um time feito para ele. O Golem regenera a cada turno, a Serpe se fortalece por efeitos negativos, o Rei Ossudo (Cripta) impede que qualquer monstro ganhe ou perca Ímpeto, o Santuário Afogado contra-ataca. O andar 5 só cai para uma equipe preparada. A Forja foi recalibrada.
 - **Esquecimento:** agora também no Pássaro de Trevas, no Corvo de Água, no Diabrete de Trevas e na Fênix de Luz.
 - **Três pergaminhos:**
   - Místico: 1% de 5★, 9% de 4★ e 90% de 3★, com 5★ garantida em 150 invocações.
   - Luz e Trevas: 1% de 5★, 7% de 4★ e 92% de 3★.
   - Lendário: 7% de 5★ e 93% de 4★, só de Fogo, Água e Vento.
-- **Núcleo de Infusão:** ocupa vaga na coleção, mas não luta nem usa runa. Serve só para fundir e sobe uma habilidade de monstro de qualquer família.
+- **Núcleo de Infusão:** ocupa espaço na coleção, mas não luta nem usa runa. Serve só para fundir e sobe uma habilidade de monstro de qualquer família.
 - **Marcos:**
   - Fim de região (fases 20, 40 e 50): um Lendário e dois Núcleos.
   - Andares 4 e 5 das masmorras: um Lendário e um de Luz e Trevas, respectivamente.
@@ -17,7 +17,7 @@
 - **Fragmentos:**
   - Soltar um monstro dá 7, 15, 30 ou 50 (até 2★, 3★, 4★ e 5★).
   - Evoluir custa só Fragmentos: 10, 20, 30, 60 e 120 por estrela.
-- **Loja:** Expansão de Coleção, +50 vagas por 100 de Ouro, até 500 vagas.
+- **Loja:** Expansão de Coleção, +50 espaços por 100 de Ouro, até 500 espaços.
 - **Balanceamento:** habilidades repetidas, como Aflição e Maldição, foram recalibradas para que times possíveis de montar vençam o Golem e a Serpe.
 - **Ferramentas:** o builder ganhou uma aba de Chefes e passivas genéricas (EffectPassive). Os efeitos aparecem em colunas separadas de positivos e negativos.
 - **Testes:** os testes antigos que falhavam foram alinhados ao jogo atual.
