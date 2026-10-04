@@ -288,7 +288,10 @@ namespace Sigilos.Tests
 			var (health, attack) = BattleFactory.FoeScale(troll.Rarity);
 			Assert.Equal(troll.Name, foe.Name, "a mesma variante que o jogador invoca");
 			Assert.Equal(troll.Element, foe.Element, "o elemento vem da variante");
-			Assert.Equal(troll.Skills.Single(s => s.IsPassive).Passive, foe.Passive, "com a Passiva da variante");
+			// A Passiva da luta é a da variante no nível 1: os mesmos efeitos, numa lista nova (SkillDefinition.At).
+			var passive = troll.Skills.Single(s => s.IsPassive);
+			Assert.Equal(passive.Passive!.Kind, foe.Passive?.Kind, "com a Passiva da variante");
+			Assert.True(passive.Effects.SequenceEqual(foe.Passive!.Effects), "e os efeitos dela");
 			Assert.Near(basis.Health * health * 1.5 * BattleFactory.FoeBoost, foe.MaxHealth, "Vida reforçada pelas estrelas, pelo encontro e pela força dos inimigos", 1e-6);
 			Assert.Near(basis.Attack * attack * 1.5 * BattleFactory.FoeBoost, foe.Stats.Attack, "Ataque também", 1e-6);
 			Assert.Near(basis.Defense * BattleFactory.FoeBoost, foe.Stats.Defense, "Defesa só pela força dos inimigos", 1e-6);

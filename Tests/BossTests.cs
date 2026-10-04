@@ -9,7 +9,11 @@ namespace Sigilos.Tests
 	/// <summary>O chefe em batalha: quem é chefe e o foco do automático nele.</summary>
 	internal static class BossTests
 	{
-		/// <summary>Uma onda com um Lobo de Vento (o Diabrete de Fogo tem vantagem nele) e o Mestre de Correntes.</summary>
+		/// <summary>
+		/// Uma onda com um Lobo de Vento (o Diabrete de Fogo tem vantagem nele) e o Mestre de Correntes. A
+		/// especial do Diabrete (Pacto Profano) cura o próprio time e não mira: fica em recarga, para o
+		/// automático escolher a básica, que mira.
+		/// </summary>
 		private static (BattleSession Session, BattleUnit Hero, BattleUnit Wolf, BattleUnit Boss) Fight()
 		{
 			var database = TestData.LoadReal();
@@ -20,7 +24,9 @@ namespace Sigilos.Tests
 			});
 			var session = BattleFactory.Create(database, team, encounter, 1);
 			session.Start();
-			return (session, session.Allies.Single(), session.Enemies.Single(e => !e.IsBoss), session.Enemies.Single(e => e.IsBoss));
+			var hero = session.Allies.Single();
+			hero.SetCooldown(1, hero.Skill(1).Cooldown);
+			return (session, hero, session.Enemies.Single(e => !e.IsBoss), session.Enemies.Single(e => e.IsBoss));
 		}
 
 		[Test]

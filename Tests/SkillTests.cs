@@ -149,7 +149,9 @@ namespace Sigilos.Tests
 			var (actives, passive) = BattleFactory.Prepare(knight.SkillsFor(true), levels, true);
 			Assert.Equal(3, actives.Count, "o Cavaleiro de Fogo tem três ativas");
 			Assert.Equal(null, passive, "e nenhuma Passiva");
-			Assert.Equal(knight.Skills[1].Cooldown - 1, actives[1].Cooldown, "no máximo, a especial perde um turno de recarga");
+			var cut = (int)knight.Skills[1].Bonus(SkillLevelKind.Cooldown, knight.Skills[1].MaxLevel);
+			Assert.True(cut > 0, "a especial tem nível de recarga");
+			Assert.Equal(knight.Skills[1].Cooldown - cut, actives[1].Cooldown, "no máximo, a especial perde os turnos de recarga dos níveis");
 			Assert.True(actives[1].Effects.Any(e => e.IgnoreDefense > 0), "desperto, a especial usa a versão do Despertar");
 		}
 	}

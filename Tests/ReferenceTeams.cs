@@ -37,7 +37,7 @@ namespace Sigilos.Tests
 			return new BattleTeam(team.Members.Select(m => m with { Runes = m.Runes.Take(count).ToList() }).ToList());
 		}
 
-		/// <summary>O time 6★ nível 40 sem runas: o outro jeito de terminar a Campanha.</summary>
+		/// <summary>O time 6★ nível 40 sem runas: vence até o fim da região 2 (fase 40); a fase 50 pede runas.</summary>
 		public static BattleTeam Bare(GameDatabase database) => Team(database, _ => 6, 40);
 
 		/// <summary>

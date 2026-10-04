@@ -15,8 +15,8 @@ namespace Sigilos.Tests
 	/// mexer em atributos, habilidades ou ondas. Uso: <c>dotnet run --project Tests -- --simulate</c>.
 	///
 	/// Na Campanha, cada fase contra quem chega a ela (<see cref="ReferenceTeams.AtStage"/>: vence de 80%
-	/// para cima, 70% nos chefes) e contra o 6★ nível 40 sem runas (o outro jeito de terminar a
-	/// Campanha). Nas Masmorras, cada andar contra o degrau que ele pede e contra o de baixo
+	/// para cima, 70% nos chefes) e contra o 6★ nível 40 sem runas (que vai até a fase 40: a 50 pede
+	/// runas). Nas Masmorras, cada andar contra o degrau que ele pede e contra o de baixo
 	/// (<see cref="ReferenceTeams.AtFloor"/>). O automático não usa Éter, então o relatório mede o time sem
 	/// aprimoramentos.
 	/// </summary>

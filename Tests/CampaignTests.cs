@@ -117,16 +117,18 @@ namespace Sigilos.Tests
 		}
 
 		/// <summary>
-		/// A calibragem (GDD, seção 10): a fase 50 se vence com nível 20 e runas, ou com 6★ nível 40 sem
-		/// runas, mas não com nível 20 sem runas; e a primeira fase é mansa para quem acabou de começar.
+		/// A calibragem (GDD, seção 10): a fase 50 se vence com nível 20 e runas, e não sem runas, nem no
+		/// nível 20 nem no 6★ nível 40; sem runas, o 6★ nível 40 chega ao fim da região 2 (fase 40). E a
+		/// primeira fase é mansa para quem acabou de começar.
 		/// </summary>
 		[Test]
-		private static void CampaignEndsAtLevelTwentyWithRunesOrFortyWithout()
+		private static void CampaignEndsAtLevelTwentyWithRunes()
 		{
 			var database = TestData.LoadReal();
 			var last = database.Stages.Last();
 			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtStage(database, last.Number), last.Encounter, 20) >= 0.7, "nível 20 com runas vence a fase 50");
-			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Bare(database), last.Encounter, 20) >= 0.6, "6★ nível 40 sem runas também");
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Bare(database), last.Encounter, 20) < 0.3, "6★ nível 40 sem runas não: a fase 50 pede runas");
+			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.Bare(database), database.Stage(40).Encounter, 20) >= 0.6, "6★ nível 40 sem runas vence o fim da região 2");
 			var noRunes = new BattleTeam(ReferenceTeams.AtStage(database, last.Number).Members.Select(m => m with { Runes = Array.Empty<Core.Runes.Rune>() }).ToList());
 			Assert.True(ReferenceTeams.WinRate(database, noRunes, last.Encounter, 20) < 0.3, "nível 20 sem runas não: as runas contam");
 			Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtStage(database, 1), database.Stage(1).Encounter, 20) >= 0.9, "a fase 1 é mansa");

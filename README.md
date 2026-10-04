@@ -44,7 +44,7 @@ dotnet run --project Tests -- --fight=10
 `--simulate` roda cada fase e cada andar de Masmorra 40 vezes no automático e mostra vitórias e
 rodadas: cada fase contra o time de referência de quem chega a ela e contra o 6★ nível 40 sem runas,
 cada andar contra o time que ele pede e o do andar de baixo (`Tests/ReferenceTeams.cs`). É a ferramenta de
-balanceamento: a fase 50 tem de cair com nível 20 e runas, ou com 6★ nível 40 sem runas. `--fight=N` imprime uma luta da fase N
+balanceamento: a fase 50 tem de cair com nível 20 e runas, e não sem runas (o 6★ nível 40 sem runas vai até a fase 40). `--fight=N` imprime uma luta da fase N
 turno a turno. `--digest` resume mais de mil lutas de semente fixa, uma por linha: rode antes e depois
 de mexer no código do combate para conferir que nenhuma luta mudou.
 
