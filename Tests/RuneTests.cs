@@ -87,6 +87,34 @@ namespace Sigilos.Tests
 			Assert.False(RuneForge.RaiseLevel(random, rune), "+15 é o teto");
 		}
 
+		/// <summary>Cada marco pede 1, 2, 3 e 4 subatributos: quem já tem cresce, quem não tem ganha um e sobe de raridade.</summary>
+		[Test]
+		private static void MilestonesAskForOneSubstatEachThreeLevels()
+		{
+			var subs = new[] { Sub(RuneStat.Crit, 0.05), Sub(RuneStat.AttackPercent, 0.05), Sub(RuneStat.HealthPercent, 0.05) };
+			var expected = new Dictionary<RuneRarity, RuneRarity[]>
+			{
+				[RuneRarity.Magic] = new[] { RuneRarity.Magic, RuneRarity.Rare, RuneRarity.Hero, RuneRarity.Legendary },
+				[RuneRarity.Rare] = new[] { RuneRarity.Rare, RuneRarity.Rare, RuneRarity.Hero, RuneRarity.Legendary },
+				[RuneRarity.Hero] = new[] { RuneRarity.Hero, RuneRarity.Hero, RuneRarity.Hero, RuneRarity.Legendary },
+			};
+			foreach (var (start, steps) in expected)
+			{
+				var random = new Random(7);
+				var rune = Rune(RuneSet.Haste, 2, RuneStat.Speed, 6, 0, subs.Take((int)start).Select(s => Sub(s.Stat, s.Value)).ToArray());
+				for (var milestone = 0; milestone < steps.Length; milestone++)
+				{
+					var before = rune.Substats.Sum(s => s.Value);
+					var count = rune.Substats.Count;
+					for (var i = 0; i < 3; i++)
+						RuneForge.RaiseLevel(random, rune);
+					Assert.Equal(steps[milestone], rune.Rarity, $"{start} em +{rune.Level}");
+					if (rune.Substats.Count == count)
+						Assert.True(rune.Substats.Sum(s => s.Value) > before + 1e-9, $"{start} em +{rune.Level}: um subatributo cresceu");
+				}
+			}
+		}
+
 		[Test]
 		private static void LegendaryRuneGrowsAnExistingSubstat()
 		{
@@ -219,7 +247,7 @@ namespace Sigilos.Tests
 			var history = rune.Substats.SelectMany(s => s.Rolls.Select(r => (s.Stat, r.Level))).Where(r => r.Level > 0).OrderBy(r => r.Level).ToList();
 			Assert.Equal("3,6,9,12", string.Join(",", history.Select(r => r.Level)), "um sorteio em cada marco");
 			Assert.Equal(4, rune.Substats.Count, "três entraram depois do drop");
-			Assert.Equal(3, rune.Substats[1].Rolls[0].Level, "o segundo subatributo entrou em +3");
+			Assert.Equal(6, rune.Substats[1].Rolls[0].Level, "a Mágica cresce em +3 e o segundo subatributo entra em +6");
 			Assert.Near(rune.Substats.Sum(s => s.Rolls.Sum(r => r.Amount)), rune.Substats.Sum(s => s.Value), "o valor é a soma dos sorteios");
 		}
 

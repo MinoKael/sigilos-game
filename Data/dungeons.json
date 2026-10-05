@@ -192,7 +192,7 @@
           [{"enemy": "drowned_guardian", "element": "Water"}, {"summon": "knight_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}]
         ]
       },
-      {"stars": 6, "level": 60, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 3500, "scale": 3.4, "scrollChance": 3, "firstClearCores": 4, "firstClearLightDark": 1, "coreChance": 3, "grades": {"6": 100}, "rarities": {"Rare": 61.8, "Hero": 35.2, "Legendary": 3.0},
+      {"stars": 6, "level": 60, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 3500, "scale": 3.0, "scrollChance": 3, "firstClearCores": 4, "firstClearLightDark": 1, "coreChance": 3, "grades": {"6": 100}, "rarities": {"Rare": 61.8, "Hero": 35.2, "Legendary": 3.0},
         "waves": [
           [{"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "knight_wind"}],
           [{"summon": "druid_water"}, {"summon": "knight_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}],
