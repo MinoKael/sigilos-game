@@ -1,0 +1,257 @@
+{
+  "family_id": "dwarf_miner",
+  "base_name": "Minerador Anão",
+  "name": "Mineradores Anões",
+  "star_grade": 4,
+  "image": "dwarf_miner",
+  "variations": {
+    "fire": {
+      "variation_id": "dwarf_miner_fire",
+      "name": "Minerador Anão de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Quebra-Runas"},
+      "skills": [
+        {
+          "name": "Picareta Rúnica",
+          "effects": [
+            {"kind": "BonusPerStatus", "target": "Self", "power": 0.25, "scope": "Buffs", "from": "Target", "bonus": "Damage"},
+            {"kind": "Damage", "target": "Target", "power": 2.69, "ignoreDefense": 0.3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Detonar o Veio",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "ChangeDuration", "target": "Target", "turns": -2, "scope": "Buffs"},
+            {"kind": "Damage", "target": "Target", "power": 3.92},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.7, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "ChangeDuration", "target": "AllEnemies", "turns": -2, "scope": "Buffs"},
+            {"kind": "Damage", "target": "Target", "power": 4.41},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.7, "turns": 2}
+          ]
+        },
+        {
+          "name": "Veio Profundo",
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.3, "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.5, "turns": 2}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "dwarf_miner_water",
+      "name": "Minerador Anão de Água",
+      "element": "Water",
+      "role": "Defense",
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "leader": {"stat": "Defense", "value": 0.2},
+      "awakening": {"name": "Escavador do Abismo"},
+      "skills": [
+        {
+          "name": "Pá Encharcada",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Escorar a Galeria",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.12, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.17, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 1}
+          ]
+        },
+        {
+          "name": "Faro de Minério",
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.25, "awakenedValue": 0.35, "scope": "Buffs"}
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "dwarf_miner_wind",
+      "name": "Minerador Anão de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Picareta Veloz"},
+      "skills": [
+        {
+          "name": "Picada Dupla",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
+            {"kind": "ChangeDuration", "target": "Target", "chance": 0.25, "turns": -1, "scope": "Buffs"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Dinamite",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -30}
+          ]
+        },
+        {
+          "name": "Faro de Minério",
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.25, "awakenedValue": 0.35, "scope": "Buffs"}
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "dwarf_miner_light",
+      "name": "Minerador Anão de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Lanterna da Mina"},
+      "skills": [
+        {
+          "name": "Lampião",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Luz na Galeria",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 1},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
+          ]
+        },
+        {
+          "name": "Cristal Curativo",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14},
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "dwarf_miner_dark",
+      "name": "Minerador Anão de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Accuracy", "value": 0.2},
+      "awakening": {"name": "Garimpeiro Sombrio"},
+      "skills": [
+        {
+          "name": "Picareta Sombria",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.2, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Desabamento",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.3, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.45, "turns": 1},
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+          ]
+        },
+        {
+          "name": "Faro de Minério",
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.25, "awakenedValue": 0.35, "scope": "Buffs"}
+        }
+      ]
+    }
+  }
+}

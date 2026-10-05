@@ -99,7 +99,8 @@ namespace Sigilos.Tests
 		/// 9): 2★ a 4★ de Fogo, Água e Vento (as 2★ caem na Campanha, até as de Luz e Trevas), as habilidades
 		/// subidas com cópias e Núcleos de Infusão, e no máximo uma 5★, do elemento que tem vantagem. A
 		/// líder (a primeira) dá a Liderança.
-		/// - Golem: Quebra de Defesa contra a Defesa enorme, roubar efeito positivo contra os pilares, cura.
+		/// - Golem: o Minerador Anão de Fogo (tira os efeitos positivos, ignora e quebra a Defesa, corta a cura do
+		///   núcleo), Quebra de Defesa contra a Defesa enorme, cura.
 		/// - Serpe: Purificação, Imunidade e Resistência contra as Aflições que alimentam o dano do dragão.
 		/// - Cripta: Esquecimento (com Precisão) para o Rei não voltar, e dano constante.
 		/// - Santuário: dano de Vento, Égide, Purificação e cura para aguentar os contragolpes.
@@ -111,7 +112,7 @@ namespace Sigilos.Tests
 				new("paladin_fire", Sets(RuneSet.Vigor, RuneSet.Haste, RuneSet.Ward)),
 				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("crow_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("goblin_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy),
+				new("dwarf_miner_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("imp_fire", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
 			},
 			["wyvern"] = new Member[]

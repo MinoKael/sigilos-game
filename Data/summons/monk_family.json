@@ -1,0 +1,249 @@
+{
+  "family_id": "monk",
+  "base_name": "Monge",
+  "name": "Monges",
+  "star_grade": 5,
+  "image": "monk",
+  "variations": {
+    "fire": {
+      "variation_id": "monk_fire",
+      "name": "Monge de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Attack", "value": 0.18},
+      "awakening": {"name": "Mestre Brasa", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Punho Flamejante",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.01, "hits": 3},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.15, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Cem Golpes",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 0.75, "hits": 5}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Chi Ardente",
+          "passive": {"kind": "StatusOrEffectEachTurn", "value": 0.5},
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "monk_water",
+      "name": "Monge de Água",
+      "element": "Water",
+      "role": "Defense",
+      "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
+      "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
+      "leader": {"stat": "Defense", "value": 0.25},
+      "awakening": {"name": "Mestre Maré", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Palma Fluida",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Postura da Maré",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.6, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Contrafluxo",
+          "passive": {"kind": "StatusOrEffectOnAttacker"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "monk_wind",
+      "name": "Monge de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.15},
+      "awakening": {"name": "Mestre Vendaval", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Chute Giratório",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.54, "hits": 2},
+            {"kind": "Impeto", "target": "Self", "power": 10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Passo do Vento",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "Impeto", "target": "Target", "power": -30},
+            {"kind": "Status", "target": "Self", "status": "SpeedUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Mil Punhos",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 3}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "monk_light",
+      "name": "Monge de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Resistance", "value": 0.25},
+      "awakening": {"name": "Mestre Alvor", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Palma Iluminada",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Meditação",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
+            {"kind": "ChangeDuration", "target": "AllAllies", "turns": 1, "scope": "Buffs"}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Equilíbrio",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "EqualizeHealth", "target": "AllAllies"},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.15},
+            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "monk_dark",
+      "name": "Monge de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Accuracy", "value": 0.25},
+      "awakening": {"name": "Mestre Sombra", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Golpe de Pressão",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94},
+            {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.25, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Toque da Morte",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.92, "ignoreDefense": 0.4},
+            {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.6, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Pontos Vitais",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Oblivion", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.5, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

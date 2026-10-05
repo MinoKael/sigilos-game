@@ -1,0 +1,251 @@
+{
+  "family_id": "mushroom",
+  "base_name": "Cogumelo",
+  "name": "Cogumelos",
+  "star_grade": 2,
+  "image": "mushroom",
+  "variations": {
+    "fire": {
+      "variation_id": "mushroom_fire",
+      "name": "Cogumelo de Fogo",
+      "element": "Fire",
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "awakening": {
+        "name": "Fungo-Brasa",
+        "skill": {
+          "name": "Esporos",
+          "passive": {"kind": "StatusOrEffectOnAttacker"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Esporo Ardente",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Nuvem de Esporos",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "mushroom_water",
+      "name": "Cogumelo de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "awakening": {
+        "name": "Musgo",
+        "skill": {
+          "name": "Anel de Cogumelos",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Esporo Úmido",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.03}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Chá de Cogumelo",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.08},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "mushroom_wind",
+      "name": "Cogumelo de Vento",
+      "element": "Wind",
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "awakening": {
+        "name": "Esporinha",
+        "skill": {
+          "name": "Nuvem Tóxica",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Sopro de Esporos",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Pó Sonífero",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.35, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "mushroom_light",
+      "name": "Cogumelo de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "awakening": {
+        "name": "Luzinha",
+        "skill": {
+          "name": "Micélio",
+          "passive": {"kind": "StatusOrEffectEachTurn"},
+          "effects": [
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.03}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Brilho Fúngico",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Shield", "target": "LowestAlly", "power": 0.03, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Esporos Curativos",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.08},
+            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "mushroom_dark",
+      "name": "Cogumelo de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
+      "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
+      "awakening": {
+        "name": "Bolor",
+        "skill": {
+          "name": "Mofo",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.4, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Esporo Podre",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Fungo Parasita",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.0, "drain": 0.3},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

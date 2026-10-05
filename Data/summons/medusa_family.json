@@ -1,0 +1,244 @@
+{
+  "family_id": "medusa",
+  "base_name": "Medusa",
+  "name": "Medusas",
+  "star_grade": 3,
+  "image": "medusa",
+  "variations": {
+    "fire": {
+      "variation_id": "medusa_fire",
+      "name": "Medusa de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Víbora",
+        "skill": {
+          "name": "Veneno de Serpente",
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Flecha de Serpente",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Cabelo de Serpentes",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 0.98, "hits": 3},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "medusa_water",
+      "name": "Medusa de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Nereida",
+        "skill": {
+          "name": "Petrificar",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35, "turns": 1},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Olhar Gelado",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Olhar Petrificante",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.5, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "medusa_wind",
+      "name": "Medusa de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Sibila",
+        "skill": {
+          "name": "Escamas Lisas",
+          "passive": {"kind": "Dodge", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Bote",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2},
+            {"kind": "Impeto", "target": "Target", "power": -10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Dança das Serpentes",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "medusa_light",
+      "name": "Medusa de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Estela",
+        "skill": {
+          "name": "Olhar Sereno",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.4, "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.08}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Reflexo",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Escudo Espelhado",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.08, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "medusa_dark",
+      "name": "Medusa de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Górgona",
+        "skill": {
+          "name": "Olhar Fatal",
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.5, "statuses": ["Stun", "Sleep"]}
+        }
+      },
+      "skills": [
+        {
+          "name": "Olhar Maldito",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Petrificação",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.4, "turns": 1},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

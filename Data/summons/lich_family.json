@@ -1,0 +1,254 @@
+{
+  "family_id": "lich",
+  "base_name": "Lich",
+  "name": "Liches",
+  "star_grade": 4,
+  "image": "lich",
+  "variations": {
+    "fire": {
+      "variation_id": "lich_fire",
+      "name": "Lich de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Crit", "value": 0.1},
+      "awakening": {"name": "Rei Cinzento"},
+      "skills": [
+        {
+          "name": "Chama Fantasma",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Fogo Necrótico",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
+            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.7, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ]
+        },
+        {
+          "name": "Filactério",
+          "passive": {"kind": "RebirthOnce", "value": 0.3, "awakenedValue": 0.4}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "lich_water",
+      "name": "Lich de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Accuracy", "value": 0.2},
+      "awakening": {"name": "Arquimago Afogado"},
+      "skills": [
+        {
+          "name": "Toque Gélido",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Silêncio Profundo",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Silence", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Silence", "chance": 0.6, "turns": 2},
+            {"kind": "ChangeDuration", "target": "AllEnemies", "turns": -1, "scope": "Buffs"}
+          ]
+        },
+        {
+          "name": "Filactério",
+          "passive": {"kind": "RebirthOnce", "value": 0.3, "awakenedValue": 0.4}
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "lich_wind",
+      "name": "Lich de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Lamento do Vento"},
+      "skills": [
+        {
+          "name": "Sopro Fantasma",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
+            {"kind": "Impeto", "target": "Target", "power": -10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Roubar Alma",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "StealBuff", "target": "Target", "power": 30, "fallback": true}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 3.92},
+            {"kind": "StealBuff", "target": "Target", "power": 30, "fallback": true},
+            {"kind": "Impeto", "target": "Self", "power": 20}
+          ]
+        },
+        {
+          "name": "Vendaval de Almas",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "ChangeDuration", "target": "AllEnemies", "turns": -1, "scope": "Buffs"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "lich_light",
+      "name": "Lich de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Arquilich Radiante"},
+      "skills": [
+        {
+          "name": "Raio Pálido",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Karma", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Selo da Eternidade",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 1},
+            {"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 2}
+          ]
+        },
+        {
+          "name": "Filactério",
+          "passive": {"kind": "RebirthOnce", "value": 0.3, "awakenedValue": 0.4}
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "lich_dark",
+      "name": "Lich de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "CritDamage", "value": 0.25},
+      "awakening": {"name": "Senhor dos Mortos"},
+      "skills": [
+        {
+          "name": "Toque Mortal",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69, "drain": 0.2},
+            {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Dreno de Almas",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "drain": 0.3},
+            {"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2, "drain": 0.4},
+            {"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.6, "turns": 2}
+          ]
+        },
+        {
+          "name": "Exército dos Mortos",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "JointAttack", "target": "AllAllies", "count": 0}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

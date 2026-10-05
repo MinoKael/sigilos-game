@@ -1,0 +1,241 @@
+{
+  "family_id": "angel",
+  "base_name": "Anjo",
+  "name": "Anjos",
+  "star_grade": 5,
+  "image": "angel",
+  "variations": {
+    "fire": {
+      "variation_id": "angel_fire",
+      "name": "Anjo de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Crit", "value": 0.15},
+      "awakening": {"name": "Serafon", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Espada Flamejante",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94, "ignoreDefense": 0.2},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Juízo Ardente",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Ira Celestial",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 5.39},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "angel_water",
+      "name": "Anjo de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.2},
+      "awakening": {"name": "Ondiel", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Toque Purificador",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Cleanse", "target": "LowestAlly"},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Chuva Celestial",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "HealTeam", "target": "AllAllies", "power": 0.25, "count": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Asas Guardiãs",
+          "passive": {"kind": "StatusOrEffectOnDeath"},
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.3},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "angel_wind",
+      "name": "Anjo de Vento",
+      "element": "Wind",
+      "role": "Defense",
+      "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
+      "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.15},
+      "awakening": {"name": "Aeriel", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Lança do Vento",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.35, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Asas Velozes",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 25},
+            {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Asas Guardiãs",
+          "passive": {"kind": "StatusOrEffectOnDeath"},
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 50},
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "angel_light",
+      "name": "Anjo de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Resistance", "value": 0.25},
+      "awakening": {"name": "Luminael", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Luz Divina",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.07}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Graça Divina",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 2},
+            {"kind": "Shield", "target": "AllAllies", "power": 0.07, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Halo Sagrado",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "angel_dark",
+      "name": "Anjo de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "CritDamage", "value": 0.3},
+      "awakening": {"name": "Morvael", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Lâmina Caída",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94, "drain": 0.2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Asas Negras",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Silence", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Queda",
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.3, "scope": "Buffs"}
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "family_id": "assassin",
+  "base_name": "Assassino",
+  "name": "Assassinos",
+  "star_grade": 3,
+  "image": "assassin",
+  "variations": {
+    "fire": {
+      "variation_id": "assassin_fire",
+      "name": "Assassino de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Brasa Oculta",
+        "skill": {
+          "name": "Fumaça Escaldante",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Hidden", "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Adaga Ardente",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Golpe Fatal",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 3.67},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "assassin_water",
+      "name": "Assassino de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Lâmina d'Água",
+        "skill": {
+          "name": "Sombra Líquida",
+          "passive": {"kind": "StatusOrEffectWhenLowest"},
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Hidden", "turns": 1},
+            {"kind": "Heal", "target": "Self", "power": 0.1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Lâmina Fria",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Envenenar",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.6, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "assassin_wind",
+      "name": "Assassino de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Vulto",
+        "skill": {
+          "name": "Instinto Assassino",
+          "passive": {"kind": "BonusVsWounded", "value": 0.4}
+        }
+      },
+      "skills": [
+        {
+          "name": "Corte Silencioso",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Passo Sombrio",
+          "cooldown": 3,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "Impeto", "target": "Self", "power": 30}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "assassin_light",
+      "name": "Assassino de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {
+        "name": "Juíza",
+        "skill": {
+          "name": "Execução Sagrada",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.67},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Lâmina Ofuscante",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Marcar o Alvo",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.8, "turns": 2},
+            {"kind": "ChangeDuration", "target": "Target", "turns": -1, "scope": "Buffs"}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "assassin_dark",
+      "name": "Assassino de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "awakening": {
+        "name": "Sussurro",
+        "skill": {
+          "name": "Desaparecer",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Hidden", "turns": 2},
+            {"kind": "Impeto", "target": "Self", "power": 40},
+            {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Punhal Sombrio",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45, "ignoreDefense": 0.2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Golpe nas Sombras",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.67},
+            {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -12,7 +12,7 @@ nova (2★ e 3★), habilidade mais forte (4★) ou atributo (5★), interface f
 com texto, nenhuma dica de mouse: toda explicação abre numa janela colada no que foi tocado, e segurar
 um monstro ou uma runa mostra o resumo), runas e atributos iguais aos de Summoners War (1 a 6
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
-melhora nunca falha; a Gema de Reavaliação desfaz o que foi feito numa runa), 17 famílias de invocação de 2★ a 5★ naturais (85 variantes; os inimigos comuns
+melhora nunca falha; a Gema de Reavaliação desfaz o que foi feito numa runa), 36 famílias de invocação de 2★ a 5★ naturais (180 variantes; os inimigos comuns
 são invocações reforçadas), a Campanha de 50 fases em três regiões, que apresenta o jogo aos poucos,
 cinco Masmorras em que cada andar é tão difícil quanto o que paga (inimigos até o nível 60), Batalha automática (30 lutas seguidas,
 correndo por trás enquanto se usa o resto do jogo), Mana para

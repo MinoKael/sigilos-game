@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b2wgka8r4jm4n"
-path="res://.godot/imported/infusion_core.svg-51bda618c0592d8b8be494ca7cfa427e.ctex"
+uid="uid://d2lqlq78tvw11"
+path="res://.godot/imported/infusion-core.svg-519d16d2d847f6b32e56c456be3e73ff.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Creatures/infusion_core.svg"
-dest_files=["res://.godot/imported/infusion_core.svg-51bda618c0592d8b8be494ca7cfa427e.ctex"]
+source_file="res://Assets/Creatures/infusion-core.svg"
+dest_files=["res://.godot/imported/infusion-core.svg-519d16d2d847f6b32e56c456be3e73ff.ctex"]
 
 [params]
 
@@ -23,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

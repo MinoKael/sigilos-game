@@ -43,7 +43,7 @@
           [{"enemy": "golem_bastion", "element": "Wind"}, {"enemy": "runic_golem", "element": "Wind"}, {"summon": "slime_wind"}]
         ]
       },
-      {"stars": 5, "level": 35, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 0.8, "scrollChance": 1, "firstClearCores": 2, "coreChance": 1, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
+      {"stars": 5, "level": 35, "mana": 6, "essence": 560, "firstClearGold": 30, "experience": 3000, "scale": 0.95, "scrollChance": 1, "firstClearCores": 2, "coreChance": 1, "grades": {"4": 58.8, "5": 39.2, "6": 2.0}, "rarities": {"Rare": 69.7, "Hero": 25.4, "Legendary": 4.9},
         "waves": [
           [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "gargoyle_wind"}, {"summon": "slime_wind"}],
           [{"summon": "goblin_wind"}, {"summon": "troll_wind"}, {"summon": "slime_wind"}, {"summon": "gargoyle_light"}],
