@@ -861,7 +861,7 @@
     "runes": {
       "slots": { "title": "Espaços", "text": "Seis espaços em círculo. 1, 3 e 5 dão sempre Ataque, Defesa e Vida fixos; o 2 pode ter Velocidade, o 4 Crítico ou Dano crítico, o 6 Resistência ou Precisão, e os três podem ter Vida, Ataque ou Defesa, fixos ou em porcentagem sobre a base." },
       "stars": { "title": "Estrelas e raridade", "text": "De 1 a {0} estrelas: decidem o tamanho de todos os números. A cor é a raridade, quantos subatributos a runa tem: Normal 0, Mágica 1, Rara 2, Heroica 3, Lendária 4. Às vezes vem um atributo nativo, que nunca cresce." },
-      "upgrade": { "title": "Melhora", "text": "Essência melhora de +0 a +{0} (a mesma do nível e do Despertar), e a melhora nunca falha. Em +3, +6, +9 e +12 entra um subatributo novo (até {1}) ou um deles cresce; em +15 o principal dá o salto final." },
+      "upgrade": { "title": "Melhora", "text": "Essência melhora de +0 a +{0} (a mesma do nível e do Despertar), e a melhora nunca falha. Em +3, +6, +9 e +12 a runa precisa ter 1, 2, 3 e {1} subatributos: se ainda não tem, entra um novo (e ela muda de raridade); se já tem, um deles cresce; em +15 o principal dá o salto final." },
       "sets": { "title": "Conjuntos", "text": "Duas ou quatro runas do mesmo conjunto dão o bônus dele. Com 6 espaços cabem um de 4 e um de 2, ou três de 2 (três iguais valem três vezes). Cada conjunto tem o seu Glifo." },
       "grind": { "title": "Pedra de Afiar", "text": "Soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo." },
       "gem": { "title": "Gema Encantada", "text": "Troca um subatributo de uma runa +{0} pelo da gema. Só um subatributo por runa pode ser encantado." },

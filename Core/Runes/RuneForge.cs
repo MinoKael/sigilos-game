@@ -66,8 +66,10 @@ namespace Sigilos.Core.Runes
 		}
 
 		/// <summary>
-		/// +1 de melhora, que nunca falha. Em +3, +6, +9 e +12 a runa ganha um subatributo novo até ter 4;
-		/// com 4, um deles, ao acaso, ganha mais um sorteio.
+		/// +1 de melhora, que nunca falha. Os marcos +3, +6, +9 e +12 pedem 1, 2, 3 e 4 subatributos
+		/// (<see cref="RuneRules.SubstatsAt"/>): a runa que ainda não tem ganha um novo e muda de raridade; a
+		/// que já tem faz um deles, ao acaso, ganhar mais um sorteio. Uma Rara (2) cresce em +3 e +6, vira
+		/// Heroica em +9 e Lendária em +12.
 		/// </summary>
 		public static bool RaiseLevel(Random random, Rune rune)
 		{
@@ -78,7 +80,7 @@ namespace Sigilos.Core.Runes
 			if (!RuneRules.IsMilestone(rune.Level))
 				return true;
 
-			if (rune.Substats.Count < RuneRules.MaxSubstats)
+			if (rune.Substats.Count < RuneRules.SubstatsAt(rune.Level))
 			{
 				rune.Substats.Add(NewSubstat(random, rune));
 			}
