@@ -15,10 +15,10 @@ namespace Sigilos.Core.Progression
 		public static int Cost(int stars) => stars switch
 		{
 			1 => 10,
-			2 => 20,
-			3 => 30,
-			4 => 60,
-			_ => 120,
+			2 => 25,
+			3 => 75,
+			4 => 150,
+			_ => 300,
 		};
 
 		/// <summary>Está no nível máximo e ainda não é 6★ (sem olhar o preço).</summary>
