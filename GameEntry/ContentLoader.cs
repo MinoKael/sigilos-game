@@ -35,7 +35,8 @@ namespace Sigilos.GameEntry
 				enemies: Localize(Read("enemies.json")),
 				stages: Localize(Read("stages.json")),
 				dungeons: Localize(Read("dungeons.json")),
-				shop: Localize(Read("shop.json")));
+				shop: Localize(Read("shop.json")),
+				exploration: Localize(Read("exploration.json")));
 
 			foreach (var problem in database.Validate())
 				GD.PushError($"Data/: {problem}");

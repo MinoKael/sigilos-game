@@ -34,6 +34,8 @@ Sep 23, 2026 · @Mikael
 
 > **Décima sexta revisão de 01/10/2026: a Campanha até a fase 50, o jogo aos poucos e a luta de treino.** Primeiro, a interface. A Fusão ganhou janela própria: só cópias da mesma família, de qualquer elemento (as do mesmo elemento se marcam com um toque), a lista do que vai sumir e a confirmação; a seleção de vários na tela de Monstros ficou só para liberar. Monstros podem ser favoritados (o coração no cartão) e vêm primeiro nas listas. A Loja vende a Gema de Reavaliação, que devolve uma runa ao estado em que caiu, sem melhoras, Pedras de Afiar nem encantamento, listando antes tudo o que desfaz (a Essência gasta não volta). O Despertar deixou de ter um segundo desenho: o monstro desperto é o mesmo desenho, com a borda acesa por dentro na cor do elemento e um anel animado próprio de cada elemento. Toda ação que muda a conta sobe para a nuvem dois segundos depois (várias seguidas viram um envio só), e a invocação sobe antes de o resultado aparecer. As invocações 4★ e 5★ aparecem com halo de raios (Luz e Trevas na cor delas), a derrota diz o que fazer para ficar mais forte, e o quadro de efeitos da luta ganhou o "?". Depois, o balanceamento: os multiplicadores de Dano, Cura e Escudo das habilidades de todas as invocações caíram 30% (arredondados para baixo), e todo inimigo da Campanha e das Masmorras ganhou 30% de Vida, Ataque e Defesa (a Velocidade ficou). Os inimigos passam do 6★ nível 40, até o nível 60, pela mesma reta do 6★; o jogador segue parando no 40. A Campanha vai até a fase 50, em três regiões (a Planície dos Menires, o Arquipélago Afogado e a Cidadela do Selo Partido), com estrelas e nível que só sobem e um multiplicador de força por fase, calibrado no simulador: a fase 50 se vence com nível 20 e runas, ou com 6★ nível 40 sem runas, mas não com nível 20 sem runas. As Masmorras viraram o passo seguinte, cada uma de um elemento e em ordem de dificuldade: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz). O jogo aparece aos poucos: uma conta nova começa por uma luta de treino com um Mestre que ensina enquanto o jogador luta, e o Santuário mostra cada parte quando a Campanha a abre. Por fim, a Batalha automática mostra quanto a luta de agora leva e estima o resto pelas lutas recentes, e melhorar uma runa por ela reabre a ficha com o que subiu em verde.
 
+> **Décima sétima revisão de 05/10/2026: a Exploração Estelar.** A Torre dos Círculos virou a **Exploração Estelar**, o modo de onde vêm os recursos: um percurso pelas 88 constelações do céu, das Boreais (1 a 21, de Ursa Menor a Andrômeda) às Equatoriais (22 a 51, com as 12 do zodíaco, de Peixes a Pégaso) e às Austrais (52 a 88, do Peixe Austral ao Cruzeiro do Sul). Cada constelação é um andar com a sua mecânica, a **Influência**: regras que valem a luta inteira (Passivas do mesmo tipo das invocações, que o Esquecimento não cala) nos inimigos, só no guardião, no time do jogador ou em todos. Muitas vezes o desafio são as habilidades de uma invocação: o **guardião** da constelação é ela, desperta, com todas as habilidades no máximo e a Vida de chefe; doze chefes novos guardam o que nenhuma família representa (os bichos do zodíaco, os ursos, o caçador, a hidra). O percurso recomeça no dia 1 de cada mês, e cada mês uma de três Explorações (Aurora, Zênite e Crepúsculo, em rodízio) troca os desafios; a recompensa de cada constelação é sempre a mesma e volta todo mês. A luta não custa Mana, tem equipe própria e é feita para o manual. O mapa de cada faixa é o céu de verdade, com os orbes e os fios de luz da constelação da Canalização.
+
 
 ## 1. Visão geral
 
@@ -49,7 +51,7 @@ Em uma frase: Summoners War: Sky Arena como base mecânica e visual (coleção, 
 | Plataforma | PC primeiro; Android depois, com o mesmo código |
 | Sessão típica | 5 a 15 min, 1 ou 2 vezes por dia |
 | Equipe | 1 pessoa, cerca de 8 a 10 h por semana (premissa a confirmar) |
-| Tamanho da 1.0 | 40 invocações (8 famílias em 5 elementos), 3 regiões (60 fases), Torre de 100 andares |
+| Tamanho da 1.0 | 40 invocações (8 famílias em 5 elementos), 3 regiões (60 fases), Exploração Estelar de 88 constelações |
 | Prazo estimado | MVP jogável em cerca de 3 meses; 1.0 em 9 a 12 meses |
 
 **O que o jogo não é.** Sem monetização, servidor, PvP online, stamina, eventos com prazo, cutscenes ou dublagem. Esses sistemas existem para reter pagantes e custam meses; num projeto pessoal só atrapalham.
@@ -91,7 +93,7 @@ Neste mundo tudo o que existe foi escrito com dezesseis Glifos primordiais, e co
 | 1 | Planície dos Menires | Nenhuma; ensina o básico | O Mestre de Correntes, rival especialista em Laço |
 | 2 | Arquipélago Afogado | Maré: a cada 3 rodadas, unidades de Água ganham +20% de Ímpeto | A Serpe-Mãe |
 | 3 | Cidadela do Selo Partido | Glifos instáveis: as habilidades começam a luta em recarga | O Arauto do Silêncio |
-| Pós-jogo | Torre dos Círculos | Andares com regras fixas, uma por andar | — |
+| Pós-jogo | Exploração Estelar | 88 constelações, cada uma com a sua Influência | Os guardiões das constelações |
 
 A Campanha tem 50 fases: 1 a 20 na Planície dos Menires, 21 a 40 no Arquipélago Afogado (quase todo de Água, para ensinar os elementos e os efeitos; no fim, a Serpe-Mãe) e 41 a 50 na Cidadela do Selo Partido (Luz e Trevas; no fim, o Arauto do Silêncio). O mapa da Campanha tem uma aba por região, e uma região fechada diz em que fase abre. As regras de batalha de cada região ainda não entraram no jogo.
 
@@ -194,7 +196,7 @@ A ficha de runa é uma só no jogo todo: o título na cor da raridade e a plaqui
 
 Toda luta pode ser automática: usa a habilidade pronta de maior número (a mais forte) e mira com vantagem elemental e, no empate, no mais ferido. Tocar num inimigo durante a luta marca o foco (a mira dourada aparece nele; tocar de novo desmarca): o automático ataca ele enquanto puder, e o resumo do inimigo fica no toque longo. Sem inimigo marcado, com "Focar o chefe no automático" ligado (na pausa de uma luta com chefe; começa ligado e vale também para a Batalha automática), a equipe inteira ataca o chefe sempre que ele pode ser alvo. Provocar continua mandando nos dois casos. No manual, o jogador escolhe a ordem das recargas e o alvo.
 
-Campanha e Masmorras são desenhadas para o automático; Torre e Provações, para o manual. Lutas já vencidas ganham a Batalha automática: o jogador escolhe quantas lutas seguidas (30 de início), e cada uma leva o tempo que levaria no automático em 2×. Ela corre por trás enquanto o jogador usa o resto do jogo: um selo no alto, no meio, mostra "4/30" e reabre a janela dela, onde dá para acompanhar, mudar o número de lutas, vender e melhorar as runas ganhas e parar. Fechar a janela não para; parar pede confirmação. Ela para sozinha sem Mana ou com o inventário de runas cheio, e aí pode ser retomada; a derrota só entra na conta e a próxima luta segue. Começar uma luta manual durante a Batalha automática pergunta antes, porque a para.
+Campanha e Masmorras são desenhadas para o automático; Exploração Estelar e Provações, para o manual. Lutas já vencidas ganham a Batalha automática: o jogador escolhe quantas lutas seguidas (30 de início), e cada uma leva o tempo que levaria no automático em 2×. Ela corre por trás enquanto o jogador usa o resto do jogo: um selo no alto, no meio, mostra "4/30" e reabre a janela dela, onde dá para acompanhar, mudar o número de lutas, vender e melhorar as runas ganhas e parar. Fechar a janela não para; parar pede confirmação. Ela para sozinha sem Mana ou com o inventário de runas cheio, e aí pode ser retomada; a derrota só entra na conta e a próxima luta segue. Começar uma luta manual durante a Batalha automática pergunta antes, porque a para.
 
 ### Luta de treino
 
@@ -364,7 +366,7 @@ flowchart LR
 | Campanha: 50 fases em 3 regiões (20, 20 e 10) | AFK | Automático | Ensina o jogo aos poucos, aumenta a ociosidade e prepara a conta para as Masmorras | MVP |
 | Masmorras de Runas: Golem Rúnico (Vento), Ninho da Serpe (Fogo), Cripta do Rei Ossudo (Trevas), Santuário Afogado (Água) | Masmorras de Summoners War e Caçadas de Epic Seven | Automático ou Batalha automática | 5 andares; cada uma solta runas de 2 a 6 estrelas de 4 conjuntos, maiores a cada andar | MVP |
 | Forja Rachada (Luz) | Fenda de Summoners War | Automático ou Batalha automática | 5 andares; Pedras de Afiar e Gemas Encantadas | MVP |
-| Torre dos Círculos: 100 andares com regras fixas | Torre de Summoners War e Abismo de Epic Seven | Manual | Pergaminhos, Ouro, Essência, desafio de montagem | v0.5 |
+| Exploração Estelar: 88 constelações, cada uma com a sua Influência, que recomeçam todo mês | Torre de Summoners War e Abismo de Epic Seven | Manual | O modo dos recursos: Essência, Ouro, Pergaminhos e marcos, todo mês | v0.5 |
 | Provações: uma luta fixa por família | Despertar de Summoners War | Manual | Libera o Despertar | v0.5 |
 | Portais Secretos: surgem ao vencer Masmorras e ficam até você usar | Masmorras secretas de Summoners War | Automático | Três vitórias no mesmo portal dão uma invocação daquela família | v1.0 |
 | Arena dos Aprendizes: rivais gerados com poder parecido com o seu | Arenas de Summoners War e Epic Seven | Automático | Fragmentos e rivais recorrentes | v1.0 |
@@ -403,6 +405,27 @@ As equipes de referência são as que um jogador consegue montar com essas taxas
 | 4 | — | — | — | 28,2% | 71,8% | 46,5% | 23,1% | 30,4% |
 | 5 | — | — | — | — | 100% | 61,8% | 35,2% | 3,0% |
 
+**Exploração Estelar.** O modo de onde vêm os recursos (Data/exploration.json; Core/Progression/Exploration.cs). Um percurso pelas 88 constelações do céu, na ordem de um passeio de verdade: as **Boreais** (centro acima de +20° de declinação; 1 a 21, de Ursa Menor, a Estrela Polar, a Andrômeda), as **Equatoriais** (a faixa do meio, com as 12 do zodíaco; 22 a 51, de Peixes a Pégaso) e as **Austrais** (centro abaixo de −25°; 52 a 88, do Peixe Austral ao Cruzeiro do Sul). Abre depois da fase 30 da Campanha, e cada constelação depois da anterior.
+
+- **A Influência.** Cada constelação tem a sua mecânica, a mesma nas três Explorações: regras que valem a luta inteira, cada uma uma Passiva (os mesmos tipos das invocações, com número e efeitos) posta em cada unidade de um lado — os inimigos, só o guardião, o time do jogador ou todos. O Esquecimento cala a Passiva da unidade, não a do céu. A ficha explica a Influência e como vencê-la, e escreve cada regra com os números; segurar uma unidade na luta mostra as regras que valem nela. Exemplos: a Estrela Polar faz o guardião abrir a onda agindo primeiro; o Lince esconde os inimigos (só dano em área os acha); a Libra iguala a Vida de cada lado a cada turno; o Relógio faz todo efeito durar menos, dos dois lados; o Oitante tira cada efeito negativo que os inimigos recebem.
+- **O guardião.** A última onda tem o guardião. Em quatro de cada cinco desafios ele é uma invocação, e as habilidades dela são o desafio: luta desperta, com todas as habilidades no máximo e a Vida de chefe (3× a de uma invocação inimiga comum, BattleFactory.GuardianHealth). Doze chefes novos guardam o que nenhuma família representa: Urso Celeste, Carneiro de Ouro, Touro Celeste, Caçador das Estrelas, Unicórnio Celeste, Caranguejo Celeste, Leão de Nemeia, Hidra de Lerna, Balança de Astreia, Escorpião Celeste, Cabra-Marinha e Centauro Celeste; e os chefes das Masmorras e da Campanha aparecem em constelações que têm a ver com eles (o Mestre de Correntes em Andrômeda, o Guardião Afogado na Baleia, o Rei Ossudo na Coroa Austral, o Arauto do Silêncio no Oitante).
+- **O rodízio.** O percurso recomeça no dia 1 de cada mês (pelo relógio do aparelho), e cada mês uma de três Explorações traz os desafios: Aurora, Zênite e Crepúsculo, nesta ordem (outubro de 2026 é a Aurora). Cada Exploração tem, para cada constelação, outro guardião (quase sempre a mesma família em outro elemento, ou outro chefe) e outra escolta; a Influência e a força ficam.
+- **A recompensa.** Sempre a mesma, qualquer que seja a Exploração, e volta todo mês: a primeira vitória de cada constelação no mês paga a recompensa dela; vencer de novo no mesmo mês não paga nada. A luta não custa Mana: o que limita é o percurso, uma vez por mês.
+- **A força.** Todos os inimigos são 6★, do nível 40 (constelação 1) ao 60 (88), e a escala sobe de 0,45 a 4,2, geométrica. As Boreais e as Austrais têm 2 e 3 ondas; o Enxame da Mosca, ondas cheias.
+
+| Recompensa por constelação (n = o andar) | Valor |
+| --- | --- |
+| Essência | 500 + 12,5 × (n − 1), de 500 a 1.590 |
+| Ouro | 5 a cada 11 constelações: 5 nas 11 primeiras, até 40 nas últimas |
+| Experiência (equipe e conta) | 1.500 + 25 × (n − 1) |
+| Pergaminho Místico | 1 a cada 4 constelações |
+| Núcleo de Infusão | 1 a cada 11 constelações |
+| Pergaminho Lendário | 1 no fim de cada faixa (21, 51 e 88) |
+| Pergaminho de Luz e Trevas | 1 no Cruzeiro do Sul (88) |
+| **O mês inteiro** | 91.850 de Essência, 1.980 de Ouro, 22 Místicos, 8 Núcleos, 3 Lendários e 1 de Luz e Trevas |
+
+A calibragem (`dotnet run --project Tests -- --exploration`) roda cada constelação nas três Explorações contra cinco times genéricos no automático. Quem chega à fase 30 vence as 7 primeiras; o fim da Campanha, quase todas as Boreais; 6★ nível 40 com runas 5★ +12 segue até a 37 e vence 52 das 88 nas três Explorações; com runas 6★ +15, até a 67; e o time forte (desperto, habilidades no máximo, runas 6★) até a 83. As últimas (o Triângulo Austral, que chama dois aliados para cada golpe, e o Cruzeiro do Sul) são o teto do mês, e várias no caminho pedem a equipe feita para a Influência delas, não a mais forte: é para o manual.
+
 **Mana.** Toda vitória custa Mana: de 2 a 6 por fase da Campanha e de 4 a 8 por andar de Masmorra. A derrota não custa nada, mas só começa a luta quem tem a Mana da vitória. A canalização recarrega 12 por hora até o máximo, que começa em 60 e sobe 1 por nível da conta até 120 no nível 60 (o último nível soma 2); o que passaria do máximo se perde. Subir de nível a conta enche a Mana, e a Mana comprada na Loja passa do máximo. Farmar runas é o centro do jogo, e o Ouro é a válvula para farmar mais.
 
 **Nível da conta.** Toda vitória dá a experiência da luta também à conta (300 × nível para o próximo), até o nível 60. Cada nível dá 20 de Ouro, enche a Mana e aumenta a Mana máxima.
@@ -415,11 +438,11 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 | --- | --- | --- |
 | Mana | Canalização (até o máximo), nível da conta, Loja | Cada vitória (a derrota não custa nada) |
 | Essência | Canalização, fases, Masmorras, runas desfeitas | Nível e Evolução das invocações, Despertar e melhora de runas |
-| Ouro | Canalização, nível da conta, primeira vitória em cada andar de Masmorra, Torre, conquistas | Loja: Mana e Pergaminhos |
-| Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (1%, 2% e 3% de chance a cada vitória nos andares 3, 4 e 5, as mesmas do Núcleo de Infusão), Loja, Torre, conquistas | Invocar |
+| Ouro | Canalização, nível da conta, primeira vitória em cada andar de Masmorra, Exploração Estelar, conquistas | Loja: Mana e Pergaminhos |
+| Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (1%, 2% e 3% de chance a cada vitória nos andares 3, 4 e 5, as mesmas do Núcleo de Infusão), Loja, Exploração Estelar, conquistas | Invocar |
 | Fragmentos | Monstros soltos, Arena | Evolução e troca por uma 4★ escolhida |
 
-Os Pergaminhos Lendários e de Luz e Trevas e os Núcleos de Infusão não são moedas do dia a dia: vêm dos marcos, o que é especial vem de chegar lá. O orçamento conta o conteúdo que ainda vem (a Torre de 100 andares, depois Provações e Arena): os marcos de hoje não podem crescer sem tirar da parte reservada.
+Os Pergaminhos Lendários e de Luz e Trevas e os Núcleos de Infusão não são moedas do dia a dia: vêm dos marcos, o que é especial vem de chegar lá. A Exploração Estelar é a exceção que se repete: o percurso recomeça todo mês, e os marcos dele voltam junto. O orçamento conta o conteúdo que ainda vem (Provações e Arena): os marcos de hoje não podem crescer sem tirar da parte reservada.
 
 | Marco | Lendário | Luz e Trevas | Núcleos de Infusão |
 | --- | --- | --- | --- |
@@ -427,8 +450,8 @@ Os Pergaminhos Lendários e de Luz e Trevas e os Núcleos de Infusão não são 
 | Primeira vitória dos andares de Masmorra (as cinco) | 5 (andar 4) | 5 (andar 5) | 55 (1, 1, 2, 3 e 4 por Masmorra) |
 | Repetir os andares 3, 4 e 5 | — | — | 1%, 2% e 3% de chance a cada vitória |
 | Níveis da conta, até o 60 | — | 5 (níveis 20, 30, 40, 50 e 60) | 12 (a cada 5 níveis) |
-| Torre dos Círculos, 100 andares (reservado) | 10 (a cada 10 andares) | 4 (andares 25, 50, 75 e 100) | 20 (a cada 5 andares) |
-| Total sem a Torre | 8 | 10 | 73, mais as repetições |
+| Total dos marcos de uma vez | 8 | 10 | 73, mais as repetições |
+| Exploração Estelar, todo mês | 3 (constelações 21, 51 e 88) | 1 (constelação 88) | 8 (a cada 11 constelações) |
 
 Com isso, perto dos 20 dias em que o jogador se prepara para o Golem 5, ele tem uma 5★ garantida, duas ou três do Místico, perto de metade de chance de uma do Lendário e uns 35 Núcleos: o bastante para montar uma equipe de 2★ a 4★ com uma 5★ e subir as habilidades dela. As Masmorras são calibradas para essa equipe (seção 11).
 
@@ -447,7 +470,7 @@ Com isso, perto dos 20 dias em que o jogador se prepara para o Golem 5, ele tem 
 | Região 1 completa | Cerca de 2 semanas |
 | As 40 invocações coletadas | Cerca de 8 semanas |
 | Primeira 6★ com as habilidades no máximo | Cerca de 3 meses |
-| Torre no andar 100 | Cerca de 4 meses |
+| Exploração Estelar inteira (88) num mês | Cerca de 4 meses |
 
 Se o jogo ficar chato no teste, a primeira alavanca é dar mais Ouro ou baratear a Loja. Aqui a generosidade não tem custo comercial.
 
@@ -472,8 +495,8 @@ Cada fase termina num jogo que você já consegue jogar; se o projeto parar em q
 | 0. Simulador em texto | 2 semanas | Combate em linha de comando ou planilha: Ímpeto, Éter, 8 invocações | A matemática de velocidade e Éter é interessante? |
 | 1. Núcleo de combate | 6 a 8 semanas | Tela de batalha, ondas, 8 invocações, IA automática, 10 fases | O automático é bom de assistir e o manual é bom de jogar? |
 | 2. MVP: loop AFK e gacha | 4 a 6 semanas | Ociosidade, nível 1–40, Despertar, runas, invocação com garantia, Baú e Ecos, equipes por conteúdo, 3 famílias (15 invocações), região 1, 4 Masmorras de Runas e a Forja | Dá vontade de voltar no dia seguinte? |
-| 3. v0.5: profundidade | 8 a 10 semanas | Provações, Torre até 30, traçado, mais andares de Masmorra, 5 famílias (25) | Existe teorização para semanas? |
-| 4. v1.0: conteúdo | 10 a 12 semanas | 8 famílias (40), regiões 2 e 3, Torre 100, Arena, Portais Secretos, Tiques | Você joga 90 dias seguidos? |
+| 3. v0.5: profundidade | 8 a 10 semanas | Provações, Exploração Estelar (as 88 constelações), traçado, mais andares de Masmorra, 5 famílias (25) | Existe teorização para semanas? |
+| 4. v1.0: conteúdo | 10 a 12 semanas | 8 famílias (40), regiões 2 e 3, Arena, Portais Secretos, Tiques | Você joga 90 dias seguidos? |
 | Depois | Contínuo | Uma família nova (5 invocações) quando der vontade, Convidados, Espelho | — |
 
 A fase 0 é a mais barata e a mais importante: combate por turnos com velocidade é quase só matemática, então dá para testar sem nenhum gráfico.
@@ -488,7 +511,7 @@ O maior risco não é técnico: é o escopo crescer até o projeto parar. Os out
 | --- | --- | --- |
 | Escopo crescente | É o que mais mata projetos pessoais | Sistema novo substitui um eixo, não soma; toda fase termina jogável |
 | Runas pesadas | Seis espaços com subatributos é o sistema mais caro de balancear e de interface | Copiar as regras e tabelas de Summoners War em vez de inventar números; melhora sem falha; simulador e testes com os valores de lá |
-| Automático forte demais | Se o automático resolve tudo, o manual perde sentido | Campanha e Masmorras são para o automático; Torre e Provações pedem a ordem das recargas no manual |
+| Automático forte demais | Se o automático resolve tudo, o manual perde sentido | Campanha e Masmorras são para o automático; Exploração Estelar e Provações pedem a ordem das recargas no manual |
 | Gacha sem tensão | Você conhece todas as criaturas | Tiques, Convidados, garantia visível e o ritual do traçado |
 
 ### Perguntas em aberto

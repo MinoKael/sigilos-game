@@ -1,5 +1,17 @@
 # Changelog — Sigilos
 
+## 05/10/2026
+- **Exploração Estelar (antiga Torre):** o modo de onde vêm os recursos, na terceira porta da tela Batalha. Um percurso pelas 88 constelações do céu:
+  - Boreais (1 a 21, de Ursa Menor a Andrômeda), Equatoriais (22 a 51, com o zodíaco, de Peixes a Pégaso) e Austrais (52 a 88, até o Cruzeiro do Sul).
+  - Abre depois da fase 30 da Campanha. Não custa Mana, tem equipe própria e é feita para o manual.
+  - **Influência:** cada constelação tem a sua mecânica, regras que valem a luta inteira nos inimigos, só no guardião, no seu time ou em todos (o Esquecimento não cala). A ficha explica a mecânica e como vencer, com os números; segurar uma unidade na luta mostra as regras dela.
+  - **Guardiões:** em quatro de cada cinco desafios, o guardião é uma invocação desperta com as habilidades no máximo e Vida de chefe: as habilidades dela são o desafio. Doze chefes novos (Urso Celeste, Carneiro de Ouro, Touro Celeste, Caçador das Estrelas, Unicórnio Celeste, Caranguejo Celeste, Leão de Nemeia, Hidra de Lerna, Balança de Astreia, Escorpião Celeste, Cabra-Marinha e Centauro Celeste).
+  - **Rodízio mensal:** no dia 1 o percurso recomeça e entra a Exploração seguinte (Aurora, Zênite e Crepúsculo), com outros guardiões e escoltas. A recompensa de cada constelação é sempre a mesma e volta todo mês.
+  - **Recompensa do mês inteiro:** 91.850 de Essência, 1.980 de Ouro, 22 Pergaminhos Místicos, 8 Núcleos de Infusão, 3 Pergaminhos Lendários e 1 de Luz e Trevas.
+  - **Mapa:** o céu de verdade de cada faixa, com os orbes e os fios de luz da constelação da Canalização (as duas desenham com as mesmas peças).
+- **Equipes:** aba da Exploração Estelar. **Compêndio:** cartão da Exploração Estelar.
+- **Simulador:** `dotnet run --project Tests -- --exploration` mede cada constelação nas três Explorações contra cinco times.
+
 ## 04/10/2026
 - **Masmorras de especialização:** cada chefe pede um time feito para ele. O Golem regenera a cada turno, a Serpe se fortalece por efeitos negativos, o Rei Ossudo (Cripta) impede que qualquer monstro ganhe ou perca Ímpeto, o Santuário Afogado contra-ataca. O andar 5 só cai para uma equipe preparada. A Forja foi recalibrada.
 - **Esquecimento:** agora também no Pássaro de Trevas, no Corvo de Água, no Diabrete de Trevas e na Fênix de Luz.

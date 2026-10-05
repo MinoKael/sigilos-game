@@ -89,6 +89,7 @@ namespace Sigilos.GameEntry
 		// Para onde cada tela de conteúdo volta: vale também depois de uma luta ou da Loja.
 		private Action _campaignBack = null!;
 		private Action _dungeonsBack = null!;
+		private Action _explorationBack = null!;
 		private Action _storageBack = null!;
 
 		/// <summary>A busca da tela de Monstros, que fica enquanto o jogo está aberto.</summary>
@@ -97,7 +98,7 @@ namespace Sigilos.GameEntry
 
 		public override void _Ready()
 		{
-			_campaignBack = _dungeonsBack = ShowMap;
+			_campaignBack = _dungeonsBack = _explorationBack = ShowMap;
 			_storageBack = _summonBack = ShowHub;
 			_account = new AccountSession(Argument("--save=") ?? DefaultSlot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
 			AddChild(_account);
@@ -199,6 +200,9 @@ namespace Sigilos.GameEntry
 					break;
 				case "dungeons":
 					Go(Destination.Dungeons, ShowMap);
+					break;
+				case "exploration":
+					Go(Destination.Exploration, ShowMap);
 					break;
 				case "summon":
 					Go(Destination.Summon, ShowHub);
@@ -832,6 +836,10 @@ namespace Sigilos.GameEntry
 					_dungeonsBack = back;
 					ShowDungeons(null);
 					break;
+				case Destination.Exploration:
+					_explorationBack = back;
+					ShowExploration(null);
+					break;
 				case Destination.Summon:
 					_summonBack = back;
 					ShowSummon();
@@ -902,6 +910,24 @@ namespace Sigilos.GameEntry
 			Swap(dungeons, () => ShowDungeons(selected));
 			if (message != null)
 				dungeons.ShowMessage(message);
+		}
+
+		/// <summary>
+		/// A Exploração Estelar na constelação <paramref name="selected"/> (nula: a próxima a vencer no mês). Num
+		/// mês novo o percurso recomeça antes de a tela abrir, e o save guarda o mês novo.
+		/// </summary>
+		private void ShowExploration(int? selected, string? message = null)
+		{
+			var now = DateTime.Now;
+			if (Exploration.Renew(_player, now))
+				Save();
+			var exploration = new ExplorationScreen(_database, _player, now, selected);
+			exploration.BackRequested += () => _explorationBack();
+			exploration.FightRequested += FightConstellation;
+			exploration.TeamRequested += () => ShowTeams(Teams.Exploration, () => ShowExploration(exploration.Selected));
+			Swap(exploration, () => ShowExploration(exploration.Selected));
+			if (message != null)
+				exploration.ShowMessage(message);
 		}
 
 		private void ShowSummon()
@@ -1071,6 +1097,46 @@ namespace Sigilos.GameEntry
 			}
 
 			Fight(T("battle.title_floor", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, Records.FloorKey(dungeon.Id, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back, () => FightFloor(dungeon, floor));
+		}
+
+		/// <summary>
+		/// Uma constelação da Exploração Estelar, com o desafio da Exploração do mês. A vitória não custa Mana;
+		/// a primeira do mês paga a recompensa da constelação, e o Continuar do resultado já entra na seguinte.
+		/// </summary>
+		private void FightConstellation(int number)
+		{
+			var exploration = _database.Exploration;
+			void Back() => ShowExploration(null);
+			if (NeedsTeam(Teams.Exploration, () => ShowExploration(number)) || BusyWithAutoBattle(() => FightConstellation(number)))
+				return;
+
+			var now = DateTime.Now;
+			Exploration.Renew(_player, now);
+			if (Exploration.Check(_player, exploration, number, now) != EntryProblem.None)
+			{
+				ShowExploration(number, T("exploration.locked", number - 1));
+				return;
+			}
+
+			var variation = Exploration.VariationOf(now);
+			var constellation = exploration.Constellation(number);
+			Fight(
+				T("battle.title_constellation", number, constellation.Name),
+				constellation.Encounter(variation),
+				Teams.Exploration,
+				Records.ConstellationKey(constellation.Id, variation),
+				() => Exploration.ApplyVictory(_player, exploration, number, DateTime.Now),
+				Back,
+				() => FightConstellation(number),
+				next: Next);
+
+			(int Mana, Action Start)? Next()
+			{
+				var following = number + 1;
+				return following <= exploration.Constellations.Count && Exploration.Check(_player, exploration, following, DateTime.Now) == EntryProblem.None
+					? (0, () => FightConstellation(following))
+					: null;
+			}
 		}
 
 		/// <summary>Sem ninguém na equipe do conteúdo, abre a tela de Equipes em vez da luta.</summary>

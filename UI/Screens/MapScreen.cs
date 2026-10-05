@@ -11,8 +11,8 @@ namespace Sigilos.UI.Screens
 {
 	/// <summary>
 	/// A escolha de batalha: três portais grandes, cada um com o nome e o progresso escritos — a
-	/// Campanha (a próxima fase), as Masmorras (quantas abertas, andares vencidos) e a Torre e as
-	/// Provações, fechadas ("em breve").
+	/// Campanha (a próxima fase), as Masmorras (quantas abertas, andares vencidos) e a Exploração
+	/// Estelar (a Exploração do mês e as constelações vencidas nele; fechada, a fase que abre).
 	/// </summary>
 	public partial class MapScreen : Control
 	{
@@ -64,8 +64,17 @@ namespace Sigilos.UI.Screens
 			dungeons.Pressed += () => Requested?.Invoke(Destination.Dungeons);
 			row.AddChild(dungeons);
 
-			var tower = new TileButton(T("map.tower"), T("map.tower_detail"), Art.Icon("tower"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Tower", Disabled = true };
-			row.AddChild(tower);
+			var exploration = _database.Exploration;
+			var explorationOpen = Core.Progression.Features.IsOpen(_player, _database, Core.Progression.Feature.Exploration) && exploration.Constellations.Count > 0;
+			var now = DateTime.Now;
+			var month = exploration.Explorations.Count > 0 ? exploration.Explorations[Core.Progression.Exploration.VariationOf(now) % exploration.Explorations.Count].Name : "";
+			var starDetail = explorationOpen
+				? T("map.exploration_detail", month, Core.Progression.Exploration.Cleared(_player, now), exploration.Constellations.Count)
+				: T("map.exploration_opens", exploration.UnlockStage);
+			var stars = new TileButton(T("map.exploration"), starDetail, Art.Icon("star_exploration"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Exploration", Disabled = !explorationOpen };
+			stars.Highlight = Core.Progression.Features.IsNew(_player, _database, Core.Progression.Feature.Exploration);
+			stars.Pressed += () => Requested?.Invoke(Destination.Exploration);
+			row.AddChild(stars);
 		}
 	}
 }

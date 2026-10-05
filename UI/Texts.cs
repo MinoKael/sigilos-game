@@ -38,6 +38,10 @@ namespace Sigilos.UI
 		public static string Name(RuneRarity rarity) => T($"rarity.{rarity}");
 		public static string Name(StatusKind status) => T($"effect.{status}.name");
 		public static string Name(DungeonKind kind) => T($"dungeons.kind.{kind}");
+		public static string Name(Hemisphere hemisphere) => T($"exploration.hemisphere.{hemisphere}");
+
+		/// <summary>Em quem uma regra da Influência vale: "Inimigos", "Guardião", "Seu time", "Todos".</summary>
+		public static string Name(InfluenceSide side) => T($"exploration.side.{side}");
 		public static string Name(RuneSort sort) => T($"filter.order.{sort}");
 		public static string Name(MonsterSort sort) => T($"filter.monster_order.{sort}");
 
@@ -424,6 +428,8 @@ namespace Sigilos.UI
 				.Concat(Keys<SkillLevelKind>("skill.level_up.{0}"))
 				.Concat(Keys<RuneToolKind>("tool.{0}"))
 				.Concat(Keys<DungeonKind>("dungeons.kind.{0}"))
+				.Concat(Keys<Hemisphere>("exploration.hemisphere.{0}"))
+				.Concat(Keys<InfluenceSide>("exploration.side.{0}"))
 				.Concat(Keys<RuneSort>("filter.order.{0}"))
 				.Concat(Keys<MonsterSort>("filter.monster_order.{0}").Where(k => !k.EndsWith(".Stat")))
 				.Concat(Keys<MonsterCondition>("filter.condition_kind.{0}"))

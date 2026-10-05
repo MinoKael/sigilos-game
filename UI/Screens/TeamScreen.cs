@@ -114,6 +114,12 @@ namespace Sigilos.UI.Screens
 			AddTab(tabs, Teams.Campaign, T("teams.campaign"), "campaign", true, 0);
 			foreach (var dungeon in _database.Dungeons)
 				AddTab(tabs, dungeon.Id, dungeon.Name, "dungeon", Dungeons.IsUnlocked(_player, dungeon), dungeon.UnlockStage);
+			if (_database.Exploration.Constellations.Count > 0)
+			{
+				keys.Add(Teams.Exploration);
+				AddTab(tabs, Teams.Exploration, T("exploration.title"), "star_exploration", Exploration.IsOpen(_player, _database.Exploration), _database.Exploration.UnlockStage);
+			}
+
 			tabs.Select(Math.Max(0, keys.IndexOf(_content)));
 			tabs.Changed += index =>
 			{

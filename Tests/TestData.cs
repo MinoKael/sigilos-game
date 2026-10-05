@@ -26,7 +26,8 @@ namespace Sigilos.Tests
 				enemies: Read("enemies.json"),
 				stages: Read("stages.json"),
 				dungeons: Read("dungeons.json"),
-				shop: Read("shop.json"));
+				shop: Read("shop.json"),
+				exploration: Read("exploration.json"));
 		}
 
 		private static GameDatabase? _database;

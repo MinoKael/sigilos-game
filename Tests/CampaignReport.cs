@@ -128,6 +128,62 @@ namespace Sigilos.Tests
 			}
 		}
 
+		/// <summary>
+		/// A Exploração Estelar, constelação a constelação: <c>dotnet run --project Tests -- --exploration</c> (ou
+		/// <c>--exploration=22-51</c>, só esses andares). Em cada uma das três Explorações, a vitória de cinco times
+		/// genéricos, do mais fraco ao mais forte: quem chega à fase 30 (quando a Exploração abre), o fim da
+		/// Campanha, 6★ nível 40 com runas 5★ +12 e com runas 6★ +15, e o time forte (desperto, habilidades no
+		/// máximo). O percurso é para o manual e para times feitos para cada Influência: o automático com time
+		/// genérico mede a curva, não o teto.
+		/// </summary>
+		public static void PrintExploration(GameDatabase database, string? range)
+		{
+			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+			var exploration = database.Exploration;
+			var (first, last) = (1, exploration.Constellations.Count);
+			if (range is { Length: > 0 })
+			{
+				var parts = range.Split('-');
+				first = int.Parse(parts[0]);
+				last = parts.Length > 1 ? int.Parse(parts[1]) : first;
+			}
+
+			var teams = new (string Name, BattleTeam Team)[]
+			{
+				("st30", ReferenceTeams.AtStage(database, 30)),
+				("st50", ReferenceTeams.AtStage(database, 50)),
+				("r5", ReferenceTeams.AtFloor(database, 4)),
+				("r6", ReferenceTeams.AtFloor(database, 5)),
+				("pow", ReferenceTeams.Powerful(database)),
+			};
+			Console.WriteLine($"{ExplorationSeeds} fights per cell; wins of {string.Join(" ", teams.Select(t => t.Name))} in each exploration");
+			Console.WriteLine("  n  constellation         enemies      | " + string.Join(" | ", exploration.Explorations.Select(e => $"{e.Id,-19}")));
+			for (var number = first; number <= last; number++)
+			{
+				var constellation = exploration.Constellation(number);
+				var cells = Enumerable.Range(0, exploration.Explorations.Count).Select(variation =>
+				{
+					var encounter = constellation.Encounter(variation);
+					return string.Join(" ", teams.Select(t => $"{Wins(database, encounter, t.Team) * 100,3:0}"));
+				});
+				Console.WriteLine($"{number,3}  {constellation.Id,-20}  {constellation.Stars + "★" + constellation.Level + " ×" + constellation.Scale.ToString("0.00"),-11} | " + string.Join(" | ", cells));
+			}
+		}
+
+		private const int ExplorationSeeds = 10;
+
+		private static double Wins(GameDatabase database, Encounter encounter, BattleTeam team)
+		{
+			var wins = 0;
+			for (var seed = 1; seed <= ExplorationSeeds; seed++)
+			{
+				if (AutoBattle.Run(BattleFactory.Create(database, team, encounter, seed)))
+					wins++;
+			}
+
+			return wins / (double)ExplorationSeeds;
+		}
+
 		private static string Cell((double Wins, double Rounds, double Health) result) =>
 			$"{result.Wins,4:P0} ({result.Rounds,4:F0})".PadRight(12);
 

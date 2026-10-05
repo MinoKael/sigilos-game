@@ -16,7 +16,10 @@ namespace Sigilos.UI.Screens
 		Compendium,
 		Grimoire,
 
-		/// <summary>A escolha de batalha: Campanha, Masmorras e o que ainda vem.</summary>
+		/// <summary>A Exploração Estelar: o percurso pelas 88 constelações, que recomeça todo mês.</summary>
+		Exploration,
+
+		/// <summary>A escolha de batalha: Campanha, Masmorras e a Exploração Estelar.</summary>
 		Map,
 	}
 
@@ -34,6 +37,7 @@ namespace Sigilos.UI.Screens
 			Destination.Shop => "shop",
 			Destination.Compendium => "compendium",
 			Destination.Grimoire => "grimoire",
+			Destination.Exploration => "star_exploration",
 			_ => "fight",
 		};
 
@@ -49,6 +53,7 @@ namespace Sigilos.UI.Screens
 			Feature.Shop => (Icon(Destination.Shop), Name(Destination.Shop)),
 			Feature.Grimoire => (Icon(Destination.Grimoire), Name(Destination.Grimoire)),
 			Feature.Dungeons => (Icon(Destination.Dungeons), Name(Destination.Dungeons)),
+			Feature.Exploration => (Icon(Destination.Exploration), Name(Destination.Exploration)),
 			Feature.Channel => ("collect", T("hub.channel")),
 			_ => ("repeat", T("common.auto_battle")),
 		};

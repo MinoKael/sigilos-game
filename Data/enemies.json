@@ -18,6 +18,8 @@
 // - drowned_guardian: its wave starts with Counter on every enemy, and its skills keep it up: AoE damage and
 //   many attacks get punished. Stun (stunned units don't counter), Blind, Attack Down, stealing the buff and
 //   strong single hits beat it; Oblivion doesn't help.
+// - celestial_*: the Star Exploration guardians (Data/exploration.json) that no summon family fits; the
+//   constellation's influence is the mechanic, their own kit follows the theme.
 [
   {
     "id": "chain_master",
@@ -231,6 +233,262 @@
         {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
         {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
       ] }
+    ]
+  },
+  {
+    "id": "celestial_bear",
+    "name": "Urso Celeste",
+    "role": "HP",
+    "rarity": 3,
+    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+    "healthScale": 6.0, "attackScale": 1.5,
+    "image": "bear",
+    "skills": [
+      { "name": "Patada", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
+      ] },
+      { "name": "Abraço de Urso", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.2},
+        {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.6, "turns": 2}
+      ] },
+      { "name": "Hibernar", "cooldown": 5, "effects": [
+        {"kind": "Heal", "target": "Self", "power": 0.2},
+        {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_ram",
+    "name": "Carneiro de Ouro",
+    "role": "Attack",
+    "rarity": 3,
+    "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+    "healthScale": 5.5, "attackScale": 1.5,
+    "image": "ram",
+    "skills": [
+      { "name": "Cabeçada", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.5},
+        {"kind": "Impeto", "target": "Target", "power": -20}
+      ] },
+      { "name": "Investida", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.3}
+      ] },
+      { "name": "Velo de Ouro", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [
+        {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_bull",
+    "name": "Touro Celeste",
+    "role": "HP",
+    "rarity": 3,
+    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+    "healthScale": 6.5, "attackScale": 1.5,
+    "image": "bull",
+    "skills": [
+      { "name": "Chifrada", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.6}
+      ] },
+      { "name": "Estouro", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.4},
+        {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+      ] },
+      { "name": "Bufar", "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"}, "effects": [
+        {"kind": "Impeto", "target": "Self", "power": 10}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_hunter",
+    "name": "Caçador das Estrelas",
+    "role": "Attack",
+    "rarity": 3,
+    "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+    "healthScale": 5.5, "attackScale": 1.5,
+    "image": "hunter",
+    "skills": [
+      { "name": "Flecha Estelar", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.4},
+        {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Chuva de Flechas", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.1, "hits": 2}
+      ] },
+      { "name": "Cinto de Órion", "cooldown": 5, "effects": [
+        {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 2},
+        {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 3}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_unicorn",
+    "name": "Unicórnio Celeste",
+    "role": "Support",
+    "rarity": 3,
+    "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+    "healthScale": 5.5, "attackScale": 1.4,
+    "image": "unicorn",
+    "skills": [
+      { "name": "Chifre de Luz", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.2},
+        {"kind": "Heal", "target": "LowestAlly", "power": 0.1}
+      ] },
+      { "name": "Galope Puro", "cooldown": 4, "effects": [
+        {"kind": "Cleanse", "target": "AllAllies"},
+        {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2}
+      ] },
+      { "name": "Crina Prateada", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [
+        {"kind": "Heal", "target": "Self", "power": 0.04}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_crab",
+    "name": "Caranguejo Celeste",
+    "role": "Defense",
+    "rarity": 3,
+    "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+    "healthScale": 5.5, "attackScale": 1.5, "defenseScale": 1.5,
+    "image": "crab",
+    "skills": [
+      { "name": "Pinça", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.4},
+        {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Esmagar Casco", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "Target", "power": 4.2},
+        {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.4}
+      ] },
+      { "name": "Casco Duro", "passive": {"kind": "DamageReduction", "value": 0.15} }
+    ]
+  },
+  {
+    "id": "celestial_lion",
+    "name": "Leão de Nemeia",
+    "role": "Attack",
+    "rarity": 3,
+    "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+    "healthScale": 6.0, "attackScale": 1.5,
+    "image": "lion",
+    "skills": [
+      { "name": "Garra de Nemeia", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.6},
+        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Rugido", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.6},
+        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.6, "turns": 2}
+      ] },
+      { "name": "Pele Invulnerável", "passive": {"kind": "DamageReduction", "value": 0.15} }
+    ]
+  },
+  {
+    "id": "celestial_hydra",
+    "name": "Hidra de Lerna",
+    "role": "HP",
+    "rarity": 3,
+    "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+    "healthScale": 6.5, "attackScale": 1.4,
+    "image": "hydra",
+    "skills": [
+      { "name": "Mordidas", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
+        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Veneno das Cabeças", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.6},
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2}
+      ] },
+      { "name": "Cabeças", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [
+        {"kind": "Heal", "target": "Self", "power": 0.05}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_scales",
+    "name": "Balança de Astreia",
+    "role": "Support",
+    "rarity": 3,
+    "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+    "healthScale": 5.5, "attackScale": 1.4,
+    "image": "scales",
+    "skills": [
+      { "name": "Peso", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.2},
+        {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Juízo", "cooldown": 4, "effects": [
+        {"kind": "EqualizeHealth", "target": "AllAllies"},
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.8}
+      ] },
+      { "name": "Contrapeso", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [
+        {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_scorpion",
+    "name": "Escorpião Celeste",
+    "role": "Attack",
+    "rarity": 3,
+    "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+    "healthScale": 5.5, "attackScale": 1.5,
+    "image": "scorpion",
+    "skills": [
+      { "name": "Pinça Venenosa", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.4},
+        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Ferroada", "cooldown": 3, "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.8},
+        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.8, "turns": 3},
+        {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.5}
+      ] },
+      { "name": "Carapaça Venenosa", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [
+        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_sea_goat",
+    "name": "Cabra-Marinha",
+    "role": "Defense",
+    "rarity": 3,
+    "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+    "healthScale": 6.0, "attackScale": 1.5, "defenseScale": 1.2,
+    "image": "sea_goat",
+    "skills": [
+      { "name": "Chifres", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.4},
+        {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Maré Montanhosa", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 2.0},
+        {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+      ] }
+    ]
+  },
+  {
+    "id": "celestial_centaur",
+    "name": "Centauro Celeste",
+    "role": "Support",
+    "rarity": 3,
+    "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+    "healthScale": 5.5, "attackScale": 1.5,
+    "image": "centaur",
+    "skills": [
+      { "name": "Flecha de Quíron", "effects": [
+        {"kind": "Damage", "target": "Target", "power": 3.4},
+        {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
+      ] },
+      { "name": "Saraivada", "cooldown": 4, "effects": [
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.0, "hits": 2},
+        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
+      ] },
+      { "name": "Mestre dos Heróis", "passive": {"kind": "CooldownEachTurn", "value": 0.3} }
     ]
   }
 ]

@@ -14,7 +14,7 @@ um monstro ou uma runa mostra o resumo), runas e atributos iguais aos de Summone
 estrelas, +15, 4 subatributos, 16 conjuntos com um Glifo cada, Pedra de Afiar e Gema Encantada; só a
 melhora nunca falha; a Gema de Reavaliação desfaz o que foi feito numa runa), 17 famílias de invocação de 2★ a 5★ naturais (85 variantes; os inimigos comuns
 são invocações reforçadas), a Campanha de 50 fases em três regiões, que apresenta o jogo aos poucos,
-cinco Masmorras em que cada andar é tão difícil quanto o que paga (inimigos até o nível 60), Batalha automática (30 lutas seguidas,
+cinco Masmorras em que cada andar é tão difícil quanto o que paga (inimigos até o nível 60), a Exploração Estelar (o modo dos recursos: um percurso pelas 88 constelações, cada uma com a sua mecânica e um guardião, que recomeça todo mês com uma de três Explorações em rodízio e paga sempre a mesma recompensa), Batalha automática (30 lutas seguidas,
 correndo por trás enquanto se usa o resto do jogo), Mana para
 entrar nas lutas, nível da conta, Ouro e Loja, Compêndio (regras) e Grimório (tudo o que existe), e conta com
 save em nuvem, aberta em um aparelho por vez (ou jogar sem conta, tudo local). O jogo nasce em português:
@@ -44,7 +44,8 @@ dotnet run --project Tests -- --fight=10
 `--simulate` roda cada fase e cada andar de Masmorra 40 vezes no automático e mostra vitórias e
 rodadas: cada fase contra o time de referência de quem chega a ela e contra o 6★ nível 40 sem runas,
 cada andar contra o time que ele pede e o do andar de baixo (`Tests/ReferenceTeams.cs`). É a ferramenta de
-balanceamento: a fase 50 tem de cair com nível 20 e runas, e não sem runas (o 6★ nível 40 sem runas vai até a fase 40). `--fight=N` imprime uma luta da fase N
+balanceamento: a fase 50 tem de cair com nível 20 e runas, e não sem runas (o 6★ nível 40 sem runas vai até a fase 40). `--exploration` (ou `--exploration=22-51`) roda cada constelação da Exploração Estelar nas três Explorações contra
+cinco times, do que acabou de abri-la ao forte de fim de jogo, e mostra a vitória de cada um. `--fight=N` imprime uma luta da fase N
 turno a turno. `--digest` resume mais de mil lutas de semente fixa, uma por linha: rode antes e depois
 de mexer no código do combate para conferir que nenhuma luta mudou.
 
@@ -56,8 +57,8 @@ Argumentos de desenvolvimento do jogo (depois de `--`):
   [docs/SERVIDOR_PROPRIO.md](docs/SERVIDOR_PROPRIO.md)).
 - `--updates=url` procura versões novas em outra pasta (só no executável exportado do Windows; ver
   [docs/ATUALIZACOES.md](docs/ATUALIZACOES.md)).
-- `--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle|tutorial` abre
-  essa tela direto, no save sem conta (`map` é a tela Batalha, com Campanha e Masmorras; `tutorial` é a
+- `--screen=map|campaign|dungeons|exploration|summon|shop|monsters|teams|runes|compendium|grimoire|battle|tutorial` abre
+  essa tela direto, no save sem conta (`map` é a tela Batalha, com Campanha, Masmorras e Exploração Estelar; `tutorial` é a
   luta de treino, que uma conta nova abre sozinha).
 
 A primeira entrada na conta pede internet; depois, a conta lembrada abre sem ela e sincroniza quando a
