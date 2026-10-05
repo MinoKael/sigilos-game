@@ -3,6 +3,7 @@ using System.Linq;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
+using Sigilos.Core.Summoning;
 
 namespace Sigilos.Tests
 {
@@ -152,6 +153,33 @@ namespace Sigilos.Tests
 					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtFloor(database, floor), encounter, 10) >= 0.6, $"{dungeon.Id} {floor}: o time do andar vence");
 					Assert.True(ReferenceTeams.WinRate(database, ReferenceTeams.AtFloor(database, floor - 1), encounter, 10) < 0.5, $"{dungeon.Id} {floor}: o de baixo ainda não");
 				}
+			}
+		}
+
+		/// <summary>
+		/// As três visões do andar 5 (ReferenceTeams.Free): com a mesma preparação, o time gratuito (um 4★ e quatro
+		/// 3★ do Pergaminho Místico) vence pelos efeitos, o especialista pelo dano bruto e a sincronia de Velocidade
+		/// vence mais rápido que os dois; o gratuito é o mais lento.
+		/// </summary>
+		[Test]
+		private static void FloorFiveFallsToEachWayOfPlaying()
+		{
+			const int fights = 10;
+			var database = TestData.LoadReal();
+			foreach (var id in ReferenceTeams.Free.Keys)
+			{
+				var free = ReferenceTeams.Free[id].Select(m => database.Summon(m.Id)).ToList();
+				Assert.True(free.Count(s => s.Rarity == 4) == 1 && free.Count(s => s.Rarity == 3) == 4, $"{id}: o gratuito é um 4★ e quatro 3★");
+				Assert.True(free.All(s => SummonRates.Allows(ScrollKind.Mystic, s.Element)), $"{id}: todos saem do Pergaminho Místico");
+
+				var last = database.Dungeon(id).Floor(5).Encounter;
+				var (freeWins, freeRounds) = ReferenceTeams.Measure(database, ReferenceTeams.Prepared(database, ReferenceTeams.Free[id]), last, fights);
+				var (okWins, okRounds) = ReferenceTeams.Measure(database, ReferenceTeams.Prepared(database, ReferenceTeams.Specialists[id]), last, fights);
+				var (fastWins, fastRounds) = ReferenceTeams.Measure(database, ReferenceTeams.Prepared(database, ReferenceTeams.Fast[id]), last, fights);
+				Assert.True(freeWins >= 0.7, $"{id} 5: o gratuito vence pelos efeitos ({freeWins:P0})");
+				Assert.True(okWins >= 0.7, $"{id} 5: o especialista vence pelo dano ({okWins:P0})");
+				Assert.True(fastWins >= 0.7, $"{id} 5: a sincronia de Velocidade vence ({fastWins:P0})");
+				Assert.True(fastRounds < okRounds && okRounds < freeRounds, $"{id} 5: Spd ({fastRounds:0}) mais rápido que OK ({okRounds:0}), e o gratuito ({freeRounds:0}) o mais lento");
 			}
 		}
 
