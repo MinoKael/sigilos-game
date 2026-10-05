@@ -1,0 +1,240 @@
+{
+  "family_id": "unicorn",
+  "base_name": "Unicórnio",
+  "name": "Unicórnios",
+  "star_grade": 5,
+  "image": "unicorn",
+  "variations": {
+    "fire": {
+      "variation_id": "unicorn_fire",
+      "name": "Unicórnio de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Attack", "value": 0.18},
+      "awakening": {"name": "Pirálio", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Chifrada Ardente",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Galope Flamejante",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Impeto", "target": "Self", "power": 20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Chifre Purificador",
+          "passive": {"kind": "StatusOrEffectEachTurn"},
+          "effects": [
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "unicorn_water",
+      "name": "Unicórnio de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Resistance", "value": 0.25},
+      "awakening": {"name": "Maréfila", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Toque da Fonte",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Fonte Sagrada",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.12},
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Chifre Purificador",
+          "passive": {"kind": "StatusOrEffectEachTurn"},
+          "effects": [
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "unicorn_wind",
+      "name": "Unicórnio de Vento",
+      "element": "Wind",
+      "role": "Defense",
+      "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
+      "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.15},
+      "awakening": {"name": "Ventália", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Coice Veloz",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Corrida Celeste",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 25},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Arco-Íris",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "ChangeDuration", "target": "AllAllies", "turns": -1, "scope": "Debuffs"},
+            {"kind": "ChangeDuration", "target": "AllAllies", "turns": 1, "scope": "Buffs"},
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "unicorn_light",
+      "name": "Unicórnio de Luz",
+      "element": "Light",
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.2},
+      "awakening": {"name": "Alvorina", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Chifre de Luz",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Bênção da Aurora",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Lágrima de Unicórnio",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "LowestAlly", "status": "Revive", "turns": 3},
+            {"kind": "HealTeam", "target": "AllAllies", "power": 0.2, "count": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "unicorn_dark",
+      "name": "Unicórnio de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "CritDamage", "value": 0.3},
+      "awakening": {"name": "Noctícorne", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Chifre Profano",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.35, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Galope Sombrio",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Chifre Corrompido",
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [
+            {"kind": "ChangeDuration", "target": "Target", "chance": 0.3, "turns": -1, "scope": "Buffs"}
+          ]
+        }
+      ]
+    }
+  }
+}

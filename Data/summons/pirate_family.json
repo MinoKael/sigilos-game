@@ -1,0 +1,265 @@
+{
+  "family_id": "pirate",
+  "base_name": "Pirata",
+  "name": "Piratas",
+  "star_grade": 4,
+  "image": "pirate",
+  "variations": {
+    "fire": {
+      "variation_id": "pirate_fire",
+      "name": "Pirata de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Capitão Brasa"},
+      "skills": [
+        {
+          "name": "Tiro de Pistola",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Barril de Pólvora",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
+            {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.6, "turns": 2}
+          ]
+        },
+        {
+          "name": "Abordagem",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.92},
+            {"kind": "StealBuff", "target": "Target", "power": 30, "fallback": true}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "pirate_water",
+      "name": "Pirata de Água",
+      "element": "Water",
+      "role": "HP",
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.15},
+      "awakening": {"name": "Capitã Maré"},
+      "skills": [
+        {
+          "name": "Gancho",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "StealBuff", "target": "Target", "power": 10, "chance": 0.25, "fallback": true}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Rum da Tripulação",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.12},
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.17},
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ]
+        },
+        {
+          "name": "Âncora",
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.2, "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "pirate_wind",
+      "name": "Pirata de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Vento-Bravo"},
+      "skills": [
+        {
+          "name": "Sabre Ágil",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Impeto", "target": "Self", "power": 10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Vento de Popa",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 25}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 35},
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
+          ]
+        },
+        {
+          "name": "Canhonada",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "pirate_light",
+      "name": "Pirata de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Crit", "value": 0.1},
+      "awakening": {"name": "Estrela-Guia"},
+      "skills": [
+        {
+          "name": "Moeda de Ouro",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "HighestAlly", "status": "Foresight", "chance": 0.3, "turns": 1, "by": "Attack"}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Mapa do Tesouro",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 15}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 15},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1}
+          ]
+        },
+        {
+          "name": "Dobrão da Sorte",
+          "passive": {"kind": "StatusOrEffectOnWaveStart"},
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 15}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "pirate_dark",
+      "name": "Pirata de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "CritDamage", "value": 0.25},
+      "awakening": {"name": "Barbatreva"},
+      "skills": [
+        {
+          "name": "Tiro Traiçoeiro",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Andar na Prancha",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.41},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 4.9},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 2}
+          ]
+        },
+        {
+          "name": "Maldição do Tesouro",
+          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.25, "awakenedValue": 0.35, "scope": "Debuffs"}
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "family_id": "mummy",
+  "base_name": "Múmia",
+  "name": "Múmias",
+  "star_grade": 4,
+  "image": "mummy",
+  "variations": {
+    "fire": {
+      "variation_id": "mummy_fire",
+      "name": "Múmia de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Faraó em Brasa"},
+      "skills": [
+        {
+          "name": "Faixa Ardente",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Maldição do Sarcófago",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.92},
+            {"kind": "Status", "target": "Target", "status": "Curse", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.6, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 4.41},
+            {"kind": "Status", "target": "Target", "status": "Curse", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "turns": 2}
+          ]
+        },
+        {
+          "name": "Imortal",
+          "passive": {"kind": "StatusOrEffectOnWaveStart"},
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Revive", "turns": 3}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Self", "status": "Revive", "turns": 3},
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "mummy_water",
+      "name": "Múmia de Água",
+      "element": "Water",
+      "role": "HP",
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.15},
+      "awakening": {"name": "Guardião da Tumba"},
+      "skills": [
+        {
+          "name": "Bandagem",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Heal", "target": "Self", "power": 0.03}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Faixas Aprisionantes",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.5, "turns": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.7, "turns": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+          ]
+        },
+        {
+          "name": "Embalsamar",
+          "passive": {"kind": "StatusOrEffectWhenLowest"},
+          "effects": [
+            {"kind": "Heal", "target": "Self", "power": 0.12},
+            {"kind": "Cleanse", "target": "Self"}
+          ],
+          "awakenedEffects": [
+            {"kind": "Heal", "target": "Self", "power": 0.17},
+            {"kind": "Cleanse", "target": "Self"}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "mummy_wind",
+      "name": "Múmia de Vento",
+      "element": "Wind",
+      "role": "Defense",
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Tempestade de Areia"},
+      "skills": [
+        {
+          "name": "Areia nos Olhos",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Tempestade do Deserto",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.7, "turns": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+          ]
+        },
+        {
+          "name": "Maldição Antiga",
+          "passive": {"kind": "StatusOrEffectOnAttacker"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.35, "turns": 2}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "mummy_light",
+      "name": "Múmia de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Sacerdotisa Solar"},
+      "skills": [
+        {
+          "name": "Selo Solar",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Rito de Passagem",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.08}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 3},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14}
+          ]
+        },
+        {
+          "name": "Bênção do Sol",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "mummy_dark",
+      "name": "Múmia de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "CritDamage", "value": 0.25},
+      "awakening": {"name": "Faraó Esquecido"},
+      "skills": [
+        {
+          "name": "Toque da Praga",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Dez Pragas",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.7, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
+          ]
+        },
+        {
+          "name": "Imortal",
+          "passive": {"kind": "StatusOrEffectOnWaveStart"},
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Revive", "turns": 3}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Self", "status": "Revive", "turns": 3},
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}
+          ]
+        }
+      ]
+    }
+  }
+}

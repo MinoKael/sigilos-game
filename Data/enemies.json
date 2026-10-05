@@ -12,6 +12,7 @@
 // team can't overpower, and floor 5 is only consistent for a team built and invested for that boss.
 // - runic_golem: huge HP and Defense; the Bastion buffs it (Defense+, shield) and enrages it when it falls,
 //   the Warden breaks the team's Defense and Attack. Defense Break, buff stealing and timing beat it.
+//   The Fire Dwarf Miner is its key: it strips the buffs, ignores and breaks Defense and blocks the healing.
 // - elder_wyvern: every enemy afflicts, and its skills hit harder for each debuff on the team (BonusPerStatus).
 // - bone_king: "Undying" passive: while it's on the field nobody (ally or foe) gains or loses Impeto, a shield
 //   after every action and it always comes back, unless Oblivion silences the passive.

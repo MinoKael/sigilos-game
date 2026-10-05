@@ -1,5 +1,15 @@
 # Changelog — Sigilos
 
+## 05/10/2026
+- **19 famílias novas (95 invocações):**
+  - 5★: Unicórnio, Princesa, Anjo e Monge.
+  - 4★: Pirata, Dríade, Gorila, Minerador Anão, Múmia, Lich e Samurai.
+  - 3★: Arqueiro, Minotauro, Medusa, Esqueleto e Assassino.
+  - 2★: Cogumelo, Lagarto e Planta Carnívora.
+- **Efeitos mais variados:** os kits novos usam Sono, Silêncio, Karma, Ferida, Bênção, Contragolpe, Reviver e Resistir Crítico, além de encurtar os efeitos positivos do inimigo, ataque em conjunto e turno extra ao derrubar.
+- **Minerador Anão de Fogo:** é a peça-chave do Golem. Tira os efeitos positivos, ignora e quebra a Defesa e corta a cura do núcleo. Com ele, a equipe preparada vence o andar 5 em 100% das lutas.
+- **Golem andar 3:** um pouco mais difícil (escala 0,8 → 0,95), para seguir pedindo o investimento do andar.
+
 ## 04/10/2026
 - **Masmorras de especialização:** cada chefe pede um time feito para ele. O Golem regenera a cada turno, a Serpe se fortalece por efeitos negativos, o Rei Ossudo (Cripta) impede que qualquer monstro ganhe ou perca Ímpeto, o Santuário Afogado contra-ataca. O andar 5 só cai para uma equipe preparada. A Forja foi recalibrada.
 - **Esquecimento:** agora também no Pássaro de Trevas, no Corvo de Água, no Diabrete de Trevas e na Fênix de Luz.

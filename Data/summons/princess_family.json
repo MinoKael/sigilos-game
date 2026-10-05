@@ -1,0 +1,255 @@
+{
+  "family_id": "princess",
+  "base_name": "Princesa",
+  "name": "Princesas",
+  "star_grade": 5,
+  "image": "princess",
+  "variations": {
+    "fire": {
+      "variation_id": "princess_fire",
+      "name": "Princesa de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Attack", "value": 0.18},
+      "awakening": {"name": "Rainha Escarlate", "stat": "Crit"},
+      "skills": [
+        {
+          "name": "Leque de Brasas",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.47, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Decreto Real",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94},
+            {"kind": "JointAttack", "target": "AllAllies", "count": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Tirania Ardente",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 2},
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.69},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "princess_water",
+      "name": "Princesa de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.2},
+      "awakening": {"name": "Rainha das Marés", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Cetro da Maré",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Shield", "target": "LowestAlly", "power": 0.05, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Baile das Ondas",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Graça Real",
+          "passive": {"kind": "StatusOrEffectOnWaveStart"},
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "princess_wind",
+      "name": "Princesa de Vento",
+      "element": "Wind",
+      "role": "Support",
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.15},
+      "awakening": {"name": "Rainha dos Ventos", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Leque de Vento",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Impeto", "target": "HighestAlly", "power": 15, "by": "Attack"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Valsa Celeste",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 30},
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Ordem Real",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "JointAttack", "target": "AllAllies", "count": 0}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "princess_light",
+      "name": "Princesa de Luz",
+      "element": "Light",
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "Defense", "value": 0.25},
+      "awakening": {"name": "Rainha Solar", "stat": "Resistance"},
+      "skills": [
+        {
+          "name": "Toque Real",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Proteção Real",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Coroa Radiante",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "princess_dark",
+      "name": "Princesa de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Accuracy", "value": 0.25},
+      "awakening": {"name": "Rainha do Eclipse", "stat": "Accuracy"},
+      "skills": [
+        {
+          "name": "Beijo Venenoso",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.3, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Canção de Ninar",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.5, "turns": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        },
+        {
+          "name": "Maldição Real",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.41},
+            {"kind": "Status", "target": "Target", "status": "Curse", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.6, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}

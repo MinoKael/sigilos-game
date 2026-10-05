@@ -1,0 +1,278 @@
+{
+  "family_id": "gorilla",
+  "base_name": "Gorila",
+  "name": "Gorilas",
+  "star_grade": 4,
+  "image": "gorilla",
+  "variations": {
+    "fire": {
+      "variation_id": "gorilla_fire",
+      "name": "Gorila de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Punho Vulcânico"},
+      "skills": [
+        {
+          "name": "Soco Ardente",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Martelada",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 4.41},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 4.9},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.5, "turns": 1}
+          ]
+        },
+        {
+          "name": "Fúria Primal",
+          "passive": {"kind": "StatusOrEffectWhenLowest"},
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 2},
+            {"kind": "Heal", "target": "Self", "power": 0.1}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "gorilla_water",
+      "name": "Gorila de Água",
+      "element": "Water",
+      "role": "HP",
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.15},
+      "awakening": {"name": "Rocha-Viva"},
+      "skills": [
+        {
+          "name": "Tapa Pesado",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Peito de Ferro",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.6, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2},
+            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
+          ]
+        },
+        {
+          "name": "Couro Grosso",
+          "passive": {"kind": "DamageReduction", "value": 0.15, "awakenedValue": 0.2}
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "gorilla_wind",
+      "name": "Gorila de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Trovão da Selva"},
+      "skills": [
+        {
+          "name": "Galhada",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Impeto", "target": "Target", "power": -15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Rugido",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -35},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.3, "turns": 2}
+          ]
+        },
+        {
+          "name": "Bater no Peito",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Impeto", "target": "Self", "power": 50},
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.5, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "gorilla_light",
+      "name": "Gorila de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Defense", "value": 0.2},
+      "awakening": {"name": "Ancião Prateado"},
+      "skills": [
+        {
+          "name": "Soco Protetor",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Shield", "target": "LowestAlly", "power": 0.04, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Proteger o Bando",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
+          ]
+        },
+        {
+          "name": "Líder do Bando",
+          "passive": {"kind": "StatusOrEffectOnWaveStart"},
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "gorilla_dark",
+      "name": "Gorila de Trevas",
+      "element": "Dark",
+      "role": "Defense",
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Sombra da Selva"},
+      "skills": [
+        {
+          "name": "Agarrão",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Esmagar Ossos",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.6, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 3.92},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.8, "turns": 2}
+          ]
+        },
+        {
+          "name": "Fúria Primal",
+          "passive": {"kind": "StatusOrEffectWhenLowest"},
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+          ]
+        }
+      ]
+    }
+  }
+}

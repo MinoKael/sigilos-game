@@ -1,0 +1,252 @@
+{
+  "family_id": "samurai",
+  "base_name": "Samurai",
+  "name": "Samurais",
+  "star_grade": 4,
+  "image": "samurai",
+  "variations": {
+    "fire": {
+      "variation_id": "samurai_fire",
+      "name": "Samurai de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Crit", "value": 0.1},
+      "awakening": {"name": "Lâmina Rubra"},
+      "skills": [
+        {
+          "name": "Corte Flamejante",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.94},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Iaijutsu",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 4.41}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 4.9, "ignoreDefense": 0.3}
+          ]
+        },
+        {
+          "name": "Bushido",
+          "passive": {"kind": "BonusVsWounded", "value": 0.3, "awakenedValue": 0.4}
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "samurai_water",
+      "name": "Samurai de Água",
+      "element": "Water",
+      "role": "Defense",
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "leader": {"stat": "Defense", "value": 0.2},
+      "awakening": {"name": "Lâmina Serena"},
+      "skills": [
+        {
+          "name": "Corte da Correnteza",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Postura do Rio",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.5, "turns": 1}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 3},
+            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 3},
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7, "turns": 1}
+          ]
+        },
+        {
+          "name": "Mente Calma",
+          "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"},
+          "effects": [
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 1}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "samurai_wind",
+      "name": "Samurai de Vento",
+      "element": "Wind",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Lâmina do Vento"},
+      "skills": [
+        {
+          "name": "Corte Veloz",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
+            {"kind": "Impeto", "target": "Self", "power": 10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Mil Cortes",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.22, "hits": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+          ]
+        },
+        {
+          "name": "Bushido",
+          "passive": {"kind": "BonusVsWounded", "value": 0.3, "awakenedValue": 0.4}
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "samurai_light",
+      "name": "Samurai de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Lâmina da Aurora"},
+      "skills": [
+        {
+          "name": "Corte Honrado",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Impeto", "target": "LowestAlly", "power": 10}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Código de Honra",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1},
+            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+          ]
+        },
+        {
+          "name": "Duelo",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "Status", "target": "Target", "status": "Taunt", "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Aegis", "turns": 1}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "samurai_dark",
+      "name": "Samurai de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "CritDamage", "value": 0.25},
+      "awakening": {"name": "Ronin Maldito"},
+      "skills": [
+        {
+          "name": "Corte Sombrio",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Corte Final",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "BonusPerStatus", "target": "Self", "power": 0.2, "scope": "Debuffs", "from": "Target", "bonus": "Damage"},
+            {"kind": "Damage", "target": "Target", "power": 3.92}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "BonusPerStatus", "target": "Self", "power": 0.3, "scope": "Debuffs", "from": "Target", "bonus": "Damage"},
+            {"kind": "Damage", "target": "Target", "power": 4.41}
+          ]
+        },
+        {
+          "name": "Bushido",
+          "passive": {"kind": "BonusVsWounded", "value": 0.3, "awakenedValue": 0.4}
+        }
+      ]
+    }
+  }
+}

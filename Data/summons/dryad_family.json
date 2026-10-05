@@ -1,0 +1,264 @@
+{
+  "family_id": "dryad",
+  "base_name": "Dríade",
+  "name": "Dríades",
+  "star_grade": 4,
+  "image": "dryad",
+  "variations": {
+    "fire": {
+      "variation_id": "dryad_fire",
+      "name": "Dríade de Fogo",
+      "element": "Fire",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Flor-de-Brasa"},
+      "skills": [
+        {
+          "name": "Espinho Ardente",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Pólen Incandescente",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
+            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.6, "turns": 2}
+          ]
+        },
+        {
+          "name": "Seiva Fervente",
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "dryad_water",
+      "name": "Dríade de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Ninfa do Lago"},
+      "skills": [
+        {
+          "name": "Gota de Seiva",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Orvalho Vivo",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ]
+        },
+        {
+          "name": "Raízes Profundas",
+          "passive": {"kind": "StatusOrEffectEachTurn"},
+          "effects": [
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
+          ],
+          "awakenedEffects": [
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "dryad_wind",
+      "name": "Dríade de Vento",
+      "element": "Wind",
+      "role": "Support",
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Sopro-de-Folha"},
+      "skills": [
+        {
+          "name": "Folha Cortante",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.2, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Pólen Sonífero",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.6, "turns": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+          ]
+        },
+        {
+          "name": "Brisa da Floresta",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 25},
+            {"kind": "Cleanse", "target": "AllAllies"}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "dryad_light",
+      "name": "Dríade de Luz",
+      "element": "Light",
+      "role": "HP",
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.15},
+      "awakening": {"name": "Guardiã do Bosque"},
+      "skills": [
+        {
+          "name": "Galho Abençoado",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Shield", "target": "Self", "power": 0.04, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Abraço da Floresta",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.6, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
+            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
+          ]
+        },
+        {
+          "name": "Casca Viva",
+          "passive": {"kind": "Thorns", "value": 0.2, "awakenedValue": 0.3}
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "dryad_dark",
+      "name": "Dríade de Trevas",
+      "element": "Dark",
+      "role": "Attack",
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Accuracy", "value": 0.2},
+      "awakening": {"name": "Flor da Noite"},
+      "skills": [
+        {
+          "name": "Espinho Venenoso",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.69},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Jardim Murcho",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 3}
+          ]
+        },
+        {
+          "name": "Colheita",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "BonusPerStatus", "target": "Self", "power": 0.3, "scope": "Debuffs", "onlyStatus": "Affliction", "from": "Target", "bonus": "Damage"},
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "ChangeDuration", "target": "Target", "turns": 1, "scope": "Debuffs", "onlyStatus": "Affliction"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    }
+  }
+}
