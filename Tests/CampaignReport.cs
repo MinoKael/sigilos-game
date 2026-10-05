@@ -94,6 +94,24 @@ namespace Sigilos.Tests
 				Console.WriteLine($"{team.Id,-7} " + string.Join(" ", row));
 			}
 
+			// As três visões do andar 5, com a mesma preparação: gratuito (efeitos), OK (dano bruto) e Spd (sincronia).
+			Console.WriteLine();
+			Console.WriteLine("Three ways of playing, at the floor 5 preparation: free (one 4★, four 3★), ok (specialist), spd (speed sync)");
+			Console.WriteLine("dungeon floor  free         ok           spd");
+			foreach (var dungeon in dungeons.Where(d => ReferenceTeams.Free.ContainsKey(d.Id)))
+			{
+				var views = new[] { ReferenceTeams.Free[dungeon.Id], ReferenceTeams.Specialists[dungeon.Id], ReferenceTeams.Fast[dungeon.Id] }
+					.Select(members => ReferenceTeams.Prepared(database, members)).ToList();
+				for (var floor = 1; floor <= dungeon.Floors.Count; floor++)
+				{
+					var encounter = dungeon.Floor(floor).Encounter;
+					Console.WriteLine($"{dungeon.Id,-7} {floor,5}  " + string.Join(" ", views.Select(team => Cell(Run(database, encounter, team)))));
+				}
+
+				var allies = BattleFactory.Create(database, views[2], dungeon.Floor(dungeon.Floors.Count).Encounter, 1).Allies;
+				Console.WriteLine("        spd order: " + string.Join(" > ", allies.OrderByDescending(u => u.TurnSpeed).Select(u => $"{u.Name} {u.TurnSpeed:0}")));
+			}
+
 			// Essência por dia de quem terminou a Campanha: a canalização o dia todo e a Mana do dia no andar 4,
 			// com as runas que caem desfeitas (a média da tabela do andar).
 			var floor4 = dungeons[0].Floor(4);

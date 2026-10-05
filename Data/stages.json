@@ -888,7 +888,7 @@
     "name": "O Arauto do Silêncio",
     "stars": 6,
     "level": 60,
-    "scale": 0.5,
+    "scale": 0.49,
     "mana": 6,
     "firstClearScrolls": 3,
     "firstClearEssence": 3000,

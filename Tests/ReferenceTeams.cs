@@ -57,22 +57,35 @@ namespace Sigilos.Tests
 		};
 
 		/// <summary>Quantas vezes o time vence o encontro, de 0 a 1.</summary>
-		public static double WinRate(GameDatabase database, BattleTeam team, Encounter encounter, int fights)
+		public static double WinRate(GameDatabase database, BattleTeam team, Encounter encounter, int fights) =>
+			Measure(database, team, encounter, fights).Wins;
+
+		/// <summary>As vitórias (de 0 a 1) e quanto tempo de luta as vitórias levam, em média (em rodadas).</summary>
+		public static (double Wins, double Rounds) Measure(GameDatabase database, BattleTeam team, Encounter encounter, int fights)
 		{
 			var wins = 0;
+			var rounds = 0.0;
 			for (var seed = 1; seed <= fights; seed++)
 			{
-				if (AutoBattle.Run(BattleFactory.Create(database, team, encounter, seed * 7919)))
+				var session = BattleFactory.Create(database, team, encounter, seed * 7919);
+				if (AutoBattle.Run(session))
+				{
 					wins++;
+					rounds += session.Time;
+				}
 			}
 
-			return wins / (double)fights;
+			return (wins / (double)fights, wins > 0 ? rounds / wins : double.PositiveInfinity);
 		}
 
 		// Especialistas ------------------------------------------------------------------------------
 
-		/// <summary>Um monstro da equipe de especialista: os conjuntos de cada vaga e, se pede, o principal da vaga 6.</summary>
-		public sealed record Member(string Id, RuneSet[] Sets, RuneStat? Six = null);
+		/// <summary>
+		/// Um monstro da equipe de especialista: os conjuntos de cada vaga e, se pede, o principal da vaga 6.
+		/// <see cref="Speed"/> é a prioridade na sincronia de Velocidade (0: nenhuma): Velocidade no principal
+		/// da vaga 2 e nos subatributos, mais quanto maior o número, para agir antes dos outros.
+		/// </summary>
+		public sealed record Member(string Id, RuneSet[] Sets, RuneStat? Six = null, int Speed = 0);
 
 		/// <summary>Um conjunto de 4 e um de 2, nas vagas 1 a 4 e 5 e 6.</summary>
 		private static RuneSet[] Sets(RuneSet four, RuneSet two) => new[] { four, four, four, four, two, two };
@@ -129,6 +142,45 @@ namespace Sigilos.Tests
 		};
 
 		/// <summary>
+		/// As três visões do andar 5, todas com a preparação dele (<see cref="Prepared"/>), para a diferença vir só
+		/// da montagem. O Golem é a régua do balanceamento.
+		/// - Gratuito (<see cref="Free"/>): um 4★ e quatro 3★ do Pergaminho Místico (Fogo, Água e Vento), o que
+		///   qualquer conta tem. Vence só porque os monstros trazem os efeitos que o chefe pede, e devagar.
+		/// - OK (<see cref="Specialists"/>): a equipe de especialista, que vence pelo dano bruto.
+		/// - Spd (<see cref="Fast"/>): a sincronia de Velocidade. Quem empurra o Ímpeto e quem põe os efeitos
+		///   negativos agem primeiro (<see cref="Member.Speed"/>); depois, o dano em área que ignora Defesa limpa
+		///   as ondas e os outros derrubam a Vida. É a que vence mais rápido.
+		/// </summary>
+		public static readonly IReadOnlyDictionary<string, IReadOnlyList<Member>> Free = new Dictionary<string, IReadOnlyList<Member>>
+		{
+			// Quebra de Defesa ao acertar, roubar a Imunidade e a Defesa+ dos Bastiões, Maldição e cura, Ataque−
+			// contra o Terremoto e dano em quem já está ferido.
+			["golem"] = new Member[]
+			{
+				new("crow_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("goblin_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy),
+				new("imp_fire", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
+				new("slime_fire", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Ward), RuneStat.Accuracy),
+				new("wolf_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+			},
+		};
+
+		/// <inheritdoc cref="Free"/>
+		public static readonly IReadOnlyDictionary<string, IReadOnlyList<Member>> Fast = new Dictionary<string, IReadOnlyList<Member>>
+		{
+			// O Cavaleiro de Vento empurra o Ímpeto de todos, o Diabrete amaldiçoa, o Corvo quebra a Defesa em área,
+			// o Cavaleiro de Fogo limpa as ondas ignorando Defesa e o Paladino lidera com Ataque.
+			["golem"] = new Member[]
+			{
+				new("paladin_fire", Sets(RuneSet.Lethal, RuneSet.Strike), Speed: 1),
+				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike), Speed: 1),
+				new("crow_fire", Sets(RuneSet.Haste, RuneSet.Strike), Speed: 2),
+				new("imp_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy, 3),
+				new("knight_wind", Sets(RuneSet.Haste, RuneSet.Vigor), Speed: 4),
+			},
+		};
+
+		/// <summary>
 		/// A equipe de especialista no degrau do andar. De 0 a 3, como <see cref="AtFloor"/> (as estrelas
 		/// naturais, as runas da Campanha). 4 é o ponto doce: 5★ nível 35, habilidades no máximo e runas 5★
 		/// +12 com os conjuntos certos — domina o andar 4, ainda não o 5. 5 é a preparação do andar 5 (a
@@ -142,8 +194,12 @@ namespace Sigilos.Tests
 			2 => Staged(database, 30, Level(30), Specialists[dungeon]),
 			3 => Staged(database, 50, Level(50), Specialists[dungeon]),
 			4 => Team(database, _ => 5, 35, 5, 12, Specialists[dungeon], maxSkills: true, picks: 3),
-			_ => Team(database, _ => 6, 40, 6, 12, Specialists[dungeon], awakened: true, maxSkills: true, picks: 8, evenLevel: 15),
+			_ => Prepared(database, Specialists[dungeon]),
 		};
+
+		/// <summary>A preparação do andar 5 (6★ nível 40, desperta, habilidades no máximo, runas 6★ boas) para estes monstros.</summary>
+		public static BattleTeam Prepared(GameDatabase database, IReadOnlyList<Member> members) =>
+			Team(database, _ => 6, 40, 6, 12, members, awakened: true, maxSkills: true, picks: 8, evenLevel: 15);
 
 		/// <summary>
 		/// O time forte sem especialização: o típico com o mesmo investimento do especialista do andar 5.
@@ -185,7 +241,7 @@ namespace Sigilos.Tests
 				: attack
 					? new[] { RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Strike, RuneSet.Strike }
 					: new[] { RuneSet.Vigor, RuneSet.Vigor, RuneSet.Ward, RuneSet.Ward, RuneSet.Bulwark, RuneSet.Bulwark };
-			var mains = new[] { RuneStat.AttackFlat, attack ? RuneStat.AttackPercent : RuneStat.Speed, RuneStat.DefenseFlat, percent, RuneStat.HealthFlat, member.Six ?? percent };
+			var mains = new[] { RuneStat.AttackFlat, attack && member.Speed == 0 ? RuneStat.AttackPercent : RuneStat.Speed, RuneStat.DefenseFlat, percent, RuneStat.HealthFlat, member.Six ?? percent };
 			var runes = new List<Rune>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
@@ -198,7 +254,7 @@ namespace Sigilos.Tests
 					while (rune.Main != mains[slot - 1]);
 					while (rune.Level < (slot % 2 == 0 && evenLevel > 0 ? evenLevel : level))
 						RuneForge.RaiseLevel(random, rune);
-					if (best == null || Score(rune, attack) > Score(best, attack))
+					if (best == null || Score(rune, attack, member.Speed) > Score(best, attack, member.Speed))
 						best = rune;
 				}
 
@@ -208,12 +264,12 @@ namespace Sigilos.Tests
 			return runes;
 		}
 
-		/// <summary>Os subatributos que servem à função, em sorteios máximos (1 = um sorteio cheio).</summary>
-		private static double Score(Rune rune, bool attack) => rune.Substats.Sum(sub =>
+		/// <summary>Os subatributos que servem à função, em sorteios máximos (1 = um sorteio cheio); a Velocidade vale mais com a prioridade.</summary>
+		private static double Score(Rune rune, bool attack, int speed) => rune.Substats.Sum(sub =>
 		{
 			var weight = sub.Stat switch
 			{
-				RuneStat.Speed => 1.2,
+				RuneStat.Speed => 1.2 + speed,
 				RuneStat.AttackPercent or RuneStat.Crit or RuneStat.CritDamage => attack ? 1 : 0,
 				RuneStat.HealthPercent or RuneStat.DefensePercent => attack ? 0.3 : 1,
 				RuneStat.Resistance or RuneStat.Accuracy => attack ? 0.3 : 0.8,

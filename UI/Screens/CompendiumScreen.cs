@@ -187,27 +187,39 @@ namespace Sigilos.UI.Screens
 			column.AddChild(grid);
 		}
 
+		/// <summary>Os efeitos lado a lado: os positivos na primeira coluna, os negativos na segunda.</summary>
 		private static void Statuses(VBoxContainer column)
 		{
 			column.AddChild(Layout.Text(T("compendium.effects.intro", Texts.Percent(BattleRules.MinResistChance)), GameTheme.Faded).Named("Intro"));
 			var grid = Cards(column);
-            var index = 0;
-            foreach (var status in Enum.GetValues<StatusKind>())
-            {
-                index++;
-                var isNegative = index % 2 == 0;
-                var tag = isNegative ? T("compendium.effects.negative") : T("compendium.effects.positive");
-                var panel = new PanelContainer { Name = status.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
+			var statuses = Enum.GetValues<StatusKind>();
+			var positives = statuses.Where(s => !BattleRules.IsNegative(s)).ToList();
+			var negatives = statuses.Where(BattleRules.IsNegative).ToList();
+			for (var i = 0; i < Math.Max(positives.Count, negatives.Count); i++)
+			{
+				StatusCard(grid, i < positives.Count ? positives[i] : null, false, i);
+				StatusCard(grid, i < negatives.Count ? negatives[i] : null, true, i);
+			}
+		}
 
-                var row = new HBoxContainer { Name = "Row" };
-                row.AddThemeConstantOverride("separation", 10);
-                row.AddChild(Doodle.Icon(Art.Effect(status), 44, isNegative ? Palette.Negative : Palette.Positive).Named("Icon"));
-                row.AddChild(RichText.Label($"{Texts.Term(status)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(status)}", CardWidth - 80).Named("Text"));
+		/// <summary>Um efeito, ou uma vaga vazia quando a coluna dele já acabou (a grade segue alinhada).</summary>
+		private static void StatusCard(GridContainer grid, StatusKind? status, bool negative, int index)
+		{
+			if (status is not { } kind)
+			{
+				grid.AddChild(new Control { Name = $"Empty{(negative ? "Negative" : "Positive")}{index}" });
+				return;
+			}
 
-                panel.AddChild(row);
-                grid.AddChild(panel);
-            }
-        }
+			var tag = negative ? T("compendium.effects.negative") : T("compendium.effects.positive");
+			var panel = new PanelContainer { Name = kind.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
+			var row = new HBoxContainer { Name = "Row" };
+			row.AddThemeConstantOverride("separation", 10);
+			row.AddChild(Doodle.Icon(Art.Effect(kind), 44, negative ? Palette.Negative : Palette.Positive).Named("Icon"));
+			row.AddChild(RichText.Label($"{Texts.Term(kind)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(kind)}", CardWidth - 80).Named("Text"));
+			panel.AddChild(row);
+			grid.AddChild(panel);
+		}
 
 		private static void Runes(VBoxContainer column)
 		{

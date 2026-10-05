@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cseqi35ytdeur"
+path="res://.godot/imported/Plano Celestial.ogg-8d1fa7cd1e844e0262021327fcae9da3.oggvorbisstr"
+
+[deps]
+
+source_file="res://Assets/Music/Plano Celestial.ogg"
+dest_files=["res://.godot/imported/Plano Celestial.ogg-8d1fa7cd1e844e0262021327fcae9da3.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

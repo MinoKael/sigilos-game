@@ -860,7 +860,7 @@
     "runes": {
       "slots": { "title": "Slots", "text": "Six slots in a circle. 1, 3 and 5 always give flat Attack, Defense and HP; 2 can have Speed, 4 Crit Rate or Crit Damage, 6 Resistance or Accuracy, and all three can have HP, Attack or Defense, flat or as a percentage of the base." },
       "stars": { "title": "Stars and rarity", "text": "From 1 to {0} stars: they decide the size of every number. The color is the rarity, how many substats the rune has: Normal 0, Magic 1, Rare 2, Hero 3, Legendary 4. Sometimes it comes with an innate stat, which never grows." },
-      "upgrade": { "title": "Upgrade", "text": "Essence upgrades from +0 to +{0} (the same Essence as levels and Awakening), and upgrades never fail. At +3, +6, +9 and +12 a new substat is added (up to {1}) or one of them grows; at +15 the main stat makes its final jump." },
+      "upgrade": { "title": "Upgrade", "text": "Essence upgrades from +0 to +{0} (the same Essence as levels and Awakening), and upgrades never fail. At +3, +6, +9 and +12 the rune needs 1, 2, 3 and {1} substats: if it doesn't have them yet, a new one is added (and its rarity goes up); if it does, one of them grows; at +15 the main stat makes its final jump." },
       "sets": { "title": "Sets", "text": "Two or four runes of the same set give its bonus. With 6 slots you fit one 4-piece and one 2-piece, or three 2-pieces (three of the same count three times). Each set has its Glyph." },
       "grind": { "title": "Grindstone", "text": "Adds a bonus to an HP, Attack, Defense or Speed substat of the same type as the stone. A new stone replaces the old bonus." },
       "gem": { "title": "Enchanted Gem", "text": "Swaps a substat of a +{0} rune for the gem's. Only one substat per rune can be enchanted." },
