@@ -88,6 +88,26 @@ table.edit input{width:86px;background:var(--input);border:1px solid var(--line)
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
 .chip{border:1px solid var(--line);background:var(--input);color:#cdd7ef;padding:2px 8px;border-radius:999px;font-size:11px}
 .chip:hover{border-color:#5872b6;color:#fff}
+.chip.on{border-color:var(--accent);background:#1d2a4d;color:#fff}
+.chip.neg.on{border-color:#a34848;background:#3a1d24}
+.skill-grid .full{grid-column:1/-1}
+.fx-list{display:flex;flex-direction:column;gap:6px}
+.fx-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 8px;background:var(--input);border:1px solid var(--line);border-radius:8px;padding:7px 8px}
+.fx-n{color:var(--muted);font-size:11px;min-width:16px;align-self:center}
+.field .fx-cell{display:flex;flex-direction:column;gap:2px;margin:0;font-size:12px;color:var(--text)}
+.fx-cell>span{font-size:10.5px;color:var(--muted)}
+.field .fx-cell select,.field .fx-cell input{width:auto;max-width:250px;background:#0b1222;border:1px solid var(--line);border-radius:6px;color:var(--text);padding:5px 6px;font-size:12px}
+.field .fx-cell select:focus,.field .fx-cell input:focus{outline:none;border-color:var(--accent)}
+.field .fx-cell input[type=number]{width:84px}
+.field .fx-cell.check{flex-direction:row;align-items:center;gap:5px;align-self:center;font-size:11.5px;color:#cdd7ef;padding-bottom:4px}
+.field .fx-cell.check input{width:auto;margin:0}
+.fx-tools{margin-left:auto;display:flex;gap:3px;align-self:center}
+.fx-tools button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:6px;padding:2px 7px;font-size:12px}
+.fx-tools button:disabled{opacity:.35}
+.fx-doc{flex-basis:100%;font-size:11px;color:var(--muted);margin:0}
+.fx-empty{font-size:12px;color:var(--muted);padding:4px 2px}
+details.fx-json{margin-top:6px}
+details.fx-json summary{cursor:pointer;font-size:11px;color:var(--muted)}
 .json-preview{background:#070c17;border:1px solid var(--line);border-radius:10px;min-height:560px;max-height:75vh;overflow:auto}
 .json-preview pre{margin:0;padding:14px;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .badge{display:inline-flex;align-items:center;padding:3px 7px;border:1px solid var(--line);border-radius:999px;color:#cdd7ef;font-size:11px;white-space:nowrap}
@@ -1315,6 +1335,8 @@ if (typeof module !== "undefined") module.exports = Core;
     dirty: false,
     active: "fire",
     tab: "variations",
+    // Os "JSON (avançado)" abertos nas habilidades, para continuarem abertos depois de redesenhar.
+    openJson: new Set(),
     project: null,
     remembered: null,
     // Aba Chefes: os inimigos únicos de Data/enemies.json, com os andares e fases em que lutam.
@@ -1524,12 +1546,173 @@ if (typeof module !== "undefined") module.exports = Core;
   const rowsOf = content => Math.min(16, Math.max(2, String(content || "").split("\n").length));
   const area = (path, content) => `<textarea data-path="${path}" data-json spellcheck="false" rows="${rowsOf(content)}">${esc(content)}</textarea>`;
 
+  // Editor visual das listas de efeitos e de níveis ---------------------------------------------------
+  // Cada efeito vira uma linha com listas para escolher (tipo, alvo, status, escopo...) e só os campos
+  // que o tipo lê (EFFECT_DOCS). Cada mudança reescreve o texto JSON da habilidade, que continua sendo o
+  // que se grava; o JSON fica à mão num "avançado" recolhido, e os dois andam juntos.
+
+  const TARGET_LABELS = {Target: "Alvo escolhido", AllEnemies: "Todos os inimigos", Self: "Quem lança", LowestAlly: "Aliado com menos",
+    AllAllies: "Todos os aliados", HighestAlly: "Aliado com mais", RandomAlly: "Aliado ao acaso", RandomEnemy: "Inimigo ao acaso"};
+  const RANK_LABELS = {Health: "Vida", Attack: "Ataque", Defense: "Defesa", Speed: "Velocidade", Crit: "Crítico", CritDamage: "Dano crítico",
+    Resistance: "Resistência", Accuracy: "Precisão", Impeto: "Ímpeto"};
+  const SCOPE_LABELS = {All: "Todos", Buffs: "Positivos", Debuffs: "Negativos"};
+  const BONUS_LABELS = {Damage: "Dano", Heal: "Cura e escudo", Impeto: "Ímpeto"};
+  const LEVEL_LABELS = {Damage: "Dano +", Recovery: "Cura e escudo +", EffectRate: "Chance de efeito +", Cooldown: "Recarga −"};
+  // Os campos numéricos: rótulo, passo e o valor quando o campo não está no JSON.
+  const FX_NUMBERS = {power: ["Poder", "0.01", ""], hits: ["Golpes", "1", "1"], ignoreDefense: ["Ignora Defesa", "0.05", "0"], drain: ["Dreno", "0.05", "0"],
+    chance: ["Chance", "0.05", "1"], turns: ["Turnos", "1", "1"], count: ["Quantos", "1", "0 = todos"]};
+  const FX_ORDER = ["status", "power", "hits", "ignoreDefense", "drain", "chance", "turns", "from", "scope", "onlyStatus", "bonus", "count", "fallback"];
+  const FX_STRUCTURAL = ["kind", "target", "from"];
+  const PICKS = ["LowestAlly", "HighestAlly"];
+  // Os modelos de lista (vazia) de cada campo: Efeitos depois do Despertar vazios somem do arquivo.
+  const emptyListText = field => field === "awakenedEffects" ? "" : "[]";
+
+  const fxAttrs = (path, field, index, key) => `data-fx="${esc(key)}" data-skill="${esc(path)}" data-field="${field}" data-index="${index}"`;
+  const fxOptions = (options, value, label, empty = null) =>
+    `${empty !== null ? `<option value="" ${isBlankValue(value) ? "selected" : ""}>${esc(empty)}</option>` : ""}${options.map(o => `<option value="${esc(o)}" ${o === value ? "selected" : ""}>${esc(label(o))}</option>`).join("")}${!isBlankValue(value) && !options.includes(value) ? `<option selected>${esc(value)}</option>` : ""}`;
+  const isBlankValue = value => value === undefined || value === null || value === "";
+  const fxSelect = (attrs, title, options, value, label, empty = null, tip = "") =>
+    `<label class="fx-cell" title="${esc(tip)}"><span>${title}</span><select ${attrs}>${fxOptions(options, value, label, empty)}</select></label>`;
+
+  /** Os status em dois grupos (positivos e negativos), com o nome do jogo. */
+  function statusOptions(value, empty = null) {
+    const all = ui.enums.statuses, doc = s => C.STATUS_DOCS[s] || [s, null];
+    const group = (title, list) => list.length ? `<optgroup label="${title}">${list.map(s => `<option value="${esc(s)}" ${s === value ? "selected" : ""}>${esc(doc(s)[0])} (${esc(s)})</option>`).join("")}</optgroup>` : "";
+    return `${empty !== null ? `<option value="" ${isBlankValue(value) ? "selected" : ""}>${esc(empty)}</option>` : ""}${group("Positivos", all.filter(s => doc(s)[1] === false))}${group("Negativos", all.filter(s => doc(s)[1] === true))}${group("Outros", all.filter(s => doc(s)[1] === null))}${!isBlankValue(value) && !all.includes(value) ? `<option selected>${esc(value)}</option>` : ""}`;
+  }
+
+  function effectRow(effect, path, field, index, count) {
+    const a = key => fxAttrs(path, field, index, key);
+    const doc = C.EFFECT_DOCS[effect.kind];
+    const targets = doc?.targets || ui.enums.targets;
+    const cells = [
+      fxSelect(a("kind"), "Tipo", ui.enums.effectKinds, effect.kind, k => `${C.EFFECT_DOCS[k]?.label || k} (${k})`, null, doc?.text || ""),
+      fxSelect(a("target"), "Alvo", targets, effect.target ?? "Target", t => `${TARGET_LABELS[t] || t} (${t})`, null, C.TARGET_DOCS[effect.target ?? "Target"] || ""),
+    ];
+    const fields = doc ? Object.keys(doc.fields) : [];
+    for (const key of FX_ORDER.filter(k => fields.includes(k) || (k in effect && !["kind", "target"].includes(k)))) {
+      const tip = doc?.fields[key] || "";
+      if (FX_NUMBERS[key]) {
+        const [title, step, fallback] = FX_NUMBERS[key];
+        cells.push(`<label class="fx-cell" title="${esc(tip)}"><span>${title}</span><input type="number" step="${step}" value="${esc(effect[key] ?? "")}" placeholder="${esc(fallback)}" ${a(key)}></label>`);
+      } else if (key === "status") {
+        cells.push(`<label class="fx-cell" title="${esc(C.STATUS_DOCS[effect.status]?.[2] || tip)}"><span>Status</span><select ${a(key)}>${statusOptions(effect.status)}</select></label>`);
+      } else if (key === "onlyStatus") {
+        cells.push(`<label class="fx-cell" title="${esc(tip)}"><span>Só este status</span><select ${a(key)}>${statusOptions(effect.onlyStatus, "— todos do escopo")}</select></label>`);
+      } else if (key === "scope") {
+        cells.push(fxSelect(a(key), "Escopo", ui.enums.scopes || Object.keys(SCOPE_LABELS), effect.scope, s => `${SCOPE_LABELS[s] || s} (${s})`, "Todos (padrão)", tip));
+      } else if (key === "from") {
+        cells.push(fxSelect(a(key), "Contar em", ui.enums.targets, effect.from, t => `${TARGET_LABELS[t] || t} (${t})`, "Alvo escolhido (padrão)", tip));
+      } else if (key === "bonus") {
+        cells.push(fxSelect(a(key), "Bônus", ui.enums.bonuses || Object.keys(BONUS_LABELS), effect.bonus, b => `${BONUS_LABELS[b] || b} (${b})`, "Dano (padrão)", C.BONUS_DOCS[effect.bonus] || tip));
+      } else if (key === "fallback") {
+        cells.push(`<label class="fx-cell check" title="${esc(tip)}"><input type="checkbox" ${effect.fallback ? "checked" : ""} ${a(key)}>sem efeito, rouba Ímpeto</label>`);
+      }
+    }
+    if (PICKS.includes(effect.target) || PICKS.includes(effect.from) || "by" in effect)
+      cells.push(fxSelect(a("by"), "Comparar por", ui.enums.ranks || Object.keys(RANK_LABELS), effect.by, r => `${RANK_LABELS[r] || r} (${r})`, "Vida (padrão)", C.RANK_DOCS[effect.by] || "o que LowestAlly e HighestAlly comparam"));
+    cells.push(`<label class="fx-cell check" title="O efeito só acontece se o dano anterior desta habilidade derrubou o alvo"><input type="checkbox" ${effect.onKill ? "checked" : ""} ${a("onKill")}>só se derrubou</label>`);
+    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", ...FX_ORDER].includes(k));
+    return `<div class="fx-row"><span class="fx-n">${index + 1}</span>${cells.join("")}
+      <span class="fx-tools">
+        <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="-1" ${index === 0 ? "disabled" : ""} title="Subir">↑</button>
+        <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="1" ${index === count - 1 ? "disabled" : ""} title="Descer">↓</button>
+        <button data-action="fx-remove" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" title="Remover">✕</button>
+      </span>
+      <p class="fx-doc">${esc(doc?.text || "Tipo sem documentação no construtor: os campos dele vão no JSON (avançado).")}${extra.length ? ` <b>Outros campos no JSON:</b> ${esc(extra.join(", "))}.` : ""}</p></div>`;
+  }
+
+  function levelRow(level, path, field, index, count) {
+    const a = key => fxAttrs(path, field, index, key);
+    const cooldown = level.kind === "Cooldown";
+    return `<div class="fx-row"><span class="fx-n">nv ${index + 2}</span>
+      ${fxSelect(a("kind"), "Melhora", ui.enums.levelKinds, level.kind, k => `${LEVEL_LABELS[k] || k} (${k})`)}
+      <label class="fx-cell"><span>${cooldown ? "Turnos a menos" : "Valor (0.1 = +10%)"}</span><input type="number" step="${cooldown ? "1" : "0.05"}" value="${esc(level.value ?? "")}" ${a("value")}></label>
+      <span class="fx-tools">
+        <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="-1" ${index === 0 ? "disabled" : ""} title="Subir">↑</button>
+        <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="1" ${index === count - 1 ? "disabled" : ""} title="Descer">↓</button>
+        <button data-action="fx-remove" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" title="Remover">✕</button>
+      </span></div>`;
+  }
+
+  /** A lista de uma habilidade (effects, awakenedEffects ou levels) em linhas para escolher, com o JSON recolhido embaixo. */
+  function fxEditor(skill, path, field, mode) {
+    const {list, error} = C.parseList(skill[field]);
+    const key = `${path}.${field}`, open = error || ui.openJson.has(key);
+    const rows = error
+      ? `<div class="fx-empty">O JSON abaixo tem um erro (${esc(error)}): corrija para voltar a editar pelas listas.</div>`
+      : list.length
+        ? list.map((item, i) => isPlainItem(item) ? (mode === "levels" ? levelRow(item, path, field, i, list.length) : effectRow(item, path, field, i, list.length)) : `<div class="fx-empty">Item ${i + 1} não é um objeto: edite no JSON.</div>`).join("")
+        : `<div class="fx-empty">${field === "awakenedEffects" ? "Vazio: o Despertar não muda esta habilidade." : "Nenhum ainda: escolha abaixo."}</div>`;
+    const adds = mode === "levels"
+      ? ui.enums.levelKinds.map(k => `<button class="chip" data-action="add-level" data-skill="${esc(path)}" data-field="${field}" data-kind="${esc(k)}">+ ${esc(LEVEL_LABELS[k] || k)}</button>`)
+      : ui.enums.effectKinds.map(k => `<button class="chip" data-action="add-effect" data-skill="${esc(path)}" data-field="${field}" data-kind="${esc(k)}" title="${esc(C.EFFECT_DOCS[k]?.text || "")}">+ ${esc(C.EFFECT_DOCS[k]?.label || k)}</button>`);
+    if (field === "awakenedEffects" && !error && list.length === 0)
+      adds.unshift(`<button class="chip on" data-action="fx-copy-base" data-skill="${esc(path)}" title="Começa dos efeitos de antes do Despertar, para só ajustar o que muda">Copiar os efeitos de base</button>`);
+    return `<div class="fx-list">${rows}</div><div class="chips">${adds.join("")}</div>
+      <details class="fx-json" data-json-key="${esc(key)}" ${open ? "open" : ""}><summary>JSON (avançado)</summary>${area(key, skill[field])}</details>`;
+  }
+
+  const isPlainItem = item => item !== null && typeof item === "object" && !Array.isArray(item);
+
+  /** Os status que a Passiva olha, como botões de marcar (vazio = todos do escopo). */
+  function statusToggles(skill, path) {
+    const chosen = String(skill.passive.statuses || "").split(",").map(x => x.trim()).filter(Boolean);
+    return `<div class="chips">${ui.enums.statuses.map(st => {
+      const doc = C.STATUS_DOCS[st] || [st, null, ""];
+      return `<button class="chip ${doc[1] ? "neg" : ""} ${chosen.includes(st) ? "on" : ""}" data-action="toggle-passive-status" data-skill="${esc(path)}" data-status="${esc(st)}" title="${esc(doc[2])}">${esc(doc[0])}</button>`;
+    }).join("")}</div>`;
+  }
+
+  /** Lê, muda e regrava a lista JSON de uma habilidade. */
+  function editList(path, field, change) {
+    const skill = getAt(path);
+    const {list, error} = C.parseList(skill[field]);
+    if (error) { toast("Corrija o JSON do campo antes de editar pelas listas."); return false; }
+    change(list);
+    skill[field] = list.length ? C.format(list) : emptyListText(field);
+    const area = document.querySelector(`textarea[data-path="${CSS.escape(`${path}.${field}`)}"]`);
+    if (area) { area.value = skill[field]; area.rows = rowsOf(area.value); }
+    return true;
+  }
+
+  const rerenderSkill = path => isBossPath(path) ? renderBosses() : renderSkills();
+
+  /** Uma mudança num campo de linha: grava no efeito (ou nível); vazio tira o campo do JSON. */
+  function editFx(node) {
+    const {skill: path, field, fx: key} = node.dataset, index = Number(node.dataset.index);
+    let value;
+    if (node.type === "checkbox") value = node.checked ? true : undefined;
+    else if (node.type === "number") value = node.value.trim() === "" ? undefined : C.num(node.value, 0);
+    else value = node.value === "" ? undefined : node.value;
+    const ok = editList(path, field, list => {
+      const item = list[index];
+      if (!item) return;
+      if (key === "kind" && field !== "levels" && value !== item.kind) {
+        // Outro tipo: começa do modelo dele, mantendo o alvo (se ele vale) e o "só se derrubou".
+        const next = C.clone(EFFECT_TEMPLATES[value] || {kind: value, target: "Target"});
+        const allowed = C.EFFECT_DOCS[value]?.targets || ui.enums.targets;
+        if (item.target && allowed.includes(item.target)) next.target = item.target;
+        if (item.onKill) next.onKill = true;
+        list[index] = next;
+      } else if (key === "kind" && field === "levels") {
+        list[index] = {kind: value, value: LEVEL_TEMPLATES[value] ?? item.value};
+      } else if (value === undefined) {
+        delete item[key];
+      } else {
+        item[key] = value;
+      }
+    });
+    if (!ok) return;
+    if (FX_STRUCTURAL.includes(key)) rerenderSkill(path);
+    touchAt(path);
+  }
+
   /** Com foe, a habilidade é de inimigo único: luta no nível 1 e não desperta, então não mostra níveis nem Despertar. */
   function skillCard(skill, path, title, badge, controls, awakening, foe = false) {
     const isPassive = !!skill.passive;
     const bad = f => C.parseList(skill[f]).error ? "bad" : "";
     const generic = isPassive && C.PASSIVE_EFFECTS.includes(skill.passive.kind);
-    const chips = (action, names) => `<div class="chips">${names.map(n => `<button class="chip" data-action="${action}" data-skill="${path}" data-kind="${esc(n)}">+ ${esc(n)}</button>`).join("")}</div>`;
     return `
       <div class="skill-card ${awakening ? "awakening" : ""}">
         <div class="skill-head"><h3>${title} <span class="badge">${badge}</span></h3><div class="row">${controls}</div></div>
@@ -1543,14 +1726,14 @@ if (typeof module !== "undefined") module.exports = Core;
             ${foe ? "<div></div>" : field("Valor desperto", `<input data-path="${path}.passive.awakenedValue" data-type="optional" type="number" step="0.01" value="${esc(skill.passive.awakenedValue)}" placeholder="não muda">`)}
             <p class="note wide">${esc(C.PASSIVE_DOCS[skill.passive.kind] || "")}</p>
             ${field("Efeitos de status que contam (BonusVs, ForEach)", select(`${path}.passive.scope`, skill.passive.scope, ui.enums.scopes || ["All", "Buffs", "Debuffs"], "All (padrão)"))}
-            ${field("Só estes status (vírgula; vazio = todos do escopo)", text(`${path}.passive.statuses`, skill.passive.statuses, `placeholder="Affliction, Curse"`))}
+            ${field("Só estes status (nenhum marcado = todos do escopo)", statusToggles(skill, path), "full")}
             ${generic ? `
-            ${field("Efeitos da Passiva (JSON): o que ela faz ao disparar", `${area(`${path}.effects`, skill.effects)}${chips("add-effect", ui.enums.effectKinds)}`, `wide ${bad("effects")}`)}
-            ${awakening || foe ? "" : field("Efeitos depois do Despertar (JSON): vazio quando não muda", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}` : ""}
+            ${field("Efeitos da Passiva: o que ela faz ao disparar, na ordem", fxEditor(skill, path, "effects", "effects"), `full ${bad("effects")}`)}
+            ${awakening || foe ? "" : field("Efeitos depois do Despertar: trocam a lista inteira (vazio = não muda)", fxEditor(skill, path, "awakenedEffects", "effects"), `full ${bad("awakenedEffects")}`)}` : ""}
           ` : `
-            ${field("Efeitos (JSON): um por linha, na ordem em que acontecem", `${area(`${path}.effects`, skill.effects)}${chips("add-effect", ui.enums.effectKinds)}`, `wide ${bad("effects")}`)}
-            ${foe ? "" : field("Níveis (JSON): o primeiro é o nível 2", `${area(`${path}.levels`, skill.levels)}${chips("add-level", ui.enums.levelKinds)}`, bad("levels"))}
-            ${awakening || foe ? "" : field("Efeitos depois do Despertar (JSON): vazio quando o Despertar não muda a habilidade", area(`${path}.awakenedEffects`, skill.awakenedEffects), `wide ${bad("awakenedEffects")}`)}
+            ${field("Efeitos: na ordem em que acontecem", fxEditor(skill, path, "effects", "effects"), `full ${bad("effects")}`)}
+            ${foe ? "" : field("Níveis: o primeiro é o nível 2", fxEditor(skill, path, "levels", "levels"), `full ${bad("levels")}`)}
+            ${awakening || foe ? "" : field("Efeitos depois do Despertar: trocam a lista inteira (vazio = o Despertar não muda a habilidade)", fxEditor(skill, path, "awakenedEffects", "effects"), `full ${bad("awakenedEffects")}`)}
           `}
         </div>
       </div>`;
@@ -1966,7 +2149,9 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
 
   document.addEventListener("input", event => {
     const node = event.target;
-    if (node.dataset.path) {
+    if (node.dataset.fx && node.type === "number") {
+      editFx(node);
+    } else if (node.dataset.path) {
       setAt(node.dataset.path, readInput(node));
       if (node.hasAttribute("data-json")) {
         node.closest(".field").classList.toggle("bad", !!C.parseList(node.value).error);
@@ -1992,7 +2177,9 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
 
   document.addEventListener("change", event => {
     const node = event.target;
-    if (node.dataset.action === "skill-type") {
+    if (node.dataset.fx) {
+      if (node.type !== "number") editFx(node);
+    } else if (node.dataset.action === "skill-type") {
       const skill = getAt(node.dataset.skill);
       skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", extra: {}} : null;
       if (isBossPath(node.dataset.skill)) renderBosses(); else renderSkills();
@@ -2006,11 +2193,20 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         setAt(node.dataset.path, node.value);
         touchAt(node.dataset.path);
       }
+      // As listas de cima refletem o JSON novo (ou o erro dele).
+      const skillPath = node.dataset.path.replace(/\.(effects|awakenedEffects|levels)$/, "");
+      if (skillPath !== node.dataset.path) rerenderSkill(skillPath);
     } else if (node.dataset.model) {
       renderModelTab();
       renderVariation();
     }
   });
+
+  document.addEventListener("toggle", event => {
+    const key = event.target.dataset?.jsonKey;
+    if (!key) return;
+    if (event.target.open) ui.openJson.add(key); else ui.openJson.delete(key);
+  }, true);
 
   function appendJson(path, field, item) {
     const skill = getAt(path);
@@ -2056,8 +2252,26 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
       }
       renderSkills(); touch();
     },
-    "add-effect": node => appendJson(node.dataset.skill, "effects", EFFECT_TEMPLATES[node.dataset.kind] || {kind: node.dataset.kind, target: "Target"}),
-    "add-level": node => appendJson(node.dataset.skill, "levels", {kind: node.dataset.kind, value: LEVEL_TEMPLATES[node.dataset.kind] ?? 0.1}),
+    "add-effect": node => appendJson(node.dataset.skill, node.dataset.field || "effects", C.clone(EFFECT_TEMPLATES[node.dataset.kind] || {kind: node.dataset.kind, target: "Target"})),
+    "add-level": node => appendJson(node.dataset.skill, node.dataset.field || "levels", {kind: node.dataset.kind, value: LEVEL_TEMPLATES[node.dataset.kind] ?? 0.1}),
+    "fx-remove": node => {
+      if (editList(node.dataset.skill, node.dataset.field, list => list.splice(Number(node.dataset.index), 1))) { rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill); }
+    },
+    "fx-move": node => {
+      const from = Number(node.dataset.index), to = from + Number(node.dataset.step);
+      if (editList(node.dataset.skill, node.dataset.field, list => { if (to >= 0 && to < list.length) [list[from], list[to]] = [list[to], list[from]]; })) { rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill); }
+    },
+    "fx-copy-base": node => {
+      const skill = getAt(node.dataset.skill);
+      skill.awakenedEffects = skill.effects;
+      rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill);
+    },
+    "toggle-passive-status": node => {
+      const skill = getAt(node.dataset.skill), status = node.dataset.status;
+      const chosen = String(skill.passive.statuses || "").split(",").map(x => x.trim()).filter(Boolean);
+      skill.passive.statuses = (chosen.includes(status) ? chosen.filter(x => x !== status) : [...chosen, status]).join(", ");
+      rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill);
+    },
     "new-family": () => {
       if (ui.dirty && !confirm("Descartar as mudanças desta família?")) return;
       loadFamily(C.blankFamily(ui.model));
