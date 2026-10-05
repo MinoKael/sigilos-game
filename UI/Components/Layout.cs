@@ -236,13 +236,30 @@ namespace Sigilos.UI.Components
 
 		/// <summary>
 		/// Rola só o necessário para <paramref name="control"/> aparecer inteiro (o cartão tocado na última
-		/// linha, cortado pela borda). Espera o quadro seguinte: o contêiner ainda vai arrumar os filhos novos.
+		/// linha, cortado pela borda). Espera o contêiner arrumar os filhos novos, que ele só faz adiado, no fim
+		/// do quadro: antes disso a peça recém-criada ainda está no canto de cima da lista, e mostrá-la levaria a
+		/// rolagem para o topo. Depois, mais um quadro, para a rolagem já ter medido o conteúdo.
 		/// </summary>
 		public static async void Reveal(ScrollContainer scroll, Control control)
 		{
+			if (control.GetParent() is Container parent)
+				await parent.ToSignal(parent, Container.SignalName.SortChildren);
 			await scroll.ToSignal(scroll.GetTree(), SceneTree.SignalName.ProcessFrame);
 			if (GodotObject.IsInstanceValid(scroll) && GodotObject.IsInstanceValid(control) && control.IsInsideTree())
 				scroll.EnsureControlVisible(control);
+		}
+
+		/// <summary>
+		/// Põe a rolagem de uma lista remontada (com um <see cref="ScrollContainer"/> novo) onde a antiga estava.
+		/// Espera a rolagem nova medir o conteúdo: antes disso ela não tem para onde ir e o valor voltaria a zero.
+		/// </summary>
+		public static async void KeepScroll(ScrollContainer scroll, int value)
+		{
+			if (value <= 0)
+				return;
+			await scroll.ToSignal(scroll, Container.SignalName.SortChildren);
+			if (GodotObject.IsInstanceValid(scroll))
+				scroll.ScrollVertical = value;
 		}
 
 		/// <summary>Uma aba com rolagem vertical, de nome de nó <paramref name="name"/>; o conteúdo vai na coluna devolvida.</summary>

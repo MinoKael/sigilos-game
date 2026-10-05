@@ -56,6 +56,10 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _left = new() { Name = "Column" };
 		private readonly HBoxContainer _tabs = Layout.Row(8).Named("TabRow");
 		private readonly VBoxContainer _middle = new() { Name = "List", SizeFlagsVertical = SizeFlags.ExpandFill };
+
+		/// <summary>A rolagem da lista do meio e de que aba ela é: a lista é remontada a cada toque, e a posição passa para a nova.</summary>
+		private ScrollContainer? _listScroll;
+		private int _listTab;
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
         private readonly GridContainer _actions = new()
         {
@@ -252,11 +256,16 @@ namespace Sigilos.UI.Screens
 
 		private void RefreshMiddle()
 		{
+			var keep = _listScroll != null && IsInstanceValid(_listScroll) && _listTab == _tab ? _listScroll.ScrollVertical : 0;
 			Layout.Clear(_middle);
+			_listScroll = null;
+			_listTab = _tab;
 			if (_tab == 0)
 				RuneList();
 			else
 				ToolList(_tab == 1 ? RuneToolKind.Grindstone : RuneToolKind.Gem);
+			if (_listScroll != null)
+				Layout.KeepScroll(_listScroll, keep);
 		}
 
 		private void RuneList()
@@ -299,7 +308,8 @@ namespace Sigilos.UI.Screens
 
 			if (runes.Count == 0)
 				_middle.AddChild(Layout.Text(T("runes.none_found"), GameTheme.Faded, 400).Named("Empty"));
-			_middle.AddChild(Layout.Scroll(grid));
+			_listScroll = Layout.Scroll(grid);
+			_middle.AddChild(_listScroll);
 		}
 
         /// <summary>
@@ -429,7 +439,8 @@ namespace Sigilos.UI.Screens
 				list.AddChild(row);
 			}
 
-			_middle.AddChild(Layout.Scroll(list));
+			_listScroll = Layout.Scroll(list);
+			_middle.AddChild(_listScroll);
 		}
 
 		// Ficha da runa -----------------------------------------------------------------------------
