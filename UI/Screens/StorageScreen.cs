@@ -477,7 +477,7 @@ namespace Sigilos.UI.Screens
 			info.AddChild(Layout.Text(string.Join(" · ", where), GameTheme.Faded).Named("Where"));
 			row.AddChild(info);
 			column.AddChild(row);
-			column.AddChild(Layout.Text(T("monsters.core_info"), null, 560).Named("Info"));
+			column.AddChild(Layout.Text(T("monsters.core_info"), null, TextWidth).Named("Info"));
 			return column;
 		}
 
