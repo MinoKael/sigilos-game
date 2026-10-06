@@ -48,6 +48,18 @@ balanceamento: a fase 50 tem de cair com nível 20 e runas, e não sem runas (o 
 turno a turno. `--digest` resume mais de mil lutas de semente fixa, uma por linha: rode antes e depois
 de mexer no código do combate para conferir que nenhuma luta mudou.
 
+```bash
+dotnet run --project Tests -c Release -- --balance --vs=golem5 --pool=free --min4=1 --max4=1
+```
+
+`--balance` é a bancada de balanceamento: varre as composições possíveis com as invocações escolhidas
+(todas, ou uma amostra quando são muitas) contra os encontros pedidos, com o investimento pedido (estrelas,
+nível, Despertar, habilidades e runas), em paralelo, e grava `reports/balance.html`: o ranking das
+composições, o peso de cada monstro e de cada família (vitória com e sem ele), a distribuição das vitórias
+e lutas de exemplo com a Vida de todos turno a turno, a contribuição de cada aliado e o log completo.
+`--balance --help` lista as opções (pool, filtros, `--must`, `--comp`, presets de investimento, lutas,
+limite e semente).
+
 Argumentos de desenvolvimento do jogo (depois de `--`):
 - `--save=nome` usa outro save e outro arquivo de conta: é outro "aparelho", e dá para testar dois na
   mesma máquina.

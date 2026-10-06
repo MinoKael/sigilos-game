@@ -207,6 +207,20 @@ namespace Sigilos.Tests
 		public static BattleTeam Powerful(GameDatabase database) =>
 			Team(database, _ => 6, 40, 6, 12, null, awakened: true, maxSkills: true, picks: 8, evenLevel: 15);
 
+		/// <summary>
+		/// Um time qualquer com o investimento pedido (a ferramenta de balanceamento, <see cref="BalanceLab"/>):
+		/// as estrelas de cada um, o nível, o Despertar, as habilidades e runas de <paramref name="runeGrade"/>
+		/// estrelas até +<paramref name="runeLevel"/> (0: sem runas), com os conjuntos de sempre para o papel.
+		/// O nível fica no máximo das estrelas de cada um.
+		/// </summary>
+		public static BattleTeam Custom(GameDatabase database, IReadOnlyList<string> ids, Func<SummonDefinition, int> stars, int level,
+			bool awakened, bool maxSkills, int runeGrade, int runeLevel, int evenLevel, int picks)
+		{
+			var team = Team(database, stars, level, runeGrade, runeLevel, ids.Select(id => new Member(id, Array.Empty<RuneSet>())).ToList(),
+				awakened, maxSkills, Math.Max(1, picks), evenLevel);
+			return new BattleTeam(team.Members.Select(m => m with { Level = Math.Min(m.Level, m.Stars >= 6 ? 40 : 10 + 5 * m.Stars) }).ToList());
+		}
+
 		/// <summary>O nível de quem chega à fase (o mesmo de <see cref="AtStage"/>).</summary>
 		private static int Level(int stage) => (int)Math.Round(1 + 19 * Math.Min(1.0, (stage - 1) / 39.0));
 

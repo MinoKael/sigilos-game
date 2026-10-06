@@ -22,6 +22,7 @@ namespace Sigilos.Tests
 	///   dotnet run --project Tests -- --fight=10    uma luta da fase 10, turno a turno
 	///   dotnet run --project Tests -- --fight=golem5:powerful   o andar 5 do Golem contra o time forte genérico
 	///   dotnet run --project Tests -- --digest      impressão digital do combate, para refatorar sem mudar a regra
+	///   dotnet run --project Tests -c Release -- --balance --vs=golem5   bancada de balanceamento (--balance --help: as opções)
 	/// </summary>
 	internal static class Program
 	{
@@ -30,6 +31,9 @@ namespace Sigilos.Tests
 
 		private static int Main(string[] args)
 		{
+			if (args.Contains("--balance"))
+				return BalanceLab.Run(TestData.LoadReal(), args);
+
 			if (args.Contains("--dungeons"))
 			{
 				CampaignReport.PrintDungeons(TestData.LoadReal());
