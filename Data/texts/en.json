@@ -1298,7 +1298,7 @@
     "awakened": "Awakened",
     "runes": "Runes",
     "seals": "Seals",
-    "dungeons_hint": "How deep each one has been cleared.",
+    "dungeons_hint": "How deep each one has been cleared, and the team behind the best time on the deepest floor.",
     "dungeon_floors": "{0} of {1} floors cleared",
     "best_times": "Best times",
     "best_times_hint": "The fastest victory on each floor.",
