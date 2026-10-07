@@ -106,12 +106,12 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Speed", "value": 0.15},
-      "awakening": {"name": "Galewyn", "stat": "Speed"},
+      "awakening": {"name": "Mino", "stat": "Speed"},
       "skills": [
         {
           "name": "Faísca Voltaica",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.01, "hits": 3}
+            {"kind": "Damage", "target": "Target", "power": 0.86, "hits": 2, "ignoreDefense": 0.9}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -124,8 +124,8 @@
           "name": "Relâmpago em Cadeia",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.47, "hits": 2},
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "ignoreDefense": 1},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

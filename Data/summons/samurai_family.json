@@ -13,7 +13,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Crit", "value": 0.1},
-      "awakening": {"name": "Lâmina Rubra"},
+      "awakening": {"name": "Sanada"},
       "skills": [
         {
           "name": "Corte Flamejante",
@@ -59,7 +59,7 @@
       "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
       "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "leader": {"stat": "Defense", "value": 0.2},
-      "awakening": {"name": "Lâmina Serena"},
+      "awakening": {"name": "Uesugi"},
       "skills": [
         {
           "name": "Corte da Correnteza",
@@ -110,12 +110,12 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Lâmina do Vento"},
+      "awakening": {"name": "Musashi"},
       "skills": [
         {
           "name": "Corte Veloz",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
+            {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 3},
             {"kind": "Impeto", "target": "Self", "power": 10}
           ],
           "levels": [
@@ -156,7 +156,7 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Lâmina da Aurora"},
+      "awakening": {"name": "Minamoto"},
       "skills": [
         {
           "name": "Corte Honrado",
@@ -210,7 +210,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "CritDamage", "value": 0.25},
-      "awakening": {"name": "Ronin Maldito"},
+      "awakening": {"name": "Masamune"},
       "skills": [
         {
           "name": "Corte Sombrio",

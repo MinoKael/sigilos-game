@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2lqlq78tvw11"
-path="res://.godot/imported/infusion-core.svg-519d16d2d847f6b32e56c456be3e73ff.ctex"
+uid="uid://bkqodlbfojlmb"
+path="res://.godot/imported/princess.svg-bf8589569c19bc7ac4bc8c639abbc645.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Creatures/infusion-core.svg"
-dest_files=["res://.godot/imported/infusion-core.svg-519d16d2d847f6b32e56c456be3e73ff.ctex"]
+source_file="res://Assets/Creatures/princess.svg"
+dest_files=["res://.godot/imported/princess.svg-bf8589569c19bc7ac4bc8c639abbc645.ctex"]
 
 [params]
 

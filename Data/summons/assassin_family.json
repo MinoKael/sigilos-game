@@ -13,26 +13,19 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Brasa Oculta",
+        "name": "Akame",
         "skill": {
-          "name": "Fumaça Escaldante",
-          "cooldown": 5,
-          "effects": [
-            {"kind": "Status", "target": "Self", "status": "Hidden", "turns": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
-          ],
-          "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
-          ]
+          "name": "Fumaça",
+          "passive": {"kind": "Dodge", "value": 0.3}
         }
       },
       "skills": [
         {
           "name": "Adaga Ardente",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 3},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -45,7 +38,7 @@
           "name": "Golpe Fatal",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 1},
             {"kind": "Damage", "target": "Target", "power": 3.67},
             {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 1}
           ],
@@ -65,7 +58,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Lâmina d'Água",
+        "name": "Talan",
         "skill": {
           "name": "Sombra Líquida",
           "passive": {"kind": "StatusOrEffectWhenLowest"},
@@ -116,14 +109,17 @@
         "name": "Vulto",
         "skill": {
           "name": "Instinto Assassino",
-          "passive": {"kind": "BonusVsWounded", "value": 0.4}
+          "passive": {"kind": "StatusOrEffectOnTargetEachTurn"},
+          "effects": [
+            {"kind": "Status", "target": "RandomEnemy", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
+          ]
         }
       },
       "skills": [
         {
           "name": "Corte Silencioso",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2}
+            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 3}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -136,8 +132,8 @@
           "name": "Passo Sombrio",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.43},
-            {"kind": "Impeto", "target": "Self", "power": 30}
+            {"kind": "Impeto", "target": "Self", "power": 30},
+            {"kind": "Damage", "target": "Target", "power": 3.43}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -155,7 +151,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Juíza",
+        "name": "Katarin",
         "skill": {
           "name": "Execução Sagrada",
           "cooldown": 5,
@@ -173,13 +169,13 @@
         {
           "name": "Lâmina Ofuscante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "chance": 1, "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 2.2}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1}
           ]
         },
@@ -188,7 +184,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.8, "turns": 2},
-            {"kind": "ChangeDuration", "target": "Target", "turns": -1, "scope": "Buffs"}
+            {"kind": "ChangeDuration", "target": "Target", "turns": -2, "scope": "Buffs"}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -206,7 +202,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Sussurro",
+        "name": "Attano",
         "skill": {
           "name": "Desaparecer",
           "cooldown": 5,
@@ -224,7 +220,7 @@
         {
           "name": "Punhal Sombrio",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45, "ignoreDefense": 0.2}
+            {"kind": "Damage", "target": "Target", "power": 2.45, "ignoreDefense": 0.2, "hits": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -238,7 +234,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.67},
-            {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.75, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

@@ -13,13 +13,13 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Dom Brasa"},
+      "awakening": {"name": "Sir Lance"},
       "skills": [
         {
           "name": "Lâmina Ardente",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.4, "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 2.69}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -49,12 +49,12 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Cooldown", "value": 1}
           ]
         }
@@ -68,18 +68,18 @@
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Dama Maré"},
+      "awakening": {"name": "Lady Beatrix"},
       "skills": [
         {
           "name": "Golpe de Escudo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1}
           ]
         },
@@ -107,7 +107,8 @@
             {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
           ],
           "awakenedEffects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2}
+            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies"}
           ]
         }
       ]
@@ -120,12 +121,13 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Dom Vendaval"},
+      "awakening": {"name": "Sir Gawa"},
       "skills": [
         {
           "name": "Estocada Veloz",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45}
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Impeto", "target": "Target", "power": -10}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -153,7 +155,8 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
-            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+            {"kind": "Impeto", "target": "AllAllies", "power": 20},
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "chance": 1, "turns": 2}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
@@ -169,18 +172,18 @@
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Defense", "value": 0.2},
-      "awakening": {"name": "Dom Alvor"},
+      "awakening": {"name": "Sir Galah"},
       "skills": [
         {
           "name": "Juramento",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.3}
+            {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.35, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.2},
+            {"kind": "EffectRate", "value": 0.2},
             {"kind": "Damage", "value": 0.1}
           ]
         },
@@ -188,14 +191,14 @@
           "name": "Voto de Escudo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt"},
+            {"kind": "Status", "target": "Self", "status": "CritResist"},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "turns": 2},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3},
             {"kind": "Status", "target": "Self", "status": "Aegis"}
           ]
@@ -204,10 +207,10 @@
           "name": "Último Voto",
           "passive": {"kind": "StatusOrEffectOnDeath"},
           "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
           ],
           "awakenedEffects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2}
+            {"kind": "Shield", "target": "AllAllies", "power": 0.35, "turns": 2}
           ]
         }
       ]
@@ -220,7 +223,7 @@
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Dom Sepulcro"},
+      "awakening": {"name": "Sir Arto"},
       "skills": [
         {
           "name": "Lâmina Faminta",
@@ -238,7 +241,7 @@
           "name": "Juramento Sombrio",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "drain": 0.3}
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.71, "drain": 0.3}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -246,18 +249,19 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45, "drain": 0.4},
-            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2},
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.45, "drain": 0.15, "ignoreDefense": 0.35}
           ]
         },
         {
           "name": "Último Voto",
           "passive": {"kind": "StatusOrEffectOnDeath"},
           "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+            {"kind": "Impeto", "target": "AllAllies", "power": 30}
           ],
           "awakenedEffects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2}
+            {"kind": "Impeto", "target": "AllAllies", "power": 50},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "chance": 1, "turns": 1}
           ]
         }
       ]

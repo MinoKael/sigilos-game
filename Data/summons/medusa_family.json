@@ -13,7 +13,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Víbora",
+        "name": "Viborar",
         "skill": {
           "name": "Veneno de Serpente",
           "passive": {"kind": "StatusOrEffectOnHit"},
@@ -153,7 +153,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Estela",
+        "name": "Eselar",
         "skill": {
           "name": "Olhar Sereno",
           "cooldown": 5,
@@ -204,10 +204,17 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Górgona",
+        "name": "Girnan",
         "skill": {
           "name": "Olhar Fatal",
-          "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.5, "statuses": ["Stun", "Sleep"]}
+          "passive": {
+            "kind": "BonusVsStatusOrEffect",
+            "value": 0.5,
+            "statuses": [
+              "Stun",
+              "Sleep"
+            ]
+          }
         }
       },
       "skills": [
@@ -215,7 +222,7 @@
           "name": "Olhar Maldito",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.55, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -234,7 +241,7 @@
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Cooldown", "value": 1}
           ]
         }

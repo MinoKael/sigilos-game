@@ -13,7 +13,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Ossobrasa",
+        "name": "Osbas",
         "skill": {
           "name": "Ossos Teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
@@ -24,7 +24,7 @@
           "name": "Espada Enferrujada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 1, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -42,7 +42,7 @@
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.2},
             {"kind": "Cooldown", "value": 1}
           ]
         }
@@ -56,7 +56,7 @@
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Ossomar",
+        "name": "Maross",
         "skill": {
           "name": "Ossos Teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
@@ -99,7 +99,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Ossovento",
+        "name": "Soven",
         "skill": {
           "name": "Ossos Teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
@@ -142,7 +142,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Ossoluz",
+        "name": "Luzo",
         "skill": {
           "name": "Reerguer",
           "cooldown": 5,
@@ -159,7 +159,7 @@
           "name": "Toque Ósseo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.03}
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -189,7 +189,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Ossonegro",
+        "name": "Nossor",
         "skill": {
           "name": "Ossos Teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
@@ -200,12 +200,10 @@
           "name": "Garra Óssea",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 1, "turns": 2}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Damage", "value": 0.1}
           ]
         },

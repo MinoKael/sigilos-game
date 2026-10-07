@@ -13,7 +13,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Resmungo",
+        "name": "Esmun",
         "skill": {
           "name": "Golpe Baixo",
           "passive": {"kind": "ForEachStatusOrEffectAppliedDo", "scope": "Debuffs"},
@@ -46,7 +46,8 @@
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "EffectRate", "value": 0.15}
           ]
         }
       ]
@@ -59,7 +60,7 @@
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Fungão",
+        "name": "Funpur",
         "skill": {
           "name": "Laço Afogador",
           "cooldown": 5,
@@ -110,7 +111,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Zás",
+        "name": "Sinza",
         "skill": {
           "name": "Golpe Baixo",
           "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.35, "scope": "Debuffs"}
@@ -120,7 +121,7 @@
         {
           "name": "Facada Rápida",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2}
+            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2, "ignoreDefense": 0.1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -133,7 +134,7 @@
           "name": "Chuva de Facas",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 0.98, "hits": 4}
+            {"kind": "Damage", "target": "Target", "power": 0.98, "hits": 4, "ignoreDefense": 0.1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -198,7 +199,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Espreita",
+        "name": "Loniup",
         "skill": {
           "name": "Golpe Baixo",
           "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.35, "scope": "Debuffs"}

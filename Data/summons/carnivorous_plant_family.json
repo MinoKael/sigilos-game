@@ -13,7 +13,7 @@
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Boca-de-Brasa",
+        "name": "Bocras",
         "skill": {
           "name": "Seiva Ácida",
           "passive": {"kind": "StatusOrEffectOnAttacker"},
@@ -24,10 +24,10 @@
       },
       "skills": [
         {
-          "name": "Bocada Ardente",
+          "name": "Bocada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -58,7 +58,7 @@
       "stats": {"hp": 8010, "atk": 456, "def": 495, "spd": 100},
       "awakened_stats": {"hp": 8895, "atk": 507, "def": 550, "spd": 101},
       "awakening": {
-        "name": "Papa-Moscas",
+        "name": "Moscapa",
         "skill": {
           "name": "Raízes Sedentas",
           "passive": {"kind": "StatusOrEffectEachTurn"},
@@ -104,7 +104,7 @@
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Chicote-Verde",
+        "name": "Chiver",
         "skill": {
           "name": "Bote da Planta",
           "cooldown": 5,
@@ -155,7 +155,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Flor do Sol",
+        "name": "Florol",
         "skill": {
           "name": "Fotossíntese",
           "passive": {"kind": "StatusOrEffectOnWaveStart"},
@@ -169,7 +169,7 @@
           "name": "Pétala",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.03}
+            {"kind": "Cleanse", "target": "LowestAlly"}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -201,7 +201,7 @@
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Dente-Negro",
+        "name": "Denero",
         "skill": {
           "name": "Digestão",
           "cooldown": 5,
@@ -231,7 +231,7 @@
           "name": "Engolir",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.0},
+            {"kind": "Damage", "target": "Target", "power": 3},
             {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.4, "turns": 2}
           ],
           "levels": [

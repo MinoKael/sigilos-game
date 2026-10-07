@@ -13,18 +13,18 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Crit", "value": 0.1},
-      "awakening": {"name": "Asa de Cinza"},
+      "awakening": {"name": "Hugi"},
       "skills": [
         {
           "name": "Bicada de Brasa",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 0.91, "hits": 3},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1}
           ]
         },
@@ -37,7 +37,7 @@
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.2},
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
@@ -65,7 +65,7 @@
       "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
       "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "leader": {"stat": "Accuracy", "value": 0.2},
-      "awakening": {"name": "Grasnalodo"},
+      "awakening": {"name": "Muni"},
       "skills": [
         {
           "name": "Bicada do Brejo",
@@ -102,11 +102,11 @@
           "name": "Mau Agouro",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.2, "turns": 2},
             {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.25, "turns": 2}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2},
             {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.35, "turns": 2}
           ]
         }
@@ -120,12 +120,12 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Pena de Vendaval"},
+      "awakening": {"name": "Ninn"},
       "skills": [
         {
           "name": "Rasgo de Garras",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2}
+            {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2, "ignoreDefense": 0.4}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -146,14 +146,15 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 4.41, "ignoreDefense": 0.3}
+            {"kind": "Damage", "target": "Target", "power": 4.41, "ignoreDefense": 0.3},
+            {"kind": "StealBuff", "target": "Target", "chance": 1, "fallback": true, "power": 0.2}
           ]
         },
         {
           "name": "Revoada de Corvos",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 0.84, "hits": 3}
+            {"kind": "Damage", "target": "AllEnemies", "power": 0.84, "hits": 3, "ignoreDefense": 0.7}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -170,7 +171,7 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Chama-Aurora"},
+      "awakening": {"name": "Neva"},
       "skills": [
         {
           "name": "Bugiganga Brilhante",
@@ -223,7 +224,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Nunca Mais"},
+      "awakening": {"name": "Evermor"},
       "skills": [
         {
           "name": "Bicada no Olho",
@@ -263,7 +264,8 @@
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2},
+            {"kind": "ChangeDuration", "target": "AllEnemies", "scope": "Buffs", "turns": -1}
           ]
         }
       ]

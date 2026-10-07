@@ -13,7 +13,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Attack", "value": 0.18},
-      "awakening": {"name": "Mestre Brasa", "stat": "Crit"},
+      "awakening": {"name": "Harma", "stat": "Crit"},
       "skills": [
         {
           "name": "Punho Flamejante",
@@ -57,7 +57,7 @@
       "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
       "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
       "leader": {"stat": "Defense", "value": 0.25},
-      "awakening": {"name": "Mestre Maré", "stat": "Resistance"},
+      "awakening": {"name": "Hakuin", "stat": "Resistance"},
       "skills": [
         {
           "name": "Palma Fluida",
@@ -103,7 +103,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Speed", "value": 0.15},
-      "awakening": {"name": "Mestre Vendaval", "stat": "Speed"},
+      "awakening": {"name": "Sojun", "stat": "Speed"},
       "skills": [
         {
           "name": "Chute Giratório",
@@ -153,7 +153,7 @@
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
       "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
       "leader": {"stat": "Resistance", "value": 0.25},
-      "awakening": {"name": "Mestre Alvor", "stat": "Resistance"},
+      "awakening": {"name": "Anzang", "stat": "Resistance"},
       "skills": [
         {
           "name": "Palma Iluminada",
@@ -202,7 +202,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Accuracy", "value": 0.25},
-      "awakening": {"name": "Mestre Sombra", "stat": "Accuracy"},
+      "awakening": {"name": "Jigoro", "stat": "Accuracy"},
       "skills": [
         {
           "name": "Golpe de Pressão",

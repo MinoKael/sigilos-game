@@ -13,7 +13,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Attack", "value": 0.18},
-      "awakening": {"name": "Rainha Escarlate", "stat": "Crit"},
+      "awakening": {"name": "Ruby", "stat": "Crit"},
       "skills": [
         {
           "name": "Leque de Brasas",
@@ -64,7 +64,7 @@
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
       "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
       "leader": {"stat": "Health", "value": 0.2},
-      "awakening": {"name": "Rainha das Marés", "stat": "Resistance"},
+      "awakening": {"name": "Lazul", "stat": "Resistance"},
       "skills": [
         {
           "name": "Cetro da Maré",
@@ -110,7 +110,7 @@
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
       "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
       "leader": {"stat": "Speed", "value": 0.15},
-      "awakening": {"name": "Rainha dos Ventos", "stat": "Speed"},
+      "awakening": {"name": "Sapphir", "stat": "Speed"},
       "skills": [
         {
           "name": "Leque de Vento",
@@ -158,7 +158,7 @@
       "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
       "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
       "leader": {"stat": "Defense", "value": 0.25},
-      "awakening": {"name": "Rainha Solar", "stat": "Resistance"},
+      "awakening": {"name": "Andaluz", "stat": "Resistance"},
       "skills": [
         {
           "name": "Toque Real",
@@ -208,7 +208,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Accuracy", "value": 0.25},
-      "awakening": {"name": "Rainha do Eclipse", "stat": "Accuracy"},
+      "awakening": {"name": "Obsidia", "stat": "Accuracy"},
       "skills": [
         {
           "name": "Beijo Venenoso",

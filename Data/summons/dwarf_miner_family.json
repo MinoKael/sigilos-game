@@ -13,7 +13,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Quebra-Runas"},
+      "awakening": {"name": "Thuroim"},
       "skills": [
         {
           "name": "Picareta Rúnica",
@@ -68,7 +68,7 @@
       "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
       "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "leader": {"stat": "Defense", "value": 0.2},
-      "awakening": {"name": "Escavador do Abismo"},
+      "awakening": {"name": "Meroim"},
       "skills": [
         {
           "name": "Pá Encharcada",
@@ -115,7 +115,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Picareta Veloz"},
+      "awakening": {"name": "Vuroim"},
       "skills": [
         {
           "name": "Picada Dupla",
@@ -161,7 +161,7 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Lanterna da Mina"},
+      "awakening": {"name": "Rahmroim"},
       "skills": [
         {
           "name": "Lampião",
@@ -214,7 +214,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Accuracy", "value": 0.2},
-      "awakening": {"name": "Garimpeiro Sombrio"},
+      "awakening": {"name": "Khuroim"},
       "skills": [
         {
           "name": "Picareta Sombria",

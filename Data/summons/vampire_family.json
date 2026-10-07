@@ -13,7 +13,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Conde Embris"},
+      "awakening": {"name": "Embris"},
       "skills": [
         {
           "name": "Mordida Escaldante",
@@ -58,7 +58,7 @@
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Condessa Mirelle"},
+      "awakening": {"name": "Mirelle"},
       "skills": [
         {
           "name": "Abraço Frio",
@@ -105,7 +105,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Conde Vesper"},
+      "awakening": {"name": "Vesper"},
       "skills": [
         {
           "name": "Presas Velozes",
@@ -158,7 +158,7 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Condessa Aurelle"},
+      "awakening": {"name": "Aurelle"},
       "skills": [
         {
           "name": "Toque Pálido",
@@ -210,7 +210,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "CritDamage", "value": 0.25},
-      "awakening": {"name": "Conde Noctis"},
+      "awakening": {"name": "Noctis"},
       "skills": [
         {
           "name": "Drenar Vida",

@@ -13,7 +13,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Fagulha",
+        "name": "Fagul",
         "skill": {
           "name": "Fuga Covarde",
           "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
@@ -56,7 +56,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Sorvo",
+        "name": "Sorvan",
         "skill": {
           "name": "Sede Profunda",
           "cooldown": 5,
@@ -105,7 +105,7 @@
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Rodamoinho",
+        "name": "Rodoin",
         "skill": {
           "name": "Fuga Covarde",
           "passive": {"kind": "SpeedWhenLowest", "value": 0.3}
@@ -116,7 +116,7 @@
           "name": "Rodopio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.35, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -130,7 +130,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
-            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -148,7 +148,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Lampejo",
+        "name": "Lamp",
         "skill": {
           "name": "Presságio Radiante",
           "cooldown": 5,
@@ -166,7 +166,7 @@
           "name": "Clarão",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Impeto", "target": "Target", "power": -15}
+            {"kind": "Impeto", "target": "Target", "power": -20}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -182,7 +182,8 @@
             {"kind": "Impeto", "target": "AllAllies", "power": 20}
           ],
           "levels": [
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Damage", "value": 0.1}
           ]
         }
       ]
@@ -195,7 +196,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Negrume",
+        "name": "Grume",
         "skill": {
           "name": "Fuga Covarde",
           "passive": {"kind": "SpeedWhenLowest", "value": 0.3}

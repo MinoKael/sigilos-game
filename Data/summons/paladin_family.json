@@ -13,7 +13,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Attack", "value": 0.18},
-      "awakening": {"name": "Valoriano", "stat": "Crit"},
+      "awakening": {"name": "Valorian", "stat": "Crit"},
       "skills": [
         {
           "name": "Castigo",

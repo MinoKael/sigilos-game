@@ -13,7 +13,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Capitão Brasa"},
+      "awakening": {"name": "Klaus"},
       "skills": [
         {
           "name": "Tiro de Pistola",
@@ -67,7 +67,7 @@
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Capitã Maré"},
+      "awakening": {"name": "Mary"},
       "skills": [
         {
           "name": "Gancho",
@@ -120,7 +120,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Vento-Bravo"},
+      "awakening": {"name": "Charles"},
       "skills": [
         {
           "name": "Sabre Ágil",
@@ -171,7 +171,7 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Crit", "value": 0.1},
-      "awakening": {"name": "Estrela-Guia"},
+      "awakening": {"name": "Bonny"},
       "skills": [
         {
           "name": "Moeda de Ouro",
@@ -223,7 +223,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "CritDamage", "value": 0.25},
-      "awakening": {"name": "Barbatreva"},
+      "awakening": {"name": "Teach"},
       "skills": [
         {
           "name": "Tiro Traiçoeiro",

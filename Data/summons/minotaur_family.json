@@ -13,7 +13,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Chifre-Fúria",
+        "name": "Chiria",
         "skill": {
           "name": "Fúria do Labirinto",
           "passive": {"kind": "StatusOrEffectWhenLowest"},
@@ -28,7 +28,7 @@
           "name": "Machado Ardente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.35, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -60,7 +60,7 @@
       "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
       "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
       "awakening": {
-        "name": "Muralha",
+        "name": "Muraha",
         "skill": {
           "name": "Casco de Pedra",
           "cooldown": 5,
@@ -79,7 +79,7 @@
           "name": "Cabeçada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.15, "turns": 1}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -111,7 +111,7 @@
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Turbilhão",
+        "name": "Turbani",
         "skill": {
           "name": "Labirinto",
           "cooldown": 5,
@@ -162,7 +162,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Sentinela",
+        "name": "Senlino",
         "skill": {
           "name": "Guarda do Labirinto",
           "passive": {"kind": "StatusOrEffectOnWaveStart"},
@@ -206,7 +206,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Carniceiro",
+        "name": "Carnico",
         "skill": {
           "name": "Faro de Sangue",
           "passive": {"kind": "BonusVsWounded", "value": 0.4}
@@ -217,12 +217,12 @@
           "name": "Machado Sombrio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.2, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.25, "turns": 1}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.2},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.2},
             {"kind": "Damage", "value": 0.1}
           ]
         },

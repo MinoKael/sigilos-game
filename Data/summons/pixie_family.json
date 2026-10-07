@@ -13,7 +13,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Acendalha",
+        "name": "Dalha",
         "skill": {
           "name": "Fogo-fátuo",
           "cooldown": 5,
@@ -63,7 +63,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Gota de Orvalho",
+        "name": "Valho",
         "skill": {
           "name": "Pó de Pixie",
           "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
@@ -146,7 +146,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Cintila",
+        "name": "Cintil",
         "skill": {
           "name": "Pó de Pixie",
           "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
@@ -188,7 +188,7 @@
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Urtiga",
+        "name": "Urtia",
         "skill": {
           "name": "Má Sorte",
           "cooldown": 5,

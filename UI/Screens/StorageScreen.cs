@@ -457,14 +457,14 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>O Núcleo de Infusão: retrato, nome, onde está e para que serve (fundir em qualquer monstro).</summary>
-		private Control CoreDetail(SummonDefinition summon, OwnedSummon monster)
+		private VBoxContainer CoreDetail(SummonDefinition summon, OwnedSummon monster)
 		{
 			var column = new VBoxContainer { Name = "Core" };
 			column.AddThemeConstantOverride("separation", 10);
 			var row = Layout.Row(14).Named("Row");
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(112, 112) };
-			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Arcane, 3, 10, 8));
-			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Arcane, MaskShape.Rounded, 6));
+			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Gold, 3, 10, 8));
+			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Gold, MaskShape.Rounded, 6));
 			row.AddChild(frame);
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
 			info.AddChild(new Label { Name = "Name", Text = summon.Name, ThemeTypeVariation = GameTheme.Heading });
@@ -489,7 +489,7 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>Retrato, nome, estrelas, elemento e papel, onde está, nível e experiência: igual em toda aba.</summary>
-		private Control Identity(SummonDefinition summon, OwnedSummon monster)
+		private VBoxContainer Identity(SummonDefinition summon, OwnedSummon monster)
 		{
 			var column = new VBoxContainer { Name = "Identity" };
 			column.AddThemeConstantOverride("separation", 6);

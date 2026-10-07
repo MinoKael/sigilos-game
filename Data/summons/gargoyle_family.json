@@ -13,7 +13,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Pedra-Pira"},
+      "awakening": {"name": "Pirapir"},
       "skills": [
         {
           "name": "Garra Dilacerante",
@@ -47,10 +47,10 @@
           "name": "Olhar de Pedra",
           "passive": {"kind": "StatusOrEffectOnAttacker"},
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.15, "turns": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.25, "turns": 1}
           ]
         }
       ]
@@ -63,7 +63,7 @@
       "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
       "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "leader": {"stat": "Defense", "value": 0.2},
-      "awakening": {"name": "Vigia-Maré"},
+      "awakening": {"name": "Vigimir"},
       "skills": [
         {
           "name": "Punho de Pedra",
@@ -116,7 +116,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Poleiro da Tormenta"},
+      "awakening": {"name": "Tormerir"},
       "skills": [
         {
           "name": "Rasante",
@@ -169,7 +169,7 @@
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
       "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Torre da Aurora"},
+      "awakening": {"name": "Aroir"},
       "skills": [
         {
           "name": "Pedra Abençoada",
@@ -206,10 +206,10 @@
           "name": "Olhar de Pedra",
           "passive": {"kind": "StatusOrEffectOnAttacker"},
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "Blessing", "chance": 0.15, "turns": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "Blessing", "chance": 0.25, "turns": 1}
           ]
         }
       ]
@@ -222,7 +222,7 @@
       "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
       "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Sorriso Sombrio"},
+      "awakening": {"name": "Samboir"},
       "skills": [
         {
           "name": "Garra Sinistra",

@@ -13,13 +13,13 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Crit", "value": 0.1},
-      "awakening": {"name": "Rei Cinzento"},
+      "awakening": {"name": "Cinder"},
       "skills": [
         {
           "name": "Chama Fantasma",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.2, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.2, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -60,7 +60,7 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Accuracy", "value": 0.2},
-      "awakening": {"name": "Arquimago Afogado"},
+      "awakening": {"name": "Drowner"},
       "skills": [
         {
           "name": "Toque Gélido",
@@ -105,7 +105,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Lamento do Vento"},
+      "awakening": {"name": "Whimper"},
       "skills": [
         {
           "name": "Sopro Fantasma",
@@ -160,7 +160,7 @@
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Arquilich Radiante"},
+      "awakening": {"name": "Hoper"},
       "skills": [
         {
           "name": "Raio Pálido",
@@ -204,7 +204,7 @@
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "leader": {"stat": "CritDamage", "value": 0.25},
-      "awakening": {"name": "Senhor dos Mortos"},
+      "awakening": {"name": "Deather"},
       "skills": [
         {
           "name": "Toque Mortal",

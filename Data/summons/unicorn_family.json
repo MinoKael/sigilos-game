@@ -13,7 +13,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Attack", "value": 0.18},
-      "awakening": {"name": "Pirálio", "stat": "Crit"},
+      "awakening": {"name": "Unipira", "stat": "Crit"},
       "skills": [
         {
           "name": "Chifrada Ardente",
@@ -58,7 +58,7 @@
       "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
       "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
       "leader": {"stat": "Resistance", "value": 0.25},
-      "awakening": {"name": "Maréfila", "stat": "Resistance"},
+      "awakening": {"name": "Marfilan", "stat": "Resistance"},
       "skills": [
         {
           "name": "Toque da Fonte",
@@ -103,7 +103,7 @@
       "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
       "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
       "leader": {"stat": "Speed", "value": 0.15},
-      "awakening": {"name": "Ventália", "stat": "Speed"},
+      "awakening": {"name": "Celestia", "stat": "Speed"},
       "skills": [
         {
           "name": "Coice Veloz",
@@ -199,7 +199,7 @@
       "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
       "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "CritDamage", "value": 0.3},
-      "awakening": {"name": "Noctícorne", "stat": "Accuracy"},
+      "awakening": {"name": "Ticorne", "stat": "Accuracy"},
       "skills": [
         {
           "name": "Chifre Profano",

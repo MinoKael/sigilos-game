@@ -13,7 +13,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Fungo-Brasa",
+        "name": "Fungi",
         "skill": {
           "name": "Esporos",
           "passive": {"kind": "StatusOrEffectOnAttacker"},
@@ -59,7 +59,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Musgo",
+        "name": "Musgi",
         "skill": {
           "name": "Anel de Cogumelos",
           "cooldown": 5,
@@ -108,7 +108,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Esporinha",
+        "name": "Espori",
         "skill": {
           "name": "Nuvem Tóxica",
           "cooldown": 5,
@@ -158,7 +158,7 @@
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
-        "name": "Luzinha",
+        "name": "Luzi",
         "skill": {
           "name": "Micélio",
           "passive": {"kind": "StatusOrEffectEachTurn"},
@@ -204,7 +204,7 @@
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
-        "name": "Bolor",
+        "name": "Borli",
         "skill": {
           "name": "Mofo",
           "cooldown": 5,
@@ -236,7 +236,7 @@
           "name": "Fungo Parasita",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.0, "drain": 0.3},
+            {"kind": "Damage", "target": "Target", "power": 3, "drain": 0.3},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
           ],
           "levels": [

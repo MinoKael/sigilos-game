@@ -26,17 +26,25 @@
     "role": "Defense",
     "rarity": 3,
     "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-    "healthScale": 5.6, "attackScale": 1.6,
+    "healthScale": 5.6,
+    "attackScale": 1.6,
     "image": "chain_master",
     "skills": [
-      { "name": "Corrente", "effects": [
-        {"kind": "Damage", "power": 3.5},
-        {"kind": "Status", "status": "Taunt", "chance": 0.8}
-      ] },
-      { "name": "Grilhões", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
-        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.55}
-      ] }
+      {
+        "name": "Corrente",
+        "effects": [
+          {"kind": "Damage", "power": 3.5},
+          {"kind": "Status", "status": "Taunt", "chance": 0.8}
+        ]
+      },
+      {
+        "name": "Grilhões",
+        "cooldown": 4,
+        "effects": [
+          {"kind": "Damage", "target": "AllEnemies", "power": 2.1},
+          {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.55}
+        ]
+      }
     ]
   },
   {
@@ -45,20 +53,33 @@
     "role": "Defense",
     "rarity": 3,
     "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-    "healthScale": 9.0, "attackScale": 1.5, "defenseScale": 3.5,
+    "healthScale": 9,
+    "attackScale": 1.5,
+    "defenseScale": 3.5,
     "image": "rock_golem",
     "skills": [
-      { "name": "Punho de Pedra", "effects": [
-        {"kind": "Damage", "power": 3.5},
-        {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 1.0, "turns": 2}
-      ] },
-      { "name": "Terremoto", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 3.0},
-        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.5}
-      ] },
-      { "name": "Núcleo Rúnico", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [
-        {"kind": "Heal", "target": "Self", "power": 0.06}
-      ] }
+      {
+        "name": "Punho de Pedra",
+        "effects": [
+          {"kind": "Damage", "power": 3.5},
+          {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 1, "turns": 2}
+        ]
+      },
+      {
+        "name": "Terremoto",
+        "cooldown": 4,
+        "effects": [
+          {"kind": "Damage", "target": "AllEnemies", "power": 3},
+          {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.5}
+        ]
+      },
+      {
+        "name": "Núcleo Rúnico",
+        "passive": {"kind": "StatusOrEffectEachTurn"},
+        "effects": [
+          {"kind": "Heal", "target": "Self", "power": 0.06}
+        ]
+      }
     ]
   },
   {
@@ -68,22 +89,34 @@
     "role": "HP",
     "rarity": 3,
     "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
-    "healthScale": 3.0, "attackScale": 1.2,
+    "healthScale": 3,
+    "attackScale": 1.2,
     "image": "golem_head",
     "skills": [
-      { "name": "Pulso Rúnico", "effects": [
-        {"kind": "Damage", "power": 2.0}
-      ] },
-      { "name": "Égide Rúnica", "cooldown": 3, "effects": [
-        {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-        {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
-        {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
-      ] },
-      { "name": "Runa Partida", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [
-        {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 4},
-        {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 4},
-        {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 4}
-      ] }
+      {
+        "name": "Pulso Rúnico",
+        "effects": [
+          {"kind": "Damage", "power": 2}
+        ]
+      },
+      {
+        "name": "Égide Rúnica",
+        "cooldown": 3,
+        "effects": [
+          {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
+          {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
+          {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
+        ]
+      },
+      {
+        "name": "Runa Partida",
+        "passive": {"kind": "StatusOrEffectOnDeath"},
+        "effects": [
+          {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 4},
+          {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 4},
+          {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 4}
+        ]
+      }
     ]
   },
   {
@@ -93,18 +126,26 @@
     "role": "Support",
     "rarity": 3,
     "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-    "healthScale": 2.5, "attackScale": 1.3,
+    "healthScale": 2.5,
+    "attackScale": 1.3,
     "image": "gargoyle",
     "skills": [
-      { "name": "Olhar Rúnico", "effects": [
-        {"kind": "Damage", "power": 2.4},
-        {"kind": "Status", "status": "SpeedDown", "chance": 0.4, "turns": 2}
-      ] },
-      { "name": "Selo Partido", "cooldown": 3, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 1.4},
-        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.6, "turns": 2},
-        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
-      ] }
+      {
+        "name": "Olhar Rúnico",
+        "effects": [
+          {"kind": "Damage", "power": 2.4},
+          {"kind": "Status", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+        ]
+      },
+      {
+        "name": "Selo Partido",
+        "cooldown": 3,
+        "effects": [
+          {"kind": "Damage", "target": "AllEnemies", "power": 1.4},
+          {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.6, "turns": 2},
+          {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
+        ]
+      }
     ]
   },
   {
@@ -113,22 +154,34 @@
     "role": "Attack",
     "rarity": 3,
     "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-    "healthScale": 10, "attackScale": 1.3,
+    "healthScale": 10,
+    "attackScale": 1.3,
     "image": "wyvern",
     "skills": [
-      { "name": "Mordida Ardente", "effects": [
-        {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "scope": "Debuffs", "bonus": "Damage", "power": 0.5},
-        {"kind": "Damage", "power": 3.4},
-        {"kind": "Status", "status": "Affliction", "chance": 0.6, "turns": 2}
-      ] },
-      { "name": "Sopro de Cinzas", "cooldown": 4, "effects": [
-        {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "scope": "Debuffs", "bonus": "Damage", "power": 0.06},
-        {"kind": "Damage", "target": "AllEnemies", "power": 0.4},
-        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 2}
-      ] },
-      { "name": "Ninho em Chamas", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [
-        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 3}
-      ] }
+      {
+        "name": "Mordida Ardente",
+        "effects": [
+          {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "scope": "Debuffs", "bonus": "Damage", "power": 0.5},
+          {"kind": "Damage", "power": 3.4},
+          {"kind": "Status", "status": "Affliction", "chance": 0.6, "turns": 2}
+        ]
+      },
+      {
+        "name": "Sopro de Cinzas",
+        "cooldown": 4,
+        "effects": [
+          {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "scope": "Debuffs", "bonus": "Damage", "power": 0.06},
+          {"kind": "Damage", "target": "AllEnemies", "power": 0.4},
+          {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 2}
+        ]
+      },
+      {
+        "name": "Ninho em Chamas",
+        "passive": {"kind": "StatusOrEffectEachTurn"},
+        "effects": [
+          {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 3}
+        ]
+      }
     ]
   },
   {
@@ -137,19 +190,31 @@
     "role": "Defense",
     "rarity": 3,
     "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-    "healthScale": 5.0, "attackScale": 1.6,
+    "healthScale": 5,
+    "attackScale": 1.6,
     "image": "crowned_skull",
     "skills": [
-      { "name": "Toque do Túmulo", "effects": [
-        {"kind": "Damage", "power": 3.5, "drain": 0.4}
-      ] },
-      { "name": "Coroa de Pó", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 3.0},
-        {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
-      ] },
-      { "name": "Coroa Imortal", "passive": {"kind": "Undying", "value": 0.3}, "effects": [
-        {"kind": "Shield", "target": "Self", "power": 0.12, "turns": 2}
-      ] }
+      {
+        "name": "Toque do Túmulo",
+        "effects": [
+          {"kind": "Damage", "power": 3.5, "drain": 0.4}
+        ]
+      },
+      {
+        "name": "Coroa de Pó",
+        "cooldown": 4,
+        "effects": [
+          {"kind": "Damage", "target": "AllEnemies", "power": 3},
+          {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
+        ]
+      },
+      {
+        "name": "Coroa Imortal",
+        "passive": {"kind": "Undying", "value": 0.3},
+        "effects": [
+          {"kind": "Shield", "target": "Self", "power": 0.12, "turns": 2}
+        ]
+      }
     ]
   },
   {
@@ -158,22 +223,34 @@
     "role": "Support",
     "rarity": 3,
     "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-    "healthScale": 6.4, "attackScale": 1.55,
+    "healthScale": 6.4,
+    "attackScale": 1.55,
     "image": "kraken",
     "skills": [
-      { "name": "Tentáculo", "effects": [
-        {"kind": "Damage", "power": 3.5},
-        {"kind": "Impeto", "power": -20, "chance": 0.5},
-        {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
-      ] },
-      { "name": "Maré Negra", "cooldown": 3, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
-        {"kind": "Status", "target": "AllAllies", "status": "Counter", "turns": 3}
-      ] },
-      { "name": "Maré Revolta", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [
-        {"kind": "Status", "target": "AllAllies", "status": "Counter", "turns": 3}
-      ] }
+      {
+        "name": "Tentáculo",
+        "effects": [
+          {"kind": "Damage", "power": 3.5},
+          {"kind": "Impeto", "power": -20, "chance": 0.5},
+          {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
+        ]
+      },
+      {
+        "name": "Maré Negra",
+        "cooldown": 3,
+        "effects": [
+          {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+          {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
+          {"kind": "Status", "target": "AllAllies", "status": "Counter", "turns": 3}
+        ]
+      },
+      {
+        "name": "Maré Revolta",
+        "passive": {"kind": "StatusOrEffectOnWaveStart"},
+        "effects": [
+          {"kind": "Status", "target": "AllAllies", "status": "Counter", "turns": 3}
+        ]
+      }
     ]
   },
   {
@@ -182,17 +259,25 @@
     "role": "HP",
     "rarity": 3,
     "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
-    "healthScale": 8.0, "attackScale": 1.6,
+    "healthScale": 8,
+    "attackScale": 1.6,
     "image": "golem_head",
     "skills": [
-      { "name": "Martelada", "effects": [
-        {"kind": "Damage", "power": 3.6}
-      ] },
-      { "name": "Brasa da Bigorna", "cooldown": 4, "effects": [
-        {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.7},
-        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.7, "turns": 2}
-      ] }
+      {
+        "name": "Martelada",
+        "effects": [
+          {"kind": "Damage", "power": 3.6}
+        ]
+      },
+      {
+        "name": "Brasa da Bigorna",
+        "cooldown": 4,
+        "effects": [
+          {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
+          {"kind": "Damage", "target": "AllEnemies", "power": 2.7},
+          {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.7, "turns": 2}
+        ]
+      }
     ]
   },
   {
@@ -201,17 +286,25 @@
     "role": "Attack",
     "rarity": 3,
     "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-    "healthScale": 6.4, "attackScale": 1.6,
+    "healthScale": 6.4,
+    "attackScale": 1.6,
     "image": "mother_serpent",
     "skills": [
-      { "name": "Mordida das Profundezas", "effects": [
-        {"kind": "Damage", "power": 3.6},
-        {"kind": "Impeto", "power": -25, "chance": 0.5}
-      ] },
-      { "name": "Maremoto", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.3},
-        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.6, "turns": 2}
-      ] }
+      {
+        "name": "Mordida das Profundezas",
+        "effects": [
+          {"kind": "Damage", "power": 3.6},
+          {"kind": "Impeto", "power": -25, "chance": 0.5}
+        ]
+      },
+      {
+        "name": "Maremoto",
+        "cooldown": 4,
+        "effects": [
+          {"kind": "Damage", "target": "AllEnemies", "power": 2.3},
+          {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.6, "turns": 2}
+        ]
+      }
     ]
   },
   {
@@ -220,18 +313,26 @@
     "role": "Support",
     "rarity": 3,
     "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-    "healthScale": 7.2, "attackScale": 1.7,
+    "healthScale": 7.2,
+    "attackScale": 1.7,
     "image": "silence_herald",
     "skills": [
-      { "name": "Sussurro do Fim", "effects": [
-        {"kind": "Damage", "power": 3.6},
-        {"kind": "Status", "status": "Curse", "chance": 0.4, "turns": 2}
-      ] },
-      { "name": "Silêncio", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
-        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
-      ] }
+      {
+        "name": "Sussurro do Fim",
+        "effects": [
+          {"kind": "Damage", "power": 3.6},
+          {"kind": "Status", "status": "Curse", "chance": 0.4, "turns": 2}
+        ]
+      },
+      {
+        "name": "Silêncio",
+        "cooldown": 4,
+        "effects": [
+          {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
+          {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2},
+          {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
+        ]
+      }
     ]
   }
 ]

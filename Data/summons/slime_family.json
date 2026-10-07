@@ -13,7 +13,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Magmalodo",
+        "name": "Magdo",
         "skill": {
           "name": "Corpo Escaldante",
           "passive": {"kind": "Thorns", "value": 0.5}
@@ -24,7 +24,7 @@
           "name": "Gosma Escaldante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -36,7 +36,7 @@
           "name": "Disparo de Magma",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.77},
             {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
@@ -55,7 +55,7 @@
       "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
       "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
       "awakening": {
-        "name": "Salmoura",
+        "name": "Blob",
         "skill": {
           "name": "Fortaleza de Gosma",
           "cooldown": 5,
@@ -74,7 +74,7 @@
           "name": "Gosma Gelada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -104,12 +104,12 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Poeirinha",
+        "name": "Jelly",
         "skill": {
           "name": "Vendaval de Meleca",
           "cooldown": 5,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.6, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -123,7 +123,7 @@
           "name": "Gosma Arenosa",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -159,8 +159,8 @@
           "name": "Gel Radiante",
           "cooldown": 5,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.17},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -173,7 +173,7 @@
           "name": "Gosma Brilhante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -185,7 +185,7 @@
           "name": "Gel Curativo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.4}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -225,7 +225,7 @@
           "name": "Gosma Pétrea",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 1, "turns": 3}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

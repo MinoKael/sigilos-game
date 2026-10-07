@@ -13,7 +13,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Prasa",
+        "name": "Fenrir",
         "skill": {
           "name": "Instinto de Caça",
           "passive": {"kind": "BonusVsWounded", "value": 0.4}
@@ -24,7 +24,8 @@
           "name": "Mordida de Brasa",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -37,7 +38,7 @@
           "name": "Investida Flamejante",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71}
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.71}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -55,7 +56,7 @@
       "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
       "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
       "awakening": {
-        "name": "Geluba",
+        "name": "Amarok",
         "skill": {
           "name": "Rasga-Ferro",
           "cooldown": 5,
@@ -104,7 +105,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Rajada",
+        "name": "Garmr",
         "skill": {
           "name": "Instinto de Caça",
           "cooldown": 4,
@@ -136,7 +137,7 @@
           "name": "Uivo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 25}
+            {"kind": "Impeto", "target": "AllAllies", "power": 30}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1},
@@ -153,7 +154,7 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "awakening": {
-        "name": "Peloar",
+        "name": "Skoll",
         "skill": {
           "name": "Luz da Lua",
           "cooldown": 5,
@@ -185,8 +186,8 @@
           "name": "Uivo Lunar",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.1},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "SpeedUp", "turns": 2}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -204,7 +205,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Bonoti",
+        "name": "Hati",
         "skill": {
           "name": "Caçador Noturno",
           "cooldown": 5,
@@ -223,6 +224,7 @@
           "name": "Mordida Sombria",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.35},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.7, "turns": 2},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
           ],
           "levels": [

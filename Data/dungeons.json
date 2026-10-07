@@ -95,14 +95,14 @@
           [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "crow_fire"}, {"summon": "goblin_fire"}]
         ]
       },
-      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 2.0, "scrollChance": 2, "firstClearCores": 3, "firstClearLegendary": 1, "coreChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
+      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.95, "scrollChance": 2, "firstClearCores": 3, "firstClearLegendary": 1, "coreChance": 2, "grades": {"5": 28.2, "6": 71.8}, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4},
         "waves": [
           [{"summon": "crow_fire"}, {"summon": "wolf_fire"}, {"summon": "goblin_fire"}, {"summon": "slime_fire"}],
           [{"summon": "dragon_fire"}, {"summon": "crow_fire"}, {"summon": "goblin_fire"}, {"summon": "troll_fire"}],
           [{"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "crow_fire"}, {"summon": "wolf_fire"}, {"summon": "knight_fire"}]
         ]
       },
-      {"stars": 6, "level": 60, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 3500, "scale": 4.4, "scrollChance": 3, "firstClearCores": 4, "firstClearLightDark": 1, "coreChance": 3, "grades": {"6": 100}, "rarities": {"Rare": 61.8, "Hero": 35.2, "Legendary": 3.0},
+      {"stars": 6, "level": 60, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 3500, "scale": 3.15, "scrollChance": 3, "firstClearCores": 4, "firstClearLightDark": 1, "coreChance": 3, "grades": {"6": 100}, "rarities": {"Rare": 61.8, "Hero": 35.2, "Legendary": 3.0},
         "waves": [
           [{"summon": "crow_fire"}, {"summon": "goblin_fire"}, {"summon": "wolf_fire"}, {"summon": "druid_fire"}],
           [{"summon": "dragon_fire"}, {"summon": "crow_fire"}, {"summon": "wolf_fire"}, {"summon": "knight_fire"}],
@@ -229,14 +229,14 @@
           [{"enemy": "forge_guardian", "element": "Light"}, {"summon": "goblin_light"}, {"summon": "bandit_light"}]
         ]
       },
-      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.0, "scrollChance": 2, "firstClearCores": 3, "firstClearLegendary": 1, "coreChance": 2, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4}, "toolCount": 1,
+      {"stars": 6, "level": 54, "mana": 7, "essence": 670, "firstClearGold": 40, "experience": 3400, "scale": 1.2, "scrollChance": 2, "firstClearCores": 3, "firstClearLegendary": 1, "coreChance": 2, "rarities": {"Rare": 46.5, "Hero": 23.1, "Legendary": 30.4}, "toolCount": 1,
         "waves": [
           [{"summon": "wizard_light"}, {"summon": "goblin_light"}, {"summon": "bandit_light"}, {"summon": "goblin_wind"}],
           [{"summon": "paladin_light"}, {"summon": "wizard_light"}, {"summon": "bandit_light"}, {"summon": "goblin_fire"}],
           [{"enemy": "forge_guardian", "element": "Light"}, {"summon": "wizard_light"}, {"summon": "goblin_light"}, {"summon": "bandit_dark"}]
         ]
       },
-      {"stars": 6, "level": 60, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 3500, "scale": 1.7, "scrollChance": 3, "firstClearCores": 4, "firstClearLightDark": 1, "coreChance": 3, "rarities": {"Rare": 61.8, "Hero": 35.2, "Legendary": 3.0}, "toolCount": 2,
+      {"stars": 6, "level": 60, "mana": 8, "essence": 880, "firstClearGold": 50, "experience": 3500, "scale": 2.3, "scrollChance": 3, "firstClearCores": 4, "firstClearLightDark": 1, "coreChance": 3, "rarities": {"Rare": 61.8, "Hero": 35.2, "Legendary": 3.0}, "toolCount": 2,
         "waves": [
           [{"summon": "wizard_light"}, {"summon": "bandit_light"}, {"summon": "goblin_light"}, {"summon": "wizard_fire"}],
           [{"summon": "paladin_light"}, {"summon": "wizard_light"}, {"summon": "goblin_light"}, {"summon": "bandit_dark"}],

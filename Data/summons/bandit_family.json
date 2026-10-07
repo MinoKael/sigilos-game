@@ -13,7 +13,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Chamusco",
+        "name": "James",
         "skill": {
           "name": "Cadê meu Cavalo?",
           "cooldown": 6,
@@ -32,7 +32,7 @@
           "name": "Tiro de Aviso",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2},
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.25, "turns": 1}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -65,13 +65,13 @@
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Ressaca",
+        "name": "Cassidy",
         "skill": {
           "name": "Cortina de Fumaça",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
-            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.8, "turns": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.3},
+            {"kind": "Status", "target": "LowestAlly", "status": "Hidden", "chance": 1, "turns": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -115,7 +115,7 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "awakening": {
-        "name": "Surrupio",
+        "name": "Morgan",
         "skill": {
           "name": "Emboscada",
           "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}
@@ -125,7 +125,8 @@
         {
           "name": "Corte Rápido",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2}
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.8, "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2, "ignoreDefense": 0.1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -206,7 +207,7 @@
       "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
       "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "awakening": {
-        "name": "Estilete",
+        "name": "Billy",
         "skill": {
           "name": "Emboscada",
           "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}

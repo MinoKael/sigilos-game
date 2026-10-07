@@ -1414,10 +1414,25 @@ if (typeof module !== "undefined") module.exports = Core;
       if (ui.remembered) html += `<div class="row" style="margin-top:8px"><button class="btn small primary" data-action="reopen-project">Reabrir ${esc(ui.remembered.name)}</button></div>`;
       html += `<div class="row" style="margin-top:8px"><button class="btn small" data-action="new-family">Nova família</button></div>`;
     } else {
-      html += `<div class="list">${[...p.families.entries()].map(([file, entry]) => {
-        const stale = entry.stale ? `<span class="badge warn" title="Os atributos guardados não são os do modelo de agora">recalcular</span>` : "";
-        return `<button data-action="load-family" data-file="${esc(file)}" class="${file === ui.familyFile ? "active" : ""}"><span>${esc(entry.data.name || entry.data.family_id)} <span class="note">${esc(entry.data.star_grade)}★ · ${Object.keys(entry.data.variations || {}).length} var.</span></span>${stale}</button>`;
-      }).join("")}</div>
+      html += `<div class="list">${[...p.families.entries()]
+  .sort(([, a], [, b]) => {
+    const gradeA = Number(a.data.star_grade) || 0;
+    const gradeB = Number(b.data.star_grade) || 0;
+
+    return gradeA - gradeB ||
+      String(a.data.name || a.data.family_id)
+        .localeCompare(String(b.data.name || b.data.family_id), "pt-BR");
+  })
+  .map(([file, entry]) => {
+    const stale = entry.stale
+      ? `<span class="badge warn" title="Os atributos guardados não são os do modelo de agora">recalcular</span>`
+      : "";
+
+    return `<button data-action="load-family" data-file="${esc(file)}" class="${file === ui.familyFile ? "active" : ""}">
+      <span>${esc(entry.data.name || entry.data.family_id)} <span class="note">${esc(entry.data.star_grade)}★ · ${Object.keys(entry.data.variations || {}).length} var.</span></span>${stale}
+    </button>`;
+  })
+  .join("")}</div>
       <div class="row">
         <button class="btn small" data-action="new-family">Nova família</button>
         <button class="btn small good" data-action="save-family">Salvar família${ui.dirty ? " •" : ""}</button>
