@@ -14,12 +14,13 @@ namespace Sigilos.GameEntry
 	/// tempo que ela levaria na tela no automático em 2×; então vem a próxima. Para no fim das lutas, com o
 	/// botão Parar, ou quando a próxima não pode começar (Mana, inventário de runas cheio) — nesses dois
 	/// casos o jogador resolve e retoma de onde parou. Parar no meio de uma luta descarta essa luta: nada
-	/// ganho, nada gasto. Quem mostra é o aviso flutuante e a janela (UI), pelo <see cref="AutoBattleRun"/>.
+	/// ganho, nada gasto. Quem mostra é o aviso flutuante e a janela (UI), pelo <see cref="AutoBattleRun"/>;
+	/// a luta de agora anda no mesmo relógio, para ver (<see cref="AutoBattleFight"/>), sem mexer no resultado.
 	/// </summary>
 	public partial class AutoBattleRunner : Node
 	{
 		private Func<EntryProblem> _check = () => EntryProblem.None;
-		private Func<(bool Victory, double Seconds)> _fight = () => (false, 0);
+		private Func<(bool Victory, double Seconds, AutoBattleFight Fight)> _fight = () => throw new InvalidOperationException();
 		private Func<VictoryReward> _victory = () => throw new InvalidOperationException();
 		private Action _save = () => { };
 		private int _mana;
@@ -37,13 +38,16 @@ namespace Sigilos.GameEntry
 		/// <summary>Uma Batalha automática está lutando agora.</summary>
 		public bool Running => Run is { Running: true };
 
+		/// <summary>O relógio parado (o jogo na conta parou sem conexão): a luta de agora não anda nem termina.</summary>
+		public bool Held { get; set; }
+
 		/// <summary>Começou uma nova, ou a de agora foi dispensada (nula).</summary>
 		public event Action<AutoBattleRun?>? RunChanged;
 
 		/// <param name="check">Se a próxima luta pode começar (sem cobrar nada).</param>
-		/// <param name="fight">Resolve uma luta inteira no automático: se venceu e quantos segundos ela levaria na tela.</param>
+		/// <param name="fight">Resolve uma luta inteira no automático: se venceu, quantos segundos ela levaria na tela e a mesma luta para ver.</param>
 		/// <param name="victory">Aplica a vitória (cobra a Mana, entrega a recompensa).</param>
-		public void Start(AutoBattleRun run, Func<EntryProblem> check, Func<(bool Victory, double Seconds)> fight, Func<VictoryReward> victory, Action save)
+		public void Start(AutoBattleRun run, Func<EntryProblem> check, Func<(bool Victory, double Seconds, AutoBattleFight Fight)> fight, Func<VictoryReward> victory, Action save)
 		{
 			Run = run;
 			_check = check;
@@ -94,10 +98,11 @@ namespace Sigilos.GameEntry
 
 		public override void _Process(double delta)
 		{
-			if (Run is not { Running: true } run)
+			if (Held || Run is not { Running: true } run)
 				return;
 
 			run.Elapsed += delta;
+			run.Fight?.Advance(run.Elapsed);
 			if (run.Elapsed < run.Duration)
 				return;
 
@@ -134,8 +139,9 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			var (victory, seconds) = _fight();
+			var (victory, seconds, fight) = _fight();
 			_victoryPending = victory;
+			run.Fight = fight;
 			run.Number = run.Done + 1;
 			run.Duration = Math.Max(0.1, seconds);
 			run.Elapsed = 0;
@@ -151,6 +157,7 @@ namespace Sigilos.GameEntry
 			run.CanResume = canResume && run.Done < run.Runs;
 			run.Number = run.Done;
 			run.Elapsed = 0;
+			run.Fight = null;
 			_victoryPending = false;
 			run.Notify();
 		}

@@ -69,11 +69,12 @@ namespace Sigilos.Tests
 			SkillDefinition? basic = null,
 			SkillDefinition? special = null,
 			PassiveDefinition? passive = null,
-			RuneSetEffects? runeEffects = null)
+			RuneSetEffects? runeEffects = null,
+			bool boss = false)
 		{
 			var stats = new StatBlock { Health = health, Attack = attack, Defense = defense, Speed = speed, CritDamage = 0.5, Resistance = resistance };
 			var skills = special == null ? new[] { basic ?? Strike } : new[] { basic ?? Strike, special };
-			return new BattleUnit(name, name, "", side, element, 1, false, stats, skills, passive, runeEffects ?? RuneSetEffects.None);
+			return new BattleUnit(name, name, "", side, element, 1, false, stats, skills, passive, runeEffects ?? RuneSetEffects.None) { IsBoss = boss };
 		}
 
 		/// <summary>Efeitos de conjunto de runa: só os citados, o resto zero.</summary>
@@ -88,14 +89,14 @@ namespace Sigilos.Tests
 			double destroy = 0) => new(drain, stun, extraTurn, shield, immunity, counter, nemesis, destroy);
 
 		/// <summary>Uma luta de uma onda só.</summary>
-		public static BattleSession Session(IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> enemies, int seed = 1)
+		public static BattleSession Session(IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> enemies, int seed = 1, VictoryCondition victory = VictoryCondition.AllWaves)
 		{
 			foreach (var ally in allies)
 				ally.Team = allies;
 			foreach (var enemy in enemies)
 				enemy.Team = enemies;
 
-			return new BattleSession(allies, new[] { enemies }, seed);
+			return new BattleSession(allies, new[] { enemies }, seed, victory);
 		}
 
 		/// <summary>Avança até a vez de <paramref name="unit"/>, resolvendo os outros turnos com o básico.</summary>

@@ -25,17 +25,24 @@ namespace Sigilos.Core.Battle
 			var events = session.Start();
 			log?.AddRange(events);
 			while (!session.IsOver)
-			{
-				var turn = session.BeginTurn();
-				log?.AddRange(turn.Events);
-				if (turn.NeedsDecision)
-				{
-					var acted = session.Act(AutoPilot.For(session, turn.Actor, focusBoss));
-					log?.AddRange(acted);
-				}
-			}
+				Turn(session, log, focusBoss);
 
 			return session.Victory == true;
+		}
+
+		/// <summary>
+		/// Um turno no automático: o começo dele e, se a unidade age, a ação. A luta vista da Batalha
+		/// automática anda por aqui, um turno de cada vez, e decide igual a <see cref="Run"/>.
+		/// </summary>
+		public static void Turn(BattleSession session, List<BattleEvent>? log, bool focusBoss)
+		{
+			var turn = session.BeginTurn();
+			log?.AddRange(turn.Events);
+			if (turn.NeedsDecision)
+			{
+				var acted = session.Act(AutoPilot.For(session, turn.Actor, focusBoss));
+				log?.AddRange(acted);
+			}
 		}
 	}
 }

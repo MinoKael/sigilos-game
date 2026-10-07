@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Battle.Victory;
+using Sigilos.Core.Content;
 
 namespace Sigilos.Core.Battle
 {
@@ -12,6 +14,9 @@ namespace Sigilos.Core.Battle
 	/// Também não sabe o que cada efeito, Passiva ou conjunto de runas faz: nos momentos da luta ela
 	/// avisa as regras em vigor em cada unidade (<see cref="UnitBehavior"/>), e o que acontece dentro de
 	/// uma habilidade é do <see cref="EffectResolver"/>.
+	///
+	/// O que vence a luta é da <see cref="VictoryCondition"/> do encontro (todas as ondas, ou o chefe);
+	/// a derrota é sempre o time inteiro caído.
 	///
 	/// Determinística: com a mesma semente e as mesmas decisões, a mesma luta. É isso que deixa o
 	/// simulador rodar milhares de lutas sem gráfico para balancear.
@@ -28,13 +33,15 @@ namespace Sigilos.Core.Battle
 		private readonly List<BattleUnit> _allies;
 		private readonly IReadOnlyList<IReadOnlyList<BattleUnit>> _waves;
 		private readonly EffectResolver _effects;
+		private readonly VictoryRule _victory;
 		private readonly List<BattleEvent> _pending = new();
 		private int _waveIndex;
 
-		public BattleSession(IReadOnlyList<BattleUnit> allies, IReadOnlyList<IReadOnlyList<BattleUnit>> waves, int seed)
+		public BattleSession(IReadOnlyList<BattleUnit> allies, IReadOnlyList<IReadOnlyList<BattleUnit>> waves, int seed, VictoryCondition victory = VictoryCondition.AllWaves)
 		{
 			_allies = allies.ToList();
 			_waves = waves;
+			_victory = VictoryRules.Of(victory);
 			Random = new Random(seed);
 			_effects = new EffectResolver(this);
 		}
@@ -45,7 +52,10 @@ namespace Sigilos.Core.Battle
 		public IReadOnlyList<BattleUnit> Enemies => _waves[_waveIndex];
 
 		/// <summary>Alguma onda tem chefe (a pausa da luta oferece focar nele).</summary>
-		public bool HasBoss => _waves.Any(wave => wave.Any(unit => unit.IsBoss));
+		public bool HasBoss => Bosses.Any();
+
+		/// <summary>Os chefes de todas as ondas, também das que ainda não entraram.</summary>
+		public IEnumerable<BattleUnit> Bosses => _waves.SelectMany(wave => wave).Where(unit => unit.IsBoss);
 
 		/// <summary>Onda atual, a partir de 1.</summary>
 		public int Wave => _waveIndex + 1;
@@ -249,18 +259,17 @@ namespace Sigilos.Core.Battle
 				return;
 			}
 
-			// Quem caiu para voltar (o Rei Ossudo) segura a onda, como segura o time aliado.
-			if (Enemies.Any(u => u.CanTakeTurn))
+			if (_victory.Won(this))
+			{
+				End(true);
 				return;
+			}
 
-			if (_waveIndex + 1 < _waves.Count)
+			// Quem caiu para voltar (o Rei Ossudo) segura a onda, como segura o time aliado.
+			if (!Enemies.Any(u => u.CanTakeTurn) && _waveIndex + 1 < _waves.Count)
 			{
 				_waveIndex++;
 				StartWave();
-			}
-			else
-			{
-				End(true);
 			}
 		}
 

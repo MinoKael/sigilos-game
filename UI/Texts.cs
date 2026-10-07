@@ -75,11 +75,11 @@ namespace Sigilos.UI
 		/// <summary>"Ataque +12%" ou "Ataque +110".</summary>
 		public static string Format(RuneStat stat, double value) => $"{Name(stat)} {Amount(stat, value)}";
 
-		/// <summary>Subatributo com o que a Pedra de Afiar somou: "Ataque +12% (+5% afiado)".</summary>
+		/// <summary>Subatributo numa linha só, com o que a Pedra de Afiar somou: "Ataque +12% (+5% afiado)".</summary>
 		public static string Format(RuneSubstat substat)
 		{
 			var text = Format(substat.Stat, substat.Total);
-			return substat.Grind > 0 ? T("rune.ground", text, Amount(substat.Stat, substat.Grind)) : text;
+			return substat.Grind > 0 ? $"{text} {T("rune.ground", Amount(substat.Stat, substat.Grind))}" : text;
 		}
 
 		/// <summary>"+5%" ou "+20".</summary>

@@ -101,7 +101,7 @@ namespace Sigilos.UI.Components
 			}
 
 			var bonus = RichText.Label(Texts.Describe(RuneSets.For(rune.Set)), width, null, 14).Named("SetBonus");
-			bonus.AddThemeColorOverride("default_color", Palette.Positive);
+			bonus.AddThemeColorOverride("default_color", Palette.TextFaded);
 			AddChild(bonus);
 
 			if (note != null)
@@ -109,8 +109,10 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>
-		/// Um subatributo. O que mudou desde <paramref name="opened"/> fica em verde: a linha inteira com
-		/// "new" se ele nasceu depois, ou o quanto subiu ao lado do valor.
+		/// Um subatributo: o nome em ouro, o valor (com a Pedra de Afiar) em branco e, entre parênteses e
+		/// apagado, o quanto veio das melhoras, o da pedra e o "encantado": "Vida +28% (+22%)". O que mudou
+		/// desde <paramref name="opened"/> fica em verde: a linha inteira com "new" se ele nasceu depois, ou
+		/// o quanto subiu ao lado do valor.
 		/// </summary>
 		private static HBoxContainer Substat(Rune rune, int index, int? opened, Func<int, IEnumerable<Control>>? tools)
 		{
@@ -119,14 +121,17 @@ namespace Sigilos.UI.Components
 			var isNew = opened is { } level && substat.Rolls.Count > 0 && substat.Rolls[0].Level > level;
 			var gained = opened is { } since ? substat.Rolls.Where(r => r.Level > since).Sum(r => r.Amount) : 0;
 			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Glyph" });
-			var label = new Label { Name = "Value", Text = Texts.Format(substat), VerticalAlignment = VerticalAlignment.Center };
+			row.AddChild(Part("Name", Texts.Name(substat.Stat), isNew ? Palette.Positive : Palette.Gold));
+			row.AddChild(Part("Value", Texts.Amount(substat.Stat, substat.Total), isNew ? Palette.Positive : Palette.Text));
+			if (substat.Upgraded > 0)
+				row.AddChild(Part("Upgraded", $"({Texts.Amount(substat.Stat, substat.Upgraded)})", Palette.TextFaded));
+			if (substat.Grind > 0)
+				row.AddChild(Part("Ground", T("rune.ground", Texts.Amount(substat.Stat, substat.Grind)), Palette.TextFaded));
 			if (substat.Enchanted)
-				label.Text = T("runes.enchanted_line", label.Text);
+				row.AddChild(Part("Enchanted", T("runes.enchanted_line"), Palette.TextFaded));
 
-			row.AddChild(label);
 			if (isNew)
 			{
-				label.AddThemeColorOverride("font_color", Palette.Positive);
 				row.AddChild(Gain("New", T("runes.new")));
 			}
 			else if (gained > 0)
@@ -138,6 +143,13 @@ namespace Sigilos.UI.Components
 			foreach (var tool in tools?.Invoke(index) ?? Array.Empty<Control>())
 				row.AddChild(tool);
 			return row;
+		}
+
+		private static Label Part(string name, string text, Color color)
+		{
+			var label = new Label { Name = name, Text = text, VerticalAlignment = VerticalAlignment.Center };
+			label.AddThemeColorOverride("font_color", color);
+			return label;
 		}
 
 		/// <summary>O que a runa ganhou, em verde, ao lado do valor.</summary>

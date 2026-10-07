@@ -1,38 +1,29 @@
 using System;
 using Godot;
 using Sigilos.UI.Style;
-using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// O aviso flutuante da Batalha automática, por cima de qualquer tela: o símbolo girando, "Batalha
-	/// automática 4/30" e, embaixo, a barra da luta em andamento. Fica no alto, colado à esquerda do canto
-	/// das moedas (<see cref="CornerGroup"/>: as cápsulas e, no Santuário, o correio), para não cobrir
-	/// nenhuma; numa tela sem moedas (a luta), no alto e no centro. Acabada ou parada, diz isso e fica até
-	/// o jogador abrir a janela e dispensar. Tocar abre a janela da Batalha automática (<see cref="Pressed"/>);
-	/// fechar a janela não para nada.
+	/// O aviso flutuante da Batalha automática, por cima de qualquer tela, no alto e no centro: só o
+	/// símbolo dela (girando enquanto luta) e a luta de agora, "4/30", meio transparente para não esconder
+	/// o que está embaixo. A cor da borda diz o estado: arcano lutando, vermelho parada (dá para retomar),
+	/// verde concluída. Fica até o jogador abrir a janela e dispensar. Tocar abre a janela da Batalha
+	/// automática (<see cref="Pressed"/>); fechar a janela não para nada.
 	/// </summary>
 	public partial class AutoBattleBadge : Button
 	{
-		private const float Height = 50;
+		private const float Height = 44;
 
-		/// <summary>O grupo dos nós do canto de cima à direita (as moedas, o correio): o aviso fica à esquerda deles.</summary>
-		public const string CornerGroup = "TopCorner";
+		/// <summary>Meio transparente: o aviso fica por cima de qualquer tela.</summary>
+		private const float Opacity = 0.8f;
 
-		/// <summary>O espaço entre o aviso e o canto das moedas.</summary>
-		private const float Gap = 10;
+		private const int IconSize = 28;
 
-		/// <summary>De quanto em quanto tempo o aviso confere onde está o canto (a tela pode ter trocado).</summary>
-		private const double PlaceSeconds = 0.2;
-
-		private readonly Doodle _icon = Doodle.Icon(Art.Icon("repeat"), 30, Palette.Arcane);
-		private readonly Label _text = new() { Name = "Text", MouseFilter = MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
-		private readonly ProgressBar _bar = Layout.Energy(Palette.Arcane, 5).Named("Progress");
+		private readonly Doodle _icon = Doodle.Icon(Art.Icon("repeat"), IconSize, Palette.Arcane);
+		private readonly Label _count = new() { Name = "Count", ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
 		private readonly StyleBoxFlat _box;
 		private AutoBattleRun? _run;
-		private float _width;
-		private double _sincePlaced;
 
 		public AutoBattleBadge()
 		{
@@ -41,43 +32,32 @@ namespace Sigilos.UI.Components
 			MouseDefaultCursorShape = CursorShape.PointingHand;
 			Visible = false;
 			ZIndex = 70;
+			Modulate = new Color(1, 1, 1, Opacity);
 
-			_box = GameTheme.Box(new Color(Palette.Inset, 0.94f), Palette.Arcane, 2, 25, 0);
+			_box = GameTheme.Box(new Color(Palette.Inset, 0.94f), Palette.Arcane, 2, (int)(Height / 2), 0);
 			_box.ShadowColor = new Color(0, 0, 0, 0.5f);
 			_box.ShadowSize = 6;
 			foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed" })
 				AddThemeStyleboxOverride(state, _box);
 			AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
 
-			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore };
-			column.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			column.OffsetLeft = 14;
-			column.OffsetRight = -18;
-			column.OffsetTop = 4;
-			column.OffsetBottom = -6;
-			column.AddThemeConstantOverride("separation", 2);
-			AddChild(column);
-
-			var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, SizeFlagsVertical = SizeFlags.ExpandFill };
-			row.AddThemeConstantOverride("separation", 10);
+			var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
+			row.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			row.AddThemeConstantOverride("separation", 8);
 			_icon.Name = "Icon";
 			_icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-			_icon.PivotOffset = new Vector2(15, 15);
+			_icon.PivotOffset = new Vector2(IconSize / 2f, IconSize / 2f);
 			row.AddChild(_icon);
-			_text.AddThemeFontOverride("font", GameTheme.Serif);
-			_text.AddThemeFontSizeOverride("font_size", 18);
-			_text.AddThemeColorOverride("font_color", Palette.Text);
-			_text.SizeFlagsVertical = SizeFlags.ExpandFill;
-			row.AddChild(_text);
-			column.AddChild(row);
+			_count.AddThemeFontSizeOverride("font_size", 20);
+			_count.SizeFlagsVertical = SizeFlags.ExpandFill;
+			row.AddChild(_count);
+			AddChild(row);
 
-			_bar.MaxValue = 1;
-			_bar.Step = 0;
-			_bar.MouseFilter = MouseFilterEnum.Ignore;
-			column.AddChild(_bar);
-
-			// A posição é de Place: preso no canto de cima à esquerda e movido para o lugar certo.
-			SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
+			// No alto, no centro, crescendo para os dois lados conforme o número.
+			SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
+			GrowHorizontal = GrowDirection.Both;
+			OffsetTop = 6;
+			OffsetBottom = 6 + Height;
 		}
 
 		/// <summary>Mostra esta Batalha automática (nula esconde o aviso).</summary>
@@ -93,13 +73,8 @@ namespace Sigilos.UI.Components
 
 		public override void _Process(double delta)
 		{
-			_sincePlaced += delta;
-			if (Visible && _sincePlaced >= PlaceSeconds)
-				Place();
-			if (_run is not { Running: true } run)
-				return;
-			_icon.Rotation += (float)delta * 2.4f;
-			_bar.Value = run.FightProgress;
+			if (_run is { Running: true })
+				_icon.Rotation += (float)delta * 2.4f;
 		}
 
 		private void Refresh()
@@ -108,43 +83,17 @@ namespace Sigilos.UI.Components
 			if (_run is not { } run)
 				return;
 
-			var count = $"{Math.Min(run.Number, run.Runs)}/{run.Runs}";
-			_text.Text = run.Running ? T("auto.badge_running", count)
-				: run.CanResume ? T("auto.badge_stopped", count)
-				: T("auto.badge_done", $"{run.Done}/{run.Runs}");
+			_count.Text = $"{Math.Min(run.Running ? run.Number : run.Done, run.Runs)}/{run.Runs}";
 			var color = run.Running ? Palette.Arcane : run.CanResume ? Palette.Negative : Palette.Spirit;
 			_box.BorderColor = color;
 			_icon.SetInk(color);
 			if (!run.Running)
 				_icon.Rotation = 0;
-			_bar.Visible = run.Running;
-			_bar.Value = run.FightProgress;
 
-			// O botão não mede os filhos: a largura acompanha o texto.
-			_width = _text.GetCombinedMinimumSize().X + 30 + 10 + 32;
-			Place();
-		}
-
-		/// <summary>
-		/// À esquerda do nó mais à esquerda do canto das moedas, centrado na altura dele; sem canto na tela,
-		/// no alto e no centro.
-		/// </summary>
-		private void Place()
-		{
-			_sincePlaced = 0;
-			if (!IsInsideTree())
-				return;
-			Rect2? corner = null;
-			foreach (var node in GetTree().GetNodesInGroup(CornerGroup))
-			{
-				if (node is Control control && control.IsVisibleInTree() && (corner == null || control.GetGlobalRect().Position.X < corner.Value.Position.X))
-					corner = control.GetGlobalRect();
-			}
-
-			Size = new Vector2(_width, Height);
-			GlobalPosition = corner is { } rect
-				? new Vector2(Mathf.Max(Layout.ScreenMargin, rect.Position.X - Gap - _width), rect.GetCenter().Y - Height / 2)
-				: new Vector2((GetViewportRect().Size.X - _width) / 2, 6);
+			// O botão não mede os filhos: a largura acompanha o número.
+			var width = 14 + IconSize + 8 + _count.GetCombinedMinimumSize().X + 16;
+			OffsetLeft = -width / 2;
+			OffsetRight = width / 2;
 		}
 	}
 }

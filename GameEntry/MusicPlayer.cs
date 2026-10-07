@@ -21,7 +21,7 @@ namespace Sigilos.GameEntry
 			Battle,
 		}
 
-		private const string Bus = "Music";
+		public const string Bus = "Music";
 
 		/// <summary>O volume das faixas, em dB.</summary>
 		private const float Volume = -14f;

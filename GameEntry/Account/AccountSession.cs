@@ -56,6 +56,9 @@ namespace Sigilos.GameEntry.Account
 	///    sessão sem forçar e pede <see cref="SyncNeeded"/>: o que se jogou sem rede sobe, ou o jogo pergunta,
 	///    se a conta também mudou em outro aparelho. Se outro aparelho está com a conta nessa hora, este cai
 	///    (<see cref="LossReason.TakenWhileAway"/>) sem perder nada.
+	///    - Sem rede, o jogo na conta segue só por <see cref="OfflineLimitSeconds"/> de jogo; depois para
+	///      (<see cref="Blocked"/>) até uma sincronização dar certo. A conta do tempo fica no aparelho: a
+	///      conexão que volta e cai antes de sincronizar, fechar o jogo ou entrar de novo não a zeram.
 	/// 4. Sair: <see cref="Flush"/> e <see cref="Leave"/>.
 	///
 	/// Cada conta tem o seu save no aparelho (<c>nome.account-id.json</c>); o do jogo sem conta
@@ -71,6 +74,18 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>Quanto esperar depois da última ação para enviar (<see cref="SaveSoon"/>): ações seguidas viram um envio só.</summary>
 		public const double SoonSeconds = 2;
 
+		/// <summary>Quanto se joga na conta sem o servidor, desde a última sincronização, antes de o jogo parar (<see cref="Blocked"/>).</summary>
+		public const double OfflineLimitSeconds = 120;
+
+		/// <summary>Sem conexão, o batimento tenta de novo mais vezes: a volta da rede aparece logo.</summary>
+		private const double RetrySeconds = 10;
+
+		/// <summary>Sem conexão, a conta do tempo vai para o aparelho a cada tanto (fechar o jogo não a zera).</summary>
+		private const double OfflineSaveSeconds = 5;
+
+		/// <summary>Um quadro conta no máximo isto: o tempo com o jogo suspenso (o celular em segundo plano) não é jogo.</summary>
+		private const double MaxFrameSeconds = 0.25;
+
 		/// <summary>Quanto sair (fechar o jogo, Sair da conta) espera o servidor antes de seguir sem ele.</summary>
 		private static readonly TimeSpan LeaveTimeout = TimeSpan.FromSeconds(3);
 
@@ -81,12 +96,15 @@ namespace Sigilos.GameEntry.Account
 		private readonly SessionLock _lock;
 		private readonly CloudSave _cloud;
 		private readonly CloudMail _mail;
-		private readonly Timer _beat = new() { Name = "Heartbeat", WaitTime = SessionLock.BeatSeconds };
-		private readonly Timer _upload = new() { Name = "Upload", WaitTime = UploadSeconds };
-		private readonly Timer _soon = new() { Name = "Soon", WaitTime = SoonSeconds, OneShot = true };
+		// Os relógios seguem com o jogo pausado (a pausa da luta, o jogo parado sem conexão): a sessão continua
+		// viva e a volta da rede aparece. A conta do tempo sem conexão (_Process) para com o jogo.
+		private readonly Timer _beat = new() { Name = "Heartbeat", WaitTime = SessionLock.BeatSeconds, ProcessMode = ProcessModeEnum.Always };
+		private readonly Timer _upload = new() { Name = "Upload", WaitTime = UploadSeconds, ProcessMode = ProcessModeEnum.Always };
+		private readonly Timer _soon = new() { Name = "Soon", WaitTime = SoonSeconds, OneShot = true, ProcessMode = ProcessModeEnum.Always };
 		private Func<PlayerState?> _player = () => null;
 		private Task<bool>? _flushing;
 		private Task<SyncResult>? _syncing;
+		private Task<BeatOutcome>? _checking;
 
 		/// <summary>O servidor não respondeu desde o último batimento que deu certo (ou o jogo abriu sem ele).</summary>
 		private bool _away;
@@ -121,6 +139,8 @@ namespace Sigilos.GameEntry.Account
 			_lock = new SessionLock(_auth, _data.DeviceId, DeviceName());
 			_cloud = new CloudSave(_auth);
 			_mail = new CloudMail(_auth);
+			Chat = new ChatLink(_http.BaseAddress!, _auth.Token);
+			Friends = new CloudFriends(_auth);
 		}
 
 		/// <summary>Chegou a chave de recuperação da conta (<see cref="PendingRecoveryKey"/>): o GameRoot mostra.</summary>
@@ -145,7 +165,7 @@ namespace Sigilos.GameEntry.Account
 		/// </summary>
 		public event Action? SyncNeeded;
 
-		/// <summary><see cref="Connected"/> mudou.</summary>
+		/// <summary><see cref="Connected"/> ou <see cref="Blocked"/> mudou.</summary>
 		public event Action? ConnectionChanged;
 
 		/// <summary>O save do jogo sem conta.</summary>
@@ -159,6 +179,13 @@ namespace Sigilos.GameEntry.Account
 
 		/// <summary>Jogando na conta e falando com o servidor; falso jogando sem internet.</summary>
 		public bool Connected => Playing && _lock.SessionId != null && !_away;
+
+		/// <summary>
+		/// O jogo na conta parou: <see cref="OfflineLimitSeconds"/> jogados sem o servidor desde a última
+		/// sincronização. Só uma sincronização que dá certo solta (<see cref="Reconnect"/>); a conexão que volta e
+		/// cai antes dela não.
+		/// </summary>
+		public bool Blocked => Playing && _data.OfflineSeconds >= OfflineLimitSeconds;
 
 		/// <summary>O jogador escolheu jogar sem conta: o jogo abre direto, sem a tela de login.</summary>
 		public bool Offline
@@ -184,11 +211,39 @@ namespace Sigilos.GameEntry.Account
 			}
 		}
 
+		/// <summary>O volume geral deste aparelho, de 0 a 1.</summary>
+		public float MasterVolume
+		{
+			get => _data.MasterVolume;
+			set
+			{
+				_data.MasterVolume = value;
+				_data.Save();
+			}
+		}
+
+		/// <summary>O volume da música deste aparelho, de 0 a 1.</summary>
+		public float MusicVolume
+		{
+			get => _data.MusicVolume;
+			set
+			{
+				_data.MusicVolume = value;
+				_data.Save();
+			}
+		}
+
 		/// <summary>O e-mail da última conta que entrou neste aparelho.</summary>
 		public string? Email => _data.Email;
 
 		/// <summary>O nome da conta, único no servidor; nulo numa conta criada antes do nome existir.</summary>
 		public string? AccountName => _data.Name;
+
+		/// <summary>O Chat global: aberto enquanto <see cref="Connected"/> (caído, abre de novo no próximo batimento).</summary>
+		public ChatLink Chat { get; }
+
+		/// <summary>Os amigos da conta no servidor (só com <see cref="Connected"/> responde).</summary>
+		public CloudFriends Friends { get; }
 
 		/// <summary>Há um token guardado: dá para entrar sem senha (<see cref="Resume"/>).</summary>
 		public bool Remembered => _auth.SignedIn;
@@ -210,6 +265,20 @@ namespace Sigilos.GameEntry.Account
 		}
 
 		public override void _ExitTree() => _http.Dispose();
+
+		/// <summary>A conta do tempo jogado sem conexão.</summary>
+		public override void _Process(double delta)
+		{
+			if (!Playing || !_away || Blocked)
+				return;
+
+			var before = _data.OfflineSeconds;
+			_data.OfflineSeconds += Math.Min(delta, MaxFrameSeconds);
+			if (Blocked || (int)(before / OfflineSaveSeconds) != (int)(_data.OfflineSeconds / OfflineSaveSeconds))
+				_data.Save();
+			if (Blocked)
+				ConnectionChanged?.Invoke();
+		}
 
 		/// <summary>Cria a conta (com o convite e o nome) e já entra nela.</summary>
 		/// <summary>Esqueci a senha: troca a senha com a chave de recuperação da conta.</summary>
@@ -371,8 +440,10 @@ namespace Sigilos.GameEntry.Account
 			_player = player;
 			_away = !connected;
 			Playing = true;
-			_beat.Start();
+			_beat.Start(connected ? SessionLock.BeatSeconds : RetrySeconds);
 			_upload.Start();
+			if (connected)
+				Chat.Open();
 		}
 
 		/// <summary>
@@ -420,8 +491,32 @@ namespace Sigilos.GameEntry.Account
 			Handle(await Check());
 		}
 
-		/// <summary>O batimento. Sem sessão (o jogo abriu sem internet), tenta tomar uma, sem forçar.</summary>
-		private Task<BeatOutcome> Check() => _lock.SessionId == null ? _lock.Recover() : _lock.Beat();
+		/// <summary>
+		/// O jogo parado sem conexão (<see cref="Blocked"/>), no "Tentar de novo": tenta o servidor agora e,
+		/// respondendo, sincroniza; é a sincronização que dá certo que solta o jogo.
+		/// </summary>
+		public async Task Reconnect()
+		{
+			if (!Playing)
+				return;
+			_beat.Start();
+			var outcome = await Check();
+			Handle(outcome);
+			if (outcome == BeatOutcome.Alive && Blocked)
+				SyncNeeded?.Invoke();
+		}
+
+		/// <summary>
+		/// O batimento. Sem sessão (o jogo abriu sem internet), tenta tomar uma, sem forçar. Pedidos enquanto um
+		/// corre esperam o mesmo (sem conexão, ele tenta a cada <see cref="RetrySeconds"/>).
+		/// </summary>
+		private Task<BeatOutcome> Check()
+		{
+			if (_checking is { IsCompleted: false })
+				return _checking;
+			_checking = _lock.SessionId == null ? _lock.Recover() : _lock.Beat();
+			return _checking;
+		}
 
 		private async Task<bool> FlushOnce()
 		{
@@ -478,10 +573,15 @@ namespace Sigilos.GameEntry.Account
 			}
 		}
 
+		/// <summary>A nuvem ficou igual ao aparelho: anota, e a conta do tempo sem conexão volta a zero.</summary>
 		private void Mark(long revision, string json)
 		{
+			var blocked = Blocked;
+			_data.OfflineSeconds = 0;
 			_data.MarkSynced(new SyncPoint(revision, CloudSync.Hash(json)));
 			LastSync = DateTimeOffset.Now;
+			if (blocked)
+				ConnectionChanged?.Invoke();
 		}
 
 		private void Handle(BeatOutcome outcome)
@@ -490,6 +590,8 @@ namespace Sigilos.GameEntry.Account
 			{
 				case BeatOutcome.Alive:
 					SetAway(false);
+					if (Playing && !Chat.Live)
+						Chat.Open();
 					break;
 				case BeatOutcome.Unknown:
 					SetAway(true);
@@ -505,13 +607,17 @@ namespace Sigilos.GameEntry.Account
 
 		/// <summary>
 		/// A conexão caiu ou voltou. Na volta, a nuvem pode ter mudado (outro aparelho jogou nesse meio tempo) e
-		/// o aparelho pode ter progresso que não subiu: pede para sincronizar de novo.
+		/// o aparelho pode ter progresso que não subiu: pede para sincronizar de novo. Sem conexão, o batimento
+		/// tenta mais vezes.
 		/// </summary>
 		private void SetAway(bool away)
 		{
 			if (!Playing || _away == away)
 				return;
 			_away = away;
+			_beat.Start(away ? RetrySeconds : SessionLock.BeatSeconds);
+			if (away)
+				Chat.Close();
 			ConnectionChanged?.Invoke();
 			if (!away)
 				SyncNeeded?.Invoke();
@@ -548,6 +654,7 @@ namespace Sigilos.GameEntry.Account
 			_beat.Stop();
 			_upload.Stop();
 			_soon.Stop();
+			Chat.Close();
 		}
 
 		private static PlayerState? Parse(string json)

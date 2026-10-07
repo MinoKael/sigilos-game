@@ -34,12 +34,7 @@ namespace Sigilos.UI.Components
 			Add("Fragments", "fragments", _fragments, () => T("currency_info.fragments"), T("currency.fragments"));
 		}
 
-		public override void _EnterTree()
-		{
-			UiSession.Changed += RefreshFromSession;
-			// O aviso da Batalha automática fica à esquerda das moedas.
-			AddToGroup(AutoBattleBadge.CornerGroup);
-		}
+		public override void _EnterTree() => UiSession.Changed += RefreshFromSession;
 
 		public override void _ExitTree() => UiSession.Changed -= RefreshFromSession;
 

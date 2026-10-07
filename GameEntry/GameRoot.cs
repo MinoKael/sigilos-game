@@ -7,6 +7,7 @@ using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
+using Sigilos.Core.Social;
 using Sigilos.Core.Summoning;
 using Sigilos.GameEntry.Account;
 using Sigilos.GameEntry.Update;
@@ -53,10 +54,14 @@ namespace Sigilos.GameEntry
 		/// <summary>De quanto em quanto tempo a coleta de lixo completa passa (<see cref="Collect"/>).</summary>
 		private const double CollectSeconds = 10;
 
+		private const string MasterBus = "Master";
+
 		private readonly Random _random = new();
 		private readonly AutoBattleRunner _runner = new();
 		private readonly MusicPlayer _music = new();
 		private readonly AutoBattleBadge _badge = new();
+		private readonly ChatFeed _chat = new();
+		private ChatBubble _bubble = null!;
 		private Control _ui = null!;
 		private Control _screens = null!;
 		private Control? _screen;
@@ -81,6 +86,9 @@ namespace Sigilos.GameEntry
 
 		/// <summary>A janela do correio, enquanto aberta: a busca que chega depois atualiza ela.</summary>
 		private MailboxDialog? _mailbox;
+
+		/// <summary>A janela dos amigos, enquanto aberta: a resposta de cada ação refaz a lista nela.</summary>
+		private FriendsDialog? _friends;
 
 		/// <summary>O download da versão nova em andamento (Cancelar e fechar o jogo param ele).</summary>
 		private System.Threading.CancellationTokenSource? _updateDownload;
@@ -119,6 +127,8 @@ namespace Sigilos.GameEntry
 				if (_screen is HubScreen hub)
 					hub.SetOffline(!_account.Connected);
 				RefreshMail();
+				RefreshBlocked();
+				RefreshChat();
 			};
 
 			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles. Antes de abrir um save
@@ -143,9 +153,19 @@ namespace Sigilos.GameEntry
 			_badge.Pressed += OpenAutoBattle;
 			AddChild(_runner);
 			_runner.RunChanged += run => _badge.Show(run);
+			// O Chat global: o balão por cima das telas; a conexão da conta traz as linhas.
+			_bubble = new ChatBubble(_chat);
+			_ui.AddChild(_bubble);
+			_bubble.Pressed += () => ChatDialog.Open(_ui, _chat);
+			_chat.Say = _account.Chat.Say;
+			_account.Chat.Received += _chat.Add;
+			_account.Chat.Refused += _chat.Refuse;
+			_account.Chat.LiveChanged += RefreshChat;
 			AddChild(_music);
-			// No PC, a janela fica sempre em 16:9.
-			AddChild(new WindowAspect());
+			ApplyVolume(MasterBus, _account.MasterVolume);
+			ApplyVolume(MusicPlayer.Bus, _account.MusicVolume);
+			// No PC, a janela fica sempre em 16:9; no celular, a interface ocupa a tela toda.
+			AddChild(new WindowAspect(OS.HasFeature("mobile") || Argument("--mobile") != null));
 
 			// Com --screen (desenvolvimento), ou depois de escolher jogar sem conta, abre direto o save local.
 			var screen = Argument("--screen=");
@@ -187,6 +207,7 @@ namespace Sigilos.GameEntry
 			_playing = true;
 			_monsterFilter = new MonsterFilter();
 			UiSession.Player = player;
+			RefreshChat();
 			// A chave que chegou no cadastro ou na entrada aparece por cima da primeira tela.
 			Callable.From(ShowRecoveryKey).CallDeferred();
 			if (Argument("--language=") == null)
@@ -224,6 +245,10 @@ namespace Sigilos.GameEntry
 				case "grimoire":
 					Go(Destination.Grimoire, ShowHub);
 					break;
+				case "friends":
+					ShowHub();
+					Go(Destination.Friends, ShowHub);
+					break;
 				case "battle":
 					FightStage(_database.Stage(Math.Min(_player.HighestStage + 1, _database.Stages.Count)));
 					break;
@@ -257,6 +282,8 @@ namespace Sigilos.GameEntry
 			_playing = false;
 			_runner.Dismiss();
 			CloseDialogs();
+			_chat.Clear();
+			RefreshChat();
 			var login = new LoginScreen(_account.Email, _account.AccountName, _account.Remembered);
 			login.LoginRequested += (email, password) => SignIn(login, () => _account.Login(email, password), false);
 			login.RegisterRequested += (email, password, invite, name) => SignIn(login, () => _account.Register(email, password, invite, name), false);
@@ -311,6 +338,8 @@ namespace Sigilos.GameEntry
 
 			_account.Begin(() => _playing ? _player : null, connected: false);
 			Play(store, player);
+			// O tempo sem conexão de antes conta: a conta que já passou do limite abre parada.
+			RefreshBlocked();
 			return true;
 		}
 
@@ -366,7 +395,9 @@ namespace Sigilos.GameEntry
 		private Task<bool> AskConflict(SaveConflict conflict)
 		{
 			var choice = new TaskCompletionSource<bool>();
-			SaveConflictDialog.Open(_ui, conflict.Local, conflict.LocalSavedAt, conflict.Cloud, conflict.CloudSavedAt, conflict.Adopting, cloud => choice.TrySetResult(cloud));
+			var dialog = SaveConflictDialog.Open(_ui, conflict.Local, conflict.LocalSavedAt, conflict.Cloud, conflict.CloudSavedAt, conflict.Adopting, cloud => choice.TrySetResult(cloud));
+			// A pergunta pode chegar com o jogo parado sem conexão (a sincronização da volta): responde mesmo assim.
+			dialog.ProcessMode = ProcessModeEnum.Always;
 			return choice.Task;
 		}
 
@@ -389,6 +420,67 @@ namespace Sigilos.GameEntry
 			_runner.Dismiss();
 			CloseDialogs();
 			Play(_account.Store!, sync.Player!);
+		}
+
+		/// <summary>A janela do jogo parado sem conexão (<see cref="RefreshBlocked"/>); nula com o jogo andando.</summary>
+		private Dialog? _blocked;
+
+		/// <summary>
+		/// Abre ou fecha a janela de sem conexão conforme <see cref="AccountSession.Blocked"/>. Com ela aberta, o
+		/// jogo na conta para: a árvore pausa (as lutas, a canalização, as animações), a Batalha automática segura o
+		/// relógio, e só a janela e a conta seguem, tentando o servidor. A sincronização que dá certo fecha a janela
+		/// e o jogo continua de onde estava.
+		/// </summary>
+		private void RefreshBlocked()
+		{
+			if (!_account.Blocked)
+			{
+				_blocked?.Close();
+				return;
+			}
+
+			if (_blocked != null)
+				return;
+
+			Save();
+			var paused = GetTree().Paused;
+			GetTree().Paused = true;
+			_runner.Held = true;
+			var dialog = Dialog.Open(_ui, T("account.blocked_title"), 480, null, "OfflineDialog");
+			dialog.ProcessMode = ProcessModeEnum.Always;
+			dialog.Dismissable = false;
+			dialog.Body.AddChild(Layout.Text(T("account.blocked_text", (int)(AccountSession.OfflineLimitSeconds / 60))).Named("Text"));
+			var status = Layout.Text("", GameTheme.Faded).Named("Status");
+			dialog.Body.AddChild(status);
+			GameButton leave = null!, retry = null!;
+			leave = dialog.AddAction(T("account.blocked_leave"), async () =>
+			{
+				// Sai sem esquecer a conta: o login oferece entrar de novo ou jogar sem conta.
+				_playing = false;
+				leave.Disabled = retry.Disabled = true;
+				status.Text = T("account.blocked_leaving");
+				await _account.Leave(false);
+				ShowLogin();
+			}, ButtonKind.Secondary, closes: false);
+			retry = dialog.AddAction(T("account.blocked_retry"), async () =>
+			{
+				retry.Disabled = true;
+				status.Text = T("account.connecting");
+				await _account.Reconnect();
+				if (_blocked != dialog)
+					return;
+				retry.Disabled = false;
+				status.Text = T(_account.Connected ? "account.syncing" : "account.error_offline");
+			}, ButtonKind.Primary, closes: false);
+			dialog.Closed += () =>
+			{
+				_blocked = null;
+				_runner.Held = false;
+				GetTree().Paused = paused;
+				// Fechada por fora (uma troca de tela) com o jogo ainda parado: abre de novo.
+				Callable.From(RefreshBlocked).CallDeferred();
+			};
+			_blocked = dialog;
 		}
 
 		/// <summary>Ajustes → Sair da conta: envia o que falta (perguntando, se não der), solta a sessão e volta para o login.</summary>
@@ -478,9 +570,53 @@ namespace Sigilos.GameEntry
 
 				dialog.Close();
 				accepted?.Invoke();
+				RefreshChat();
 				if (_screen is HubScreen)
 					_current();
 			};
+		}
+
+		/// <summary>
+		/// O balão do Chat global só aparece jogando na conta; ele e a janela mostram a conexão (ao vivo,
+		/// conectando com a conta conectada, ou sem conexão).
+		/// </summary>
+		private void RefreshChat()
+		{
+			_bubble.Visible = _playing && _account.Playing;
+			_chat.Me = _account.AccountName;
+			_chat.SetState(_account.Chat.Live, _account.Connected && !_account.Chat.Live);
+		}
+
+		/// <summary>Anuncia os feitos no Chat global. Sem conexão, nada sai, nem depois: o chat é só o de agora.</summary>
+		private void Share(IEnumerable<Feat> feats)
+		{
+			foreach (var feat in feats)
+				_ = _account.Chat.Share(feat);
+		}
+
+		/// <summary>Os volumes nos Ajustes: valem na hora e ficam gravados no aparelho.</summary>
+		private ConfigVolume[] Volumes() => new[]
+		{
+			new ConfigVolume("Master", T("config.volume_master"), _account.MasterVolume, volume =>
+			{
+				_account.MasterVolume = volume;
+				ApplyVolume(MasterBus, volume);
+			}),
+			new ConfigVolume("Music", T("config.volume_music"), _account.MusicVolume, volume =>
+			{
+				_account.MusicVolume = volume;
+				ApplyVolume(MusicPlayer.Bus, volume);
+			}),
+		};
+
+		/// <summary>O volume escolhido (0 a 1) no barramento; 0 cala. As transições da música mexem nos tocadores, não aqui.</summary>
+		private static void ApplyVolume(string bus, float volume)
+		{
+			var index = AudioServer.GetBusIndex(bus);
+			if (index < 0)
+				return;
+			AudioServer.SetBusMute(index, volume <= 0f);
+			AudioServer.SetBusVolumeDb(index, Mathf.LinearToDb(Mathf.Max(volume, 0.001f)));
 		}
 
 		/// <summary>A conta nos Ajustes.</summary>
@@ -683,11 +819,12 @@ namespace Sigilos.GameEntry
 				Save();
 				UseLanguage(language);
 				ShowHub();
-			}, AccountSettings(), ShowTutorial);
+			}, Volumes(), AccountSettings(), ShowTutorial);
 			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
 			hub.MailRequested += () => OpenMailbox(hub);
 			hub.AvatarRequested += (summon, awakened) => Change(() => Core.Progression.Account.SetAvatar(_player, summon, awakened), () => hub.Refresh(DateTime.Now));
 			Swap(hub, ShowHub);
+			_bubble.Dock(hub.ChatCorner);
 			hub.SetMail(_mail?.Count);
 			RefreshMail();
 		}
@@ -776,6 +913,76 @@ namespace Sigilos.GameEntry
 			_mailbox?.Show(_mail);
 		}
 
+		// Amigos -------------------------------------------------------------------------------------
+
+		/// <summary>
+		/// A janela dos amigos: só com a conta conectada (quem guarda os amigos é o servidor). Busca a lista ao
+		/// abrir e de novo depois de cada ação.
+		/// </summary>
+		private void OpenFriends()
+		{
+			var friends = FriendsDialog.Open(_screen ?? _ui);
+			if (!_account.Playing)
+			{
+				friends.ShowMessage(T("friends.no_account"));
+				return;
+			}
+
+			if (!_account.Connected)
+			{
+				friends.ShowMessage(T("friends.offline"));
+				return;
+			}
+
+			_friends = friends;
+			friends.Closed += () =>
+			{
+				if (_friends == friends)
+					_friends = null;
+			};
+			friends.InviteRequested += name => FriendAction(friends, _account.Friends.Invite(name),
+				response => T(response.Text("status") == "friends" ? "friends.now_friends" : "friends.invited", name));
+			friends.AcceptRequested += friend => FriendAction(friends, _account.Friends.Accept(friend.Id), _ => T("friends.now_friends", friend.Name));
+			friends.RemoveRequested += friend => FriendAction(friends, _account.Friends.Remove(friend.Id), null);
+			RefreshFriends(friends);
+		}
+
+		private async void RefreshFriends(FriendsDialog friends)
+		{
+			var fetch = await _account.Friends.Fetch();
+			if (!_playing || _friends != friends)
+				return;
+			if (fetch.List is { } list)
+				friends.Show(list);
+			else
+				friends.ShowMessage(FriendsError(fetch.Response));
+		}
+
+		/// <summary>
+		/// Uma ação nos amigos: o servidor responde, a janela mostra o resultado (<paramref name="done"/>, ou o
+		/// porquê da recusa) e a lista de novo.
+		/// </summary>
+		private async void FriendAction(FriendsDialog friends, Task<ApiResponse> request, Func<ApiResponse, string>? done)
+		{
+			var response = await request;
+			if (!_playing || _friends != friends)
+				return;
+			if (!response.Ok)
+				friends.Notice(FriendsError(response), true);
+			else if (done != null)
+				friends.Notice(done(response), false);
+			RefreshFriends(friends);
+		}
+
+		/// <summary>A recusa do servidor nos amigos, escrita: a que ele nomeou, ou a genérica.</summary>
+		private static string FriendsError(ApiResponse response) => response switch
+		{
+			{ Unreached: true } => T("friends.offline"),
+			{ Status: 429 } => T("account.error_busy"),
+			{ Error: { } error } when Has($"friends.error_{error}") => T($"friends.error_{error}"),
+			_ => T("friends.error"),
+		};
+
 		/// <summary>
 		/// A luta de treino (<see cref="Tutorial"/>), com o Mestre ensinando: no fim, ou ao sair pela pausa,
 		/// conta como feita (não abre mais sozinha) e leva à primeira invocação, se a conta ainda não invocou
@@ -861,6 +1068,9 @@ namespace Sigilos.GameEntry
 				case Destination.Map:
 					ShowMap();
 					break;
+				case Destination.Friends:
+					OpenFriends();
+					break;
 			}
 		}
 
@@ -922,6 +1132,8 @@ namespace Sigilos.GameEntry
 				var results = SummonRitual.Perform(_random, _database, _player, count, kind);
 				if (results.Count == 0)
 					return;
+
+				Share(Feats.Of(results));
 
 				Teams.FillCampaign(_player, results.Select(r => r.Monster).OrderByDescending(m => _database.Summon(m.SummonId).Rarity));
 				Save();
@@ -1005,7 +1217,7 @@ namespace Sigilos.GameEntry
 			runes.BackRequested += _ => back();
 			runes.EquipRequested += (id, monster) => Change(() => RuneInventory.Equip(_player, Rune(id), monster), runes.Refresh);
 			runes.UnequipRequested += id => Change(() => RuneInventory.Unequip(_player, Rune(id)), runes.Refresh);
-			runes.UpgradeRequested += (id, target) => Change(() => RuneInventory.Upgrade(_random, _player, Rune(id), target), runes.Refresh);
+			runes.UpgradeRequested += (id, target) => Change(() => UpgradeRune(Rune(id), target), runes.Refresh);
 			runes.GrindRequested += (id, index, tool) => Change(() => RuneInventory.Grind(_random, _player, Rune(id), index, tool), runes.Refresh);
 			runes.EnchantRequested += (id, index, tool) => Change(() => RuneInventory.Enchant(_random, _player, Rune(id), index, tool), runes.Refresh);
 			runes.SellRequested += id => Change(() => RuneInventory.Sell(_player, Rune(id)), runes.Refresh);
@@ -1192,11 +1404,14 @@ namespace Sigilos.GameEntry
 				var run = new AutoBattleRun(title, content, mana, runs);
 				_runner.Start(run, check, () =>
 				{
-					var session = BattleFactory.Create(_database, PlayerTeam.Build(_player, _database, content), encounter, _random.Next());
+					var team = PlayerTeam.Build(_player, _database, content);
+					var seed = _random.Next();
 					var log = new List<BattleEvent>();
 					// A escolha da pausa vale aqui também, lida a cada luta.
-					var won = AutoBattle.Run(session, log, _player.FocusBoss);
-					return (won, BattlePace.Seconds(log, BattlePace.AutoBattleFactor));
+					var won = AutoBattle.Run(BattleFactory.Create(_database, team, encounter, seed), log, _player.FocusBoss);
+					// A mesma luta de novo (mesma equipe, mesma semente), para a janela e a tela cheia verem.
+					var fight = new AutoBattleFight(BattleFactory.Create(_database, team, encounter, seed), _player.FocusBoss);
+					return (won, BattlePace.Seconds(log, BattlePace.AutoBattleFactor), fight);
 				}, victory, () =>
 				{
 					Save();
@@ -1250,7 +1465,7 @@ namespace Sigilos.GameEntry
 				},
 				UpgradeRune = (rune, target) =>
 				{
-					RuneInventory.Upgrade(_random, _player, rune, target);
+					UpgradeRune(rune, target);
 					Save();
 					run.Notify();
 					RefreshCurrent();
@@ -1281,6 +1496,15 @@ namespace Sigilos.GameEntry
 		}
 
 		private Core.Runes.Rune Rune(int id) => _player.Runes.First(r => r.Id == id);
+
+		/// <summary>Melhora a runa até <paramref name="target"/>; a que chegou a +15 agora vira feito no Chat global.</summary>
+		private void UpgradeRune(Core.Runes.Rune rune, int target)
+		{
+			var before = rune.Level;
+			RuneInventory.Upgrade(_random, _player, rune, target);
+			if (Feats.Of(rune, before) is { } feat)
+				Share(new[] { feat });
+		}
 
 		/// <summary>Um monstro no resultado da luta: o retrato e a barra de experiência do antes até agora.</summary>
 		private ResultMonster ResultOf(OwnedSummon monster, int level, int experience)

@@ -2,6 +2,7 @@ using System;
 using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
+using Sigilos.Core.Progression;
 using Sigilos.UI.Style;
 
 namespace Sigilos.UI.Components
@@ -11,8 +12,9 @@ namespace Sigilos.UI.Components
 	/// elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à direita. A moldura é
 	/// pelas estrelas naturais (bronze, prata, ouro). Um símbolo pequeno embaixo à esquerda marca o que
 	/// importa ali (na equipe, Líder), o cadeado ao lado dele diz que o monstro está bloqueado, o
-	/// coração abaixo das estrelas marca o favorito, e uma faixa escrita embaixo diz o que o jogador
-	/// precisa saber na hora ("Novo!", "Líder").
+	/// coração abaixo das estrelas marca o favorito, do outro lado, abaixo do elemento, os níveis de
+	/// habilidade subidos ("3/8", ou "Max" com todas no máximo), e uma faixa escrita embaixo diz o que o
+	/// jogador precisa saber na hora ("Novo!", "Líder").
 	///
 	/// Toque curto é <see cref="Pressed"/> (escolher, marcar); toque longo abre o resumo do monstro
 	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado na seleção
@@ -98,6 +100,8 @@ namespace Sigilos.UI.Components
 				layer.AddChild(LockBadge(width, marker != null));
 			if (monster is { Favorite: true })
 				layer.AddChild(FavoriteBadge(width));
+			if (monster is { IsInfusionCore: false } && UiSession.Database is { } database)
+				layer.AddChild(SkillUps(Fusion.SkillUps(database, monster), width));
 
 			if (tag != null)
 				layer.AddChild(Tag(tag, width));
@@ -154,6 +158,29 @@ namespace Sigilos.UI.Components
 			var heart = Doodle.Icon(Art.Icon("favorite"), size, Palette.Negative.Lightened(0.15f)).Named("Favorite");
 			heart.Position = new Vector2(width * 0.04f, width * 0.17f);
 			return heart;
+		}
+
+		/// <summary>Os níveis de habilidade subidos, à direita, na altura do coração; "Max" em ouro quando não sobe mais nada.</summary>
+		private static Control SkillUps((int Done, int Total) ups, float width)
+		{
+			var max = ups.Done >= ups.Total;
+			var label = new Label
+			{
+				Name = "SkillUps",
+				Text = max ? Locale.T("monsters.skills_max") : $"{ups.Done}/{ups.Total}",
+				ThemeTypeVariation = GameTheme.Number,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				MouseFilter = MouseFilterEnum.Ignore,
+			};
+			label.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.12f), 10, 16));
+			label.AddThemeColorOverride("font_color", max ? Palette.Gold : Palette.Text);
+			label.AddThemeColorOverride("font_outline_color", Palette.Background);
+			label.AddThemeConstantOverride("outline_size", 3);
+			label.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
+			label.GrowHorizontal = GrowDirection.Begin;
+			label.OffsetRight = -width * 0.04f;
+			label.OffsetTop = width * 0.15f;
+			return label;
 		}
 
 		/// <summary>A faixa escrita, em ouro sobre pedra, presa na borda de baixo do desenho.</summary>

@@ -146,3 +146,5 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Effects/unrecoverable.svg` | [Bleeding-wound - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Bleeding-wound_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/silence.svg` | [Silence - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Silence_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/oblivion.svg` | [Brain-freeze - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Brain-freeze_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/chat.svg` | [Talk - game-icons.svg](https://commons.wikimedia.org/wiki/File:Talk_-_game-icons.svg) | Skoll | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/friends.svg` | [Shaking-hands - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Shaking-hands_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |

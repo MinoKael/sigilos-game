@@ -162,11 +162,7 @@ namespace Sigilos.UI.Screens
 			if (Monster is { } monster)
 			{
 				var summon = _database.Summon(monster.SummonId);
-				var portrait = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(64, 64), MouseFilter = MouseFilterEnum.Stop };
-				portrait.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 2, 32, 3));
-				portrait.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Circle, boil: false, aura: monster.Awakened ? summon.Element : null));
-				Press.On(portrait, null, () => MonsterSummary.Open(portrait, summon, monster));
-				head.AddChild(portrait);
+				head.AddChild(Portrait(summon, monster, 64));
 				var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
 				info.AddChild(new Label { Name = "Name", Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading });
 				info.AddChild(new Label { Name = "Level", Text = T("common.stars_level", Texts.Stars(monster.Stars), monster.Level) + (monster.Stored ? " · " + T("monsters.vault") : ""), ThemeTypeVariation = GameTheme.Faded });
@@ -461,10 +457,9 @@ namespace Sigilos.UI.Screens
 			if (!_levelWhenOpened.ContainsKey(rune.Id))
 				_levelWhenOpened[rune.Id] = rune.Level;
 
-			string? note = null;
+			_detail.AddChild(new RuneCard(rune, 300, opened, index => SubstatTools(rune, index)));
 			if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
-				note = T(holder.Stored ? "rune.owner_vault" : "rune.owner", _database.Summon(holder.SummonId).NameFor(holder.Awakened));
-			_detail.AddChild(new RuneCard(rune, 300, opened, index => SubstatTools(rune, index), note));
+				_detail.AddChild(OwnerRow(holder));
 
 			var full = RuneInventory.IsFull(_player);
 			if (rune.EquippedOn != null && (rune.EquippedOn == _monsterId || Monster == null))
@@ -514,6 +509,28 @@ namespace Sigilos.UI.Screens
                 _actions.AddChild(sellBtn);
             }
         }
+
+		/// <summary>Quem usa a runa escolhida: o rosto dele (toque longo abre o resumo) e "Equipada em ...".</summary>
+		private Control OwnerRow(OwnedSummon holder)
+		{
+			var summon = _database.Summon(holder.SummonId);
+			var row = Layout.Row(10).Named("Owner");
+			row.AddChild(Portrait(summon, holder, 44));
+			var name = Layout.Text(T(holder.Stored ? "rune.owner_vault" : "rune.owner", summon.NameFor(holder.Awakened)), GameTheme.Faded, 240).Named("Name");
+			name.SizeFlagsVertical = SizeFlags.ShrinkCenter;
+			row.AddChild(name);
+			return row;
+		}
+
+		/// <summary>O rosto do monstro num círculo com a moldura da raridade; toque longo abre o resumo dele.</summary>
+		private static Control Portrait(SummonDefinition summon, OwnedSummon monster, float size)
+		{
+			var portrait = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(size, size), MouseFilter = MouseFilterEnum.Stop };
+			portrait.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 2, (int)(size / 2), 3));
+			portrait.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Circle, boil: false, aura: monster.Awakened ? summon.Element : null));
+			Press.On(portrait, null, () => MonsterSummary.Open(portrait, summon, monster));
+			return portrait;
+		}
 
 		/// <summary>
 		/// Reavaliar: só aparece numa runa que mudou desde que caiu. Sem gema, fica apagado e diz onde

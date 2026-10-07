@@ -220,5 +220,36 @@ namespace Sigilos.Tests
 			Assert.True(speeds.Zip(speeds.Skip(1)).All(pair => pair.First >= pair.Second), "por Velocidade, a maior primeiro");
 			Assert.Equal(2, new MonsterFilter { Element = Element.Fire, Awakened = false }.Active, "dois campos filtrando");
 		}
+
+		[Test]
+		private static void MonsterFilterReadsWhatTheSkillsDo()
+		{
+			var database = TestData.Database;
+			var player = TestData.PlayerWith();
+
+			// A cura escala na Vida máxima do alvo; o escudo, na de quem lança (docs/COMBATE.md).
+			var healer = database.Summons.First(s => s.Skills.Any(k => k.Effects.Any(e => e.Kind == EffectKind.Heal)));
+			Assert.True(SkillTraits.BehaviorsOf(healer, false).Contains(SkillBehavior.Heal), $"{healer.Id} cura");
+			Assert.True(SkillTraits.ScalingsOf(healer, false).Contains(SkillScaling.TargetMaxHealth), $"{healer.Id} escala na Vida do alvo");
+			var multi = database.Summons.First(s => s.Skills.Any(k => k.Effects.Any(e => e.Kind == EffectKind.Damage && e.Hits > 1)));
+			Assert.True(SkillTraits.BehaviorsOf(multi, false).Contains(SkillBehavior.MultiHit), $"{multi.Id} bate várias vezes");
+			Assert.True(SkillTraits.ScalingsOf(multi, false).Contains(SkillScaling.Attack), $"{multi.Id} escala no Ataque");
+
+			// Cada opção que o filtro mostra acha algum monstro (numa das formas).
+			foreach (var behavior in SkillTraits.BehaviorsIn(database.Summons))
+				Assert.True(database.Summons.Any(s => SkillTraits.BehaviorsOf(s, false).Contains(behavior) || SkillTraits.BehaviorsOf(s, true).Contains(behavior)), $"{behavior} existe");
+			Assert.True(SkillTraits.StatusesIn(database.Summons).Count > 0, "há efeitos para filtrar");
+
+			// O filtro olha a forma de agora: o que só o Despertar traz não conta antes dele.
+			var (summon, gained) = database.Summons
+				.Select(s => (Summon: s, Gained: SkillTraits.BehaviorsOf(s, true).Except(SkillTraits.BehaviorsOf(s, false)).ToList()))
+				.First(x => x.Gained.Count > 0);
+			var monster = Roster.Add(player, summon);
+			var filter = new MonsterFilter { Behavior = gained[0] };
+			Assert.False(filter.Matches(monster, summon, player), $"{summon.Id} sem o Despertar não tem {gained[0]}");
+			monster.Awakened = true;
+			Assert.True(filter.Matches(monster, summon, player), $"{summon.Id} desperto tem {gained[0]}");
+			Assert.Equal(3, new MonsterFilter { Behavior = SkillBehavior.Heal, Scaling = SkillScaling.Attack, Applies = StatusKind.Stun }.Active, "três campos de habilidade");
+		}
 	}
 }

@@ -34,6 +34,10 @@ namespace Sigilos.Core.Runes
 		[JsonIgnore]
 		public double Total => Value + Grind;
 
+		/// <summary>O que as melhoras somaram (todos os sorteios menos o de origem).</summary>
+		[JsonIgnore]
+		public double Upgraded => Rolls.Skip(1).Sum(r => r.Amount);
+
 		/// <summary>Um subatributo novo com o sorteio de origem.</summary>
 		public static RuneSubstat Rolled(RuneStat stat, int level, double amount) => new()
 		{

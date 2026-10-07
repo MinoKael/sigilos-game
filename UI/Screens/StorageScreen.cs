@@ -26,7 +26,8 @@ namespace Sigilos.UI.Screens
 	/// - Runas: as 6 no círculo, os conjuntos ativos e o botão que abre a tela de Runas.
 	///
 	/// Embaixo das abas, Filtros e Ordem (<see cref="MonsterFilter"/>): elemento, papel, estrelas, estrelas
-	/// naturais, Despertar e situação; a ordem por estrelas, nível, elemento, nome, chegada ou por um
+	/// naturais, Despertar, situação e as habilidades (o que fazem, em que escalam, que efeito põem: só as
+	/// opções que algum monstro tem, <see cref="SkillTraits"/>); a ordem por estrelas, nível, elemento, nome, chegada ou por um
 	/// atributo (com as runas), que então aparece escrito em cada cartão. Os favoritos vêm antes em
 	/// qualquer ordem. O GameRoot guarda a busca enquanto o jogo está aberto (<see cref="FilterChanged"/>).
 	///
@@ -242,6 +243,14 @@ namespace Sigilos.UI.Screens
 				value => _filter = _filter with { Awakened = value < 0 ? null : value == 1 });
 			dialog.Field("Condition", T("filter.condition"), Enum.GetValues<MonsterCondition>().Select(c => (new Choice(T($"filter.condition_kind.{c}")), (int)c)), _filter.Condition is { } condition ? (int)condition : FilterDialog.All,
 				value => _filter = _filter with { Condition = value < 0 ? null : (MonsterCondition)value });
+
+			// O que as habilidades fazem: só as opções que algum monstro do jogo tem.
+			dialog.Field("Behavior", T("filter.behavior"), SkillTraits.BehaviorsIn(_database.Summons).Select(b => (new Choice(T($"filter.behavior_kind.{b}")), (int)b)), _filter.Behavior is { } behavior ? (int)behavior : FilterDialog.All,
+				value => _filter = _filter with { Behavior = value < 0 ? null : (SkillBehavior)value });
+			dialog.Field("Scaling", T("filter.scaling"), SkillTraits.ScalingsIn(_database.Summons).Select(s => (new Choice(T($"filter.scaling_kind.{s}")), (int)s)), _filter.Scaling is { } scaling ? (int)scaling : FilterDialog.All,
+				value => _filter = _filter with { Scaling = value < 0 ? null : (SkillScaling)value });
+			dialog.Field("Applies", T("filter.applies"), SkillTraits.StatusesIn(_database.Summons).Select(s => (new Choice(Texts.Name(s)), (int)s)), _filter.Applies is { } status ? (int)status : FilterDialog.All,
+				value => _filter = _filter with { Applies = value < 0 ? null : (StatusKind)value });
 		}, () => Filter(_filter), () => _filter = new MonsterFilter { Sort = _filter.Sort, SortStat = _filter.SortStat });
 
 		/// <summary>A busca nova: desmarca quem saiu da grade, avisa o GameRoot e refaz a tela.</summary>

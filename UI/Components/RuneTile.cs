@@ -15,8 +15,8 @@ namespace Sigilos.UI.Components
 	///
 	/// Toque curto é <see cref="Pressed"/>; toque longo abre a ficha da runa (<see cref="RuneCard"/>) numa
 	/// janela colada nela. Escolhida, fica azul arcano; marcada para vender, ganha o ✓ verde. Na lista, a
-	/// runa equipada mostra no lugar do número o medalhão de quem a usa (apagado se ele está no Baú); a
-	/// bloqueada, um cadeado no meio da linha de baixo. O toque passa para cima, então arrastar rola a
+	/// runa equipada mostra no lugar do número o rosto de quem a usa, num quadradinho com borda na cor do
+	/// elemento (apagado se ele está no Baú); a bloqueada, um cadeado no meio da linha de baixo. O toque passa para cima, então arrastar rola a
 	/// lista.
 	/// </summary>
 	public partial class RuneTile : PanelContainer
@@ -114,14 +114,15 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
-		/// <summary>Quem usa a runa: o medalhão do monstro no lugar do número do espaço (apagado se ele está no Baú).</summary>
+		/// <summary>Quem usa a runa: o rosto do monstro num quadradinho com borda, no lugar do número do espaço (apagado se ele está no Baú).</summary>
 		public void SetOwner(Texture2D? creature, Color ink, bool stored)
 		{
 			var size = 18 * _scale;
-			var holder = new Control { Name = "Owner", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(size, size) };
-			var medal = Doodle.Masked(creature, stored ? ink.Darkened(0.5f) : ink, MaskShape.Circle, boil: false);
-			medal.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			holder.AddChild(medal);
+			if (stored)
+				ink = ink.Darkened(0.5f);
+			var holder = new PanelContainer { Name = "Owner", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(size, size) };
+			holder.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, ink, 1, (int)(3 * _scale), 0));
+			holder.AddChild(Doodle.Masked(creature, ink, MaskShape.Rounded, 2 * _scale, 1, boil: false));
 			_layer.AddChild(OnBottomLine(holder, 0, (Inset + SlotWidth / 2) * _scale, GrowDirection.Both));
 		}
 

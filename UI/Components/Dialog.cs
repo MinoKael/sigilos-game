@@ -14,6 +14,9 @@ namespace Sigilos.UI.Components
 	/// - Com <c>anchor</c>, é contextual: abre colada no elemento que o jogador tocou (embaixo dele, ou em
 	///   cima quando não cabe), com uma seta apontando para ele, e a tela escurece pouco.
 	/// - Sem, abre no centro, e a tela escurece mais.
+	/// - Em tela cheia (<see cref="Full"/>), cobre a tela toda: o fundo preto meio transparente e, por cima
+	///   dele, o cabeçalho, o conteúdo ocupando o que sobra (num chão escuro, para o jogo atrás não se
+	///   misturar com o texto) e a fileira de baixo.
 	///
 	/// Tocar fora, o ✕, Esc e o botão Voltar do celular fecham (<see cref="Dismissable"/> falso deixa só
 	/// os botões de ação). Fechar não mexe em nada do jogo: quem precisa saber assina <see cref="Closed"/>.
@@ -56,24 +59,39 @@ namespace Sigilos.UI.Components
 		private readonly HBoxContainer _right = new() { Name = "Right", Alignment = BoxContainer.AlignmentMode.End };
 		private readonly Control? _anchor;
 		private readonly float _width;
+		private readonly bool _full;
 		private bool _closed;
 		private bool _dismissable = true;
 
 		/// <summary>Onde a seta encosta no painel e para onde ela aponta (coordenadas locais); nulo sem âncora.</summary>
 		private (Vector2 Base, Vector2 Tip)? _arrow;
 
-		private Dialog(string title, float width, Control? anchor, string name)
+		private Dialog(string title, float width, Control? anchor, string name, bool full = false)
 		{
 			_anchor = anchor;
 			_width = width;
+			_full = full;
 			Name = name;
-			Color = new Color(0, 0, 0, anchor == null ? 0.6f : 0.35f);
+			Color = new Color(0, 0, 0, full ? 0.5f : anchor == null ? 0.6f : 0.35f);
 			MouseFilter = MouseFilterEnum.Stop;
 			ZIndex = 80;
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
-			_panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 18));
-			_panel.CustomMinimumSize = new Vector2(width, 0);
+			if (full)
+			{
+				// Sem o couro: o próprio fundo escurecido é a janela, com a mesma margem das telas.
+				var box = new StyleBoxEmpty();
+				box.SetContentMarginAll(Layout.ScreenMargin);
+				_panel.AddThemeStyleboxOverride("panel", box);
+				_panel.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+				_scroll.SizeFlagsVertical = SizeFlags.ExpandFill;
+			}
+			else
+			{
+				_panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 18));
+				_panel.CustomMinimumSize = new Vector2(width, 0);
+			}
+
 			AddChild(_panel);
 
 			var column = new VBoxContainer { Name = "Column" };
@@ -103,7 +121,17 @@ namespace Sigilos.UI.Components
 			Body.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_scroll.AddChild(Body);
 			DragScroll.Enable(_scroll);
-			column.AddChild(_scroll);
+			if (full)
+			{
+				var sheet = new PanelContainer { Name = "Sheet", SizeFlagsVertical = SizeFlags.ExpandFill };
+				sheet.AddThemeStyleboxOverride("panel", GameTheme.Box(new Color(Palette.Inset, 0.88f), Palette.GoldDark, 1, 12, 12));
+				sheet.AddChild(_scroll);
+				column.AddChild(sheet);
+			}
+			else
+			{
+				column.AddChild(_scroll);
+			}
 
 			_actions.AddThemeConstantOverride("separation", 14);
 			column.AddChild(_actions);
@@ -158,6 +186,17 @@ namespace Sigilos.UI.Components
 			return dialog;
 		}
 
+		/// <summary>
+		/// Abre cobrindo a tela toda por cima da tela de <paramref name="from"/> (o Chat global): o conteúdo rola
+		/// no espaço que sobra entre o cabeçalho e a fileira de baixo.
+		/// </summary>
+		public static Dialog Full(Control from, string title, string name)
+		{
+			var dialog = new Dialog(title, 0, null, name, true);
+			Layout.Host(from).AddChild(dialog);
+			return dialog;
+		}
+
 		/// <summary>Janela contextual só de texto (o que antes seria uma dica), colada em <paramref name="anchor"/>.</summary>
 		public static Dialog Info(Control anchor, string title, string text, float width = 460)
 		{
@@ -197,6 +236,26 @@ namespace Sigilos.UI.Components
 			_actions.Visible = true;
 			_actions.AddChild(button);
 			return button;
+		}
+
+		/// <summary>Um controle na fileira de baixo, na ordem em que chega (o campo de texto do chat antes do Enviar).</summary>
+		public void AddFooter(Control control)
+		{
+			_actions.Visible = true;
+			_actions.AddChild(control);
+		}
+
+		/// <summary>Rola o conteúdo até <paramref name="control"/> aparecer, depois de ele se arrumar (a linha que acabou de chegar).</summary>
+		public void Reveal(Control control) => Layout.Reveal(_scroll, control);
+
+		/// <summary>O conteúdo está rolado até o fim (ou cabe sem rolar).</summary>
+		public bool AtEnd
+		{
+			get
+			{
+				var bar = _scroll.GetVScrollBar();
+				return _scroll.ScrollVertical >= bar.MaxValue - bar.Page - 4;
+			}
 		}
 
 		/// <summary>Tira os botões de ação (para quem remonta a janela).</summary>
@@ -256,7 +315,7 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		private void Fit()
 		{
-			if (!IsInsideTree() || _closed)
+			if (!IsInsideTree() || _closed || _full)
 				return;
 
 			var screen = Size;

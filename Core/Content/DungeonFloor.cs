@@ -57,6 +57,9 @@ namespace Sigilos.Core.Content
 		/// <summary>Multiplica Vida e Ataque de todos os inimigos do andar.</summary>
 		public double Scale { get; init; } = 1;
 
-		public Encounter Encounter => new(Stars, Level, Waves, Scale);
+		/// <summary>O que vence o andar: nas Masmorras, derrubar o chefe vence na hora, mesmo com lacaios em pé.</summary>
+		public VictoryCondition Victory { get; init; } = VictoryCondition.Boss;
+
+		public Encounter Encounter => new(Stars, Level, Waves, Scale, Victory);
 	}
 }

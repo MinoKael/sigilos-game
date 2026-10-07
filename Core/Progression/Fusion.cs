@@ -25,8 +25,16 @@ namespace Sigilos.Core.Progression
 		/// <summary>Quantas cópias ainda viram nível de habilidade.</summary>
 		public static int SkillUpsLeft(GameDatabase database, OwnedSummon monster)
 		{
+			var (done, total) = SkillUps(database, monster);
+			return total - done;
+		}
+
+		/// <summary>Os níveis de habilidade que o monstro já subiu e quantos dá para subir ao todo.</summary>
+		public static (int Done, int Total) SkillUps(GameDatabase database, OwnedSummon monster)
+		{
 			var skills = database.Summon(monster.SummonId).SkillsFor(monster.Awakened);
-			return Enumerable.Range(0, skills.Count).Sum(i => Math.Max(0, skills[i].MaxLevel - monster.SkillLevel(i)));
+			var done = Enumerable.Range(0, skills.Count).Sum(i => Math.Min(monster.SkillLevel(i), skills[i].MaxLevel) - 1);
+			return (done, skills.Sum(s => s.MaxLevel - 1));
 		}
 
 		public static bool CanFuse(PlayerState player, GameDatabase database, int targetId, int materialId) =>

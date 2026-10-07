@@ -36,7 +36,8 @@ namespace Sigilos.UI.Screens
 	}
 
 	/// <summary>
-	/// A janela da Batalha automática: à esquerda, a luta de agora ("4/30"), a barra dela, o tempo que
+	/// A janela da Batalha automática: à esquerda, a luta de agora pequena (<see cref="AutoBattleWatch"/>:
+	/// só o campo e os monstros; tocar abre a tela cheia, e voltar dela traz para cá), o número dela ("4/30"), a barra dela, o tempo que
 	/// falta, vitórias e derrotas, e quantas lutas fazer (dá para mudar no meio); à direita, tudo o que
 	/// rendeu até aqui — moedas, experiência, os monstros (que dá para bloquear) e as runas, que dá para
 	/// vender, melhorar ou bloquear ali mesmo sem parar nada.
@@ -48,34 +49,55 @@ namespace Sigilos.UI.Screens
 	{
 		private const float Width = 1060;
 
+		/// <summary>A largura da coluna da esquerda (e da luta pequena).</summary>
+		private const float StatusWidth = 400;
+
 		public static Dialog Open(Control from, AutoBattleRun run, PlayerState player, AutoBattleActions actions)
 		{
 			var dialog = Dialog.Open(from, T("auto.title"), Width, null, "AutoBattleDialog");
 			// Fechar não para nada: a seta diz que é voltar ao jogo, não cancelar a Batalha automática.
 			dialog.UseBackButton();
 			var clock = new AutoClock(run) { Name = "Clock" };
-			void Rebuild() => Build(dialog, run, player, actions, clock);
+			AutoBattleWatch? watch = null;
+			watch = AutoBattleWatch.Small(run, StatusWidth, () =>
+			{
+				// A tela cheia mostra a mesma luta; a pequena some enquanto isso e volta no ponto em que a luta estiver.
+				watch!.Visible = false;
+				AutoBattleWatch.Open(dialog, run).Closed += () =>
+				{
+					if (GodotObject.IsInstanceValid(watch))
+						watch.Visible = true;
+				};
+			});
+			void Rebuild() => Build(dialog, run, player, actions, clock, watch);
 			run.Changed += Rebuild;
 			dialog.Closed += () =>
 			{
 				run.Changed -= Rebuild;
-				if (!clock.IsInsideTree())
-					clock.QueueFree();
+				foreach (var kept in new Control[] { clock, watch })
+				{
+					if (!kept.IsInsideTree())
+						kept.QueueFree();
+				}
 			};
 			Rebuild();
 			return dialog;
 		}
 
-		private static void Build(Dialog dialog, AutoBattleRun run, PlayerState player, AutoBattleActions actions, AutoClock clock)
+		private static void Build(Dialog dialog, AutoBattleRun run, PlayerState player, AutoBattleActions actions, AutoClock clock, AutoBattleWatch watch)
 		{
-			if (clock.GetParent() is { } parent)
-				parent.RemoveChild(clock);
+			foreach (var kept in new Control[] { clock, watch })
+			{
+				if (kept.GetParent() is { } parent)
+					parent.RemoveChild(kept);
+			}
+
 			Layout.Clear(dialog.Body);
 			dialog.ClearActions();
 
 			var columns = Layout.Row(24).Named("Columns");
 			dialog.Body.AddChild(columns);
-			columns.AddChild(Status(run, actions, clock));
+			columns.AddChild(Status(run, actions, clock, watch));
 			columns.AddChild(Rewards(dialog, run, player, actions));
 
 			if (run.Running)
@@ -91,11 +113,13 @@ namespace Sigilos.UI.Screens
 			}
 		}
 
-		/// <summary>A coluna da esquerda: a luta de agora, o relógio, o placar e quantas lutas fazer.</summary>
-		private static Control Status(AutoBattleRun run, AutoBattleActions actions, AutoClock clock)
+		/// <summary>A coluna da esquerda: a luta de agora (pequena, enquanto roda), o relógio, o placar e quantas lutas fazer.</summary>
+		private static Control Status(AutoBattleRun run, AutoBattleActions actions, AutoClock clock, AutoBattleWatch watch)
 		{
-			var column = new VBoxContainer { Name = "Status", CustomMinimumSize = new Vector2(400, 0) };
+			var column = new VBoxContainer { Name = "Status", CustomMinimumSize = new Vector2(StatusWidth, 0) };
 			column.AddThemeConstantOverride("separation", 12);
+			if (run.Running)
+				column.AddChild(watch);
 			column.AddChild(new Label { Name = "Fight", Text = run.Title, ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart });
 
 			var count = new Label { Name = "Count", Text = $"{Math.Min(Math.Max(run.Number, run.Done), run.Runs)}/{run.Runs}", ThemeTypeVariation = GameTheme.Number, HorizontalAlignment = HorizontalAlignment.Center };
@@ -105,7 +129,7 @@ namespace Sigilos.UI.Screens
 
 			var state = run.Running ? T("auto.state_running", run.Number)
 				: run.StopReason ?? T("auto.done", run.Done);
-			var stateLabel = Layout.Text(state, width: 400).Named("State");
+			var stateLabel = Layout.Text(state, width: StatusWidth).Named("State");
 			stateLabel.HorizontalAlignment = HorizontalAlignment.Center;
 			stateLabel.AddThemeColorOverride("font_color", run.Running ? Palette.Text : run.CanResume ? Palette.Negative : Palette.Spirit);
 			column.AddChild(stateLabel);
@@ -156,7 +180,7 @@ namespace Sigilos.UI.Screens
 			}
 
 			column.AddChild(presets);
-			var mana = Layout.Text(T("auto.mana_needed", run.Mana, run.Mana * Math.Max(0, run.Runs - run.Done)), GameTheme.Faded, 400).Named("Mana");
+			var mana = Layout.Text(T("auto.mana_needed", run.Mana, run.Mana * Math.Max(0, run.Runs - run.Done)), GameTheme.Faded, StatusWidth).Named("Mana");
 			mana.HorizontalAlignment = HorizontalAlignment.Center;
 			column.AddChild(mana);
 			return column;

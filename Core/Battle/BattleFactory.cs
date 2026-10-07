@@ -45,7 +45,7 @@ namespace Sigilos.Core.Battle
 				.Select(wave => Wave(database, wave, encounter))
 				.ToList();
 
-			return new BattleSession(allies, waves, seed);
+			return new BattleSession(allies, waves, seed, encounter.Victory);
 		}
 
 		/// <summary>Separa as ativas (no nível e na versão certa) da Passiva.</summary>

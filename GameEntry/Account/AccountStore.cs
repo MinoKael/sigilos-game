@@ -11,8 +11,10 @@ namespace Sigilos.GameEntry.Account
 	/// - o id do aparelho, sorteado uma vez (o servidor reconhece "o mesmo aparelho" por ele);
 	/// - se o jogador escolheu jogar sem conta (o jogo abre direto, sem a tela de login);
 	/// - o idioma do último jogo (a tela de login sai nele, antes de haver save aberto);
+	/// - o volume geral e o da música, de 0 a 1 (são do aparelho, não do save);
 	/// - o e-mail, o nome, o id e o token de renovação de quem entrou (a senha nunca);
-	/// - por conta, o último ponto de sincronização (<see cref="SyncPoint"/>).
+	/// - por conta, o último ponto de sincronização (<see cref="SyncPoint"/>);
+	/// - quanto se jogou na conta sem o servidor desde a última sincronização (o limite sem conexão).
 	///
 	/// Com <c>-- --save=nome</c>, cada nome tem o seu arquivo e o seu id: dá para testar dois "aparelhos"
 	/// na mesma máquina.
@@ -29,6 +31,10 @@ namespace Sigilos.GameEntry.Account
 
 		public string? Language { get; set; }
 
+		public float MasterVolume { get; set; } = 1f;
+
+		public float MusicVolume { get; set; } = 1f;
+
 		public string? Email { get; set; }
 
 		/// <summary>O nome da conta (único no servidor), como veio na última entrada ou renovação.</summary>
@@ -43,6 +49,12 @@ namespace Sigilos.GameEntry.Account
 		/// guardado: fica aqui até o "Já guardei", para não se perder se o jogo fechar antes.
 		/// </summary>
 		public string? RecoveryKey { get; set; }
+
+		/// <summary>
+		/// Segundos jogados na conta sem o servidor desde a última sincronização (AccountSession.Blocked). Fica
+		/// no aparelho: fechar e abrir o jogo não zera.
+		/// </summary>
+		public double OfflineSeconds { get; set; }
 
 		/// <summary>O último ponto de sincronização, pelo id da conta.</summary>
 		public Dictionary<string, SyncPoint> Synced { get; set; } = new();

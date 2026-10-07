@@ -65,6 +65,9 @@ namespace Sigilos.UI.Screens
 			_collect = GameButton.Of(T("hub.collect"), () => CollectRequested?.Invoke(), ButtonKind.Primary, "collect", 50).Named("Collect");
 		}
 
+		/// <summary>A constelação: no Santuário, o balão do chat fica no canto dela (<see cref="ChatBubble.Dock"/>).</summary>
+		public Control ChatCorner => _constellation;
+
 		public event Action<Destination>? Requested;
 		public event Action? ConfigRequested;
 		public event Action? CollectRequested;
@@ -87,8 +90,6 @@ namespace Sigilos.UI.Screens
 			// O correio colado nas moedas, no mesmo espaçamento entre as cápsulas.
 			var corner = Layout.Row(6).Named("Corner");
 			corner.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-			// O aviso da Batalha automática fica à esquerda do correio, não por cima dele.
-			corner.AddToGroup(AutoBattleBadge.CornerGroup);
 			corner.AddChild(MailButton());
 			corner.AddChild(_currencies);
 			top.AddChild(corner);
@@ -315,17 +316,19 @@ namespace Sigilos.UI.Screens
 				SizeFlagsHorizontal = SizeFlags.ExpandFill,
 				SizeFlagsVertical = SizeFlags.ShrinkEnd,
 			});
-			var places = new[]
+			// Amigos não depende da Campanha: está sempre lá (sem conta, a janela diz por quê).
+			var places = new (Destination, Feature?)[]
 			{
 				(Destination.Monsters, Feature.Monsters), (Destination.Runes, Feature.Runes), (Destination.Teams, Feature.Teams),
-				(Destination.Shop, Feature.Shop), (Destination.Grimoire, Feature.Grimoire), (Destination.Compendium, Feature.Compendium),
+				(Destination.Shop, Feature.Shop), (Destination.Friends, null), (Destination.Grimoire, Feature.Grimoire),
+				(Destination.Compendium, Feature.Compendium),
 			};
 			foreach (var (destination, feature) in places)
 			{
-				if (!Features.IsOpen(_player, _database, feature))
+				if (feature is { } locked && !Features.IsOpen(_player, _database, locked))
 					continue;
 				var button = TileButton.Nav(Destinations.Name(destination), Destinations.Icon(destination)).Named(destination.ToString());
-				button.Highlight = Features.IsNew(_player, _database, feature);
+				button.Highlight = feature is { } opened && Features.IsNew(_player, _database, opened);
 				button.Pressed += () => Requested?.Invoke(destination);
 				row.AddChild(button);
 			}

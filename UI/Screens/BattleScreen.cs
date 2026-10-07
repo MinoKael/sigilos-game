@@ -40,6 +40,11 @@ namespace Sigilos.UI.Screens
 	/// Na luta de treino, o <see cref="TutorialCoach"/> fala no alto: a tela espera as explicações dele
 	/// antes de cada vez do jogador, acende só as habilidades e os alvos que ele deixa e lhe mostra cada
 	/// evento; o Automático fica desligado até a última lição.
+	///
+	/// Para ver a Batalha automática (<see cref="AutoBattleFight"/>), a tela só assiste: não pede turno nem
+	/// decide nada, mostra os momentos da luta conforme chegam no relógio dela. Pequena, na janela da
+	/// Batalha automática, é só o campo e os monstros; na tela cheia, tem o cabeçalho, a ordem de turno,
+	/// Efeitos e a seta de voltar no lugar da pausa.
 	/// </summary>
 	public partial class BattleScreen : Control
 	{
@@ -47,6 +52,18 @@ namespace Sigilos.UI.Screens
 		private readonly string _title;
 		private readonly TutorialCoach? _coach;
 		private readonly Dictionary<BattleUnit, UnitView> _views = new();
+
+		/// <summary>A luta da Batalha automática que a tela assiste; nula na luta jogada.</summary>
+		private readonly AutoBattleFight? _watch;
+
+		/// <summary>Com o que fica em volta do campo (cabeçalho, ordem de turno, botões); só o campo na vista pequena.</summary>
+		private readonly bool _hud = true;
+
+		/// <summary>A seta de voltar da tela cheia que assiste.</summary>
+		private readonly Action? _back;
+
+		/// <summary>O pedaço da luta assistida que já estava no campo quando a tela começou a olhar.</summary>
+		private int _joined;
 
 		/// <summary>Quantos próximos a ordem de turno mostra.</summary>
 		private const int TurnsShown = 6;
@@ -100,6 +117,21 @@ namespace Sigilos.UI.Screens
 			_focusBoss = focusBoss;
 		}
 
+		/// <summary>
+		/// Assiste a luta de agora da Batalha automática, na velocidade dela. Com <paramref name="back"/>, na
+		/// tela cheia (com a seta de voltar); sem, só o campo e os monstros.
+		/// </summary>
+		public BattleScreen(AutoBattleFight fight, string title, Action? back)
+		{
+			_session = fight.Session;
+			_title = title;
+			_watch = fight;
+			_auto = true;
+			_hud = back != null;
+			_back = back;
+			_speedIndex = BattlePace.Speeds.Count - 1;
+		}
+
 		/// <summary>A luta acabou: verdadeiro na vitória.</summary>
 		public event Action<bool>? Finished;
 
@@ -125,12 +157,14 @@ namespace Sigilos.UI.Screens
 
 		public override void _Ready()
 		{
-			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			// A vista pequena tem o tamanho e a escala de quem a mostra.
+			if (_hud)
+				SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background(_arena, ring: false));
 
 			// O campo ocupa a tela toda, menos a faixa da ordem de turno à esquerda.
 			_arena.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			_arena.OffsetLeft = ArenaLeft;
+			_arena.OffsetLeft = _hud ? ArenaLeft : Layout.ScreenMargin;
 			_arena.OffsetRight = -Layout.ScreenMargin;
 			_arena.OffsetTop = 16;
 			_arena.OffsetBottom = -16;
@@ -147,10 +181,20 @@ namespace Sigilos.UI.Screens
 			AddChild(_bossBar);
 			AddChild(Pin(_order, LayoutPreset.TopLeft));
 			_order.OffsetTop = _order.OffsetBottom = 104;
-            AddChild(Pin(SigilButton.Of("pause", OpenPause, 56, SigilShape.Square), LayoutPreset.TopRight));
+            AddChild(Pin(_back != null ? new BackButton(_back) { Name = "Back" } : SigilButton.Of("pause", OpenPause, 56, SigilShape.Square), LayoutPreset.TopRight));
 			AddChild(Pin(Controls(), LayoutPreset.BottomLeft));
 			AddChild(Pin(_actions, LayoutPreset.BottomRight));
 			AddChild(EffectsPanel());
+			if (_watch != null)
+			{
+				// A vista pequena é só o campo e os monstros.
+				if (!_hud)
+					foreach (var hud in GetChildren().OfType<Control>().Where(child => child != _arena && child is not Backdrop))
+						hud.Visible = false;
+				Join();
+				return;
+			}
+
 			if (_coach != null)
 			{
 				// A placa do Mestre fica no quarto de cima à esquerda do campo, o único sempre vazio: os
@@ -195,12 +239,18 @@ namespace Sigilos.UI.Screens
 				Elapsed += delta;
 		}
 
-		public override void _ExitTree() => _closed = true;
+		public override void _ExitTree()
+		{
+			_closed = true;
+			if (_watch != null)
+				_watch.Played -= Watch;
+		}
 
 		/// <summary>Esc e o Voltar do celular pausam — depois que as janelas por cima (resumo, habilidade) fecharam.</summary>
 		public override void _UnhandledInput(InputEvent @event)
 		{
-			if (!@event.IsActionPressed("ui_cancel"))
+			// Assistindo, não há pausa: a tela cheia volta pela seta (que também atende o Esc).
+			if (_watch != null || !@event.IsActionPressed("ui_cancel"))
 				return;
 			GetViewport().SetInputAsHandled();
 			OpenPause();
@@ -256,6 +306,8 @@ namespace Sigilos.UI.Screens
 				ShowSpeed();
 			};
 			row.AddChild(_speedButton);
+			// Assistindo a Batalha automática, o automático e a velocidade são os dela.
+			_autoButton.Visible = _speedButton.Visible = _watch == null;
 
 			_effectsButton.Text = T("battle.effects");
 			_effectsButton.Toggled += on =>
@@ -461,8 +513,8 @@ namespace Sigilos.UI.Screens
 					return;
 				}
 
-				// Inimigo: marca (ou desmarca) o foco. Aliado: o resumo, como no toque longo.
-				if (v.Unit.Side == Side.Enemies)
+				// Inimigo: marca (ou desmarca) o foco. Aliado (ou qualquer um, assistindo): o resumo, como no toque longo.
+				if (v.Unit.Side == Side.Enemies && _watch == null)
 					ToggleFocus(v);
 				else
 					MonsterSummary.Open(v, v.Unit);
@@ -642,28 +694,62 @@ namespace Sigilos.UI.Screens
 					return;
 
 				var seconds = beat.Seconds / Speed;
-				switch (beat.Kind)
-				{
-					case BeatKind.Approach when beat.Actor != null && _views.TryGetValue(beat.Actor, out var actor):
-						_striker = actor;
-						_arena.Approach(actor, (beat.Targets ?? Array.Empty<BattleUnit>()).Where(_views.ContainsKey).Select(unit => (Control)_views[unit]).ToList(), seconds);
-						break;
-					case BeatKind.Return when beat.Actor != null && _views.TryGetValue(beat.Actor, out var returning):
-						_arena.Return(returning, seconds);
-						_striker = null;
-						break;
-					case BeatKind.Volley when _striker != null && beat.Events.Select(HitTarget).FirstOrDefault(unit => unit != null) is { } first && _views.TryGetValue(first, out var struck):
-						_arena.Bump(_striker, struck, seconds);
-						break;
-				}
-
-				foreach (var battleEvent in beat.Events)
-					Show(battleEvent);
+				ShowBeat(beat, seconds);
 				if (seconds > 0)
 					await ToSignal(GetTree().CreateTimer(seconds, processAlways: false), SceneTreeTimer.SignalName.Timeout);
 			}
 
 			RefreshEffects();
+		}
+
+		/// <summary>Um momento na tela: a corrida, o tranco ou a volta de quem ataca, e os eventos dele.</summary>
+		private void ShowBeat(Beat beat, double seconds)
+		{
+			switch (beat.Kind)
+			{
+				case BeatKind.Approach when beat.Actor != null && _views.TryGetValue(beat.Actor, out var actor):
+					_striker = actor;
+					_arena.Approach(actor, (beat.Targets ?? Array.Empty<BattleUnit>()).Where(_views.ContainsKey).Select(unit => (Control)_views[unit]).ToList(), seconds);
+					break;
+				case BeatKind.Return when beat.Actor != null && _views.TryGetValue(beat.Actor, out var returning):
+					_arena.Return(returning, seconds);
+					_striker = null;
+					break;
+				case BeatKind.Volley when _striker != null && beat.Events.Select(HitTarget).FirstOrDefault(unit => unit != null) is { } first && _views.TryGetValue(first, out var struck):
+					_arena.Bump(_striker, struck, seconds);
+					break;
+			}
+
+			foreach (var battleEvent in beat.Events)
+				Show(battleEvent);
+		}
+
+		/// <summary>
+		/// Começa a assistir a Batalha automática: o campo como a luta está agora (a onda, a Vida, os efeitos),
+		/// e dali em diante os momentos que chegam. O que ainda falta mostrar do pedaço de agora já está no
+		/// estado, então fica de fora (<see cref="AutoBattleFight.Steps"/>).
+		/// </summary>
+		private void Join()
+		{
+			_joined = _watch!.Steps;
+			if (_joined > 0)
+				ShowWave(_session.Wave, _session.WaveCount, _session.Enemies);
+			foreach (var view in _views.Values)
+				view.Refresh();
+			if (_hud)
+				_order.Show(_session.PredictOrder(TurnsShown));
+			if (_session.IsOver)
+				_banner.Text = _session.Victory == true ? T("battle.victory") : T("battle.defeat");
+			_watch.Played += Watch;
+		}
+
+		private void Watch(Beat beat, int step)
+		{
+			if (step <= _joined || _closed || !IsInsideTree())
+				return;
+			ShowBeat(beat, AutoBattleFight.Seconds(beat));
+			if (beat.Kind == BeatKind.Return)
+				RefreshEffects();
 		}
 
 		private static BattleUnit? HitTarget(BattleEvent battleEvent) => battleEvent switch
@@ -674,6 +760,34 @@ namespace Sigilos.UI.Screens
 			_ => null,
 		};
 
+		/// <summary>Os inimigos de uma onda no campo, com a barra e o anúncio do chefe, se ela tiver um.</summary>
+		private void ShowWave(int number, int count, IReadOnlyList<BattleUnit> wave)
+		{
+			SetFocus(null);
+			foreach (var old in _views.Keys.Where(u => u.Side == Side.Enemies).ToList())
+				_views.Remove(old);
+			var enemies = wave.Select((enemy, i) => (Control)ViewFor(enemy, $"Enemy{i + 1}")).ToList();
+			var boss = wave.FirstOrDefault(enemy => enemy.IsBoss);
+			// Os inimigos do alto do arco descem para os efeitos deles não ficarem embaixo da barra do chefe.
+			_arena.Ceiling = boss != null && _hud ? _bossBar.OffsetTop + _bossBar.GetCombinedMinimumSize().Y + 4 - _arena.OffsetTop : 0;
+			_arena.SetEnemies(enemies, boss != null ? _views[boss] : null);
+			_wave = $"{number}/{count}";
+			RefreshCounters();
+			if (boss != null)
+			{
+				// A onda do chefe: a barra grande no alto e o anúncio em vermelho no meio do círculo.
+				_bossBar.Track(_views[boss]);
+				_banner.Text = T("battle.boss_wave", number, boss.Name);
+				_banner.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.2f));
+			}
+			else
+			{
+				_bossBar.Clear();
+				_banner.Text = T("battle.wave_banner", number);
+				_banner.AddThemeColorOverride("font_color", Palette.Text);
+			}
+		}
+
 		/// <summary>Aplica um evento na tela. Quanto esperar depois é do <see cref="BattlePace"/>.</summary>
 		private void Show(BattleEvent battleEvent)
 		{
@@ -681,30 +795,7 @@ namespace Sigilos.UI.Screens
 			switch (battleEvent)
 			{
 				case WaveStarted wave:
-					SetFocus(null);
-					foreach (var old in _views.Keys.Where(u => u.Side == Side.Enemies).ToList())
-						_views.Remove(old);
-					var enemies = wave.Enemies.Select((enemy, i) => (Control)ViewFor(enemy, $"Enemy{i + 1}")).ToList();
-					var boss = wave.Enemies.FirstOrDefault(enemy => enemy.IsBoss);
-					// Os inimigos do alto do arco descem para os efeitos deles não ficarem embaixo da barra do chefe.
-					_arena.Ceiling = boss != null ? _bossBar.OffsetTop + _bossBar.GetCombinedMinimumSize().Y + 4 - _arena.OffsetTop : 0;
-					_arena.SetEnemies(enemies, boss != null ? _views[boss] : null);
-					_wave = $"{wave.Wave}/{wave.WaveCount}";
-					RefreshCounters();
-					if (boss != null)
-					{
-						// A onda do chefe: a barra grande no alto e o anúncio em vermelho no meio do círculo.
-						_bossBar.Track(_views[boss]);
-						_banner.Text = T("battle.boss_wave", wave.Wave, boss.Name);
-						_banner.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.2f));
-					}
-					else
-					{
-						_bossBar.Clear();
-						_banner.Text = T("battle.wave_banner", wave.Wave);
-						_banner.AddThemeColorOverride("font_color", Palette.Text);
-					}
-
+					ShowWave(wave.Wave, wave.WaveCount, wave.Enemies);
 					return;
 
 				case TurnStarted turn:

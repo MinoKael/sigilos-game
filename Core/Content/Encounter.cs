@@ -4,7 +4,8 @@ namespace Sigilos.Core.Content
 {
 	/// <summary>
 	/// O que a batalha precisa de uma fase ou de um andar de Masmorra: estrelas e nível dos inimigos, as
-	/// ondas e um multiplicador de Vida e Ataque dos inimigos (os andares fundos passam do 6★ nível 40).
+	/// ondas, um multiplicador de Vida e Ataque dos inimigos (os andares fundos passam do 6★ nível 40) e o
+	/// que vence a luta (<see cref="VictoryCondition"/>).
 	/// </summary>
-	public sealed record Encounter(int Stars, int Level, IReadOnlyList<IReadOnlyList<StageEnemy>> Waves, double Scale = 1);
+	public sealed record Encounter(int Stars, int Level, IReadOnlyList<IReadOnlyList<StageEnemy>> Waves, double Scale = 1, VictoryCondition Victory = VictoryCondition.AllWaves);
 }

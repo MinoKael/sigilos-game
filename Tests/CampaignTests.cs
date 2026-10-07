@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Summoning;
+using Sigilos.UI;
 
 namespace Sigilos.Tests
 {
@@ -26,6 +28,31 @@ namespace Sigilos.Tests
 			Assert.Equal(a.Victory, b.Victory, "resultado");
 			Assert.Near(a.Time, b.Time, "duração");
 			Assert.Near(a.Allies.Sum(u => u.Health), b.Allies.Sum(u => u.Health), "Vida que sobrou");
+		}
+
+		/// <summary>
+		/// A luta que a janela e a tela cheia da Batalha automática mostram é a que ela resolveu: os mesmos
+		/// eventos, na mesma ordem, inteira dentro do tempo que a Batalha automática espera.
+		/// </summary>
+		[Test]
+		private static void WatchedAutoBattleIsTheFightItResolved()
+		{
+			var database = TestData.LoadReal();
+			var team = Team(TestData.PlayerWith(TestData.TypicalTeam));
+			var encounter = database.Dungeon("golem").Floor(3).Encounter;
+			var log = new List<BattleEvent>();
+			var won = AutoBattle.Run(BattleFactory.Create(database, team, encounter, 31), log, focusBoss: true);
+			var seconds = BattlePace.Seconds(log, BattlePace.AutoBattleFactor);
+
+			var fight = new AutoBattleFight(BattleFactory.Create(database, team, encounter, 31), focusBoss: true);
+			var shown = new List<BattleEvent>();
+			fight.Played += (beat, _) => shown.AddRange(beat.Events);
+			for (var elapsed = 0.0; elapsed < seconds; elapsed += 1 / 60.0)
+				fight.Advance(elapsed);
+			fight.Advance(seconds);
+
+			Assert.Equal(won, fight.Session.Victory == true, "resultado");
+			Assert.Equal(string.Join(",", log.Select(e => e.GetType().Name)), string.Join(",", shown.Select(e => e.GetType().Name)), "eventos mostrados");
 		}
 
 		[Test]

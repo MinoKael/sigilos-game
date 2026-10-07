@@ -129,6 +129,20 @@ namespace Sigilos.GameEntry.Account
 			return again.Ok ? await Send(method, path, body, _accessToken) : again;
 		}
 
+		/// <summary>
+		/// Um token de acesso válido para quem fala com o servidor fora do HTTP (o Chat global), renovado antes
+		/// se venceu; nulo fora da conta ou se a renovação falhou.
+		/// </summary>
+		public async Task<string?> Token()
+		{
+			if (RefreshToken == null)
+				return null;
+			if (_accessToken != null && DateTimeOffset.UtcNow < _accessExpires)
+				return _accessToken;
+			var refreshed = await Refresh();
+			return refreshed.Ok ? _accessToken : null;
+		}
+
 		private async Task<ApiResponse> RefreshOnce()
 		{
 			if (RefreshToken == null)

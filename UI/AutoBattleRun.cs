@@ -65,6 +65,9 @@ namespace Sigilos.UI
 		/// <summary>Monstros que caíram (a Campanha às vezes solta um).</summary>
 		public List<SummonResult> Monsters { get; } = new();
 
+		/// <summary>A luta em andamento, para ver (a janela e a tela cheia); nula com a corrida parada ou acabada.</summary>
+		public AutoBattleFight? Fight { get; set; }
+
 		/// <summary>Quanto já passou da luta em andamento, e quanto ela leva na tela.</summary>
 		public double Elapsed { get; set; }
 

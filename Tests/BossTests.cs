@@ -39,6 +39,42 @@ namespace Sigilos.Tests
 			Assert.True(session.HasBoss, "a luta sabe que tem chefe (a pausa oferece o foco)");
 		}
 
+		/// <summary>Um herói que derruba o chefe num golpe, ao lado de um lacaio que não cai.</summary>
+		private static (BattleSession Session, BattleUnit Minion) BossDownFirst(VictoryCondition victory)
+		{
+			var hero = TestData.Unit("heroi", Side.Allies, speed: 200, attack: 5000);
+			var minion = TestData.Unit("lacaio", Side.Enemies, health: 1e9);
+			var boss = TestData.Unit("chefe", Side.Enemies, health: 100, boss: true);
+			var session = TestData.Session(new[] { hero }, new[] { minion, boss }, victory: victory);
+			session.Start();
+			TestData.RunUntilTurnOf(session, hero);
+			session.Act(new UnitAction(0, boss));
+			return (session, minion);
+		}
+
+		[Test]
+		private static void BossDownWinsTheDungeonAtOnce()
+		{
+			var (session, minion) = BossDownFirst(VictoryCondition.Boss);
+			Assert.True(session.Victory == true, "Masmorra: o chefe caiu, a luta está ganha");
+			Assert.True(minion.IsAlive, "mesmo com o lacaio em pé");
+		}
+
+		[Test]
+		private static void BossDownIsNotEnoughInTheCampaign()
+		{
+			var (session, _) = BossDownFirst(VictoryCondition.AllWaves);
+			Assert.False(session.IsOver, "Campanha: com o lacaio em pé, a luta segue");
+		}
+
+		[Test]
+		private static void DungeonFloorsWinOnTheBoss()
+		{
+			var database = TestData.LoadReal();
+			Assert.True(database.Dungeons.All(d => d.Floors.All(f => f.Encounter.Victory == VictoryCondition.Boss)), "todo andar de Masmorra vence no chefe");
+			Assert.Equal(VictoryCondition.AllWaves, database.Stage(1).Encounter.Victory, "a fase da Campanha, em todas as ondas");
+		}
+
 		[Test]
 		private static void AutoFocusesTheBossOnlyWhenAsked()
 		{

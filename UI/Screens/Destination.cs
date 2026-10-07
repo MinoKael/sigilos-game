@@ -16,6 +16,9 @@ namespace Sigilos.UI.Screens
 		Compendium,
 		Grimoire,
 
+		/// <summary>A janela dos amigos (só a conta conectada tem).</summary>
+		Friends,
+
 		/// <summary>A escolha de batalha: Campanha, Masmorras e o que ainda vem.</summary>
 		Map,
 	}
@@ -34,6 +37,7 @@ namespace Sigilos.UI.Screens
 			Destination.Shop => "shop",
 			Destination.Compendium => "compendium",
 			Destination.Grimoire => "grimoire",
+			Destination.Friends => "friends",
 			_ => "fight",
 		};
 
