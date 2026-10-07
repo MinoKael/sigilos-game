@@ -15,7 +15,7 @@ namespace Sigilos.Core.Social
 	/// <summary>Invocou um monstro de 5★: a variante (o id do catálogo).</summary>
 	public sealed record SummonFeat(string SummonId) : Feat;
 
-	/// <summary>Levou uma runa a +15: o conjunto, o espaço, as estrelas e o atributo principal (sem os subatributos).</summary>
+	/// <summary>Levou uma runa a +15: o conjunto, o espaço, as estrelas, o atributo principal e os subatributos (sem o inato).</summary>
 	public sealed record RuneFeat(RuneSet Set, int Slot, int Grade, RuneStat Main, List<RuneSubstat> Substats) : Feat
 	{
 		/// <summary>Uma runa de mostruário com o que o feito conta, em +15.</summary>

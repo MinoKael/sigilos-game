@@ -6,6 +6,7 @@ using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
+using Sigilos.Core.Social;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
 
@@ -41,8 +42,11 @@ namespace Sigilos.UI
 		public static string Name(RuneSort sort) => T($"filter.order.{sort}");
 		public static string Name(MonsterSort sort) => T($"filter.monster_order.{sort}");
 
+		/// <summary>O feito do Chat global numa frase: "Fulano conseguiu um novo monstro 5★!".</summary>
+		public static string Describe(Feat feat, string by) => T(feat is RuneFeat ? "chat.feat_rune" : "chat.feat_summon", by);
+
 		/// <summary>"30 Mana", "10 Pergaminhos", "1 Pergaminho".</summary>
-		public static string Amount(ShopItem item, int amount) => item == ShopItem.Scrolls ? Scrolls(amount) : T($"shop.item.{item}", amount);
+		public static string Amount(ShopItem item, int amount) => item == ShopItem.Scrolls ? Scrolls(amount) : T($"shop.item.{item}", Number(amount));
 
 		/// <summary>Por que a luta não começou, com o custo em Mana dela.</summary>
 		public static string Refusal(EntryProblem problem, int mana) => T($"entry.{problem}", mana, Core.Player.RuneInventory.Capacity);
@@ -172,14 +176,22 @@ namespace Sigilos.UI
 			_ => number.ToString(Culture),
 		};
 
-		public static string Scrolls(int count) => count == 1 ? T("currency.scroll") : T("currency.scrolls", count);
+		public static string Scrolls(int count) => count == 1 ? T("currency.scroll") : T("currency.scrolls", Number(count));
 
 		public static string Turns(int turns) => turns == 1 ? T("turns.one") : T("turns.many", turns);
 
 		public static string Percent(double fraction) => string.Format(Culture, "{0:0.#}%", fraction * 100);
 
-		/// <summary>O número inteiro, sem arredondar, com o separador de milhar do idioma: 12345 → 12.345 (12,345 em inglês).</summary>
-		public static string Number(int value) => value.ToString("N0", Culture);
+		/// <summary>
+		/// O número com o separador de milhar do idioma: 12345 → 12.345 (12,345 em inglês). Só de um milhão para
+		/// cima abrevia, em milhões com três casas, cortando o resto (nunca mostra mais do que o jogador tem):
+		/// 1167890 → 1,167M (1.167M em inglês).
+		/// </summary>
+		public static string Number(int value) => value is >= Million or <= -Million
+			? $"{(value / 1000 / 1000m).ToString("N3", Culture)}M"
+			: value.ToString("N0", Culture);
+
+		private const int Million = 1_000_000;
 
 		// Termos e Glifos --------------------------------------------------------------------------
 

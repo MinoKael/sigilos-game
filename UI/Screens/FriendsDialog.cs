@@ -50,7 +50,7 @@ namespace Sigilos.UI.Screens
 			_name.TextChanged += _ => RefreshInvite();
 			_name.TextSubmitted += _ => Invite();
 			invite.AddChild(_name);
-			_invite = GameButton.Of(T("friends.invite"), Invite, ButtonKind.Primary).Wide(ActionWidth).Named("Send");
+			_invite = Fixed(GameButton.Of(T("friends.invite"), Invite, ButtonKind.Primary)).Named("Send");
 			invite.AddChild(_invite);
 			_dialog.Body.AddChild(invite);
 
@@ -142,7 +142,7 @@ namespace Sigilos.UI.Screens
 		{
 			var color = friend.Online ? Palette.Spirit : Palette.TextFaded;
 			var (panel, row) = Row(friend, T(friend.Online ? "friends.online" : "friends.away"), color, presence: true);
-			var remove = GameButton.Of(T("friends.remove"), () => { }, height: ActionHeight).Wide(ActionWidth).Named("Remove");
+			var remove = Fixed(GameButton.Of(T("friends.remove"), () => { }, height: ActionHeight)).Named("Remove");
 			remove.Pressed += () => Dialog.Confirm(remove, T("friends.remove_title"), T("friends.remove_confirm", friend.Name), T("friends.remove"), () =>
 			{
 				Lock(row);
@@ -187,11 +187,18 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>Um botão da linha: tocado, trava a linha inteira (a resposta do servidor refaz a lista).</summary>
 		private GameButton Action(HBoxContainer row, string text, Action pressed, ButtonKind kind = ButtonKind.Secondary) =>
-			GameButton.Of(text, () =>
+			Fixed(GameButton.Of(text, () =>
 			{
 				Lock(row);
 				pressed();
-			}, kind, height: ActionHeight).Wide(ActionWidth);
+			}, kind, height: ActionHeight));
+
+		/// <summary>Na largura dele, à direita: sozinho, o GameButton se estica e divide a linha com o nome.</summary>
+		private static GameButton Fixed(GameButton button)
+		{
+			button.Wide(ActionWidth).SizeFlagsHorizontal = Control.SizeFlags.ShrinkEnd;
+			return button;
+		}
 
 		/// <summary>A linha espera o servidor: os botões travam e o aviso da ação anterior sai.</summary>
 		private void Lock(HBoxContainer row)

@@ -280,10 +280,10 @@ namespace Sigilos.GameEntry.Account
 				ConnectionChanged?.Invoke();
 		}
 
-		/// <summary>Cria a conta (com o convite e o nome) e já entra nela.</summary>
 		/// <summary>Esqueci a senha: troca a senha com a chave de recuperação da conta.</summary>
 		public Task<ApiResponse> ResetPassword(string email, string recoveryKey, string password) => _auth.ResetPassword(email.Trim(), recoveryKey.Trim(), password);
 
+		/// <summary>Cria a conta (com o convite e o nome) e já entra nela.</summary>
 		public async Task<ApiResponse> Register(string email, string password, string invite, string name)
 		{
 			var response = await _auth.Register(email.Trim(), password, invite.Trim(), name);

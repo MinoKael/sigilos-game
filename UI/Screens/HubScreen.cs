@@ -289,7 +289,7 @@ namespace Sigilos.UI.Screens
 			_battle.Pressed += () => Requested?.Invoke(Destination.Map);
 			column.AddChild(_battle);
 
-			_summon = new TileButton(T("destination.Summon"), T("hub.summon_detail", _player.Scrolls), Art.Icon("summon"), new Vector2(380, 130), ButtonKind.Secondary, horizontal: true) { Name = "Summon" };
+			_summon = new TileButton(T("destination.Summon"), T("hub.summon_detail", Texts.Number(_player.Scrolls)), Art.Icon("summon"), new Vector2(380, 130), ButtonKind.Secondary, horizontal: true) { Name = "Summon" };
 			_summon.Pressed += () => Requested?.Invoke(Destination.Summon);
 			column.AddChild(_summon);
 			return column;

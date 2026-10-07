@@ -82,6 +82,8 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
 | `POST /mail/{id}/claim` | — | 204 (repetir não faz mal); 404 se a carta não é da conta |
 | `POST /admin/mail` | cabeçalho `X-Admin-Key`; `to` (nome, e-mail ou `*` para todas), `title`, `text`, `rewards`, `expiresInDays` | 201 com o id; 401 sem a chave; 400 `invalid_mail` ou `invalid_reward`; 404 `user_not_found` |
 | `GET /admin/mail`, `DELETE /admin/mail/{id}` | cabeçalho `X-Admin-Key` | as cartas enviadas, com quantas contas coletaram; retirar uma carta |
+| `GET /chat` (WebSocket) | token de acesso no cabeçalho | o Chat global ao vivo: falas e feitos, repassados a todos com o nome da conta; nada fica guardado |
+| `GET /friends`, `POST /friends/requests`, `POST /friends/{id}/accept`, `DELETE /friends/{id}` | nome da conta (no convite) | amigos e convites (até 50, contando os enviados); de amigo, se está jogando |
 | `GET /health` | — | 200, para um monitor externo |
 
 **A trava fica no servidor**, que é quem decide:
@@ -133,6 +135,8 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
   ponto de sincronização. Gravar sem mudar nada não conta como mudança.
 - `AccountStore`: o arquivo da conta no aparelho.
 - `AccountSession`: o nó que junta tudo, com o batimento e o envio a cada 60 s.
+- `ChatLink`: a conexão do Chat global, aberta com a conta conectada e reaberta no batimento se cair.
+- `CloudFriends`: a lista de amigos e os convites.
 
 O fluxo, no `GameRoot`:
 1. **Abrir o jogo.**

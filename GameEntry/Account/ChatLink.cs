@@ -3,10 +3,12 @@ using Sigilos.Core.Runes;
 using Sigilos.Core.Social;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +27,8 @@ namespace Sigilos.GameEntry.Account
 
 		private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(15);
 
-		private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
+		/// <summary>Os enums vão e voltam pelo nome, como o conjunto e o principal: o servidor confere o nome.</summary>
+		private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter(null, false) } };
 
 		private readonly Uri _address;
 		private readonly Func<Task<string?>> _token;
@@ -127,7 +130,7 @@ namespace Sigilos.GameEntry.Account
 		public static string Write(Feat feat) => feat switch
 		{
 			SummonFeat summon => JsonSerializer.Serialize(new { type = "feat", feat = "summon", summon = summon.SummonId }, Json),
-			RuneFeat rune => JsonSerializer.Serialize(new { type = "feat", feat = "rune", set = rune.Set.ToString(), slot = rune.Slot, grade = rune.Grade, main = rune.Main.ToString(), rune.Substats }, Json),
+			RuneFeat rune => JsonSerializer.Serialize(new { type = "feat", feat = "rune", set = rune.Set.ToString(), slot = rune.Slot, grade = rune.Grade, main = rune.Main.ToString(), substats = rune.Substats.Select(s => new { s.Stat, s.Rolls, s.Grind, s.Enchanted }) }, Json),
 			_ => throw new ArgumentOutOfRangeException(nameof(feat), feat, null),
 		};
 
@@ -175,8 +178,8 @@ namespace Sigilos.GameEntry.Account
 			"summon" when Text(message, "summon") is { Length: > 0 } summon => new SummonFeat(summon),
 			"rune" when Name<RuneSet>(message, "set") is { } set && Name<RuneStat>(message, "main") is { } main &&
 			            Number(message, "slot") is { } slot and >= 1 and <= RuneRules.Slots &&
-                        Number(message, "grade") is { } grade and >= 1 and <= RuneRules.MaxGrade &&
-			            List<RuneSubstat>(message, "substats") is { } substats  =>
+			            Number(message, "grade") is { } grade and >= 1 and <= RuneRules.MaxGrade &&
+			            Substats(message) is { } substats =>
 				new RuneFeat(set, slot, grade, main, substats),
 			_ => null,
 		};
@@ -250,7 +253,27 @@ namespace Sigilos.GameEntry.Account
 		private static T? Name<T>(JsonElement message, string property) where T : struct, Enum =>
 			Text(message, property) is { } name && Enum.TryParse<T>(name, false, out var value) && Enum.IsDefined(value) && value.ToString() == name ? value : null;
 
-        private static List<T>? List<T>(JsonElement message, string property) =>
-			message.TryGetProperty(property, out var value) && value.ValueKind == JsonValueKind.Array ? value.Deserialize<List<T>>() : null;
-    }
+		/// <summary>
+		/// Os subatributos do feito de runa. Sem eles (um servidor que ainda não os repassa), a runa vem sem; nulo se
+		/// vieram estragados (subatributo que este jogo não conhece, sorteio vazio, mais de quatro).
+		/// </summary>
+		private static List<RuneSubstat>? Substats(JsonElement message)
+		{
+			if (!message.TryGetProperty("substats", out var value))
+				return new List<RuneSubstat>();
+
+			try
+			{
+				var substats = value.Deserialize<List<RuneSubstat>>(Json);
+				return substats is { Count: <= RuneRules.MaxSubstats } &&
+				       substats.TrueForAll(s => s is { Rolls: not null, Original: null } && Enum.IsDefined(s.Stat) && s.Rolls.TrueForAll(r => r != null))
+					? substats
+					: null;
+			}
+			catch (JsonException)
+			{
+				return null;
+			}
+		}
+	}
 }

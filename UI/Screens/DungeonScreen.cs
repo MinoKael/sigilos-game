@@ -207,7 +207,7 @@ namespace Sigilos.UI.Screens
 			info.AddChild(rarities);
 
 			var chips = Layout.Flow(6).Named("Rewards");
-			chips.AddChild(Layout.Labeled("essence", floor.Essence.ToString(), T("currency.essence")));
+			chips.AddChild(Layout.Labeled("essence", Texts.Number(floor.Essence), T("currency.essence")));
 			chips.AddChild(Layout.Labeled("level_max", floor.Experience.ToString(), T("reward.experience")).Named("Experience"));
 			if (floor.ScrollChance > 0)
 				chips.AddChild(Layout.Labeled("scroll", Texts.Percent(floor.ScrollChance / 100), T("dungeons.scroll_chance")).Named("Scroll"));

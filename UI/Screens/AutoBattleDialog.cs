@@ -195,11 +195,11 @@ namespace Sigilos.UI.Screens
 
 			var totals = Layout.Flow(8).Named("Totals");
 			totals.AddChild(Layout.Labeled("mana", $"−{run.ManaSpent}", T("currency.mana")).Named("Mana"));
-			totals.AddChild(Layout.Labeled("essence", $"+{run.Essence}", T("currency.essence")).Named("Essence"));
+			totals.AddChild(Layout.Labeled("essence", $"+{Texts.Number(run.Essence)}", T("currency.essence")).Named("Essence"));
 			if (run.Gold > 0)
-				totals.AddChild(Layout.Labeled("gold", $"+{run.Gold}", T("currency.gold")).Named("Gold"));
+				totals.AddChild(Layout.Labeled("gold", $"+{Texts.Number(run.Gold)}", T("currency.gold")).Named("Gold"));
 			if (run.Scrolls > 0)
-				totals.AddChild(Layout.Labeled("scroll", $"+{run.Scrolls}", T("currency.scrolls_name")).Named("Scrolls"));
+				totals.AddChild(Layout.Labeled("scroll", $"+{Texts.Number(run.Scrolls)}", T("currency.scrolls_name")).Named("Scrolls"));
 			BattleResultPanel.AddPrize(totals, run.Prize);
 			totals.AddChild(Layout.Labeled("level_max", $"+{run.Experience}", T("reward.experience")).Named("Experience"));
 			if (run.LevelUps > 0)

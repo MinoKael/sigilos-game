@@ -569,7 +569,7 @@ namespace Sigilos.UI.Screens
 			var spend = Math.Min(full, _player.Essence);
 			var target = Leveling.LevelAfter(monster, spend);
 			Dialog.Confirm(this, T("monsters.max_confirm_title", target),
-				T("monsters.max_confirm", spend.ToString("N0", Culture), summon.NameFor(monster.Awakened), target, _player.Essence.ToString("N0", Culture)),
+				T("monsters.max_confirm", Texts.Number(spend), summon.NameFor(monster.Awakened), target, Texts.Number(_player.Essence)),
 				T("monsters.max_level_button", target), () => InfuseRequested?.Invoke(monster.Id, true));
 		}
 
@@ -723,7 +723,7 @@ namespace Sigilos.UI.Screens
 			row.AddChild(awaken.Wide(260));
 			_detail.AddChild(row);
 			if (awaken.Disabled)
-				_detail.AddChild(Layout.Text(T("monsters.awaken_short", cost - _player.Essence), GameTheme.Faded).Named("Short"));
+				_detail.AddChild(Layout.Text(T("monsters.awaken_short", Texts.Number(cost - _player.Essence)), GameTheme.Faded).Named("Short"));
 		}
 
 		/// <summary>O monstro normal ou desperto (o mesmo desenho, com a aura e o anel do elemento), aceso se for a forma de agora.</summary>

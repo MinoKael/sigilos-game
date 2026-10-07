@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Sigilos.Core.Content;
@@ -30,8 +31,8 @@ namespace Sigilos.Tests
 			Assert.Equal(1, feats.Count, "só a 5★ vira feito");
 			Assert.Equal(new SummonFeat(five.Id), feats[0], "o feito leva o id da variante");
 
-			var rune = new Rune { Set = RuneSet.Vigor, Slot = 2, Grade = 6, Main = RuneStat.AttackPercent, Level = RuneRules.MaxLevel };
-			Assert.Equal(new RuneFeat(RuneSet.Vigor, 2, 6, RuneStat.AttackPercent), Feats.Of(rune, 12), "chegou a +15 agora");
+			var rune = new Rune { Set = RuneSet.Vigor, Slot = 2, Grade = 6, Main = RuneStat.AttackPercent, Level = RuneRules.MaxLevel, Substats = { RuneSubstat.Rolled(RuneStat.Speed, 0, 5) } };
+			Assert.Equal(new RuneFeat(RuneSet.Vigor, 2, 6, RuneStat.AttackPercent, rune.Substats), Feats.Of(rune, 12), "chegou a +15 agora, com os subatributos");
 			Assert.Equal(null, Feats.Of(rune, RuneRules.MaxLevel), "já estava em +15");
 			rune.Level = 14;
 			Assert.Equal(null, Feats.Of(rune, 12), "ainda não chegou");
@@ -46,11 +47,20 @@ namespace Sigilos.Tests
 			Assert.Equal("knight_fire", summon.GetProperty("summon").GetString(), "a variante");
 			Assert.Equal(3, summon.EnumerateObject().Count(), "nada além disso");
 
-			var rune = JsonDocument.Parse(ChatLink.Write(new RuneFeat(RuneSet.Vigor, 2, 6, RuneStat.AttackPercent))).RootElement;
+			var speed = RuneSubstat.Rolled(RuneStat.Speed, 0, 5);
+			speed.Rolls.Add(new RuneRoll(3, 4));
+			speed.Enchanted = true;
+			speed.Original = RuneSubstat.Rolled(RuneStat.DefensePercent, 0, 0.05);
+			var rune = JsonDocument.Parse(ChatLink.Write(new RuneFeat(RuneSet.Vigor, 2, 6, RuneStat.AttackPercent, new List<RuneSubstat> { speed }))).RootElement;
 			Assert.Equal("Vigor", rune.GetProperty("set").GetString(), "o conjunto pelo nome");
 			Assert.Equal("AttackPercent", rune.GetProperty("main").GetString(), "o principal pelo nome");
 			Assert.Equal(6, rune.GetProperty("grade").GetInt32(), "as estrelas");
-			Assert.Equal(6, rune.EnumerateObject().Count(), "sem subatributos nem dono");
+			Assert.Equal(7, rune.EnumerateObject().Count(), "sem o nível nem o dono");
+			var substat = rune.GetProperty("substats")[0];
+			Assert.Equal("Speed", substat.GetProperty("stat").GetString(), "o subatributo pelo nome");
+			Assert.Equal(2, substat.GetProperty("rolls").GetArrayLength(), "os sorteios");
+			Assert.Equal(true, substat.GetProperty("enchanted").GetBoolean(), "encantado");
+			Assert.False(substat.TryGetProperty("original", out _), "sem o que a gema trocou");
 		}
 
 		[Test]
@@ -60,8 +70,13 @@ namespace Sigilos.Tests
 			Assert.Equal(new ChatLine("Mestre", Now, "oi [b]pessoal[/b]", null), say, "a fala chega como veio");
 			Assert.Equal(null, error, "sem erro");
 
-			var rune = ChatLink.Read("""{"type":"feat","feat":"rune","from":"Aprendiz","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":2,"grade":6,"main":"AttackPercent"}""", out _);
-			Assert.Equal(new RuneFeat(RuneSet.Vigor, 2, 6, RuneStat.AttackPercent), rune?.Feat, "o feito da runa");
+			var rune = ChatLink.Read("""{"type":"feat","feat":"rune","from":"Aprendiz","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":2,"grade":6,"main":"AttackPercent","substats":[{"stat":"Speed","rolls":[{"level":0,"amount":5},{"level":3,"amount":4}],"grind":2,"enchanted":true}]}""", out _)?.Feat as RuneFeat;
+			Assert.Equal((RuneSet.Vigor, 2, 6, RuneStat.AttackPercent), (rune!.Set, rune.Slot, rune.Grade, rune.Main), "o feito da runa");
+			var speed = rune.Substats.Single();
+			Assert.Equal((RuneStat.Speed, 9.0, 2.0, true), (speed.Stat, speed.Value, speed.Grind, speed.Enchanted), "o subatributo, com os sorteios, a pedra e a gema");
+
+			var older = ChatLink.Read("""{"type":"feat","feat":"rune","from":"Aprendiz","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":2,"grade":6,"main":"AttackPercent"}""", out _)?.Feat as RuneFeat;
+			Assert.Equal(0, older?.Substats.Count, "sem os subatributos (servidor que não os repassa), o feito vem mesmo assim");
 
 			Assert.Equal(null, ChatLink.Read("""{"type":"error","error":"rate_limited"}""", out error), "recusa não é linha");
 			Assert.Equal("rate_limited", error, "o erro da recusa");
@@ -71,6 +86,10 @@ namespace Sigilos.Tests
 				"""{"type":"feat","feat":"rune","from":"A","at":"2026-10-07T14:05:00Z","set":"Bogus","slot":2,"grade":6,"main":"Speed"}""",
 				"""{"type":"feat","feat":"rune","from":"A","at":"2026-10-07T14:05:00Z","set":"0","slot":2,"grade":6,"main":"Speed"}""",
 				"""{"type":"feat","feat":"rune","from":"A","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":7,"grade":6,"main":"Speed"}""",
+				"""{"type":"feat","feat":"rune","from":"A","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":2,"grade":6,"main":"Speed","substats":[{"stat":"Bogus","rolls":[]}]}""",
+				"""{"type":"feat","feat":"rune","from":"A","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":2,"grade":6,"main":"Speed","substats":[{"stat":5,"rolls":[]}]}""",
+				"""{"type":"feat","feat":"rune","from":"A","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":2,"grade":6,"main":"Speed","substats":[{"stat":"Speed","rolls":null}]}""",
+				"""{"type":"feat","feat":"rune","from":"A","at":"2026-10-07T14:05:00Z","set":"Vigor","slot":2,"grade":6,"main":"Speed","substats":"Speed"}""",
 				"""{"type":"feat","feat":"pet","from":"A","at":"2026-10-07T14:05:00Z"}""",
 				"""{"type":"shout","from":"A","at":"2026-10-07T14:05:00Z","text":"oi"}""",
 				"""{"type":"say","at":"2026-10-07T14:05:00Z","text":"sem nome"}""",

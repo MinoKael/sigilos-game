@@ -246,10 +246,10 @@ namespace Sigilos.UI.Screens
 			if (outcome.Reward is { } reward)
 			{
 				if (reward.Scrolls > 0)
-					chips.AddChild(Layout.Labeled("scroll", $"+{reward.Scrolls}", T("currency.scrolls_name")));
+					chips.AddChild(Layout.Labeled("scroll", $"+{Texts.Number(reward.Scrolls)}", T("currency.scrolls_name")));
 				if (reward.Gold > 0)
-					chips.AddChild(Layout.Labeled("gold", $"+{reward.Gold}", T("currency.gold")));
-				var essence = Layout.Labeled("essence", $"+{reward.Essence}", T("currency.essence"));
+					chips.AddChild(Layout.Labeled("gold", $"+{Texts.Number(reward.Gold)}", T("currency.gold")));
+				var essence = Layout.Labeled("essence", $"+{Texts.Number(reward.Essence)}", T("currency.essence"));
 				_essence = essence.GetNode<Label>("Row/Value");
 				_essenceShown = reward.Essence;
 				chips.AddChild(essence);

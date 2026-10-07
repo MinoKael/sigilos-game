@@ -17,15 +17,13 @@ namespace Sigilos.UI.Screens
 	/// - Fala: a hora apagada, o nome em ouro (o desta conta em azul arcano) e o texto, como texto puro (o que
 	///   o jogador escreve não vira formatação).
 	/// - Feito (monstro 5★, runa +15): a linha toda é um botão que abre o resumo do monstro do catálogo ou a
-	///   runa (só o conjunto, o espaço, as estrelas e o principal: o que o feito conta).
+	///   ficha da runa (<see cref="RuneDialog"/>, sem o inato: o feito não o leva).
 	/// - Recusa do servidor (rápido demais, conta sem nome) vira uma linha apagada só nesta janela.
 	///
 	/// Fechar não desliga nada: o chat segue ao vivo e guarda o que chegar.
 	/// </summary>
 	public sealed class ChatDialog
 	{
-		private const float RuneWidth = 420;
-
 		private const float SendWidth = 160;
 
 		private readonly ChatFeed _feed;
@@ -68,11 +66,13 @@ namespace Sigilos.UI.Screens
 			_send.Pressed += Submit;
 			_dialog.AddFooter(_send);
 
+			feed.Reading = true;
 			feed.Added += Add;
 			feed.Changed += Refresh;
 			feed.Refused += Refuse;
 			_dialog.Closed += () =>
 			{
+				feed.Reading = false;
 				feed.Added -= Add;
 				feed.Changed -= Refresh;
 				feed.Refused -= Refuse;
@@ -116,7 +116,7 @@ namespace Sigilos.UI.Screens
 				_dialog.Reveal(row);
 		}
 
-		private void Refuse(string error) => Notice(T(Has($"chat.error_{error}") ? $"chat.error_{error}" : "chat.error_send"));
+		private void Refuse(string error) => Notice(Has($"chat.error_{error}") ? T($"chat.error_{error}") : T("chat.error_send"));
 
 		/// <summary>Um aviso só desta janela (o que o servidor recusou), apagado, no fim das linhas.</summary>
 		private void Notice(string text)
@@ -177,7 +177,7 @@ namespace Sigilos.UI.Screens
 			label.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
 			Time(label, line);
 			label.PushColor(Palette.Gold);
-			label.AddText(T(feat is RuneFeat ? "chat.feat_rune" : "chat.feat_summon", line.From));
+			label.AddText(Texts.Describe(feat, line.From));
 			label.Pop();
 			row.AddChild(label);
 			panel.AddChild(row);
@@ -185,7 +185,7 @@ namespace Sigilos.UI.Screens
 			Action? open = feat switch
 			{
 				SummonFeat when summon != null => () => MonsterSummary.Open(panel, summon, null),
-				RuneFeat rune => () => ShowRune(panel, rune, line.From),
+				RuneFeat rune => () => RuneDialog.Show(panel, rune.ToRune(), note: T("chat.rune_by", line.From)),
 				_ => null,
 			};
 			if (open != null)
@@ -195,32 +195,6 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>Uma runa em +15 tem sempre os quatro subatributos: é sempre da raridade mais alta.</summary>
 		private static RuneRarity RuneFeatRarity => (RuneRarity)RuneRules.MaxSubstats;
-
-		/// <summary>A runa do feito: o Glifo, as estrelas, o +15, o principal e o bônus do conjunto.</summary>
-		private static void ShowRune(Control from, RuneFeat feat, string by)
-		{
-			var rune = feat.ToRune();
-			var color = Palette.Of(RuneFeatRarity);
-			var dialog = Dialog.Open(from, Texts.Title(rune), RuneWidth, from, "RuneFeatDialog");
-
-			var row = Layout.Row(14).Named("Rune");
-			row.AddChild(new RuneGlyph(RuneSets.For(rune.Set).Glyph, 48, color, outline: true) { Name = "Glyph" });
-			var stats = new VBoxContainer { Name = "Stats", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			var grade = new Label { Name = "Grade", Text = $"{Texts.Stars(rune.Grade)}  +{rune.Level}" };
-			grade.AddThemeColorOverride("font_color", color);
-			stats.AddChild(grade);
-			var main = new Label { Name = "Main", Text = Texts.Format(rune.Main, rune.MainValue) };
-			main.AddThemeFontOverride("font", GameTheme.Serif);
-			main.AddThemeFontSizeOverride("font_size", 22);
-			stats.AddChild(main);
-			row.AddChild(stats);
-			dialog.Body.AddChild(row);
-
-			var bonus = RichText.Label(Texts.Describe(RuneSets.For(rune.Set)), RuneWidth - 40, null, 14).Named("SetBonus");
-			bonus.AddThemeColorOverride("default_color", Palette.TextFaded);
-			dialog.Body.AddChild(bonus);
-			dialog.Body.AddChild(Layout.Text(T("chat.rune_by", by), GameTheme.Faded).Named("By"));
-		}
 
 		private static RichTextLabel Text() => new()
 		{

@@ -49,7 +49,7 @@ namespace Sigilos.UI.Screens
 			content.AddChild(Line("Monsters", T("account.conflict_monsters", player.Monsters.Count)));
 			content.AddChild(Line("Stage", player.HighestStage > 0 ? T("account.conflict_stage", player.HighestStage) : T("account.conflict_no_stage")));
 			content.AddChild(Line("Dungeons", T("account.conflict_floors", player.DungeonFloors.Values.Sum())));
-			content.AddChild(Line("Wealth", T("account.conflict_wealth", player.Essence.ToString("N0", Culture), player.Gold.ToString("N0", Culture))));
+			content.AddChild(Line("Wealth", T("account.conflict_wealth", Texts.Number(player.Essence), Texts.Number(player.Gold))));
 			if (savedAt is { } at)
 				content.AddChild(Line("Saved", T("account.conflict_saved", at.ToLocalTime().ToString("g", Culture)), GameTheme.Faded));
 			return panel;

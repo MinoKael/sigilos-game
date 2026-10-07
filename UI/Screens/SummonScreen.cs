@@ -209,7 +209,7 @@ namespace Sigilos.UI.Screens
 		private void OpenExchange()
 		{
 			var dialog = Dialog.Open(this, T("summon.exchange_title"), 820, null, "ExchangeDialog");
-			dialog.Body.AddChild(Layout.Text(T("summon.exchange_hint", FragmentExchange.Cost, _player.Fragments), GameTheme.Faded).Named("Hint"));
+			dialog.Body.AddChild(Layout.Text(T("summon.exchange_hint", Texts.Number(FragmentExchange.Cost), Texts.Number(_player.Fragments)), GameTheme.Faded).Named("Hint"));
 			var grid = new GridContainer { Name = "Options", Columns = 5 };
 			grid.AddThemeConstantOverride("h_separation", 10);
 			grid.AddThemeConstantOverride("v_separation", 10);

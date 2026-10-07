@@ -7,9 +7,9 @@ namespace Sigilos.UI
 {
 	/// <summary>
 	/// O Chat global do jogo aberto: as últimas <see cref="MaxLines"/> linhas que chegaram desde que a conta
-	/// conectou, só na memória (sair da conta ou fechar o jogo apaga), e se a conexão está viva. Quem alimenta é o GameRoot, com a conexão da conta; quem mostra são o balão
-	/// (<see cref="Components.ChatBubble"/>) e a janela (<see cref="Screens.ChatDialog"/>), que fala por
-	/// <see cref="Say"/>.
+	/// conectou, só na memória (sair da conta ou fechar o jogo apaga), e se a conexão está viva. Quem alimenta
+	/// é o GameRoot, com a conexão da conta; quem mostra são o balão (<see cref="Components.ChatBubble"/>, com a
+	/// última linha ao lado) e a janela (<see cref="Screens.ChatDialog"/>), que fala por <see cref="Say"/>.
 	/// </summary>
 	public sealed class ChatFeed
 	{
@@ -27,6 +27,9 @@ namespace Sigilos.UI
 
 		/// <summary>O nome desta conta (as falas dela saem noutra cor); nulo numa conta sem nome.</summary>
 		public string? Me { get; set; }
+
+		/// <summary>A janela do chat está aberta: o balão não abre outra nem mostra a última linha por cima dela.</summary>
+		public bool Reading { get; set; }
 
 		/// <summary>Manda uma fala; falso se não saiu (sem conexão).</summary>
 		public Func<string, Task<bool>>? Say { get; set; }

@@ -31,7 +31,7 @@ namespace Sigilos.UI.Components
 		{
 			var cost = RuneRules.UpgradeCost(rune, target);
 			return Dialog.Confirm(from, T("runes.upgrade_confirm_title", target),
-				T("runes.upgrade_confirm", cost.ToString("N0", Culture), Texts.Title(rune), rune.Level, target, essence.ToString("N0", Culture)),
+				T("runes.upgrade_confirm", Texts.Number(cost), Texts.Title(rune), rune.Level, target, Texts.Number(essence)),
 				T("runes.upgrade_button", target), confirmed);
 		}
 	}

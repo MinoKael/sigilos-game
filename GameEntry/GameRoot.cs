@@ -156,7 +156,11 @@ namespace Sigilos.GameEntry
 			// O Chat global: o balão por cima das telas; a conexão da conta traz as linhas.
 			_bubble = new ChatBubble(_chat);
 			_ui.AddChild(_bubble);
-			_bubble.Pressed += () => ChatDialog.Open(_ui, _chat);
+			_bubble.Pressed += () =>
+			{
+				if (!_chat.Reading)
+					ChatDialog.Open(_ui, _chat);
+			};
 			_chat.Say = _account.Chat.Say;
 			_account.Chat.Received += _chat.Add;
 			_account.Chat.Refused += _chat.Refuse;
