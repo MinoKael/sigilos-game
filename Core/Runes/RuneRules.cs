@@ -20,7 +20,7 @@ namespace Sigilos.Core.Runes
 		public const int MaxSubstats = 4;
 
 		/// <summary>Chance de a runa sair com atributo nativo.</summary>
-		public const double InnateChance = 0.3;
+		public const double InnateChance = 0.05;
 
 		/// <summary>Quanto da tabela de custo (<see cref="BaseCost"/>) vale 1 Essência.</summary>
 		public const int CostPerEssence = 10;
