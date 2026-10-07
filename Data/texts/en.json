@@ -1391,7 +1391,20 @@
   "avatar": {
     "title": "Account portrait",
     "change": "Change portrait",
-    "hint": "Pick one of your monsters. The awakened form shows up once you own an awakened copy.",
+    "kind": {
+      "Summon": "Monsters",
+      "Special": "Special"
+    },
+    "hint": {
+      "Summon": "Your monsters and the monster portraits that came as rewards. The awakened form shows up once you own an awakened copy.",
+      "Special": "Portraits that are not monsters: the game's default and the ones that come as rewards."
+    },
+    "special": {
+      "default": "Default",
+      "sigil": "Summoning Sigil",
+      "grimoire": "Grimoire",
+      "star": "Guiding Star"
+    },
     "empty": "Summon monsters to pick the account portrait from them."
   },
 
@@ -1422,7 +1435,7 @@
     "runes": "Runes",
     "furthest": "Furthest in the sky",
     "seals": "Seals",
-    "dungeons_hint": "How deep each one has been cleared.",
+    "dungeons_hint": "How deep each one has been cleared, and the team behind the best time on the deepest floor.",
     "dungeon_floors": "{0} of {1} floors cleared",
     "best_times": "Best times",
     "best_times_hint": "The fastest victory on each floor.",

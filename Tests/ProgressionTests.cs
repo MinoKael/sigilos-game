@@ -252,6 +252,23 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void BestTimeKeepsTheTeamThatMadeIt()
+		{
+			var player = NewPlayer();
+			var key = Records.FloorKey("golem", 2);
+			Assert.Equal(0, Records.Team(player, key).Count, "recorde sem equipe gravada: nenhuma");
+			Records.Submit(player, key, 80, [new RecordMember("imp_fire", false), new RecordMember("phoenix_fire", true)]);
+			Records.Submit(player, key, 95, [new RecordMember("imp_dark", false)]);
+			Assert.Equal("imp_fire,phoenix_fire", string.Join(",", Records.Team(player, key).Select(m => m.Summon)), "a mais lenta não troca a equipe; a ordem fica");
+			Assert.True(Records.Team(player, key)[1].Awakened, "e lembra quem lutou desperto");
+
+			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
+			Assert.Equal(2, Records.Team(loaded, key).Count, "o save guarda a equipe");
+			Records.Submit(loaded, key, 60, [new RecordMember("imp_dark", false)]);
+			Assert.Equal("imp_dark", Records.Team(loaded, key).Single().Summon, "o recorde novo traz a equipe dele");
+		}
+
+		[Test]
         private static void IdleRefillsManaUpToTheDoubleMax()
         {
             var player = NewPlayer();

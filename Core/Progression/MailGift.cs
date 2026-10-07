@@ -16,7 +16,8 @@ namespace Sigilos.Core.Progression
 	/// - <c>monster:knight_fire</c>: cópias novas do monstro (nível 1, como as da invocação);
 	/// - <c>rune:5</c>, <c>rune:5:Hero</c> ou <c>rune:5:Hero:Vigor</c>: runas sorteadas dessas estrelas, e da
 	///   raridade e do conjunto, se a chave diz;
-	/// - <c>avatar:imp_fire</c> ou <c>avatar:imp_fire:awakened</c>: o retrato da conta, mesmo sem ter o monstro.
+	/// - <c>avatar:imp_fire</c> ou <c>avatar:imp_fire:awakened</c>: o retrato da conta, mesmo sem ter o monstro;
+	///   <c>avatar:sigil</c>: um retrato especial (<see cref="SpecialAvatars"/>).
 	/// </summary>
 	public sealed record MailGift(MailGiftKind Kind, string Id, int Count, int Grade = 0, RuneRarity? Rarity = null, RuneSet? Set = null, bool Awakened = false)
 	{

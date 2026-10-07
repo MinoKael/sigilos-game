@@ -144,6 +144,9 @@ namespace Sigilos.Core.Player
 		/// <summary>O melhor tempo de cada luta vencida, em segundos (<see cref="Progression.Records"/>).</summary>
 		public Dictionary<string, double> BestTimes { get; set; } = new();
 
+		/// <summary>A equipe de cada melhor tempo, pela mesma chave; falta nos tempos gravados antes de o campo existir.</summary>
+		public Dictionary<string, List<RecordMember>> BestTeams { get; set; } = new();
+
 		/// <summary>As cartas do correio já coletadas neste save, pelo id do servidor (<see cref="Progression.Mailbox"/>).</summary>
 		public List<string> ClaimedMail { get; set; } = new();
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
@@ -27,7 +28,7 @@ namespace Sigilos.Tests
 		private static void AccountPortraitIsAMonsterTheAccountHas()
 		{
 			var player = TestData.PlayerWith("imp_fire", "imp_fire", "knight_fire");
-			Assert.Equal(2, Account.Avatars(player).Count, "uma vez cada variante");
+			Assert.Equal(2, Account.Avatars(player).Count(a => a.Kind == AvatarKind.Summon), "uma vez cada variante");
 			Assert.False(Account.SetAvatar(player, "phoenix_fire", false), "quem a conta não tem não vira retrato");
 			Assert.False(Account.SetAvatar(player, "imp_fire", true), "nem o desperto sem uma cópia desperta");
 
@@ -39,6 +40,33 @@ namespace Sigilos.Tests
 
 			var saved = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
 			Assert.Equal("imp_fire", saved.Avatar, "o retrato vai no save");
+		}
+
+		[Test]
+		private static void SpecialPortraitsAreApartFromMonsters()
+		{
+			var player = TestData.PlayerWith("imp_fire");
+			var first = Account.Avatars(player)[0];
+			Assert.Equal(new AccountAvatar(SpecialAvatars.Default, false, AvatarKind.Special), first, "o padrão vem primeiro, em toda conta");
+			Assert.Equal(first, Account.Current(player), "sem escolha, o retrato é o padrão");
+			Assert.False(Account.SetAvatar(player, "sigil", false), "o especial que não chegou não vale");
+
+			var mail = new Mail("m1", "", "", new Dictionary<MailItem, int>(), DateTimeOffset.UnixEpoch, null)
+			{
+				Gifts = [new MailGift(MailGiftKind.Avatar, "sigil", 1, Awakened: true), new MailGift(MailGiftKind.Avatar, "phoenix_fire", 1)],
+			};
+			Assert.True(Mailbox.Claim(player, mail, TestData.Database), "o correio entrega os dois");
+			var unlocked = Account.Avatars(player);
+			Assert.True(unlocked.Contains(new AccountAvatar("sigil", false, AvatarKind.Special)), "o especial do correio é especial, sem forma desperta");
+			Assert.True(unlocked.Contains(new AccountAvatar("phoenix_fire", false, AvatarKind.Summon)), "o de monstro do correio é de monstro");
+
+			Assert.True(Account.SetAvatar(player, "sigil", false), "o especial vira retrato");
+			Assert.Equal(new AccountAvatar("sigil", false, AvatarKind.Special), Account.Current(player), "e é o de agora");
+			Assert.True(Account.SetAvatar(player, SpecialAvatars.Default, false), "o padrão sempre vale");
+			Assert.Equal(null, player.Avatar, "e volta a ser nulo no save");
+
+			player.Avatar = "imp_dark";
+			Assert.Equal(SpecialAvatars.Default, Account.Current(player).Id, "um retrato que a conta não tem mais mostra o padrão");
 		}
 
 		[Test]

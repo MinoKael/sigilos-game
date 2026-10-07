@@ -12,7 +12,7 @@ namespace Sigilos.Core.Progression
 	/// cair no meio, a recompensa não se perde, e a mesma carta nunca é coletada duas vezes. A Mana pode
 	/// passar do máximo, como a da Loja. Os presentes (<see cref="Mail.Gifts"/>) entram junto: monstros novos
 	/// na coleção (ou no Baú), runas no inventário (mesmo cheio, como as da vitória) e retratos liberados
-	/// (<see cref="Account.UnlockAvatar"/>). Monstro que o jogo não conhece não entra.
+	/// (<see cref="Account.UnlockAvatar"/>, de monstro ou especiais). Monstro ou retrato que o jogo não conhece não entra.
 	/// </summary>
 	public static class Mailbox
 	{
@@ -54,7 +54,7 @@ namespace Sigilos.Core.Progression
 					for (var i = 0; i < gift.Count; i++)
 						RuneInventory.Create(random, player, gift.Grade, gift.Set is { } set ? new[] { set } : null, gift.Rarity);
 					break;
-				case MailGiftKind.Avatar when database.HasSummon(gift.Id):
+				case MailGiftKind.Avatar when database.HasSummon(gift.Id) || SpecialAvatars.Has(gift.Id):
 					Account.UnlockAvatar(player, gift.Id, gift.Awakened);
 					break;
 			}

@@ -108,7 +108,7 @@ namespace Sigilos.UI.Screens
 			return panel;
 		}
 
-		/// <summary>Um presente: o monstro (desenho, ×quantos, nome), a runa (estrelas, raridade e conjunto) ou o retrato.</summary>
+		/// <summary>Um presente: o monstro (desenho, ×quantos, nome), a runa (estrelas, raridade e conjunto) ou o retrato (de monstro ou especial).</summary>
 		private Control Gift(MailGift gift)
 		{
 			if (gift.Kind == MailGiftKind.Rune)
@@ -118,6 +118,9 @@ namespace Sigilos.UI.Screens
 					what += $" · {Texts.Name(set)}";
 				return Layout.Labeled("rune", $"{gift.Count}× {Texts.Stars(gift.Grade)}", T("mail.gift.rune", what));
 			}
+
+			if (gift.Kind == MailGiftKind.Avatar && SpecialAvatars.Has(gift.Id))
+				return Layout.Labeled(SpecialAvatars.IconOf(gift.Id), "", T("mail.gift.avatar", T($"avatar.special.{gift.Id}")), Palette.Gold);
 
 			var summon = _database is { } database && database.HasSummon(gift.Id) ? database.Summon(gift.Id) : null;
 			if (summon == null)

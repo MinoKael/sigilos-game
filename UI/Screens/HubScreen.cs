@@ -65,9 +65,6 @@ namespace Sigilos.UI.Screens
 			_collect = GameButton.Of(T("hub.collect"), () => CollectRequested?.Invoke(), ButtonKind.Primary, "collect", 50).Named("Collect");
 		}
 
-		/// <summary>A constelação: no Santuário, o balão do chat fica no canto dela (<see cref="ChatBubble.Dock"/>).</summary>
-		public Control ChatCorner => _constellation;
-
 		public event Action<Destination>? Requested;
 		public event Action? ConfigRequested;
 		public event Action? CollectRequested;

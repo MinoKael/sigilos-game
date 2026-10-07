@@ -1392,7 +1392,20 @@
   "avatar": {
     "title": "Retrato da conta",
     "change": "Trocar retrato",
-    "hint": "Escolha um dos seus monstros. A forma desperta aparece quando você tem uma cópia desperta.",
+    "kind": {
+      "Summon": "Monstros",
+      "Special": "Especiais"
+    },
+    "hint": {
+      "Summon": "Os seus monstros e os retratos de monstro que chegaram de recompensa. A forma desperta aparece quando você tem uma cópia desperta.",
+      "Special": "Retratos que não são monstros: o padrão do jogo e os que chegam de recompensa."
+    },
+    "special": {
+      "default": "Padrão",
+      "sigil": "Sigilo de Invocação",
+      "grimoire": "Grimório",
+      "star": "Estrela-guia"
+    },
     "empty": "Invoque monstros para escolher entre eles o retrato da conta."
   },
 
@@ -1423,7 +1436,7 @@
     "runes": "Runas",
     "furthest": "Mais longe no céu",
     "seals": "Selos",
-    "dungeons_hint": "Até que andar cada uma já foi vencida.",
+    "dungeons_hint": "Até que andar cada uma já foi vencida, e a equipe do melhor tempo do andar mais fundo.",
     "dungeon_floors": "{0} de {1} andares vencidos",
     "best_times": "Melhores tempos",
     "best_times_hint": "A vitória mais rápida de cada andar.",

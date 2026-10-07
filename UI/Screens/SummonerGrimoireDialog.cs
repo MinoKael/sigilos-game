@@ -18,12 +18,14 @@ namespace Sigilos.UI.Screens
 	///
 	/// - I · Invocador: o retrato num anel de sigilo, o nome na fita, o nível com a experiência (e o que
 	///   ela dá) e desde quando a conta existe; na página da frente, os registros da conta;
-	/// - II · Masmorras: até que andar cada uma foi e, na frente, o melhor tempo de cada andar;
+	/// - II · Masmorras: até que andar cada uma foi, com a equipe do melhor tempo do andar mais fundo
+	///   vencido (<see cref="Records.Team"/>), e, na frente, o melhor tempo de cada andar;
 	/// - III · Céu: a Exploração do mês, as três faixas e o mais longe que já chegou; na frente, o céu da
 	///   faixa desenhado a tinta, com o percurso do mês riscado;
 	/// - IV · Selos: os marcos da jornada e da coleção (<see cref="Seals"/>), lacrados ou só riscados.
 	///
-	/// Só lê o save. Trocar o retrato fecha o livro e pede a escolha (<see cref="AvatarRequested"/>).
+	/// As páginas e o texto delas vêm das variações do tema (<see cref="GameTheme.PagePanel"/>,
+	/// <see cref="GameTheme.PageRule"/>, <see cref="GameTheme.PageText"/>...). Só lê o save. Trocar o retrato fecha o livro e pede a escolha (<see cref="AvatarRequested"/>).
 	/// </summary>
 	public sealed partial class SummonerGrimoireDialog
 	{
@@ -85,11 +87,10 @@ namespace Sigilos.UI.Screens
 			_spread.CreateTween().TweenProperty(_spread, "modulate:a", 1f, 0.18f);
 		}
 
-		/// <summary>Uma página de pergaminho: o conteúdo em cima e o número dela embaixo.</summary>
+		/// <summary>Uma página do livro: o conteúdo em cima e o número dela embaixo.</summary>
 		private (VBoxContainer Content, Label Folio) Page(string name)
 		{
-			var page = new PanelContainer { Name = name, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, PageHeight) };
-			page.AddThemeStyleboxOverride("panel", Ornament.Page(22));
+			var page = new PanelContainer { Name = name, ThemeTypeVariation = GameTheme.PagePanel, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, PageHeight) };
 			var column = new VBoxContainer { Name = "Column" };
 			var content = new VBoxContainer { Name = "Content", SizeFlagsVertical = Control.SizeFlags.ExpandFill };
 			content.AddThemeConstantOverride("separation", 8);
@@ -177,6 +178,8 @@ namespace Sigilos.UI.Screens
 				text.AddChild(new Label { Name = "Name", Text = dungeon.Name, ThemeTypeVariation = GameTheme.PageText });
 				var detail = open ? T("book.dungeon_floors", cleared, dungeon.Floors.Count) : T("dungeons.opens_at", dungeon.UnlockStage);
 				text.AddChild(new Label { Name = "Detail", Text = detail, ThemeTypeVariation = GameTheme.PageFaded });
+				if (cleared > 0 && Team(Records.FloorKey(dungeon.Id, cleared)) is { } team)
+					text.AddChild(team);
 				row.AddChild(text);
 				row.AddChild(new FloorMarks(cleared, dungeon.Floors.Count) { Name = "Floors", SizeFlagsVertical = Control.SizeFlags.ShrinkCenter });
 				page.AddChild(row);
@@ -336,15 +339,33 @@ namespace Sigilos.UI.Screens
 		private static Label Cell(string text, string variation) =>
 			new() { Text = text, ThemeTypeVariation = variation, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, CustomMinimumSize = new Vector2(52, 0) };
 
-		/// <summary>O divisor da página: a régua de estrela, a tinta.</summary>
-		private static HSeparator Rule()
+		/// <summary>O divisor da página.</summary>
+		private static HSeparator Rule() => new() { Name = "Rule", ThemeTypeVariation = GameTheme.PageRule };
+
+		/// <summary>
+		/// A equipe do recorde <paramref name="key"/> em retratos pequenos (moldura da raridade, a aura no
+		/// desperto), a Líder primeiro; null quando o tempo é de antes de a equipe ser gravada.
+		/// </summary>
+		private Control? Team(string key)
 		{
-			var rule = new HSeparator { Name = "Rule" };
-			rule.AddThemeStyleboxOverride("separator", InkRule);
-			return rule;
+			var members = Records.Team(_player, key).Where(m => _database.HasSummon(m.Summon)).ToList();
+			if (members.Count == 0)
+				return null;
+
+			var row = Layout.Row(4).Named("Team");
+			foreach (var member in members)
+			{
+				var summon = _database.Summon(member.Summon);
+				var portrait = new PanelContainer { Name = Layout.NodeName(member.Summon), CustomMinimumSize = new Vector2(TeamPortrait, TeamPortrait) };
+				portrait.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 2, (int)(TeamPortrait / 2), 2));
+				portrait.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Circle, boil: false, aura: member.Awakened ? summon.Element : null));
+				row.AddChild(portrait);
+			}
+
+			return row;
 		}
 
-		private static readonly StarRule InkRule = new(Palette.InkFaded, Palette.Rubric);
+		private const float TeamPortrait = 30;
 
 		// Desenhos a tinta ----------------------------------------------------------------------------
 

@@ -5,8 +5,9 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// O balão do Chat global, por cima de qualquer tela, no canto de cima à esquerda (no Santuário, no canto da
-	/// constelação: <see cref="Dock"/>): só o símbolo do chat, redondo e meio transparente como o aviso da
+	/// O balão do Chat global, por cima de qualquer tela, sempre no mesmo lugar: o canto de cima à esquerda da
+	/// janela, antes do título e da margem das telas (nenhuma tela o muda de lugar, para o dedo achá-lo sempre
+	/// ali sem cobrir os controles). Só o símbolo do chat, redondo e meio transparente como o aviso da
 	/// Batalha automática (<see cref="AutoBattleBadge"/>). Não conta as linhas que chegam. A borda diz a
 	/// conexão: verde ao vivo, apagada sem ela. Tocar abre a janela do chat (<see cref="Pressed"/>). Só aparece
 	/// jogando na conta.
@@ -21,9 +22,6 @@ namespace Sigilos.UI.Components
 		private const float Side = 36;
 
 		private const float Corner = 2;
-
-		/// <summary>O controle em cujo canto o balão fica; nulo: o canto da janela.</summary>
-		private Control? _dock;
 
 		/// <summary>Meio transparente: o balão fica por cima de qualquer tela.</summary>
 		private const float Opacity = 0.8f;
@@ -75,7 +73,8 @@ namespace Sigilos.UI.Components
 			AddChild(_icon);
 
 			SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
-			Place();
+			OffsetLeft = OffsetTop = Corner;
+			OffsetRight = OffsetBottom = Corner + Side;
 			BuildLast();
 
 			feed.Changed += Refresh;
@@ -88,44 +87,6 @@ namespace Sigilos.UI.Components
 		{
 			_feed.Changed -= Refresh;
 			_feed.Added -= ShowLast;
-		}
-
-		/// <summary>
-		/// Prende o balão no canto de cima à esquerda de <paramref name="corner"/>, acompanhando quando ele muda
-		/// de lugar ou tamanho; nulo, ou quando ele sai da tela, o balão volta ao canto da janela.
-		/// </summary>
-		public void Dock(Control? corner)
-		{
-			if (_dock != null)
-			{
-				_dock.ItemRectChanged -= PlaceLater;
-				_dock.TreeExiting -= Undock;
-			}
-
-			_dock = corner;
-			if (corner != null)
-			{
-				corner.ItemRectChanged += PlaceLater;
-				corner.TreeExiting += Undock;
-			}
-
-			PlaceLater();
-		}
-
-		private void Undock() => Dock(null);
-
-		/// <summary>Depois do arranjo: quando o canto muda, os pais dele já estão no lugar.</summary>
-		private void PlaceLater() => Callable.From(Place).CallDeferred();
-
-		private void Place()
-		{
-			var at = _dock == null
-				? new Vector2(Corner, Corner)
-				: _dock.GlobalPosition - (GetParentControl()?.GlobalPosition ?? Vector2.Zero);
-			OffsetLeft = at.X;
-			OffsetTop = at.Y;
-			OffsetRight = at.X + Side;
-			OffsetBottom = at.Y + Side;
 		}
 
 		private void Refresh()

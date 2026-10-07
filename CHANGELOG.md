@@ -6,12 +6,15 @@
   - Fundo de céu noturno com nebulosa e astrolábio; separadores com estrela; páginas de pergaminho escritas a tinta.
   - A Canalização ganhou a carta do céu por baixo, o mapa da Exploração a grade do céu, e os sigilos grandes a moldura graduada.
   - Ícones novos da Exploração Estelar: a porta, a Influência e as três faixas do céu.
-- **Grimório do Invocador:** tocar na conta, no Santuário, abre o livro da conta, com quatro capítulos.
-  - I, Invocador: retrato, nome, desde quando a conta existe, nível e os registros.
-  - II, Masmorras: andares vencidos e os melhores tempos.
+- **Grimório do Invocador:** tocar na conta, no Santuário, abre o livro da conta, com quatro capítulos, em páginas de pergaminho.
+  - I, Invocador: retrato, nome, desde quando a conta existe, nível e os registros (com o mais longe no céu).
+  - II, Masmorras: andares vencidos, a equipe do melhor tempo do andar mais fundo e os melhores tempos de cada andar.
   - III, Céu: a Exploração do mês, o mais longe que já chegou e o céu da faixa desenhado a tinta.
-  - IV, Selos: doze marcos da jornada e da coleção, lacrados em cera quando cumpridos (só registro, sem prêmio).
+  - IV, Selos: doze marcos da jornada e da coleção (dois deles do céu), lacrados em cera quando cumpridos (só registro, sem prêmio).
   - Trocar o retrato passou a ser pelo livro.
+- **Recordes com a equipe:** o melhor tempo de cada luta guarda a equipe que o fez (vale a partir de agora; os tempos antigos ficam sem equipe).
+- **Retrato da conta em duas abas:** Monstros (os da coleção e os de monstro vindos do correio) e Especiais (o padrão e os de recompensa, que não são monstros). O correio pode mandar um especial (`avatar:sigil`).
+- **Chat:** o balão fica sempre no canto de cima à esquerda da janela, em todas as telas (no Santuário também).
 - **Música:** o Plano Celestial toca fora das lutas e a Batalha nas lutas, em laço.
   - Ao entrar em combate, o Plano Celestial afunda (cai o volume e o tom) e a Batalha entra por cima.
   - Ao sair, o Plano Celestial volta de onde parou.

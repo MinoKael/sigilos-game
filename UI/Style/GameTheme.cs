@@ -47,17 +47,23 @@ namespace Sigilos.UI.Style
 		/// <summary>Tinta de noite rebaixada dentro de um painel (listas, barras, cápsulas).</summary>
 		public const string InsetPanel = "InsetPanel";
 
-		/// <summary>Título de capítulo numa página de pergaminho: tinta violeta, como as iluminuras.</summary>
+		/// <summary>Uma página do Grimório do Invocador.</summary>
+		public const string PagePanel = "PagePanel";
+
+		/// <summary>Título de capítulo numa página do Grimório.</summary>
 		public const string PageHeading = "PageHeadingLabel";
 
-		/// <summary>Texto escrito numa página de pergaminho: tinta escura.</summary>
+		/// <summary>Texto escrito numa página do Grimório.</summary>
 		public const string PageText = "PageTextLabel";
 
-		/// <summary>Anotação pequena numa página de pergaminho: tinta apagada.</summary>
+		/// <summary>Anotação pequena numa página do Grimório.</summary>
 		public const string PageFaded = "PageFadedLabel";
 
-		/// <summary>Barra numa página de pergaminho: o sulco riscado a tinta, não entalhado na noite.</summary>
+		/// <summary>Barra numa página do Grimório.</summary>
 		public const string PageBar = "PageBar";
+
+		/// <summary>O divisor numa página do Grimório.</summary>
+		public const string PageRule = "PageRule";
 
 		/// <summary>A fonte do jogo: títulos, números e texto.</summary>
 		public static readonly Font Serif = Game();
@@ -137,6 +143,9 @@ namespace Sigilos.UI.Style
 
 			theme.SetStylebox("separator", "HSeparator", new StarRule());
 			theme.SetConstant("separation", "HSeparator", 14);
+
+			theme.SetTypeVariation(PageRule, "HSeparator");
+			theme.SetStylebox("separator", PageRule, new StarRule(Palette.InkFaded, Palette.Rubric));
 		}
 
 		private static void Panels(Theme theme)
@@ -145,6 +154,8 @@ namespace Sigilos.UI.Style
 			theme.SetStylebox("panel", "Panel", Ornament.Panel(Palette.Panel, Palette.GoldDark, 0));
 			theme.SetTypeVariation(InsetPanel, "PanelContainer");
 			theme.SetStylebox("panel", InsetPanel, Carved(Palette.Inset, 8));
+			theme.SetTypeVariation(PagePanel, "PanelContainer");
+			theme.SetStylebox("panel", PagePanel, Ornament.Page(22));
 		}
 
 		private static void Buttons(Theme theme)
