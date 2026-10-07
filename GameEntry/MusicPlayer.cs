@@ -24,10 +24,11 @@ namespace Sigilos.GameEntry
 		private const string Bus = "Music";
 
 		/// <summary>O volume das faixas, em dB.</summary>
-		private const float Volume = -6f;
+		private const float Volume = -14f;
+		private const float VolumeBattle = -28f;
 
-		/// <summary>Quieto o bastante para pausar sem estalo.</summary>
-		private const float Silent = -40f;
+        /// <summary>Quieto o bastante para pausar sem estalo.</summary>
+        private const float Silent = -40f;
 
 		private readonly AudioStreamPlayer _celestial = Player("Celestial", "res://Assets/Music/Plano Celestial.ogg");
 		private readonly AudioStreamPlayer _battle = Player("Battle", "res://Assets/Music/Battle.ogg");
@@ -79,7 +80,7 @@ namespace Sigilos.GameEntry
 				}
 
 				Start(to, restart: true);
-				_tween.TweenProperty(to, "volume_db", Volume, 0.9).SetDelay(from != null ? 0.35 : 0)
+				_tween.TweenProperty(to, "volume_db", VolumeBattle, 0.9).SetDelay(from != null ? 0.35 : 0)
 					.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
 			}
 			else
