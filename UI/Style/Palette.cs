@@ -72,6 +72,22 @@ namespace Sigilos.UI.Style
 		public static readonly Color Damage = Color.Color8(250, 240, 225);
 		public static readonly Color Heal = Positive;
 
+		/// <summary>O violeta místico: sigilos desenhados, selos.</summary>
+		public static readonly Color Violet = Awakened;
+
+		/// <summary>As páginas do Grimório do Invocador: o fundo delas e a mancha das barras.</summary>
+		public static readonly Color Parchment = Text;
+
+		public static readonly Color ParchmentShade = Inset;
+
+		/// <summary>A tinta escrita nas páginas, e a mais apagada das anotações.</summary>
+		public static readonly Color Ink = Text;
+
+		public static readonly Color InkFaded = TextFaded;
+
+		/// <summary>A tinta de destaque das páginas (os títulos de capítulo, os selos lacrados).</summary>
+		public static readonly Color Rubric = Color.Color8(120, 72, 170);
+
 		public static Color Stars(bool awakened) => awakened ? Awakened : Gold;
 
 		/// <summary>Moldura por raridade: bronze, prata e ouro a partir da 3★ (GDD, seção 5).</summary>

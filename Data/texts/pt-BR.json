@@ -480,8 +480,6 @@
 
   "hub": {
     "channeling": "{0}h {1}min acumulados (até {2} h)",
-    "account_tip": "{0}/{1} de experiência. Toda vitória dá experiência também à conta; cada nível dá {2} Ouro, enche a Mana e aumenta a Mana máxima, até {4} no nível {3}.",
-    "account_max_tip": "A conta chegou ao nível {0}, o máximo.",
     "account_level": "Conta · Nível {0}",
     "account_progress": "{0}/{1} de experiência",
     "account_max_short": "Nível máximo",
@@ -1259,8 +1257,78 @@
   "avatar": {
     "title": "Retrato da conta",
     "change": "Trocar retrato",
-    "hint": "Escolha um dos seus monstros. A forma desperta aparece quando você tem uma cópia desperta.",
+    "kind": {
+      "Summon": "Monstros",
+      "Special": "Especiais"
+    },
+    "hint": {
+      "Summon": "Os seus monstros e os retratos de monstro que chegaram de recompensa. A forma desperta aparece quando você tem uma cópia desperta.",
+      "Special": "Retratos que não são monstros: o padrão do jogo e os que chegam de recompensa."
+    },
+    "special": {
+      "default": "Padrão",
+      "sigil": "Sigilo de Invocação",
+      "grimoire": "Grimório",
+      "star": "Estrela-guia"
+    },
     "empty": "Invoque monstros para escolher entre eles o retrato da conta."
+  },
+
+  "book": {
+    "title": "Grimório do Invocador",
+    "chapter": {
+      "Summoner": "Invocador",
+      "Dungeons": "Masmorras",
+      "Seals": "Selos"
+    },
+    "unnamed": "Invocador sem nome",
+    "since": "Invocador desde {0}",
+    "day": "1 dia de estudo",
+    "days": "{0} dias de estudo",
+    "level": "Nível {0}",
+    "experience": "{0}/{1} de experiência",
+    "experience_tip": "Toda vitória dá experiência também à conta; cada nível dá {0} Ouro, enche a Mana e aumenta a Mana máxima, até {2} no nível {1}.",
+    "max_level": "A conta chegou ao nível {0}, o máximo.",
+    "of": "{0} de {1}",
+    "records": "Registros",
+    "records_hint": "O que este invocador já fez.",
+    "campaign": "Campanha",
+    "pulls": "Invocações feitas",
+    "monsters": "Monstros",
+    "families": "Famílias conhecidas",
+    "awakened": "Despertos",
+    "runes": "Runas",
+    "seals": "Selos",
+    "dungeons_hint": "Até que andar cada uma já foi vencida, e a equipe do melhor tempo do andar mais fundo.",
+    "dungeon_floors": "{0} de {1} andares vencidos",
+    "best_times": "Melhores tempos",
+    "best_times_hint": "A vitória mais rápida de cada andar.",
+    "seals_journey": "Selos da jornada",
+    "seals_collection": "Selos da coleção",
+    "seal": {
+      "first_victory": "Primeira vitória",
+      "campaign": "A Campanha inteira",
+      "deep_dungeon": "O fundo da Masmorra",
+      "all_dungeons": "Todas as Masmorras",
+      "pulls": "Cem invocações",
+      "families": "Meio bestiário",
+      "awakened": "O primeiro Despertar",
+      "six_stars": "Seis estrelas",
+      "legend": "Uma lenda",
+      "account": "A conta no máximo"
+    },
+    "seal_goal": {
+      "first_victory": "Vença a primeira fase da Campanha",
+      "campaign": "Vença as {0} fases da Campanha",
+      "deep_dungeon": "Vença o último andar de uma Masmorra",
+      "all_dungeons": "Vença o último andar das {0} Masmorras",
+      "pulls": "Faça {0} invocações",
+      "families": "Tenha monstros de {0} famílias",
+      "awakened": "Desperte um monstro",
+      "six_stars": "Evolua um monstro até {0}★",
+      "legend": "Tenha um monstro de 5★ natural",
+      "account": "Leve a conta ao nível {0}"
+    }
   },
 
   "friends": {

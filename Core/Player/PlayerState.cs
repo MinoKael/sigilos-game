@@ -24,6 +24,9 @@ namespace Sigilos.Core.Player
 		/// <summary>0 num save anterior ao campo existir.</summary>
 		public int Version { get; set; }
 
+		/// <summary>Quando a conta começou (o Grimório do Invocador mostra); nulo num save anterior ao campo existir.</summary>
+		public DateTime? Started { get; set; }
+
 		// Moedas (GDD, seção 12).
 
 		/// <summary>Pergaminhos Místicos: o comum (fases, Masmorras, Loja).</summary>
@@ -128,6 +131,9 @@ namespace Sigilos.Core.Player
 
 		/// <summary>O melhor tempo de cada luta vencida, em segundos (<see cref="Progression.Records"/>).</summary>
 		public Dictionary<string, double> BestTimes { get; set; } = new();
+
+		/// <summary>A equipe de cada melhor tempo, pela mesma chave; falta nos tempos gravados antes de o campo existir.</summary>
+		public Dictionary<string, List<RecordMember>> BestTeams { get; set; } = new();
 
 		/// <summary>As cartas do correio já coletadas neste save, pelo id do servidor (<see cref="Progression.Mailbox"/>).</summary>
 		public List<string> ClaimedMail { get; set; } = new();

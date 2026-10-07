@@ -22,35 +22,54 @@ namespace Sigilos.Core.Progression
 		public const int MaxCollectionCapacity = 500;
 
 		/// <summary>
-		/// Os retratos que a conta pode usar: cada variante que ela tem (na coleção ou no Baú) e, de quem
-		/// ela tem uma cópia desperta, também a forma desperta; depois, os liberados pelo correio
-		/// (<see cref="PlayerState.AvatarUnlocks"/>). Na ordem em que chegaram à conta.
+		/// Os retratos que a conta pode usar: o padrão (<see cref="SpecialAvatars.Default"/>); cada variante
+		/// que ela tem (na coleção ou no Baú) e, de quem ela tem uma cópia desperta, também a forma desperta;
+		/// depois, os liberados pelo correio (<see cref="PlayerState.AvatarUnlocks"/>), de monstro ou especiais.
+		/// Na ordem em que chegaram à conta.
 		/// </summary>
-		public static IReadOnlyList<(string Summon, bool Awakened)> Avatars(PlayerState player) => player.Monsters
-			.Where(m => !m.IsInfusionCore)
-			.OrderBy(m => m.Id)
-			.SelectMany(m => m.Awakened ? new[] { (m.SummonId, false), (m.SummonId, true) } : new[] { (m.SummonId, false) })
-			.Concat(player.AvatarUnlocks.Select(key => key.EndsWith(AwakenedSuffix) ? (key[..^AwakenedSuffix.Length], true) : (key, false)))
+		public static IReadOnlyList<AccountAvatar> Avatars(PlayerState player) => new[] { new AccountAvatar(SpecialAvatars.Default, false, AvatarKind.Special) }
+			.Concat(player.Monsters
+				.Where(m => !m.IsInfusionCore)
+				.OrderBy(m => m.Id)
+				.SelectMany(m => m.Awakened ? new[] { (m.SummonId, false), (m.SummonId, true) } : new[] { (m.SummonId, false) })
+				.Select(a => new AccountAvatar(a.Item1, a.Item2, AvatarKind.Summon)))
+			.Concat(player.AvatarUnlocks.Select(Unlocked))
 			.Distinct()
 			.ToList();
 
+		/// <summary>O retrato de agora; sem escolha (ou com um que não está mais em <see cref="Avatars"/>, como o de um monstro solto), o padrão.</summary>
+		public static AccountAvatar Current(PlayerState player)
+		{
+			var current = player.Avatar is { } id ? Of(id, player.AvatarAwakened) : default;
+			return player.Avatar != null && Avatars(player).Contains(current) ? current : new AccountAvatar(SpecialAvatars.Default, false, AvatarKind.Special);
+		}
+
 		private const string AwakenedSuffix = ":awakened";
 
-		/// <summary>Libera um retrato sem ter o monstro (presente do correio). Repetir não faz nada.</summary>
-		public static void UnlockAvatar(PlayerState player, string summonId, bool awakened)
+		/// <summary>O tipo sai do id: o que está em <see cref="SpecialAvatars"/> é especial (e não tem forma desperta); o resto, monstro.</summary>
+		private static AccountAvatar Of(string id, bool awakened) => SpecialAvatars.Has(id)
+			? new AccountAvatar(id, false, AvatarKind.Special)
+			: new AccountAvatar(id, awakened, AvatarKind.Summon);
+
+		private static AccountAvatar Unlocked(string key) =>
+			key.EndsWith(AwakenedSuffix) ? Of(key[..^AwakenedSuffix.Length], true) : Of(key, false);
+
+		/// <summary>Libera um retrato sem ter o monstro, ou um especial (presente do correio). Repetir não faz nada.</summary>
+		public static void UnlockAvatar(PlayerState player, string id, bool awakened)
 		{
-			var key = awakened ? summonId + AwakenedSuffix : summonId;
+			var key = awakened && !SpecialAvatars.Has(id) ? id + AwakenedSuffix : id;
 			if (!player.AvatarUnlocks.Contains(key))
 				player.AvatarUnlocks.Add(key);
 		}
 
-		/// <summary>Troca o retrato da conta por um de <see cref="Avatars"/>; outro qualquer é recusado.</summary>
-		public static bool SetAvatar(PlayerState player, string summonId, bool awakened)
+		/// <summary>Troca o retrato da conta por um de <see cref="Avatars"/>; outro qualquer é recusado. O padrão volta a ser nulo no save.</summary>
+		public static bool SetAvatar(PlayerState player, string id, bool awakened)
 		{
-			if (!Avatars(player).Contains((summonId, awakened)))
+			var avatar = Of(id, awakened);
+			if (!Avatars(player).Contains(avatar))
 				return false;
-			player.Avatar = summonId;
-			player.AvatarAwakened = awakened;
+			player.Avatar = avatar.Id == SpecialAvatars.Default ? null : avatar.Id;
+			player.AvatarAwakened = avatar.Awakened;
 			return true;
 		}
 

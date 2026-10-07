@@ -828,7 +828,6 @@ namespace Sigilos.GameEntry
 			hub.MailRequested += () => OpenMailbox(hub);
 			hub.AvatarRequested += (summon, awakened) => Change(() => Core.Progression.Account.SetAvatar(_player, summon, awakened), () => hub.Refresh(DateTime.Now));
 			Swap(hub, ShowHub);
-			_bubble.Dock(hub.ChatCorner);
 			hub.SetMail(_mail?.Count);
 			RefreshMail();
 		}
@@ -1344,7 +1343,7 @@ namespace Sigilos.GameEntry
 					.Select(m => (Monster: m, m.Level, m.Experience))
 					.ToList();
 				var reward = victory ? victoryReward() : null;
-				var newBest = victory && Records.Submit(_player, record, battle.Elapsed);
+				var newBest = victory && Records.Submit(_player, record, battle.Elapsed, before.Select(b => new RecordMember(b.Monster.SummonId, b.Monster.Awakened)));
 				Save();
 				var result = before.Select(b => ResultOf(b.Monster, b.Level, b.Experience)).ToList();
 				var tips = victory ? null : DefeatAdvice.For(_player, _database, before.Select(b => b.Monster).ToList(), encounter);

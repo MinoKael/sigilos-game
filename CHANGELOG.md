@@ -1,6 +1,14 @@
 # Changelog — Sigilos
 
 ## 07/10/2026
+- **Grimório do Invocador:** tocar na conta, no Santuário, abre o livro da conta, com três capítulos.
+  - I, Invocador: retrato, nome, desde quando a conta existe, nível e os registros.
+  - II, Masmorras: andares vencidos, a equipe do melhor tempo do andar mais fundo e os melhores tempos de cada andar.
+  - III, Selos: dez marcos da jornada e da coleção, lacrados quando cumpridos (só registro, sem prêmio).
+  - Trocar o retrato passou a ser pelo livro.
+- **Recordes com a equipe:** o melhor tempo de cada luta guarda a equipe que o fez (vale a partir de agora; os tempos antigos ficam sem equipe).
+- **Retrato da conta em duas abas:** Monstros (os da coleção e os de monstro vindos do correio) e Especiais (o padrão e os de recompensa, que não são monstros). O correio pode mandar um especial (`avatar:sigil`).
+- **Chat:** o balão fica sempre no canto de cima à esquerda da janela, em todas as telas (no Santuário também).
 - **Música:** o Plano Celestial toca fora das lutas e a Batalha nas lutas, em laço.
   - Ao entrar em combate, o Plano Celestial afunda (cai o volume e o tom) e a Batalha entra por cima.
   - Ao sair, o Plano Celestial volta de onde parou.

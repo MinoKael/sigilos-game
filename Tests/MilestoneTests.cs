@@ -34,7 +34,7 @@ namespace Sigilos.Tests
 			Assert.False(Awakening.CanAwaken(player, core, database.Summon(core.SummonId)), "não desperta");
 			Assert.Equal(0, Fusion.Release(player, database, core.Id), "não se solta");
 			Assert.False(Fusion.CanFuse(player, database, core.Id, imp.Id), "não recebe fusão");
-			Assert.True(Account.Avatars(player).All(a => !InfusionCore.Is(a.Summon)), "nem vira retrato da conta");
+			Assert.True(Account.Avatars(player).All(a => !InfusionCore.Is(a.Id)), "nem vira retrato da conta");
 
 			Assert.True(Fusion.CanFuse(player, database, imp.Id, core.Id), "funde em qualquer família");
 			Assert.True(Fusion.Fuse(new Random(1), player, database, imp.Id, core.Id) >= 0, "funde");

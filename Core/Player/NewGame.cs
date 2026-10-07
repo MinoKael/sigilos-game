@@ -28,6 +28,7 @@ namespace Sigilos.Core.Player
 			var player = new PlayerState
 			{
 				Version = PlayerState.CurrentVersion,
+				Started = now,
 				Scrolls = StartingScrolls,
 				Essence = StartingEssence,
 				Gold = StartingGold,

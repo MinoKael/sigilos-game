@@ -44,6 +44,24 @@ namespace Sigilos.UI.Style
 		/// <summary>Pedra entalhada dentro de um painel (listas, barras, cápsulas).</summary>
 		public const string InsetPanel = "InsetPanel";
 
+		/// <summary>Uma página do Grimório do Invocador.</summary>
+		public const string PagePanel = "PagePanel";
+
+		/// <summary>Título de capítulo numa página do Grimório.</summary>
+		public const string PageHeading = "PageHeadingLabel";
+
+		/// <summary>Texto escrito numa página do Grimório.</summary>
+		public const string PageText = "PageTextLabel";
+
+		/// <summary>Anotação pequena numa página do Grimório.</summary>
+		public const string PageFaded = "PageFadedLabel";
+
+		/// <summary>Barra numa página do Grimório.</summary>
+		public const string PageBar = "PageBar";
+
+		/// <summary>O divisor numa página do Grimório.</summary>
+		public const string PageRule = "PageRule";
+
 		/// <summary>A fonte do jogo: títulos, números e texto.</summary>
 		public static readonly Font Serif = Game();
 
@@ -109,6 +127,21 @@ namespace Sigilos.UI.Style
 			var line = new StyleBoxLine { Color = Palette.GoldDark, Thickness = 1, GrowBegin = -6, GrowEnd = -6 };
 			theme.SetStylebox("separator", "HSeparator", line);
 			theme.SetConstant("separation", "HSeparator", 10);
+
+			theme.SetTypeVariation(PageHeading, "Label");
+			theme.SetFont("font", PageHeading, Serif);
+			theme.SetFontSize("font_size", PageHeading, 22);
+			theme.SetColor("font_color", PageHeading, Palette.Gold);
+
+			theme.SetTypeVariation(PageText, "Label");
+			theme.SetColor("font_color", PageText, Palette.Ink);
+
+			theme.SetTypeVariation(PageFaded, "Label");
+			theme.SetFontSize("font_size", PageFaded, 13);
+			theme.SetColor("font_color", PageFaded, Palette.InkFaded);
+
+			theme.SetTypeVariation(PageRule, "HSeparator");
+			theme.SetStylebox("separator", PageRule, line);
 		}
 
 		private static void Panels(Theme theme)
@@ -117,6 +150,8 @@ namespace Sigilos.UI.Style
 			theme.SetStylebox("panel", "Panel", Ornament.Panel(Palette.Panel, Palette.GoldDark, 0));
 			theme.SetTypeVariation(InsetPanel, "PanelContainer");
 			theme.SetStylebox("panel", InsetPanel, Carved(Palette.Inset, 8));
+			theme.SetTypeVariation(PagePanel, "PanelContainer");
+			theme.SetStylebox("panel", PagePanel, Carved(Palette.Inset, 22));
 		}
 
 		private static void Buttons(Theme theme)
@@ -272,6 +307,9 @@ namespace Sigilos.UI.Style
 			theme.SetStylebox("background", "ProgressBar", groove);
 			theme.SetStylebox("fill", "ProgressBar", Energy(Palette.Health));
 			theme.SetColor("font_color", "ProgressBar", Palette.Text);
+
+			theme.SetTypeVariation(PageBar, "ProgressBar");
+			theme.SetStylebox("background", PageBar, groove);
 
 			// O controle deslizante é a mesma barra entalhada, com a energia até a gema.
 			var track = Carved(Palette.Inset, 0);
