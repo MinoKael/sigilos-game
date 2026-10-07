@@ -1,0 +1,385 @@
+{
+  "_leia": [
+    "Template do correio (POST /admin/mail no sigilos-server). Copie um dos corpos de 'exemplos' (ou o 'template') e mande; o resto do arquivo é referência.",
+    "Fontes: D:\\dev\\sigilos-server\\Server\\Program.cs (MailRequest, MailRewards) e, no jogo, Core/Progression/MailItem.cs, MailGift.cs, Mailbox.cs e GameEntry/Account/CloudMail.cs.",
+    "O servidor confere só o formato das chaves; o jogo descarta em silêncio monstro/retrato que não conhece e runa com raridade ou conjunto inválidos.",
+    "Gerado por py Tools/mail/mail_template.py: rode de novo quando entrar monstro, moeda, raridade ou conjunto."
+  ],
+  "envio": {
+    "rota": "POST https://sigilos.minopavel.duckdns.org/admin/mail",
+    "cabecalhos": {
+      "X-Admin-Key": "<SIGILOS_ADMIN_KEY, 24+ caracteres>",
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    "limite": "30 pedidos por minuto por IP (todas as rotas /admin)",
+    "campos": {
+      "to": "opcional. Nome da conta (sem diferença de maiúsculas e acentos), e-mail, ou \"*\" / vazio / ausente = todas as contas, inclusive as criadas depois do envio",
+      "title": "obrigatório, 1 a 80 caracteres (depois do Trim)",
+      "text": "opcional, até 2000 caracteres; pode ficar vazio",
+      "rewards": "opcional. Objeto chave → quantidade (inteiro ≥ 1). Sem rewards, a carta é só um aviso. A mesma moeda duas vezes com maiúsculas diferentes (gold e Gold) = 400 invalid_reward",
+      "expiresInDays": "opcional, 1 a 365; ausente = a carta não vence"
+    },
+    "respostas": {
+      "201": {
+        "id": "GUID",
+        "to": "nome (ou e-mail) da conta, ou \"*\"",
+        "expiresAt": "data ou null"
+      },
+      "400 invalid_mail": "title vazio/maior que 80, text maior que 2000, ou expiresInDays fora de 1–365",
+      "400 invalid_reward": "chave desconhecida, quantidade < 1 ou acima do máximo, ou moeda repetida (a resposta traz 'allowed' e 'max')",
+      "404 user_not_found": "'to' não bate com nome nem e-mail",
+      "401": "X-Admin-Key ausente ou errada (ou SIGILOS_ADMIN_KEY não configurada)"
+    },
+    "outras_rotas": {
+      "GET /admin/mail": "lista as cartas enviadas (mais novas primeiro) com 'claims' = quantas contas coletaram",
+      "DELETE /admin/mail/{id}": "retira a carta e quem a coletou: 204 ou 404 mail_not_found"
+    }
+  },
+  "template": {
+    "to": "<nome da conta, e-mail ou *>",
+    "title": "Presente completo",
+    "text": "Uma carta com todos os tipos de recompensa.",
+    "rewards": {
+      "gold": 100,
+      "mana": 120,
+      "scrolls": 10,
+      "essence": 5000,
+      "fragments": 10,
+      "reappraisalGems": 2,
+      "lightDarkScrolls": 1,
+      "legendaryScrolls": 1,
+      "infusionCores": 2,
+      "monster:knight_fire": 1,
+      "rune:5": 2,
+      "rune:5:Hero": 1,
+      "rune:6:Legendary:Vigor": 1,
+      "avatar:imp_fire:awakened": 1
+    },
+    "expiresInDays": 30
+  },
+  "exemplos": {
+    "pergaminhos_especiais": {
+      "to": "*",
+      "title": "Evento de aniversário",
+      "text": "Pergaminhos especiais para todos.",
+      "rewards": {
+        "lightDarkScrolls": 1,
+        "legendaryScrolls": 1
+      },
+      "expiresInDays": 30
+    },
+    "aviso_sem_recompensa": {
+      "to": "*",
+      "title": "Manutenção amanhã",
+      "text": "O servidor fica fora do ar das 3h às 4h."
+    },
+    "moedas_para_todos": {
+      "to": "*",
+      "title": "Manutenção concluída",
+      "text": "Obrigado pela paciência.",
+      "rewards": {
+        "mana": 120,
+        "gold": 50
+      },
+      "expiresInDays": 7
+    },
+    "todas_as_moedas": {
+      "to": "Mestre",
+      "title": "Compensação",
+      "text": "",
+      "rewards": {
+        "gold": 100,
+        "mana": 120,
+        "scrolls": 10,
+        "essence": 5000,
+        "fragments": 10,
+        "reappraisalGems": 2,
+        "lightDarkScrolls": 1,
+        "legendaryScrolls": 1,
+        "infusionCores": 2
+      }
+    },
+    "monstro_para_uma_conta": {
+      "to": "player@example.com",
+      "title": "Um novo aliado",
+      "text": "Cópia nova, nível 1, como a da invocação.",
+      "rewards": {
+        "monster:knight_fire": 2
+      }
+    },
+    "nucleo_de_infusao": {
+      "to": "Mestre",
+      "title": "Núcleos de Infusão",
+      "text": "Até 10 por carta; monster:infusion_core dá o mesmo resultado.",
+      "rewards": {
+        "infusionCores": 3
+      }
+    },
+    "runas": {
+      "to": "*",
+      "title": "Runas de presente",
+      "text": "Sorteadas como as da vitória.",
+      "rewards": {
+        "rune:4": 5,
+        "rune:5:Rare": 2,
+        "rune:6:Legendary:Frenzy": 1
+      },
+      "expiresInDays": 14
+    },
+    "retrato": {
+      "to": "Mestre",
+      "title": "Retrato exclusivo",
+      "text": "Libera o retrato da conta, mesmo sem ter o monstro.",
+      "rewards": {
+        "avatar:imp_fire": 1,
+        "avatar:dragon_dark:awakened": 1
+      }
+    }
+  },
+  "catalogo": {
+    "moedas": {
+      "_regra": "chave = nome da moeda (sem diferença de maiúsculas); 1 a 1.000.000 cada, menos infusionCores (1 a 10)",
+      "gold": "Ouro",
+      "mana": "Mana (pode passar do máximo)",
+      "scrolls": "Pergaminhos",
+      "essence": "Essência",
+      "fragments": "Fragmentos",
+      "reappraisalGems": "Gemas de Reavaliação",
+      "lightDarkScrolls": "Pergaminhos de Luz e Trevas",
+      "legendaryScrolls": "Pergaminhos Lendários",
+      "infusionCores": "Núcleos de Infusão, 1 a 10 (cada um chega como monstro; igual a monster:infusion_core)"
+    },
+    "runas": {
+      "_regra": "chave rune:<estrelas>[:<raridade>[:<conjunto>]]; 1 a 20 por chave. Sem raridade/conjunto, sorteados. Conjunto exige raridade (rune:5::Vigor não vale). Raridade ou conjunto com erro de grafia: o servidor aceita e o jogo descarta a runa",
+      "estrelas": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "raridades": {
+        "Normal": "Normal, 0 subatributos",
+        "Magic": "Mágica, 1 subatributo",
+        "Rare": "Rara, 2 subatributos",
+        "Hero": "Heroica, 3 subatributos",
+        "Legendary": "Lendária, 4 subatributos"
+      },
+      "conjuntos": {
+        "Vigor": "Vigor",
+        "Haste": "Pressa",
+        "Ward": "Vigia",
+        "Bulwark": "Baluarte",
+        "Finesse": "Sutileza",
+        "Strike": "Agredir",
+        "Frenzy": "Frenesi",
+        "Counter": "Contragolpe",
+        "Torment": "Tormento",
+        "Tenacity": "Tenacidade",
+        "Wrath": "Fúria",
+        "Lethal": "Letal",
+        "Sustain": "Amparo",
+        "Bane": "Perdição",
+        "Siphon": "Sifão",
+        "Oblivion": "Oblívio"
+      }
+    },
+    "monstros": {
+      "_regra": "chave monster:<id> (minúsculas, o id da variante); 1 a 10 por chave; cópias novas no nível 1 (Baú se a coleção estiver cheia). Também vale monster:infusion_core",
+      "ids": {
+        "2★": {
+          "bird_dark": "Pássaro de Trevas (Dark)",
+          "bird_fire": "Pássaro de Fogo (Fire)",
+          "bird_light": "Pássaro de Luz (Light)",
+          "bird_water": "Pássaro de Água (Water)",
+          "bird_wind": "Pássaro de Vento (Wind)",
+          "carnivorous_plant_dark": "Planta Carnívora de Trevas (Dark)",
+          "carnivorous_plant_fire": "Planta Carnívora de Fogo (Fire)",
+          "carnivorous_plant_light": "Planta Carnívora de Luz (Light)",
+          "carnivorous_plant_water": "Planta Carnívora de Água (Water)",
+          "carnivorous_plant_wind": "Planta Carnívora de Vento (Wind)",
+          "lizard_dark": "Lagarto de Trevas (Dark)",
+          "lizard_fire": "Lagarto de Fogo (Fire)",
+          "lizard_light": "Lagarto de Luz (Light)",
+          "lizard_water": "Lagarto de Água (Water)",
+          "lizard_wind": "Lagarto de Vento (Wind)",
+          "mushroom_dark": "Cogumelo de Trevas (Dark)",
+          "mushroom_fire": "Cogumelo de Fogo (Fire)",
+          "mushroom_light": "Cogumelo de Luz (Light)",
+          "mushroom_water": "Cogumelo de Água (Water)",
+          "mushroom_wind": "Cogumelo de Vento (Wind)",
+          "pixie_dark": "Pixie de Trevas (Dark)",
+          "pixie_fire": "Pixie de Fogo (Fire)",
+          "pixie_light": "Pixie de Luz (Light)",
+          "pixie_water": "Pixie de Água (Water)",
+          "pixie_wind": "Pixie de Vento (Wind)"
+        },
+        "3★": {
+          "archer_dark": "Arqueiro de Trevas (Dark)",
+          "archer_fire": "Arqueiro de Fogo (Fire)",
+          "archer_light": "Arqueiro de Luz (Light)",
+          "archer_water": "Arqueiro de Água (Water)",
+          "archer_wind": "Arqueiro de Vento (Wind)",
+          "assassin_dark": "Assassino de Trevas (Dark)",
+          "assassin_fire": "Assassino de Fogo (Fire)",
+          "assassin_light": "Assassino de Luz (Light)",
+          "assassin_water": "Assassino de Água (Water)",
+          "assassin_wind": "Assassino de Vento (Wind)",
+          "bandit_dark": "Bandido de Trevas (Dark)",
+          "bandit_fire": "Bandido de Fogo (Fire)",
+          "bandit_light": "Bandido de Luz (Light)",
+          "bandit_water": "Bandido de Água (Water)",
+          "bandit_wind": "Bandido de Vento (Wind)",
+          "goblin_dark": "Goblin de Trevas (Dark)",
+          "goblin_fire": "Goblin de Fogo (Fire)",
+          "goblin_light": "Goblin de Luz (Light)",
+          "goblin_water": "Goblin de Água (Water)",
+          "goblin_wind": "Goblin de Vento (Wind)",
+          "imp_dark": "Diabrete de Trevas (Dark)",
+          "imp_fire": "Diabrete de Fogo (Fire)",
+          "imp_light": "Diabrete de Luz (Light)",
+          "imp_water": "Diabrete de Água (Water)",
+          "imp_wind": "Diabrete de Vento (Wind)",
+          "medusa_dark": "Medusa de Trevas (Dark)",
+          "medusa_fire": "Medusa de Fogo (Fire)",
+          "medusa_light": "Medusa de Luz (Light)",
+          "medusa_water": "Medusa de Água (Water)",
+          "medusa_wind": "Medusa de Vento (Wind)",
+          "minotaur_dark": "Minotauro de Trevas (Dark)",
+          "minotaur_fire": "Minotauro de Fogo (Fire)",
+          "minotaur_light": "Minotauro de Luz (Light)",
+          "minotaur_water": "Minotauro de Água (Water)",
+          "minotaur_wind": "Minotauro de Vento (Wind)",
+          "skeleton_dark": "Esqueleto de Trevas (Dark)",
+          "skeleton_fire": "Esqueleto de Fogo (Fire)",
+          "skeleton_light": "Esqueleto de Luz (Light)",
+          "skeleton_water": "Esqueleto de Água (Water)",
+          "skeleton_wind": "Esqueleto de Vento (Wind)",
+          "slime_dark": "Limo de Trevas (Dark)",
+          "slime_fire": "Limo de Fogo (Fire)",
+          "slime_light": "Limo de Luz (Light)",
+          "slime_water": "Limo de Água (Water)",
+          "slime_wind": "Limo de Vento (Wind)",
+          "wolf_dark": "Lobo de Trevas (Dark)",
+          "wolf_fire": "Lobo de Fogo (Fire)",
+          "wolf_light": "Lobo de Luz (Light)",
+          "wolf_water": "Lobo de Água (Water)",
+          "wolf_wind": "Lobo de Vento (Wind)"
+        },
+        "4★": {
+          "crow_dark": "Corvo de Trevas (Dark)",
+          "crow_fire": "Corvo de Fogo (Fire)",
+          "crow_light": "Corvo de Luz (Light)",
+          "crow_water": "Corvo de Água (Water)",
+          "crow_wind": "Corvo de Vento (Wind)",
+          "dryad_dark": "Dríade de Trevas (Dark)",
+          "dryad_fire": "Dríade de Fogo (Fire)",
+          "dryad_light": "Dríade de Luz (Light)",
+          "dryad_water": "Dríade de Água (Water)",
+          "dryad_wind": "Dríade de Vento (Wind)",
+          "dwarf_miner_dark": "Minerador Anão de Trevas (Dark)",
+          "dwarf_miner_fire": "Minerador Anão de Fogo (Fire)",
+          "dwarf_miner_light": "Minerador Anão de Luz (Light)",
+          "dwarf_miner_water": "Minerador Anão de Água (Water)",
+          "dwarf_miner_wind": "Minerador Anão de Vento (Wind)",
+          "gargoyle_dark": "Gárgula de Trevas (Dark)",
+          "gargoyle_fire": "Gárgula de Fogo (Fire)",
+          "gargoyle_light": "Gárgula de Luz (Light)",
+          "gargoyle_water": "Gárgula de Água (Water)",
+          "gargoyle_wind": "Gárgula de Vento (Wind)",
+          "gorilla_dark": "Gorila de Trevas (Dark)",
+          "gorilla_fire": "Gorila de Fogo (Fire)",
+          "gorilla_light": "Gorila de Luz (Light)",
+          "gorilla_water": "Gorila de Água (Water)",
+          "gorilla_wind": "Gorila de Vento (Wind)",
+          "knight_dark": "Cavaleiro de Trevas (Dark)",
+          "knight_fire": "Cavaleiro de Fogo (Fire)",
+          "knight_light": "Cavaleiro de Luz (Light)",
+          "knight_water": "Cavaleiro de Água (Water)",
+          "knight_wind": "Cavaleiro de Vento (Wind)",
+          "lich_dark": "Lich de Trevas (Dark)",
+          "lich_fire": "Lich de Fogo (Fire)",
+          "lich_light": "Lich de Luz (Light)",
+          "lich_water": "Lich de Água (Water)",
+          "lich_wind": "Lich de Vento (Wind)",
+          "mummy_dark": "Múmia de Trevas (Dark)",
+          "mummy_fire": "Múmia de Fogo (Fire)",
+          "mummy_light": "Múmia de Luz (Light)",
+          "mummy_water": "Múmia de Água (Water)",
+          "mummy_wind": "Múmia de Vento (Wind)",
+          "pirate_dark": "Pirata de Trevas (Dark)",
+          "pirate_fire": "Pirata de Fogo (Fire)",
+          "pirate_light": "Pirata de Luz (Light)",
+          "pirate_water": "Pirata de Água (Water)",
+          "pirate_wind": "Pirata de Vento (Wind)",
+          "samurai_dark": "Samurai de Trevas (Dark)",
+          "samurai_fire": "Samurai de Fogo (Fire)",
+          "samurai_light": "Samurai de Luz (Light)",
+          "samurai_water": "Samurai de Água (Water)",
+          "samurai_wind": "Samurai de Vento (Wind)",
+          "troll_dark": "Troll de Trevas (Dark)",
+          "troll_fire": "Troll de Fogo (Fire)",
+          "troll_light": "Troll de Luz (Light)",
+          "troll_water": "Troll de Água (Water)",
+          "troll_wind": "Troll de Vento (Wind)",
+          "vampire_dark": "Vampiro de Trevas (Dark)",
+          "vampire_fire": "Vampiro de Fogo (Fire)",
+          "vampire_light": "Vampiro de Luz (Light)",
+          "vampire_water": "Vampiro de Água (Water)",
+          "vampire_wind": "Vampiro de Vento (Wind)"
+        },
+        "5★": {
+          "angel_dark": "Anjo de Trevas (Dark)",
+          "angel_fire": "Anjo de Fogo (Fire)",
+          "angel_light": "Anjo de Luz (Light)",
+          "angel_water": "Anjo de Água (Water)",
+          "angel_wind": "Anjo de Vento (Wind)",
+          "dragon_dark": "Dragão de Trevas (Dark)",
+          "dragon_fire": "Dragão de Fogo (Fire)",
+          "dragon_light": "Dragão de Luz (Light)",
+          "dragon_water": "Dragão de Água (Water)",
+          "dragon_wind": "Dragão de Vento (Wind)",
+          "druid_dark": "Druida de Trevas (Dark)",
+          "druid_fire": "Druida de Fogo (Fire)",
+          "druid_light": "Druida de Luz (Light)",
+          "druid_water": "Druida de Água (Water)",
+          "druid_wind": "Druida de Vento (Wind)",
+          "monk_dark": "Monge de Trevas (Dark)",
+          "monk_fire": "Monge de Fogo (Fire)",
+          "monk_light": "Monge de Luz (Light)",
+          "monk_water": "Monge de Água (Water)",
+          "monk_wind": "Monge de Vento (Wind)",
+          "paladin_dark": "Paladino de Trevas (Dark)",
+          "paladin_fire": "Paladino de Fogo (Fire)",
+          "paladin_light": "Paladino de Luz (Light)",
+          "paladin_water": "Paladino de Água (Water)",
+          "paladin_wind": "Paladino de Vento (Wind)",
+          "phoenix_dark": "Fênix de Trevas (Dark)",
+          "phoenix_fire": "Fênix de Fogo (Fire)",
+          "phoenix_light": "Fênix de Luz (Light)",
+          "phoenix_water": "Fênix de Água (Water)",
+          "phoenix_wind": "Fênix de Vento (Wind)",
+          "princess_dark": "Princesa de Trevas (Dark)",
+          "princess_fire": "Princesa de Fogo (Fire)",
+          "princess_light": "Princesa de Luz (Light)",
+          "princess_water": "Princesa de Água (Water)",
+          "princess_wind": "Princesa de Vento (Wind)",
+          "unicorn_dark": "Unicórnio de Trevas (Dark)",
+          "unicorn_fire": "Unicórnio de Fogo (Fire)",
+          "unicorn_light": "Unicórnio de Luz (Light)",
+          "unicorn_water": "Unicórnio de Água (Water)",
+          "unicorn_wind": "Unicórnio de Vento (Wind)",
+          "wizard_dark": "Mago de Trevas (Dark)",
+          "wizard_fire": "Mago de Fogo (Fire)",
+          "wizard_light": "Mago de Luz (Light)",
+          "wizard_water": "Mago de Água (Water)",
+          "wizard_wind": "Mago de Vento (Wind)"
+        }
+      }
+    },
+    "retratos": {
+      "_regra": "chave avatar:<id> ou avatar:<id>:awakened; quantidade sempre 1. Os ids são os mesmos de catalogo.monstros.ids"
+    }
+  }
+}
