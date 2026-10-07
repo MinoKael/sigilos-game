@@ -48,5 +48,19 @@ namespace Sigilos.UI.Components
 			Sparkle(canvas, at, radius * 0.75f, new Color(color, 0.12f * twinkle));
 			Sparkle(canvas, at, radius * 0.38f, new Color(color.Lightened(0.2f), 0.45f + 0.5f * twinkle));
 		}
+
+		/// <summary>
+		/// A mesma estrela que pisca, com o desenho <paramref name="star"/> (em branco, para tingir) no lugar
+		/// do polígono: os mesmos raios e o mesmo pulso, com a borda lisa do PNG renderizado.
+		/// </summary>
+		public static void Twinkle(CanvasItem canvas, Texture2D star, Vector2 at, float radius, float time, float phase, Color color)
+		{
+			var twinkle = 0.55f + 0.45f * Mathf.Sin(time * 1.7f + phase);
+			Draw(radius * 0.75f, new Color(color, 0.12f * twinkle));
+			Draw(radius * 0.38f, new Color(color.Lightened(0.2f), 0.45f + 0.5f * twinkle));
+
+			void Draw(float size, Color tint) =>
+				canvas.DrawTextureRect(star, new Rect2(at - new Vector2(size, size), new Vector2(size, size) * 2), false, tint);
+		}
 	}
 }

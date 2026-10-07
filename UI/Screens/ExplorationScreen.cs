@@ -34,6 +34,7 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _actions = new() { Name = "Actions" };
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private ScrollContainer? _chartScroll;
+		private ScrollContainer? _detailScroll;
 		private int _selected;
 		private Hemisphere _hemisphere;
 
@@ -88,7 +89,8 @@ namespace Sigilos.UI.Screens
 			var column = new VBoxContainer { Name = "Column" };
 			column.AddThemeConstantOverride("separation", 10);
 			_detail.AddThemeConstantOverride("separation", 12);
-			column.AddChild(Layout.Scroll(_detail));
+			_detailScroll = Layout.Scroll(_detail);
+			column.AddChild(_detailScroll);
 			_actions.AddThemeConstantOverride("separation", 8);
 			column.AddChild(_actions);
 			panel.AddChild(column);
@@ -165,9 +167,7 @@ namespace Sigilos.UI.Screens
 				// A faixa nova abre na constelação a vencer dela (ou na primeira).
 				_hemisphere = (Hemisphere)index;
 				var (first, last) = Exploration.Range(_hemisphere);
-				_selected = Math.Clamp(Cleared + 1, first, last);
-				_message.Text = "";
-				Callable.From(Refresh).CallDeferred();
+				Select(Math.Clamp(Cleared + 1, first, last));
 			};
 			_tabs.AddChild(tabs);
 		}
@@ -178,16 +178,24 @@ namespace Sigilos.UI.Screens
 			_progress.Text = T("exploration.progress", Cleared, Exploration.Constellations.Count)
 				+ (_player.ExplorationBest > 0 ? "  ·  " + T("exploration.best", _player.ExplorationBest) : "");
 			var chart = new StarChart(Exploration, _hemisphere, Cleared, _selected) { Name = "Map" };
-			chart.Chosen += number =>
-			{
-				_selected = number;
-				_message.Text = "";
-				Callable.From(Refresh).CallDeferred();
-			};
+			chart.Chosen += Select;
 			_chartScroll = Layout.Scroll(chart).Named("MapScroll");
 			_chart.AddChild(_chartScroll);
 			if (chart.OrbOf(_selected) is { } orb)
 				Layout.Reveal(_chartScroll, orb);
+		}
+
+		/// <summary>
+		/// Abre a constelação <paramref name="number"/>: a coluna da direita volta ao topo, como ao entrar
+		/// na tela (na hora, sem animação), e a tela se refaz no fim do quadro.
+		/// </summary>
+		private void Select(int number)
+		{
+			_selected = number;
+			_message.Text = "";
+			if (_detailScroll != null)
+				_detailScroll.ScrollVertical = 0;
+			Callable.From(Refresh).CallDeferred();
 		}
 
 		private void RefreshDetail()

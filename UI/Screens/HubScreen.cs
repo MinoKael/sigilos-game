@@ -76,8 +76,8 @@ namespace Sigilos.UI.Screens
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			// O anel do fundo gira em volta do sigilo da Canalização.
-			AddChild(Layout.Background(_core));
+			// Sem o anel do fundo: a constelação já faz esse papel em volta do sigilo da Canalização.
+			AddChild(Layout.Background(_core, ring: false));
 			var page = Layout.Page(this);
 
 			var top = Layout.Row(12).Named("Top");

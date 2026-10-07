@@ -169,7 +169,10 @@ namespace Sigilos.UI.Components
 			QueueRedraw();
 		}
 
-		/// <summary>A estrela que pisca no orbe sem ícone, como os orbes da Canalização.</summary>
+		/// <summary>
+		/// A estrela que pisca no orbe sem ícone, como os orbes da Canalização, desenhada com a estrela polar
+		/// (<c>polar_star</c>) em vez do polígono, que serrilha nesse tamanho.
+		/// </summary>
 		private sealed partial class Twinkler : Control
 		{
 			private readonly float _phase;
@@ -188,7 +191,14 @@ namespace Sigilos.UI.Components
 				QueueRedraw();
 			}
 
-			public override void _Draw() => Starlight.Twinkle(this, Size / 2, Mathf.Min(Size.X, Size.Y) / 2 - 6, _time, _phase, Palette.Gold);
+			public override void _Draw()
+			{
+				var radius = Mathf.Min(Size.X, Size.Y) / 2 - 6;
+				if (Art.IconInk("polar_star") is { } star)
+					Starlight.Twinkle(this, star, Size / 2, radius, _time, _phase, Palette.Gold);
+				else
+					Starlight.Twinkle(this, Size / 2, radius, _time, _phase, Palette.Gold);
+			}
 		}
 	}
 }

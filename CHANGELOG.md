@@ -6,6 +6,10 @@
   - Fundo de céu noturno com nebulosa e astrolábio; separadores com estrela; páginas de pergaminho escritas a tinta.
   - A Canalização ganhou a carta do céu por baixo, o mapa da Exploração a grade do céu, e os sigilos grandes a moldura graduada.
   - Ícones novos da Exploração Estelar: a porta, a Influência e as três faixas do céu.
+  - Títulos numa fonte serifada de destaque (Cinzel); o texto e os números continuam na fonte do jogo.
+  - O Santuário perdeu o anel girando no fundo: a constelação da Canalização já faz esse papel.
+  - A estrela que pisca nos orbes do mapa da Exploração é a estrela polar desenhada, lisa, no lugar do polígono serrilhado.
+- **Exploração:** escolher outra constelação volta a coluna da direita para o topo, como ao entrar na tela.
 - **Grimório do Invocador:** tocar na conta, no Santuário, abre o livro da conta, com quatro capítulos, em páginas de pergaminho.
   - I, Invocador: retrato, nome, desde quando a conta existe, nível e os registros (com o mais longe no céu).
   - II, Masmorras: andares vencidos, a equipe do melhor tempo do andar mais fundo e os melhores tempos de cada andar.

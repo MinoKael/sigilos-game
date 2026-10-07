@@ -71,6 +71,12 @@ namespace Sigilos.UI.Style
 		/// <summary>A mesma fonte do jogo (o nome fica para quem pede "a fonte do texto").</summary>
 		public static readonly Font Sans = Serif;
 
+		/// <summary>
+		/// A fonte de destaque, serifada, só para títulos (<see cref="Title"/>, <see cref="Heading"/>,
+		/// <see cref="PageHeading"/>); o texto e os números ficam na fonte do jogo.
+		/// </summary>
+		public static readonly Font Display = DisplayFont();
+
 		/// <summary>A fonte das runas: cada Glifo é uma letra (<see cref="Texts.Rune"/>).</summary>
 		public static readonly Font Runes = GD.Load<Font>("res://Assets/Fonts/Kehdrai.ttf");
 
@@ -81,6 +87,15 @@ namespace Sigilos.UI.Style
 			var reserve = new SystemFont { FontNames = new[] { "Georgia", "Segoe UI Symbol", "Segoe UI", "Arial" } };
 			font.Fallbacks = new Godot.Collections.Array<Font> { reserve };
 			return font;
+		}
+
+		/// <summary>A Cinzel no peso 600, que fica legível no tamanho dos títulos, com a reserva da fonte do jogo.</summary>
+		private static Font DisplayFont()
+		{
+			var font = GD.Load<FontFile>("res://Assets/Fonts/Cinzel.ttf");
+			font.Fallbacks = new Godot.Collections.Array<Font> { Serif };
+			var weight = TextServerManager.GetPrimaryInterface().NameToTag("wght");
+			return new FontVariation { BaseFont = font, VariationOpentype = new Godot.Collections.Dictionary { { weight, 600 } } };
 		}
 
 		public static Theme Build()
@@ -103,14 +118,14 @@ namespace Sigilos.UI.Style
 			theme.SetColor("font_color", "Label", Palette.Text);
 
 			theme.SetTypeVariation(Title, "Label");
-			theme.SetFont("font", Title, Serif);
+			theme.SetFont("font", Title, Display);
 			theme.SetFontSize("font_size", Title, 32);
 			theme.SetColor("font_color", Title, Palette.Gold);
 			theme.SetColor("font_shadow_color", Title, new Color(Palette.Background, 0.85f));
 			theme.SetConstant("shadow_offset_y", Title, 2);
 
 			theme.SetTypeVariation(Heading, "Label");
-			theme.SetFont("font", Heading, Serif);
+			theme.SetFont("font", Heading, Display);
 			theme.SetFontSize("font_size", Heading, 23);
 			theme.SetColor("font_color", Heading, Palette.Gold);
 			theme.SetColor("font_shadow_color", Heading, new Color(Palette.Background, 0.6f));
@@ -130,7 +145,7 @@ namespace Sigilos.UI.Style
 			theme.SetColor("default_color", "RichTextLabel", Palette.Text);
 
 			theme.SetTypeVariation(PageHeading, "Label");
-			theme.SetFont("font", PageHeading, Serif);
+			theme.SetFont("font", PageHeading, Display);
 			theme.SetFontSize("font_size", PageHeading, 22);
 			theme.SetColor("font_color", PageHeading, Palette.Rubric);
 

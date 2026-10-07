@@ -148,9 +148,16 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Effects/oblivion.svg` | [Brain-freeze - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Brain-freeze_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/chat.svg` | [Talk - game-icons.svg](https://commons.wikimedia.org/wiki/File:Talk_-_game-icons.svg) | Skoll | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/friends.svg` | [Shaking-hands - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Shaking-hands_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/polar_star.svg` | [Polar-star - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Polar-star_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/seal.svg` | [Wax-seal - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Wax-seal_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/star_exploration.svg` | [Telescope - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Telescope_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/influence.svg` | [Orbital - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Orbital_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/hemisphere_boreal.svg` | [Night-sky - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Night-sky_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/hemisphere_equatorial.svg` | [Star-formation - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Star-formation_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/hemisphere_austral.svg` | [Galaxy - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Galaxy_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+
+## Fontes
+
+| Arquivo | Fonte | Autor | Licença |
+|---|---|---|---|
+| `Fonts/Cinzel.ttf` (a de destaque dos títulos) | [Cinzel](https://github.com/NDISCOVER/Cinzel), pelo Google Fonts | The Cinzel Project Authors (Natanael Gama) | [SIL OFL 1.1](https://openfontlicense.org), texto em `Fonts/Cinzel-OFL.txt` |
