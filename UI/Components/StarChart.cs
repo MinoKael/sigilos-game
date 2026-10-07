@@ -15,7 +15,8 @@ namespace Sigilos.UI.Components
 	/// No trecho já vencido no mês, o fio é verde e a faísca corre por ele; até a próxima, dourado; dali em
 	/// diante, apagado e sem faísca. A próxima a vencer pulsa em verde; a escolhida fica acesa; as que ainda
 	/// não abriram ficam apagadas, mas se tocam (dá para olhar o que vem). Sem o ícone da constelação, o orbe
-	/// mostra a estrela que pisca, como os da Canalização. Atrás, um campo de estrelas.
+	/// mostra a estrela que pisca, como os da Canalização. Atrás, um campo de estrelas e a grade de
+	/// ascensão reta e declinação a tinta de índigo, como a carta do céu da Canalização.
 	///
 	/// Só desenha e avisa o toque (<see cref="Chosen"/>): o que fazer com a constelação é da tela.
 	/// </summary>
@@ -26,11 +27,17 @@ namespace Sigilos.UI.Components
 		/// <summary>Quantas estrelas de fundo por 10.000 px² do mapa.</summary>
 		private const float StarDensity = 1.1f;
 
+		/// <summary>Colunas de ascensão reta na largura do mapa; as linhas de declinação têm o mesmo passo.</summary>
+		private const int Hours = 8;
+
+		private static readonly Color GridInk = new(Palette.Indigo, 0.4f);
+
 		private readonly List<(int Number, SigilButton Node, Vector2 Spot)> _orbs = new();
 		private readonly List<(Vector2 Spot, float Size, float Phase)> _field = new();
 		private readonly float _chartWidth;
 		private readonly float _chartHeight;
 		private readonly int _cleared;
+		private Vector2[] _grid = [];
 		private float _time;
 
 		/// <param name="cleared">Constelações vencidas no mês (o fio brilha até aí).</param>
@@ -97,6 +104,9 @@ namespace Sigilos.UI.Components
 
 		public override void _Draw()
 		{
+			if (_grid.Length > 0)
+				DrawMultiline(_grid, GridInk, 1);
+
 			foreach (var (spot, size, phase) in _field)
 			{
 				var light = 0.25f + 0.2f * Mathf.Sin(_time * 0.8f + phase);
@@ -125,6 +135,26 @@ namespace Sigilos.UI.Components
 
 		private static Vector2 Center(Control control) => control.Position + control.Size / 2;
 
+		/// <summary>A grade do céu no tamanho do mapa, refeita só quando ele muda (pares de pontos, para um traço só).</summary>
+		private static Vector2[] Grid(Vector2 size)
+		{
+			if (size.X <= 0 || size.Y <= 0)
+				return [];
+			var step = size.X / Hours;
+			var lines = new List<Vector2>();
+			for (var x = step; x < size.X - 1; x += step)
+			{
+				lines.Add(new Vector2(x, 0));
+				lines.Add(new Vector2(x, size.Y));
+			}
+			for (var y = step; y < size.Y - 1; y += step)
+			{
+				lines.Add(new Vector2(0, y));
+				lines.Add(new Vector2(size.X, y));
+			}
+			return lines.ToArray();
+		}
+
 		private void Arrange()
 		{
 			UpdateMinimumSize();
@@ -135,6 +165,7 @@ namespace Sigilos.UI.Components
 				node.Position = spot * zoom - node.Size / 2;
 			}
 
+			_grid = Grid(Size);
 			QueueRedraw();
 		}
 

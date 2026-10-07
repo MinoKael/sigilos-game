@@ -21,9 +21,16 @@ namespace Sigilos.UI.Components
 	/// Os estados se leem pela luz, não pela cor de fundo: apertado, afunda; ligado
 	/// (<see cref="BaseButton.ToggleMode"/>) fica aceso em azul; desligado, apaga. <see cref="Highlight"/>
 	/// pulsa em verde para chamar o jogador. No PC, sob o mouse a moldura vira ouro; nada depende disso.
+	/// O redondo grande (a partir de <see cref="Bezel"/>) tem a moldura graduada como um astrolábio.
 	/// </summary>
 	public partial class SigilButton : Button
 	{
+		/// <summary>O tamanho a partir do qual o sigilo redondo ganha as marcas de grau entre as duas molduras.</summary>
+		public const float Bezel = 56;
+
+		/// <summary>As direções das marcas: 24, uma a cada 15°; as dos pontos cardeais entram mais.</summary>
+		private static readonly Vector2[] Degrees = Directions(24);
+
 		private readonly Doodle _icon;
 		private readonly Label _letters = new()
 		{
@@ -51,6 +58,7 @@ namespace Sigilos.UI.Components
 		private float _time;
 		private Color _ink = Palette.Gold;
 		private Color? _accent;
+		private Vector2[]? _ticks;
 
 		public SigilButton(Texture2D? icon, float size = 56, SigilShape shape = SigilShape.Circle)
 		{
@@ -268,6 +276,28 @@ namespace Sigilos.UI.Components
 			Body(center, radius, fill);
 			Outline(center, radius, ring, 2);
 			Outline(center, radius - 4, new Color(ring, 0.35f), 1);
+			if (Shape == SigilShape.Circle && Mathf.Min(Size.X, Size.Y) >= Bezel)
+				Graduate(center, radius, new Color(ring, 0.55f));
+		}
+
+		/// <summary>As marcas de grau na faixa entre as duas molduras, num traço só.</summary>
+		private void Graduate(Vector2 center, float radius, Color color)
+		{
+			_ticks ??= new Vector2[Degrees.Length * 2];
+			for (var k = 0; k < Degrees.Length; k++)
+			{
+				_ticks[k * 2] = center + Degrees[k] * (radius - 1);
+				_ticks[k * 2 + 1] = center + Degrees[k] * (radius - (k % 6 == 0 ? 8 : 4));
+			}
+			DrawMultiline(_ticks, color, 1, true);
+		}
+
+		private static Vector2[] Directions(int count)
+		{
+			var directions = new Vector2[count];
+			for (var k = 0; k < count; k++)
+				directions[k] = Vector2.FromAngle(k * Mathf.Tau / count - Mathf.Pi / 2);
+			return directions;
 		}
 
 		private void Body(Vector2 center, float radius, Color fill)

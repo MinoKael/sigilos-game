@@ -1,16 +1,6 @@
 # Exploração Estelar: ícones e desenhos novos
 
-Ids que o código e os dados já usam e que ainda não têm arte. Sem o arquivo, o jogo roda: o orbe da constelação mostra a estrela que pisca, e os outros lugares ficam só com a cor. Os ícones vão em `Assets/Icons/<id>.svg` e os desenhos de criatura em `Assets/Creatures/<id>.svg`; depois, `Tools/art/render_png.py` gera os PNG de `Assets/Rendered`.
-
-## Ícones da interface (`Assets/Icons`)
-
-| Id | Onde aparece |
-| --- | --- |
-| `star_exploration` | Porta da Exploração Estelar na tela Batalha, aviso de "abriu", Compêndio, aba de Equipes e a Exploração do mês |
-| `influence` | Cabeçalho da Influência na ficha da constelação |
-| `hemisphere_boreal` | Aba Boreais |
-| `hemisphere_equatorial` | Aba Equatoriais |
-| `hemisphere_austral` | Aba Austrais |
+Ids que o código e os dados já usam e que ainda não têm arte. Sem o arquivo, o jogo roda: o orbe da constelação mostra a estrela que pisca, e a ficha da constelação fica sem o desenho. Os ícones da interface (a porta `star_exploration`, `influence` e as faixas `hemisphere_*`) já existem. Os ícones vão em `Assets/Icons/<id>.svg` e os desenhos de criatura em `Assets/Creatures/<id>.svg`; depois, `Tools/art/render_png.py` gera os PNG de `Assets/Rendered`.
 
 ## Desenhos de criatura (`Assets/Creatures`)
 

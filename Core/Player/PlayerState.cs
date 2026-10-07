@@ -24,6 +24,9 @@ namespace Sigilos.Core.Player
 		/// <summary>0 num save anterior ao campo existir.</summary>
 		public int Version { get; set; }
 
+		/// <summary>Quando a conta começou (o Grimório do Invocador mostra); nulo num save anterior ao campo existir.</summary>
+		public DateTime? Started { get; set; }
+
 		// Moedas (GDD, seção 12).
 
 		/// <summary>Pergaminhos Místicos: o comum (fases, Masmorras, Loja).</summary>

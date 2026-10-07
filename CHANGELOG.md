@@ -1,6 +1,17 @@
 # Changelog — Sigilos
 
 ## 07/10/2026
+- **Visual: o grimório do invocador.** A interface inteira virou o gabinete de um invocador que estuda constelações.
+  - Paleta sóbria: violeta (místico), índigo (céu), ouro só no que é precioso, couro e pergaminho.
+  - Fundo de céu noturno com nebulosa e astrolábio; separadores com estrela; páginas de pergaminho escritas a tinta.
+  - A Canalização ganhou a carta do céu por baixo, o mapa da Exploração a grade do céu, e os sigilos grandes a moldura graduada.
+  - Ícones novos da Exploração Estelar: a porta, a Influência e as três faixas do céu.
+- **Grimório do Invocador:** tocar na conta, no Santuário, abre o livro da conta, com quatro capítulos.
+  - I, Invocador: retrato, nome, desde quando a conta existe, nível e os registros.
+  - II, Masmorras: andares vencidos e os melhores tempos.
+  - III, Céu: a Exploração do mês, o mais longe que já chegou e o céu da faixa desenhado a tinta.
+  - IV, Selos: doze marcos da jornada e da coleção, lacrados em cera quando cumpridos (só registro, sem prêmio).
+  - Trocar o retrato passou a ser pelo livro.
 - **Música:** o Plano Celestial toca fora das lutas e a Batalha nas lutas, em laço.
   - Ao entrar em combate, o Plano Celestial afunda (cai o volume e o tom) e a Batalha entra por cima.
   - Ao sair, o Plano Celestial volta de onde parou.

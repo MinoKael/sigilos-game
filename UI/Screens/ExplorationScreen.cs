@@ -111,15 +111,21 @@ namespace Sigilos.UI.Screens
 			RefreshDetail();
 		}
 
+		/// <summary>"Nova Exploração em 12 dias" (em horas no último dia): também o Grimório do Invocador mostra.</summary>
+		public static string NextRotation(DateTime now)
+		{
+			var left = Core.Progression.Exploration.NextRotation(now) - now;
+			var remaining = left.TotalHours < 24 ? T("exploration.hours", Math.Max(1, (int)Math.Ceiling(left.TotalHours)))
+				: left.TotalDays < 2 ? T("exploration.day")
+				: T("exploration.days", (int)left.TotalDays);
+			return T("exploration.next_rotation", remaining);
+		}
+
 		/// <summary>"Exploração da Aurora · nova Exploração em 12 dias": tocar explica o rodízio e o que o mês paga.</summary>
 		private Control Month()
 		{
 			var name = Exploration.Explorations.Count > 0 ? Exploration.Explorations[Variation % Exploration.Explorations.Count].Name : "";
-			var left = Core.Progression.Exploration.NextRotation(_now) - _now;
-			var remaining = left.TotalHours < 24 ? T("exploration.hours", Math.Max(1, (int)Math.Ceiling(left.TotalHours)))
-				: left.TotalDays < 2 ? T("exploration.day")
-				: T("exploration.days", (int)left.TotalDays);
-			var month = Layout.Labeled("star_exploration", name, T("exploration.next_rotation", remaining), Palette.Arcane).Named("Month");
+			var month = Layout.Labeled("star_exploration", name, NextRotation(_now), Palette.Arcane).Named("Month");
 			month.MouseFilter = MouseFilterEnum.Stop;
 			month.MouseDefaultCursorShape = CursorShape.PointingHand;
 			void Explain()
@@ -196,7 +202,9 @@ namespace Sigilos.UI.Screens
 			var cleared = Core.Progression.Exploration.IsCleared(_player, number, _now);
 
 			var title = Layout.Row(12).Named("Header");
-			title.AddChild(Doodle.Icon(Art.Icon(constellation.Icon), 56, Palette.Gold).Named("Icon"));
+			// Sem o desenho da constelação (docs/exploracao_estelar_icones.md), o título não guarda o lugar dele.
+			if (Art.Icon(constellation.Icon) is { } icon)
+				title.AddChild(Doodle.Icon(icon, 56, Palette.Gold).Named("Icon"));
 			var names = new VBoxContainer { Name = "Names", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			names.AddThemeConstantOverride("separation", 0);
 			names.AddChild(new Label { Name = "Title", Text = constellation.Name, ThemeTypeVariation = GameTheme.Heading });

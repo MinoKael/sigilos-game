@@ -8,7 +8,8 @@ namespace Sigilos.UI.Screens
 {
 	/// <summary>
 	/// A entrada da conta, antes do Santuário (docs/SAVE_NUVEM.md, "Contas"). Deitada para o celular:
-	/// - À esquerda, o nome do jogo, o que a conta faz e, embaixo, Jogar sem conta.
+	/// - À esquerda, o nome do jogo, o que a conta faz, o emblema (o sigilo de invocar num astrolábio, com
+	///   uma constelação riscada em volta) e, embaixo, Jogar sem conta.
 	/// - À direita, o cartão da conta, com os campos no alto (o teclado do celular cobre a parte de baixo
 	///   da tela). Duas formas:
 	///   - Com uma conta lembrada neste aparelho: o nome e o e-mail, Entrar (sem senha) e Usar outra conta.
@@ -30,7 +31,7 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _card = new() { Name = "Card" };
 		private readonly Label _message = new() { Name = "Message", AutowrapMode = TextServer.AutowrapMode.WordSmart, Visible = false };
 		private readonly GameButton _offline;
-		private readonly Doodle _sigil = Doodle.Icon(Art.Icon("summon"), 150, Palette.GoldDark);
+		private readonly Doodle _sigil = Doodle.Icon(Art.Icon("summon"), 150, Palette.Gold);
 		private bool _remembered;
 		private bool _register;
 		private bool _busy;
@@ -123,9 +124,9 @@ namespace Sigilos.UI.Screens
 			column.AddChild(new Label { Name = "Title", Text = ProjectSettings.GetSetting("application/config/name").AsString(), ThemeTypeVariation = GameTheme.Title });
 			column.AddChild(Layout.Text(T("account.subtitle")).Named("Subtitle"));
 			_sigil.Name = "Sigil";
-			_sigil.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
-			_sigil.SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter;
-			column.AddChild(_sigil);
+			var emblem = new Emblem { SizeFlagsHorizontal = SizeFlags.ShrinkCenter, SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter };
+			emblem.AddChild(_sigil);
+			column.AddChild(emblem);
 			_offline.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
 			column.AddChild(_offline);
 			column.AddChild(Layout.Text(T("account.offline_hint"), GameTheme.Faded).Named("OfflineHint"));
@@ -277,6 +278,60 @@ namespace Sigilos.UI.Screens
 			{
 				if (field != null)
 					field.Editable = !_busy;
+			}
+		}
+
+		/// <summary>
+		/// O emblema do jogo: o sigilo no meio de um astrolábio de índigo (dois anéis e as marcas do grau) e
+		/// uma constelação riscada em ouro por cima do anel. Desenho parado, refeito só ao mudar de tamanho.
+		/// </summary>
+		private sealed partial class Emblem : CenterContainer
+		{
+			/// <summary>As estrelas da constelação: ângulo (graus, 0 à direita, sentido horário) e distância em fração do raio.</summary>
+			private static readonly (float Angle, float Distance)[] Stars =
+			{
+				(-168, 0.9f), (-136, 1.02f), (-104, 0.88f), (-70, 1.0f), (-34, 0.86f), (-4, 1.04f), (30, 0.92f),
+			};
+
+			private static readonly Color Ring = new(Palette.Indigo, 0.8f);
+			private static readonly Color Thread = new(Palette.GoldDark, 0.8f);
+
+			public Emblem()
+			{
+				Name = "Emblem";
+				CustomMinimumSize = new Vector2(300, 300);
+				MouseFilter = MouseFilterEnum.Ignore;
+				Resized += QueueRedraw;
+			}
+
+			public override void _Draw()
+			{
+				var center = Size / 2;
+				var radius = Mathf.Min(Size.X, Size.Y) / 2 - 14;
+				DrawArc(center, radius, 0, Mathf.Tau, 96, Ring, 1.5f, true);
+				DrawArc(center, radius - 10, 0, Mathf.Tau, 96, new Color(Ring, 0.5f), 1, true);
+				for (var k = 0; k < 72; k++)
+				{
+					var direction = Vector2.FromAngle(k * Mathf.Tau / 72);
+					DrawLine(center + direction * (radius - 10), center + direction * (radius - (k % 6 == 0 ? 0 : 5)), new Color(Ring, 0.6f), 1, true);
+				}
+
+				var previous = (Vector2?)null;
+				for (var i = 0; i < Stars.Length; i++)
+				{
+					var (angle, distance) = Stars[i];
+					var at = center + Vector2.FromAngle(Mathf.DegToRad(angle)) * radius * distance;
+					if (previous is { } from)
+						DrawLine(from, at, Thread, 1, true);
+					previous = at;
+				}
+				for (var i = 0; i < Stars.Length; i++)
+				{
+					var (angle, distance) = Stars[i];
+					var at = center + Vector2.FromAngle(Mathf.DegToRad(angle)) * radius * distance;
+					DrawCircle(at, 3, Palette.Background);
+					Starlight.Sparkle(this, at, i % 3 == 0 ? 11 : 7, i % 3 == 0 ? Palette.Gold : Palette.Starlight);
+				}
 			}
 		}
 	}

@@ -12,8 +12,8 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// O Santuário: a tela de abertura de toda sessão (GDD, seção 11), pensada para o celular.
 	///
-	/// - No alto, a conta (retrato, o nome dela e o nível, a barra de experiência; tocar explica, e dali
-	///   se troca o retrato por um dos monstros da conta, <see cref="AvatarPicker"/>), o
+	/// - No alto, a conta (retrato, o nome dela e o nível, a barra de experiência; tocar abre o Grimório do
+	///   Invocador, <see cref="SummonerGrimoireDialog"/>, e dali se troca o retrato, <see cref="AvatarPicker"/>), o
 	///   Correio (uma cápsula como as das moedas, só com a carta, e quantas faltam coletar num selo
 	///   vermelho) e os recursos. Sem conta (ou numa conta sem nome), no lugar do nome vai "Conta".
 	/// - No meio, à esquerda, a Canalização: a constelação ocupa o painel (o sigilo do centro com o anel
@@ -94,7 +94,7 @@ namespace Sigilos.UI.Screens
 			corner.AddChild(_currencies);
 			top.AddChild(corner);
 			page.AddChild(top);
-			_account.Pressed += ExplainAccount;
+			_account.Pressed += OpenBook;
 			_offline.Text = T("hub.offline");
 			_offline.AddThemeColorOverride("font_color", Palette.Negative);
 			_offline.AddThemeColorOverride("font_hover_color", Palette.Negative.Lightened(0.2f));
@@ -199,14 +199,11 @@ namespace Sigilos.UI.Screens
 			_account.CustomMinimumSize = row.GetCombinedMinimumSize();
 		}
 
-		private void ExplainAccount()
+		/// <summary>O retrato abre o Grimório do Invocador; trocar o retrato de lá abre a escolha.</summary>
+		private void OpenBook()
 		{
-			var maxed = _player.AccountLevel >= Account.MaxLevel;
-			var text = maxed
-				? T("hub.account_max_tip", _player.AccountLevel)
-				: T("hub.account_tip", _player.AccountExperience, Account.ExperienceToNext(_player.AccountLevel), Account.LevelUpGold, Account.MaxLevel, Mana.BaseMax + Mana.MaxFromLevels);
-			var dialog = Dialog.Info(_account, AccountTitle(), text);
-			dialog.AddAction(T("avatar.change"), () => AvatarPicker.Open(this, _database, _player, (summon, awakened) => AvatarRequested?.Invoke(summon, awakened)), ButtonKind.Secondary, true, "avatar").Named("Avatar");
+			var book = SummonerGrimoireDialog.Open(this, _database, _player, _accountName, DateTime.Now);
+			book.AvatarRequested += () => AvatarPicker.Open(this, _database, _player, (summon, awakened) => AvatarRequested?.Invoke(summon, awakened));
 		}
 
 		/// <summary>"Fulano · Nível 22" com conta que tem nome; "Conta · Nível 22" sem.</summary>

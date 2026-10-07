@@ -32,7 +32,7 @@ namespace Sigilos.UI.Components
 			string.Concat(id.Split('_', StringSplitOptions.RemoveEmptyEntries).Select(part => char.ToUpperInvariant(part[0]) + part[1..]));
 
 		/// <summary>
-		/// O fundo de pedra quente com a luz de vela e o anel de sigilo, centrado na tela ou no centro de
+		/// O fundo de céu de noite com as estrelas e o astrolábio, centrado na tela ou no centro de
 		/// <paramref name="focus"/> (o que a tela tem no meio: a constelação, o portal, o círculo).
 		/// </summary>
 		public static Backdrop Background(Control? focus = null, bool ring = true) => new(focus, ring) { Name = "Backdrop" };

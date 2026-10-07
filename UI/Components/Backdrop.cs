@@ -4,9 +4,9 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// O fundo de tela (Assets/Shaders/backdrop.gdshader): pedra quente, luz de vela e o anel de sigilo
-	/// girando. O centro da luz e do anel fica no meio da tela ou, com um <c>focus</c>, no centro dele —
-	/// e acompanha se ele se mexer ou a janela mudar de tamanho.
+	/// O fundo de tela (Assets/Shaders/backdrop.gdshader): o céu de noite com a claridade violeta, a névoa,
+	/// as estrelas que piscam e o astrolábio girando. O centro da claridade e do astrolábio fica no meio da
+	/// tela ou, com um <c>focus</c>, no centro dele — e acompanha se ele se mexer ou a janela mudar de tamanho.
 	/// </summary>
 	public partial class Backdrop : ColorRect
 	{
@@ -16,7 +16,7 @@ namespace Sigilos.UI.Components
 		private readonly ShaderMaterial _material;
 		private Vector2 _center = new(-1, -1);
 
-		/// <param name="ring">Com o anel de sigilo girando; a batalha tira, porque o chão dela já é o oval.</param>
+		/// <param name="ring">Com o astrolábio girando; a batalha tira, porque o chão dela já é o oval.</param>
 		public Backdrop(Control? focus, bool ring = true)
 		{
 			_focus = focus;
@@ -25,6 +25,8 @@ namespace Sigilos.UI.Components
 			_material.SetShaderParameter("edge_color", Palette.Background);
 			_material.SetShaderParameter("glow_color", Palette.BackgroundGlow);
 			_material.SetShaderParameter("rune_color", Palette.Gold);
+			_material.SetShaderParameter("star_color", Palette.Starlight);
+			_material.SetShaderParameter("nebula_color", Palette.Violet);
 			_material.SetShaderParameter("ring_strength", ring ? 1f : 0f);
 			Material = _material;
 			Color = Palette.Background;
