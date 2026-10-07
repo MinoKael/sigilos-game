@@ -8,7 +8,8 @@ namespace Sigilos.Core.Progression
 	/// <summary>
 	/// A Campanha apresenta o jogo aos poucos (GDD, seção 10): cada parte abre numa fase, sem trava
 	/// artificial — é a primeira vitória que mostra a parte, e ela nunca mais fecha. Monstros e Equipes
-	/// abrem na primeira invocação; as Masmorras, na fase que abre a primeira delas (Data/dungeons.json).
+	/// abrem na primeira invocação; as Masmorras, na fase que abre a primeira delas (Data/dungeons.json), e a
+	/// Exploração Estelar na fase dela (Data/exploration.json).
 	/// A parte que acabou de abrir é "nova" até a próxima fase vencida: o botão dela pulsa, e a vitória
 	/// que a abriu avisa.
 	/// </summary>
@@ -30,6 +31,7 @@ namespace Sigilos.Core.Progression
 		{
 			Feature.Monsters or Feature.Teams => 0,
 			Feature.Dungeons => database.Dungeons.Select(d => d.UnlockStage).DefaultIfEmpty(0).Min(),
+			Feature.Exploration => database.Exploration.Constellations.Count > 0 ? database.Exploration.UnlockStage : 0,
 			_ => Stages[feature],
 		};
 
@@ -38,6 +40,7 @@ namespace Sigilos.Core.Progression
 			Feature.Monsters or Feature.Teams => player.TotalPulls > 0 || player.Collection.Any(),
 			// Uma Masmorra já vencida continua aberta (Dungeons.IsUnlocked), e a porta junto.
 			Feature.Dungeons => database.Dungeons.Any(d => Dungeons.IsUnlocked(player, d)),
+			Feature.Exploration => Exploration.IsOpen(player, database.Exploration),
 			_ => player.HighestStage >= StageOf(database, feature),
 		};
 

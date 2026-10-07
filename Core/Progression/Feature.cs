@@ -12,5 +12,6 @@ namespace Sigilos.Core.Progression
 		AutoBattle,
 		Grimoire,
 		Dungeons,
+		Exploration,
 	}
 }

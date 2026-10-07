@@ -3,9 +3,10 @@ using System.Collections.Generic;
 namespace Sigilos.Core.Content
 {
 	/// <summary>
-	/// O que a batalha precisa de uma fase ou de um andar de Masmorra: estrelas e nível dos inimigos, as
-	/// ondas, um multiplicador de Vida e Ataque dos inimigos (os andares fundos passam do 6★ nível 40) e o
-	/// que vence a luta (<see cref="VictoryCondition"/>).
+	/// O que a batalha precisa de uma fase, de um andar de Masmorra ou de uma constelação: estrelas e nível
+	/// dos inimigos, as ondas, um multiplicador de Vida e Ataque dos inimigos (os andares fundos passam do
+	/// 6★ nível 40), o que vence a luta (<see cref="VictoryCondition"/>) e as regras que valem a luta inteira
+	/// (a Influência de uma constelação; nulo: nenhuma).
 	/// </summary>
-	public sealed record Encounter(int Stars, int Level, IReadOnlyList<IReadOnlyList<StageEnemy>> Waves, double Scale = 1, VictoryCondition Victory = VictoryCondition.AllWaves);
+	public sealed record Encounter(int Stars, int Level, IReadOnlyList<IReadOnlyList<StageEnemy>> Waves, double Scale = 1, VictoryCondition Victory = VictoryCondition.AllWaves, IReadOnlyList<InfluenceRule>? Rules = null);
 }

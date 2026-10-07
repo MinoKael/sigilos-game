@@ -19,6 +19,7 @@ namespace Sigilos.Tests
 	///   dotnet run --project Tests -- --only=Summon só os testes com "Summon" no nome
 	///   dotnet run --project Tests -- --simulate    relatório de balanceamento da campanha
 	///   dotnet run --project Tests -- --dungeons    relatório das Masmorras de especialização
+	///   dotnet run --project Tests -- --exploration relatório da Exploração Estelar (ou --exploration=22-51)
 	///   dotnet run --project Tests -- --fight=10    uma luta da fase 10, turno a turno
 	///   dotnet run --project Tests -- --fight=golem5:powerful   o andar 5 do Golem contra o time forte genérico
 	///   dotnet run --project Tests -- --digest      impressão digital do combate, para refatorar sem mudar a regra
@@ -37,6 +38,13 @@ namespace Sigilos.Tests
 			if (args.Contains("--dungeons"))
 			{
 				CampaignReport.PrintDungeons(TestData.LoadReal());
+				return 0;
+			}
+
+			var exploration = args.FirstOrDefault(a => a.StartsWith("--exploration", StringComparison.Ordinal));
+			if (exploration != null)
+			{
+				CampaignReport.PrintExploration(TestData.LoadReal(), exploration.Contains('=') ? exploration[(exploration.IndexOf('=') + 1)..] : null);
 				return 0;
 			}
 

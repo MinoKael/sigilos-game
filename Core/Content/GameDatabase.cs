@@ -35,7 +35,8 @@ namespace Sigilos.Core.Content
 			IReadOnlyList<EnemyDefinition> enemies,
 			IReadOnlyList<StageDefinition> stages,
 			IReadOnlyList<DungeonDefinition> dungeons,
-			IReadOnlyList<ShopOffer> shop)
+			IReadOnlyList<ShopOffer> shop,
+			ExplorationDefinition? exploration = null)
 		{
 			StatModel = statModel;
 			Families = families;
@@ -43,6 +44,7 @@ namespace Sigilos.Core.Content
 			Stages = stages.OrderBy(s => s.Number).ToList();
 			Dungeons = dungeons;
 			Shop = shop;
+			Exploration = exploration ?? new ExplorationDefinition();
 
 			// As variantes saem dos arquivos das famílias, na ordem dos elementos. O arquivo só traz Vida,
 			// Ataque, Defesa e Velocidade: os outros quatro atributos são os de base do modelo.
@@ -86,6 +88,9 @@ namespace Sigilos.Core.Content
 		/// <summary>As ofertas da Loja, na ordem de Data/shop.json.</summary>
 		public IReadOnlyList<ShopOffer> Shop { get; }
 
+		/// <summary>A Exploração Estelar (Data/exploration.json); sem o arquivo, vazia.</summary>
+		public ExplorationDefinition Exploration { get; }
+
 		public SummonDefinition Summon(string id) => _summonsById[id];
 		public EnemyDefinition Enemy(string id) => _enemiesById[id];
 		public StageDefinition Stage(int number) => Stages.First(s => s.Number == number);
@@ -107,13 +112,15 @@ namespace Sigilos.Core.Content
 		}
 
 		/// <param name="families">O texto de cada arquivo de Data/summons, um por família.</param>
+		/// <param name="exploration">O texto de Data/exploration.json; nulo: sem Exploração Estelar.</param>
 		public static GameDatabase FromJson(
 			string statModel,
 			IEnumerable<string> families,
 			string enemies,
 			string stages,
 			string dungeons,
-			string shop)
+			string shop,
+			string? exploration = null)
 		{
 			return new GameDatabase(
 				Parse<StatModel>(statModel, "stat_model.json"),
@@ -121,7 +128,8 @@ namespace Sigilos.Core.Content
 				Parse<List<EnemyDefinition>>(enemies, "enemies.json"),
 				Parse<List<StageDefinition>>(stages, "stages.json"),
 				Parse<List<DungeonDefinition>>(dungeons, "dungeons.json"),
-				Parse<List<ShopOffer>>(shop, "shop.json"));
+				Parse<List<ShopOffer>>(shop, "shop.json"),
+				exploration == null ? null : Parse<ExplorationDefinition>(exploration, "exploration.json"));
 		}
 
 		private static T Parse<T>(string json, string file)
@@ -235,13 +243,75 @@ namespace Sigilos.Core.Content
 				}
 			}
 
-			if (Dungeons.Select(d => d.Id).Distinct().Count() != Dungeons.Count || Dungeons.Any(d => d.Id == "campaign"))
+			if (Dungeons.Select(d => d.Id).Distinct().Count() != Dungeons.Count || Dungeons.Any(d => d.Id is "campaign" or "exploration"))
 				yield return "Masmorras: ids repetidos ou reservados.";
+
+			foreach (var problem in ValidateExploration())
+				yield return $"Exploração Estelar: {problem}";
 
 			foreach (var offer in Shop.Where(o => o.Amount <= 0 || o.Price <= 0 || o.Name.Length == 0))
 				yield return $"Loja, oferta {offer.Id}: sem nome, quantidade ou preço.";
 			if (Shop.Select(o => o.Id).Distinct().Count() != Shop.Count)
 				yield return "Loja: ids repetidos.";
+		}
+
+		/// <summary>
+		/// O percurso: constelações com id, nome, ícone e lugar no mapa, um desafio por Exploração (ondas
+		/// válidas, o guardião na última), a força dentro da faixa dos inimigos, a recompensa sem número
+		/// negativo e a Influência com regras que as Passivas aceitam.
+		/// </summary>
+		private IEnumerable<string> ValidateExploration()
+		{
+			var exploration = Exploration;
+			if (exploration.Constellations.Count == 0)
+				yield break;
+
+			if (exploration.Explorations.Count == 0)
+				yield return "sem Explorações para o rodízio.";
+			if (exploration.UnlockStage < 1 || exploration.UnlockStage > Stages.Count)
+				yield return $"abre na fase {exploration.UnlockStage}, que não existe.";
+			if (exploration.Constellations.Select(c => c.Id).Distinct().Count() != exploration.Constellations.Count)
+				yield return "ids de constelação repetidos.";
+			if (exploration.Constellations.Zip(exploration.Constellations.Skip(1)).Any(pair => pair.Second.Hemisphere < pair.First.Hemisphere))
+				yield return "o percurso tem de ir das Boreais às Equatoriais e às Austrais, sem voltar.";
+
+			foreach (var constellation in exploration.Constellations)
+			{
+				var where = $"{constellation.Id}:";
+				if (constellation.Id.Length == 0 || constellation.Name.Length == 0 || constellation.Icon.Length == 0)
+					yield return $"{where} sem id, nome ou ícone.";
+				if (constellation.Chart.Count != 2)
+					yield return $"{where} sem o lugar no mapa (\"chart\": [x, y]).";
+				if (!ValidLevel(constellation.Stars, constellation.Level) || constellation.Scale <= 0)
+					yield return $"{where} inimigos {constellation.Stars}★ nível {constellation.Level}, escala {constellation.Scale}.";
+				if (constellation.Challenges.Count != exploration.Explorations.Count)
+					yield return $"{where} {constellation.Challenges.Count} desafios para {exploration.Explorations.Count} Explorações.";
+				var reward = constellation.Reward;
+				if (reward.Essence < 0 || reward.Gold < 0 || reward.Scrolls < 0 || reward.Experience < 0 || reward.Legendary < 0 || reward.LightDark < 0 || reward.Cores < 0)
+					yield return $"{where} recompensa negativa.";
+				if (constellation.Influence.Name.Length == 0 || constellation.Influence.Rules.Count == 0)
+					yield return $"{where} sem Influência (nome e regras).";
+				foreach (var rule in constellation.Influence.Rules)
+				{
+					if (rule.Passive.Kind == PassiveKind.Undying)
+						yield return $"{where} a Influência não usa a Passiva do Rei Ossudo.";
+					foreach (var problem in ValidateSkill(rule.Skill))
+						yield return $"{where} Influência: {problem}";
+				}
+
+				for (var i = 0; i < constellation.Challenges.Count; i++)
+				{
+					var challenge = constellation.Challenges[i];
+					if (challenge.Scale <= 0)
+						yield return $"{where} desafio {i + 1} com escala {challenge.Scale}.";
+					foreach (var problem in ValidateWaves(challenge.Waves))
+						yield return $"{where} desafio {i + 1}: {problem}";
+					if (challenge.Waves.SelectMany(w => w).Any(slot => slot.Guardian && slot.Summon == null))
+						yield return $"{where} desafio {i + 1}: só invocação é guardião (o chefe de Data/enemies.json já é chefe).";
+					if (constellation.Guardian(i) == null)
+						yield return $"{where} desafio {i + 1}: a última onda não tem guardião nem chefe.";
+				}
+			}
 		}
 
 		/// <summary>

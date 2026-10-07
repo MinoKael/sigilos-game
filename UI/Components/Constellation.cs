@@ -11,7 +11,8 @@ namespace Sigilos.UI.Components
 	/// quanto a canalização já encheu (<see cref="Progress"/>). Embaixo do centro vai o que a tela prender
 	/// com <see cref="Attach"/> (o tempo, o que juntou e o Coletar).
 	///
-	/// Só arruma e desenha: o sigilo do centro e o que ele faz são da tela.
+	/// Só arruma e desenha: o sigilo do centro e o que ele faz são da tela. Os fios e as estrelas são os de
+	/// <see cref="Starlight"/>, os mesmos do mapa da Exploração Estelar (<see cref="StarChart"/>).
 	/// </summary>
 	public partial class Constellation : Control
 	{
@@ -80,24 +81,15 @@ namespace Sigilos.UI.Components
 			{
 				var target = OrbAt(i, center, radii);
 				var direction = (target - center).Normalized();
-				var from = center + direction * (core + 12);
-				var to = target - direction * (Orb + 4);
-				DrawLine(from, to, new Color(Palette.Arcane, 0.07f), 7, true);
-				DrawLine(from, to, new Color(Palette.Gold, 0.4f), 1.5f, true);
 
-				// A faísca que corre do centro para o orbe.
-				var t = Mathf.PosMod(_time * 0.22f + i * 0.37f, 1f);
-				var spark = from.Lerp(to, t);
-				DrawCircle(spark, 5, new Color(Palette.Spirit, 0.12f));
-				DrawCircle(spark, 2.2f, new Color(Palette.Spirit, 0.85f * Mathf.Sin(t * Mathf.Pi)));
+				// O fio de luz, com a faísca que corre do centro para o orbe.
+				Starlight.Thread(this, center + direction * (core + 12), target - direction * (Orb + 4), _time, i * 0.37f, Palette.Gold, Palette.Spirit);
 
 				// O orbe: o mesmo sigilo de pedra dos botões redondos, com uma estrela que pisca no seu tempo.
 				DrawCircle(target, Orb, Palette.Panel);
 				DrawArc(target, Orb, 0, Mathf.Tau, 48, Palette.GoldDark, 2, true);
 				DrawArc(target, Orb - 4, 0, Mathf.Tau, 48, new Color(Palette.GoldDark, 0.35f), 1, true);
-				var twinkle = 0.55f + 0.45f * Mathf.Sin(_time * 1.7f + i * 1.3f);
-				Sparkle(target, Orb * 0.75f, new Color(Palette.Gold, 0.12f * twinkle));
-				Sparkle(target, Orb * 0.38f, new Color(Palette.Gold.Lightened(0.2f), 0.45f + 0.5f * twinkle));
+				Starlight.Twinkle(this, target, Orb, _time, i * 1.3f, Palette.Gold);
 			}
 
 			// O anel da canalização em volta do centro.
@@ -128,18 +120,6 @@ namespace Sigilos.UI.Components
 			var (angle, distance) = Places[index];
 			var rad = Mathf.DegToRad(angle);
 			return center + new Vector2(Mathf.Cos(rad) * radii.X, Mathf.Sin(rad) * radii.Y) * distance;
-		}
-
-		private void Sparkle(Vector2 at, float size, Color color)
-		{
-			var waist = size * 0.24f;
-			DrawColoredPolygon(new[]
-			{
-				at + new Vector2(0, -size), at + new Vector2(waist, -waist),
-				at + new Vector2(size, 0), at + new Vector2(waist, waist),
-				at + new Vector2(0, size), at + new Vector2(-waist, waist),
-				at + new Vector2(-size, 0), at + new Vector2(-waist, -waist),
-			}, color);
 		}
 
 		private void Arrange()

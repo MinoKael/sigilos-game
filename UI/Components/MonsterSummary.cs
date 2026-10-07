@@ -130,6 +130,16 @@ namespace Sigilos.UI.Components
 				skills.AddChild(PassiveRow(passive, unit.Awakened));
 			body.AddChild(Section(T("summary.skills"), skills));
 
+			// A Influência da constelação (Exploração Estelar): as regras do céu que valem nesta unidade.
+			if (unit.Influences.Count > 0)
+			{
+				var influences = new VBoxContainer { Name = "Influences" };
+				influences.AddThemeConstantOverride("separation", 6);
+				for (var i = 0; i < unit.Influences.Count; i++)
+					influences.AddChild(RichText.Label(Texts.Describe(unit.Influences[i], false), Width - 60, GameTheme.Faded, GameTheme.SmallSize).Named($"Influence{i + 1}"));
+				body.AddChild(Section(T("summary.influence"), influences));
+			}
+
 			if (summon?.Leader is { } leader && unit.Side == Side.Allies)
 				body.AddChild(Leadership(leader));
 			return dialog;

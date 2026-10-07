@@ -67,6 +67,18 @@ namespace Sigilos.Core.Player
 		/// <summary>Maior andar vencido em cada Masmorra, pelo id de Data/dungeons.json.</summary>
 		public Dictionary<string, int> DungeonFloors { get; set; } = new();
 
+		/// <summary>
+		/// O mês do progresso da Exploração Estelar ("2026-10"); nulo antes da primeira entrada. Num mês
+		/// novo o percurso recomeça (<see cref="Progression.Exploration"/>).
+		/// </summary>
+		public string? ExplorationMonth { get; set; }
+
+		/// <summary>Constelações vencidas no mês de <see cref="ExplorationMonth"/>, na ordem do percurso. 0 = nenhuma.</summary>
+		public int ExplorationCleared { get; set; }
+
+		/// <summary>O mais longe que a conta já foi no percurso, em qualquer mês.</summary>
+		public int ExplorationBest { get; set; }
+
 		/// <summary>Invocações desde a última 5★: a garantia visível do gacha.</summary>
 		public int PullsSinceFiveStar { get; set; }
 

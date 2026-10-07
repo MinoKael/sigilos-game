@@ -63,6 +63,7 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Sanctuary", "collect", T("compendium.basic.sanctuary.title"), T("compendium.basic.sanctuary.text", Idle.CapHours));
 			Card(grid, "Campaign", "campaign", T("compendium.basic.campaign.title"), T("compendium.basic.campaign.text", GameDatabase.MaxCampaignRuneGrade));
 			Card(grid, "Dungeons", "dungeon", T("compendium.basic.dungeons.title"), T("compendium.basic.dungeons.text"));
+			Card(grid, "Exploration", "star_exploration", T("compendium.basic.exploration.title"), T("compendium.basic.exploration.text", Exploration.Rotation));
 			Card(grid, "Mana", "mana", T("compendium.basic.mana.title"), T("compendium.basic.mana.text", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
 			Card(grid, "Gold", "gold", T("compendium.basic.gold.title"), T("compendium.basic.gold.text", Account.LevelUpGold));
 			Card(grid, "Summon", "summon", T("compendium.basic.summon.title"), T("compendium.basic.summon.text"));

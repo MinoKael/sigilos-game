@@ -1,0 +1,2191 @@
+// Star Exploration (GDD, section 11): the resource mode, a journey through the 88 constellations of the sky
+// in path order: the Boreal ones (center above +20 degrees of declination), the Equatorial ones (the middle
+// band, with the 12 of the zodiac) and the Austral ones (center below -25 degrees). Each constellation is a
+// floor. The journey starts over on day 1 of every month, and every month one of the three "explorations"
+// (in rotation) brings its challenges; the "reward" of each constellation is always the same, paid by the
+// first victory of the month (Core/Progression/Exploration.cs). Fights cost no Mana.
+// "influence" is the constellation's mechanic, the same in the three explorations: rules that last the whole
+// fight, each a passive (the same kinds as Data/summons, with value and effects) put on every unit of its
+// "side": Foes (every enemy), Guardian (only the boss), Allies (the player's team) or Everyone. Effects aim
+// from the point of view of whoever holds the rule. The written explanation, with how to beat it, is in the
+// texts ("exploration.influence.<constellation id>"); the numbers are written by the game from the rules.
+// "challenges" has one entry per exploration, in their order: the waves, with the guardian in the last one.
+// A summon with "guardian": true is the boss of the fight: awakened, all skills at max level and boss HP
+// (Core/Battle/BattleFactory.cs), so its skills are the challenge; a unique boss of Data/enemies.json is
+// already a boss. "scale" (in the challenge) fine-tunes it over the constellation's strength.
+// "stars", "level" and "scale" are the strength of every enemy, the same all year. "chart" is where the orb
+// sits on its band's map, in points of a "chartWidth"-wide map: the projection of the real sky (polar for the
+// Boreal and Austral bands, a strip for the Equatorial one), spread just enough for orbs not to touch. "ra"
+// (hours) and "dec" (degrees) are the real center of the constellation. "icon" is in Assets/Icons (without
+// the file, the map shows a star).
+{
+  "unlockStage": 30,
+  "chartWidth": 560,
+  "explorations": [
+    {"id": "aurora", "name": "Exploração da Aurora"},
+    {"id": "zenith", "name": "Exploração do Zênite"},
+    {"id": "dusk", "name": "Exploração do Crepúsculo"}
+  ],
+  "constellations": [
+    {
+      "id": "ursa_minor", "name": "Ursa Menor", "latin": "Ursa Minor", "hemisphere": "Boreal", "icon": "constellation_ursa_minor",
+      "ra": 15.0, "dec": 77.7, "chart": [277, 282], "stars": 6, "level": 40, "scale": 0.45,
+      "reward": {"essence": 500, "gold": 5, "experience": 1500},
+      "influence": {"name": "Estrela Polar", "rules": [
+        {"side": "Guardian", "passive": {"kind": "ImpetoAtWaveStart", "value": 1.0}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "slime_wind"}],
+          [{"summon": "wolf_water"}, {"summon": "knight_water", "guardian": true}, {"summon": "slime_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_wind"}, {"summon": "wolf_wind"}, {"summon": "slime_light"}],
+          [{"summon": "wolf_wind"}, {"summon": "wolf_wind", "guardian": true}, {"summon": "slime_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "slime_dark"}],
+          [{"summon": "wolf_water"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "slime_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "camelopardalis", "name": "Girafa", "latin": "Camelopardalis", "hemisphere": "Boreal", "icon": "constellation_camelopardalis",
+      "ra": 8.9, "dec": 69.0, "chart": [368, 267], "stars": 6, "level": 40, "scale": 0.46,
+      "reward": {"essence": 510, "gold": 5, "experience": 1500},
+      "influence": {"name": "Vista do Alto", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Foresight", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "pixie_light"}, {"summon": "bird_light"}, {"summon": "pixie_wind"}],
+          [{"summon": "bird_light"}, {"summon": "druid_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_wind"}, {"summon": "bird_wind"}, {"summon": "pixie_dark"}],
+          [{"summon": "bird_wind"}, {"summon": "druid_wind", "guardian": true}, {"summon": "pixie_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_water"}, {"summon": "bird_water"}, {"summon": "pixie_fire"}],
+          [{"summon": "bird_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "auriga", "name": "Cocheiro", "latin": "Auriga", "hemisphere": "Boreal", "icon": "constellation_auriga",
+      "ra": 6.0, "dec": 42.0, "chart": [460, 322], "stars": 6, "level": 40, "scale": 0.47,
+      "reward": {"essence": 520, "gold": 5, "experience": 1550},
+      "influence": {"name": "Carruagem", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "SpeedUp", "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "goblin_wind"}, {"summon": "wolf_dark"}],
+          [{"summon": "goblin_wind"}, {"summon": "knight_wind", "guardian": true}, {"summon": "wolf_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "goblin_wind"}, {"summon": "wolf_fire"}],
+          [{"summon": "goblin_wind"}, {"summon": "paladin_wind", "guardian": true}, {"summon": "wolf_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "goblin_wind"}, {"summon": "wolf_water"}],
+          [{"summon": "goblin_wind"}, {"summon": "bandit_wind", "guardian": true}, {"summon": "wolf_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "lynx", "name": "Lince", "latin": "Lynx", "hemisphere": "Boreal", "icon": "constellation_lynx",
+      "ra": 7.9, "dec": 47.5, "chart": [450, 227], "stars": 6, "level": 41, "scale": 0.49,
+      "reward": {"essence": 540, "gold": 5, "experience": 1600, "scrolls": 1},
+      "influence": {"name": "Olhos na Penumbra", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Hidden", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_dark"}, {"summon": "crow_dark"}, {"summon": "goblin_fire"}],
+          [{"summon": "crow_dark"}, {"summon": "imp_dark", "guardian": true}, {"summon": "goblin_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_dark"}, {"summon": "crow_dark"}, {"summon": "goblin_water"}],
+          [{"summon": "crow_dark"}, {"summon": "bandit_dark", "guardian": true}, {"summon": "goblin_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_water"}, {"summon": "crow_water"}, {"summon": "goblin_light"}],
+          [{"summon": "crow_water"}, {"summon": "vampire_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "ursa_major", "name": "Ursa Maior", "latin": "Ursa Major", "hemisphere": "Boreal", "icon": "constellation_ursa_major",
+      "ra": 11.3, "dec": 51.0, "chart": [339, 178], "stars": 6, "level": 41, "scale": 0.5,
+      "reward": {"essence": 550, "gold": 5, "experience": 1600},
+      "influence": {"name": "Pele Grossa", "rules": [
+        {"side": "Guardian", "passive": {"kind": "DamageReduction", "value": 0.3}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "troll_water"}, {"summon": "slime_water"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_water"}, {"enemy": "celestial_bear", "element": "Water"}, {"summon": "troll_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_light"}, {"summon": "slime_light"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_light"}, {"enemy": "celestial_bear", "element": "Light"}, {"summon": "troll_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "slime_fire"}, {"summon": "troll_dark"}],
+          [{"summon": "slime_fire"}, {"enemy": "celestial_bear", "element": "Fire"}, {"summon": "troll_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "leo_minor", "name": "Leão Menor", "latin": "Leo Minor", "hemisphere": "Boreal", "icon": "constellation_leo_minor",
+      "ra": 10.2, "dec": 32.1, "chart": [394, 104], "stars": 6, "level": 41, "scale": 0.51,
+      "reward": {"essence": 560, "gold": 5, "experience": 1600},
+      "influence": {"name": "Rugido Pequeno", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "goblin_wind"}, {"summon": "wolf_light"}],
+          [{"summon": "goblin_wind"}, {"enemy": "celestial_lion", "element": "Wind"}, {"summon": "wolf_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_water"}, {"summon": "goblin_water"}, {"summon": "wolf_dark"}],
+          [{"summon": "goblin_water"}, {"enemy": "celestial_lion", "element": "Water"}, {"summon": "wolf_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_light"}, {"summon": "goblin_light"}, {"summon": "wolf_fire"}],
+          [{"summon": "goblin_light"}, {"summon": "wolf_light", "guardian": true}, {"summon": "wolf_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "canes_venatici", "name": "Cães de Caça", "latin": "Canes Venatici", "hemisphere": "Boreal", "icon": "constellation_canes_venatici",
+      "ra": 13.1, "dec": 40.1, "chart": [253, 142], "stars": 6, "level": 41, "scale": 0.52,
+      "reward": {"essence": 580, "gold": 5, "experience": 1650},
+      "influence": {"name": "Matilha", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnTargetEachTurn", "value": 0.3}, "effects": [{"kind": "JointAttack", "target": "RandomAlly", "count": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "bandit_wind"}, {"summon": "wolf_dark"}],
+          [{"summon": "bandit_wind"}, {"summon": "wolf_wind", "guardian": true}, {"summon": "wolf_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_dark"}, {"summon": "bandit_dark"}, {"summon": "wolf_fire"}],
+          [{"summon": "bandit_dark"}, {"summon": "wolf_dark", "guardian": true}, {"summon": "wolf_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_fire"}, {"summon": "bandit_fire"}, {"summon": "wolf_wind"}],
+          [{"summon": "bandit_fire"}, {"summon": "wolf_fire", "guardian": true}, {"summon": "wolf_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "coma_berenices", "name": "Cabeleira de Berenice", "latin": "Coma Berenices", "hemisphere": "Boreal", "icon": "constellation_coma_berenices",
+      "ra": 12.8, "dec": 23.3, "chart": [258, 50], "stars": 6, "level": 42, "scale": 0.54,
+      "reward": {"essence": 590, "gold": 5, "experience": 1700, "scrolls": 1},
+      "influence": {"name": "Oferenda", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [{"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "pixie_light"}, {"summon": "slime_light"}, {"summon": "pixie_fire"}],
+          [{"summon": "slime_light"}, {"summon": "pixie_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}],
+          [{"summon": "slime_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_light"}, {"summon": "slime_light"}, {"summon": "pixie_wind"}],
+          [{"summon": "slime_light"}, {"summon": "paladin_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "bootes", "name": "Boieiro", "latin": "Boötes", "hemisphere": "Boreal", "icon": "constellation_bootes",
+      "ra": 14.7, "dec": 31.2, "chart": [165, 115], "stars": 6, "level": 42, "scale": 0.55,
+      "reward": {"essence": 600, "gold": 5, "experience": 1700},
+      "influence": {"name": "Pastor de Estrelas", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Impeto", "target": "AllAllies", "power": 20}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_water"}],
+          [{"summon": "bird_wind"}, {"summon": "knight_wind", "guardian": true}, {"summon": "goblin_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_light"}],
+          [{"summon": "bird_wind"}, {"summon": "paladin_wind", "guardian": true}, {"summon": "goblin_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_light"}, {"summon": "bird_light"}, {"summon": "goblin_dark"}],
+          [{"summon": "bird_light"}, {"summon": "bandit_light", "guardian": true}, {"summon": "goblin_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "corona_borealis", "name": "Coroa Boreal", "latin": "Corona Borealis", "hemisphere": "Boreal", "icon": "constellation_corona_borealis",
+      "ra": 15.8, "dec": 32.6, "chart": [145, 205], "stars": 6, "level": 42, "scale": 0.57,
+      "reward": {"essence": 610, "gold": 5, "experience": 1700},
+      "influence": {"name": "Coroa de Ariadne", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Immunity", "turns": 3}, {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_wind"}],
+          [{"summon": "pixie_light"}, {"summon": "paladin_light", "guardian": true}, {"summon": "knight_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_fire"}, {"summon": "pixie_fire"}, {"summon": "knight_dark"}],
+          [{"summon": "pixie_fire"}, {"summon": "paladin_fire", "guardian": true}, {"summon": "knight_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_fire"}],
+          [{"summon": "pixie_light"}, {"summon": "wizard_light", "guardian": true}, {"summon": "knight_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "hercules", "name": "Hércules", "latin": "Hercules", "hemisphere": "Boreal", "icon": "constellation_hercules",
+      "ra": 17.4, "dec": 27.5, "chart": [93, 282], "stars": 6, "level": 42, "scale": 0.58,
+      "reward": {"essence": 620, "gold": 5, "experience": 1750, "cores": 1},
+      "influence": {"name": "Doze Trabalhos", "rules": [
+        {"side": "Guardian", "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"}, "effects": [{"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "bandit_fire"}, {"summon": "troll_dark"}],
+          [{"summon": "bandit_fire"}, {"summon": "knight_fire", "guardian": true}, {"summon": "troll_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "bandit_fire"}, {"summon": "troll_water"}],
+          [{"summon": "bandit_fire"}, {"summon": "troll_fire", "guardian": true}, {"summon": "troll_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_dark"}, {"summon": "bandit_dark"}, {"summon": "troll_water"}],
+          [{"summon": "bandit_dark"}, {"summon": "paladin_dark", "guardian": true}, {"summon": "troll_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "lyra", "name": "Lira", "latin": "Lyra", "hemisphere": "Boreal", "icon": "constellation_lyra",
+      "ra": 18.9, "dec": 36.7, "chart": [120, 371], "stars": 6, "level": 43, "scale": 0.6,
+      "reward": {"essence": 640, "gold": 10, "experience": 1800, "scrolls": 1},
+      "influence": {"name": "Canção de Orfeu", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.25, "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "pixie_wind"}, {"summon": "bird_fire"}],
+          [{"summon": "pixie_wind"}, {"summon": "pixie_wind", "guardian": true}, {"summon": "bird_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_water"}, {"summon": "pixie_water"}, {"summon": "bird_wind"}],
+          [{"summon": "pixie_water"}, {"summon": "pixie_water", "guardian": true}, {"summon": "bird_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_wind"}],
+          [{"summon": "pixie_light"}, {"summon": "bird_light", "guardian": true}, {"summon": "bird_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "vulpecula", "name": "Raposa", "latin": "Vulpecula", "hemisphere": "Boreal", "icon": "constellation_vulpecula",
+      "ra": 20.2, "dec": 24.4, "chart": [111, 475], "stars": 6, "level": 43, "scale": 0.61,
+      "reward": {"essence": 650, "gold": 10, "experience": 1800},
+      "influence": {"name": "Astúcia", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit", "value": 0.4}, "effects": [{"kind": "StealBuff", "target": "Target"}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_fire"}, {"summon": "imp_fire"}, {"summon": "goblin_wind"}],
+          [{"summon": "imp_fire"}, {"summon": "bandit_fire", "guardian": true}, {"summon": "goblin_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_fire"}, {"summon": "imp_fire"}, {"summon": "goblin_light"}],
+          [{"summon": "imp_fire"}, {"summon": "goblin_fire", "guardian": true}, {"summon": "goblin_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_water"}, {"summon": "imp_water"}, {"summon": "goblin_dark"}],
+          [{"summon": "imp_water"}, {"summon": "bandit_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "cygnus", "name": "Cisne", "latin": "Cygnus", "hemisphere": "Boreal", "icon": "constellation_cygnus",
+      "ra": 20.6, "dec": 44.5, "chart": [191, 430], "stars": 6, "level": 43, "scale": 0.63,
+      "reward": {"essence": 660, "gold": 10, "experience": 1800},
+      "influence": {"name": "Asas Abertas", "rules": [
+        {"side": "Foes", "passive": {"kind": "Dodge", "value": 0.15}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_water"}, {"summon": "slime_water"}, {"summon": "bird_light"}],
+          [{"summon": "slime_water"}, {"summon": "bird_water", "guardian": true}, {"summon": "bird_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "slime_light"}, {"summon": "bird_dark"}],
+          [{"summon": "slime_light"}, {"summon": "bird_light", "guardian": true}, {"summon": "bird_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_water"}, {"summon": "slime_water"}, {"summon": "bird_fire"}],
+          [{"summon": "slime_water"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "bird_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "draco", "name": "Dragão", "latin": "Draco", "hemisphere": "Boreal", "icon": "constellation_draco",
+      "ra": 17.0, "dec": 67.0, "chart": [189, 307], "stars": 6, "level": 43, "scale": 0.64,
+      "reward": {"essence": 680, "gold": 10, "experience": 1850},
+      "influence": {"name": "Hálito Antigo", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn", "value": 0.5}, "effects": [{"kind": "Damage", "target": "AllEnemies", "power": 0.5}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "gargoyle_fire"}, {"summon": "crow_fire"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "crow_fire"}, {"summon": "dragon_fire", "guardian": true}, {"summon": "gargoyle_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_dark"}, {"summon": "crow_dark"}, {"summon": "gargoyle_fire"}],
+          [{"summon": "crow_dark"}, {"summon": "dragon_dark", "guardian": true}, {"summon": "gargoyle_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_water"}, {"summon": "crow_water"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "crow_water"}, {"summon": "dragon_water", "guardian": true}, {"summon": "gargoyle_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "cepheus", "name": "Cefeu", "latin": "Cepheus", "hemisphere": "Boreal", "icon": "constellation_cepheus",
+      "ra": 22.0, "dec": 71.0, "chart": [266, 376], "stars": 6, "level": 43, "scale": 0.66,
+      "reward": {"essence": 690, "gold": 10, "experience": 1900, "scrolls": 1},
+      "influence": {"name": "Decreto Real", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "Silence", "chance": 0.4, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "gargoyle_light"}, {"summon": "knight_fire"}],
+          [{"summon": "gargoyle_light"}, {"summon": "knight_light", "guardian": true}, {"summon": "knight_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "gargoyle_water"}, {"summon": "knight_wind"}],
+          [{"summon": "gargoyle_water"}, {"summon": "paladin_water", "guardian": true}, {"summon": "knight_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "gargoyle_dark"}, {"summon": "knight_wind"}],
+          [{"summon": "gargoyle_dark"}, {"summon": "knight_dark", "guardian": true}, {"summon": "knight_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "lacerta", "name": "Lagarto", "latin": "Lacerta", "hemisphere": "Boreal", "icon": "constellation_lacerta",
+      "ra": 22.5, "dec": 46.0, "chart": [250, 500], "stars": 6, "level": 44, "scale": 0.68,
+      "reward": {"essence": 700, "gold": 10, "experience": 1900},
+      "influence": {"name": "Regeneração", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Heal", "target": "Self", "power": 0.06}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}],
+          [{"summon": "goblin_wind"}, {"summon": "druid_wind", "guardian": true}, {"summon": "slime_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_light"}, {"summon": "goblin_light"}, {"summon": "slime_wind"}],
+          [{"summon": "goblin_light"}, {"summon": "slime_light", "guardian": true}, {"summon": "slime_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_dark"}],
+          [{"summon": "goblin_water"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "slime_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "cassiopeia", "name": "Cassiopeia", "latin": "Cassiopeia", "hemisphere": "Boreal", "icon": "constellation_cassiopeia",
+      "ra": 1.0, "dec": 62.0, "chart": [328, 444], "stars": 6, "level": 44, "scale": 0.7,
+      "reward": {"essence": 710, "gold": 10, "experience": 1900},
+      "influence": {"name": "Vaidade", "rules": [
+        {"side": "Foes", "passive": {"kind": "Thorns", "value": 0.2}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "vampire_light"}, {"summon": "imp_light"}, {"summon": "vampire_wind"}],
+          [{"summon": "imp_light"}, {"summon": "vampire_light", "guardian": true}, {"summon": "vampire_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "vampire_water"}, {"summon": "imp_water"}, {"summon": "vampire_dark"}],
+          [{"summon": "imp_water"}, {"summon": "vampire_water", "guardian": true}, {"summon": "vampire_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "vampire_fire"}, {"summon": "imp_fire"}, {"summon": "vampire_water"}],
+          [{"summon": "imp_fire"}, {"summon": "vampire_fire", "guardian": true}, {"summon": "vampire_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "triangulum", "name": "Triângulo", "latin": "Triangulum", "hemisphere": "Boreal", "icon": "constellation_triangulum",
+      "ra": 2.2, "dec": 31.5, "chart": [425, 529], "stars": 6, "level": 44, "scale": 0.71,
+      "reward": {"essence": 720, "gold": 10, "experience": 1950},
+      "influence": {"name": "Trindade", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 3}, {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}, {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "imp_wind"}, {"summon": "pixie_wind"}, {"summon": "imp_dark"}],
+          [{"summon": "pixie_wind"}, {"summon": "wizard_wind", "guardian": true}, {"summon": "imp_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_fire"}, {"summon": "pixie_fire"}, {"summon": "imp_water"}],
+          [{"summon": "pixie_fire"}, {"summon": "wizard_fire", "guardian": true}, {"summon": "imp_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_dark"}, {"summon": "pixie_dark"}, {"summon": "imp_water"}],
+          [{"summon": "pixie_dark"}, {"summon": "wizard_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "perseus", "name": "Perseu", "latin": "Perseus", "hemisphere": "Boreal", "icon": "constellation_perseus",
+      "ra": 3.2, "dec": 45.0, "chart": [420, 437], "stars": 6, "level": 44, "scale": 0.73,
+      "reward": {"essence": 740, "gold": 10, "experience": 2000, "scrolls": 1},
+      "influence": {"name": "Olhar da Medusa", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnTargetEachTurn"}, "effects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35, "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "gargoyle_dark"}, {"summon": "knight_dark"}, {"summon": "gargoyle_fire"}],
+          [{"summon": "knight_dark"}, {"summon": "gargoyle_dark", "guardian": true}, {"summon": "gargoyle_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_fire"}, {"summon": "knight_fire"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "knight_fire"}, {"summon": "knight_fire", "guardian": true}, {"summon": "gargoyle_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_fire"}, {"summon": "knight_fire"}, {"summon": "gargoyle_light"}],
+          [{"summon": "knight_fire"}, {"summon": "gargoyle_fire", "guardian": true}, {"summon": "gargoyle_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "andromeda", "name": "Andrômeda", "latin": "Andromeda", "hemisphere": "Boreal", "icon": "constellation_andromeda",
+      "ra": 0.8, "dec": 37.4, "chart": [333, 541], "stars": 6, "level": 45, "scale": 0.75,
+      "reward": {"essence": 750, "gold": 10, "experience": 2000, "legendary": 1},
+      "influence": {"name": "Acorrentada", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.6, "turns": 2}]},
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "goblin_dark"}, {"summon": "knight_water"}],
+          [{"summon": "goblin_dark"}, {"enemy": "chain_master", "element": "Dark"}, {"summon": "knight_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "goblin_water"}, {"summon": "knight_light"}],
+          [{"summon": "goblin_water"}, {"enemy": "chain_master", "element": "Water"}, {"summon": "knight_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "goblin_light"}, {"summon": "knight_dark"}],
+          [{"summon": "goblin_light"}, {"enemy": "chain_master", "element": "Light"}, {"summon": "knight_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "pisces", "name": "Peixes", "latin": "Pisces", "hemisphere": "Equatorial", "icon": "constellation_pisces",
+      "ra": 0.5, "dec": 13.7, "chart": [133, 50], "stars": 6, "level": 45, "scale": 0.77,
+      "reward": {"essence": 760, "gold": 10, "experience": 2000, "cores": 1},
+      "influence": {"name": "Águas Calmas", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_light"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_light"}],
+          [{"summon": "slime_water"}, {"summon": "slime_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_water"}, {"summon": "imp_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_fire"}],
+          [{"summon": "slime_water"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "cetus", "name": "Baleia", "latin": "Cetus", "hemisphere": "Equatorial", "icon": "constellation_cetus",
+      "ra": 1.7, "dec": -7.2, "chart": [318, 116], "stars": 6, "level": 45, "scale": 0.79,
+      "reward": {"essence": 780, "gold": 15, "experience": 2050},
+      "influence": {"name": "Abismo", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectEachTurn", "value": 0.5}, "effects": [{"kind": "Impeto", "target": "AllEnemies", "power": -10}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_water"}, {"summon": "slime_water"}, {"summon": "goblin_dark"}],
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_dark"}],
+          [{"summon": "goblin_water"}, {"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_water"}, {"summon": "slime_water"}, {"summon": "goblin_fire"}],
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_fire"}],
+          [{"summon": "goblin_water"}, {"enemy": "mother_serpent", "element": "Water"}, {"summon": "slime_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_dark"}, {"summon": "slime_dark"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_water"}],
+          [{"summon": "goblin_dark"}, {"enemy": "drowned_guardian", "element": "Dark"}, {"summon": "slime_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "aries", "name": "Áries", "latin": "Aries", "hemisphere": "Equatorial", "icon": "constellation_aries",
+      "ra": 2.6, "dec": 20.8, "chart": [70, 166], "stars": 6, "level": 45, "scale": 0.81,
+      "reward": {"essence": 790, "gold": 15, "experience": 2100, "scrolls": 1},
+      "influence": {"name": "Investida do Carneiro", "rules": [
+        {"side": "Guardian", "passive": {"kind": "ImpetoAtWaveStart", "value": 0.6}},
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Impeto", "target": "Target", "power": -30}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "wolf_fire"}, {"summon": "troll_water"}],
+          [{"summon": "wolf_fire"}, {"summon": "troll_fire"}, {"summon": "wolf_water"}],
+          [{"summon": "troll_fire"}, {"enemy": "celestial_ram", "element": "Fire"}, {"summon": "wolf_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "wolf_fire"}, {"summon": "troll_wind"}],
+          [{"summon": "wolf_fire"}, {"summon": "troll_fire"}, {"summon": "wolf_wind"}],
+          [{"summon": "troll_fire"}, {"summon": "troll_fire", "guardian": true}, {"summon": "wolf_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_wind"}, {"summon": "wolf_wind"}, {"summon": "troll_light"}],
+          [{"summon": "wolf_wind"}, {"summon": "troll_wind"}, {"summon": "wolf_light"}],
+          [{"summon": "troll_wind"}, {"enemy": "celestial_ram", "element": "Wind"}, {"summon": "wolf_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "taurus", "name": "Touro", "latin": "Taurus", "hemisphere": "Equatorial", "icon": "constellation_taurus",
+      "ra": 4.7, "dec": 14.9, "chart": [122, 281], "stars": 6, "level": 46, "scale": 0.83,
+      "reward": {"essence": 800, "gold": 15, "experience": 2100},
+      "influence": {"name": "Fúria do Touro", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [{"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}, {"kind": "Impeto", "target": "Self", "power": 10}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "goblin_fire"}, {"summon": "troll_wind"}],
+          [{"summon": "goblin_fire"}, {"summon": "troll_fire"}, {"summon": "goblin_wind"}],
+          [{"summon": "troll_fire"}, {"enemy": "celestial_bull", "element": "Fire"}, {"summon": "goblin_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_dark"}, {"summon": "goblin_dark"}, {"summon": "troll_wind"}],
+          [{"summon": "goblin_dark"}, {"summon": "troll_dark"}, {"summon": "goblin_wind"}],
+          [{"summon": "troll_dark"}, {"enemy": "celestial_bull", "element": "Dark"}, {"summon": "goblin_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_light"}, {"summon": "goblin_light"}, {"summon": "troll_dark"}],
+          [{"summon": "goblin_light"}, {"summon": "troll_light"}, {"summon": "goblin_dark"}],
+          [{"summon": "troll_light"}, {"enemy": "celestial_bull", "element": "Light"}, {"summon": "goblin_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "orion", "name": "Órion", "latin": "Orion", "hemisphere": "Equatorial", "icon": "constellation_orion",
+      "ra": 5.6, "dec": 5.9, "chart": [202, 330], "stars": 6, "level": 46, "scale": 0.85,
+      "reward": {"essence": 810, "gold": 15, "experience": 2100},
+      "influence": {"name": "Marca do Caçador", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.4, "turns": 2}]},
+        {"side": "Guardian", "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.5, "statuses": ["Curse"]}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_light"}, {"summon": "bandit_light"}, {"summon": "wolf_wind"}],
+          [{"summon": "bandit_light"}, {"summon": "wolf_light"}, {"summon": "bandit_wind"}],
+          [{"summon": "wolf_light"}, {"enemy": "celestial_hunter", "element": "Light"}, {"summon": "bandit_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_fire"}, {"summon": "bandit_fire"}, {"summon": "wolf_dark"}],
+          [{"summon": "bandit_fire"}, {"summon": "wolf_fire"}, {"summon": "bandit_dark"}],
+          [{"summon": "wolf_fire"}, {"enemy": "celestial_hunter", "element": "Fire"}, {"summon": "bandit_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_dark"}, {"summon": "bandit_dark"}, {"summon": "wolf_fire"}],
+          [{"summon": "bandit_dark"}, {"summon": "wolf_dark"}, {"summon": "bandit_fire"}],
+          [{"summon": "wolf_dark"}, {"summon": "crow_dark", "guardian": true}, {"summon": "bandit_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "lepus", "name": "Lebre", "latin": "Lepus", "hemisphere": "Equatorial", "icon": "constellation_lepus",
+      "ra": 5.6, "dec": -19.0, "chart": [418, 321], "stars": 6, "level": 46, "scale": 0.88,
+      "reward": {"essence": 820, "gold": 15, "experience": 2150},
+      "influence": {"name": "Correria", "rules": [
+        {"side": "Foes", "passive": {"kind": "SpeedWhenLowest", "value": 0.6}},
+        {"side": "Guardian", "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "imp_wind"}, {"summon": "bird_wind"}, {"summon": "imp_dark"}],
+          [{"summon": "bird_wind"}, {"summon": "imp_wind"}, {"summon": "bird_dark"}],
+          [{"summon": "imp_wind"}, {"summon": "imp_wind", "guardian": true}, {"summon": "bird_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_fire"}, {"summon": "bird_fire"}, {"summon": "imp_water"}],
+          [{"summon": "bird_fire"}, {"summon": "imp_fire"}, {"summon": "bird_water"}],
+          [{"summon": "imp_fire"}, {"summon": "imp_fire", "guardian": true}, {"summon": "bird_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_light"}, {"summon": "bird_light"}, {"summon": "imp_water"}],
+          [{"summon": "bird_light"}, {"summon": "imp_light"}, {"summon": "bird_water"}],
+          [{"summon": "imp_light"}, {"summon": "imp_light", "guardian": true}, {"summon": "bird_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "canis_major", "name": "Cão Maior", "latin": "Canis Major", "hemisphere": "Equatorial", "icon": "constellation_canis_major",
+      "ra": 6.8, "dec": -22.1, "chart": [453, 406], "stars": 6, "level": 46, "scale": 0.9,
+      "reward": {"essence": 840, "gold": 15, "experience": 2200, "scrolls": 1},
+      "influence": {"name": "Canícula", "rules": [
+        {"side": "Everyone", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Status", "target": "Self", "status": "Affliction", "chance": 0.3, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_fire"}, {"summon": "imp_fire"}, {"summon": "wolf_water"}],
+          [{"summon": "imp_fire"}, {"summon": "wolf_fire"}, {"summon": "imp_water"}],
+          [{"summon": "wolf_fire"}, {"summon": "wolf_fire", "guardian": true}, {"summon": "imp_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_dark"}, {"summon": "imp_dark"}, {"summon": "wolf_water"}],
+          [{"summon": "imp_dark"}, {"summon": "wolf_dark"}, {"summon": "imp_water"}],
+          [{"summon": "wolf_dark"}, {"summon": "wolf_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_light"}, {"summon": "imp_light"}, {"summon": "wolf_wind"}],
+          [{"summon": "imp_light"}, {"summon": "wolf_light"}, {"summon": "imp_wind"}],
+          [{"summon": "wolf_light"}, {"summon": "wolf_light", "guardian": true}, {"summon": "imp_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "monoceros", "name": "Unicórnio", "latin": "Monoceros", "hemisphere": "Equatorial", "icon": "constellation_monoceros",
+      "ra": 7.1, "dec": 0.3, "chart": [265, 406], "stars": 6, "level": 46, "scale": 0.92,
+      "reward": {"essence": 850, "gold": 15, "experience": 2200},
+      "influence": {"name": "Chifre Purificador", "rules": [
+        {"side": "Foes", "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "pixie_light"}, {"summon": "knight_light"}, {"summon": "pixie_water"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_water"}],
+          [{"summon": "pixie_light"}, {"enemy": "celestial_unicorn", "element": "Light"}, {"summon": "knight_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_water"}, {"summon": "knight_water"}, {"summon": "pixie_light"}],
+          [{"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "knight_light"}],
+          [{"summon": "pixie_water"}, {"enemy": "celestial_unicorn", "element": "Water"}, {"summon": "knight_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_light"}, {"summon": "knight_light"}, {"summon": "pixie_dark"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_dark"}],
+          [{"summon": "pixie_light"}, {"summon": "knight_light", "guardian": true}, {"summon": "knight_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "gemini", "name": "Gêmeos", "latin": "Gemini", "hemisphere": "Equatorial", "icon": "constellation_gemini",
+      "ra": 7.1, "dec": 22.6, "chart": [53, 410], "stars": 6, "level": 47, "scale": 0.95,
+      "reward": {"essence": 860, "gold": 15, "experience": 2200},
+      "influence": {"name": "Castor e Pólux", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [{"kind": "Heal", "target": "AllAllies", "power": 0.5}, {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_fire"}, {"summon": "wolf_fire"}, {"summon": "knight_light"}],
+          [{"summon": "wolf_fire"}, {"summon": "knight_fire"}, {"summon": "wolf_light"}],
+          [{"summon": "knight_fire", "guardian": true}, {"summon": "knight_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "wolf_light"}, {"summon": "knight_dark"}],
+          [{"summon": "wolf_light"}, {"summon": "knight_light"}, {"summon": "wolf_dark"}],
+          [{"summon": "wolf_light", "guardian": true}, {"summon": "wolf_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "wolf_light"}, {"summon": "knight_fire"}],
+          [{"summon": "wolf_light"}, {"summon": "knight_light"}, {"summon": "wolf_fire"}],
+          [{"summon": "phoenix_light", "guardian": true}, {"summon": "phoenix_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "canis_minor", "name": "Cão Menor", "latin": "Canis Minor", "hemisphere": "Equatorial", "icon": "constellation_canis_minor",
+      "ra": 7.6, "dec": 6.4, "chart": [183, 448], "stars": 6, "level": 47, "scale": 0.97,
+      "reward": {"essence": 880, "gold": 15, "experience": 2250},
+      "influence": {"name": "Cão de Guarda", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.6, "turns": 2}, {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_water"}, {"summon": "slime_water"}, {"summon": "wolf_dark"}],
+          [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "slime_dark"}],
+          [{"summon": "wolf_water"}, {"summon": "wolf_water", "guardian": true}, {"summon": "slime_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_light"}, {"summon": "slime_light"}, {"summon": "wolf_fire"}],
+          [{"summon": "slime_light"}, {"summon": "wolf_light"}, {"summon": "slime_fire"}],
+          [{"summon": "wolf_light"}, {"summon": "druid_light", "guardian": true}, {"summon": "slime_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_light"}, {"summon": "slime_light"}, {"summon": "wolf_water"}],
+          [{"summon": "slime_light"}, {"summon": "wolf_light"}, {"summon": "slime_water"}],
+          [{"summon": "wolf_light"}, {"summon": "knight_light", "guardian": true}, {"summon": "slime_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "cancer", "name": "Câncer", "latin": "Cancer", "hemisphere": "Equatorial", "icon": "constellation_cancer",
+      "ra": 8.6, "dec": 19.8, "chart": [80, 499], "stars": 6, "level": 47, "scale": 1.0,
+      "reward": {"essence": 890, "gold": 15, "experience": 2300, "scrolls": 1},
+      "influence": {"name": "Carapaça", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3}, {"kind": "Shield", "target": "Self", "power": 0.15, "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_fire"}],
+          [{"summon": "goblin_water"}, {"summon": "slime_water"}, {"summon": "goblin_fire"}],
+          [{"summon": "slime_water"}, {"enemy": "celestial_crab", "element": "Water"}, {"summon": "goblin_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_fire"}, {"summon": "goblin_fire"}, {"summon": "slime_wind"}],
+          [{"summon": "goblin_fire"}, {"summon": "slime_fire"}, {"summon": "goblin_wind"}],
+          [{"summon": "slime_fire"}, {"enemy": "celestial_crab", "element": "Fire"}, {"summon": "goblin_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_wind"}],
+          [{"summon": "goblin_dark"}, {"summon": "slime_dark"}, {"summon": "goblin_wind"}],
+          [{"summon": "slime_dark"}, {"enemy": "celestial_crab", "element": "Dark"}, {"summon": "goblin_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "leo", "name": "Leão", "latin": "Leo", "hemisphere": "Equatorial", "icon": "constellation_leo",
+      "ra": 10.7, "dec": 13.1, "chart": [138, 611], "stars": 6, "level": 47, "scale": 1.02,
+      "reward": {"essence": 900, "gold": 15, "experience": 2300, "cores": 1},
+      "influence": {"name": "Rugido do Rei", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.7, "turns": 2}, {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.5, "turns": 2}]},
+        {"side": "Guardian", "passive": {"kind": "BonusVsWounded", "value": 0.3}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_fire"}, {"summon": "troll_fire"}, {"summon": "wolf_wind"}],
+          [{"summon": "troll_fire"}, {"summon": "wolf_fire"}, {"summon": "troll_wind"}],
+          [{"summon": "wolf_fire"}, {"enemy": "celestial_lion", "element": "Fire"}, {"summon": "troll_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_dark"}, {"summon": "troll_dark"}, {"summon": "wolf_wind"}],
+          [{"summon": "troll_dark"}, {"summon": "wolf_dark"}, {"summon": "troll_wind"}],
+          [{"summon": "wolf_dark"}, {"enemy": "celestial_lion", "element": "Dark"}, {"summon": "troll_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_light"}, {"summon": "troll_light"}, {"summon": "wolf_dark"}],
+          [{"summon": "troll_light"}, {"summon": "wolf_light"}, {"summon": "troll_dark"}],
+          [{"summon": "wolf_light"}, {"enemy": "celestial_lion", "element": "Light"}, {"summon": "troll_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "sextans", "name": "Sextante", "latin": "Sextans", "hemisphere": "Equatorial", "icon": "constellation_sextans",
+      "ra": 10.3, "dec": -2.6, "chart": [277, 589], "stars": 6, "level": 48, "scale": 1.05,
+      "reward": {"essence": 910, "gold": 20, "experience": 2300},
+      "influence": {"name": "Ângulo Certo", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "CritResist", "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "imp_water"}, {"summon": "goblin_water"}, {"summon": "imp_light"}],
+          [{"summon": "goblin_water"}, {"summon": "imp_water"}, {"summon": "goblin_light"}],
+          [{"summon": "imp_water"}, {"summon": "wizard_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_light"}, {"summon": "goblin_light"}, {"summon": "imp_dark"}],
+          [{"summon": "goblin_light"}, {"summon": "imp_light"}, {"summon": "goblin_dark"}],
+          [{"summon": "imp_light"}, {"summon": "wizard_light", "guardian": true}, {"summon": "goblin_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_light"}, {"summon": "goblin_light"}, {"summon": "imp_fire"}],
+          [{"summon": "goblin_light"}, {"summon": "imp_light"}, {"summon": "goblin_fire"}],
+          [{"summon": "imp_light"}, {"summon": "goblin_light", "guardian": true}, {"summon": "goblin_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "hydra", "name": "Hidra", "latin": "Hydra", "hemisphere": "Equatorial", "icon": "constellation_hydra",
+      "ra": 11.6, "dec": -14.5, "chart": [345, 677], "stars": 6, "level": 48, "scale": 1.08,
+      "reward": {"essence": 920, "gold": 20, "experience": 2350},
+      "influence": {"name": "Cabeças que Voltam", "rules": [
+        {"side": "Foes", "passive": {"kind": "RebirthOnce", "value": 0.35}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "crow_water"}, {"summon": "slime_dark"}],
+          [{"summon": "crow_water"}, {"summon": "slime_water"}, {"summon": "crow_dark"}],
+          [{"summon": "slime_water"}, {"enemy": "celestial_hydra", "element": "Water"}, {"summon": "crow_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_dark"}, {"summon": "crow_dark"}, {"summon": "slime_fire"}],
+          [{"summon": "crow_dark"}, {"summon": "slime_dark"}, {"summon": "crow_fire"}],
+          [{"summon": "slime_dark"}, {"enemy": "celestial_hydra", "element": "Dark"}, {"summon": "crow_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_wind"}, {"summon": "crow_wind"}, {"summon": "slime_water"}],
+          [{"summon": "crow_wind"}, {"summon": "slime_wind"}, {"summon": "crow_water"}],
+          [{"summon": "slime_wind"}, {"enemy": "mother_serpent", "element": "Wind"}, {"summon": "crow_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "crater", "name": "Taça", "latin": "Crater", "hemisphere": "Equatorial", "icon": "constellation_crater",
+      "ra": 11.4, "dec": -15.9, "chart": [419, 623], "stars": 6, "level": 48, "scale": 1.11,
+      "reward": {"essence": 940, "gold": 20, "experience": 2400, "scrolls": 1},
+      "influence": {"name": "Taça Amarga", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.3, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "vampire_dark"}, {"summon": "imp_dark"}, {"summon": "vampire_fire"}],
+          [{"summon": "imp_dark"}, {"summon": "vampire_dark"}, {"summon": "imp_fire"}],
+          [{"summon": "vampire_dark"}, {"summon": "vampire_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "vampire_fire"}, {"summon": "imp_fire"}, {"summon": "vampire_wind"}],
+          [{"summon": "imp_fire"}, {"summon": "vampire_fire"}, {"summon": "imp_wind"}],
+          [{"summon": "vampire_fire"}, {"summon": "vampire_fire", "guardian": true}, {"summon": "imp_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "vampire_dark"}, {"summon": "imp_dark"}, {"summon": "vampire_wind"}],
+          [{"summon": "imp_dark"}, {"summon": "vampire_dark"}, {"summon": "imp_wind"}],
+          [{"summon": "vampire_dark"}, {"summon": "imp_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "corvus", "name": "Corvo", "latin": "Corvus", "hemisphere": "Equatorial", "icon": "constellation_corvus",
+      "ra": 12.4, "dec": -18.4, "chart": [429, 714], "stars": 6, "level": 48, "scale": 1.13,
+      "reward": {"essence": 950, "gold": 20, "experience": 2400},
+      "influence": {"name": "Mau Agouro", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit", "value": 0.3}, "effects": [{"kind": "Status", "target": "Target", "status": "Oblivion", "turns": 2}]},
+        {"side": "Guardian", "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.3, "statuses": ["Oblivion"]}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "crow_water"}, {"summon": "bird_water"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_water"}, {"summon": "crow_water"}, {"summon": "bird_wind"}],
+          [{"summon": "crow_water"}, {"summon": "crow_water", "guardian": true}, {"summon": "bird_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_dark"}, {"summon": "bird_dark"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_dark"}, {"summon": "crow_dark"}, {"summon": "bird_wind"}],
+          [{"summon": "crow_dark"}, {"summon": "crow_dark", "guardian": true}, {"summon": "bird_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_fire"}, {"summon": "bird_fire"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_fire"}, {"summon": "crow_fire"}, {"summon": "bird_dark"}],
+          [{"summon": "crow_fire"}, {"summon": "crow_fire", "guardian": true}, {"summon": "bird_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "virgo", "name": "Virgem", "latin": "Virgo", "hemisphere": "Equatorial", "icon": "constellation_virgo",
+      "ra": 13.4, "dec": -4.2, "chart": [291, 760], "stars": 6, "level": 49, "scale": 1.16,
+      "reward": {"essence": 960, "gold": 20, "experience": 2400},
+      "influence": {"name": "Colheita", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Heal", "target": "AllAllies", "power": 0.04}, {"kind": "Cleanse", "target": "LowestAlly"}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "pixie_light"}, {"summon": "knight_light"}, {"summon": "pixie_wind"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_wind"}],
+          [{"summon": "pixie_light"}, {"summon": "paladin_light", "guardian": true}, {"summon": "knight_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_water"}, {"summon": "knight_water"}, {"summon": "pixie_dark"}],
+          [{"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "knight_dark"}],
+          [{"summon": "pixie_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "knight_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_water"}, {"summon": "knight_water"}, {"summon": "pixie_fire"}],
+          [{"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "knight_fire"}],
+          [{"summon": "pixie_water"}, {"summon": "pixie_water", "guardian": true}, {"summon": "knight_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "libra", "name": "Libra", "latin": "Libra", "hemisphere": "Equatorial", "icon": "constellation_libra",
+      "ra": 15.2, "dec": -15.2, "chart": [388, 858], "stars": 6, "level": 49, "scale": 1.19,
+      "reward": {"essence": 980, "gold": 20, "experience": 2450},
+      "influence": {"name": "Pesos Iguais", "rules": [
+        {"side": "Everyone", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "EqualizeHealth", "target": "AllAllies"}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "imp_light"}, {"summon": "knight_light"}, {"summon": "imp_dark"}],
+          [{"summon": "knight_light"}, {"summon": "imp_light"}, {"summon": "knight_dark"}],
+          [{"summon": "imp_light"}, {"enemy": "celestial_scales", "element": "Light"}, {"summon": "knight_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_dark"}, {"summon": "knight_dark"}, {"summon": "imp_fire"}],
+          [{"summon": "knight_dark"}, {"summon": "imp_dark"}, {"summon": "knight_fire"}],
+          [{"summon": "imp_dark"}, {"enemy": "celestial_scales", "element": "Dark"}, {"summon": "knight_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_fire"}, {"summon": "knight_fire"}, {"summon": "imp_wind"}],
+          [{"summon": "knight_fire"}, {"summon": "imp_fire"}, {"summon": "knight_wind"}],
+          [{"summon": "imp_fire"}, {"summon": "imp_fire", "guardian": true}, {"summon": "knight_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "serpens", "name": "Serpente", "latin": "Serpens", "hemisphere": "Equatorial", "icon": "constellation_serpens",
+      "ra": 15.8, "dec": 10.0, "chart": [165, 892], "stars": 6, "level": 49, "scale": 1.22,
+      "reward": {"essence": 990, "gold": 20, "experience": 2500, "scrolls": 1},
+      "influence": {"name": "Veneno da Serpente", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.4, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_fire"}],
+          [{"summon": "goblin_dark"}, {"summon": "slime_dark"}, {"summon": "goblin_fire"}],
+          [{"summon": "slime_dark"}, {"enemy": "mother_serpent", "element": "Dark"}, {"summon": "goblin_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_fire"}, {"summon": "goblin_fire"}, {"summon": "slime_wind"}],
+          [{"summon": "goblin_fire"}, {"summon": "slime_fire"}, {"summon": "goblin_wind"}],
+          [{"summon": "slime_fire"}, {"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "goblin_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "slime_light"}],
+          [{"summon": "goblin_wind"}, {"summon": "slime_wind"}, {"summon": "goblin_light"}],
+          [{"summon": "slime_wind"}, {"enemy": "mother_serpent", "element": "Wind"}, {"summon": "goblin_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "ophiuchus", "name": "Serpentário", "latin": "Ophiuchus", "hemisphere": "Equatorial", "icon": "constellation_ophiuchus",
+      "ra": 17.4, "dec": -7.9, "chart": [322, 971], "stars": 6, "level": 49, "scale": 1.26,
+      "reward": {"essence": 1000, "gold": 20, "experience": 2500},
+      "influence": {"name": "Bastão de Asclépio", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_wind"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}],
+          [{"summon": "slime_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_light"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_light"}],
+          [{"summon": "slime_water"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_water"}, {"summon": "paladin_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "scorpius", "name": "Escorpião", "latin": "Scorpius", "hemisphere": "Equatorial", "icon": "constellation_scorpius",
+      "ra": 16.9, "dec": -27.0, "chart": [493, 952], "stars": 6, "level": 49, "scale": 1.29,
+      "reward": {"essence": 1010, "gold": 20, "experience": 2500},
+      "influence": {"name": "Ferrão Mortal", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnTargetEachTurn"}, "effects": [{"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.6, "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_dark"}, {"summon": "crow_dark"}, {"summon": "goblin_wind"}],
+          [{"summon": "crow_dark"}, {"summon": "goblin_dark"}, {"summon": "crow_wind"}],
+          [{"summon": "goblin_dark"}, {"enemy": "celestial_scorpion", "element": "Dark"}, {"summon": "crow_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_fire"}, {"summon": "crow_fire"}, {"summon": "goblin_dark"}],
+          [{"summon": "crow_fire"}, {"summon": "goblin_fire"}, {"summon": "crow_dark"}],
+          [{"summon": "goblin_fire"}, {"enemy": "celestial_scorpion", "element": "Fire"}, {"summon": "crow_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_wind"}, {"summon": "crow_wind"}, {"summon": "goblin_fire"}],
+          [{"summon": "crow_wind"}, {"summon": "goblin_wind"}, {"summon": "crow_fire"}],
+          [{"summon": "goblin_wind"}, {"enemy": "celestial_scorpion", "element": "Wind"}, {"summon": "crow_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "sagittarius", "name": "Sagitário", "latin": "Sagittarius", "hemisphere": "Equatorial", "icon": "constellation_sagittarius",
+      "ra": 19.1, "dec": -28.5, "chart": [506, 1073], "stars": 6, "level": 50, "scale": 1.32,
+      "reward": {"essence": 1020, "gold": 20, "experience": 2550},
+      "influence": {"name": "Segunda Flecha", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnTargetEachTurn"}, "effects": [{"kind": "Damage", "target": "Target", "power": 1.2, "ignoreDefense": 0.5}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bandit_fire"}, {"summon": "wolf_fire"}, {"summon": "bandit_dark"}],
+          [{"summon": "wolf_fire"}, {"summon": "bandit_fire"}, {"summon": "wolf_dark"}],
+          [{"summon": "bandit_fire"}, {"enemy": "celestial_centaur", "element": "Fire"}, {"summon": "wolf_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "bandit_wind"}, {"summon": "wolf_wind"}, {"summon": "bandit_fire"}],
+          [{"summon": "wolf_wind"}, {"summon": "bandit_wind"}, {"summon": "wolf_fire"}],
+          [{"summon": "bandit_wind"}, {"enemy": "celestial_centaur", "element": "Wind"}, {"summon": "wolf_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bandit_fire"}, {"summon": "wolf_fire"}, {"summon": "bandit_wind"}],
+          [{"summon": "wolf_fire"}, {"summon": "bandit_fire"}, {"summon": "wolf_wind"}],
+          [{"summon": "bandit_fire"}, {"summon": "bandit_fire", "guardian": true}, {"summon": "wolf_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "scutum", "name": "Escudo", "latin": "Scutum", "hemisphere": "Equatorial", "icon": "constellation_scutum",
+      "ra": 18.7, "dec": -9.9, "chart": [344, 1060], "stars": 6, "level": 50, "scale": 1.36,
+      "reward": {"essence": 1040, "gold": 20, "experience": 2600, "scrolls": 1, "cores": 1},
+      "influence": {"name": "Égide", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Aegis", "turns": 3}]},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectEachTurn", "value": 0.3}, "effects": [{"kind": "Status", "target": "Self", "status": "Aegis", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "gargoyle_water"}, {"summon": "knight_fire"}],
+          [{"summon": "gargoyle_water"}, {"summon": "knight_water"}, {"summon": "gargoyle_fire"}],
+          [{"summon": "knight_water"}, {"summon": "paladin_water", "guardian": true}, {"summon": "gargoyle_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "gargoyle_water"}, {"summon": "knight_wind"}],
+          [{"summon": "gargoyle_water"}, {"summon": "knight_water"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "knight_water"}, {"summon": "knight_water", "guardian": true}, {"summon": "gargoyle_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "gargoyle_light"}, {"summon": "knight_wind"}],
+          [{"summon": "gargoyle_light"}, {"summon": "knight_light"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "knight_light"}, {"summon": "gargoyle_light", "guardian": true}, {"summon": "gargoyle_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "aquila", "name": "Águia", "latin": "Aquila", "hemisphere": "Equatorial", "icon": "constellation_aquila",
+      "ra": 19.7, "dec": 3.4, "chart": [224, 1105], "stars": 6, "level": 50, "scale": 1.39,
+      "reward": {"essence": 1050, "gold": 25, "experience": 2600},
+      "influence": {"name": "Raio de Zeus", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Damage", "target": "RandomEnemy", "power": 1.0}, {"kind": "Status", "target": "RandomEnemy", "status": "Stun", "chance": 0.3, "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_fire"}, {"summon": "crow_fire"}, {"summon": "bird_wind"}],
+          [{"summon": "crow_fire"}, {"summon": "bird_fire"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_fire"}, {"summon": "bird_fire", "guardian": true}, {"summon": "crow_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "crow_wind"}, {"summon": "bird_light"}],
+          [{"summon": "crow_wind"}, {"summon": "bird_wind"}, {"summon": "crow_light"}],
+          [{"summon": "bird_wind"}, {"summon": "bird_wind", "guardian": true}, {"summon": "crow_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "crow_wind"}, {"summon": "bird_dark"}],
+          [{"summon": "crow_wind"}, {"summon": "bird_wind"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_wind"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "crow_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "sagitta", "name": "Flecha", "latin": "Sagitta", "hemisphere": "Equatorial", "icon": "constellation_sagitta",
+      "ra": 19.7, "dec": 18.9, "chart": [71, 1092], "stars": 6, "level": 50, "scale": 1.43,
+      "reward": {"essence": 1060, "gold": 25, "experience": 2600},
+      "influence": {"name": "Voo Reto", "rules": [
+        {"side": "Foes", "passive": {"kind": "ImpetoAtWaveStart", "value": 0.4}},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Foresight", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "crow_wind"}, {"summon": "goblin_wind"}, {"summon": "crow_light"}],
+          [{"summon": "goblin_wind"}, {"summon": "crow_wind"}, {"summon": "goblin_light"}],
+          [{"summon": "crow_wind"}, {"summon": "crow_wind", "guardian": true}, {"summon": "goblin_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_wind"}, {"summon": "goblin_wind"}, {"summon": "crow_dark"}],
+          [{"summon": "goblin_wind"}, {"summon": "crow_wind"}, {"summon": "goblin_dark"}],
+          [{"summon": "crow_wind"}, {"summon": "bandit_wind", "guardian": true}, {"summon": "goblin_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_wind"}, {"summon": "goblin_wind"}, {"summon": "crow_fire"}],
+          [{"summon": "goblin_wind"}, {"summon": "crow_wind"}, {"summon": "goblin_fire"}],
+          [{"summon": "crow_wind"}, {"summon": "goblin_wind", "guardian": true}, {"summon": "goblin_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "delphinus", "name": "Delfim", "latin": "Delphinus", "hemisphere": "Equatorial", "icon": "constellation_delphinus",
+      "ra": 20.7, "dec": 11.7, "chart": [139, 1155], "stars": 6, "level": 51, "scale": 1.47,
+      "reward": {"essence": 1080, "gold": 25, "experience": 2650},
+      "influence": {"name": "Brincadeira", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [{"kind": "Impeto", "target": "Self", "power": 15}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_water"}, {"summon": "pixie_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_fire"}],
+          [{"summon": "slime_water"}, {"summon": "bird_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_wind"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}],
+          [{"summon": "slime_water"}, {"summon": "vampire_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "equuleus", "name": "Cavalo Menor", "latin": "Equuleus", "hemisphere": "Equatorial", "icon": "constellation_equuleus",
+      "ra": 21.2, "dec": 7.8, "chart": [212, 1210], "stars": 6, "level": 51, "scale": 1.5,
+      "reward": {"essence": 1090, "gold": 25, "experience": 2700, "scrolls": 1},
+      "influence": {"name": "Coice", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit", "value": 0.35}, "effects": [{"kind": "Impeto", "target": "Target", "power": -25}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "knight_wind"}, {"summon": "wolf_fire"}],
+          [{"summon": "knight_wind"}, {"summon": "wolf_wind"}, {"summon": "knight_fire"}],
+          [{"summon": "wolf_wind"}, {"summon": "knight_wind", "guardian": true}, {"summon": "knight_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "knight_wind"}, {"summon": "wolf_water"}],
+          [{"summon": "knight_wind"}, {"summon": "wolf_wind"}, {"summon": "knight_water"}],
+          [{"summon": "wolf_wind"}, {"summon": "paladin_wind", "guardian": true}, {"summon": "knight_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "knight_wind"}, {"summon": "wolf_light"}],
+          [{"summon": "knight_wind"}, {"summon": "wolf_wind"}, {"summon": "knight_light"}],
+          [{"summon": "wolf_wind"}, {"summon": "troll_wind", "guardian": true}, {"summon": "knight_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "capricornus", "name": "Capricórnio", "latin": "Capricornus", "hemisphere": "Equatorial", "icon": "constellation_capricornus",
+      "ra": 21.0, "dec": -18.0, "chart": [413, 1178], "stars": 6, "level": 51, "scale": 1.54,
+      "reward": {"essence": 1100, "gold": 25, "experience": 2700},
+      "influence": {"name": "Duas Formas", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectWhenLowest"}, "effects": [{"kind": "Heal", "target": "Self", "power": 0.15}, {"kind": "Status", "target": "Self", "status": "Immunity", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "troll_water"}, {"summon": "slime_water"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_water"}, {"summon": "troll_water"}, {"summon": "slime_wind"}],
+          [{"summon": "troll_water"}, {"enemy": "celestial_sea_goat", "element": "Water"}, {"summon": "slime_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_dark"}, {"summon": "slime_dark"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_dark"}, {"summon": "troll_dark"}, {"summon": "slime_wind"}],
+          [{"summon": "troll_dark"}, {"enemy": "celestial_sea_goat", "element": "Dark"}, {"summon": "slime_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_light"}, {"summon": "slime_light"}, {"summon": "troll_dark"}],
+          [{"summon": "slime_light"}, {"summon": "troll_light"}, {"summon": "slime_dark"}],
+          [{"summon": "troll_light"}, {"enemy": "celestial_sea_goat", "element": "Light"}, {"summon": "slime_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "aquarius", "name": "Aquário", "latin": "Aquarius", "hemisphere": "Equatorial", "icon": "constellation_aquarius",
+      "ra": 22.3, "dec": -10.8, "chart": [349, 1249], "stars": 6, "level": 51, "scale": 1.58,
+      "reward": {"essence": 1110, "gold": 25, "experience": 2700},
+      "influence": {"name": "Enxurrada", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.8, "turns": 3}]},
+        {"side": "Foes", "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.25, "statuses": ["SpeedDown"]}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_light"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_light"}],
+          [{"summon": "slime_water"}, {"summon": "dragon_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_water"}, {"summon": "wizard_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
+          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_fire"}],
+          [{"summon": "slime_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "pegasus", "name": "Pégaso", "latin": "Pegasus", "hemisphere": "Equatorial", "icon": "constellation_pegasus",
+      "ra": 22.7, "dec": 19.5, "chart": [81, 1271], "stars": 6, "level": 51, "scale": 1.62,
+      "reward": {"essence": 1120, "gold": 25, "experience": 2750, "legendary": 1},
+      "influence": {"name": "Asas de Pégaso", "rules": [
+        {"side": "Guardian", "passive": {"kind": "Dodge", "value": 0.25}},
+        {"side": "Guardian", "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "SpeedUp", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_dark"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "bird_wind"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "bird_wind"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "gargoyle_light"}, {"summon": "bird_fire"}],
+          [{"summon": "gargoyle_light"}, {"summon": "bird_light"}, {"summon": "gargoyle_fire"}],
+          [{"summon": "bird_light"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "gargoyle_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_water"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "bird_wind"}, {"summon": "gargoyle_water"}],
+          [{"summon": "bird_wind"}, {"summon": "dragon_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "piscis_austrinus", "name": "Peixe Austral", "latin": "Piscis Austrinus", "hemisphere": "Austral", "icon": "constellation_piscis_austrinus",
+      "ra": 22.3, "dec": -30.6, "chart": [387, 73], "stars": 6, "level": 52, "scale": 1.67,
+      "reward": {"essence": 1140, "gold": 25, "experience": 2800, "scrolls": 1},
+      "influence": {"name": "Último de Pé", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 3}, {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 3}, {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "imp_water"}, {"summon": "slime_fire"}, {"summon": "imp_water"}],
+          [{"summon": "slime_water"}, {"summon": "imp_fire"}, {"summon": "slime_water"}, {"summon": "imp_water"}],
+          [{"summon": "slime_fire"}, {"summon": "imp_water", "guardian": true}, {"summon": "imp_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "imp_water"}, {"summon": "slime_wind"}, {"summon": "imp_water"}],
+          [{"summon": "slime_water"}, {"summon": "imp_wind"}, {"summon": "slime_water"}, {"summon": "imp_water"}],
+          [{"summon": "slime_wind"}, {"summon": "wizard_water", "guardian": true}, {"summon": "imp_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "imp_water"}, {"summon": "slime_light"}, {"summon": "imp_water"}],
+          [{"summon": "slime_water"}, {"summon": "imp_light"}, {"summon": "slime_water"}, {"summon": "imp_water"}],
+          [{"summon": "slime_light"}, {"summon": "bird_water", "guardian": true}, {"summon": "imp_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "sculptor", "name": "Escultor", "latin": "Sculptor", "hemisphere": "Austral", "icon": "constellation_sculptor",
+      "ra": 0.4, "dec": -32.1, "chart": [271, 50], "stars": 6, "level": 52, "scale": 1.71,
+      "reward": {"essence": 1150, "gold": 25, "experience": 2800},
+      "influence": {"name": "Pedra Viva", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [{"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.25, "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "gargoyle_dark"}, {"summon": "troll_dark"}, {"summon": "gargoyle_water"}, {"summon": "troll_dark"}],
+          [{"summon": "gargoyle_dark"}, {"summon": "troll_water"}, {"summon": "gargoyle_dark"}, {"summon": "troll_dark"}],
+          [{"summon": "gargoyle_water"}, {"summon": "gargoyle_dark", "guardian": true}, {"summon": "troll_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_light"}, {"summon": "troll_light"}, {"summon": "gargoyle_wind"}, {"summon": "troll_light"}],
+          [{"summon": "gargoyle_light"}, {"summon": "troll_wind"}, {"summon": "gargoyle_light"}, {"summon": "troll_light"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "gargoyle_light", "guardian": true}, {"summon": "troll_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_water"}, {"summon": "troll_water"}, {"summon": "gargoyle_dark"}, {"summon": "troll_water"}],
+          [{"summon": "gargoyle_water"}, {"summon": "troll_dark"}, {"summon": "gargoyle_water"}, {"summon": "troll_water"}],
+          [{"summon": "gargoyle_dark"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "troll_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "fornax", "name": "Fornalha", "latin": "Fornax", "hemisphere": "Austral", "icon": "constellation_fornax",
+      "ra": 2.8, "dec": -31.6, "chart": [170, 119], "stars": 6, "level": 52, "scale": 1.75,
+      "reward": {"essence": 1160, "gold": 25, "experience": 2800},
+      "influence": {"name": "Têmpera", "rules": [
+        {"side": "Foes", "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"}, "effects": [{"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "goblin_fire"}, {"summon": "troll_light"}, {"summon": "goblin_fire"}],
+          [{"summon": "troll_fire"}, {"summon": "goblin_light"}, {"summon": "troll_fire"}, {"summon": "goblin_fire"}],
+          [{"summon": "troll_light"}, {"enemy": "forge_guardian", "element": "Fire"}, {"summon": "goblin_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_light"}, {"summon": "goblin_light"}, {"summon": "troll_dark"}, {"summon": "goblin_light"}],
+          [{"summon": "troll_light"}, {"summon": "goblin_dark"}, {"summon": "troll_light"}, {"summon": "goblin_light"}],
+          [{"summon": "troll_dark"}, {"enemy": "forge_guardian", "element": "Light"}, {"summon": "goblin_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_fire"}, {"summon": "goblin_fire"}, {"summon": "troll_water"}, {"summon": "goblin_fire"}],
+          [{"summon": "troll_fire"}, {"summon": "goblin_water"}, {"summon": "troll_fire"}, {"summon": "goblin_fire"}],
+          [{"summon": "troll_water"}, {"summon": "troll_fire", "guardian": true}, {"summon": "goblin_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "eridanus", "name": "Erídano", "latin": "Eridanus", "hemisphere": "Austral", "icon": "constellation_eridanus",
+      "ra": 3.3, "dec": -28.8, "chart": [102, 180], "stars": 6, "level": 52, "scale": 1.8,
+      "reward": {"essence": 1180, "gold": 25, "experience": 2850, "cores": 1},
+      "influence": {"name": "Correnteza", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Impeto", "target": "AllEnemies", "power": -30}]},
+        {"side": "Foes", "passive": {"kind": "ImpetoAtWaveStart", "value": 0.3}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_dark"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_water"}, {"summon": "goblin_dark"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_dark"}, {"summon": "dragon_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_fire"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_water"}, {"summon": "goblin_fire"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_fire"}, {"summon": "goblin_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_wind"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_water"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_wind"}, {"summon": "wizard_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "caelum", "name": "Buril", "latin": "Caelum", "hemisphere": "Austral", "icon": "constellation_caelum",
+      "ra": 4.7, "dec": -38.0, "chart": [52, 277], "stars": 6, "level": 53, "scale": 1.85,
+      "reward": {"essence": 1190, "gold": 30, "experience": 2900, "scrolls": 1},
+      "influence": {"name": "Entalhe", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.4, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "gargoyle_fire"}, {"summon": "knight_fire"}, {"summon": "gargoyle_water"}, {"summon": "knight_fire"}],
+          [{"summon": "gargoyle_fire"}, {"summon": "knight_water"}, {"summon": "gargoyle_fire"}, {"summon": "knight_fire"}],
+          [{"summon": "gargoyle_water"}, {"summon": "gargoyle_fire", "guardian": true}, {"summon": "knight_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_fire"}, {"summon": "knight_fire"}, {"summon": "gargoyle_wind"}, {"summon": "knight_fire"}],
+          [{"summon": "gargoyle_fire"}, {"summon": "knight_wind"}, {"summon": "gargoyle_fire"}, {"summon": "knight_fire"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "knight_fire", "guardian": true}, {"summon": "knight_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_dark"}, {"summon": "knight_dark"}, {"summon": "gargoyle_wind"}, {"summon": "knight_dark"}],
+          [{"summon": "gargoyle_dark"}, {"summon": "knight_wind"}, {"summon": "gargoyle_dark"}, {"summon": "knight_dark"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "druid_dark", "guardian": true}, {"summon": "knight_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "columba", "name": "Pomba", "latin": "Columba", "hemisphere": "Austral", "icon": "constellation_columba",
+      "ra": 5.9, "dec": -35.1, "chart": [72, 368], "stars": 6, "level": 53, "scale": 1.89,
+      "reward": {"essence": 1200, "gold": 30, "experience": 2900},
+      "influence": {"name": "Trégua", "rules": [
+        {"side": "Everyone", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "Silence", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_water"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_light"}, {"summon": "pixie_water"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_water"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_water"}, {"summon": "pixie_water"}, {"summon": "bird_light"}, {"summon": "pixie_water"}],
+          [{"summon": "bird_water"}, {"summon": "pixie_light"}, {"summon": "bird_water"}, {"summon": "pixie_water"}],
+          [{"summon": "bird_light"}, {"summon": "bird_water", "guardian": true}, {"summon": "pixie_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_dark"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_light"}, {"summon": "pixie_dark"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_dark"}, {"summon": "pixie_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "puppis", "name": "Popa", "latin": "Puppis", "hemisphere": "Austral", "icon": "constellation_puppis",
+      "ra": 7.3, "dec": -31.2, "chart": [76, 532], "stars": 6, "level": 53, "scale": 1.94,
+      "reward": {"essence": 1210, "gold": 30, "experience": 2900},
+      "influence": {"name": "Tripulação", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [{"kind": "Impeto", "target": "AllAllies", "power": 30}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_water"}, {"summon": "bandit_water"}, {"summon": "goblin_light"}, {"summon": "bandit_water"}],
+          [{"summon": "goblin_water"}, {"summon": "bandit_light"}, {"summon": "goblin_water"}, {"summon": "bandit_water"}],
+          [{"summon": "goblin_light"}, {"summon": "bandit_water", "guardian": true}, {"summon": "bandit_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_dark"}, {"summon": "bandit_dark"}, {"summon": "goblin_light"}, {"summon": "bandit_dark"}],
+          [{"summon": "goblin_dark"}, {"summon": "bandit_light"}, {"summon": "goblin_dark"}, {"summon": "bandit_dark"}],
+          [{"summon": "goblin_light"}, {"summon": "bandit_dark", "guardian": true}, {"summon": "bandit_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_fire"}, {"summon": "bandit_fire"}, {"summon": "goblin_water"}, {"summon": "bandit_fire"}],
+          [{"summon": "goblin_fire"}, {"summon": "bandit_water"}, {"summon": "goblin_fire"}, {"summon": "bandit_fire"}],
+          [{"summon": "goblin_water"}, {"summon": "bandit_fire", "guardian": true}, {"summon": "bandit_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "pyxis", "name": "Bússola", "latin": "Pyxis", "hemisphere": "Austral", "icon": "constellation_pyxis",
+      "ra": 9.0, "dec": -27.4, "chart": [122, 687], "stars": 6, "level": 53, "scale": 1.99,
+      "reward": {"essence": 1220, "gold": 30, "experience": 2950},
+      "influence": {"name": "Desorientação", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_light"}, {"summon": "crow_light"}, {"summon": "goblin_dark"}, {"summon": "crow_light"}],
+          [{"summon": "goblin_light"}, {"summon": "crow_dark"}, {"summon": "goblin_light"}, {"summon": "crow_light"}],
+          [{"summon": "goblin_dark"}, {"summon": "goblin_light", "guardian": true}, {"summon": "crow_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_water"}, {"summon": "crow_water"}, {"summon": "goblin_fire"}, {"summon": "crow_water"}],
+          [{"summon": "goblin_water"}, {"summon": "crow_fire"}, {"summon": "goblin_water"}, {"summon": "crow_water"}],
+          [{"summon": "goblin_fire"}, {"summon": "bandit_water", "guardian": true}, {"summon": "crow_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_water"}, {"summon": "crow_water"}, {"summon": "goblin_wind"}, {"summon": "crow_water"}],
+          [{"summon": "goblin_water"}, {"summon": "crow_wind"}, {"summon": "goblin_water"}, {"summon": "crow_water"}],
+          [{"summon": "goblin_wind"}, {"summon": "crow_water", "guardian": true}, {"summon": "crow_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "antlia", "name": "Máquina Pneumática", "latin": "Antlia", "hemisphere": "Austral", "icon": "constellation_antlia",
+      "ra": 10.3, "dec": -32.5, "chart": [204, 730], "stars": 6, "level": 54, "scale": 2.05,
+      "reward": {"essence": 1240, "gold": 30, "experience": 3000, "scrolls": 1},
+      "influence": {"name": "Vácuo", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "ChangeDuration", "target": "Target", "turns": -1, "scope": "Buffs"}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "imp_wind"}, {"summon": "pixie_wind"}, {"summon": "imp_fire"}, {"summon": "pixie_wind"}],
+          [{"summon": "imp_wind"}, {"summon": "pixie_fire"}, {"summon": "imp_wind"}, {"summon": "pixie_wind"}],
+          [{"summon": "imp_fire"}, {"summon": "wizard_wind", "guardian": true}, {"summon": "pixie_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_light"}, {"summon": "pixie_light"}, {"summon": "imp_water"}, {"summon": "pixie_light"}],
+          [{"summon": "imp_light"}, {"summon": "pixie_water"}, {"summon": "imp_light"}, {"summon": "pixie_light"}],
+          [{"summon": "imp_water"}, {"summon": "wizard_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_light"}, {"summon": "pixie_light"}, {"summon": "imp_wind"}, {"summon": "pixie_light"}],
+          [{"summon": "imp_light"}, {"summon": "pixie_wind"}, {"summon": "imp_light"}, {"summon": "pixie_light"}],
+          [{"summon": "imp_wind"}, {"summon": "imp_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "centaurus", "name": "Centauro", "latin": "Centaurus", "hemisphere": "Austral", "icon": "constellation_centaurus",
+      "ra": 13.1, "dec": -47.3, "chart": [370, 691], "stars": 6, "level": 54, "scale": 2.1,
+      "reward": {"essence": 1250, "gold": 30, "experience": 3000},
+      "influence": {"name": "Mestre Centauro", "rules": [
+        {"side": "Foes", "passive": {"kind": "CooldownEachTurn", "value": 0.5}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "wolf_light"}, {"summon": "knight_water"}, {"summon": "wolf_light"}],
+          [{"summon": "knight_light"}, {"summon": "wolf_water"}, {"summon": "knight_light"}, {"summon": "wolf_light"}],
+          [{"summon": "knight_water"}, {"enemy": "celestial_centaur", "element": "Light"}, {"summon": "wolf_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "wolf_water"}, {"summon": "knight_light"}, {"summon": "wolf_water"}],
+          [{"summon": "knight_water"}, {"summon": "wolf_light"}, {"summon": "knight_water"}, {"summon": "wolf_water"}],
+          [{"summon": "knight_light"}, {"enemy": "celestial_centaur", "element": "Water"}, {"summon": "wolf_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "wolf_light"}, {"summon": "knight_dark"}, {"summon": "wolf_light"}],
+          [{"summon": "knight_light"}, {"summon": "wolf_dark"}, {"summon": "knight_light"}, {"summon": "wolf_light"}],
+          [{"summon": "knight_dark"}, {"summon": "wizard_light", "guardian": true}, {"summon": "wolf_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "lupus", "name": "Lobo", "latin": "Lupus", "hemisphere": "Austral", "icon": "constellation_lupus",
+      "ra": 15.2, "dec": -42.7, "chart": [430, 621], "stars": 6, "level": 54, "scale": 2.15,
+      "reward": {"essence": 1260, "gold": 30, "experience": 3000},
+      "influence": {"name": "Matilha Faminta", "rules": [
+        {"side": "Foes", "passive": {"kind": "BonusVsWounded", "value": 0.4}},
+        {"side": "Foes", "passive": {"kind": "Lifesteal", "value": 0.15}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "wolf_dark"}, {"summon": "vampire_dark"}, {"summon": "wolf_wind"}, {"summon": "vampire_dark"}],
+          [{"summon": "wolf_dark"}, {"summon": "vampire_wind"}, {"summon": "wolf_dark"}, {"summon": "vampire_dark"}],
+          [{"summon": "wolf_wind"}, {"summon": "wolf_dark", "guardian": true}, {"summon": "vampire_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_wind"}, {"summon": "vampire_wind"}, {"summon": "wolf_dark"}, {"summon": "vampire_wind"}],
+          [{"summon": "wolf_wind"}, {"summon": "vampire_dark"}, {"summon": "wolf_wind"}, {"summon": "vampire_wind"}],
+          [{"summon": "wolf_dark"}, {"summon": "wolf_wind", "guardian": true}, {"summon": "vampire_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "wolf_fire"}, {"summon": "vampire_fire"}, {"summon": "wolf_water"}, {"summon": "vampire_fire"}],
+          [{"summon": "wolf_fire"}, {"summon": "vampire_water"}, {"summon": "wolf_fire"}, {"summon": "vampire_fire"}],
+          [{"summon": "wolf_water"}, {"summon": "wolf_fire", "guardian": true}, {"summon": "vampire_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "norma", "name": "Esquadro", "latin": "Norma", "hemisphere": "Austral", "icon": "constellation_norma",
+      "ra": 15.9, "dec": -51.4, "chart": [468, 537], "stars": 6, "level": 54, "scale": 2.21,
+      "reward": {"essence": 1280, "gold": 30, "experience": 3050},
+      "influence": {"name": "Medida Justa", "rules": [
+        {"side": "Everyone", "passive": {"kind": "DamageReduction", "value": 0.3}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "gargoyle_water"}, {"summon": "knight_dark"}, {"summon": "gargoyle_water"}],
+          [{"summon": "knight_water"}, {"summon": "gargoyle_dark"}, {"summon": "knight_water"}, {"summon": "gargoyle_water"}],
+          [{"summon": "knight_dark"}, {"summon": "knight_water", "guardian": true}, {"summon": "gargoyle_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "gargoyle_dark"}, {"summon": "knight_fire"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "knight_dark"}, {"summon": "gargoyle_fire"}, {"summon": "knight_dark"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "knight_fire"}, {"summon": "knight_dark", "guardian": true}, {"summon": "gargoyle_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "gargoyle_dark"}, {"summon": "knight_water"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "knight_dark"}, {"summon": "gargoyle_water"}, {"summon": "knight_dark"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "knight_water"}, {"summon": "paladin_dark", "guardian": true}, {"summon": "gargoyle_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "ara", "name": "Altar", "latin": "Ara", "hemisphere": "Austral", "icon": "constellation_ara",
+      "ra": 17.4, "dec": -56.6, "chart": [446, 424], "stars": 6, "level": 54, "scale": 2.27,
+      "reward": {"essence": 1290, "gold": 30, "experience": 3100, "scrolls": 1},
+      "influence": {"name": "Pacto de Sangue", "rules": [
+        {"side": "Foes", "passive": {"kind": "Lifesteal", "value": 0.3}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "vampire_dark"}, {"summon": "imp_dark"}, {"summon": "vampire_fire"}, {"summon": "imp_dark"}],
+          [{"summon": "vampire_dark"}, {"summon": "imp_fire"}, {"summon": "vampire_dark"}, {"summon": "imp_dark"}],
+          [{"summon": "vampire_fire"}, {"summon": "vampire_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "vampire_fire"}, {"summon": "imp_fire"}, {"summon": "vampire_wind"}, {"summon": "imp_fire"}],
+          [{"summon": "vampire_fire"}, {"summon": "imp_wind"}, {"summon": "vampire_fire"}, {"summon": "imp_fire"}],
+          [{"summon": "vampire_wind"}, {"summon": "imp_fire", "guardian": true}, {"summon": "imp_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "vampire_dark"}, {"summon": "imp_dark"}, {"summon": "vampire_wind"}, {"summon": "imp_dark"}],
+          [{"summon": "vampire_dark"}, {"summon": "imp_wind"}, {"summon": "vampire_dark"}, {"summon": "imp_dark"}],
+          [{"summon": "vampire_wind"}, {"summon": "paladin_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "corona_australis", "name": "Coroa Austral", "latin": "Corona Australis", "hemisphere": "Austral", "icon": "constellation_corona_australis",
+      "ra": 18.6, "dec": -41.1, "chart": [506, 353], "stars": 6, "level": 55, "scale": 2.33,
+      "reward": {"essence": 1300, "gold": 30, "experience": 3100},
+      "influence": {"name": "Coroa Partida", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.7, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "crow_dark"}, {"summon": "knight_water"}, {"summon": "crow_dark"}],
+          [{"summon": "knight_dark"}, {"summon": "crow_water"}, {"summon": "knight_dark"}, {"summon": "crow_dark"}],
+          [{"summon": "knight_water"}, {"enemy": "bone_king", "element": "Dark"}, {"summon": "crow_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "crow_dark"}, {"summon": "knight_wind"}, {"summon": "crow_dark"}],
+          [{"summon": "knight_dark"}, {"summon": "crow_wind"}, {"summon": "knight_dark"}, {"summon": "crow_dark"}],
+          [{"summon": "knight_wind"}, {"summon": "knight_dark", "guardian": true}, {"summon": "crow_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "crow_dark"}, {"summon": "knight_light"}, {"summon": "crow_dark"}],
+          [{"summon": "knight_dark"}, {"summon": "crow_light"}, {"summon": "knight_dark"}, {"summon": "crow_dark"}],
+          [{"summon": "knight_light"}, {"summon": "paladin_dark", "guardian": true}, {"summon": "crow_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "telescopium", "name": "Telescópio", "latin": "Telescopium", "hemisphere": "Austral", "icon": "constellation_telescopium",
+      "ra": 19.3, "dec": -51.0, "chart": [473, 266], "stars": 6, "level": 55, "scale": 2.39,
+      "reward": {"essence": 1310, "gold": 30, "experience": 3100, "cores": 1},
+      "influence": {"name": "Lente", "rules": [
+        {"side": "Everyone", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "CritUp", "turns": 3}, {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "crow_light"}, {"summon": "imp_light"}, {"summon": "crow_wind"}, {"summon": "imp_light"}],
+          [{"summon": "crow_light"}, {"summon": "imp_wind"}, {"summon": "crow_light"}, {"summon": "imp_light"}],
+          [{"summon": "crow_wind"}, {"summon": "wizard_light", "guardian": true}, {"summon": "imp_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_light"}, {"summon": "imp_light"}, {"summon": "crow_dark"}, {"summon": "imp_light"}],
+          [{"summon": "crow_light"}, {"summon": "imp_dark"}, {"summon": "crow_light"}, {"summon": "imp_light"}],
+          [{"summon": "crow_dark"}, {"summon": "crow_light", "guardian": true}, {"summon": "imp_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_light"}, {"summon": "imp_light"}, {"summon": "crow_fire"}, {"summon": "imp_light"}],
+          [{"summon": "crow_light"}, {"summon": "imp_fire"}, {"summon": "crow_light"}, {"summon": "imp_light"}],
+          [{"summon": "crow_fire"}, {"summon": "imp_light", "guardian": true}, {"summon": "imp_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "microscopium", "name": "Microscópio", "latin": "Microscopium", "hemisphere": "Austral", "icon": "constellation_microscopium",
+      "ra": 21.0, "dec": -36.3, "chart": [442, 173], "stars": 6, "level": 55, "scale": 2.45,
+      "reward": {"essence": 1320, "gold": 35, "experience": 3150},
+      "influence": {"name": "Contágio", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "ChangeDuration", "target": "Target", "turns": 1, "scope": "Debuffs"}, {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_dark"}, {"summon": "pixie_dark"}, {"summon": "slime_light"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_dark"}, {"summon": "pixie_light"}, {"summon": "slime_dark"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_light"}, {"summon": "druid_dark", "guardian": true}, {"summon": "pixie_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_dark"}, {"summon": "pixie_dark"}, {"summon": "slime_fire"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_dark"}, {"summon": "pixie_fire"}, {"summon": "slime_dark"}, {"summon": "pixie_dark"}],
+          [{"summon": "slime_fire"}, {"summon": "slime_dark", "guardian": true}, {"summon": "pixie_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_fire"}, {"summon": "pixie_fire"}, {"summon": "slime_wind"}, {"summon": "pixie_fire"}],
+          [{"summon": "slime_fire"}, {"summon": "pixie_wind"}, {"summon": "slime_fire"}, {"summon": "pixie_fire"}],
+          [{"summon": "slime_wind"}, {"summon": "druid_fire", "guardian": true}, {"summon": "pixie_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "grus", "name": "Grou", "latin": "Grus", "hemisphere": "Austral", "icon": "constellation_grus",
+      "ra": 22.5, "dec": -46.4, "chart": [350, 158], "stars": 6, "level": 55, "scale": 2.51,
+      "reward": {"essence": 1340, "gold": 35, "experience": 3200, "scrolls": 1},
+      "influence": {"name": "Vigília", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnAttacker", "value": 0.35}, "effects": [{"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_dark"}, {"summon": "crow_dark"}, {"summon": "bird_fire"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_dark"}, {"summon": "crow_fire"}, {"summon": "bird_dark"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_fire"}, {"summon": "bird_dark", "guardian": true}, {"summon": "crow_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "crow_wind"}, {"summon": "bird_water"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_wind"}, {"summon": "crow_water"}, {"summon": "bird_wind"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_water"}, {"summon": "bird_wind", "guardian": true}, {"summon": "crow_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "crow_light"}, {"summon": "bird_wind"}, {"summon": "crow_light"}],
+          [{"summon": "bird_light"}, {"summon": "crow_wind"}, {"summon": "bird_light"}, {"summon": "crow_light"}],
+          [{"summon": "bird_wind"}, {"summon": "bird_light", "guardian": true}, {"summon": "crow_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "phoenix", "name": "Fênix", "latin": "Phoenix", "hemisphere": "Austral", "icon": "constellation_phoenix",
+      "ra": 0.9, "dec": -48.6, "chart": [259, 147], "stars": 6, "level": 56, "scale": 2.58,
+      "reward": {"essence": 1350, "gold": 35, "experience": 3200},
+      "influence": {"name": "Das Cinzas", "rules": [
+        {"side": "Guardian", "passive": {"kind": "RebirthOnce", "value": 0.6}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_fire"}, {"summon": "crow_fire"}, {"summon": "bird_wind"}, {"summon": "crow_fire"}],
+          [{"summon": "bird_fire"}, {"summon": "crow_wind"}, {"summon": "bird_fire"}, {"summon": "crow_fire"}],
+          [{"summon": "bird_wind"}, {"summon": "phoenix_fire", "guardian": true}, {"summon": "crow_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_dark"}, {"summon": "crow_dark"}, {"summon": "bird_wind"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_dark"}, {"summon": "crow_wind"}, {"summon": "bird_dark"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_wind"}, {"summon": "phoenix_dark", "guardian": true}, {"summon": "crow_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "crow_light"}, {"summon": "bird_dark"}, {"summon": "crow_light"}],
+          [{"summon": "bird_light"}, {"summon": "crow_dark"}, {"summon": "bird_light"}, {"summon": "crow_light"}],
+          [{"summon": "bird_dark"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "crow_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "horologium", "name": "Relógio", "latin": "Horologium", "hemisphere": "Austral", "icon": "constellation_horologium",
+      "ra": 3.3, "dec": -53.3, "chart": [201, 218], "stars": 6, "level": 56, "scale": 2.65,
+      "reward": {"essence": 1360, "gold": 35, "experience": 3200},
+      "influence": {"name": "Tique-Taque", "rules": [
+        {"side": "Everyone", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "ChangeDuration", "target": "Self", "turns": -1, "scope": "All"}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "imp_fire"}, {"summon": "gargoyle_fire"}, {"summon": "imp_light"}, {"summon": "gargoyle_fire"}],
+          [{"summon": "imp_fire"}, {"summon": "gargoyle_light"}, {"summon": "imp_fire"}, {"summon": "gargoyle_fire"}],
+          [{"summon": "imp_light"}, {"summon": "wizard_fire", "guardian": true}, {"summon": "gargoyle_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_dark"}, {"summon": "gargoyle_dark"}, {"summon": "imp_light"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "imp_dark"}, {"summon": "gargoyle_light"}, {"summon": "imp_dark"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "imp_light"}, {"summon": "wizard_dark", "guardian": true}, {"summon": "gargoyle_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_wind"}, {"summon": "gargoyle_wind"}, {"summon": "imp_fire"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "imp_wind"}, {"summon": "gargoyle_fire"}, {"summon": "imp_wind"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "imp_fire"}, {"summon": "wizard_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "reticulum", "name": "Retículo", "latin": "Reticulum", "hemisphere": "Austral", "icon": "constellation_reticulum",
+      "ra": 3.9, "dec": -60.0, "chart": [143, 290], "stars": 6, "level": 56, "scale": 2.71,
+      "reward": {"essence": 1380, "gold": 35, "experience": 3250},
+      "influence": {"name": "Mira", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Foresight", "turns": 2}]},
+        {"side": "Foes", "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.4, "statuses": ["Shield", "Aegis", "DefenseUp"]}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "crow_fire"}, {"summon": "goblin_fire"}, {"summon": "crow_dark"}, {"summon": "goblin_fire"}],
+          [{"summon": "crow_fire"}, {"summon": "goblin_dark"}, {"summon": "crow_fire"}, {"summon": "goblin_fire"}],
+          [{"summon": "crow_dark"}, {"summon": "crow_fire", "guardian": true}, {"summon": "goblin_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_dark"}, {"summon": "goblin_dark"}, {"summon": "crow_fire"}, {"summon": "goblin_dark"}],
+          [{"summon": "crow_dark"}, {"summon": "goblin_fire"}, {"summon": "crow_dark"}, {"summon": "goblin_dark"}],
+          [{"summon": "crow_fire"}, {"summon": "goblin_dark", "guardian": true}, {"summon": "goblin_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_fire"}, {"summon": "goblin_fire"}, {"summon": "crow_wind"}, {"summon": "goblin_fire"}],
+          [{"summon": "crow_fire"}, {"summon": "goblin_wind"}, {"summon": "crow_fire"}, {"summon": "goblin_fire"}],
+          [{"summon": "crow_wind"}, {"summon": "bandit_fire", "guardian": true}, {"summon": "goblin_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "dorado", "name": "Dourado", "latin": "Dorado", "hemisphere": "Austral", "icon": "constellation_dorado",
+      "ra": 5.2, "dec": -59.4, "chart": [115, 448], "stars": 6, "level": 56, "scale": 2.79,
+      "reward": {"essence": 1390, "gold": 35, "experience": 3300, "scrolls": 1},
+      "influence": {"name": "Nuvem de Magalhães", "rules": [
+        {"side": "Everyone", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.5, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_fire"}, {"summon": "goblin_dark"}],
+          [{"summon": "slime_dark"}, {"summon": "goblin_fire"}, {"summon": "slime_dark"}, {"summon": "goblin_dark"}],
+          [{"summon": "slime_fire"}, {"summon": "slime_dark", "guardian": true}, {"summon": "goblin_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_wind"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_water"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_wind"}, {"summon": "crow_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_light"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_water"}, {"summon": "goblin_light"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_light"}, {"summon": "bandit_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "pictor", "name": "Pintor", "latin": "Pictor", "hemisphere": "Austral", "icon": "constellation_pictor",
+      "ra": 5.7, "dec": -53.5, "chart": [173, 377], "stars": 6, "level": 57, "scale": 2.86,
+      "reward": {"essence": 1400, "gold": 35, "experience": 3300},
+      "influence": {"name": "Paleta", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "AttackUp", "chance": 0.5, "turns": 3}, {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 0.5, "turns": 3}, {"kind": "Status", "target": "Self", "status": "SpeedUp", "chance": 0.5, "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "pixie_fire"}, {"summon": "imp_fire"}, {"summon": "pixie_wind"}, {"summon": "imp_fire"}],
+          [{"summon": "pixie_fire"}, {"summon": "imp_wind"}, {"summon": "pixie_fire"}, {"summon": "imp_fire"}],
+          [{"summon": "pixie_wind"}, {"summon": "pixie_fire", "guardian": true}, {"summon": "imp_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_dark"}, {"summon": "imp_dark"}, {"summon": "pixie_wind"}, {"summon": "imp_dark"}],
+          [{"summon": "pixie_dark"}, {"summon": "imp_wind"}, {"summon": "pixie_dark"}, {"summon": "imp_dark"}],
+          [{"summon": "pixie_wind"}, {"summon": "pixie_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "pixie_light"}, {"summon": "imp_light"}, {"summon": "pixie_dark"}, {"summon": "imp_light"}],
+          [{"summon": "pixie_light"}, {"summon": "imp_dark"}, {"summon": "pixie_light"}, {"summon": "imp_light"}],
+          [{"summon": "pixie_dark"}, {"summon": "goblin_light", "guardian": true}, {"summon": "imp_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "carina", "name": "Quilha", "latin": "Carina", "hemisphere": "Austral", "icon": "constellation_carina",
+      "ra": 8.7, "dec": -63.2, "chart": [167, 547], "stars": 6, "level": 57, "scale": 2.93,
+      "reward": {"essence": 1410, "gold": 35, "experience": 3300},
+      "influence": {"name": "Casco Firme", "rules": [
+        {"side": "Foes", "passive": {"kind": "DamageReduction", "value": 0.2}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "troll_water"}, {"summon": "knight_light"}, {"summon": "troll_water"}],
+          [{"summon": "knight_water"}, {"summon": "troll_light"}, {"summon": "knight_water"}, {"summon": "troll_water"}],
+          [{"summon": "knight_light"}, {"summon": "knight_water", "guardian": true}, {"summon": "troll_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "troll_water"}, {"summon": "knight_dark"}, {"summon": "troll_water"}],
+          [{"summon": "knight_water"}, {"summon": "troll_dark"}, {"summon": "knight_water"}, {"summon": "troll_water"}],
+          [{"summon": "knight_dark"}, {"summon": "paladin_water", "guardian": true}, {"summon": "troll_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_water"}, {"summon": "troll_water"}, {"summon": "knight_fire"}, {"summon": "troll_water"}],
+          [{"summon": "knight_water"}, {"summon": "troll_fire"}, {"summon": "knight_water"}, {"summon": "troll_water"}],
+          [{"summon": "knight_fire"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "troll_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "vela", "name": "Vela", "latin": "Vela", "hemisphere": "Austral", "icon": "constellation_vela",
+      "ra": 9.6, "dec": -47.2, "chart": [197, 634], "stars": 6, "level": 57, "scale": 3.01,
+      "reward": {"essence": 1420, "gold": 35, "experience": 3350},
+      "influence": {"name": "Vento em Popa", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Impeto", "target": "AllAllies", "power": 15}, {"kind": "Impeto", "target": "AllEnemies", "power": -15}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_dark"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_dark"}, {"summon": "bird_wind"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_dark"}, {"summon": "dragon_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_fire"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_fire"}, {"summon": "bird_wind"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_fire"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_water"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_wind"}, {"summon": "gargoyle_water"}, {"summon": "bird_wind"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_water"}, {"summon": "gargoyle_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "volans", "name": "Peixe Voador", "latin": "Volans", "hemisphere": "Austral", "icon": "constellation_volans",
+      "ra": 7.8, "dec": -69.8, "chart": [206, 463], "stars": 6, "level": 57, "scale": 3.09,
+      "reward": {"essence": 1440, "gold": 35, "experience": 3400, "scrolls": 1},
+      "influence": {"name": "Salto", "rules": [
+        {"side": "Foes", "passive": {"kind": "Dodge", "value": 0.2}},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [{"kind": "Impeto", "target": "Self", "power": 20}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_water"}, {"summon": "slime_water"}, {"summon": "bird_fire"}, {"summon": "slime_water"}],
+          [{"summon": "bird_water"}, {"summon": "slime_fire"}, {"summon": "bird_water"}, {"summon": "slime_water"}],
+          [{"summon": "bird_fire"}, {"summon": "imp_water", "guardian": true}, {"summon": "slime_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_fire"}, {"summon": "slime_fire"}, {"summon": "bird_wind"}, {"summon": "slime_fire"}],
+          [{"summon": "bird_fire"}, {"summon": "slime_wind"}, {"summon": "bird_fire"}, {"summon": "slime_fire"}],
+          [{"summon": "bird_wind"}, {"summon": "bird_fire", "guardian": true}, {"summon": "slime_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "slime_wind"}, {"summon": "bird_light"}, {"summon": "slime_wind"}],
+          [{"summon": "bird_wind"}, {"summon": "slime_light"}, {"summon": "bird_wind"}, {"summon": "slime_wind"}],
+          [{"summon": "bird_light"}, {"summon": "vampire_wind", "guardian": true}, {"summon": "slime_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "mensa", "name": "Mesa", "latin": "Mensa", "hemisphere": "Austral", "icon": "constellation_mensa",
+      "ra": 5.4, "dec": -77.5, "chart": [265, 392], "stars": 6, "level": 57, "scale": 3.17,
+      "reward": {"essence": 1450, "gold": 35, "experience": 3400, "cores": 1},
+      "influence": {"name": "Rocha", "rules": [
+        {"side": "Foes", "passive": {"kind": "DamageReduction", "value": 0.1}},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [{"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.25, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "troll_light"}, {"summon": "gargoyle_light"}, {"summon": "troll_water"}, {"summon": "gargoyle_light"}],
+          [{"summon": "troll_light"}, {"summon": "gargoyle_water"}, {"summon": "troll_light"}, {"summon": "gargoyle_light"}],
+          [{"summon": "troll_water"}, {"summon": "gargoyle_light", "guardian": true}, {"summon": "gargoyle_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_water"}, {"summon": "gargoyle_water"}, {"summon": "troll_light"}, {"summon": "gargoyle_water"}],
+          [{"summon": "troll_water"}, {"summon": "gargoyle_light"}, {"summon": "troll_water"}, {"summon": "gargoyle_water"}],
+          [{"summon": "troll_light"}, {"summon": "knight_water", "guardian": true}, {"summon": "gargoyle_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "troll_water"}, {"summon": "gargoyle_water"}, {"summon": "troll_dark"}, {"summon": "gargoyle_water"}],
+          [{"summon": "troll_water"}, {"summon": "gargoyle_dark"}, {"summon": "troll_water"}, {"summon": "gargoyle_water"}],
+          [{"summon": "troll_dark"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "gargoyle_water"}]
+        ]}
+      ]
+    },
+    {
+      "id": "hydrus", "name": "Hidra Macho", "latin": "Hydrus", "hemisphere": "Austral", "icon": "constellation_hydrus",
+      "ra": 2.3, "dec": -70.0, "chart": [233, 305], "stars": 6, "level": 58, "scale": 3.25,
+      "reward": {"essence": 1460, "gold": 40, "experience": 3400},
+      "influence": {"name": "Bote", "rules": [
+        {"side": "Foes", "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "slime_wind"}, {"summon": "crow_wind"}, {"summon": "slime_light"}, {"summon": "crow_wind"}],
+          [{"summon": "slime_wind"}, {"summon": "crow_light"}, {"summon": "slime_wind"}, {"summon": "crow_wind"}],
+          [{"summon": "slime_light"}, {"enemy": "celestial_hydra", "element": "Wind"}, {"summon": "crow_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_water"}, {"summon": "crow_water"}, {"summon": "slime_dark"}, {"summon": "crow_water"}],
+          [{"summon": "slime_water"}, {"summon": "crow_dark"}, {"summon": "slime_water"}, {"summon": "crow_water"}],
+          [{"summon": "slime_dark"}, {"enemy": "mother_serpent", "element": "Water"}, {"summon": "crow_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "slime_dark"}, {"summon": "crow_dark"}, {"summon": "slime_fire"}, {"summon": "crow_dark"}],
+          [{"summon": "slime_dark"}, {"summon": "crow_fire"}, {"summon": "slime_dark"}, {"summon": "crow_dark"}],
+          [{"summon": "slime_fire"}, {"enemy": "elder_wyvern", "element": "Dark"}, {"summon": "crow_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "tucana", "name": "Tucano", "latin": "Tucana", "hemisphere": "Austral", "icon": "constellation_tucana",
+      "ra": 23.8, "dec": -65.8, "chart": [292, 233], "stars": 6, "level": 58, "scale": 3.33,
+      "reward": {"essence": 1480, "gold": 40, "experience": 3450},
+      "influence": {"name": "Algazarra", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectEachTurn", "value": 0.25}, "effects": [{"kind": "Status", "target": "RandomEnemy", "status": "Stun", "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_fire"}, {"summon": "pixie_fire"}, {"summon": "bird_dark"}, {"summon": "pixie_fire"}],
+          [{"summon": "bird_fire"}, {"summon": "pixie_dark"}, {"summon": "bird_fire"}, {"summon": "pixie_fire"}],
+          [{"summon": "bird_dark"}, {"summon": "bird_fire", "guardian": true}, {"summon": "pixie_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_fire"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_light"}, {"summon": "pixie_fire"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_fire"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_dark"}, {"summon": "pixie_dark"}, {"summon": "bird_water"}, {"summon": "pixie_dark"}],
+          [{"summon": "bird_dark"}, {"summon": "pixie_water"}, {"summon": "bird_dark"}, {"summon": "pixie_dark"}],
+          [{"summon": "bird_water"}, {"summon": "bird_dark", "guardian": true}, {"summon": "pixie_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "indus", "name": "Índio", "latin": "Indus", "hemisphere": "Austral", "icon": "constellation_indus",
+      "ra": 22.0, "dec": -59.7, "chart": [382, 249], "stars": 6, "level": 58, "scale": 3.42,
+      "reward": {"essence": 1490, "gold": 40, "experience": 3500, "scrolls": 1},
+      "influence": {"name": "Emboscada", "rules": [
+        {"side": "Foes", "passive": {"kind": "ImpetoAtWaveStart", "value": 0.7}},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Foresight", "turns": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bandit_wind"}, {"summon": "wolf_wind"}, {"summon": "bandit_fire"}, {"summon": "wolf_wind"}],
+          [{"summon": "bandit_wind"}, {"summon": "wolf_fire"}, {"summon": "bandit_wind"}, {"summon": "wolf_wind"}],
+          [{"summon": "bandit_fire"}, {"summon": "bandit_wind", "guardian": true}, {"summon": "wolf_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bandit_dark"}, {"summon": "wolf_dark"}, {"summon": "bandit_water"}, {"summon": "wolf_dark"}],
+          [{"summon": "bandit_dark"}, {"summon": "wolf_water"}, {"summon": "bandit_dark"}, {"summon": "wolf_dark"}],
+          [{"summon": "bandit_water"}, {"summon": "bandit_dark", "guardian": true}, {"summon": "wolf_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "bandit_dark"}, {"summon": "wolf_dark"}, {"summon": "bandit_wind"}, {"summon": "wolf_dark"}],
+          [{"summon": "bandit_dark"}, {"summon": "wolf_wind"}, {"summon": "bandit_dark"}, {"summon": "wolf_dark"}],
+          [{"summon": "bandit_wind"}, {"summon": "goblin_dark", "guardian": true}, {"summon": "wolf_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "pavo", "name": "Pavão", "latin": "Pavo", "hemisphere": "Austral", "icon": "constellation_pavo",
+      "ra": 19.6, "dec": -65.8, "chart": [415, 338], "stars": 6, "level": 58, "scale": 3.51,
+      "reward": {"essence": 1500, "gold": 40, "experience": 3500},
+      "influence": {"name": "Exibição", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "Taunt", "turns": 2}]},
+        {"side": "Guardian", "passive": {"kind": "Thorns", "value": 0.3}}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_water"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_light"}, {"summon": "pixie_water"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_water"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_wind"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_light"}, {"summon": "pixie_wind"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_wind"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_dark"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_light"}, {"summon": "pixie_dark"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_dark"}, {"summon": "pixie_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]}
+      ]
+    },
+    {
+      "id": "octans", "name": "Oitante", "latin": "Octans", "hemisphere": "Austral", "icon": "constellation_octans",
+      "ra": 23.0, "dec": -82.2, "chart": [323, 321], "stars": 6, "level": 59, "scale": 3.6,
+      "reward": {"essence": 1510, "gold": 40, "experience": 3500},
+      "influence": {"name": "Inabalável", "rules": [
+        {"side": "Foes", "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"}, "effects": [{"kind": "Cleanse", "target": "Self"}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "crow_dark"}, {"summon": "imp_dark"}, {"summon": "crow_wind"}, {"summon": "imp_dark"}],
+          [{"summon": "crow_dark"}, {"summon": "imp_wind"}, {"summon": "crow_dark"}, {"summon": "imp_dark"}],
+          [{"summon": "crow_wind"}, {"enemy": "silence_herald", "element": "Dark"}, {"summon": "imp_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_light"}, {"summon": "imp_light"}, {"summon": "crow_dark"}, {"summon": "imp_light"}],
+          [{"summon": "crow_light"}, {"summon": "imp_dark"}, {"summon": "crow_light"}, {"summon": "imp_light"}],
+          [{"summon": "crow_dark"}, {"enemy": "silence_herald", "element": "Light"}, {"summon": "imp_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "crow_dark"}, {"summon": "imp_dark"}, {"summon": "crow_fire"}, {"summon": "imp_dark"}],
+          [{"summon": "crow_dark"}, {"summon": "imp_fire"}, {"summon": "crow_dark"}, {"summon": "imp_dark"}],
+          [{"summon": "crow_fire"}, {"summon": "wizard_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "apus", "name": "Ave-do-Paraíso", "latin": "Apus", "hemisphere": "Austral", "icon": "constellation_apus",
+      "ra": 16.1, "dec": -75.3, "chart": [355, 407], "stars": 6, "level": 59, "scale": 3.69,
+      "reward": {"essence": 1520, "gold": 40, "experience": 3550},
+      "influence": {"name": "Plumagem", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}, {"kind": "Status", "target": "Self", "status": "SpeedUp", "turns": 2}]},
+        {"side": "Foes", "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Buffs"}, "effects": [{"kind": "Impeto", "target": "Self", "power": 10}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_dark"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_light"}, {"summon": "pixie_dark"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
+          [{"summon": "bird_dark"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "pixie_wind"}, {"summon": "bird_fire"}, {"summon": "pixie_wind"}],
+          [{"summon": "bird_wind"}, {"summon": "pixie_fire"}, {"summon": "bird_wind"}, {"summon": "pixie_wind"}],
+          [{"summon": "bird_fire"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "pixie_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "bird_wind"}, {"summon": "pixie_wind"}, {"summon": "bird_water"}, {"summon": "pixie_wind"}],
+          [{"summon": "bird_wind"}, {"summon": "pixie_water"}, {"summon": "bird_wind"}, {"summon": "pixie_wind"}],
+          [{"summon": "bird_water"}, {"summon": "pixie_wind", "guardian": true}, {"summon": "pixie_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "triangulum_australe", "name": "Triângulo Austral", "latin": "Triangulum Australe", "hemisphere": "Austral", "icon": "constellation_triangulum_australe",
+      "ra": 16.1, "dec": -65.4, "chart": [387, 494], "stars": 6, "level": 59, "scale": 3.79,
+      "reward": {"essence": 1540, "gold": 40, "experience": 3600, "scrolls": 1},
+      "influence": {"name": "Três Pontas", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnTargetEachTurn"}, "effects": [{"kind": "JointAttack", "target": "AllAllies", "count": 2}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_dark"}, {"summon": "wolf_dark"}, {"summon": "knight_fire"}, {"summon": "wolf_dark"}],
+          [{"summon": "knight_dark"}, {"summon": "wolf_fire"}, {"summon": "knight_dark"}, {"summon": "wolf_dark"}],
+          [{"summon": "knight_fire"}, {"summon": "knight_dark", "guardian": true}, {"summon": "wolf_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_fire"}, {"summon": "wolf_fire"}, {"summon": "knight_wind"}, {"summon": "wolf_fire"}],
+          [{"summon": "knight_fire"}, {"summon": "wolf_wind"}, {"summon": "knight_fire"}, {"summon": "wolf_fire"}],
+          [{"summon": "knight_wind"}, {"summon": "knight_fire", "guardian": true}, {"summon": "wolf_fire"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_fire"}, {"summon": "wolf_fire"}, {"summon": "knight_light"}, {"summon": "wolf_fire"}],
+          [{"summon": "knight_fire"}, {"summon": "wolf_light"}, {"summon": "knight_fire"}, {"summon": "wolf_fire"}],
+          [{"summon": "knight_light"}, {"summon": "paladin_fire", "guardian": true}, {"summon": "wolf_fire"}]
+        ]}
+      ]
+    },
+    {
+      "id": "circinus", "name": "Compasso", "latin": "Circinus", "hemisphere": "Austral", "icon": "constellation_circinus",
+      "ra": 14.6, "dec": -63.0, "chart": [350, 578], "stars": 6, "level": 59, "scale": 3.89,
+      "reward": {"essence": 1550, "gold": 40, "experience": 3600},
+      "influence": {"name": "Rodízio", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Impeto", "target": "LowestAlly", "power": 20, "by": "Impeto"}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "gargoyle_dark"}, {"summon": "imp_dark"}, {"summon": "gargoyle_water"}, {"summon": "imp_dark"}],
+          [{"summon": "gargoyle_dark"}, {"summon": "imp_water"}, {"summon": "gargoyle_dark"}, {"summon": "imp_dark"}],
+          [{"summon": "gargoyle_water"}, {"summon": "wizard_dark", "guardian": true}, {"summon": "imp_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_wind"}, {"summon": "imp_wind"}, {"summon": "gargoyle_light"}, {"summon": "imp_wind"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "imp_light"}, {"summon": "gargoyle_wind"}, {"summon": "imp_wind"}],
+          [{"summon": "gargoyle_light"}, {"summon": "gargoyle_wind", "guardian": true}, {"summon": "imp_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "gargoyle_wind"}, {"summon": "imp_wind"}, {"summon": "gargoyle_dark"}, {"summon": "imp_wind"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "imp_dark"}, {"summon": "gargoyle_wind"}, {"summon": "imp_wind"}],
+          [{"summon": "gargoyle_dark"}, {"summon": "knight_wind", "guardian": true}, {"summon": "imp_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "chamaeleon", "name": "Camaleão", "latin": "Chamaeleon", "hemisphere": "Austral", "icon": "constellation_chamaeleon",
+      "ra": 10.7, "dec": -79.2, "chart": [296, 478], "stars": 6, "level": 60, "scale": 3.99,
+      "reward": {"essence": 1560, "gold": 40, "experience": 3600},
+      "influence": {"name": "Camuflagem", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "Self", "status": "Hidden", "turns": 1}]},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectWhenLowest"}, "effects": [{"kind": "Status", "target": "Self", "status": "Hidden", "turns": 2}, {"kind": "Heal", "target": "Self", "power": 0.08}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "imp_dark"}, {"summon": "goblin_dark"}, {"summon": "imp_wind"}, {"summon": "goblin_dark"}],
+          [{"summon": "imp_dark"}, {"summon": "goblin_wind"}, {"summon": "imp_dark"}, {"summon": "goblin_dark"}],
+          [{"summon": "imp_wind"}, {"summon": "imp_dark", "guardian": true}, {"summon": "goblin_dark"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_water"}, {"summon": "goblin_water"}, {"summon": "imp_dark"}, {"summon": "goblin_water"}],
+          [{"summon": "imp_water"}, {"summon": "goblin_dark"}, {"summon": "imp_water"}, {"summon": "goblin_water"}],
+          [{"summon": "imp_dark"}, {"summon": "vampire_water", "guardian": true}, {"summon": "goblin_water"}]
+        ]},
+        {"waves": [
+          [{"summon": "imp_dark"}, {"summon": "goblin_dark"}, {"summon": "imp_fire"}, {"summon": "goblin_dark"}],
+          [{"summon": "imp_dark"}, {"summon": "goblin_fire"}, {"summon": "imp_dark"}, {"summon": "goblin_dark"}],
+          [{"summon": "imp_fire"}, {"summon": "phoenix_dark", "guardian": true}, {"summon": "goblin_dark"}]
+        ]}
+      ]
+    },
+    {
+      "id": "musca", "name": "Mosca", "latin": "Musca", "hemisphere": "Austral", "icon": "constellation_musca",
+      "ra": 12.6, "dec": -70.2, "chart": [258, 562], "stars": 6, "level": 60, "scale": 4.09,
+      "reward": {"essence": 1580, "gold": 40, "experience": 3650},
+      "influence": {"name": "Enxame", "rules": [
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 1}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_dark"}, {"summon": "bird_wind"}, {"summon": "goblin_wind"}],
+          [{"summon": "bird_dark"}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_dark"}, {"summon": "bird_wind"}],
+          [{"summon": "goblin_wind"}, {"summon": "bird_dark"}, {"summon": "vampire_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_fire"}, {"summon": "bird_wind"}, {"summon": "goblin_wind"}],
+          [{"summon": "bird_fire"}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_fire"}, {"summon": "bird_wind"}],
+          [{"summon": "goblin_wind"}, {"summon": "bird_fire"}, {"summon": "crow_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}]
+        ]},
+        {"waves": [
+          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_water"}, {"summon": "bird_wind"}, {"summon": "goblin_wind"}],
+          [{"summon": "bird_water"}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_water"}, {"summon": "bird_wind"}],
+          [{"summon": "goblin_wind"}, {"summon": "bird_water"}, {"summon": "goblin_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}]
+        ]}
+      ]
+    },
+    {
+      "id": "crux", "name": "Cruzeiro do Sul", "latin": "Crux", "hemisphere": "Austral", "icon": "constellation_crux",
+      "ra": 12.45, "dec": -60.2, "chart": [289, 649], "stars": 6, "level": 60, "scale": 4.2,
+      "reward": {"essence": 1590, "gold": 40, "experience": 3700, "scrolls": 1, "cores": 1, "legendary": 1, "lightDark": 1},
+      "influence": {"name": "Guia do Sul", "rules": [
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 4}]},
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Heal", "target": "AllAllies", "power": 0.05}, {"kind": "Cleanse", "target": "AllAllies"}]},
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 3}]}
+      ]},
+      "challenges": [
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_fire"}, {"summon": "pixie_light"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_fire"}, {"summon": "knight_light"}, {"summon": "pixie_light"}],
+          [{"summon": "knight_fire"}, {"summon": "paladin_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_water"}, {"summon": "pixie_light"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_water"}, {"summon": "knight_light"}, {"summon": "pixie_light"}],
+          [{"summon": "knight_water"}, {"summon": "dragon_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]},
+        {"waves": [
+          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_wind"}, {"summon": "pixie_light"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_wind"}, {"summon": "knight_light"}, {"summon": "pixie_light"}],
+          [{"summon": "knight_wind"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "pixie_light"}]
+        ]}
+      ]
+    }
+  ]
+}

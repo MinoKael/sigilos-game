@@ -13,5 +13,12 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Só para <see cref="Enemy"/>.</summary>
 		public Element Element { get; init; }
+
+		/// <summary>
+		/// Só para <see cref="Summon"/>: a invocação é o guardião da luta (o chefe da constelação na
+		/// Exploração Estelar). Luta desperta, com todas as habilidades no máximo e a Vida de chefe
+		/// (Core/Battle/BattleFactory.cs): as habilidades dela são o desafio.
+		/// </summary>
+		public bool Guardian { get; init; }
 	}
 }

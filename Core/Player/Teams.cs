@@ -5,13 +5,16 @@ using System.Linq;
 namespace Sigilos.Core.Player
 {
 	/// <summary>
-	/// Uma equipe por conteúdo do jogo: a Campanha tem a dela e cada Masmorra a sua (a chave é o id da
-	/// Masmorra em Data/dungeons.json). Até <see cref="PlayerState.TeamSize"/> monstros; a primeira é a
+	/// Uma equipe por conteúdo do jogo: a Campanha tem a dela, a Exploração Estelar a dela e cada Masmorra
+	/// a sua (a chave é o id da Masmorra em Data/dungeons.json). Até <see cref="PlayerState.TeamSize"/> monstros; a primeira é a
 	/// Líder. Monstro no Baú não entra em equipe.
 	/// </summary>
 	public static class Teams
 	{
 		public const string Campaign = "campaign";
+
+		/// <summary>A equipe da Exploração Estelar, a mesma nas 88 constelações.</summary>
+		public const string Exploration = "exploration";
 
 		public static IReadOnlyList<int> Of(PlayerState player, string content) =>
 			player.Teams.TryGetValue(content, out var team) ? team : Array.Empty<int>();

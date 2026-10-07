@@ -111,7 +111,7 @@ namespace Sigilos.UI.Screens
 			{
 				actions.AddChild(GameButton.Of(T("battle.leave"), onClose, ButtonKind.Secondary, "back", 64).Named("Leave").Wide(200));
 				actions.AddChild(GameButton.Of(T("battle.again"), onRestart, ButtonKind.Secondary, "repeat", 64).Named("Again").Wide(240));
-				actions.AddChild(GameButton.Of(T("common.continue"), following.Start, ButtonKind.Primary, "confirm", 64).WithCost("mana", following.Mana.ToString()).Named("Continue").Wide(240));
+				actions.AddChild(GameButton.Of(T("common.continue"), following.Start, ButtonKind.Primary, "confirm", 64).WithCost("mana", following.Mana > 0 ? following.Mana.ToString() : "").Named("Continue").Wide(240));
 			}
 			else
 			{
