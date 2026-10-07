@@ -29,6 +29,7 @@ namespace Sigilos.GameEntry
 	/// barra de baixo, a Monstros, Runas, Equipes, Loja, Grimório, Compêndio e Ajustes; cada tela volta
 	/// para onde veio (seta, Esc ou o Voltar do celular). A Batalha automática roda fora das telas
 	/// (<see cref="AutoBattleRunner"/>), com o aviso flutuante no alto de todas.
+	/// A música acompanha a tela (<see cref="MusicPlayer"/>): a Batalha na luta, o Plano Celestial no resto.
 	///
 	/// Antes do Santuário vem a conta (<see cref="AccountSession"/>, docs/SAVE_NUVEM.md): a tela de login
 	/// (Entrar, Criar conta, Jogar sem conta), a pergunta "desconectar o outro aparelho?" e, quando o
@@ -54,6 +55,7 @@ namespace Sigilos.GameEntry
 
 		private readonly Random _random = new();
 		private readonly AutoBattleRunner _runner = new();
+		private readonly MusicPlayer _music = new();
 		private readonly AutoBattleBadge _badge = new();
 		private Control _ui = null!;
 		private Control _screens = null!;
@@ -141,6 +143,7 @@ namespace Sigilos.GameEntry
 			_badge.Pressed += OpenAutoBattle;
 			AddChild(_runner);
 			_runner.RunChanged += run => _badge.Show(run);
+			AddChild(_music);
 			// No PC, a janela fica sempre em 16:9.
 			AddChild(new WindowAspect());
 
@@ -1320,6 +1323,8 @@ namespace Sigilos.GameEntry
 			_current = reshow;
 			screen.Name = screen.GetType().Name;
 			_screens.AddChild(screen);
+			// A Batalha toca na tela de luta; todo o resto é o Plano Celestial (a Batalha automática não tem tela).
+			_music.Play(screen is BattleScreen ? MusicPlayer.Track.Battle : MusicPlayer.Track.Celestial);
 		}
 
 		private static string? Argument(string prefix) => OS.GetCmdlineUserArgs()

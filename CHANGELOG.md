@@ -1,5 +1,19 @@
 # Changelog — Sigilos
 
+## 07/10/2026
+- **Música:** o Plano Celestial toca fora das lutas e a Batalha nas lutas, em laço.
+  - Ao entrar em combate, o Plano Celestial afunda (cai o volume e o tom) e a Batalha entra por cima.
+  - Ao sair, o Plano Celestial volta de onde parou.
+  - Lutas seguidas não reiniciam a Batalha, e a Batalha automática não troca a música.
+
+## 06/10/2026
+- **Bancada de balanceamento** (`dotnet run --project Tests -c Release -- --balance`):
+  - Testa todas as composições possíveis, ou uma amostra quando são muitas, contra fases e andares de Masmorra.
+  - O investimento é configurável: estrelas, nível, Despertar, habilidades e runas.
+  - Gera um relatório visual com o ranking das composições, o peso de cada monstro e família e lutas de exemplo com a Vida turno a turno e o log completo.
+- **Balanceamento 0.4.4:** ajustes nas famílias e arte dos monstros novos.
+- **Música:** faixa de batalha adicionada.
+
 ## 05/10/2026
 - **19 famílias novas (95 invocações):**
   - 5★: Unicórnio, Princesa, Anjo e Monge.
@@ -9,6 +23,15 @@
 - **Efeitos mais variados:** os kits novos usam Sono, Silêncio, Karma, Ferida, Bênção, Contragolpe, Reviver e Resistir Crítico, além de encurtar os efeitos positivos do inimigo, ataque em conjunto e turno extra ao derrubar.
 - **Minerador Anão de Fogo:** é a peça-chave do Golem. Tira os efeitos positivos, ignora e quebra a Defesa e corta a cura do núcleo. Com ele, a equipe preparada vence o andar 5 em 100% das lutas.
 - **Golem andar 3:** um pouco mais difícil (escala 0,8 → 0,95), para seguir pedindo o investimento do andar.
+- **Runas:** os marcos de melhora +3, +6, +9 e +12 pedem 1, 2, 3 e 4 subatributos. Uma runa Rara cresce em +3 e +6 e só vira Heroica em +9; antes, virava em +3.
+- **Recalibragem:** Santuário andar 5 (escala 3,4 → 3,0) e fase 50 (0,5 → 0,49), depois da mudança nas runas.
+- **Evolução:** agora custa 10, 25, 75, 150 e 300 Fragmentos por estrela.
+- **Compêndio:** os efeitos positivos ficam na primeira coluna e os negativos na segunda.
+- **Coleção:** a ficha do Núcleo de Infusão fica da mesma largura das outras.
+- **Monstros e Runas:** tocar nos últimos itens não faz mais a lista voltar ao topo.
+- **Testes do Golem:** o andar 5 é medido em três visões. O time gratuito (um 4★ e quatro 3★) vence pelos efeitos, o OK (o especialista) pelo dano bruto e o Spd (sincronia de Velocidade) é o mais rápido.
+- **Construtor de famílias:** as habilidades são montadas por listas de escolha (tipo, alvo, status, escopo…), sem digitar JSON.
+- **Música:** faixa Plano Celestial adicionada.
 
 ## 04/10/2026
 - **Masmorras de especialização:** cada chefe pede um time feito para ele. O Golem regenera a cada turno, a Serpe se fortalece por efeitos negativos, o Rei Ossudo (Cripta) impede que qualquer monstro ganhe ou perca Ímpeto, o Santuário Afogado contra-ataca. O andar 5 só cai para uma equipe preparada. A Forja foi recalibrada.
