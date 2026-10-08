@@ -55,6 +55,42 @@ namespace Sigilos.Tests
 			Assert.Equal(string.Join(",", log.Select(e => e.GetType().Name)), string.Join(",", shown.Select(e => e.GetType().Name)), "eventos mostrados");
 		}
 
+		/// <summary>
+		/// A luta vista mostra o começo de cada turno com a luta ainda antes da ação, como a jogada: os
+		/// cartões, que se atualizam no começo, não mostram o dano do golpe antes de quem ataca correr.
+		/// </summary>
+		[Test]
+		private static void WatchedAutoBattleShowsEachTurnStartBeforeTheAction()
+		{
+			var database = TestData.LoadReal();
+			var team = Team(TestData.PlayerWith(TestData.TypicalTeam));
+			var encounter = database.Dungeon("golem").Floor(3).Encounter;
+
+			var played = BattleFactory.Create(database, team, encounter, 31);
+			played.Start();
+			var expected = new List<double>();
+			while (!played.IsOver)
+			{
+				var actor = AutoBattle.Begin(played, null);
+				expected.Add(Life(played));
+				if (actor != null)
+					AutoBattle.Act(played, actor, null, focusBoss: true);
+			}
+
+			var fight = new AutoBattleFight(BattleFactory.Create(database, team, encounter, 31), focusBoss: true);
+			var seen = new List<double>();
+			fight.Played += (beat, _) =>
+			{
+				if (beat.Events.Any(e => e is TurnStarted))
+					seen.Add(Life(fight.Session));
+			};
+			fight.Advance(double.MaxValue);
+
+			Assert.Equal(string.Join(";", expected), string.Join(";", seen), "Vida no começo de cada turno");
+		}
+
+		private static double Life(BattleSession session) => session.Allies.Concat(session.Enemies).Sum(u => u.Health);
+
 		[Test]
 		private static void EveryStageAndFloorEnds()
 		{

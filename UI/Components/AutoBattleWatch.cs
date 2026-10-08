@@ -21,7 +21,10 @@ namespace Sigilos.UI.Components
 	/// </summary>
 	public partial class AutoBattleWatch : Control
 	{
-		/// <summary>A moldura, o convite e o toque da vista pequena ficam por cima até de quem corre para golpear e do painel de Efeitos.</summary>
+		/// <summary>
+		/// A moldura, o convite e o toque da vista pequena ficam por cima até de quem corre para golpear e do
+		/// painel de Efeitos, mas abaixo da camada de uma janela: a pergunta aberta por cima os cobre.
+		/// </summary>
 		private const int OnTop = 30;
 
 		private readonly AutoBattleRun _run;

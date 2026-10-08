@@ -7,8 +7,10 @@ namespace Sigilos.UI
 	/// <summary>
 	/// A luta de agora da Batalha automática, para ver. A Batalha automática resolve a luta na hora e
 	/// espera o tempo dela; esta é a mesma luta (a mesma equipe, a mesma semente, as mesmas decisões do
-	/// <see cref="AutoBattle"/>, então os mesmos eventos) andada no relógio dela, um turno de cada vez,
-	/// em momentos de tela (<see cref="BattlePace"/>) na velocidade da Batalha automática.
+	/// <see cref="AutoBattle"/>, então os mesmos eventos) andada no relógio dela em momentos de tela
+	/// (<see cref="BattlePace"/>) na velocidade da Batalha automática. Anda como a luta jogada: o começo
+	/// de cada turno e, só depois de mostrado, a ação. Num turno inteiro de uma vez, o começo atualizava
+	/// os cartões com a Vida de depois da ação, e o alvo perdia Vida antes de quem ataca correr até ele.
 	///
 	/// Ela é da corrida (<see cref="AutoBattleRun.Fight"/>), não de quem olha: a vista pequena da janela e
 	/// a tela cheia mostram a mesma, e abrir, fechar ou trocar de vista não para nem recomeça nada. Quem
@@ -20,6 +22,9 @@ namespace Sigilos.UI
 		private readonly List<BattleEvent> _events = new();
 		private readonly bool _focusBoss;
 		private bool _started;
+
+		/// <summary>Quem começou o turno e ainda vai agir: o próximo pedaço é a ação dele.</summary>
+		private BattleUnit? _actor;
 
 		/// <summary>Onde termina, no relógio da luta, o último momento já tirado da luta.</summary>
 		private double _end;
@@ -34,7 +39,7 @@ namespace Sigilos.UI
 		public BattleSession Session { get; }
 
 		/// <summary>
-		/// Quantos pedaços (o começo e cada turno) já saíram da luta. O estado dela já inclui o último, mesmo
+		/// Quantos pedaços (o começo da luta, e o começo e a ação de cada turno) já saíram da luta. O estado dela já inclui o último, mesmo
 		/// com momentos dele ainda por mostrar: quem começa a olhar agora ignora esses e segue do próximo.
 		/// </summary>
 		public int Steps { get; private set; }
@@ -65,18 +70,29 @@ namespace Sigilos.UI
 			}
 		}
 
-		/// <summary>O próximo pedaço da luta (o começo, ou um turno) em momentos; falso quando ela acabou.</summary>
+		/// <summary>O próximo pedaço da luta (o começo dela, o começo de um turno ou a ação dele) em momentos; falso quando ela acabou.</summary>
 		private bool Step()
 		{
-			if (_started && Session.IsOver)
-				return false;
-
 			_events.Clear();
-			if (_started)
-				AutoBattle.Turn(Session, _events, _focusBoss);
-			else
+			if (!_started)
+			{
 				_events.AddRange(Session.Start());
-			_started = true;
+				_started = true;
+			}
+			else if (_actor != null)
+			{
+				AutoBattle.Act(Session, _actor, _events, _focusBoss);
+				_actor = null;
+			}
+			else if (Session.IsOver)
+			{
+				return false;
+			}
+			else
+			{
+				_actor = AutoBattle.Begin(Session, _events);
+			}
+
 			Steps++;
 			foreach (var beat in BattlePace.Beats(_events))
 			{
