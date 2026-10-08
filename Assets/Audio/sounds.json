@@ -1,0 +1,2342 @@
+{
+  "generator": "Tools/sounds (docs/SONS.md)",
+  "sounds": {
+    "ui.button_click": {
+      "category": "ui",
+      "description": "Clique de botão: toc de madeira com uma notinha de marimba.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/button_click_01.wav",
+        "res://Assets/Audio/ui/button_click_02.wav",
+        "res://Assets/Audio/ui/button_click_03.wav"
+      ],
+      "seconds": 0.09,
+      "peak_db": -9.3
+    },
+    "ui.button_hover": {
+      "category": "ui",
+      "description": "Hover/foco: um brilho de celesta quase sem ataque.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/button_hover_01.wav",
+        "res://Assets/Audio/ui/button_hover_02.wav",
+        "res://Assets/Audio/ui/button_hover_03.wav"
+      ],
+      "seconds": 0.085,
+      "peak_db": -21.9
+    },
+    "ui.button_press": {
+      "category": "ui",
+      "description": "Pressionar: a metade de baixo do clique, mais abafada.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/button_press.wav"
+      ],
+      "seconds": 0.044,
+      "peak_db": -9.7
+    },
+    "ui.button_release": {
+      "category": "ui",
+      "description": "Soltar: a metade de cima do clique, com uma nota leve.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/button_release.wav"
+      ],
+      "seconds": 0.066,
+      "peak_db": -12.1
+    },
+    "ui.item_select": {
+      "category": "ui",
+      "description": "Selecionar item: corda dedilhada e quinta subindo na marimba.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/item_select.wav"
+      ],
+      "seconds": 0.172,
+      "peak_db": -14.6
+    },
+    "ui.item_deselect": {
+      "category": "ui",
+      "description": "Desselecionar item: a quinta descendo, mais macia.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/item_deselect.wav"
+      ],
+      "seconds": 0.139,
+      "peak_db": -12.9
+    },
+    "ui.tab_switch": {
+      "category": "ui",
+      "description": "Trocar aba: a aba de couro passando e um toc.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/tab_switch_01.wav",
+        "res://Assets/Audio/ui/tab_switch_02.wav"
+      ],
+      "seconds": 0.112,
+      "peak_db": -11.6
+    },
+    "ui.menu_open": {
+      "category": "ui",
+      "description": "Abrir menu: couro, um sopro subindo e Ré–Fá♯–Lá na marimba.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/menu_open.wav"
+      ],
+      "seconds": 0.259,
+      "peak_db": -14.8
+    },
+    "ui.menu_close": {
+      "category": "ui",
+      "description": "Fechar menu: o arpejo descendo e a capa assentando.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/menu_close.wav"
+      ],
+      "seconds": 0.214,
+      "peak_db": -16.7
+    },
+    "ui.panel_open": {
+      "category": "ui",
+      "description": "Abrir painel: o painel deslizando e uma celesta.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/panel_open.wav"
+      ],
+      "seconds": 0.277,
+      "peak_db": -17.6
+    },
+    "ui.panel_close": {
+      "category": "ui",
+      "description": "Fechar painel: o painel voltando e encostando.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/panel_close.wav"
+      ],
+      "seconds": 0.153,
+      "peak_db": -13.3
+    },
+    "ui.dialog_open": {
+      "category": "ui",
+      "description": "Abrir diálogo: um bilhete desdobrando com uma nota de vidro.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/dialog_open.wav"
+      ],
+      "seconds": 0.285,
+      "peak_db": -17.3
+    },
+    "ui.dialog_close": {
+      "category": "ui",
+      "description": "Fechar diálogo: o bilhete dobrando, a nota descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/dialog_close.wav"
+      ],
+      "seconds": 0.213,
+      "peak_db": -15.6
+    },
+    "ui.confirm": {
+      "category": "ui",
+      "description": "Confirmar ação: Ré e Lá firmes, com o brilho da celesta.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/confirm.wav"
+      ],
+      "seconds": 0.259,
+      "peak_db": -17.4
+    },
+    "ui.cancel": {
+      "category": "ui",
+      "description": "Cancelar ação: um toc mais grave e a quarta descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/cancel.wav"
+      ],
+      "seconds": 0.191,
+      "peak_db": -10.1
+    },
+    "ui.back": {
+      "category": "ui",
+      "description": "Voltar: a folha passando para trás e duas notas descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/back.wav"
+      ],
+      "seconds": 0.168,
+      "peak_db": -14.6
+    },
+    "ui.forward": {
+      "category": "ui",
+      "description": "Avançar: a folha passando para a frente e duas notas subindo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/forward.wav"
+      ],
+      "seconds": 0.173,
+      "peak_db": -17.3
+    },
+    "ui.scroll": {
+      "category": "ui",
+      "description": "Scroll: um dente de catraca de madeira, bem baixinho.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/scroll_01.wav",
+        "res://Assets/Audio/ui/scroll_02.wav",
+        "res://Assets/Audio/ui/scroll_03.wav"
+      ],
+      "seconds": 0.029,
+      "peak_db": -15.6
+    },
+    "ui.page_change": {
+      "category": "ui",
+      "description": "Trocar página: uma folha curta virando.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/page_change.wav"
+      ],
+      "seconds": 0.186,
+      "peak_db": -14.5
+    },
+    "ui.drag_item": {
+      "category": "ui",
+      "description": "Arrastar item: a peça levantando, um \"blup\" subindo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/drag_item.wav"
+      ],
+      "seconds": 0.119,
+      "peak_db": -16.1
+    },
+    "ui.drop_item": {
+      "category": "ui",
+      "description": "Soltar item: a peça assentando, um \"plop\" descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/drop_item.wav"
+      ],
+      "seconds": 0.153,
+      "peak_db": -10.6
+    },
+    "ui.equip_item": {
+      "category": "ui",
+      "description": "Equipar item: o couro, a fivela e a quinta subindo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/equip_item.wav"
+      ],
+      "seconds": 0.236,
+      "peak_db": -16
+    },
+    "ui.unequip_item": {
+      "category": "ui",
+      "description": "Desequipar item: a fivela abrindo e a quinta descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/unequip_item.wav"
+      ],
+      "seconds": 0.177,
+      "peak_db": -13.6
+    },
+    "ui.toggle_on": {
+      "category": "ui",
+      "description": "Ativar toggle: o estalo da chave e um tom subindo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/toggle_on.wav"
+      ],
+      "seconds": 0.104,
+      "peak_db": -11.8
+    },
+    "ui.toggle_off": {
+      "category": "ui",
+      "description": "Desativar toggle: o estalo mais grave e o tom descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/toggle_off.wav"
+      ],
+      "seconds": 0.088,
+      "peak_db": -10.7
+    },
+    "ui.slider_up": {
+      "category": "ui",
+      "description": "Slider aumentando: um dente com o tom subindo um pouco.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/slider_up.wav"
+      ],
+      "seconds": 0.041,
+      "peak_db": -16.7
+    },
+    "ui.slider_down": {
+      "category": "ui",
+      "description": "Slider diminuindo: um dente com o tom descendo um pouco.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/slider_down.wav"
+      ],
+      "seconds": 0.041,
+      "peak_db": -13.1
+    },
+    "ui.option_choose": {
+      "category": "ui",
+      "description": "Escolher opção: corda e celesta na quinta.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/option_choose.wav"
+      ],
+      "seconds": 0.174,
+      "peak_db": -14
+    },
+    "ui.filter_applied": {
+      "category": "ui",
+      "description": "Filtro aplicado: uma peneirada de papel e duas notas.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/filter_applied.wav"
+      ],
+      "seconds": 0.156,
+      "peak_db": -15.6
+    },
+    "ui.sort_changed": {
+      "category": "ui",
+      "description": "Ordenação alterada: três cartas de madeira se arrumando.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/sort_changed.wav"
+      ],
+      "seconds": 0.179,
+      "peak_db": -10.9
+    },
+    "ui.item_locked": {
+      "category": "ui",
+      "description": "Item bloqueado: o cadeado fechando.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/item_locked.wav"
+      ],
+      "seconds": 0.108,
+      "peak_db": -10.2
+    },
+    "ui.item_unlocked": {
+      "category": "ui",
+      "description": "Item desbloqueado: o cadeado abrindo e um arpejo de celesta.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/item_unlocked.wav"
+      ],
+      "seconds": 0.28,
+      "peak_db": -16.1
+    },
+    "ui.interaction_error": {
+      "category": "ui",
+      "description": "Erro de interação: duas notas abafadas em trítono, sem susto.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/interaction_error.wav"
+      ],
+      "seconds": 0.251,
+      "peak_db": -13.7
+    },
+    "ui.action_unavailable": {
+      "category": "ui",
+      "description": "Ação indisponível: um toc-toc de madeira abafado.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/action_unavailable.wav"
+      ],
+      "seconds": 0.15,
+      "peak_db": -12.6
+    },
+    "grimoire.book_open": {
+      "category": "grimoire",
+      "description": "Abrir grimório: a lombada rangendo, a capa caindo aberta e duas notas de celesta.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/book_open.wav"
+      ],
+      "seconds": 0.706,
+      "peak_db": -8.8
+    },
+    "grimoire.book_close": {
+      "category": "grimoire",
+      "description": "Fechar grimório: o ar empurrado e a capa fechando.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/book_close.wav"
+      ],
+      "seconds": 0.462,
+      "peak_db": -11.3
+    },
+    "grimoire.page_turn": {
+      "category": "grimoire",
+      "description": "Virar página.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/page_turn_01.wav",
+        "res://Assets/Audio/grimoire/page_turn_02.wav",
+        "res://Assets/Audio/grimoire/page_turn_03.wav"
+      ],
+      "seconds": 0.242,
+      "peak_db": -12.1
+    },
+    "grimoire.pages_riffle": {
+      "category": "grimoire",
+      "description": "Virar várias páginas rapidamente.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/pages_riffle.wav"
+      ],
+      "seconds": 0.446,
+      "peak_db": -12.3
+    },
+    "grimoire.page_select": {
+      "category": "grimoire",
+      "description": "Selecionar página: o dedo na folha e uma nota.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/page_select.wav"
+      ],
+      "seconds": 0.232,
+      "peak_db": -13.8
+    },
+    "grimoire.write": {
+      "category": "grimoire",
+      "description": "Escrever: a pena riscando em três traços.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/write.wav"
+      ],
+      "seconds": 0.816,
+      "peak_db": -9.1
+    },
+    "grimoire.trace_symbol": {
+      "category": "grimoire",
+      "description": "Traçar símbolo: a pena e um rastro de luz que sobe até a quinta.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/trace_symbol.wav"
+      ],
+      "seconds": 0.879,
+      "peak_db": -10.9
+    },
+    "grimoire.magic_ink": {
+      "category": "grimoire",
+      "description": "Tinta mágica: bolhas no tinteiro e um brilho tremendo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/magic_ink.wav"
+      ],
+      "seconds": 0.619,
+      "peak_db": -13.2
+    },
+    "grimoire.reveal_text": {
+      "category": "grimoire",
+      "description": "Revelar texto: um vidro crescendo ao contrário até a quinta.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/reveal_text.wav"
+      ],
+      "seconds": 0.945,
+      "peak_db": -12.4
+    },
+    "grimoire.magic_text_appear": {
+      "category": "grimoire",
+      "description": "Texto mágico aparecendo: brilhos em Ré lídio sobre um tapete leve.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/magic_text_appear.wav"
+      ],
+      "seconds": 0.922,
+      "peak_db": -13.9
+    },
+    "grimoire.entry_discovered": {
+      "category": "grimoire",
+      "description": "Descobrir entrada: a página, a taça e um arpejo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/entry_discovered.wav"
+      ],
+      "seconds": 0.854,
+      "peak_db": -14
+    },
+    "grimoire.creature_registered": {
+      "category": "grimoire",
+      "description": "Nova criatura registrada: o carimbo, um coro curto e o sino.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/creature_registered.wav"
+      ],
+      "seconds": 0.967,
+      "peak_db": -11.7
+    },
+    "grimoire.skill_discovered": {
+      "category": "grimoire",
+      "description": "Nova habilidade descoberta: o sigilo acendendo na página.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/skill_discovered.wav"
+      ],
+      "seconds": 0.709,
+      "peak_db": -16.5
+    },
+    "grimoire.info_unlocked": {
+      "category": "grimoire",
+      "description": "Nova informação desbloqueada: o fecho abrindo e duas notas.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/info_unlocked.wav"
+      ],
+      "seconds": 0.511,
+      "peak_db": -15.7
+    },
+    "grimoire.page_complete": {
+      "category": "grimoire",
+      "description": "Completar página: a marimba subindo o acorde e o sino.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/page_complete.wav"
+      ],
+      "seconds": 0.891,
+      "peak_db": -13.4
+    },
+    "grimoire.section_complete": {
+      "category": "grimoire",
+      "description": "Completar seção: acorde de sinos, coro e brilhos.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/section_complete.wav"
+      ],
+      "seconds": 1.296,
+      "peak_db": -13.2
+    },
+    "grimoire.book_complete": {
+      "category": "grimoire",
+      "description": "Livro completamente preenchido: a capa fechando, coro, sinos e o sigilo.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/grimoire/book_complete.wav"
+      ],
+      "seconds": 2.398,
+      "peak_db": -10.4
+    },
+    "constellation.star_activate": {
+      "category": "constellation",
+      "description": "Ativar estrela: um lampejo de cristal.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/star_activate_01.wav",
+        "res://Assets/Audio/constellation/star_activate_02.wav",
+        "res://Assets/Audio/constellation/star_activate_03.wav"
+      ],
+      "seconds": 0.548,
+      "peak_db": -17.3
+    },
+    "constellation.stars_connect": {
+      "category": "constellation",
+      "description": "Conectar duas estrelas: dois lampejos ligados por um fio de tom.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/stars_connect.wav"
+      ],
+      "seconds": 0.692,
+      "peak_db": -16.1
+    },
+    "constellation.line_draw": {
+      "category": "constellation",
+      "description": "Criar linha: um traço de luz subindo, tremendo de leve.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/line_draw.wav"
+      ],
+      "seconds": 0.802,
+      "peak_db": -15.1
+    },
+    "constellation.constellation_complete": {
+      "category": "constellation",
+      "description": "Completar constelação: a escala lídia em cristal e o acorde aberto.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/constellation_complete.wav"
+      ],
+      "seconds": 1.721,
+      "peak_db": -13.1
+    },
+    "constellation.partial_activate": {
+      "category": "constellation",
+      "description": "Parcialmente ativada: Ré e Lá, sem o Mi que fecharia.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/partial_activate.wav"
+      ],
+      "seconds": 0.579,
+      "peak_db": -15.9
+    },
+    "constellation.full_activate": {
+      "category": "constellation",
+      "description": "Totalmente ativada: Ré–Lá–Mi completo, o sino e o brilho.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/full_activate.wav"
+      ],
+      "seconds": 0.915,
+      "peak_db": -14.2
+    },
+    "constellation.star_pulse": {
+      "category": "constellation",
+      "description": "Estrela pulsando: um tom que acende e apaga.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/star_pulse_01.wav",
+        "res://Assets/Audio/constellation/star_pulse_02.wav"
+      ],
+      "seconds": 0.632,
+      "peak_db": -18.6
+    },
+    "constellation.astral_charge": {
+      "category": "constellation",
+      "description": "Energia astral acumulando: a quinta subindo, brilhos cada vez mais densos.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/astral_charge.wav"
+      ],
+      "seconds": 1.297,
+      "peak_db": -14.5
+    },
+    "constellation.astral_release": {
+      "category": "constellation",
+      "description": "Energia astral liberada: o estouro de ar e o acorde de cristal.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/astral_release.wav"
+      ],
+      "seconds": 0.915,
+      "peak_db": -13.7
+    },
+    "constellation.stardust": {
+      "category": "constellation",
+      "description": "Poeira estelar: brilhos miúdos caindo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/stardust_01.wav",
+        "res://Assets/Audio/constellation/stardust_02.wav"
+      ],
+      "seconds": 0.939,
+      "peak_db": -15.8
+    },
+    "constellation.astral_glint": {
+      "category": "constellation",
+      "description": "Brilho astral: um lampejo e o harmônico.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/astral_glint.wav"
+      ],
+      "seconds": 0.431,
+      "peak_db": -17.5
+    },
+    "constellation.constellation_discovered": {
+      "category": "constellation",
+      "description": "Descobrir constelação: o céu abrindo, três lampejos e o sino.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/constellation_discovered.wav"
+      ],
+      "seconds": 1.591,
+      "peak_db": -13.2
+    },
+    "constellation.node_unlock": {
+      "category": "constellation",
+      "description": "Desbloquear nó: o cristal soltando e um lampejo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/node_unlock.wav"
+      ],
+      "seconds": 0.608,
+      "peak_db": -16.2
+    },
+    "constellation.path_unlock": {
+      "category": "constellation",
+      "description": "Desbloquear caminho: o traço de luz acendendo quatro estrelas.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/path_unlock.wav"
+      ],
+      "seconds": 0.919,
+      "peak_db": -15.7
+    },
+    "constellation.constellation_evolve": {
+      "category": "constellation",
+      "description": "Evoluir constelação: a energia subindo até um acorde lídio maior.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/constellation_evolve.wav"
+      ],
+      "seconds": 1.785,
+      "peak_db": -13.7
+    },
+    "constellation.constellation_reset": {
+      "category": "constellation",
+      "description": "Resetar constelação: as estrelas voltando ao contrário e o ar descendo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/constellation_reset.wav"
+      ],
+      "seconds": 0.876,
+      "peak_db": -13.2
+    },
+    "constellation.activate_fail": {
+      "category": "constellation",
+      "description": "Falha ao ativar: o cristal em segunda menor apagando.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/activate_fail.wav"
+      ],
+      "seconds": 0.293,
+      "peak_db": -13.5
+    },
+    "constellation.legendary_unlock": {
+      "category": "constellation",
+      "description": "Constelação lendária desbloqueada: a subida, o sigilo, o coro lídio e a chuva de estrelas.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/constellation/legendary_unlock.wav"
+      ],
+      "seconds": 2.974,
+      "peak_db": -9
+    },
+    "summon.summon_start": {
+      "category": "summon",
+      "description": "Iniciar invocação: o sigilo acende sobre a taça grave.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/summon_start.wav"
+      ],
+      "seconds": 0.939,
+      "peak_db": -12.6
+    },
+    "summon.circle_appear": {
+      "category": "summon",
+      "description": "Círculo mágico aparecendo: a taça e quatro cristais em volta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/circle_appear.wav"
+      ],
+      "seconds": 1.255,
+      "peak_db": -10.5
+    },
+    "summon.sigil_draw": {
+      "category": "summon",
+      "description": "Sigilo sendo desenhado: o traço vivo e o sigilo acendendo no fim.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/sigil_draw.wav"
+      ],
+      "seconds": 1.192,
+      "peak_db": -13.2
+    },
+    "summon.energy_build": {
+      "category": "summon",
+      "description": "Energia acumulando: a quinta subindo e o pulso acelerando.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/energy_build.wav"
+      ],
+      "seconds": 1.509,
+      "peak_db": -9.8
+    },
+    "summon.portal_open": {
+      "category": "summon",
+      "description": "Portal abrindo: o ar sendo puxado, o estouro macio e o coro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/portal_open.wav"
+      ],
+      "seconds": 1.53,
+      "peak_db": -8.9
+    },
+    "summon.portal_stable": {
+      "category": "summon",
+      "description": "Portal estabilizando: o tapete parado, a taça e o brilho.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/portal_stable.wav"
+      ],
+      "seconds": 1.616,
+      "peak_db": -11.6
+    },
+    "summon.creature_summoned": {
+      "category": "summon",
+      "description": "Criatura sendo invocada: a chegada, o sino e o acorde maior.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/creature_summoned.wav"
+      ],
+      "seconds": 0.874,
+      "peak_db": -8
+    },
+    "summon.summon_rare": {
+      "category": "summon",
+      "description": "Invocação rara: subida curta e acorde de quatro sinos.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/summon_rare.wav"
+      ],
+      "seconds": 1.344,
+      "peak_db": -10.5
+    },
+    "summon.summon_very_rare": {
+      "category": "summon",
+      "description": "Invocação muito rara: subida maior, chegada, cinco sinos e coro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/summon_very_rare.wav"
+      ],
+      "seconds": 1.848,
+      "peak_db": -9.5
+    },
+    "summon.summon_legendary": {
+      "category": "summon",
+      "description": "Invocação lendária: a subida inteira, o estouro, o sigilo, coro e seis sinos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/summon/summon_legendary.wav"
+      ],
+      "seconds": 3.025,
+      "peak_db": -8
+    },
+    "summon.summon_fail": {
+      "category": "summon",
+      "description": "Invocação falha: a energia sobe e se desfaz num sopro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/summon_fail.wav"
+      ],
+      "seconds": 0.903,
+      "peak_db": -7.4
+    },
+    "summon.summon_duplicate": {
+      "category": "summon",
+      "description": "Invocação repetida: o sino em eco e a criatura virando cacos de cristal.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/summon_duplicate.wav"
+      ],
+      "seconds": 0.816,
+      "peak_db": -11.5
+    },
+    "summon.creature_reveal": {
+      "category": "summon",
+      "description": "Revelação da criatura: o vidro crescendo ao contrário até o sino.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/creature_reveal.wav"
+      ],
+      "seconds": 1.397,
+      "peak_db": -10.4
+    },
+    "summon.new_creature_reveal": {
+      "category": "summon",
+      "description": "Revelação de nova criatura: a revelação com coro e mais brilho.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/new_creature_reveal.wav"
+      ],
+      "seconds": 1.828,
+      "peak_db": -10.3
+    },
+    "summon.fragments_received": {
+      "category": "summon",
+      "description": "Fragmentos recebidos: cacos de cristal tilintando.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/fragments_received.wav"
+      ],
+      "seconds": 0.452,
+      "peak_db": -11.8
+    },
+    "summon.essence_received": {
+      "category": "summon",
+      "description": "Essência recebida: a taça, bolhas de luz e o vidro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/essence_received.wav"
+      ],
+      "seconds": 0.675,
+      "peak_db": -12.3
+    },
+    "summon.reveal_star_1": {
+      "category": "summon",
+      "description": "Revelação 1★: uma nota de celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_1.wav"
+      ],
+      "seconds": 0.379,
+      "peak_db": -14.9
+    },
+    "summon.reveal_star_2": {
+      "category": "summon",
+      "description": "Revelação 2★: a quinta em celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_2.wav"
+      ],
+      "seconds": 0.447,
+      "peak_db": -14.7
+    },
+    "summon.reveal_star_3": {
+      "category": "summon",
+      "description": "Revelação 3★: o acorde maior em sinos.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_3.wav"
+      ],
+      "seconds": 0.892,
+      "peak_db": -10.2
+    },
+    "summon.reveal_star_4": {
+      "category": "summon",
+      "description": "Revelação 4★: subida, quatro sinos e coro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_4.wav"
+      ],
+      "seconds": 1.381,
+      "peak_db": -8.4
+    },
+    "summon.reveal_star_5": {
+      "category": "summon",
+      "description": "Revelação 5★: a subida inteira, o estouro, o sigilo, coro e seis sinos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_5.wav"
+      ],
+      "seconds": 2.52,
+      "peak_db": -8.8
+    },
+    "rewards.gold": {
+      "category": "rewards",
+      "description": "Ganhar ouro: moedas caindo umas sobre as outras.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/gold_01.wav",
+        "res://Assets/Audio/rewards/gold_02.wav",
+        "res://Assets/Audio/rewards/gold_03.wav"
+      ],
+      "seconds": 0.373,
+      "peak_db": -10.9
+    },
+    "rewards.essence": {
+      "category": "rewards",
+      "description": "Ganhar essência: a taça aguda, o vidro e bolhas de luz.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/essence.wav"
+      ],
+      "seconds": 0.545,
+      "peak_db": -12.3
+    },
+    "rewards.fragments": {
+      "category": "rewards",
+      "description": "Ganhar fragmentos: cacos de cristal e a fivela.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/fragments.wav"
+      ],
+      "seconds": 0.445,
+      "peak_db": -12.3
+    },
+    "rewards.experience": {
+      "category": "rewards",
+      "description": "Ganhar experiência: a escala subindo em celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/experience.wav"
+      ],
+      "seconds": 0.487,
+      "peak_db": -12.7
+    },
+    "rewards.equipment": {
+      "category": "rewards",
+      "description": "Ganhar equipamento: couro, metal e a quinta na marimba.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/equipment.wav"
+      ],
+      "seconds": 0.319,
+      "peak_db": -5.2
+    },
+    "rewards.rune": {
+      "category": "rewards",
+      "description": "Ganhar runa: a pedra entalhada e o vidro acendendo.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/rune.wav"
+      ],
+      "seconds": 0.545,
+      "peak_db": -10.6
+    },
+    "rewards.item_rare": {
+      "category": "rewards",
+      "description": "Item raro: três sinos e um lampejo.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/item_rare.wav"
+      ],
+      "seconds": 0.747,
+      "peak_db": -11.7
+    },
+    "rewards.item_epic": {
+      "category": "rewards",
+      "description": "Item épico: quatro sinos, tapete e brilhos.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/item_epic.wav"
+      ],
+      "seconds": 1.129,
+      "peak_db": -10.6
+    },
+    "rewards.item_legendary": {
+      "category": "rewards",
+      "description": "Item lendário: subida, cinco sinos, coro, moeda e chuva de brilhos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/rewards/item_legendary.wav"
+      ],
+      "seconds": 2.06,
+      "peak_db": -10.2
+    },
+    "rewards.level_up": {
+      "category": "rewards",
+      "description": "Subir de nível: o acorde subindo na marimba, sinos e um coro curto.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/level_up.wav"
+      ],
+      "seconds": 1.287,
+      "peak_db": -10
+    },
+    "rewards.star_up": {
+      "category": "rewards",
+      "description": "Subir estrela: dois lampejos e o sino.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/star_up.wav"
+      ],
+      "seconds": 0.984,
+      "peak_db": -12.7
+    },
+    "rewards.skill_unlock": {
+      "category": "rewards",
+      "description": "Desbloquear habilidade: o sigilo e o acorde Ré–Lá–Mi.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/skill_unlock.wav"
+      ],
+      "seconds": 0.889,
+      "peak_db": -12.9
+    },
+    "rewards.creature_unlock": {
+      "category": "rewards",
+      "description": "Desbloquear criatura: a trava, quatro sinos e o coro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/creature_unlock.wav"
+      ],
+      "seconds": 1.1,
+      "peak_db": -9.6
+    },
+    "rewards.quest_complete": {
+      "category": "rewards",
+      "description": "Completar missão: \"tã-tã-TÃ\" na marimba e o sino.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/quest_complete.wav"
+      ],
+      "seconds": 0.884,
+      "peak_db": -13
+    },
+    "rewards.achievement_complete": {
+      "category": "rewards",
+      "description": "Completar conquista: acorde de sinos, celesta subindo e moeda.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/achievement_complete.wav"
+      ],
+      "seconds": 1.126,
+      "peak_db": -10.4
+    },
+    "rewards.daily_reward": {
+      "category": "rewards",
+      "description": "Recompensa diária: o embrulho de papel, a escala e a moeda.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/daily_reward.wav"
+      ],
+      "seconds": 0.944,
+      "peak_db": -12.7
+    },
+    "rewards.chest_open": {
+      "category": "rewards",
+      "description": "Baú abrindo: a trava, a dobradiça, a tampa e o brilho de dentro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/chest_open.wav"
+      ],
+      "seconds": 0.884,
+      "peak_db": -8.6
+    },
+    "rewards.chest_rare": {
+      "category": "rewards",
+      "description": "Baú raro: o baú e três sinos.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/chest_rare.wav"
+      ],
+      "seconds": 1.181,
+      "peak_db": -8.9
+    },
+    "rewards.chest_legendary": {
+      "category": "rewards",
+      "description": "Baú lendário: o baú, a subida, cinco sinos, coro e moedas.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/rewards/chest_legendary.wav"
+      ],
+      "seconds": 2.088,
+      "peak_db": -10
+    },
+    "combat.attack_light": {
+      "category": "combat",
+      "description": "Ataque físico leve.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/attack_light_01.wav",
+        "res://Assets/Audio/combat/attack_light_02.wav",
+        "res://Assets/Audio/combat/attack_light_03.wav"
+      ],
+      "seconds": 0.17,
+      "peak_db": -6.2
+    },
+    "combat.attack_medium": {
+      "category": "combat",
+      "description": "Ataque físico médio.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/attack_medium_01.wav",
+        "res://Assets/Audio/combat/attack_medium_02.wav",
+        "res://Assets/Audio/combat/attack_medium_03.wav"
+      ],
+      "seconds": 0.238,
+      "peak_db": -5.7
+    },
+    "combat.attack_heavy": {
+      "category": "combat",
+      "description": "Ataque físico pesado.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/attack_heavy_01.wav",
+        "res://Assets/Audio/combat/attack_heavy_02.wav",
+        "res://Assets/Audio/combat/attack_heavy_03.wav"
+      ],
+      "seconds": 0.332,
+      "peak_db": -5.9
+    },
+    "combat.critical_hit": {
+      "category": "combat",
+      "description": "Golpe crítico: o impacto com um anel de metal e um lampejo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/critical_hit_01.wav",
+        "res://Assets/Audio/combat/critical_hit_02.wav"
+      ],
+      "seconds": 0.458,
+      "peak_db": -6.2
+    },
+    "combat.very_heavy_hit": {
+      "category": "combat",
+      "description": "Golpe muito pesado: impacto máximo com o estouro.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/very_heavy_hit_01.wav",
+        "res://Assets/Audio/combat/very_heavy_hit_02.wav"
+      ],
+      "seconds": 0.707,
+      "peak_db": -6.4
+    },
+    "combat.slash": {
+      "category": "combat",
+      "description": "Corte.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/slash_01.wav",
+        "res://Assets/Audio/combat/slash_02.wav",
+        "res://Assets/Audio/combat/slash_03.wav"
+      ],
+      "seconds": 0.218,
+      "peak_db": -9
+    },
+    "combat.pierce": {
+      "category": "combat",
+      "description": "Perfuração: o sopro fino e o \"tchk\" da ponta.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/pierce_01.wav",
+        "res://Assets/Audio/combat/pierce_02.wav",
+        "res://Assets/Audio/combat/pierce_03.wav"
+      ],
+      "seconds": 0.126,
+      "peak_db": -5.3
+    },
+    "combat.impact": {
+      "category": "combat",
+      "description": "Impacto.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/impact_01.wav",
+        "res://Assets/Audio/combat/impact_02.wav",
+        "res://Assets/Audio/combat/impact_03.wav"
+      ],
+      "seconds": 0.141,
+      "peak_db": -4
+    },
+    "combat.blunt": {
+      "category": "combat",
+      "description": "Pancada: o impacto com um \"bonk\" de madeira.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/blunt_01.wav",
+        "res://Assets/Audio/combat/blunt_02.wav",
+        "res://Assets/Audio/combat/blunt_03.wav"
+      ],
+      "seconds": 0.156,
+      "peak_db": -4.8
+    },
+    "combat.ranged_attack": {
+      "category": "combat",
+      "description": "Ataque à distância: o disparo e o ar indo embora.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/ranged_attack_01.wav",
+        "res://Assets/Audio/combat/ranged_attack_02.wav"
+      ],
+      "seconds": 0.236,
+      "peak_db": -8.7
+    },
+    "combat.magic_projectile": {
+      "category": "combat",
+      "description": "Projétil mágico: o lampejo de saída e o rastro de cristal.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/magic_projectile_01.wav",
+        "res://Assets/Audio/combat/magic_projectile_02.wav",
+        "res://Assets/Audio/combat/magic_projectile_03.wav"
+      ],
+      "seconds": 0.496,
+      "peak_db": -11.9
+    },
+    "combat.physical_projectile": {
+      "category": "combat",
+      "description": "Projétil físico: algo girando no ar e batendo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/physical_projectile_01.wav",
+        "res://Assets/Audio/combat/physical_projectile_02.wav"
+      ],
+      "seconds": 0.251,
+      "peak_db": -7.9
+    },
+    "combat.arrow": {
+      "category": "combat",
+      "description": "Flecha: a corda, o assobio e a ponta fincando.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/arrow_01.wav",
+        "res://Assets/Audio/combat/arrow_02.wav",
+        "res://Assets/Audio/combat/arrow_03.wav"
+      ],
+      "seconds": 0.226,
+      "peak_db": -5.8
+    },
+    "combat.multi_projectile": {
+      "category": "combat",
+      "description": "Múltiplos projéteis: quatro disparos em leque.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/multi_projectile_01.wav",
+        "res://Assets/Audio/combat/multi_projectile_02.wav"
+      ],
+      "seconds": 0.318,
+      "peak_db": -10.4
+    },
+    "combat.area_attack": {
+      "category": "combat",
+      "description": "Ataque em área: o golpe largo e a onda de choque.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/area_attack_01.wav",
+        "res://Assets/Audio/combat/area_attack_02.wav"
+      ],
+      "seconds": 0.864,
+      "peak_db": -7.4
+    },
+    "combat.explosion": {
+      "category": "combat",
+      "description": "Explosão.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/explosion_01.wav",
+        "res://Assets/Audio/combat/explosion_02.wav"
+      ],
+      "seconds": 0.776,
+      "peak_db": -7.9
+    },
+    "combat.attack_miss": {
+      "category": "combat",
+      "description": "Ataque que erra: só o ar passando.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/attack_miss_01.wav",
+        "res://Assets/Audio/combat/attack_miss_02.wav",
+        "res://Assets/Audio/combat/attack_miss_03.wav"
+      ],
+      "seconds": 0.26,
+      "peak_db": -11.6
+    },
+    "combat.attack_blocked": {
+      "category": "combat",
+      "description": "Ataque bloqueado: o golpe no escudo de madeira e metal.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/attack_blocked_01.wav",
+        "res://Assets/Audio/combat/attack_blocked_02.wav",
+        "res://Assets/Audio/combat/attack_blocked_03.wav"
+      ],
+      "seconds": 0.221,
+      "peak_db": -3.8
+    },
+    "combat.attack_resisted": {
+      "category": "combat",
+      "description": "Ataque resistido: o golpe abafado numa taça grave.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/attack_resisted_01.wav",
+        "res://Assets/Audio/combat/attack_resisted_02.wav"
+      ],
+      "seconds": 0.297,
+      "peak_db": -8.5
+    },
+    "combat.damage.physical_light": {
+      "category": "combat/damage",
+      "description": "Dano físico leve.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/physical_light_01.wav",
+        "res://Assets/Audio/combat/damage/physical_light_02.wav",
+        "res://Assets/Audio/combat/damage/physical_light_03.wav"
+      ],
+      "seconds": 0.099,
+      "peak_db": -4.7
+    },
+    "combat.damage.physical_medium": {
+      "category": "combat/damage",
+      "description": "Dano físico médio.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/physical_medium_01.wav",
+        "res://Assets/Audio/combat/damage/physical_medium_02.wav",
+        "res://Assets/Audio/combat/damage/physical_medium_03.wav"
+      ],
+      "seconds": 0.143,
+      "peak_db": -6.4
+    },
+    "combat.damage.physical_heavy": {
+      "category": "combat/damage",
+      "description": "Dano físico pesado.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/physical_heavy_01.wav",
+        "res://Assets/Audio/combat/damage/physical_heavy_02.wav",
+        "res://Assets/Audio/combat/damage/physical_heavy_03.wav"
+      ],
+      "seconds": 0.198,
+      "peak_db": -7.1
+    },
+    "combat.damage.critical": {
+      "category": "combat/damage",
+      "description": "Dano crítico: o impacto, o anel de metal e cacos.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/critical_01.wav",
+        "res://Assets/Audio/combat/damage/critical_02.wav",
+        "res://Assets/Audio/combat/damage/critical_03.wav"
+      ],
+      "seconds": 0.317,
+      "peak_db": -5.8
+    },
+    "combat.damage.magic": {
+      "category": "combat/damage",
+      "description": "Dano mágico: impacto leve com a quinta de vidro e um sopro.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/magic_01.wav",
+        "res://Assets/Audio/combat/damage/magic_02.wav",
+        "res://Assets/Audio/combat/damage/magic_03.wav"
+      ],
+      "seconds": 0.197,
+      "peak_db": -6.7
+    },
+    "combat.damage.elemental": {
+      "category": "combat/damage",
+      "description": "Dano elemental: impacto com ruído vivo, estalos e vidro.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/elemental_01.wav",
+        "res://Assets/Audio/combat/damage/elemental_02.wav",
+        "res://Assets/Audio/combat/damage/elemental_03.wav"
+      ],
+      "seconds": 0.231,
+      "peak_db": -5.8
+    },
+    "combat.damage.periodic": {
+      "category": "combat/damage",
+      "description": "Dano contínuo: uma pontada curta, para repetir a cada turno.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/periodic_01.wav",
+        "res://Assets/Audio/combat/damage/periodic_02.wav",
+        "res://Assets/Audio/combat/damage/periodic_03.wav"
+      ],
+      "seconds": 0.11,
+      "peak_db": -7.9
+    },
+    "combat.damage.poison": {
+      "category": "combat/damage",
+      "description": "Dano de veneno: bolhas graves e o tom azedando.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/poison_01.wav",
+        "res://Assets/Audio/combat/damage/poison_02.wav",
+        "res://Assets/Audio/combat/damage/poison_03.wav"
+      ],
+      "seconds": 0.219,
+      "peak_db": -5.4
+    },
+    "combat.damage.burn": {
+      "category": "combat/damage",
+      "description": "Dano de queimadura: o fogo pegando e o chiado.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/burn_01.wav",
+        "res://Assets/Audio/combat/damage/burn_02.wav",
+        "res://Assets/Audio/combat/damage/burn_03.wav"
+      ],
+      "seconds": 0.381,
+      "peak_db": -6.3
+    },
+    "combat.damage.bleed": {
+      "category": "combat/damage",
+      "description": "Dano de sangramento/ferida: um corte rápido e a pulsação, estilizados.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/bleed_01.wav",
+        "res://Assets/Audio/combat/damage/bleed_02.wav",
+        "res://Assets/Audio/combat/damage/bleed_03.wav"
+      ],
+      "seconds": 0.152,
+      "peak_db": -8
+    },
+    "combat.damage.light": {
+      "category": "combat/damage",
+      "description": "Dano de luz: o impacto que brilha.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/light_01.wav",
+        "res://Assets/Audio/combat/damage/light_02.wav",
+        "res://Assets/Audio/combat/damage/light_03.wav"
+      ],
+      "seconds": 0.269,
+      "peak_db": -7.6
+    },
+    "combat.damage.dark": {
+      "category": "combat/damage",
+      "description": "Dano de trevas: a sombra crescendo ao contrário até o golpe.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/dark_01.wav",
+        "res://Assets/Audio/combat/damage/dark_02.wav",
+        "res://Assets/Audio/combat/damage/dark_03.wav"
+      ],
+      "seconds": 0.298,
+      "peak_db": -5.7
+    },
+    "combat.damage.fire": {
+      "category": "combat/damage",
+      "description": "Dano de fogo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/fire_01.wav",
+        "res://Assets/Audio/combat/damage/fire_02.wav",
+        "res://Assets/Audio/combat/damage/fire_03.wav"
+      ],
+      "seconds": 0.294,
+      "peak_db": -4.9
+    },
+    "combat.damage.water": {
+      "category": "combat/damage",
+      "description": "Dano de água.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/water_01.wav",
+        "res://Assets/Audio/combat/damage/water_02.wav",
+        "res://Assets/Audio/combat/damage/water_03.wav"
+      ],
+      "seconds": 0.374,
+      "peak_db": -8.1
+    },
+    "combat.damage.wind": {
+      "category": "combat/damage",
+      "description": "Dano de vento.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/wind_01.wav",
+        "res://Assets/Audio/combat/damage/wind_02.wav",
+        "res://Assets/Audio/combat/damage/wind_03.wav"
+      ],
+      "seconds": 0.194,
+      "peak_db": -9
+    },
+    "combat.damage.reflected": {
+      "category": "combat/damage",
+      "description": "Dano refletido: o golpe volta num \"boing\" de metal.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/reflected_01.wav",
+        "res://Assets/Audio/combat/damage/reflected_02.wav",
+        "res://Assets/Audio/combat/damage/reflected_03.wav"
+      ],
+      "seconds": 0.192,
+      "peak_db": -6.6
+    },
+    "combat.damage.true_damage": {
+      "category": "combat/damage",
+      "description": "Dano verdadeiro: seco, limpo, com um \"tink\" que atravessa.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/true_damage_01.wav",
+        "res://Assets/Audio/combat/damage/true_damage_02.wav",
+        "res://Assets/Audio/combat/damage/true_damage_03.wav"
+      ],
+      "seconds": 0.15,
+      "peak_db": -6.3
+    },
+    "combat.damage.absorbed": {
+      "category": "combat/damage",
+      "description": "Dano absorvido: a taça engole o golpe.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/absorbed_01.wav",
+        "res://Assets/Audio/combat/damage/absorbed_02.wav",
+        "res://Assets/Audio/combat/damage/absorbed_03.wav"
+      ],
+      "seconds": 0.316,
+      "peak_db": -9.3
+    },
+    "combat.damage.reduced": {
+      "category": "combat/damage",
+      "description": "Dano reduzido: o golpe abafado na madeira.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/reduced_01.wav",
+        "res://Assets/Audio/combat/damage/reduced_02.wav",
+        "res://Assets/Audio/combat/damage/reduced_03.wav"
+      ],
+      "seconds": 0.11,
+      "peak_db": -5.3
+    },
+    "combat.damage.nullified": {
+      "category": "combat/damage",
+      "description": "Dano nulo: um \"tink\" de vidro e nada mais.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/nullified_01.wav",
+        "res://Assets/Audio/combat/damage/nullified_02.wav",
+        "res://Assets/Audio/combat/damage/nullified_03.wav"
+      ],
+      "seconds": 0.245,
+      "peak_db": -9
+    },
+    "combat.damage.shield_absorb": {
+      "category": "combat/damage",
+      "description": "Escudo absorvendo: o golpe na redoma de cristal.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/damage/shield_absorb_01.wav",
+        "res://Assets/Audio/combat/damage/shield_absorb_02.wav",
+        "res://Assets/Audio/combat/damage/shield_absorb_03.wav"
+      ],
+      "seconds": 0.379,
+      "peak_db": -7.6
+    },
+    "combat.elements.fire_flame": {
+      "category": "combat/elements",
+      "description": "Fogo: chama.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/fire_flame_01.wav",
+        "res://Assets/Audio/combat/elements/fire_flame_02.wav"
+      ],
+      "seconds": 0.627,
+      "peak_db": -6.4
+    },
+    "combat.elements.fire_burst": {
+      "category": "combat/elements",
+      "description": "Fogo: explosão.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/fire_burst_01.wav",
+        "res://Assets/Audio/combat/elements/fire_burst_02.wav"
+      ],
+      "seconds": 0.708,
+      "peak_db": -7.9
+    },
+    "combat.elements.fire_projectile": {
+      "category": "combat/elements",
+      "description": "Fogo: projétil.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/fire_projectile_01.wav",
+        "res://Assets/Audio/combat/elements/fire_projectile_02.wav"
+      ],
+      "seconds": 0.655,
+      "peak_db": -6.8
+    },
+    "combat.elements.fire_burn": {
+      "category": "combat/elements",
+      "description": "Fogo: queimadura.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/fire_burn_01.wav",
+        "res://Assets/Audio/combat/elements/fire_burn_02.wav"
+      ],
+      "seconds": 0.489,
+      "peak_db": -6.8
+    },
+    "combat.elements.fire_grand": {
+      "category": "combat/elements",
+      "description": "Fogo: grande magia. O sigilo, o fogo pegando, o estouro e o incêndio.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/fire_grand.wav"
+      ],
+      "seconds": 1.847,
+      "peak_db": -7.1
+    },
+    "combat.elements.water_drop": {
+      "category": "combat/elements",
+      "description": "Água: gota.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/water_drop_01.wav",
+        "res://Assets/Audio/combat/elements/water_drop_02.wav"
+      ],
+      "seconds": 0.14,
+      "peak_db": -7.1
+    },
+    "combat.elements.water_flow": {
+      "category": "combat/elements",
+      "description": "Água: fluxo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/water_flow_01.wav",
+        "res://Assets/Audio/combat/elements/water_flow_02.wav"
+      ],
+      "seconds": 0.772,
+      "peak_db": -7.6
+    },
+    "combat.elements.water_impact": {
+      "category": "combat/elements",
+      "description": "Água: impacto aquático.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/water_impact_01.wav",
+        "res://Assets/Audio/combat/elements/water_impact_02.wav"
+      ],
+      "seconds": 0.372,
+      "peak_db": -7
+    },
+    "combat.elements.water_wave": {
+      "category": "combat/elements",
+      "description": "Água: onda.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/water_wave_01.wav",
+        "res://Assets/Audio/combat/elements/water_wave_02.wav"
+      ],
+      "seconds": 0.975,
+      "peak_db": -6.8
+    },
+    "combat.elements.water_grand": {
+      "category": "combat/elements",
+      "description": "Água: grande magia. O sigilo, a maré subindo e a onda quebrando.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/water_grand.wav"
+      ],
+      "seconds": 2.238,
+      "peak_db": -8.1
+    },
+    "combat.elements.wind_cut": {
+      "category": "combat/elements",
+      "description": "Vento: corte.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/wind_cut_01.wav",
+        "res://Assets/Audio/combat/elements/wind_cut_02.wav"
+      ],
+      "seconds": 0.262,
+      "peak_db": -10.2
+    },
+    "combat.elements.wind_gust": {
+      "category": "combat/elements",
+      "description": "Vento: rajada.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/wind_gust_01.wav",
+        "res://Assets/Audio/combat/elements/wind_gust_02.wav"
+      ],
+      "seconds": 0.591,
+      "peak_db": -8.5
+    },
+    "combat.elements.wind_tornado": {
+      "category": "combat/elements",
+      "description": "Vento: tornado.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/wind_tornado_01.wav",
+        "res://Assets/Audio/combat/elements/wind_tornado_02.wav"
+      ],
+      "seconds": 1.168,
+      "peak_db": -7.8
+    },
+    "combat.elements.wind_dash": {
+      "category": "combat/elements",
+      "description": "Vento: movimento rápido.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/wind_dash_01.wav",
+        "res://Assets/Audio/combat/elements/wind_dash_02.wav"
+      ],
+      "seconds": 0.2,
+      "peak_db": -9.7
+    },
+    "combat.elements.wind_grand": {
+      "category": "combat/elements",
+      "description": "Vento: grande magia. O sigilo, o redemoinho crescendo e a rajada.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/wind_grand.wav"
+      ],
+      "seconds": 1.961,
+      "peak_db": -8.6
+    },
+    "combat.elements.light_glint": {
+      "category": "combat/elements",
+      "description": "Luz: brilho.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/light_glint_01.wav",
+        "res://Assets/Audio/combat/elements/light_glint_02.wav"
+      ],
+      "seconds": 0.452,
+      "peak_db": -12
+    },
+    "combat.elements.light_seal": {
+      "category": "combat/elements",
+      "description": "Luz: selo sagrado. A pedra do selo, o sino e a quinta de cristal.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/light_seal_01.wav",
+        "res://Assets/Audio/combat/elements/light_seal_02.wav"
+      ],
+      "seconds": 0.758,
+      "peak_db": -9.6
+    },
+    "combat.elements.light_heal": {
+      "category": "combat/elements",
+      "description": "Luz: cura luminosa. Coro em \"a\" e a celesta subindo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/light_heal_01.wav",
+        "res://Assets/Audio/combat/elements/light_heal_02.wav"
+      ],
+      "seconds": 1.099,
+      "peak_db": -10.3
+    },
+    "combat.elements.light_burst": {
+      "category": "combat/elements",
+      "description": "Luz: explosão de luz.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/light_burst_01.wav",
+        "res://Assets/Audio/combat/elements/light_burst_02.wav"
+      ],
+      "seconds": 0.693,
+      "peak_db": -9.2
+    },
+    "combat.elements.light_grand": {
+      "category": "combat/elements",
+      "description": "Luz: grande magia. O sigilo, o coro maior abrindo e a explosão de sinos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/light_grand.wav"
+      ],
+      "seconds": 2.55,
+      "peak_db": -9.6
+    },
+    "combat.elements.dark_whisper": {
+      "category": "combat/elements",
+      "description": "Trevas: sussurro sombrio.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/dark_whisper_01.wav",
+        "res://Assets/Audio/combat/elements/dark_whisper_02.wav"
+      ],
+      "seconds": 0.989,
+      "peak_db": -7.8
+    },
+    "combat.elements.dark_energy": {
+      "category": "combat/elements",
+      "description": "Trevas: energia obscura. A sombra cantando e a taça ao contrário.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/dark_energy_01.wav",
+        "res://Assets/Audio/combat/elements/dark_energy_02.wav"
+      ],
+      "seconds": 1.128,
+      "peak_db": -9.7
+    },
+    "combat.elements.dark_corruption": {
+      "category": "combat/elements",
+      "description": "Trevas: corrupção. A sombra, estalos secos e bolhas graves.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/dark_corruption_01.wav",
+        "res://Assets/Audio/combat/elements/dark_corruption_02.wav"
+      ],
+      "seconds": 1.118,
+      "peak_db": -9.7
+    },
+    "combat.elements.dark_impact": {
+      "category": "combat/elements",
+      "description": "Trevas: impacto sombrio. O sopro ao contrário até o golpe e a sombra depois.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/dark_impact_01.wav",
+        "res://Assets/Audio/combat/elements/dark_impact_02.wav"
+      ],
+      "seconds": 0.919,
+      "peak_db": -6.9
+    },
+    "combat.elements.dark_grand": {
+      "category": "combat/elements",
+      "description": "Trevas: grande magia. O sigilo grave, o coro em \"u\", a sombra subindo e o golpe.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/dark_grand.wav"
+      ],
+      "seconds": 2.323,
+      "peak_db": -8.2
+    },
+    "combat.status.buff_apply": {
+      "category": "combat/status",
+      "description": "Aplicar buff: a celesta subindo e um brilho.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/buff_apply.wav"
+      ],
+      "seconds": 0.488,
+      "peak_db": -12.4
+    },
+    "combat.status.buff_remove": {
+      "category": "combat/status",
+      "description": "Remover buff: a celesta descendo e o ar saindo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/buff_remove.wav"
+      ],
+      "seconds": 0.25,
+      "peak_db": -13
+    },
+    "combat.status.debuff_apply": {
+      "category": "combat/status",
+      "description": "Aplicar debuff: a sombra e o vidro escorregando meio tom.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/debuff_apply.wav"
+      ],
+      "seconds": 0.586,
+      "peak_db": -11.6
+    },
+    "combat.status.debuff_remove": {
+      "category": "combat/status",
+      "description": "Remover debuff: um sopro limpando e a quinta subindo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/debuff_remove.wav"
+      ],
+      "seconds": 0.347,
+      "peak_db": -11.5
+    },
+    "combat.status.stun": {
+      "category": "combat/status",
+      "description": "Stun: o golpe e as estrelinhas girando.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/stun.wav"
+      ],
+      "seconds": 0.629,
+      "peak_db": -5.8
+    },
+    "combat.status.sleep": {
+      "category": "combat/status",
+      "description": "Sono: três notas de canção de ninar e um bocejo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/sleep.wav"
+      ],
+      "seconds": 1.034,
+      "peak_db": -9.3
+    },
+    "combat.status.silence": {
+      "category": "combat/status",
+      "description": "Silêncio: um \"shh\" e a nota sendo abafada.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/silence.wav"
+      ],
+      "seconds": 0.419,
+      "peak_db": -10.3
+    },
+    "combat.status.oblivion": {
+      "category": "combat/status",
+      "description": "Esquecimento: o vidro ao contrário, um sussurro e a nota se perdendo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/oblivion.wav"
+      ],
+      "seconds": 1.038,
+      "peak_db": -10.2
+    },
+    "combat.status.bomb": {
+      "category": "combat/status",
+      "description": "Bomba: o pavio aceso e o tique-taque.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/bomb.wav"
+      ],
+      "seconds": 0.42,
+      "peak_db": -6.7
+    },
+    "combat.status.wound": {
+      "category": "combat/status",
+      "description": "Ferida: um corte curto e a pulsação, estilizados.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/wound.wav"
+      ],
+      "seconds": 0.186,
+      "peak_db": -7.1
+    },
+    "combat.status.poison": {
+      "category": "combat/status",
+      "description": "Veneno: bolhas, a sombra e o tom azedo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/poison.wav"
+      ],
+      "seconds": 0.364,
+      "peak_db": -8
+    },
+    "combat.status.burn": {
+      "category": "combat/status",
+      "description": "Queimadura: o fogo pegando, a chama curta e o chiado.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/burn.wav"
+      ],
+      "seconds": 0.393,
+      "peak_db": -8
+    },
+    "combat.status.blessing": {
+      "category": "combat/status",
+      "description": "Benção: coro curto, o sino e o brilho.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/blessing.wav"
+      ],
+      "seconds": 1.015,
+      "peak_db": -10.8
+    },
+    "combat.status.counter": {
+      "category": "combat/status",
+      "description": "Contragolpe: a lâmina em guarda, \"shing\".",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/counter.wav"
+      ],
+      "seconds": 0.257,
+      "peak_db": -7.8
+    },
+    "combat.status.revive": {
+      "category": "combat/status",
+      "description": "Reviver: a energia subindo, coro, sinos e brilho.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/revive.wav"
+      ],
+      "seconds": 1.703,
+      "peak_db": -8
+    },
+    "combat.status.karma": {
+      "category": "combat/status",
+      "description": "Karma: a quinta girando em círculo sobre a taça.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/karma.wav"
+      ],
+      "seconds": 0.713,
+      "peak_db": -9.5
+    },
+    "combat.status.resist": {
+      "category": "combat/status",
+      "description": "Resistência: a taça curta e um \"tink\" abafado.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/resist.wav"
+      ],
+      "seconds": 0.316,
+      "peak_db": -8.3
+    },
+    "combat.status.immunity": {
+      "category": "combat/status",
+      "description": "Imunidade: o acorde de cristal fechado sobre a taça.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/immunity.wav"
+      ],
+      "seconds": 0.572,
+      "peak_db": -11.7
+    },
+    "combat.status.purify": {
+      "category": "combat/status",
+      "description": "Purificação: um sopro claro subindo, o sino e brilhos.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/purify.wav"
+      ],
+      "seconds": 0.803,
+      "peak_db": -8.6
+    },
+    "combat.status.heal": {
+      "category": "combat/status",
+      "description": "Cura: a celesta subindo sobre um tapete leve.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/heal.wav"
+      ],
+      "seconds": 0.736,
+      "peak_db": -11.1
+    },
+    "combat.status.heal_critical": {
+      "category": "combat/status",
+      "description": "Cura crítica: coro, a celesta até a oitava, sinos e brilhos.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/heal_critical.wav"
+      ],
+      "seconds": 1.159,
+      "peak_db": -9.2
+    },
+    "combat.status.shield": {
+      "category": "combat/status",
+      "description": "Escudo: o ar fechando a redoma de cristal.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/shield.wav"
+      ],
+      "seconds": 0.741,
+      "peak_db": -10.4
+    },
+    "combat.status.shield_break": {
+      "category": "combat/status",
+      "description": "Escudo quebrando: a redoma estilhaçando.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/status/shield_break.wav"
+      ],
+      "seconds": 0.352,
+      "peak_db": -9.3
+    },
+    "progression.impetus_gain": {
+      "category": "progression",
+      "description": "Ganhar Ímpeto: um vidro e o tom subindo à quinta.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/impetus_gain.wav"
+      ],
+      "seconds": 0.161,
+      "peak_db": -14.2
+    },
+    "progression.impetus_loss": {
+      "category": "progression",
+      "description": "Perder Ímpeto: o tom caindo e o ar saindo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/impetus_loss.wav"
+      ],
+      "seconds": 0.131,
+      "peak_db": -14.7
+    },
+    "progression.impetus_full": {
+      "category": "progression",
+      "description": "Ímpeto máximo: Ré–Lá–Mi em lampejos e o brilho.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/impetus_full.wav"
+      ],
+      "seconds": 0.712,
+      "peak_db": -15
+    },
+    "progression.skill_activate": {
+      "category": "progression",
+      "description": "Ativar habilidade: o sigilo acendendo com um sopro.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/skill_activate.wav"
+      ],
+      "seconds": 0.67,
+      "peak_db": -15.1
+    },
+    "progression.skill_charging": {
+      "category": "progression",
+      "description": "Habilidade carregando: a subida com o pulso acelerando.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/skill_charging.wav"
+      ],
+      "seconds": 0.747,
+      "peak_db": -13.9
+    },
+    "progression.skill_ready": {
+      "category": "progression",
+      "description": "Habilidade pronta: dois lampejos e o sino.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/skill_ready.wav"
+      ],
+      "seconds": 0.645,
+      "peak_db": -15.1
+    },
+    "progression.ultimate_ready": {
+      "category": "progression",
+      "description": "Ultimate pronto: subida curta, sinos Ré–Lá–Mi, coro e lampejo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/ultimate_ready.wav"
+      ],
+      "seconds": 1.372,
+      "peak_db": -13.4
+    },
+    "progression.turn_start": {
+      "category": "progression",
+      "description": "Turno iniciado: a quinta subindo na marimba, baixinho.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/turn_start.wav"
+      ],
+      "seconds": 0.3,
+      "peak_db": -15.8
+    },
+    "progression.turn_end": {
+      "category": "progression",
+      "description": "Turno encerrado: a quinta descendo, mais baixinho.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/turn_end.wav"
+      ],
+      "seconds": 0.257,
+      "peak_db": -15.8
+    },
+    "progression.victory": {
+      "category": "progression",
+      "description": "Vitória: o acorde subindo, sinos, coro e a chuva de brilhos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/progression/victory.wav"
+      ],
+      "seconds": 2.41,
+      "peak_db": -10.5
+    },
+    "progression.defeat": {
+      "category": "progression",
+      "description": "Derrota: sinos abafados descendo em Ré frígio sobre o acorde menor.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/progression/defeat.wav"
+      ],
+      "seconds": 3.325,
+      "peak_db": -11
+    },
+    "progression.stage_clear": {
+      "category": "progression",
+      "description": "Fase concluída: a marimba e três sinos.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/stage_clear.wav"
+      ],
+      "seconds": 1.204,
+      "peak_db": -15.8
+    },
+    "progression.boss_defeated": {
+      "category": "progression",
+      "description": "Boss derrotado: o estouro, o gongo, coro e sinos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/progression/boss_defeated.wav"
+      ],
+      "seconds": 2.831,
+      "peak_db": -9.2
+    },
+    "progression.boss_reward": {
+      "category": "progression",
+      "description": "Recompensa de boss: moedas, quatro sinos, coro e brilhos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/progression/boss_reward.wav"
+      ],
+      "seconds": 1.825,
+      "peak_db": -10.9
+    },
+    "progression.new_wave": {
+      "category": "progression",
+      "description": "Nova onda: dois passos, o ar e o chamado do sino.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/new_wave.wav"
+      ],
+      "seconds": 1.107,
+      "peak_db": -13.1
+    },
+    "progression.auto_battle_start": {
+      "category": "progression",
+      "description": "Combate automático iniciado: a engrenagem e dois lampejos subindo.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/auto_battle_start.wav"
+      ],
+      "seconds": 0.65,
+      "peak_db": -15.7
+    },
+    "progression.auto_battle_end": {
+      "category": "progression",
+      "description": "Combate automático encerrado: os lampejos descendo e a engrenagem parando.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/auto_battle_end.wav"
+      ],
+      "seconds": 0.432,
+      "peak_db": -16.2
+    },
+    "combat.boss.enter": {
+      "category": "combat/boss",
+      "description": "Boss entrando: dois passos de tambor, o gongo e o rosnado.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/enter.wav"
+      ],
+      "seconds": 3.275,
+      "peak_db": -10
+    },
+    "combat.boss.special": {
+      "category": "combat/boss",
+      "description": "Boss usando habilidade especial: a subida grave, o rosnado e o estouro.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/special.wav"
+      ],
+      "seconds": 1.781,
+      "peak_db": -9.1
+    },
+    "combat.boss.enrage": {
+      "category": "combat/boss",
+      "description": "Boss enfurecendo: o rosnado subindo e os tambores acelerando.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/enrage.wav"
+      ],
+      "seconds": 1.701,
+      "peak_db": -9.8
+    },
+    "combat.boss.mechanic": {
+      "category": "combat/boss",
+      "description": "Boss ativando mecânica: o gongo e o mecanismo girando.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/mechanic.wav"
+      ],
+      "seconds": 1.444,
+      "peak_db": -9.7
+    },
+    "combat.boss.regenerate": {
+      "category": "combat/boss",
+      "description": "Boss regenerando: a sombra cantando, bolhas graves e a taça ao contrário.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/regenerate.wav"
+      ],
+      "seconds": 1.87,
+      "peak_db": -9.9
+    },
+    "combat.boss.counter": {
+      "category": "combat/boss",
+      "description": "Boss contra-atacando: o metal, o rosnado curto e o golpe.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/counter.wav"
+      ],
+      "seconds": 0.764,
+      "peak_db": -8.3
+    },
+    "combat.boss.heavy_damage": {
+      "category": "combat/boss",
+      "description": "Boss recebendo dano pesado: o impacto máximo e o rosnado de dor.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/heavy_damage.wav"
+      ],
+      "seconds": 0.95,
+      "peak_db": -8.7
+    },
+    "combat.boss.near_defeat": {
+      "category": "combat/boss",
+      "description": "Boss quase derrotado: o batimento cansado e o rosnado fraco.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/near_defeat.wav"
+      ],
+      "seconds": 1.692,
+      "peak_db": -10.3
+    },
+    "combat.boss.defeated": {
+      "category": "combat/boss",
+      "description": "Boss derrotado: o rosnado caindo, o estouro, os cacos e o gongo.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/defeated.wav"
+      ],
+      "seconds": 2.652,
+      "peak_db": -8.7
+    }
+  }
+}
