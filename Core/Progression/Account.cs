@@ -9,12 +9,16 @@ namespace Sigilos.Core.Progression
 	/// <summary>
 	/// O nível da conta (GDD, seção 12), de 1 a <see cref="MaxLevel"/>. Toda vitória dá a experiência da
 	/// luta também à conta, na Campanha e nas Masmorras. Cada nível dá Ouro, enche a Mana e aumenta a
-	/// Mana máxima (<see cref="Mana.Max"/>: 60 no nível 1, 120 no 60).
+	/// Mana máxima (<see cref="Mana.Max"/>: 100 no nível 1, 300 no 100). No máximo, a experiência não
+	/// some: um terço dela vira Essência (<see cref="ExperiencePerEssenceAtMax"/>).
 	/// </summary>
 	public static class Account
 	{
 		public const int LevelUpGold = 20;
-		public const int MaxLevel = 60;
+		public const int MaxLevel = 100;
+
+		/// <summary>No nível máximo, cada tantos pontos de experiência da conta valem 1 de Essência.</summary>
+		public const int ExperiencePerEssenceAtMax = 3;
 
 		/// <summary>
 		/// Até onde a coleção cresce com a Expansão de Coleção da Loja (começa em
@@ -85,32 +89,52 @@ namespace Sigilos.Core.Progression
 			return true;
 		}
 
-		/// <summary>Experiência para sair de <paramref name="level"/> e chegar ao próximo (a conta ganha o mesmo que cada monstro).</summary>
-		public static int ExperienceToNext(int level) => 300 * level;
+		/// <summary>Experiência para sair de <paramref name="level"/> e chegar ao próximo (máximo: nível 100).</summary>
+		public static int ExperienceToNext(int level)
+		{
+			level = Math.Clamp(level, 1, MaxLevel - 1);
+
+			// Progressão suave no início e significativamente maior nos níveis altos.
+			const double baseExperience = 500;
+			const double growth = 1.075;
+
+			return (int)Math.Round(baseExperience * Math.Pow(growth, level - 1));
+		}
 
 		/// <summary>
 		/// Soma experiência; cada nível ganho dá Ouro e o prêmio de marco dele (<see cref="Milestones.ForAccountLevel"/>),
-		/// e a Mana enche. Devolve os níveis ganhos.
+		/// e a Mana enche. A experiência que chega com a conta no máximo (inclusive a que sobra do nível que
+		/// fecha nele) vira Essência, um terço dela. Devolve os níveis ganhos e essa Essência.
 		/// </summary>
-		public static int GiveExperience(PlayerState player, int amount)
+		public static AccountGain GiveExperience(PlayerState player, int amount)
 		{
-			if (player.AccountLevel >= MaxLevel) return 0;
 			var gained = 0;
-			player.AccountExperience += Math.Max(0, amount);
-			while (player.AccountLevel < MaxLevel && player.AccountExperience >= ExperienceToNext(player.AccountLevel))
+			var past = Math.Max(0, amount);
+			if (player.AccountLevel < MaxLevel)
 			{
-				player.AccountExperience -= ExperienceToNext(player.AccountLevel);
-				player.AccountLevel++;
-				player.Gold += LevelUpGold;
-				Milestones.Grant(player, Milestones.ForAccountLevel(player.AccountLevel));
-				gained++;
+				player.AccountExperience += past;
+				past = 0;
+				while (player.AccountLevel < MaxLevel && player.AccountExperience >= ExperienceToNext(player.AccountLevel))
+				{
+					player.AccountExperience -= ExperienceToNext(player.AccountLevel);
+					player.AccountLevel++;
+					player.Gold += LevelUpGold;
+					Milestones.Grant(player, Milestones.ForAccountLevel(player.AccountLevel));
+					gained++;
+				}
+
+				if (player.AccountLevel >= MaxLevel)
+				{
+					past = player.AccountExperience;
+					player.AccountExperience = 0;
+				}
 			}
 
-			if (player.AccountLevel >= MaxLevel)
-				player.AccountExperience = 0;
+			var essence = past / ExperiencePerEssenceAtMax;
+			player.Essence += essence;
 			if (gained > 0)
 				Mana.Refill(player);
-			return gained;
+			return new AccountGain(gained, essence);
 		}
 	}
 }

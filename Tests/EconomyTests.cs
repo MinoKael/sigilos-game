@@ -11,17 +11,49 @@ namespace Sigilos.Tests
 	internal static class EconomyTests
 	{
 		[Test]
-		private static void AccountLevelRaisesMaxManaUpTo120()
+		private static void AccountLevelRaisesMaxManaUpTo300()
 		{
 			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), TestData.Database);
-			Assert.Equal(60, Mana.Max(player), "nível 1");
+			Assert.Equal(100, Mana.Max(player), "nível 1");
 
 			player.AccountLevel = 2;
-			Assert.Equal(61, Mana.Max(player), "+1 por nível");
+			Assert.Equal(102, Mana.Max(player), "+2 por nível");
 			player.AccountLevel = Account.MaxLevel - 1;
-			Assert.Equal(118, Mana.Max(player), "118 no 59");
+			Assert.Equal(297, Mana.Max(player), "297 no 99");
 			player.AccountLevel = Account.MaxLevel;
-			Assert.Equal(120, Mana.Max(player), "120 no nível 60, o máximo");
+			Assert.Equal(300, Mana.Max(player), "300 no nível 100, o máximo");
+		}
+
+		[Test]
+		private static void AccountExperienceCurveKeepsTheOldPaceUpTo60()
+		{
+			Assert.Equal(500, Account.ExperienceToNext(1), "500 para sair do 1");
+			Assert.True(Account.ExperienceToNext(99) > Account.ExperienceToNext(60) * 10, "os níveis altos pedem muito mais");
+			var to60 = Enumerable.Range(1, 59).Sum(Account.ExperienceToNext);
+			Assert.True(to60 > 400_000 && to60 < 600_000, $"chegar ao 60 pede perto do que pedia antes (531 mil): {to60}");
+			Assert.Equal(Account.ExperienceToNext(Account.MaxLevel - 1), Account.ExperienceToNext(Account.MaxLevel), "no máximo, a conta do último nível");
+		}
+
+		[Test]
+		private static void AccountAtMaxTurnsAThirdOfTheExperienceIntoEssence()
+		{
+			var database = TestData.LoadReal();
+			var player = TestData.PlayerWith("phoenix_fire");
+			player.AccountLevel = Account.MaxLevel - 1;
+			player.AccountExperience = Account.ExperienceToNext(Account.MaxLevel - 1) - 30;
+			var essence = player.Essence;
+
+			var gain = Account.GiveExperience(player, 330);
+			Assert.Equal(new AccountGain(1, 100), gain, "fecha o 100 com 30; os 300 que sobram dão 100 de Essência");
+			Assert.Equal(essence + 100, player.Essence, "a Essência vai para a conta");
+			Assert.Equal(0, player.AccountExperience, "nada fica guardado no máximo");
+
+			player.HighestStage = 1;
+			var stage = database.Stage(1);
+			essence = player.Essence;
+			var reward = Campaign.ApplyVictory(new Random(1), player, stage, database);
+			Assert.Equal(stage.Essence + stage.Experience / Account.ExperiencePerEssenceAtMax, reward.Essence, "a recompensa já mostra a Essência da experiência");
+			Assert.Equal(essence + reward.Essence, player.Essence, "e é a que entrou");
 		}
 
 		[Test]
@@ -76,15 +108,15 @@ namespace Sigilos.Tests
 			player.Mana = 5;
 			var gold = player.Gold;
 
-			Assert.Equal(1, Account.GiveExperience(player, Account.ExperienceToNext(1)), "um nível exato");
+			Assert.Equal(1, Account.GiveExperience(player, Account.ExperienceToNext(1)).Levels, "um nível exato");
 			Assert.Equal(2, player.AccountLevel, "nível 2");
 			Assert.Equal(gold + Account.LevelUpGold, player.Gold, "Ouro do nível");
 			Assert.Equal(Mana.Max(player), player.Mana, "a Mana enche");
 
 			Account.GiveExperience(player, 10_000_000);
-			Assert.Equal(Account.MaxLevel, player.AccountLevel, "para no nível 60");
+			Assert.Equal(Account.MaxLevel, player.AccountLevel, "para no nível 100");
 			Assert.Equal(0, player.AccountExperience, "sem experiência sobrando no máximo");
-			Assert.Equal(0, Account.GiveExperience(player, 1000), "no máximo não sobe mais");
+			Assert.Equal(0, Account.GiveExperience(player, 1000).Levels, "no máximo não sobe mais");
 		}
 
 		[Test]

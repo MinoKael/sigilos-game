@@ -1,5 +1,14 @@
 # Changelog — Sigilos
 
+## 08/10/2026
+- **Nível da conta até 100.** A experiência para o próximo nível segue 500 × 1,075^(nível − 1): suave no começo, bem maior nos níveis altos.
+  - A Mana máxima vai de 100 no nível 1 a 300 no nível 100 (+2 por nível).
+  - Os marcos dos níveis passam a somar 20 Núcleos de Infusão do 1 ao 100.
+  - **No nível máximo, a experiência não se perde:** um terço dela vira Essência. A tela da vitória já mostra essa Essência junto da outra.
+- **Canalização da Mana:** 20 por hora, uma a cada 3 minutos (era 12). A Mana máxima do nível 1 enche do zero em 5 horas.
+- **Loja:** Frasco de Mana com 120 por 75 de Ouro e Cântaro com 300 por 150.
+- **Invocação:** os botões ficam travados do começo do ritual até os cartões aparecerem, mesmo trocando a aba do pergaminho. Antes, trocar a aba no meio do ritual liberava outra invocação, e a segunda leva somava cartões à primeira e empurrava os de cima (a 5★ da garantia, por exemplo) para fora do palco.
+
 ## 07/10/2026
 - **Visual: o grimório do invocador.** A interface inteira virou o gabinete de um invocador que estuda constelações.
   - Paleta sóbria: violeta (místico), índigo (céu), ouro só no que é precioso, couro e pergaminho.

@@ -58,6 +58,12 @@ namespace Sigilos.UI.Screens
 		/// <summary>A lição ainda espera a ×10: a ×1 fica apagada.</summary>
 		private bool _lesson;
 
+		/// <summary>
+		/// Do começo do ritual até os cartões aparecerem: nada invoca de novo, nem depois de trocar a aba
+		/// (<see cref="Refresh"/> reabilitaria os botões e a segunda leva empurraria a primeira para fora).
+		/// </summary>
+		private bool _ritual;
+
 		public SummonScreen(GameDatabase database, PlayerState player, TutorialCoach? coach = null)
 		{
 			_database = database;
@@ -167,9 +173,11 @@ namespace Sigilos.UI.Screens
 			Cost(_single, 1);
 			Cost(_ten, 10);
 			_exchange.WithCost("fragments", Texts.Number(FragmentExchange.Cost));
-			_exchange.Disabled = _lesson || _player.Fragments < FragmentExchange.Cost;
-			if (_lesson)
+			_exchange.Disabled = _ritual || _lesson || _player.Fragments < FragmentExchange.Cost;
+			if (_lesson || _ritual)
 				_single.Disabled = true;
+			if (_ritual)
+				_ten.Disabled = true;
 		}
 
 		/// <summary>As abas dos pergaminhos, com quantos a conta tem de cada; o tutorial só mostra o Místico.</summary>
@@ -238,10 +246,10 @@ namespace Sigilos.UI.Screens
 		/// </summary>
 		public void ShowResults(IReadOnlyList<SummonResult> results, Task? saved = null)
 		{
+			_ritual = true;
 			Refresh();
 			Layout.Clear(_cards);
 			_results.Visible = false;
-			_single.Disabled = _ten.Disabled = true;
 			_coach?.Clear();
 
 			if (_idle != null)
@@ -280,11 +288,14 @@ namespace Sigilos.UI.Screens
 		/// </summary>
 		private void Reveal(IReadOnlyList<SummonResult> results)
 		{
+			_ritual = false;
 			_sigil?.QueueFree();
 			_sigil = null;
+			// Só a leva desta invocação: nunca soma cartões a uma anterior.
+			Layout.Clear(_cards);
 			_cards.Columns = Math.Min(5, results.Count);
 			_cards.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
-            _results.Visible = true;
+			_results.Visible = true;
 			var width = results.Count == 1 ? 180 : 124;
 
 			for (var i = 0; i < results.Count; i++)

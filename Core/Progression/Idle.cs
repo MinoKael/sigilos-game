@@ -6,7 +6,8 @@ namespace Sigilos.Core.Progression
 	/// <summary>
 	/// Ociosidade (GDD, seção 11): com o jogo fechado, os círculos de invocação continuam canalizando
 	/// Essência, Ouro e Mana. Essência e Ouro crescem com a fase mais alta vencida; a Mana enche
-	/// <see cref="Mana.PerHour"/> por hora até o máximo, e o que passaria dele se perde. O acúmulo para
+	/// <see cref="Mana.PerHour"/> por hora até o dobro do máximo (<see cref="Mana.Room"/>), e o que passaria
+	/// disso se perde. O acúmulo para
 	/// em 12 horas.
 	///
 	/// O relógio entra como parâmetro (<c>now</c>): os testes escolhem a hora sem mexer no sistema.

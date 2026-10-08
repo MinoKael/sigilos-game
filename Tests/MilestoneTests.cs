@@ -87,7 +87,7 @@ namespace Sigilos.Tests
 			Assert.Equal(20, player.AccountLevel, "sobe para o 20");
 			Assert.Equal(1, player.LightDarkScrolls, "o nível 20 dá um Pergaminho de Luz e Trevas");
 			Assert.Equal(cores + 1, player.Monsters.Count(m => m.IsInfusionCore), "e um Núcleo (a cada 5 níveis)");
-			Assert.Equal(new Prize(0, 5, 12), Milestones.ForAccountLevels(0, Account.MaxLevel), "do 1 ao 60: 5 de Luz e Trevas e 12 Núcleos");
+			Assert.Equal(new Prize(0, 5, 20), Milestones.ForAccountLevels(0, Account.MaxLevel), "do 1 ao 100: 5 de Luz e Trevas e 20 Núcleos");
 		}
 
 		[Test]

@@ -81,24 +81,26 @@ namespace Sigilos.Tests
 			player.HighestStage = exploration.UnlockStage;
 			player.AccountLevel = Account.MaxLevel;
 			var reward = exploration.Constellation(1).Reward;
+			// No nível máximo, a experiência da constelação também paga Essência, um terço dela.
+			var paid = reward.Essence + reward.Experience / Account.ExperiencePerEssenceAtMax;
 
 			var essence = player.Essence;
 			var gold = player.Gold;
 			var first = Exploration.ApplyVictory(player, exploration, 1, October);
 			Assert.True(first.FirstClear, "a primeira do mês");
-			Assert.Equal(essence + reward.Essence, player.Essence, "a Essência da constelação");
+			Assert.Equal(essence + paid, player.Essence, "a Essência da constelação");
 			Assert.Equal(gold + reward.Gold, player.Gold, "o Ouro da constelação");
 
 			var again = Exploration.ApplyVictory(player, exploration, 1, October);
 			Assert.False(again.FirstClear, "repetir no mesmo mês");
 			Assert.Equal(0, again.Essence, "não paga de novo");
-			Assert.Equal(essence + reward.Essence, player.Essence, "a conta não muda");
+			Assert.Equal(essence + paid, player.Essence, "a conta não muda");
 
 			// No mês seguinte, outra Exploração: o percurso recomeça e paga o mesmo.
 			Assert.Equal(0, Exploration.Cleared(player, November), "o mês novo começa do zero");
 			var next = Exploration.ApplyVictory(player, exploration, 1, November);
 			Assert.True(next.FirstClear, "a primeira de novembro");
-			Assert.Equal(reward.Essence, next.Essence, "a mesma recompensa");
+			Assert.Equal(paid, next.Essence, "a mesma recompensa");
 			Assert.Equal(1, player.ExplorationBest, "o recorde fica");
 		}
 

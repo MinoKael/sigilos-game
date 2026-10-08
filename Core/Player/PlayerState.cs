@@ -61,10 +61,10 @@ namespace Sigilos.Core.Player
 		/// </summary>
 		public int CollectionCapacity { get; set; } = StartingCollectionCapacity;
 
-		/// <summary>Paga cada vitória; a derrota não custa nada. A ociosidade recarrega até o máximo (Core/Progression/Mana).</summary>
+		/// <summary>Paga cada vitória; a derrota não custa nada. A ociosidade recarrega até o dobro do máximo (Core/Progression/Mana).</summary>
 		public int Mana { get; set; }
 
-		/// <summary>Nível da conta, de 1 a 60: sobe com a experiência de toda vitória e aumenta a Mana máxima.</summary>
+		/// <summary>Nível da conta, de 1 a 100: sobe com a experiência de toda vitória e aumenta a Mana máxima.</summary>
 		public int AccountLevel { get; set; } = 1;
 
 		/// <summary>Experiência da conta dentro do nível atual.</summary>

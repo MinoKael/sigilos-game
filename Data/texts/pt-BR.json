@@ -978,7 +978,7 @@
       "campaign": { "title": "Campanha", "text": "50 fases em três regiões, com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Pergaminhos e sempre uma runa; as seguintes dão Essência e chance de runa. A Campanha apresenta o jogo aos poucos: cada parte do Santuário abre numa fase. Ela solta runas de até {0} estrelas; vencer a fase 50 pede cerca de nível 20 com runas, ou 6★ nível 40 sem." },
       "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas Raras ou melhores de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada andar mostra a chance de cada estrela e raridade, e quanto mais fundo, maior a runa: 2 e 3 estrelas no andar 1, só 6 estrelas no andar 5. O andar 1 é igual de difícil em todas, e assim por diante, tão difícil quanto o que paga. Elas abrem durante a Campanha: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana e pode soltar também um Pergaminho Místico; a primeira vitória em cada andar dá Ouro." },
       "exploration": { "title": "Exploração Estelar", "text": "Um percurso pelas 88 constelações do céu: as Boreais, as Equatoriais (com as 12 do zodíaco) e as Austrais, uma depois da outra. Cada constelação tem a sua Influência, uma mecânica que vale a luta inteira (leia antes e monte a equipe para ela), e muitas vezes o desafio são as habilidades do guardião, uma invocação desperta com as habilidades no máximo. A cada mês, uma de {0} Explorações traz os desafios, em rodízio, e no dia 1 o percurso recomeça do zero. A recompensa de cada constelação é sempre a mesma e volta todo mês, na primeira vitória dela: Essência, Ouro, Pergaminhos e, nos marcos, Núcleos de Infusão e Pergaminhos especiais. A luta não custa Mana, tem uma equipe própria e é feita para o manual." },
-      "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o máximo: {0} no nível 1 da conta, {1} no nível {3}, o máximo. Toda vitória dá experiência também à conta, e cada nível enche a Mana." },
+      "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o dobro da Mana máxima, que é {0} no nível 1 da conta e {1} no nível {3}, o último. Toda vitória dá experiência também à conta, e cada nível enche a Mana. No nível {3}, um terço da experiência vira Essência." },
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
       "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. O Místico tira Fogo, Água e Vento, com a garantia de 5★ sempre à vista; o de Luz e Trevas, só Luz e Trevas; o Lendário, só 4★ e 5★. Os dois especiais vêm dos marcos do jogo. A primeira 5★ da conta é garantida, e Fragmentos trocam por uma 4★ escolhida." },
       "monsters": { "title": "Monstros e Baú", "text": "A coleção começa com {0} vagas e cresce na Loja, com a Expansão de Coleção, até {2}; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas. Bloqueie um monstro ou uma runa (o cadeado) para nunca soltar, fundir ou vender por engano; desbloqueie para fazer isso." },
@@ -1174,7 +1174,7 @@
   },
 
   "currency_info": {
-    "mana": "Toda vitória custa Mana; a derrota não custa nada. A Canalização do Santuário recarrega {0} por hora até o seu máximo ({1}), e a Loja vende mais (pode passar do máximo).",
+    "mana": "Toda vitória custa Mana; a derrota não custa nada. A Canalização do Santuário recarrega {0} por hora até o dobro do seu máximo ({1}), e a Loja vende mais (pode passar disso).",
     "essence": "A Essência sobe o nível dos monstros ({0} de experiência por Essência) e paga o Despertar, a evolução e a melhora de runas. Vem das vitórias, da Canalização e de runas vendidas.",
     "gold": "O Ouro é a moeda rara: vem da Canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. A Loja troca Ouro por Mana ou Pergaminhos.",
     "scrolls": "Os Pergaminhos Místicos invocam monstros: 1 por invocação, 10 por dez. Vêm da primeira vitória em cada fase da Campanha e da Loja.",
@@ -1424,7 +1424,7 @@
     "level": "Nível {0}",
     "experience": "{0}/{1} de experiência",
     "experience_tip": "Toda vitória dá experiência também à conta; cada nível dá {0} Ouro, enche a Mana e aumenta a Mana máxima, até {2} no nível {1}.",
-    "max_level": "A conta chegou ao nível {0}, o máximo.",
+    "max_level": "A conta chegou ao nível {0}, o máximo: um terço da experiência das vitórias vira Essência.",
     "of": "{0} de {1}",
     "records": "Registros",
     "records_hint": "O que este invocador já fez.",

@@ -363,7 +363,7 @@ flowchart LR
   F -- horas depois --> A
 ```
 
-**Ociosidade.** Com o jogo fechado, seus círculos de invocação continuam canalizando, como as construções da ilha em Summoners War. Acumulam Essência, Ouro e Mana (a Mana só até o máximo); a taxa de Essência e Ouro cresce com a fase mais alta vencida, e o acúmulo para em 12 horas.
+**Ociosidade.** Com o jogo fechado, seus círculos de invocação continuam canalizando, como as construções da ilha em Summoners War. Acumulam Essência, Ouro e Mana (a Mana só até o dobro do máximo); a taxa de Essência e Ouro cresce com a fase mais alta vencida, e o acúmulo para em 12 horas.
 
 | Modo | Inspiração | Controle | Para que serve | Entra em |
 | --- | --- | --- | --- | --- |
@@ -430,9 +430,9 @@ As equipes de referência são as que um jogador consegue montar com essas taxas
 
 A calibragem (`dotnet run --project Tests -- --exploration`) roda cada constelação nas três Explorações contra cinco times genéricos no automático. Quem chega à fase 30 vence as 7 primeiras; o fim da Campanha, quase todas as Boreais; 6★ nível 40 com runas 5★ +12 segue até a 37 e vence 52 das 88 nas três Explorações; com runas 6★ +15, até a 67; e o time forte (desperto, habilidades no máximo, runas 6★) até a 83. As últimas (o Triângulo Austral, que chama dois aliados para cada golpe, e o Cruzeiro do Sul) são o teto do mês, e várias no caminho pedem a equipe feita para a Influência delas, não a mais forte: é para o manual.
 
-**Mana.** Toda vitória custa Mana: de 2 a 6 por fase da Campanha e de 4 a 8 por andar de Masmorra. A derrota não custa nada, mas só começa a luta quem tem a Mana da vitória. A canalização recarrega 12 por hora até o máximo, que começa em 60 e sobe 1 por nível da conta até 120 no nível 60 (o último nível soma 2); o que passaria do máximo se perde. Subir de nível a conta enche a Mana, e a Mana comprada na Loja passa do máximo. Farmar runas é o centro do jogo, e o Ouro é a válvula para farmar mais.
+**Mana.** Toda vitória custa Mana: de 2 a 6 por fase da Campanha e de 4 a 8 por andar de Masmorra. A derrota não custa nada, mas só começa a luta quem tem a Mana da vitória. A canalização recarrega 20 por hora (a Mana máxima do nível 1 enche do zero em 5 horas) até o dobro do máximo; o máximo começa em 100 e sobe 2 por nível da conta até 300 no nível 100. O que passaria do dobro se perde. Subir de nível a conta enche a Mana até o máximo, e a Mana comprada na Loja passa do dobro. Farmar runas é o centro do jogo, e o Ouro é a válvula para farmar mais.
 
-**Nível da conta.** Toda vitória dá a experiência da luta também à conta (300 × nível para o próximo), até o nível 60. Cada nível dá 20 de Ouro, enche a Mana e aumenta a Mana máxima.
+**Nível da conta.** Toda vitória dá a experiência da luta também à conta (500 × 1,075^(nível − 1) para o próximo: suave no começo, bem maior nos níveis altos), até o nível 100. Cada nível dá 20 de Ouro, enche a Mana e aumenta a Mana máxima. No nível 100, a experiência não se perde: um terço dela vira Essência.
 
 ## 12. Economia
 
@@ -440,8 +440,8 @@ Cinco moedas, e nunca mais que isso. O Ouro faz o papel do cristal de um gacha c
 
 | Moeda | De onde vem | Para onde vai |
 | --- | --- | --- |
-| Mana | Canalização (até o máximo), nível da conta, Loja | Cada vitória (a derrota não custa nada) |
-| Essência | Canalização, fases, Masmorras, runas desfeitas | Nível e Evolução das invocações, Despertar e melhora de runas |
+| Mana | Canalização (até o dobro do máximo), nível da conta, Loja | Cada vitória (a derrota não custa nada) |
+| Essência | Canalização, fases, Masmorras, runas desfeitas, experiência da conta no nível 100 (um terço) | Nível e Evolução das invocações, Despertar e melhora de runas |
 | Ouro | Canalização, nível da conta, primeira vitória em cada andar de Masmorra, Exploração Estelar, conquistas | Loja: Mana e Pergaminhos |
 | Pergaminhos Místicos | Primeira vitória de cada fase, Masmorras (1%, 2% e 3% de chance a cada vitória nos andares 3, 4 e 5, as mesmas do Núcleo de Infusão), Loja, Exploração Estelar, conquistas | Invocar |
 | Fragmentos | Monstros soltos, Arena | Evolução e troca por uma 4★ escolhida |
@@ -465,7 +465,7 @@ Com isso, perto dos 20 dias em que o jogador se prepara para o Golem 5, ele tem 
 
 **Retrato da conta.** O Grimório do Invocador tem o botão Trocar retrato: o retrato pode ser qualquer monstro que a conta tem, e a forma desperta de quem ela tem uma cópia desperta.
 
-**Loja.** Troca Ouro por Mana (30 por 15, 120 por 50), Pergaminhos (1 por 20, 10 por 180), a Gema de Reavaliação (40), a Expansão de Coleção (10 vagas por 100, até a coleção chegar a 500 vagas, quando esgota) ou a troca do nome da conta (10.000; o Ouro só sai se o nome novo for aceito). As ofertas moram em Data/shop.json. Trocar o nome é só na Loja: nos Ajustes fica apenas escolher o primeiro nome, para quem ainda não tem. Toda conta tem uma chave de recuperação de quatro palavras (RUNA-FAROL-GRIFO-SELO), mostrada uma vez só: no cadastro, ou na primeira entrada de uma conta criada antes dela. No login, "Esqueci a senha" troca a senha com o e-mail e essa chave; cinco chaves erradas travam a recuperação até o suporte destravar (o servidor tem a rota de admin que destrava e refaz senha e chave).
+**Loja.** Troca Ouro por Mana (120 por 75, 300 por 150), Pergaminhos (1 por 30, 10 por 250), a Gema de Reavaliação (500), a Expansão de Coleção (50 vagas por 100, até a coleção chegar a 500 vagas, quando esgota) ou a troca do nome da conta (10.000; o Ouro só sai se o nome novo for aceito). As ofertas moram em Data/shop.json. Trocar o nome é só na Loja: nos Ajustes fica apenas escolher o primeiro nome, para quem ainda não tem. Toda conta tem uma chave de recuperação de quatro palavras (RUNA-FAROL-GRIFO-SELO), mostrada uma vez só: no cadastro, ou na primeira entrada de uma conta criada antes dela. No login, "Esqueci a senha" troca a senha com o e-mail e essa chave; cinco chaves erradas travam a recuperação até o suporte destravar (o servidor tem a rota de admin que destrava e refaz senha e chave).
 
 ### Ritmo-alvo
 
