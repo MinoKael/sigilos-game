@@ -12,6 +12,7 @@
   - Andar 4: Rara 60%, Heroica 32%, Lendária 8% (era 46,5 / 23,1 / 30,4). Continua o andar das runas 6★ (71,8%), agora com mais Heroicas: é com ele que o time se prepara para o 5.
   - Andar 5: Rara 46,5%, Heroica 23,1%, Lendária 30,4% (era 61,8 / 35,2 / 3,0). Quem o vence rende mais nele em tudo: por dia de Mana, 60 runas 6★ e 18 Lendárias 6★, contra 49 e 3,9 no andar 4.
   - Forja: o andar 5 solta 1 pedra por vitória (eram 2), com a mesma tabela de grau das outras Masmorras.
+  - O andar 5 de toda Masmorra dá o dobro de Essência: 1.760 por vitória (eram 880), 105.600 num dia de Mana.
 - **Conferência do drop das Masmorras** (`dotnet run --project Tests -- --drops`): cada andar vence 20 000 vezes pelo jogo de verdade e o que caiu é comparado com a tabela do andar (estrelas, raridade, conjunto, pedras da Forja, Pergaminho Místico, Núcleo de Infusão, Mana, Essência, experiência e o Ouro e o marco da primeira vitória). No fim, o que cada andar rende por dia de Mana. O teste `EveryFloorDropsByItsTable` faz a mesma conferência em toda Masmorra.
 - **Nível da conta até 100.** A experiência para o próximo nível segue 500 × 1,075^(nível − 1): suave no começo, bem maior nos níveis altos.
   - A Mana máxima vai de 100 no nível 1 a 300 no nível 100 (+2 por nível).
