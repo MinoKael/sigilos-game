@@ -41,7 +41,7 @@ namespace Sigilos.UI.Screens
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly Button _account = new() { Name = "Account", FocusMode = FocusModeEnum.None, Flat = true, MouseDefaultCursorShape = CursorShape.PointingHand };
-		private readonly Constellation _constellation = new() { Name = "Constellation" };
+		private readonly Constellation _constellation = ChatBubble.Dock(new Constellation { Name = "Constellation" });
 		private readonly SigilButton _core = new(Art.Icon("collect"), 128) { Name = "Core" };
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
 		private readonly HBoxContainer _pending = Layout.Row(8, true).Named("Pending");

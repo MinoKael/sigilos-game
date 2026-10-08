@@ -93,6 +93,7 @@ namespace Sigilos.UI.Components
 			var header = new HBoxContainer { Name = "Header" };
 			header.AddThemeConstantOverride("separation", 14);
 			header.AddChild(new Label { Name = "Title", Text = title, ThemeTypeVariation = GameTheme.Title, VerticalAlignment = VerticalAlignment.Center });
+			header.AddChild(ChatBubble.Slot());
 			var extra = new HBoxContainer { Name = "Extra", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Begin };
 			extra.AddThemeConstantOverride("separation", 10);
 			header.AddChild(extra);

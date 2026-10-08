@@ -24,8 +24,14 @@ namespace Sigilos.Core.Player
 		/// <summary>0 num save anterior ao campo existir.</summary>
 		public int Version { get; set; }
 
-		/// <summary>Quando a conta começou (o Grimório do Invocador mostra); nulo num save anterior ao campo existir.</summary>
+		/// <summary>
+		/// Quando a conta começou (o Grimório do Invocador mostra). Num save anterior ao campo existir, a
+		/// primeira vez que a conta abre depois dele (<see cref="Progression.Account.Open"/>).
+		/// </summary>
 		public DateTime? Started { get; set; }
+
+		/// <summary>Quando entrou na guilda em que está; nulo sem guilda. Reservado: ainda não há guildas.</summary>
+		public DateTime? GuildJoined { get; set; }
 
 		// Moedas (GDD, seção 12).
 
@@ -132,7 +138,10 @@ namespace Sigilos.Core.Player
 		/// <summary>O melhor tempo de cada luta vencida, em segundos (<see cref="Progression.Records"/>).</summary>
 		public Dictionary<string, double> BestTimes { get; set; } = new();
 
-		/// <summary>A equipe de cada melhor tempo, pela mesma chave; falta nos tempos gravados antes de o campo existir.</summary>
+		/// <summary>
+		/// A equipe de cada melhor tempo, pela mesma chave. Nos tempos gravados antes de o campo existir, só o
+		/// do andar mais fundo de cada Masmorra ganha uma, ao abrir a conta (<see cref="Progression.Records.FillDeepestTeams"/>).
+		/// </summary>
 		public Dictionary<string, List<RecordMember>> BestTeams { get; set; } = new();
 
 		/// <summary>As cartas do correio já coletadas neste save, pelo id do servidor (<see cref="Progression.Mailbox"/>).</summary>

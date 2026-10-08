@@ -5,12 +5,14 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// O balão do Chat global, por cima de qualquer tela, sempre no mesmo lugar: o canto de cima à esquerda da
-	/// janela, antes do título e da margem das telas (nenhuma tela o muda de lugar, para o dedo achá-lo sempre
-	/// ali sem cobrir os controles). Só o símbolo do chat, redondo e meio transparente como o aviso da
-	/// Batalha automática (<see cref="AutoBattleBadge"/>). Não conta as linhas que chegam. A borda diz a
-	/// conexão: verde ao vivo, apagada sem ela. Tocar abre a janela do chat (<see cref="Pressed"/>). Só aparece
-	/// jogando na conta.
+	/// O balão do Chat global, por cima de qualquer tela, no lugar que a tela marca para ele (<see cref="Follow"/>):
+	/// - nas telas com cabeçalho, logo depois do título, num espaço guardado para ele (<see cref="Slot"/>, que
+	///   <see cref="Layout.Header"/> já põe);
+	/// - no Santuário, no canto da constelação, e na luta, ao lado da rodada (<see cref="Dock"/> e <see cref="Slot"/>);
+	/// - numa tela que não marca nada, no canto de cima à esquerda da janela.
+	/// Só o símbolo do chat, redondo e meio transparente como o aviso da Batalha automática
+	/// (<see cref="AutoBattleBadge"/>). Não conta as linhas que chegam. A borda diz a conexão: verde ao vivo,
+	/// apagada sem ela. Tocar abre a janela do chat (<see cref="Pressed"/>). Só aparece jogando na conta.
 	///
 	/// Ao lado, numa faixa, a última linha que chegou de outra conta ("Nome: texto", ou o feito), por
 	/// <see cref="LastSeconds"/> segundos; a seguinte toma o lugar dela e conta de novo. Tocar na faixa também
@@ -18,10 +20,22 @@ namespace Sigilos.UI.Components
 	/// </summary>
 	public partial class ChatBubble : Button
 	{
-		/// <summary>Pequeno e colado no canto: cabe antes da margem das telas.</summary>
-		private const float Side = 36;
+		/// <summary>Pequeno: cabe ao lado do título das telas.</summary>
+		public const float Side = 36;
 
 		private const float Corner = 2;
+
+		/// <summary>O grupo dos lugares do balão (<see cref="Slot"/>, <see cref="Dock"/>).</summary>
+		private const string DockGroup = "ChatDock";
+
+		/// <summary>A tela de agora: o balão fica no primeiro lugar marcado dentro dela.</summary>
+		private Control? _screen;
+
+		/// <summary>O lugar onde o balão está; nulo: o canto da janela.</summary>
+		private Control? _dock;
+
+		/// <summary>Já há um <see cref="Place"/> marcado para o fim do quadro (só um por vez).</summary>
+		private bool _placing;
 
 		/// <summary>Meio transparente: o balão fica por cima de qualquer tela.</summary>
 		private const float Opacity = 0.8f;
@@ -73,8 +87,7 @@ namespace Sigilos.UI.Components
 			AddChild(_icon);
 
 			SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
-			OffsetLeft = OffsetTop = Corner;
-			OffsetRight = OffsetBottom = Corner + Side;
+			Place();
 			BuildLast();
 
 			feed.Changed += Refresh;
@@ -83,10 +96,95 @@ namespace Sigilos.UI.Components
 			Refresh();
 		}
 
+		public override void _EnterTree() => GetViewport().SizeChanged += PlaceLater;
+
 		public override void _ExitTree()
 		{
 			_feed.Changed -= Refresh;
 			_feed.Added -= ShowLast;
+			GetViewport().SizeChanged -= PlaceLater;
+		}
+
+		/// <summary>
+		/// O espaço do balão numa fileira (depois do título da tela, ao lado da rodada na luta): guarda o
+		/// lugar dele, para ele não cobrir nada, e o marca como o lugar do balão.
+		/// </summary>
+		public static Control Slot() => Dock(new Control
+		{
+			Name = "ChatSlot",
+			CustomMinimumSize = new Vector2(Side, Side),
+			SizeFlagsVertical = SizeFlags.ShrinkCenter,
+			MouseFilter = MouseFilterEnum.Ignore,
+		});
+
+		/// <summary>Marca <paramref name="corner"/> como o lugar do balão: ele fica no canto de cima à esquerda dele.</summary>
+		public static T Dock<T>(T corner) where T : Control
+		{
+			corner.AddToGroup(DockGroup);
+			return corner;
+		}
+
+		/// <summary>A tela que entrou: o balão vai para o lugar que ela marcou (sem lugar, o canto da janela).</summary>
+		public void Follow(Control? screen)
+		{
+			_screen = screen;
+			PlaceLater();
+		}
+
+		/// <summary>Depois do arranjo: quando o lugar muda, os pais dele já estão no lugar.</summary>
+		private void PlaceLater()
+		{
+			if (_placing)
+				return;
+			_placing = true;
+			Callable.From(Place).CallDeferred();
+		}
+
+		/// <summary>
+		/// Acha o lugar na tela de agora (o de antes pode ter saído, numa tela que se refaz), passa a
+		/// acompanhá-lo e põe o balão no canto dele.
+		/// </summary>
+		private void Place()
+		{
+			_placing = false;
+			var dock = FindDock();
+			if (dock != _dock)
+			{
+				if (_dock != null && IsInstanceValid(_dock))
+				{
+					_dock.ItemRectChanged -= PlaceLater;
+					_dock.TreeExiting -= PlaceLater;
+				}
+
+				_dock = dock;
+				if (dock != null)
+				{
+					dock.ItemRectChanged += PlaceLater;
+					dock.TreeExiting += PlaceLater;
+				}
+			}
+
+			var at = dock == null || !IsInsideTree()
+				? new Vector2(Corner, Corner)
+				: dock.GlobalPosition - (GetParentControl()?.GlobalPosition ?? Vector2.Zero);
+			OffsetLeft = at.X;
+			OffsetTop = at.Y;
+			OffsetRight = at.X + Side;
+			OffsetBottom = at.Y + Side;
+		}
+
+		private Control? FindDock()
+		{
+			if (_screen == null || !IsInstanceValid(_screen) || !_screen.IsInsideTree())
+				return null;
+
+			foreach (var node in _screen.GetTree().GetNodesInGroup(DockGroup))
+			{
+				if (node is Control dock && !dock.IsQueuedForDeletion() && _screen.IsAncestorOf(dock))
+					return dock;
+			}
+
+			return null;
 		}
 
 		private void Refresh()

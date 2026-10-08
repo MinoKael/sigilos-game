@@ -269,6 +269,35 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void OpeningAnOldSaveFillsTheStartAndTheDeepestTeam()
+		{
+			var database = TestData.LoadReal();
+			var player = TestData.PlayerWith("imp_fire", "phoenix_fire");
+			player.Started = null;
+			foreach (var monster in player.Monsters)
+				Teams.Toggle(player, "golem", monster.Id);
+			player.DungeonFloors["golem"] = 3;
+			var older = Records.FloorKey("golem", 2);
+			var deepest = Records.FloorKey("golem", 3);
+			player.BestTimes[older] = 80;
+			player.BestTimes[deepest] = 120;
+
+			Account.Open(player, database, Start);
+			Assert.Equal<DateTime?>(Start, player.Started, "o save sem começo começa ao abrir");
+			Assert.Equal("imp_fire,phoenix_fire", string.Join(",", Records.Team(player, deepest).Select(m => m.Summon)), "o andar mais fundo ganha a equipe salva da Masmorra");
+			Assert.Equal(0, Records.Team(player, older).Count, "os andares de antes ficam sem equipe");
+
+			player.BestTeams[deepest] = [new RecordMember("imp_dark", false)];
+			Account.Open(player, database, Start.AddDays(5));
+			Assert.Equal<DateTime?>(Start, player.Started, "abrir de novo não muda o começo");
+			Assert.Equal("imp_dark", Records.Team(player, deepest).Single().Summon, "nem a equipe que já existe");
+
+			Assert.Equal<DateTime?>(null, player.GuildJoined, "sem guilda, sem data de entrada");
+			player.GuildJoined = Start.AddDays(2);
+			Assert.Equal<DateTime?>(Start.AddDays(2), PlayerSave.FromJson(PlayerSave.ToJson(player))!.GuildJoined, "o save guarda a entrada na guilda");
+		}
+
+		[Test]
         private static void IdleRefillsManaUpToTheDoubleMax()
         {
             var player = NewPlayer();

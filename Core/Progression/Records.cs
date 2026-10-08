@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 
 namespace Sigilos.Core.Progression
@@ -22,6 +23,33 @@ namespace Sigilos.Core.Progression
 		/// <summary>A equipe do melhor tempo, na ordem dela (a Líder primeiro); vazia se o tempo é de antes de a equipe ser gravada.</summary>
 		public static IReadOnlyList<RecordMember> Team(PlayerState player, string key) =>
 			player.BestTeams.TryGetValue(key, out var team) ? team : [];
+
+		/// <summary>
+		/// O melhor tempo do andar mais fundo vencido de cada Masmorra, quando é de antes de a equipe ser
+		/// gravada, fica com a equipe salva hoje para aquela Masmorra: foi a última a avançar ali, a mais
+		/// provável de ter feito o tempo. Os outros tempos antigos ficam sem equipe; os que já têm não mudam.
+		/// </summary>
+		public static void FillDeepestTeams(PlayerState player, GameDatabase database)
+		{
+			foreach (var dungeon in database.Dungeons)
+			{
+				if (!player.DungeonFloors.TryGetValue(dungeon.Id, out var cleared) || cleared <= 0)
+					continue;
+
+				var key = FloorKey(dungeon.Id, cleared);
+				if (!player.BestTimes.ContainsKey(key) || player.BestTeams.ContainsKey(key))
+					continue;
+
+				var team = Teams.Of(player, dungeon.Id)
+					.Select(player.Monster)
+					.OfType<OwnedSummon>()
+					.Where(m => !m.Stored && database.HasSummon(m.SummonId))
+					.Select(m => new RecordMember(m.SummonId, m.Awakened))
+					.ToList();
+				if (team.Count > 0)
+					player.BestTeams[key] = team;
+			}
+		}
 
 		/// <summary>Grava o tempo de uma vitória, e a equipe dela, se ele bate o melhor. Devolve verdadeiro quando bateu.</summary>
 		public static bool Submit(PlayerState player, string key, double seconds, IEnumerable<RecordMember>? team = null)
