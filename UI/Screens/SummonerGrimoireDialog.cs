@@ -5,6 +5,7 @@ using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -26,6 +27,7 @@ namespace Sigilos.UI.Screens
 	///
 	/// As páginas e o texto delas vêm das variações do tema (<see cref="GameTheme.PagePanel"/>,
 	/// <see cref="GameTheme.PageRule"/>, <see cref="GameTheme.PageText"/>...). Só lê o save. Trocar o retrato fecha o livro e pede a escolha (<see cref="AvatarRequested"/>).
+	/// O livro soa ao abrir, a cada capítulo virado e ao fechar.
 	/// </summary>
 	public sealed partial class SummonerGrimoireDialog
 	{
@@ -56,7 +58,11 @@ namespace Sigilos.UI.Screens
 			var tabs = new TextTabs(height: 46, compact: true) { Name = "Bookmarks", Alignment = BoxContainer.AlignmentMode.Center };
 			for (var i = 0; i < _chapters.Length; i++)
 				tabs.Add($"{Texts.Roman(i + 1)} · {T($"book.chapter.{_chapters[i].Id}")}").Name = _chapters[i].Id;
-			tabs.Changed += Open;
+			tabs.Changed += index =>
+			{
+				Sfx.Play("grimoire.page_turn");
+				Open(index);
+			};
 			_dialog.Body.AddChild(tabs);
 
 			_spread.AddThemeConstantOverride("separation", 10);
@@ -65,6 +71,8 @@ namespace Sigilos.UI.Screens
 			_dialog.Body.AddChild(_spread);
 
 			_dialog.AddAction(T("avatar.change"), () => AvatarRequested?.Invoke(), ButtonKind.Secondary, true, "avatar").Named("Avatar");
+			_dialog.Closed += () => Sfx.Play("grimoire.book_close");
+			Sfx.Play("grimoire.book_open");
 			Open(0);
 		}
 

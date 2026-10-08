@@ -12,6 +12,7 @@ using Sigilos.Core.Summoning;
 using Sigilos.GameEntry.Account;
 using Sigilos.GameEntry.Update;
 using Sigilos.UI;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Screens;
 using Sigilos.UI.Style;
@@ -31,6 +32,7 @@ namespace Sigilos.GameEntry
 	/// para onde veio (seta, Esc ou o Voltar do celular). A Batalha automática roda fora das telas
 	/// (<see cref="AutoBattleRunner"/>), com o aviso flutuante no alto de todas.
 	/// A música acompanha a tela (<see cref="MusicPlayer"/>): a Batalha na luta, o Plano Celestial no resto.
+	/// Os efeitos sonoros tocam pelo <see cref="Sfx"/> (docs/SONS.md): cada ação daqui soa o seu.
 	///
 	/// Antes do Santuário vem a conta (<see cref="AccountSession"/>, docs/SAVE_NUVEM.md): a tela de login
 	/// (Entrar, Criar conta, Jogar sem conta), a pergunta "desconectar o outro aparelho?" e, quando o
@@ -59,6 +61,7 @@ namespace Sigilos.GameEntry
 		private readonly Random _random = new();
 		private readonly AutoBattleRunner _runner = new();
 		private readonly MusicPlayer _music = new();
+		private readonly Sfx _sfx = new();
 		private readonly AutoBattleBadge _badge = new();
 		private readonly ChatFeed _chat = new();
 		private ChatBubble _bubble = null!;
@@ -167,8 +170,10 @@ namespace Sigilos.GameEntry
 			_account.Chat.Refused += _chat.Refuse;
 			_account.Chat.LiveChanged += RefreshChat;
 			AddChild(_music);
+			AddChild(_sfx);
 			ApplyVolume(MasterBus, _account.MasterVolume);
 			ApplyVolume(MusicPlayer.Bus, _account.MusicVolume);
+			ApplyVolume(Sfx.Bus, _account.EffectsVolume);
 			// No PC, a janela fica sempre em 16:9; no celular, a interface ocupa a tela toda.
 			AddChild(new WindowAspect(OS.HasFeature("mobile") || Argument("--mobile") != null));
 
@@ -616,6 +621,11 @@ namespace Sigilos.GameEntry
 				_account.MusicVolume = volume;
 				ApplyVolume(MusicPlayer.Bus, volume);
 			}),
+			new ConfigVolume("Effects", T("config.volume_effects"), _account.EffectsVolume, volume =>
+			{
+				_account.EffectsVolume = volume;
+				ApplyVolume(Sfx.Bus, volume);
+			}),
 		};
 
 		/// <summary>O volume escolhido (0 a 1) no barramento; 0 cala. As transições da música mexem nos tocadores, não aqui.</summary>
@@ -829,9 +839,9 @@ namespace Sigilos.GameEntry
 				UseLanguage(language);
 				ShowHub();
 			}, Volumes(), AccountSettings(), ShowTutorial);
-			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
+			hub.CollectRequested += () => Change(() => Sfx.PlayIf(!Idle.Collect(_player, DateTime.Now).IsEmpty, "rewards.essence"), () => hub.Refresh(DateTime.Now));
 			hub.MailRequested += () => OpenMailbox(hub);
-			hub.AvatarRequested += (summon, awakened) => Change(() => Core.Progression.Account.SetAvatar(_player, summon, awakened), () => hub.Refresh(DateTime.Now));
+			hub.AvatarRequested += (summon, awakened) => Change(() => Sfx.PlayIf(Core.Progression.Account.SetAvatar(_player, summon, awakened), "ui.option_choose"), () => hub.Refresh(DateTime.Now));
 			Swap(hub, ShowHub);
 			hub.SetMail(_mail?.Count);
 			RefreshMail();
@@ -908,6 +918,7 @@ namespace Sigilos.GameEntry
 			if (claimed.Count == 0)
 				return;
 
+			Sfx.Play("rewards.daily_reward");
 			Save();
 			foreach (var mail in claimed)
 				_ = _account.ClaimMail(mail.Id);
@@ -1191,18 +1202,20 @@ namespace Sigilos.GameEntry
 			storage.InfuseRequested += (id, toMax) => Change(() =>
 			{
 				var monster = _player.Monster(id)!;
-				Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.InfuseCosts(monster).Next);
+				var level = monster.Level;
+				if (Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.InfuseCosts(monster).Next) > 0)
+					Sfx.Play(monster.Level > level ? "rewards.level_up" : "rewards.experience");
 			}, storage.Refresh);
-			storage.AwakenRequested += id => Change(() => Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), storage.Refresh);
-			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), storage.Refresh);
-			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), storage.Refresh);
-			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), storage.Refresh);
-			storage.StoreManyRequested += ids => Change(() => Roster.StoreMany(_player, ids), storage.Refresh);
-			storage.RetrieveManyRequested += ids => Change(() => Roster.RetrieveMany(_player, ids), storage.Refresh);
-			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), storage.Refresh);
-			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), storage.Refresh);
-			storage.LockRequested += id => Change(() => _player.Monster(id)!.Locked = !_player.Monster(id)!.Locked, storage.Refresh);
-			storage.FavoriteRequested += id => Change(() => _player.Monster(id)!.Favorite = !_player.Monster(id)!.Favorite, storage.Refresh);
+			storage.AwakenRequested += id => Change(() => Sfx.PlayIf(Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), "rewards.creature_unlock"), storage.Refresh);
+			storage.EvolveRequested += id => Change(() => Sfx.PlayIf(Evolution.Evolve(_player, _player.Monster(id)!), "rewards.star_up"), storage.Refresh);
+			storage.StoreRequested += id => Change(() => Sfx.PlayIf(Roster.Store(_player, id), "ui.drop_item"), storage.Refresh);
+			storage.RetrieveRequested += id => Change(() => Sfx.PlayIf(Roster.Retrieve(_player, id), "ui.drag_item"), storage.Refresh);
+			storage.StoreManyRequested += ids => Change(() => Sfx.PlayIf(Roster.StoreMany(_player, ids) > 0, "ui.drop_item"), storage.Refresh);
+			storage.RetrieveManyRequested += ids => Change(() => Sfx.PlayIf(Roster.RetrieveMany(_player, ids) > 0, "ui.drag_item"), storage.Refresh);
+			storage.FuseRequested += (target, materials) => Change(() => Sfx.PlayIf(Fusion.FuseMany(_random, _player, _database, target, materials) > 0, "rewards.skill_unlock"), storage.Refresh);
+			storage.ReleaseRequested += ids => Change(() => Sfx.PlayIf(Fusion.ReleaseMany(_player, _database, ids) > 0, "rewards.fragments"), storage.Refresh);
+			storage.LockRequested += id => Change(() => Sfx.Play((_player.Monster(id)!.Locked = !_player.Monster(id)!.Locked) ? "ui.item_locked" : "ui.item_unlocked"), storage.Refresh);
+			storage.FavoriteRequested += id => Change(() => Sfx.Play((_player.Monster(id)!.Favorite = !_player.Monster(id)!.Favorite) ? "ui.item_select" : "ui.item_deselect"), storage.Refresh);
 			Swap(storage, () => ShowStorage(selected));
 		}
 
@@ -1217,16 +1230,20 @@ namespace Sigilos.GameEntry
 				{
 					ChooseName(false, offer.Price, () => Change(() =>
 					{
-						if (Shop.Buy(_player, offer))
-							shop.ShowMessage(T("shop.renamed", _account.AccountName ?? ""));
+						if (!Shop.Buy(_player, offer))
+							return;
+						Sfx.Play("rewards.gold");
+						shop.ShowMessage(T("shop.renamed", _account.AccountName ?? ""));
 					}, shop.Refresh));
 					return;
 				}
 
 				Change(() =>
 				{
-					if (Shop.Buy(_player, offer))
-						shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
+					if (!Shop.Buy(_player, offer))
+						return;
+					Sfx.Play("rewards.gold");
+					shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
 				}, shop.Refresh);
 			};
 			Swap(shop, () => ShowShop(back));
@@ -1236,8 +1253,14 @@ namespace Sigilos.GameEntry
 		{
 			var teams = new TeamScreen(_database, _player, content);
 			teams.BackRequested += back;
-			teams.ToggleRequested += (key, id) => Change(() => Teams.Toggle(_player, key, id), teams.Refresh);
-			teams.LeaderRequested += (key, id) => Change(() => Teams.MakeLeader(_player, key, id), teams.Refresh);
+			teams.ToggleRequested += (key, id) => Change(() =>
+			{
+				if (Teams.Toggle(_player, key, id))
+					Sfx.Play(Teams.Of(_player, key).Contains(id) ? "ui.equip_item" : "ui.unequip_item");
+				else
+					Sfx.Play("ui.action_unavailable");
+			}, teams.Refresh);
+			teams.LeaderRequested += (key, id) => Change(() => Sfx.PlayIf(Teams.MakeLeader(_player, key, id), "ui.option_choose"), teams.Refresh);
 			Swap(teams, () => ShowTeams(content, back));
 		}
 
@@ -1245,15 +1268,15 @@ namespace Sigilos.GameEntry
 		{
 			var runes = new RuneScreen(_database, _player, monsterId);
 			runes.BackRequested += _ => back();
-			runes.EquipRequested += (id, monster) => Change(() => RuneInventory.Equip(_player, Rune(id), monster), runes.Refresh);
-			runes.UnequipRequested += id => Change(() => RuneInventory.Unequip(_player, Rune(id)), runes.Refresh);
+			runes.EquipRequested += (id, monster) => Change(() => Sfx.PlayIf(RuneInventory.Equip(_player, Rune(id), monster), "ui.equip_item"), runes.Refresh);
+			runes.UnequipRequested += id => Change(() => Sfx.PlayIf(RuneInventory.Unequip(_player, Rune(id)), "ui.unequip_item"), runes.Refresh);
 			runes.UpgradeRequested += (id, target) => Change(() => UpgradeRune(Rune(id), target), runes.Refresh);
-			runes.GrindRequested += (id, index, tool) => Change(() => RuneInventory.Grind(_random, _player, Rune(id), index, tool), runes.Refresh);
-			runes.EnchantRequested += (id, index, tool) => Change(() => RuneInventory.Enchant(_random, _player, Rune(id), index, tool), runes.Refresh);
-			runes.SellRequested += id => Change(() => RuneInventory.Sell(_player, Rune(id)), runes.Refresh);
-			runes.SellManyRequested += ids => Change(() => RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))), runes.Refresh);
-			runes.LockRequested += id => Change(() => Rune(id).Locked = !Rune(id).Locked, runes.Refresh);
-			runes.ReappraiseRequested += id => Change(() => Core.Runes.RuneReappraisal.Reappraise(_player, Rune(id)), runes.Refresh);
+			runes.GrindRequested += (id, index, tool) => Change(() => Sfx.PlayIf(RuneInventory.Grind(_random, _player, Rune(id), index, tool), "grimoire.trace_symbol"), runes.Refresh);
+			runes.EnchantRequested += (id, index, tool) => Change(() => Sfx.PlayIf(RuneInventory.Enchant(_random, _player, Rune(id), index, tool), "grimoire.magic_ink"), runes.Refresh);
+			runes.SellRequested += id => Change(() => Sfx.PlayIf(RuneInventory.Sell(_player, Rune(id)) > 0, "rewards.gold"), runes.Refresh);
+			runes.SellManyRequested += ids => Change(() => Sfx.PlayIf(RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))) > 0, "rewards.gold"), runes.Refresh);
+			runes.LockRequested += id => Change(() => Sfx.Play((Rune(id).Locked = !Rune(id).Locked) ? "ui.item_locked" : "ui.item_unlocked"), runes.Refresh);
+			runes.ReappraiseRequested += id => Change(() => Sfx.PlayIf(Core.Runes.RuneReappraisal.Reappraise(_player, Rune(id)), "grimoire.reveal_text"), runes.Refresh);
 			Swap(runes, () => ShowRunes(monsterId, back));
 		}
 
@@ -1571,7 +1594,7 @@ namespace Sigilos.GameEntry
 		private void UpgradeRune(Core.Runes.Rune rune, int target)
 		{
 			var before = rune.Level;
-			RuneInventory.Upgrade(_random, _player, rune, target);
+			Sfx.PlayIf(RuneInventory.Upgrade(_random, _player, rune, target), "rewards.rune");
 			if (Feats.Of(rune, before) is { } feat)
 				Share(new[] { feat });
 		}
@@ -1617,6 +1640,7 @@ namespace Sigilos.GameEntry
 			_current = reshow;
 			screen.Name = screen.GetType().Name;
 			_screens.AddChild(screen);
+			Sfx.Fallback("ui.panel_open", 1);
 			_bubble.Follow(screen);
 			// A Batalha toca na tela de luta; todo o resto é o Plano Celestial (a Batalha automática não tem tela).
 			_music.Play(screen is BattleScreen ? MusicPlayer.Track.Battle : MusicPlayer.Track.Celestial);

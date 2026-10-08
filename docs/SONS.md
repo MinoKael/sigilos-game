@@ -5,7 +5,7 @@ de sons ou arquivo de áudio de fora. Cada efeito é uma receita em C# (camadas 
 corpos que vibram), e a ferramenta gera os `.wav` em `Assets/Audio` e o catálogo `sounds.json`. A
 mesma semente dá sempre os mesmos bytes, então a biblioteca pode ser refeita a qualquer momento.
 
-O jogo ainda não toca esses sons; o catálogo já está pronto para a integração (ver "O catálogo").
+O jogo toca pelo nome lógico do catálogo (ver "No jogo").
 
 ## Gerar
 
@@ -15,7 +15,7 @@ Da raiz do repositório:
 dotnet run --project Tools/sounds -c Release
 ```
 
-Gera os 223 efeitos (330 arquivos, uns 17 MB) em 2 segundos e apaga os `.wav` que não são mais de
+Gera os 224 efeitos (332 arquivos, uns 17 MB) em 2 segundos e apaga os `.wav` que não são mais de
 nenhum efeito. Opções:
 
 | Opção | O que faz |
@@ -142,6 +142,47 @@ lógico não muda quando o número de variações muda; é ele que o jogo deve u
 
 O catálogo recusa nome repetido, nome fora de snake_case, pasta que não está na lista e um nome que
 pareça variação de outro da mesma pasta (`gold` e `gold_02`).
+
+## No jogo
+
+`UI/Audio/Sfx.cs` é um nó do GameRoot, vivo o tempo todo, com 16 tocadores no barramento `Effects`
+(o volume de **Efeitos** nos Ajustes, salvo no aparelho como os outros dois). Lê o catálogo ao abrir,
+carrega os sons da interface na hora e o resto na primeira vez que toca. Sorteia a variação sem
+repetir a última, e o mesmo som de novo em menos de 40 ms não toca (os acertos de um golpe em área).
+
+```csharp
+Sfx.Play("rewards.star_up");               // agora
+Sfx.Play("summon.energy_build", 0.3);      // daqui a 0,3 s
+Sfx.PlayIf(Evolution.Evolve(...), "rewards.star_up");   // só se a ação pegou
+Sfx.Fallback("ui.button_click");           // reserva (abaixo)
+```
+
+**A ação cala o clique.** Os componentes tocam sons de reserva (`Sfx.Fallback`): o botão
+(`Juice`: clique, ou ligar e desligar), a aba (`TextTabs`), a janela abrindo e fechando (`Dialog`), a
+tela que entra (`GameRoot.Swap`), a seta de voltar e o toque curto (`Press`). A reserva espera o fim
+do quadro e só toca se nenhum `Sfx.Play` veio no mesmo quadro; entre as reservas do quadro, ganha a
+de maior prioridade (voltar 3, janela 2, aba e tela 1, botão 0). Então o Evoluir soa a estrela, e não
+o clique; o botão que abre uma janela soa a janela. O toque longo que abriu um resumo cala o clique
+do soltar (`Sfx.Quiet`).
+
+**Onde cada parte soa:**
+
+| Onde | Sons |
+| --- | --- |
+| Interface | clique, ligar/desligar, aba, janela, tela, voltar, os controles de volume (degrau a degrau, já no volume novo) |
+| Luta (`BattleSounds`) | um momento vira no máximo 3 sons: a habilidade soa o feitiço do elemento (recarga 5 ou mais, o grande feitiço; o chefe, a voz dele) e a básica corre calada; um acerto só por golpe (crítico, pesado do chefe, área, impacto do elemento ou médio); por cima, escudo que absorveu ou vantagem e desvantagem de elemento; 0,12 s depois, a queda e os efeitos. Veneno e Bomba têm o deles; o efeito que vence sozinho não soa; dentro de uma ação, o que já soou fora do golpe não repete (a cura em cinco é uma). Os atrasos aceleram com a luta; a vista pequena da Batalha automática é muda. O turno manual soa ao chegar |
+| Resultado | a runa que caiu (mais rica quanto mais rara); com as barras, o ouro, o destaque (monstro, prêmio de marco, o que abriu, Pergaminhos e ferramentas) e a conta que subiu ou o melhor tempo; cada nível de monstro |
+| Invocação | o ritual (sigilo e energia subindo) e cada cartão pelas estrelas, em cascata; o monstro novo fecha com o registro no grimório |
+| Monstros, Runas, Equipes, Loja | cada ação com o som dela (Infundir, Despertar, Evoluir, Fundir, Soltar, Guardar, Bloquear, Equipar, Melhorar, Afiar, Encantar, Reavaliar, Vender, Comprar); a que não pegou soa só o clique, e a equipe cheia avisa |
+| Santuário e correio | coletar a Canalização, trocar o retrato, coletar cartas |
+| Grimório e livro do Invocador | abrir, virar página, escolher a família, fechar |
+| Exploração | o céu ao entrar e a estrela ao escolher a constelação |
+| Batalha automática | começar (e retomar) e parar; as lutas não soam |
+
+**Som novo no código:** gere o efeito (acima), escreva o nome lógico inteiro no código (sem montar
+com `$"..."`: uma tabela de nomes quando depende de um valor, como `SummonScreen.RevealSounds`) e rode
+os testes. `SoundTests` confere que todo `"categoria.nome"` de `UI/` e `GameEntry/` que não é chave de
+texto está no catálogo, que os arquivos do catálogo existem e como a luta vira som.
 
 ## Como é feito
 

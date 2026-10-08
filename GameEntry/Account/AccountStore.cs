@@ -35,6 +35,8 @@ namespace Sigilos.GameEntry.Account
 
 		public float MusicVolume { get; set; } = 1f;
 
+		public float EffectsVolume { get; set; } = 1f;
+
 		public string? Email { get; set; }
 
 		/// <summary>O nome da conta (único no servidor), como veio na última entrada ou renovação.</summary>

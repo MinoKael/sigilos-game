@@ -6,6 +6,7 @@ using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -65,6 +66,10 @@ namespace Sigilos.UI.Screens
 	/// item escrito; embaixo, a equipe, cada monstro com o nome e a barra de experiência subindo nível a
 	/// nível (ou "nível máximo"), e os botões Lutar de novo e Continuar. A runa que caiu abre por cima,
 	/// na <see cref="RuneCard"/>, com Vender, Bloquear (guarda e tranca) e Guardar.
+	///
+	/// Os sons vêm depois da vitória que a luta já tocou, quando o jogador pode ver: a runa ao abrir (mais
+	/// rica quanto mais rara); com as barras, o ouro, o destaque do que veio e, por último, a conta que
+	/// subiu de nível ou o melhor tempo batido; cada nível que um monstro sobe, o seu.
 	/// </summary>
 	public partial class BattleResultPanel : ColorRect
 	{
@@ -135,6 +140,13 @@ namespace Sigilos.UI.Screens
 			}
 
 			// A runa que caiu, por cima de tudo: o jogador decide antes de ver o resto.
+			Sfx.Play(rune.Rarity switch
+			{
+				RuneRarity.Legendary => "rewards.item_legendary",
+				RuneRarity.Hero => "rewards.item_epic",
+				RuneRarity.Rare => "rewards.item_rare",
+				_ => "rewards.rune",
+			});
 			var value = RuneRules.SellValue(rune);
 			var dialog = RuneDialog.Show(this, rune, anchored: false);
 			dialog.Dismissable = false;
@@ -151,6 +163,27 @@ namespace Sigilos.UI.Screens
 			foreach (var animation in _animations)
 				animation();
 			_animations.Clear();
+			Fanfare();
+		}
+
+		/// <summary>O que a vitória rendeu, um som depois do outro: o ouro, o destaque e o fecho.</summary>
+		private void Fanfare()
+		{
+			if (_outcome.Reward is not { } reward)
+				return;
+
+			Sfx.Play("rewards.gold", 0.2);
+			var highlight = reward.SummonResult != null ? "summon.creature_summoned"
+				: reward.Prize is { IsEmpty: false } ? "rewards.chest_rare"
+				: _outcome.Opened is { Count: > 0 } ? "grimoire.info_unlocked"
+				: reward.Scrolls > 0 || reward.Tools.Count > 0 ? "rewards.equipment"
+				: null;
+			if (highlight != null)
+				Sfx.Play(highlight, 0.6);
+			if (reward.AccountLevels > 0)
+				Sfx.Play("rewards.level_up", 1.2);
+			else if (_outcome.NewBest)
+				Sfx.Play("rewards.achievement_complete", 1.2);
 		}
 
 		private static Label Title(bool victory)
@@ -442,6 +475,7 @@ namespace Sigilos.UI.Screens
 						bar.Value = step.From;
 						ShowLevel(level, step.Level, monster.MaxLevel && last);
 						FloatingText.Spawn(view, T("battle.level_up"), Palette.Spirit, 15);
+						Sfx.Play("rewards.experience");
 					}));
 				}
 

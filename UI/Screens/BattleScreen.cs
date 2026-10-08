@@ -2,6 +2,7 @@ using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using System;
@@ -62,6 +63,9 @@ namespace Sigilos.UI.Screens
 		/// <summary>A seta de voltar da tela cheia que assiste.</summary>
 		private readonly Action? _back;
 
+		/// <summary>Os sons dos momentos; só a tela com o que fica em volta do campo toca (a vista pequena é muda).</summary>
+		private readonly BattleSounds _sounds;
+
 		/// <summary>O pedaço da luta assistida que já estava no campo quando a tela começou a olhar.</summary>
 		private int _joined;
 
@@ -115,6 +119,7 @@ namespace Sigilos.UI.Screens
 			_auto = auto && coach == null;
 			_coach = coach;
 			_focusBoss = focusBoss;
+			_sounds = new BattleSounds(live: true);
 		}
 
 		/// <summary>
@@ -130,6 +135,7 @@ namespace Sigilos.UI.Screens
 			_hud = back != null;
 			_back = back;
 			_speedIndex = BattlePace.Speeds.Count - 1;
+			_sounds = new BattleSounds(live: false);
 		}
 
 		/// <summary>A luta acabou: verdadeiro na vitória.</summary>
@@ -588,6 +594,7 @@ namespace Sigilos.UI.Screens
 				return chosen;
 			}
 
+			Sfx.Play("progression.turn_start");
 			var decision = new TaskCompletionSource<UnitAction>(TaskCreationOptions.RunContinuationsAsynchronously);
 			void Decide(UnitAction action)
 			{
@@ -726,6 +733,8 @@ namespace Sigilos.UI.Screens
 
 			foreach (var battleEvent in beat.Events)
 				Show(battleEvent);
+			if (_hud)
+				Sfx.Play(_sounds.Of(beat), Speed);
 		}
 
 		/// <summary>

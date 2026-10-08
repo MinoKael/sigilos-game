@@ -1,9 +1,13 @@
 # Changelog — Sigilos
 
 ## 08/10/2026
-- **Sons próprios.** Uma biblioteca de 223 efeitos sonoros (330 arquivos, com as variações), toda sintetizada para Sigilos, sem nenhum áudio de fora: interface, grimório, constelações, invocação, recompensas, combate (golpes, dano, os cinco elementos, efeitos de batalha e o chefe) e progressão.
+- **Sons próprios.** Uma biblioteca de 224 efeitos sonoros (332 arquivos, com as variações), toda sintetizada para Sigilos, sem nenhum áudio de fora: interface, grimório, constelações, invocação, recompensas, combate (golpes, dano, os cinco elementos, efeitos de batalha e o chefe) e progressão.
   - O som do jogo: grimório arcano, constelações e invocação. Interface delicada de madeira, papel e notinhas; magia de sinos, cristal e coro; tudo em Ré, com a assinatura Ré–Lá–Mi.
-  - Ainda não toca no jogo: os arquivos e o catálogo ficam prontos para a integração.
+  - **Os sons tocam no jogo.** Interface (botões, abas, janelas, telas, voltar), luta, resultado, invocação, Monstros, Runas, Equipes, Loja, Santuário, correio, Grimório, Exploração e Batalha automática.
+  - Na luta, cada momento soa no máximo três sons, acelerando junto com a luta: o feitiço do elemento, o golpe, a queda e os efeitos. A vista pequena da Batalha automática fica muda.
+  - A ação com som próprio cala o clique do botão que a pediu: o Evoluir soa a estrela, não o clique.
+  - Som novo de nocaute: o ar saindo, o corpo no chão e uma nota de vidro apagando.
+- **Ajustes:** volume de **Efeitos**, ao lado de Geral e Música.
 - **Nível da conta até 100.** A experiência para o próximo nível segue 500 × 1,075^(nível − 1): suave no começo, bem maior nos níveis altos.
   - A Mana máxima vai de 100 no nível 1 a 300 no nível 100 (+2 por nível).
   - Os marcos dos níveis passam a somar 20 Núcleos de Infusão do 1 ao 100.

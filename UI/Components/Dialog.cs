@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
 
@@ -20,6 +21,7 @@ namespace Sigilos.UI.Components
 	///
 	/// Tocar fora, o ✕, Esc e o botão Voltar do celular fecham (<see cref="Dismissable"/> falso deixa só
 	/// os botões de ação). Fechar não mexe em nada do jogo: quem precisa saber assina <see cref="Closed"/>.
+	/// Abrir e fechar soam como reserva (<see cref="Sfx.Fallback"/>), acima do clique que abriu.
 	/// </summary>
 	public partial class Dialog : ColorRect
 	{
@@ -226,6 +228,7 @@ namespace Sigilos.UI.Components
 			var host = Layout.Host(from);
 			dialog.ZIndex = host.GetChildren().OfType<Dialog>().Where(d => !d._closed).Select(d => d.ZIndex + Layer).DefaultIfEmpty(Bottom).Max();
 			host.AddChild(dialog);
+			Sfx.Fallback("ui.dialog_open", 2);
 			return dialog;
 		}
 
@@ -284,6 +287,7 @@ namespace Sigilos.UI.Components
 			if (_closed)
 				return;
 			_closed = true;
+			Sfx.Fallback("ui.dialog_close", 2);
 			QueueFree();
 			Closed?.Invoke();
 		}

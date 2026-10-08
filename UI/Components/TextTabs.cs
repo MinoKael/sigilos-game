@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Style;
 
 namespace Sigilos.UI.Components
@@ -49,6 +50,7 @@ namespace Sigilos.UI.Components
 				if (Selected == index)
 					return;
 				Selected = index;
+				Sfx.Fallback("ui.tab_switch", 1);
 				Changed?.Invoke(index);
 			};
 			_tabs.Add(tab);

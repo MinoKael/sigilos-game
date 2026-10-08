@@ -6,6 +6,7 @@ using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -59,7 +60,12 @@ namespace Sigilos.UI.Screens
 			sigils.Add(T("grimoire.tab.runes"), "", "grimoire").Name = "RuneTables";
 			sigils.Add(T("grimoire.tab.grindstones"), "", "grindstone").Name = "Grindstones";
 			sigils.Add(T("grimoire.tab.gems"), "", "gem").Name = "Gems";
-			sigils.Changed += index => tabs.CurrentTab = index;
+			sigils.Changed += index =>
+			{
+				Sfx.Play("grimoire.page_turn");
+				tabs.CurrentTab = index;
+			};
+			Sfx.Play("grimoire.book_open");
 		}
 
 		// Invocações --------------------------------------------------------------------------------
@@ -136,6 +142,7 @@ namespace Sigilos.UI.Screens
 
 				// Troca de família mantendo o elemento, quando a nova tem.
 				_selected = Variants(family.Id).FirstOrDefault(s => s.Element == _selected.Element) ?? Variants(family.Id).First();
+				Sfx.Play("grimoire.page_select");
 				Callable.From(RefreshSummons).CallDeferred();
 			}
 

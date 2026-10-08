@@ -1220,7 +1220,8 @@
     "rename_in_shop": "To change the account name, look in the Shop.",
     "sound": "Sound",
     "volume_master": "Master",
-    "volume_music": "Music"
+    "volume_music": "Music",
+    "volume_effects": "Effects"
   },
 
   "lock": {

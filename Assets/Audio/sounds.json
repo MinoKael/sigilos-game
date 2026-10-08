@@ -1326,6 +1326,17 @@
       "seconds": 0.297,
       "peak_db": -8.5
     },
+    "combat.knockout": {
+      "category": "combat",
+      "description": "Nocaute: o ar saindo, o corpo no chão e a quinta apagando no vidro.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/knockout_01.wav",
+        "res://Assets/Audio/combat/knockout_02.wav"
+      ],
+      "seconds": 0.724,
+      "peak_db": -5.3
+    },
     "combat.damage.physical_light": {
       "category": "combat/damage",
       "description": "Dano físico leve.",

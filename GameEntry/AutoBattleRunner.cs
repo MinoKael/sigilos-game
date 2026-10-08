@@ -2,6 +2,7 @@ using System;
 using Godot;
 using Sigilos.Core.Progression;
 using Sigilos.UI;
+using Sigilos.UI.Audio;
 using static Sigilos.UI.Locale;
 
 namespace Sigilos.GameEntry
@@ -16,6 +17,7 @@ namespace Sigilos.GameEntry
 	/// casos o jogador resolve e retoma de onde parou. Parar no meio de uma luta descarta essa luta: nada
 	/// ganho, nada gasto. Quem mostra é o aviso flutuante e a janela (UI), pelo <see cref="AutoBattleRun"/>;
 	/// a luta de agora anda no mesmo relógio, para ver (<see cref="AutoBattleFight"/>), sem mexer no resultado.
+	/// As lutas não soam; só o começo (e a retomada) e a parada.
 	/// </summary>
 	public partial class AutoBattleRunner : Node
 	{
@@ -57,6 +59,7 @@ namespace Sigilos.GameEntry
 			_mana = run.Mana;
 			run.Running = true;
 			RunChanged?.Invoke(run);
+			Sfx.Play("progression.auto_battle_start");
 			Next();
 		}
 
@@ -75,6 +78,7 @@ namespace Sigilos.GameEntry
 			run.Running = true;
 			run.StopReason = null;
 			run.CanResume = false;
+			Sfx.Play("progression.auto_battle_start");
 			Next();
 		}
 
@@ -160,6 +164,7 @@ namespace Sigilos.GameEntry
 			run.Fight = null;
 			_victoryPending = false;
 			run.Notify();
+			Sfx.Play("progression.auto_battle_end");
 		}
 	}
 }

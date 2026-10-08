@@ -5,6 +5,7 @@ using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -68,6 +69,7 @@ namespace Sigilos.UI.Screens
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("exploration.title"), _currencies, () => BackRequested?.Invoke()).Header);
+			Sfx.Play("constellation.stardust");
 
 			var body = Layout.Row(20).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -178,7 +180,11 @@ namespace Sigilos.UI.Screens
 			_progress.Text = T("exploration.progress", Cleared, Exploration.Constellations.Count)
 				+ (_player.ExplorationBest > 0 ? "  ·  " + T("exploration.best", _player.ExplorationBest) : "");
 			var chart = new StarChart(Exploration, _hemisphere, Cleared, _selected) { Name = "Map" };
-			chart.Chosen += Select;
+			chart.Chosen += number =>
+			{
+				Sfx.Play("constellation.star_activate");
+				Select(number);
+			};
 			_chartScroll = Layout.Scroll(chart).Named("MapScroll");
 			_chart.AddChild(_chartScroll);
 			if (chart.OrbOf(_selected) is { } orb)

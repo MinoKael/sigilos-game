@@ -150,6 +150,16 @@ namespace Sigilos.Sounds.Recipes
 				Foley.Thud(p, 0, 130, 0.6);
 				p.Noise(NoiseColor.Pink, Envelope.Perc(0.002, 0.08)).Lowpass(1200).Gain(0.4);
 			}, 2, -1);
+
+			yield return r.Of("knockout", "Nocaute: o ar saindo, o corpo no chão e a quinta apagando no vidro.", p =>
+			{
+				Strike.Whoosh(p, 0, 0.18, p.Vary(1500, 0.1), 450, 0.45);
+				Foley.Thud(p, 0.14, p.Vary(160, 0.06), 0.7);
+				Foley.Knock(p, 0.14, p.Vary(320, 0.06), 0.1, 0.55);
+				Arcane.Glass(p, A4, 0.18, 0.35, 0.3);
+				Arcane.Glass(p, D4, 0.32, 0.55, 0.28);
+				p.Reverb(0.1, 0.5);
+			}, 2);
 		}
 	}
 }

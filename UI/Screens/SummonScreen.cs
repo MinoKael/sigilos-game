@@ -7,6 +7,7 @@ using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Summoning;
 using Sigilos.Core.Progression;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -28,6 +29,12 @@ namespace Sigilos.UI.Screens
 	public partial class SummonScreen : Control
 	{
 		private const double RitualSeconds = 1.4;
+
+		/// <summary>O som de cada cartão que aparece, por estrelas (1★ a 5★).</summary>
+		private static readonly string[] RevealSounds =
+		{
+			"summon.reveal_star_1", "summon.reveal_star_2", "summon.reveal_star_3", "summon.reveal_star_4", "summon.reveal_star_5",
+		};
 		private const float PortalSize = 360;
 
 		private readonly GameDatabase _database;
@@ -242,7 +249,8 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>
 		/// O círculo gira e brilha; depois os cartões aparecem um a um. Com <paramref name="saved"/> (o envio
-		/// para a nuvem), o resultado só aparece depois dele, ou de <see cref="SaveWaitSeconds"/>.
+		/// para a nuvem), o resultado só aparece depois dele, ou de <see cref="SaveWaitSeconds"/>. O sigilo
+		/// acende com som e a energia sobe até o fim do giro.
 		/// </summary>
 		public void ShowResults(IReadOnlyList<SummonResult> results, Task? saved = null)
 		{
@@ -270,6 +278,8 @@ namespace Sigilos.UI.Screens
 			tween.Parallel().TweenMethod(Callable.From<Color>(c => _sigil.SetInk(c)), Palette.Gold, Palette.Frame(best).Lerp(Colors.White, 0.3f), RitualSeconds);
 			tween.TweenProperty(_sigil, "modulate:a", 0f, 0.25);
 			tween.TweenCallback(Callable.From(() => RevealWhenSaved(results, saved)));
+			Sfx.Play("summon.summon_start");
+			Sfx.Play("summon.energy_build", 0.3);
 		}
 
 		private async void RevealWhenSaved(IReadOnlyList<SummonResult> results, Task? saved)
@@ -284,7 +294,8 @@ namespace Sigilos.UI.Screens
 		/// Os cartões aparecem um a um. 4★ e 5★ ganham destaque: um halo de raios atrás, a faixa no alto
 		/// ("4★!", "5★!") e o cartão que salta; o 5★ ainda acende a tela num clarão. Luz e Trevas, os
 		/// elementos mais raros, trocam o ouro e a prata pela cor do elemento, com raios em duas cores e
-		/// o nome do elemento na faixa.
+		/// o nome do elemento na faixa. Cada cartão soa as estrelas dele, na mesma cascata; o monstro novo na
+		/// conta fecha com o registro no grimório.
 		/// </summary>
 		private void Reveal(IReadOnlyList<SummonResult> results)
 		{
@@ -307,6 +318,7 @@ namespace Sigilos.UI.Screens
 				var slot = new Control { Name = $"Result{i + 1}", CustomMinimumSize = new Vector2(width, width * 1.25f), MouseFilter = MouseFilterEnum.Ignore };
 				var card = new CreatureCard(result.Summon, result.Monster, width, null, tag) { Name = "Card", Modulate = new Color(1, 1, 1, 0) };
 				var delay = 0.08 * i;
+				Sfx.Play(RevealSounds[Math.Clamp(result.Summon.Rarity, 1, RevealSounds.Length) - 1], delay);
 				var rare = result.Summon.Rarity >= 4;
 				if (rare)
 				{
@@ -331,6 +343,9 @@ namespace Sigilos.UI.Screens
 
 				_cards.AddChild(slot);
 			}
+
+			if (results.Any(result => result.FirstCopy))
+				Sfx.Play("grimoire.creature_registered", 0.08 * results.Count + 0.4);
 
 			// Espera o grid medir os cartões antes de centralizar.
 			Callable.From(Center).CallDeferred();

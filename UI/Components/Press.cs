@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using Sigilos.UI.Audio;
 
 namespace Sigilos.UI.Components
 {
@@ -66,6 +67,7 @@ namespace Sigilos.UI.Components
 				if (holding)
 				{
 					holding = false;
+					Sfx.Quiet();
 					return;
 				}
 
@@ -120,6 +122,7 @@ namespace Sigilos.UI.Components
 					if (_down)
 					{
 						_down = false;
+						Sfx.Fallback("ui.button_click");
 						Tapped?.Invoke();
 					}
 

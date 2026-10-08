@@ -1221,7 +1221,8 @@
     "rename_in_shop": "Para trocar o nome da conta, procure na Loja.",
     "sound": "Som",
     "volume_master": "Geral",
-    "volume_music": "Música"
+    "volume_music": "Música",
+    "volume_effects": "Efeitos"
   },
 
   "lock": {
