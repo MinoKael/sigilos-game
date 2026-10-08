@@ -16,9 +16,17 @@
   - III, Céu: a Exploração do mês, o mais longe que já chegou e o céu da faixa desenhado a tinta.
   - IV, Selos: doze marcos da jornada e da coleção (dois deles do céu), lacrados em cera quando cumpridos (só registro, sem prêmio).
   - Trocar o retrato passou a ser pelo livro.
-- **Recordes com a equipe:** o melhor tempo de cada luta guarda a equipe que o fez (vale a partir de agora; os tempos antigos ficam sem equipe).
+- **Recordes com a equipe:** o melhor tempo de cada luta guarda a equipe que o fez, a partir de agora.
+  - Nos tempos antigos, o andar mais fundo vencido de cada Masmorra recebe a equipe salva hoje para ela, a mais provável de ter feito o tempo.
+  - Os outros andares antigos ficam sem equipe.
 - **Retrato da conta em duas abas:** Monstros (os da coleção e os de monstro vindos do correio) e Especiais (o padrão e os de recompensa, que não são monstros). O correio pode mandar um especial (`avatar:sigil`).
-- **Chat:** o balão fica sempre no canto de cima à esquerda da janela, em todas as telas (no Santuário também).
+- **Chat:** o balão fica onde cada tela marca:
+  - logo depois do título (Monstros, Runas, Batalha e as outras telas com cabeçalho);
+  - no Santuário, no canto da constelação;
+  - na luta, ao lado da rodada.
+- **Início da conta:** um save de antes da data de início passa a contar da primeira vez que abre depois desta versão.
+- **Guilda:** o save já guarda a data de entrada na guilda atual. Fica reservada, porque ainda não há guildas.
+- **Recalibragem do andar 5:** Ninho da Serpe (escala 3,15 → 4,3) e Forja Rachada (2,3 → 1,7), depois das regras de vitória novas e da chance inata menor.
 - **Música:** o Plano Celestial toca fora das lutas e a Batalha nas lutas, em laço.
   - Ao entrar em combate, o Plano Celestial afunda (cai o volume e o tom) e a Batalha entra por cima.
   - Ao sair, o Plano Celestial volta de onde parou.

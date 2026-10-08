@@ -209,6 +209,7 @@ namespace Sigilos.GameEntry
 		{
 			_store = store;
 			_player = player;
+			Core.Progression.Account.Open(player, _database, DateTime.Now);
 			_playing = true;
 			_monsterFilter = new MonsterFilter();
 			UiSession.Player = player;
@@ -1616,6 +1617,7 @@ namespace Sigilos.GameEntry
 			_current = reshow;
 			screen.Name = screen.GetType().Name;
 			_screens.AddChild(screen);
+			_bubble.Follow(screen);
 			// A Batalha toca na tela de luta; todo o resto é o Plano Celestial (a Batalha automática não tem tela).
 			_music.Play(screen is BattleScreen ? MusicPlayer.Track.Battle : MusicPlayer.Track.Celestial);
 		}

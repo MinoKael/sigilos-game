@@ -269,7 +269,11 @@ namespace Sigilos.UI.Screens
 			title.AddThemeFontSizeOverride("font_size", 20);
 			title.AddThemeColorOverride("font_color", Palette.Gold);
 			header.AddChild(title);
-			header.AddChild(_counters);
+			// O balão do chat fica ao lado da onda e da rodada (as cápsulas se refazem; o lugar dele não).
+			var counters = Layout.Row(8).Named("Status");
+			counters.AddChild(_counters);
+			counters.AddChild(ChatBubble.Slot());
+			header.AddChild(counters);
 			return Pin(header, LayoutPreset.TopLeft);
 		}
 

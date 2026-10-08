@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 
 namespace Sigilos.Core.Progression
@@ -42,6 +43,17 @@ namespace Sigilos.Core.Progression
 		{
 			var current = player.Avatar is { } id ? Of(id, player.AvatarAwakened) : default;
 			return player.Avatar != null && Avatars(player).Contains(current) ? current : new AccountAvatar(SpecialAvatars.Default, false, AvatarKind.Special);
+		}
+
+		/// <summary>
+		/// Completa, ao abrir a conta, o que um save anterior aos campos não tem: o começo da conta passa a ser
+		/// agora (<see cref="PlayerState.Started"/>) e o recorde do andar mais fundo de cada Masmorra ganha a
+		/// equipe (<see cref="Records.FillDeepestTeams"/>). O que já existe não muda.
+		/// </summary>
+		public static void Open(PlayerState player, GameDatabase database, DateTime now)
+		{
+			player.Started ??= now;
+			Records.FillDeepestTeams(player, database);
 		}
 
 		private const string AwakenedSuffix = ":awakened";
