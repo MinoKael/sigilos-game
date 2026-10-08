@@ -30,19 +30,29 @@ namespace Sigilos.Core.Battle
 			return session.Victory == true;
 		}
 
-		/// <summary>
-		/// Um turno no automático: o começo dele e, se a unidade age, a ação. A luta vista da Batalha
-		/// automática anda por aqui, um turno de cada vez, e decide igual a <see cref="Run"/>.
-		/// </summary>
+		/// <summary>Um turno no automático: o começo dele (<see cref="Begin"/>) e, se a unidade age, a ação (<see cref="Act"/>).</summary>
 		public static void Turn(BattleSession session, List<BattleEvent>? log, bool focusBoss)
+		{
+			if (Begin(session, log) is { } actor)
+				Act(session, actor, log, focusBoss);
+		}
+
+		/// <summary>
+		/// O começo de um turno; devolve quem age, ou nulo quando a unidade não age. A luta vista da Batalha
+		/// automática anda pelas duas metades em separado, como a luta jogada, e decide igual a <see cref="Run"/>.
+		/// </summary>
+		public static BattleUnit? Begin(BattleSession session, List<BattleEvent>? log)
 		{
 			var turn = session.BeginTurn();
 			log?.AddRange(turn.Events);
-			if (turn.NeedsDecision)
-			{
-				var acted = session.Act(AutoPilot.For(session, turn.Actor, focusBoss));
-				log?.AddRange(acted);
-			}
+			return turn.NeedsDecision ? turn.Actor : null;
+		}
+
+		/// <summary>A ação de <paramref name="actor"/>, que o <see cref="Begin"/> devolveu.</summary>
+		public static void Act(BattleSession session, BattleUnit actor, List<BattleEvent>? log, bool focusBoss)
+		{
+			var acted = session.Act(AutoPilot.For(session, actor, focusBoss));
+			log?.AddRange(acted);
 		}
 	}
 }

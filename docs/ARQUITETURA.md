@@ -331,7 +331,9 @@ O que o contrato do projeto tem de diferente da especificação:
 - **Camadas por cima vão no alto da árvore.** O `GameRoot` põe a tela num contêiner (`Screens`), o
   selo da Batalha automática depois dele e as janelas (`Dialog`) no controle mais alto (`Layout.Host`),
   que tem o tema; assim cobrem a tela inteira de qualquer botão e sobrevivem à troca de tela. Ordem
-  de desenho: resultado da luta 60, selo 70, janela 80, pausa 99.
+  de desenho: resultado da luta 60, selo 70, janela 80, pausa 99. Cada janela aberta por cima de outra
+  fica 40 acima dela (`Dialog.Layer`): o conteúdo de uma janela pode subir até 30 dentro dela (a luta
+  pequena da Batalha automática e a moldura), e a pergunta de depois ainda cobre tudo.
 - **Texto fora do código.** As telas pedem texto por chave ao `Locale`; o que depende de regra
   (descrição de habilidade, conjunto, efeito) é montado em `Texts` a partir das mesmas regras que o
   combate usa, então a explicação nunca desatualiza. `Tools/texts/check_texts.py` confere as chaves

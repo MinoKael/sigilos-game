@@ -26,6 +26,8 @@
   - na luta, ao lado da rodada.
 - **Início da conta:** um save de antes da data de início passa a contar da primeira vez que abre depois desta versão.
 - **Guilda:** o save já guarda a data de entrada na guilda atual. Fica reservada, porque ainda não há guildas.
+- **Batalha automática, a luta que se assiste:** o alvo só perde Vida quando o golpe chega. Antes, a barra caía no começo do turno, um instante antes de quem ataca correr até ele.
+- **Janelas:** a pergunta aberta por cima de outra janela cobre tudo dela. A moldura azul e o "Tocar para ver em tela cheia" da luta pequena ficavam por cima de "Parar a Batalha automática?".
 - **Recalibragem do andar 5:** Ninho da Serpe (escala 3,15 → 4,3) e Forja Rachada (2,3 → 1,7), depois das regras de vitória novas e da chance inata menor.
 - **Música:** o Plano Celestial toca fora das lutas e a Batalha nas lutas, em laço.
   - Ao entrar em combate, o Plano Celestial afunda (cai o volume e o tom) e a Batalha entra por cima.

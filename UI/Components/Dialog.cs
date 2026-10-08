@@ -31,6 +31,16 @@ namespace Sigilos.UI.Components
 		/// <summary>O tamanho da seta que aponta para o elemento de origem.</summary>
 		private const float Arrow = 12;
 
+		/// <summary>A camada da primeira janela, por cima das telas e dos avisos.</summary>
+		private const int Bottom = 80;
+
+		/// <summary>
+		/// Cada janela fica esta camada acima das abertas antes dela. O conteúdo de uma janela pode subir
+		/// dentro dela (a luta pequena da Batalha automática, com a moldura, sobe até 30), e nada disso passa
+		/// por cima da pergunta que abriu depois.
+		/// </summary>
+		private const int Layer = 40;
+
 		private readonly PanelContainer _panel = new() { Name = "Panel" };
 		/// <summary>
 		/// A rolagem do conteúdo guarda sempre o lugar da barra (<c>Reserve</c>): o conteúdo tem a mesma largura
@@ -74,7 +84,6 @@ namespace Sigilos.UI.Components
 			Name = name;
 			Color = new Color(0, 0, 0, full ? 0.5f : anchor == null ? 0.6f : 0.35f);
 			MouseFilter = MouseFilterEnum.Stop;
-			ZIndex = 80;
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
 			if (full)
@@ -181,9 +190,7 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		public static Dialog Open(Control from, string title, float width = DefaultWidth, Control? anchor = null, string name = "Dialog")
 		{
-			var dialog = new Dialog(title, width, anchor, name);
-			Layout.Host(from).AddChild(dialog);
-			return dialog;
+			return Show(from, new Dialog(title, width, anchor, name));
 		}
 
 		/// <summary>
@@ -192,9 +199,7 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		public static Dialog Full(Control from, string title, string name)
 		{
-			var dialog = new Dialog(title, 0, null, name, true);
-			Layout.Host(from).AddChild(dialog);
-			return dialog;
+			return Show(from, new Dialog(title, 0, null, name, true));
 		}
 
 		/// <summary>Janela contextual só de texto (o que antes seria uma dica), colada em <paramref name="anchor"/>.</summary>
@@ -212,6 +217,15 @@ namespace Sigilos.UI.Components
 			dialog.Body.AddChild(RichText.Label(text, 480).Named("Text"));
 			dialog.AddAction(T("common.cancel"), null).Named("Cancel");
 			dialog.AddAction(confirm, onConfirmed, kind).Named("Confirm");
+			return dialog;
+		}
+
+		/// <summary>Põe <paramref name="dialog"/> por cima da tela de <paramref name="from"/>, uma camada acima das janelas abertas (<see cref="Layer"/>).</summary>
+		private static Dialog Show(Control from, Dialog dialog)
+		{
+			var host = Layout.Host(from);
+			dialog.ZIndex = host.GetChildren().OfType<Dialog>().Where(d => !d._closed).Select(d => d.ZIndex + Layer).DefaultIfEmpty(Bottom).Max();
+			host.AddChild(dialog);
 			return dialog;
 		}
 
