@@ -399,15 +399,15 @@ As equipes de referência são as que um jogador consegue montar com essas taxas
 
 **A dificuldade é a recompensa.** Na Forja, cada andar é tão difícil quanto o que paga: ela se diferencia pelas pedras e pelo elemento, não por uma mecânica de chefe. O andar pede o time que já usa runas como as que ele solta: o 1, quem está na fase 15 (runas 2★ e 3★); o 2, quem está na fase 30 (runas 4★); o 3, o fim da Campanha (nível 20, runas 4★ +12); o 4, 6★ nível 40 com runas 5★ +12; o 5, 6★ nível 40 com runas 6★ +15. Todas abrem durante a Campanha (a Golem na fase 15, a Serpe na 20, a Cripta na 25, o Afogado e a Forja na 30). Cada uma é quase toda do seu elemento, então ganha quem leva a vantagem (Fogo na Golem, Água na Serpe, Luz na Cripta, Vento no Afogado, Trevas na Forja).
 
-**Drop por andar.** Toda Masmorra de runas paga pela mesma tabela, e a Forja usa a de raridade para o grau de cada pedra (2 pedras no andar 5):
+**Drop por andar.** Toda Masmorra de runas paga pela mesma tabela, e a Forja usa a de raridade para o grau de cada pedra (uma pedra por vitória). O andar 4 é o das runas 6★, Heroicas na maioria: é com elas que o time se prepara para o 5. O andar 5 é o das Lendárias, e quem o vence rende mais nele em tudo (por dia de Mana: 49 runas 6★ e 3,9 Lendárias 6★ no andar 4, 60 e 18,2 no 5). A chance de Lendária só sobe do andar 3 em diante. `dotnet run --project Tests -- --drops` confere o drop com a tabela e mostra o rendimento por dia:
 
 | Andar | 2★ | 3★ | 4★ | 5★ | 6★ | Rara | Heroica | Lendária |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | 53,9% | 46,1% | — | — | — | 70,7% | 23,5% | 5,8% |
 | 2 | — | 30,7% | 54,5% | 14,7% | — | 69,3% | 25,7% | 5,0% |
 | 3 | — | — | 58,8% | 39,2% | 2,0% | 69,7% | 25,4% | 4,9% |
-| 4 | — | — | — | 28,2% | 71,8% | 46,5% | 23,1% | 30,4% |
-| 5 | — | — | — | — | 100% | 61,8% | 35,2% | 3,0% |
+| 4 | — | — | — | 28,2% | 71,8% | 60% | 32% | 8% |
+| 5 | — | — | — | — | 100% | 46,5% | 23,1% | 30,4% |
 
 **Exploração Estelar.** O modo de onde vêm os recursos (Data/exploration.json; Core/Progression/Exploration.cs). Um percurso pelas 88 constelações do céu, na ordem de um passeio de verdade: as **Boreais** (centro acima de +20° de declinação; 1 a 21, de Ursa Menor, a Estrela Polar, a Andrômeda), as **Equatoriais** (a faixa do meio, com as 12 do zodíaco; 22 a 51, de Peixes a Pégaso) e as **Austrais** (centro abaixo de −25°; 52 a 88, do Peixe Austral ao Cruzeiro do Sul). Abre depois da fase 30 da Campanha, e cada constelação depois da anterior.
 
