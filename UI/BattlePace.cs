@@ -21,7 +21,7 @@ namespace Sigilos.UI
 	public sealed record Beat(BeatKind Kind, IReadOnlyList<BattleEvent> Events, double Seconds, BattleUnit? Actor = null, IReadOnlyList<BattleUnit>? Targets = null);
 
 	/// <summary>
-	/// O ritmo da luta na tela, como em Summoners War: quem ataca corre até o alvo, golpeia e volta. A
+	/// O ritmo da luta na tela: quem ataca corre até o alvo, golpeia e volta. A
 	/// tela mostra a luta em <see cref="Beats"/>, e a Batalha automática usa a mesma conta para saber
 	/// quanto uma luta levaria — assim as duas nunca discordam.
 	///

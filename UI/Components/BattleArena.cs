@@ -10,7 +10,7 @@ namespace Sigilos.UI.Components
 	/// e os inimigos no arco de cima à direita, frente a frente pela diagonal.
 	///
 	/// Quem ataca corre até o alvo e para na frente dele (<see cref="Approach"/>), dá um tranco a cada golpe
-	/// (<see cref="Bump"/>) e volta ao seu lugar (<see cref="Return"/>), como em Summoners War; num golpe em
+	/// (<see cref="Bump"/>) e volta ao seu lugar (<see cref="Return"/>); num golpe em
 	/// área corre até o meio do grupo. Cada alvo atingido ganha um respingo (<see cref="Splash"/>), todos
 	/// juntos quando o golpe é em área.
 	///

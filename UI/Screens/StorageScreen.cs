@@ -13,7 +13,7 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Monstros, no jeito do Summoners War: à esquerda a grade de cartões, com as abas Coleção e Baú e o
+	/// Monstros: à esquerda a grade de cartões, com as abas Coleção e Baú e o
 	/// botão de selecionar vários; à direita a ficha do escolhido.
 	///
 	/// A ficha tem duas colunas. Na estreita, à esquerda, a régua de abas escritas em pé (Atributos,

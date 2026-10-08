@@ -53,7 +53,7 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void MainStatMatchesTheSummonersWarTable()
+		private static void MainStatMatchesTheReferenceTable()
 		{
 			Assert.Near(0.11, RuneRules.MainValue(RuneStat.AttackPercent, 6, 0), "6★ Ataque% +0", 1e-9);
 			Assert.Near(0.47, RuneRules.MainValue(RuneStat.AttackPercent, 6, 12), "6★ Ataque% +12", 1e-9);
@@ -126,7 +126,7 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void UpgradeCostIsTheSummonersWarAverage()
+		private static void UpgradeCostIsTheReferenceAverage()
 		{
 			Assert.Equal(10, RuneRules.UpgradeCost(1, 0), "1★ +0→+1: 100 da tabela, 10 de Essência");
 			Assert.Equal(32700, RuneRules.UpgradeCost(6, 14), "6★ +14→+15: 16350 da tabela com 5% de chance");

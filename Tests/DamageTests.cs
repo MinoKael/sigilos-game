@@ -14,16 +14,39 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void DefenseFollowsTheSummonersWarCurve()
+		private static void DefenseFollowsTheReferenceCurve()
 		{
-			// Summoners War: 1000 / (1140 + 3,5 × DEF). A nossa é a mesma curva com Defesa 0 = golpe cheio.
+			// A referência (docs/COMBATE.md): 1000 / (1140 + 3,5 × DEF). A nossa é a mesma curva com Defesa 0 = golpe cheio.
 			var attacker = TestData.Unit("a", Side.Allies, attack: 1000, element: Element.Light);
 			foreach (var defense in new[] { 300.0, 700, 1500 })
 			{
 				var target = TestData.Unit("b", Side.Enemies, defense: defense, element: Element.Light);
-				var summonersWar = 1000 * 1000 / (1140 + 3.5 * defense);
-				Assert.Near(summonersWar * 1.14, DamageFormula.Compute(attacker, target, 1, 0, false), $"DEF {defense}", 1);
+				var reference = 1000 * 1000 / (1140 + 3.5 * defense);
+				Assert.Near(reference * 1.14, DamageFormula.Compute(attacker, target, 1, 0, false), $"DEF {defense}", 1);
 			}
+		}
+
+		/// <summary>Ignorar toda a Defesa tira junto a Defesa+ e a Quebra de Defesa; ignorar metade tira metade da Defesa final.</summary>
+		[Test]
+		private static void IgnoringDefenseActsOnTheFinalDefense()
+		{
+			var attacker = TestData.Unit("a", Side.Allies, element: Element.Light);
+			var target = TestData.Unit("b", Side.Enemies, defense: 500, element: Element.Light);
+			target.AddStatus(new StatusEffect(StatusKind.DefenseUp, 2));
+			Assert.Near(100, DamageFormula.Compute(attacker, target, 1, BattleRules.IgnoreDefense, false), "a Defesa+ não conta");
+
+			var broken = TestData.Unit("c", Side.Enemies, defense: 2 * BattleRules.DefenseConstant, element: Element.Light);
+			Assert.Near(50, DamageFormula.Compute(attacker, broken, 1, 0.5, false), "metade de 2K é K: metade do dano");
+		}
+
+		/// <summary>A Passiva de redução continua valendo contra quem ignora a Defesa: ela é regra da unidade, não Defesa.</summary>
+		[Test]
+		private static void ReductionPassiveStillCountsWhenIgnoringDefense()
+		{
+			var attacker = TestData.Unit("a", Side.Allies, element: Element.Light);
+			var passive = new PassiveDefinition { Kind = PassiveKind.DamageReduction, Value = 0.5 };
+			var target = TestData.Unit("b", Side.Enemies, defense: 500, element: Element.Light, passive: passive);
+			Assert.Near(50, DamageFormula.Compute(attacker, target, 1, BattleRules.IgnoreDefense, false), "sem Defesa, ainda pela metade");
 		}
 
 		[Test]
