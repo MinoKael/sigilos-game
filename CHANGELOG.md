@@ -8,6 +8,7 @@
   - A ação com som próprio cala o clique do botão que a pediu: o Evoluir soa a estrela, não o clique.
   - Som novo de nocaute: o ar saindo, o corpo no chão e uma nota de vidro apagando.
 - **Ajustes:** volume de **Efeitos**, ao lado de Geral e Música.
+- **Conferência do drop das Masmorras** (`dotnet run --project Tests -- --drops`): cada andar vence 20 000 vezes pelo jogo de verdade e o que caiu é comparado com a tabela do andar (estrelas, raridade, conjunto, pedras da Forja, Pergaminho Místico, Núcleo de Infusão, Mana, Essência, experiência e o Ouro e o marco da primeira vitória). No fim, o que cada andar rende por dia de Mana. O teste `EveryFloorDropsByItsTable` faz a mesma conferência em toda Masmorra.
 - **Nível da conta até 100.** A experiência para o próximo nível segue 500 × 1,075^(nível − 1): suave no começo, bem maior nos níveis altos.
   - A Mana máxima vai de 100 no nível 1 a 300 no nível 100 (+2 por nível).
   - Os marcos dos níveis passam a somar 20 Núcleos de Infusão do 1 ao 100.

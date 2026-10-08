@@ -36,28 +36,19 @@ namespace Sigilos.Tests
 			Assert.Equal(EntryProblem.NoMana, Dungeons.Check(player, golem, 1), "sem a Mana da vitória não entra");
 		}
 
-		/// <summary>As estrelas e a raridade saem na proporção da tabela do andar, e só o que ela tem.</summary>
+		/// <summary>
+		/// Todo andar de toda Masmorra solta pela tabela dele, e só o que ela tem: a conferência do
+		/// <c>--drops</c> (<see cref="DropReport"/>), com menos vitórias.
+		/// </summary>
 		[Test]
-		private static void RuneDungeonDropsByTheFloorChances()
+		private static void EveryFloorDropsByItsTable()
 		{
-			const int drops = 4000;
 			var database = TestData.LoadReal();
-			var golem = database.Dungeon("golem");
 			var random = new Random(4);
-
-			for (var floor = 1; floor <= golem.Floors.Count; floor++)
-			{
-				var rules = golem.Floor(floor);
-				var player = TestData.PlayerWith("phoenix_fire");
-				var runes = Enumerable.Range(0, drops).Select(_ => Dungeons.ApplyVictory(random, player, golem, floor).Rune!).ToList();
-				Assert.True(runes.All(r => golem.Sets.Contains(r.Set)), "só conjuntos da Masmorra");
-				Assert.True(runes.All(r => rules.Grades.ContainsKey(r.Grade)), $"andar {floor}: só as estrelas da tabela");
-				Assert.True(runes.All(r => rules.Rarities.ContainsKey(r.Rarity)), $"andar {floor}: só as raridades da tabela");
-				foreach (var (grade, chance) in rules.Grades)
-					Assert.True(Math.Abs(100.0 * runes.Count(r => r.Grade == grade) / drops - chance) < 3, $"andar {floor}: {grade}★ perto de {chance}%");
-				foreach (var (rarity, chance) in rules.Rarities)
-					Assert.True(Math.Abs(100.0 * runes.Count(r => r.Rarity == rarity) / drops - chance) < 3, $"andar {floor}: {rarity} perto de {chance}%");
-			}
+			var problems = database.Dungeons
+				.SelectMany(dungeon => Enumerable.Range(1, dungeon.Floors.Count).SelectMany(floor => DropReport.Inspect(dungeon, floor, 3000, random).Problems))
+				.ToList();
+			Assert.Empty(problems, "drop fora da tabela");
 		}
 
 		[Test]
