@@ -31,9 +31,18 @@ namespace Sigilos.UI.Screens
 	/// atributo (com as runas), que então aparece escrito em cada cartão. Os favoritos vêm antes em
 	/// qualquer ordem. O GameRoot guarda a busca enquanto o jogo está aberto (<see cref="FilterChanged"/>).
 	///
+	/// Os monstros que chegaram desde a última visita (<see cref="Roster.IsNew"/>) vêm na frente de tudo,
+	/// com a faixa "Novo!", a aba diz quantos e, abrindo a tela sem escolha, o mais novo já vem escolhido
+	/// (na aba dele). Ao sair pelo Voltar, deixam de ser novos.
+	///
+	/// No Baú, cópias iguais em tudo o que importa (<see cref="MonsterStack"/>) viram um cartão só, com
+	/// "×7"; tocar nele abre as cópias uma a uma (<see cref="CopiesDialog"/>): marcar algumas e só com elas
+	/// tirar do Baú, fundir ou soltar. Sobrando uma cópia, o cartão volta a ser normal.
+	///
 	/// Selecionar vários marca cartões (nas duas abas, qualquer monstro, bloqueado ou não) para guardar no
-	/// Baú, tirar dele ou soltar de uma vez; soltar deixa de fora os bloqueados. Fundir é só pela janela
-	/// da fusão, para uma escolha não se confundir com a outra. Mudar o filtro desmarca os que somem da
+	/// Baú, tirar dele ou soltar de uma vez; soltar deixa de fora os bloqueados. No Baú, tocar num grupo
+	/// marca (ou desmarca) as cópias todas; o cartão diz quantas estão marcadas ("3/7"). Fundir é só pela
+	/// janela da fusão, para uma escolha não se confundir com a outra. Mudar o filtro desmarca os que somem da
 	/// grade, para não soltar nada que não se vê. Toque longo em qualquer cartão abre o resumo. Cada botão vira um evento; o GameRoot aplica a regra e
 	/// chama <see cref="Refresh"/>.
 	/// </summary>
@@ -89,7 +98,9 @@ namespace Sigilos.UI.Screens
 			_database = database;
 			_player = player;
 			_filter = filter ?? new MonsterFilter();
-			_selected = player.Monster(selected ?? -1)?.Id ?? player.Collection.FirstOrDefault()?.Id;
+			_selected = player.Monster(selected ?? -1)?.Id
+				?? player.Monsters.Where(m => Roster.IsNew(player, m)).MaxBy(m => m.Id)?.Id
+				?? player.Collection.FirstOrDefault()?.Id;
 			_showStorage = player.Monster(_selected ?? -1)?.Stored ?? false;
 		}
 
@@ -176,7 +187,7 @@ namespace Sigilos.UI.Screens
 		public void Refresh()
 		{
 			if (_selected is { } id && _player.Monster(id) == null)
-				_selected = _player.Collection.FirstOrDefault()?.Id;
+				_selected = (_showStorage ? _player.Storage : _player.Collection).FirstOrDefault()?.Id ?? _player.Collection.FirstOrDefault()?.Id;
 			_marked.RemoveWhere(marked => _player.Monster(marked) == null);
 
 			_currencies.Refresh(_player);
@@ -192,8 +203,8 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_tools);
 			var tabs = new TextTabs { Name = "Places" };
-			tabs.Add(T("monsters.collection"), $"{_player.Collection.Count()}/{_player.CollectionCapacity}").Name = "Collection";
-			tabs.Add(T("monsters.vault"), _player.Storage.Count().ToString()).Name = "Vault";
+			tabs.Add(T("monsters.collection"), WithNew($"{_player.Collection.Count()}/{_player.CollectionCapacity}", _player.Collection)).Name = "Collection";
+			tabs.Add(T("monsters.vault"), WithNew(_player.Storage.Count().ToString(), _player.Storage)).Name = "Vault";
 			tabs.Select(_showStorage ? 1 : 0);
 			tabs.Changed += index =>
 			{
@@ -220,6 +231,13 @@ namespace Sigilos.UI.Screens
 				? _filter with { Sort = MonsterSort.Stat, SortStat = (Stat)(value - StatOrder) }
 				: _filter with { Sort = (MonsterSort)value });
 			_search.AddChild(sort);
+		}
+
+		/// <summary>A contagem da aba e, se houver, quantos ali são novos.</summary>
+		private string WithNew(string count, IEnumerable<OwnedSummon> place)
+		{
+			var fresh = place.Count(m => Roster.IsNew(_player, m));
+			return fresh == 0 ? count : T("monsters.with_new", count, fresh);
 		}
 
 		/// <summary>As ordens da grade e, depois, uma por atributo.</summary>
@@ -349,35 +367,17 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_roster);
 			var place = (_showStorage ? _player.Storage : _player.Collection).ToList();
-			var monsters = _filter.Apply(place, _database, _player).ToList();
+			// Os novos na frente; entre eles e entre os outros, a ordem do filtro.
+			var monsters = _filter.Apply(place, _database, _player).OrderByDescending(m => Roster.IsNew(_player, m)).ToList();
+			var stacks = _showStorage
+				? MonsterStack.Group(monsters, _player)
+				: monsters.Select(m => new MonsterStack(new[] { m })).ToList();
 
-			foreach (var monster in monsters)
+			foreach (var stack in stacks)
 			{
-				var summon = _database.Summon(monster.SummonId);
-				var inTeam = MonsterNotes.Teams(_database, _player, monster.Id).Count > 0;
-				// Na ordem por atributo, o valor dele (com as runas) fica escrito no cartão.
-				var value = _filter.Sort == MonsterSort.Stat ? Texts.Value(_filter.SortStat, MonsterFilter.Value(monster, summon, _player, _filter.SortStat)) : null;
-				var card = new CreatureCard(summon, monster, CardWidth, inTeam ? "team" : null, value) { Name = $"Monster{monster.Id}" };
-				card.SetSelected(monster.Id == _selected);
-				card.SetMarked(_marked.Contains(monster.Id));
-				card.Pressed += c =>
-				{
-					var clicked = c.Monster!.Id;
-					_touched = clicked;
-					if (_selecting)
-					{
-						if (!_marked.Remove(clicked))
-							_marked.Add(clicked);
-					}
-					else
-					{
-						_selected = clicked;
-					}
-
-					Refresh();
-				};
+				var card = Card(stack);
 				_roster.AddChild(card);
-				if (monster.Id == _touched)
+				if (stack.Copies.Any(c => c.Id == _touched))
 					Layout.Reveal(_rosterScroll, card);
 			}
 
@@ -388,6 +388,49 @@ namespace Sigilos.UI.Screens
 				var empty = place.Count > 0 ? "monsters.filter_empty" : _showStorage ? "monsters.vault_empty" : "monsters.collection_empty";
 				_roster.AddChild(Layout.Text(T(empty), GameTheme.Faded, 400).Named("Empty"));
 			}
+		}
+
+		/// <summary>O cartão de um monstro, ou de um grupo de cópias do Baú (com "×7", ou "3/7" marcadas).</summary>
+		private CreatureCard Card(MonsterStack stack)
+		{
+			var monster = stack.First;
+			var summon = _database.Summon(monster.SummonId);
+			var inTeam = MonsterNotes.Teams(_database, _player, monster.Id).Count > 0;
+			// Na ordem por atributo, o valor dele (com as runas) fica escrito no cartão; o novo diz que é novo.
+			var tag = Roster.IsNew(_player, monster) ? T("monsters.new")
+				: _filter.Sort == MonsterSort.Stat ? Texts.Value(_filter.SortStat, MonsterFilter.Value(monster, summon, _player, _filter.SortStat)) : null;
+			var card = new CreatureCard(summon, monster, CardWidth, inTeam ? "team" : null, tag) { Name = stack.Count > 1 ? $"Group{monster.Id}" : $"Monster{monster.Id}" };
+			var marked = stack.Copies.Count(c => _marked.Contains(c.Id));
+			card.SetSelected(stack.Copies.Any(c => c.Id == _selected));
+			card.SetMarked(marked == stack.Count);
+			card.SetCount(stack.Count, marked);
+			card.Pressed += _ => Tap(stack);
+			return card;
+		}
+
+		/// <summary>Na seleção, marca ou desmarca (o grupo inteiro); fora dela, escolhe e, num grupo, abre as cópias.</summary>
+		private void Tap(MonsterStack stack)
+		{
+			var ids = stack.Copies.Select(c => c.Id).ToList();
+			_touched = ids[0];
+			if (_selecting)
+			{
+				if (ids.All(_marked.Contains))
+					_marked.ExceptWith(ids);
+				else
+					_marked.UnionWith(ids);
+			}
+			else if (!ids.Contains(_selected ?? -1))
+			{
+				_selected = ids[0];
+			}
+
+			Refresh();
+			if (!_selecting && stack.Count > 1)
+				CopiesDialog.Open(this, _database, _player, stack,
+					retrieved => RetrieveManyRequested?.Invoke(retrieved),
+					(target, materials) => FuseRequested?.Invoke(target, materials),
+					released => ReleaseRequested?.Invoke(released));
 		}
 
 		// Ficha ------------------------------------------------------------------------------------

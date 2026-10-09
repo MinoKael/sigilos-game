@@ -59,6 +59,10 @@ namespace Sigilos.Core.Player
 			return true;
 		}
 
+		/// <summary>Equipa várias de uma vez, cada uma como em <see cref="Equip"/> (a prova da tela de Runas); devolve quantas entraram.</summary>
+		public static int EquipMany(PlayerState player, IEnumerable<Rune> runes, int monsterId) =>
+			runes.ToList().Count(rune => Equip(player, rune, monsterId));
+
 		/// <summary>Tira a runa do monstro, se cabe no inventário.</summary>
 		public static bool Unequip(PlayerState player, Rune rune)
 		{

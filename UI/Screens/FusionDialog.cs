@@ -17,7 +17,7 @@ namespace Sigilos.UI.Screens
 	/// marca as do mesmo elemento; as outras se marcam tocando. Embaixo, a lista do que vai sumir; Fundir
 	/// pergunta de novo, com a lista e os avisos, e só então funde. Cada cópia sobe uma habilidade
 	/// sorteada em um nível, então não se marca mais do que ainda cabe. Bloqueadas aparecem apagadas,
-	/// com o cadeado, e não se marcam.
+	/// com o cadeado, e não se marcam. Aberta das cópias do Baú, já vem com as escolhidas lá marcadas.
 	/// </summary>
 	public sealed class FusionDialog
 	{
@@ -38,7 +38,7 @@ namespace Sigilos.UI.Screens
 		private readonly Label _message = new() { Name = "Message", AutowrapMode = TextServer.AutowrapMode.WordSmart, Visible = false };
 		private readonly HBoxContainer _tools = Layout.Row(10).Named("Tools");
 
-		private FusionDialog(Control from, GameDatabase database, PlayerState player, OwnedSummon target, Action<IReadOnlyList<int>> fuse)
+		private FusionDialog(Control from, GameDatabase database, PlayerState player, OwnedSummon target, Action<IReadOnlyList<int>> fuse, IEnumerable<int>? marked)
 		{
 			_database = database;
 			_player = player;
@@ -63,11 +63,14 @@ namespace Sigilos.UI.Screens
 			_message.CustomMinimumSize = new Vector2(Width - 40, 0);
 			_message.AddThemeColorOverride("font_color", Palette.Negative);
 			_dialog.Body.AddChild(_message);
+			if (marked != null)
+				Preselect(marked.ToHashSet());
 			Refresh();
 		}
 
-		public static FusionDialog Open(Control from, GameDatabase database, PlayerState player, OwnedSummon target, Action<IReadOnlyList<int>> fuse) =>
-			new(from, database, player, target, fuse);
+		/// <param name="marked">As cópias que já vêm marcadas (as que cabem; bloqueadas não).</param>
+		public static FusionDialog Open(Control from, GameDatabase database, PlayerState player, OwnedSummon target, Action<IReadOnlyList<int>> fuse, IEnumerable<int>? marked = null) =>
+			new(from, database, player, target, fuse, marked);
 
 		/// <summary>
 		/// As cópias da família (as da mesma variante primeiro, depois as mais fracas: as que menos custam
@@ -158,6 +161,15 @@ namespace Sigilos.UI.Screens
 			else
 				_marked.Add(copy.Id);
 			Refresh();
+		}
+
+		/// <summary>Marca <paramref name="ids"/> na ordem da janela até onde cabe; se sobrar alguma, avisa.</summary>
+		private void Preselect(IReadOnlySet<int> ids)
+		{
+			var wanted = _copies.Where(c => ids.Contains(c.Id) && !c.Locked).ToList();
+			_marked.AddRange(wanted.Take(_room).Select(c => c.Id));
+			if (wanted.Count > _room)
+				Say(T("monsters.fusion_full", _room));
 		}
 
 		/// <summary>Marca as cópias da mesma variante (as mais fracas primeiro) até onde cabe.</summary>

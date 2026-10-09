@@ -98,6 +98,13 @@ namespace Sigilos.Core.Player
 
 		public int NextMonsterId { get; set; } = 1;
 
+		/// <summary>
+		/// O monstro mais novo (o maior id) que a conta já viu na tela de Monstros: os que chegaram depois
+		/// são os novos (<see cref="Roster.IsNew"/>). Num save anterior ao campo, ao abrir a conta, todos
+		/// contam como vistos (<see cref="Progression.Account.Open"/>).
+		/// </summary>
+		public int? SeenMonster { get; set; }
+
 		/// <summary>Uma equipe por conteúdo (<see cref="Player.Teams"/>): ids de monstro, a primeira é a Líder.</summary>
 		public Dictionary<string, List<int>> Teams { get; set; } = new();
 

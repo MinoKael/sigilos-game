@@ -9,6 +9,9 @@ namespace Sigilos.Core.Player
 		/// <summary>Bloqueado: não se solta nem vira material de fusão.</summary>
 		Locked,
 
+		/// <summary>Desbloqueado: o que ainda pode sumir numa fusão ou ao soltar.</summary>
+		Unlocked,
+
 		/// <summary>Em alguma equipe (Campanha ou Masmorra).</summary>
 		InTeam,
 

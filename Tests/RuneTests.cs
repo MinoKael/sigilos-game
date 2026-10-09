@@ -181,6 +181,32 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void SwapPreviewReplacesTheSlotAndClosesSets()
+		{
+			var baseStats = new StatBlock { Health = 1000, Attack = 100, Defense = 100, Speed = 100 };
+			var equipped = new List<Rune>
+			{
+				Rune(RuneSet.Haste, 1, RuneStat.AttackFlat, level: 15),
+				Rune(RuneSet.Haste, 2, RuneStat.Speed, level: 15),
+				Rune(RuneSet.Haste, 3, RuneStat.DefenseFlat, level: 15),
+				Rune(RuneSet.Vigor, 4, RuneStat.AttackPercent, level: 15),
+			};
+			var fourth = Rune(RuneSet.Haste, 4, RuneStat.AttackPercent, level: 15);
+			var swapped = RuneSwap.Apply(equipped, new[] { fourth });
+
+			Assert.Equal("1,2,3,4", string.Join(",", swapped.Select(r => r.Slot)), "um por espaço, em ordem");
+			Assert.True(swapped.Contains(fourth) && !swapped.Contains(equipped[3]), "a nova toma o espaço 4");
+			Assert.Equal(0, RuneBonuses.Compute(baseStats, equipped).ActiveSets.Count, "três de Rapidez não fecham");
+			Assert.Equal(1, RuneBonuses.Compute(baseStats, swapped).ActiveSets.Count, "com a quarta, fecha");
+			Assert.Equal(4, equipped.Count, "a lista de agora fica como estava");
+
+			var sixth = Rune(RuneSet.Vigor, 6, RuneStat.Accuracy, level: 15);
+			Assert.Equal(5, RuneSwap.Apply(equipped, new[] { fourth, sixth }).Count, "espaço vazio ganha runa");
+			var other = Rune(RuneSet.Vigor, 4, RuneStat.HealthPercent);
+			Assert.True(RuneSwap.Apply(equipped, new[] { fourth, other }).Contains(other), "no mesmo espaço, fica a última");
+		}
+
+		[Test]
 		private static void EquipSwapsTheSlotAndStoredMonstersKeepTheirRunes()
 		{
 			var player = TestData.PlayerWith("imp_fire", "imp_water");

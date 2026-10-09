@@ -51,12 +51,14 @@ namespace Sigilos.Core.Progression
 
 		/// <summary>
 		/// Completa, ao abrir a conta, o que um save anterior aos campos não tem: o começo da conta passa a ser
-		/// agora (<see cref="PlayerState.Started"/>) e o recorde do andar mais fundo de cada Masmorra ganha a
+		/// agora (<see cref="PlayerState.Started"/>), os monstros que já tem contam como vistos
+		/// (<see cref="PlayerState.SeenMonster"/>) e o recorde do andar mais fundo de cada Masmorra ganha a
 		/// equipe (<see cref="Records.FillDeepestTeams"/>). O que já existe não muda.
 		/// </summary>
 		public static void Open(PlayerState player, GameDatabase database, DateTime now)
 		{
 			player.Started ??= now;
+			player.SeenMonster ??= player.NextMonsterId - 1;
 			Records.FillDeepestTeams(player, database);
 		}
 

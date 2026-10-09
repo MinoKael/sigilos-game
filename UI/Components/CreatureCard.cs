@@ -11,10 +11,11 @@ namespace Sigilos.UI.Components
 	/// Cartão de monstro: estrelas de agora no alto à esquerda (douradas, roxas depois do Despertar), o
 	/// elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à direita. A moldura é
 	/// pelas estrelas naturais (bronze, prata, ouro). Um símbolo pequeno embaixo à esquerda marca o que
-	/// importa ali (na equipe, Líder), o cadeado ao lado dele diz que o monstro está bloqueado, o
-	/// coração abaixo das estrelas marca o favorito, do outro lado, abaixo do elemento, os níveis de
-	/// habilidade subidos ("3/8", ou "Max" com todas no máximo), e uma faixa escrita embaixo diz o que o
-	/// jogador precisa saber na hora ("Novo!", "Líder").
+	/// importa ali (na equipe, Líder), o disco de ouro com o cadeado ao lado dele diz que o monstro está
+	/// bloqueado, o coração abaixo das estrelas marca o favorito, do outro lado, abaixo do elemento, os
+	/// níveis de habilidade subidos ("3/8", ou "Max" com todas no máximo), e uma faixa escrita embaixo
+	/// diz o que o jogador precisa saber na hora ("Novo!", "Líder"). Um cartão que junta cópias iguais
+	/// (o Baú) leva a plaquinha "×7" na borda de baixo (<see cref="SetCount"/>).
 	///
 	/// Toque curto é <see cref="Pressed"/> (escolher, marcar); toque longo abre o resumo do monstro
 	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado na seleção
@@ -27,6 +28,9 @@ namespace Sigilos.UI.Components
 		private readonly int _border;
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly Press _press = new();
+		private readonly Control _layer = new() { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
+		private readonly float _width;
+		private PanelContainer? _count;
 		private bool _selected;
 		private bool _marked;
 
@@ -37,6 +41,7 @@ namespace Sigilos.UI.Components
 		{
 			Summon = summon;
 			Monster = monster;
+			_width = width;
 			var awakened = monster?.Awakened ?? awakenedPreview;
 
 			CustomMinimumSize = new Vector2(width, width * 1.25f);
@@ -53,7 +58,7 @@ namespace Sigilos.UI.Components
 			_box.ShadowOffset = new Vector2(0, 2);
 			AddThemeStyleboxOverride("panel", _box);
 
-			var layer = new Control { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
+			var layer = _layer;
 			AddChild(layer);
 
 			// O desenho cabe inteiro entre as estrelas e o nível, recortado no miolo arredondado do cartão.
@@ -135,15 +140,51 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
+		/// <summary>
+		/// Quantas cópias o cartão junta: "×7" numa plaquinha de ouro no meio da borda de baixo, ou
+		/// "3/7" quando parte delas está marcada. Uma cópia só tira a plaquinha.
+		/// </summary>
+		public void SetCount(int count, int marked = 0)
+		{
+			_count?.QueueFree();
+			_count = null;
+			if (count <= 1)
+				return;
+
+			_count = new PanelContainer { Name = "Count", MouseFilter = MouseFilterEnum.Ignore };
+			var box = GameTheme.Box(Palette.Gold, Palette.Background, 2, 8, 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 6;
+			_count.AddThemeStyleboxOverride("panel", box);
+			var label = new Label
+			{
+				Name = "Text",
+				Text = marked > 0 && marked < count ? $"{marked}/{count}" : $"×{count}",
+				ThemeTypeVariation = GameTheme.Number,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				MouseFilter = MouseFilterEnum.Ignore,
+			};
+			label.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(_width * 0.16f), 12, 20));
+			label.AddThemeColorOverride("font_color", Palette.Background);
+			label.AddThemeConstantOverride("outline_size", 0);
+			_count.AddChild(label);
+			_count.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
+			_count.GrowHorizontal = GrowDirection.Both;
+			_count.GrowVertical = GrowDirection.Begin;
+			_layer.AddChild(_count);
+		}
+
 		public override void _GuiInput(InputEvent @event) => _press.Feed(this, @event);
 
-		/// <summary>O cadeado do monstro bloqueado, embaixo à esquerda (ao lado do símbolo, se houver um).</summary>
+		/// <summary>
+		/// O cadeado do monstro bloqueado: disco de ouro com o cadeado escuro, embaixo à esquerda (ao lado
+		/// do símbolo, se houver um). Cheio e claro, não se confunde com nada mais do cartão.
+		/// </summary>
 		private static Control LockBadge(float width, bool besideMarker)
 		{
-			var size = Math.Max(16, width * 0.17f);
-			var badge = new PanelContainer { Name = "Lock", MouseFilter = MouseFilterEnum.Ignore };
-			badge.AddThemeStyleboxOverride("panel", GameTheme.Box(new Color(Palette.Inset, 0.92f), Palette.GoldDark, 1, (int)size, 2));
-			badge.AddChild(Doodle.Icon(Art.Icon("lock"), (int)(size - 4), Palette.Gold).Named("Icon"));
+			var size = Math.Max(20, width * 0.24f);
+			var badge = new PanelContainer { Name = "Lock", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(size, size) };
+			badge.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Gold, Palette.Background, 2, (int)size, 3));
+			badge.AddChild(Doodle.Icon(Art.Icon("lock"), (int)(size - 8), Palette.Background).Named("Icon"));
 			badge.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
 			badge.GrowVertical = GrowDirection.Begin;
 			badge.OffsetLeft = badge.OffsetRight = besideMarker ? width * 0.21f : 0;

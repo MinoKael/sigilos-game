@@ -1196,7 +1196,13 @@ namespace Sigilos.GameEntry
 		private void ShowStorage(int? selected)
 		{
 			var storage = new StorageScreen(_database, _player, selected, _monsterFilter);
-			storage.BackRequested += () => _storageBack();
+			storage.BackRequested += () =>
+			{
+				// Saiu da tela: os novos foram vistos.
+				if (Roster.MarkSeen(_player))
+					Save();
+				_storageBack();
+			};
 			storage.FilterChanged += filter => _monsterFilter = filter;
 			storage.RunesRequested += id => ShowRunes(id, () => ShowStorage(id));
 			storage.InfuseRequested += (id, toMax) => Change(() =>
@@ -1269,6 +1275,7 @@ namespace Sigilos.GameEntry
 			var runes = new RuneScreen(_database, _player, monsterId);
 			runes.BackRequested += _ => back();
 			runes.EquipRequested += (id, monster) => Change(() => Sfx.PlayIf(RuneInventory.Equip(_player, Rune(id), monster), "ui.equip_item"), runes.Refresh);
+			runes.EquipManyRequested += (ids, monster) => Change(() => Sfx.PlayIf(RuneInventory.EquipMany(_player, ids.Select(Rune), monster) > 0, "ui.equip_item"), runes.Refresh);
 			runes.UnequipRequested += id => Change(() => Sfx.PlayIf(RuneInventory.Unequip(_player, Rune(id)), "ui.unequip_item"), runes.Refresh);
 			runes.UpgradeRequested += (id, target) => Change(() => UpgradeRune(Rune(id), target), runes.Refresh);
 			runes.GrindRequested += (id, index, tool) => Change(() => Sfx.PlayIf(RuneInventory.Grind(_random, _player, Rune(id), index, tool), "grimoire.magic_ink"), runes.Refresh);

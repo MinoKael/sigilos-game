@@ -1,6 +1,19 @@
 # Changelog — Sigilos
 
 ## 08/10/2026
+- **Runas: a prévia antes de equipar.** Escolher uma runa que não está no monstro já mostra a ficha de agora ao lado da que ele teria com ela, e a diferença pronta: + em verde, − em vermelho, apagado o que não muda. Conta o valor fixo, o percentual e os conjuntos (os que fecham e os que abrem), e a runa aparece no espaço dela no círculo, em azul.
+  - **Provar** guarda a runa numa prova, uma por espaço, e a prévia soma a prova à runa escolhida: dá para montar a combinação inteira e comparar outras sem perder a referência, porque a coluna "Agora" segue sendo o monstro como está. **Equipar N** põe a prova toda de uma vez; **Limpar** larga.
+  - Tocar numa runa não remonta mais a grade: só troca o destaque, a coluna da esquerda e a ficha da runa. Com centenas de runas, a lista fica onde estava.
+  - Botões mais baixos (Filtros, Ordenar, Onde, as ações da runa), e a coluna da esquerda com a ficha sempre à vista.
+- **Monstros: os novos na frente.** Os que chegaram desde a última visita à tela vêm antes de todos, com a faixa "Novo!", e a aba diz quantos ("90/100 · Novos: 1"). Abrindo a tela, o mais novo já vem escolhido. Ao sair, deixam de ser novos (o save guarda até onde a conta viu).
+- **Monstros, filtro por situação:** Desbloqueados.
+- **Cadeado bem à vista:** o monstro bloqueado leva um disco de ouro, maior, com o cadeado escuro.
+- **Baú: cópias iguais num cartão só.** Monstros iguais em estrelas, nível, Despertar, habilidades, bloqueio, favorito e runas viram um cartão com "×7"; os que diferem em algo disso ficam em cartões separados (bloqueadas de um lado, novas de outro).
+  - Tocar no cartão abre as cópias uma a uma: marcar algumas ou todas e, só com as marcadas, **Tirar do Baú** (até onde a coleção tiver vaga), **Fundir em…** (a escolha do monstro que as recebe, e a fusão abre com elas já marcadas) ou **Soltar**.
+  - Depois de cada ação a janela mostra as que sobraram; sobrando uma, o cartão volta a ser normal.
+  - Em Selecionar vários, tocar num grupo marca as cópias todas; o cartão diz quantas estão marcadas ("3/7").
+- **Santuário:** a constelação fica no meio exato do quadro, em qualquer altura dele.
+
 - **Sons próprios.** Uma biblioteca de 62 efeitos sonoros, toda sintetizada para Sigilos, sem nenhum áudio de fora: interface, grimório, constelações, invocação, recompensas, combate (acertos, os cinco elementos, o chefe) e progressão.
   - O som do jogo é o de um grimório mágico entre constelações, feito para morar dentro da música: harpa, celesta, sinos macios, taça e feltro, no mesmo tom dela (Mi menor / Sol maior), com a assinatura Ré–Lá–Mi. Nada de estalo duro, agudo agressivo, distorção ou explosão.
   - Volume em degraus, sempre por baixo da música: o que se repete é o mais baixo, a navegação um pouco acima, a luta comum no meio, as habilidades grandes e as recompensas raras acima, e a invocação 5★ no topo. Importância vem das camadas (acorde maior, coro, a subida antes), não de volume.

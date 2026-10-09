@@ -16,6 +16,19 @@ namespace Sigilos.Core.Player
 		/// <summary>Quantas vagas a coleção ainda tem.</summary>
 		public static int FreeSlots(PlayerState player) => System.Math.Max(0, player.CollectionCapacity - player.Collection.Count());
 
+		/// <summary>Chegou depois da última visita à tela de Monstros (<see cref="PlayerState.SeenMonster"/>).</summary>
+		public static bool IsNew(PlayerState player, OwnedSummon monster) => monster.Id > (player.SeenMonster ?? int.MaxValue);
+
+		/// <summary>O jogador viu os monstros: nenhum é mais novo. Falso se já não havia nenhum.</summary>
+		public static bool MarkSeen(PlayerState player)
+		{
+			if (player.SeenMonster == player.NextMonsterId - 1)
+				return false;
+
+			player.SeenMonster = player.NextMonsterId - 1;
+			return true;
+		}
+
 		/// <summary>Uma cópia nova da variante, nas estrelas naturais e no nível 1: na coleção, ou no Baú se a coleção está cheia.</summary>
 		public static OwnedSummon Add(PlayerState player, SummonDefinition summon)
 		{

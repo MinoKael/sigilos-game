@@ -27,8 +27,11 @@ namespace Sigilos.UI.Components
 		/// <summary>O raio dos orbes em volta.</summary>
 		private const float Orb = 30;
 
-		/// <summary>A altura do centro, em fração do painel: um pouco acima do meio, para caber o que vai embaixo.</summary>
-		private const float CenterHeight = 0.45f;
+		/// <summary>
+		/// A altura do centro, em fração do painel: o meio, então a carta do céu e os orbes ficam centrados
+		/// no quadro em qualquer altura dele (o que vai embaixo do centro cabe dentro da órbita de fora).
+		/// </summary>
+		private const float CenterHeight = 0.5f;
 
 		/// <summary>A tinta da carta do céu: índigo, apagada, para ficar atrás dos fios.</summary>
 		private static readonly Color ChartInk = new(Palette.Indigo, 0.45f);
