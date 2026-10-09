@@ -389,11 +389,35 @@
   "skill": {
     "chance": "{0} chance of ",
     "damage": "{0}{1} Attack damage {2}",
+    "damage_formula": "{0}{1} damage {2}",
+    "fixed": ", fixed damage (no Defense, element or crit)",
+    "term": {
+      "Attack": "{0} Attack",
+      "Defense": "{0} Defense",
+      "MaxHealth": "{0} Max HP",
+      "Speed": "{0} Speed",
+      "TargetMaxHealth": "{0} of the target's Max HP",
+      "Level": "{0} per level"
+    },
+    "measure": {
+      "HealthFraction": "current HP %",
+      "TargetHealthFraction": "the target's current HP %",
+      "LivingAllies": "living allies %"
+    },
+    "factor": {
+      "HealthFraction": "{0} at empty HP to {1} at full HP",
+      "TargetHealthFraction": "{0} with the target at empty HP to {1} at full HP",
+      "LivingAllies": "{0} with no allies standing to {1} with all standing"
+    },
+    "speed": "(Speed{0}) / {1}",
+    "speed_target": "target's Speed",
     "hits": "{0} hits of ",
     "ignores": ", ignoring {0} of Defense",
     "drain": ", draining {0} as HP",
     "heal": "heals {0} HP {1}",
+    "heal_formula": "heals {0} {1}",
     "shield": "{0} of {1} HP {2} for {3}",
+    "shield_formula": "{0} of {1} {2} for {3}",
     "effect": "{0}{1} {2} for {3}",
     "impetus": "{0}{1}% {2} {3}",
     "cleanse": "removes one harmful effect {0}",
@@ -426,6 +450,10 @@
     "shorten": "{0}shortens {2} {3} by {1}",
     "equalize": "levels the HP {0} to the same share",
     "heal_team": "heals {0} HP of the {1} most injured {2}",
+    "heal_team_formula": "heals {0} to the {1} most injured {2}",
+    "revive": "revives the fallen allies with {0}",
+    "revive_some": "revives {1} random fallen allies with {0}",
+    "revive_health": "{0} HP",
     "joint": "{0} allies attack along with their basic skill",
     "joint_all": "all allies attack along with their basic skill",
     "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}",
@@ -963,8 +991,10 @@
       "MultiHit": "Multi-hit",
       "IgnoreDefense": "Ignores Defense",
       "Drain": "Drains HP",
+      "FixedDamage": "Fixed damage",
       "Heal": "Heal",
       "Shield": "Shield",
+      "Revive": "Revives allies",
       "Buff": "Buff",
       "Debuff": "Debuff",
       "Cleanse": "Removes debuffs",
@@ -980,8 +1010,15 @@
     "scaling": "Scales with",
     "scaling_kind": {
       "Attack": "Attack",
+      "Defense": "Defense",
       "MaxHealth": "Max HP",
-      "TargetMaxHealth": "Target's Max HP"
+      "Speed": "Speed",
+      "TargetMaxHealth": "Target's Max HP",
+      "Level": "Level",
+      "HealthFraction": "Current HP",
+      "TargetHealthFraction": "Target's current HP",
+      "TargetSpeed": "Target's Speed",
+      "LivingAllies": "Living allies"
     },
     "applies": "Applies",
     "monster_order": {
@@ -1431,9 +1468,7 @@
     },
     "special": {
       "default": "Default",
-      "sigil": "Summoning Sigil",
-      "grimoire": "Grimoire",
-      "star": "Guiding Star"
+      "astronaut_helmet": "Astronaut Helmet"
     },
     "empty": "Summon monsters to pick the account portrait from them."
   },

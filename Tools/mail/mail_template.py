@@ -1,9 +1,9 @@
 """Gera docs/mail_template.json: o template do correio (POST /admin/mail no sigilos-server).
 
 Monta, a partir do jogo, o catálogo do que uma carta pode trazer: as moedas (MailItem), as raridades
-e os conjuntos de runa (RuneRarity, RuneSet) com os nomes de Data/texts/pt-BR.json, e os ids de todos
-os monstros de Data/summons. Antes de gravar, confere o "template" e cada exemplo contra as regras do
-servidor (MailRewards em D:/dev/sigilos-server/Server/Program.cs) e do jogo (MailGift.Parse): um
+e os conjuntos de runa (RuneRarity, RuneSet) com os nomes de Data/texts/pt-BR.json, os ids de todos
+os monstros de Data/summons e os dos retratos especiais (um por desenho de Assets/Avatars). Antes de
+gravar, confere o "template" e cada exemplo contra as regras do servidor (MailRewards em D:/dev/sigilos-server/Server/Program.cs) e do jogo (MailGift.Parse): um
 exemplo inválido para tudo. Os limites abaixo copiam os do servidor; se ele mudar, mude aqui também.
 
 Uso:
@@ -21,6 +21,7 @@ CONTENT = ROOT / "Core" / "Content"
 PROGRESSION = ROOT / "Core" / "Progression"
 TEXTS = ROOT / "Data" / "texts" / "pt-BR.json"
 SUMMONS = ROOT / "Data" / "summons"
+AVATARS = ROOT / "Assets" / "Avatars"
 INFUSION_CORE = "infusion_core"
 
 # MailRewards no servidor.
@@ -62,11 +63,18 @@ def monsters():
     return {f"{stars}★": dict(sorted(ids.items())) for stars, ids in sorted(by_stars.items())}
 
 
+def specials(texts):
+    """Como SpecialAvatars.IdOf: o nome do desenho em minúsculas, com "_" no lugar de "-"."""
+    names = texts["avatar"]["special"]
+    ids = (svg.stem.lower().replace("-", "_") for svg in sorted(AVATARS.glob("*.svg")))
+    return {i: names.get(i, "(sem nome em Data/texts)") for i in ids if i != "default"}
+
+
 def item_limit(item):
     return LIMITED_ITEMS.get(item, MAX_AMOUNT)
 
 
-def check(name, body, items, rarities, sets, monster_ids):
+def check(name, body, items, rarities, sets, monster_ids, special_ids):
     errors = []
     title, text, days = body.get("title", "").strip(), body.get("text", "").strip(), body.get("expiresInDays")
     if not 1 <= len(title) <= 80 or len(text) > 2000 or (days is not None and not 1 <= days <= 365):
@@ -86,7 +94,7 @@ def check(name, body, items, rarities, sets, monster_ids):
                 errors.append(f"{key}: o jogo não conhece a raridade ou o conjunto")
         elif AVATAR_KEY.fullmatch(key):
             limit = 1
-            if key.split(":")[1] not in monster_ids:
+            if key.split(":")[1] not in monster_ids | special_ids:
                 errors.append(f"{key}: o jogo não conhece o retrato")
         else:
             errors.append(f"{key}: invalid_reward")
@@ -107,6 +115,7 @@ def main():
     sets = {s: texts["set"][s] for s in enum_members(CONTENT / "RuneSet.cs")}
     catalog_monsters = monsters()
     monster_ids = {i for group in catalog_monsters.values() for i in group} | {INFUSION_CORE}
+    catalog_specials = specials(texts)
 
     template = {
         "to": "<nome da conta, e-mail ou *>",
@@ -172,9 +181,16 @@ def main():
             "rewards": {"avatar:imp_fire": 1, "avatar:dragon_dark:awakened": 1},
         },
     }
+    if catalog_specials:
+        examples["retrato_especial"] = {
+            "to": "*",
+            "title": "Retrato especial",
+            "text": "Um retrato que não é monstro, para quem coletar.",
+            "rewards": {f"avatar:{next(iter(catalog_specials))}": 1},
+        }
 
     errors = [e for name, body in {"template": template, **examples}.items()
-              for e in check(name, body, items, rarities, sets, monster_ids)]
+              for e in check(name, body, items, rarities, sets, monster_ids, set(catalog_specials))]
     if errors:
         print("\n".join(errors))
         sys.exit(1)
@@ -231,7 +247,8 @@ def main():
                 "ids": catalog_monsters,
             },
             "retratos": {
-                "_regra": "chave avatar:<id> ou avatar:<id>:awakened; quantidade sempre 1. Os ids são os mesmos de catalogo.monstros.ids",
+                "_regra": "chave avatar:<id> ou avatar:<id>:awakened; quantidade sempre 1. De monstro: os ids de catalogo.monstros.ids; especiais (sem :awakened): os de especiais, um por desenho de Assets/Avatars",
+                "especiais": catalog_specials,
             },
         },
     }

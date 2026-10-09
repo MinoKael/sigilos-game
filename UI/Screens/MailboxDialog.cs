@@ -120,7 +120,7 @@ namespace Sigilos.UI.Screens
 			}
 
 			if (gift.Kind == MailGiftKind.Avatar && SpecialAvatars.Has(gift.Id))
-				return Layout.Labeled(SpecialAvatars.IconOf(gift.Id), "", T("mail.gift.avatar", T($"avatar.special.{gift.Id}")), Palette.Gold);
+				return Layout.Labeled(Art.SpecialAvatar(gift.Id), "", T("mail.gift.avatar", T($"avatar.special.{gift.Id}")), Palette.Gold);
 
 			var summon = _database is { } database && database.HasSummon(gift.Id) ? database.Summon(gift.Id) : null;
 			if (summon == null)

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Sigilos.Core.Content
 {
 	/// <summary>
@@ -25,6 +28,13 @@ namespace Sigilos.Core.Content
 	///   básica o alvo da habilidade.
 	/// - ExtraTurnOnKill: se a habilidade derrubou alguém até aqui, turno extra para quem lança e
 	///   <see cref="Turns"/> turnos a menos na recarga dela.
+	/// - Revive: traz de volta, na hora, os aliados caídos (<see cref="Count"/> deles, sorteados; 0 = todos)
+	///   com <see cref="Power"/> da Vida máxima de cada um.
+	///
+	/// A conta de Damage, Heal, HealTeam, Shield e Revive (<see cref="EffectScaling"/>): <see cref="Power"/> ×
+	/// o atributo de sempre do tipo (ou <see cref="Stat"/>), mais cada termo de <see cref="Plus"/>, vezes
+	/// <see cref="Factor"/> e <see cref="Speed"/>. <see cref="Fixed"/> faz o dano não passar pela Defesa,
+	/// pelo elemento nem pelo crítico.
 	///
 	/// <see cref="By"/> diz o que LowestAlly e HighestAlly comparam (em qualquer tipo, e no <see cref="From"/>).
 	///
@@ -58,10 +68,27 @@ namespace Sigilos.Core.Content
 		/// <summary>BonusPerStatus: o que cada efeito contado dá.</summary>
 		public BonusKind Bonus { get; init; }
 
-		/// <summary>HealTeam e JointAttack: quantos alvos (0 = todos).</summary>
+		/// <summary>HealTeam, JointAttack e Revive: quantos alvos (0 = todos).</summary>
 		public int Count { get; init; }
 
 		/// <summary>LowestAlly e HighestAlly: o valor comparado (o padrão é a fração de Vida).</summary>
 		public TargetRank By { get; init; }
+
+		/// <summary>O atributo do <see cref="Power"/> no lugar do de sempre do tipo (nulo: o de sempre).</summary>
+		public ScaleStat? Stat { get; init; }
+
+		/// <summary>Termos somados a <see cref="Power"/> × o atributo: 0,5 do Ataque mais 0,08 da Vida máxima.</summary>
+		public IReadOnlyList<ScaleTerm> Plus { get; init; } = NoTerms;
+
+		/// <summary>Multiplica a conta por uma fração de agora (a Vida de quem lança, a do alvo, os aliados de pé).</summary>
+		public ScaleFactor? Factor { get; init; }
+
+		/// <summary>Multiplica a conta pela Velocidade de quem lança.</summary>
+		public SpeedFactor? Speed { get; init; }
+
+		/// <summary>Damage: dano fixo, sem Defesa, elemento nem crítico; o que mexe no dano recebido pelo alvo ainda conta.</summary>
+		public bool Fixed { get; init; }
+
+		private static readonly IReadOnlyList<ScaleTerm> NoTerms = Array.Empty<ScaleTerm>();
 	}
 }

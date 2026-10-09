@@ -142,6 +142,7 @@ namespace Sigilos.GameEntry
 			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles. Antes de abrir um save
 			// (a tela de login), vale o idioma do último jogo deste aparelho.
 			_language = Argument("--language=") ?? _account.Language ?? _account.OfflineStore.Load()?.Language ?? ContentLoader.BaseLanguage;
+			ContentLoader.LoadAvatars();
 			ContentLoader.LoadTexts(_language);
 			_database = ContentLoader.Load();
 			UiSession.Database = _database;

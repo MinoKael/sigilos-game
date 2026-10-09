@@ -45,7 +45,7 @@ namespace Sigilos.Core.Content
 
 		/// <summary>
 		/// A habilidade como ela luta: no nível pedido, desperta ou não. Dano, cura e chance já vêm com
-		/// os bônus de nível; a recarga já vem descontada.
+		/// os bônus de nível (no power e em cada termo somado a ele); a recarga já vem descontada.
 		/// </summary>
 		public SkillDefinition At(int level, bool awakened)
 		{
@@ -57,8 +57,8 @@ namespace Sigilos.Core.Content
 
 			var prepared = effects.Select(e => e.Kind switch
 			{
-				EffectKind.Damage => e with { Power = e.Power * damage },
-				EffectKind.Heal or EffectKind.Shield => e with { Power = e.Power * recovery },
+				EffectKind.Damage => e with { Power = e.Power * damage, Plus = Scaled(e.Plus, damage) },
+				EffectKind.Heal or EffectKind.Shield or EffectKind.Revive => e with { Power = e.Power * recovery, Plus = Scaled(e.Plus, recovery) },
 				EffectKind.Status when e.Chance < 1 => e with { Chance = Math.Min(1, e.Chance + rate) },
 				_ => e,
 			}).ToList();
@@ -71,5 +71,8 @@ namespace Sigilos.Core.Content
 				Passive = Passive is { } passive ? passive with { Effects = prepared } : null,
 			};
 		}
+
+		private static IReadOnlyList<ScaleTerm> Scaled(IReadOnlyList<ScaleTerm> terms, double bonus) =>
+			terms.Count == 0 ? terms : terms.Select(t => t with { Power = t.Power * bonus }).ToList();
 	}
 }

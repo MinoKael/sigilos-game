@@ -65,7 +65,8 @@ dele). A Bomba já trata o atordoamento dela para acabar no mesmo turno (`BombSt
 ## Dano
 
 D = ATQ × M × K / (K + DEF) × E × C × (dano recebido pelo alvo) × (dano causado por quem bate),
-`DamageFormula.Compute`.
+`DamageFormula.Apply`. ATQ × M é a conta do efeito na habilidade de sempre; com outra conta (veja "Em
+que atributo a habilidade escala"), ela entra no lugar.
 
 - **Defesa.** A curva é a da referência, 1000 / (1140 + 3,5 × DEF), mas normalizada para Defesa 0
   valer o golpe cheio: K = 1140 / 3,5 ≈ 326 (`BattleRules.DefenseConstant`). Na referência, ignorar a
@@ -86,7 +87,12 @@ D = ATQ × M × K / (K + DEF) × E × C × (dano recebido pelo alvo) × (dano ca
 Na referência, dano fixo ignora a Defesa, não tem crítico nem acaso, e ainda sofre o que mexe no dano
 recebido (Marca) e as Passivas de redução.
 
-Nenhuma habilidade do Sigilos dá dano fixo. O dano que não passa pela fórmula é dano de efeito:
+No Sigilos é o campo `fixed` de um efeito de dano (`EffectDefinition.Fixed`): a conta inteira chega ao
+alvo sem Defesa, elemento nem crítico, e sem sortear o crítico. Conta o dano recebido pelo alvo
+(Maldição, Passivas de redução) e o escudo absorve; o dano causado por quem bate não entra. Dano no
+mínimo 1, como o resto (`DamageFormula.Apply`).
+
+Fora ele, o dano que não passa pela fórmula é dano de efeito:
 
 - **Bomba:** ATQ de quem pôs × `BattleRules.BombDamageMultiplier`; sem Defesa, elemento ou crítico;
   conta o dano recebido pelo alvo (Maldição) e o escudo absorve. É o mesmo comportamento do dano fixo
@@ -104,14 +110,36 @@ alvo em %, Vida atual em %, Vida atual, Vida perdida, nível de quem ataca, Velo
 Velocidade do alvo, aliados vivos em %, inimigos vivos, e as marcas de dano fixo, de vários golpes
 (xN), de soma fixa (+N) e de Passiva.
 
-O Sigilos escala só no que o design dele tem, e não importa os outros:
+Os efeitos de dano, cura, cura do time, escudo e Revive têm uma conta (`Core/Content/EffectScaling.cs`,
+feita em `Core/Battle/EffectAmount.cs`):
+
+conta = (power × atributo + Σ plus.power × plus.stat) × (factor.base + factor.slope × fração) × (VEL + speed.add) / (speed.over ou VEL do alvo)
+
+- **Atributo:** o de sempre do tipo (dano: Ataque de quem lança; cura, cura do time e Revive: Vida
+  máxima do alvo; escudo: Vida máxima de quem lança) ou o de `stat`: Attack, Defense, MaxHealth, Speed,
+  TargetMaxHealth ou Level. Todos são de quem lança, menos TargetMaxHealth; Level usa o power como valor
+  por nível (110 = 110 por nível).
+- **plus:** termos somados, cada um com o atributo e o power dele. Os bônus da habilidade (nível de dano
+  ou de cura, `BonusPerStatus`) valem no power e nos termos.
+- **factor:** `by` é HealthFraction (Vida atual de quem lança), TargetHealthFraction (a do alvo) ou
+  LivingAllies (aliados de pé, quem lança conta), de 0 a 1. Base e slope 0 juntos não valem.
+- **speed:** a Velocidade de agora de quem lança mais `add`, dividida por `over` ou, com `overTarget`,
+  pela Velocidade do alvo.
+- **fixed** (só dano): veja Dano fixo.
+
+A conta nunca é negativa. Sem esses campos ela é a de sempre e dá o mesmo número de antes (o `--digest`
+não muda). O orçamento de BVP não vê a conta: uma habilidade que lê Defesa, Vida ou Velocidade dá mais a
+um monstro forte nisso, e o balanço dela é feito na mão, no simulador (o Family Builder mostra quanto a
+conta dá na variante). Da planilha, ficam de fora a Vida atual e a perdida em número, a Velocidade
+relativa, os inimigos vivos e a soma fixa (+N).
 
 | Efeito | Escala em | Onde |
 | --- | --- | --- |
-| Dano | Ataque de quem lança (× multiplicador, em N golpes) | `DamageFormula`, `DamageEffect` |
-| Cura | Vida máxima do alvo | `HealEffect` |
-| Cura do time | Vida máxima de cada alvo | `HealTeam` |
-| Escudo | Vida máxima de quem lança | `ShieldEffect` |
+| Dano | Ataque de quem lança (× multiplicador, em N golpes), ou a conta | `EffectAmount`, `DamageFormula`, `DamageEffect` |
+| Cura | Vida máxima do alvo, ou a conta | `HealEffect` |
+| Cura do time | Vida máxima de cada alvo, ou a conta | `HealTeam` |
+| Escudo | Vida máxima de quem lança, ou a conta | `ShieldEffect` |
+| Revive | Vida máxima de quem volta, ou a conta; quem já ia voltar sozinho (Passiva) fica de fora | `ReviveEffect` |
 | Bomba | Ataque de quem pôs | `BombStatus` |
 | Aflição | Vida máxima do dono | `DamageOverTime` |
 | Bênção | Vida máxima do dono | `HealOverTime` |
@@ -122,15 +150,16 @@ O Sigilos escala só no que o design dele tem, e não importa os outros:
 | Perdição | Ímpeto por fatia da Vida máxima do dono perdida num golpe (`RuneSets.BaneStep`) | `BaneSet` |
 | Nivelar Vida | Não é dano: a média das frações de Vida | `EqualizeHealthEffect` |
 
-O teto do Oblívio e o passo da Perdição usam a Vida máxima só como limite ou medida, não como dano:
-nenhum golpe do Sigilos tira uma fração da Vida máxima do alvo.
+O teto do Oblívio e o passo da Perdição usam a Vida máxima só como limite ou medida, não como dano: um
+golpe só tira uma fração da Vida máxima do alvo com um termo TargetMaxHealth na conta.
 
-Escalar em Defesa, Velocidade ou na Vida do alvo seria uma regra nova de design, não uma correção.
-Os filtros de Monstros usam esta mesma tabela (`Core/Player/SkillTraits.cs`).
+Os filtros de Monstros (Escala) leem a conta (`Core/Player/SkillTraits.cs`): cada atributo e fração que
+ela usa, mais a Velocidade do alvo.
 
-**Escala nova.** Só entra com uma habilidade que precise dela e com a decisão escrita no GDD. Aí: um
-`EffectKind` (ou campo do efeito) que diga a escala, a estratégia que lê o atributo, a linha nesta
-tabela, a linha em `SkillTraits` e um teste. Nunca uma fórmula copiada da planilha ou da referência.
+**Termo novo.** Um atributo é uma linha em `ScaleStat` e em `EffectAmount.Values`; uma fração, em
+`ScaleMeasure` e em `EffectAmount.Measures`. Mais a linha em `SkillTraits`, os textos (`skill.term`,
+`skill.measure`, `skill.factor`), as linhas do Family Builder (`SCALE_VALUES` ou `SCALE_MEASURES` e as
+docs) e um teste. Os números de cada habilidade são do balanço do Sigilos, nunca copiados da planilha.
 
 ## Ignorar redução de dano
 

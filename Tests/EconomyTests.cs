@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
@@ -78,27 +81,56 @@ namespace Sigilos.Tests
 		private static void SpecialPortraitsAreApartFromMonsters()
 		{
 			var player = TestData.PlayerWith("imp_fire");
+			Assert.True(SpecialAvatars.All.Count > 1, "Assets/Avatars tem desenhos");
+			var special = SpecialAvatars.All[1];
 			var first = Account.Avatars(player)[0];
 			Assert.Equal(new AccountAvatar(SpecialAvatars.Default, false, AvatarKind.Special), first, "o padrão vem primeiro, em toda conta");
 			Assert.Equal(first, Account.Current(player), "sem escolha, o retrato é o padrão");
-			Assert.False(Account.SetAvatar(player, "sigil", false), "o especial que não chegou não vale");
+			Assert.False(Account.SetAvatar(player, special, false), "o especial que não chegou não vale");
 
 			var mail = new Mail("m1", "", "", new Dictionary<MailItem, int>(), DateTimeOffset.UnixEpoch, null)
 			{
-				Gifts = [new MailGift(MailGiftKind.Avatar, "sigil", 1, Awakened: true), new MailGift(MailGiftKind.Avatar, "phoenix_fire", 1)],
+				Gifts = [new MailGift(MailGiftKind.Avatar, special, 1, Awakened: true), new MailGift(MailGiftKind.Avatar, "phoenix_fire", 1)],
 			};
 			Assert.True(Mailbox.Claim(player, mail, TestData.Database), "o correio entrega os dois");
 			var unlocked = Account.Avatars(player);
-			Assert.True(unlocked.Contains(new AccountAvatar("sigil", false, AvatarKind.Special)), "o especial do correio é especial, sem forma desperta");
+			Assert.True(unlocked.Contains(new AccountAvatar(special, false, AvatarKind.Special)), "o especial do correio é especial, sem forma desperta");
 			Assert.True(unlocked.Contains(new AccountAvatar("phoenix_fire", false, AvatarKind.Summon)), "o de monstro do correio é de monstro");
 
-			Assert.True(Account.SetAvatar(player, "sigil", false), "o especial vira retrato");
-			Assert.Equal(new AccountAvatar("sigil", false, AvatarKind.Special), Account.Current(player), "e é o de agora");
+			Assert.True(Account.SetAvatar(player, special, false), "o especial vira retrato");
+			Assert.Equal(new AccountAvatar(special, false, AvatarKind.Special), Account.Current(player), "e é o de agora");
 			Assert.True(Account.SetAvatar(player, SpecialAvatars.Default, false), "o padrão sempre vale");
 			Assert.Equal(null, player.Avatar, "e volta a ser nulo no save");
 
 			player.Avatar = "imp_dark";
 			Assert.Equal(SpecialAvatars.Default, Account.Current(player).Id, "um retrato que a conta não tem mais mostra o padrão");
+		}
+
+		/// <summary>Cada desenho de Assets/Avatars é um retrato especial: com um id que a chave do correio aceita, o PNG gerado e o nome nos dois idiomas.</summary>
+		[Test]
+		private static void SpecialPortraitsAreTheDrawingsOfTheAvatarsFolder()
+		{
+			var files = TestData.AvatarFiles().ToList();
+			Assert.True(files.Count > 0, "Assets/Avatars tem desenhos");
+			Assert.Equal(files.Count + 1, SpecialAvatars.All.Count, "um especial por desenho, mais o padrão");
+			Assert.Equal(SpecialAvatars.Default, SpecialAvatars.All[0], "o padrão vem primeiro");
+			foreach (var file in files)
+			{
+				var id = SpecialAvatars.IdOf(file);
+				Assert.Equal(file, SpecialAvatars.FileOf(id), $"{id} aponta para o desenho");
+				Assert.True(Regex.IsMatch(id, "^[a-z0-9_]+$"), $"{id} cabe na chave do correio (avatar:<id>)");
+				Assert.True(File.Exists(Path.Combine(Program.ProjectRoot, "Assets", "Rendered", "Avatars", $"{file}_128.png")), $"{file}: falta rodar Tools/art/render_png.py");
+			}
+
+			Assert.True(SpecialAvatars.Has("astronaut_helmet"), "astronaut-helmet.svg vira avatar:astronaut_helmet");
+			Assert.False(SpecialAvatars.Has("sigil"), "os especiais de antes saíram");
+			foreach (var language in new[] { "pt-BR", "en" })
+			{
+				var text = File.ReadAllText(Path.Combine(Program.ProjectRoot, "Data", "texts", $"{language}.json"));
+				using var document = JsonDocument.Parse(text, new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
+				var names = document.RootElement.GetProperty("avatar").GetProperty("special").EnumerateObject().Select(p => p.Name).ToList();
+				Assert.Equal(string.Join(",", SpecialAvatars.All.OrderBy(id => id)), string.Join(",", names.OrderBy(id => id)), $"{language}: avatar.special tem um nome por especial, e só eles");
+			}
 		}
 
 		[Test]

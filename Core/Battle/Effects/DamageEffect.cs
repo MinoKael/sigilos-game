@@ -4,7 +4,8 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Battle.Effects
 {
 	/// <summary>
-	/// Dano: <see cref="EffectDefinition.Hits"/> golpes de <see cref="EffectDefinition.Power"/> do Ataque.
+	/// Dano: <see cref="EffectDefinition.Hits"/> golpes de <see cref="EffectDefinition.Power"/> do Ataque (ou da
+	/// conta do efeito: <see cref="EffectAmount"/>).
 	/// Os golpes vão em rodadas — cada um acerta todos os alvos antes do próximo —, então um golpe em
 	/// área com 2 golpes é "todos, depois todos" (e a tela mostra cada rodada de uma vez).
 	///
@@ -23,11 +24,7 @@ namespace Sigilos.Core.Battle.Effects
 					if (!cast.Caster.IsAlive)
 						return;
 
-					cast.Resolver.Land(new Strike(cast, target, effect.Power * cast.Scale)
-					{
-						IgnoreDefense = effect.IgnoreDefense,
-						Drain = effect.Drain,
-					});
+					cast.Resolver.Land(new Strike(cast, target, effect));
 				}
 			}
 		}

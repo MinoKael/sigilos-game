@@ -134,6 +134,14 @@
         "avatar:imp_fire": 1,
         "avatar:dragon_dark:awakened": 1
       }
+    },
+    "retrato_especial": {
+      "to": "*",
+      "title": "Retrato especial",
+      "text": "Um retrato que não é monstro, para quem coletar.",
+      "rewards": {
+        "avatar:astronaut_helmet": 1
+      }
     }
   },
   "catalogo": {
@@ -379,7 +387,10 @@
       }
     },
     "retratos": {
-      "_regra": "chave avatar:<id> ou avatar:<id>:awakened; quantidade sempre 1. Os ids são os mesmos de catalogo.monstros.ids"
+      "_regra": "chave avatar:<id> ou avatar:<id>:awakened; quantidade sempre 1. De monstro: os ids de catalogo.monstros.ids; especiais (sem :awakened): os de especiais, um por desenho de Assets/Avatars",
+      "especiais": {
+        "astronaut_helmet": "Capacete de Astronauta"
+      }
     }
   }
 }

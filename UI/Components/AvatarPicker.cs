@@ -36,7 +36,7 @@ namespace Sigilos.UI.Components
 				return Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Circle, boil: false, aura: current.Awakened ? summon.Element : null);
 			}
 
-			return Doodle.Masked(Art.Icon(SpecialAvatars.IconOf(current.Id)), Palette.Gold, MaskShape.Circle, boil: false);
+			return Doodle.Masked(Art.SpecialAvatar(current.Id), Palette.Gold, MaskShape.Circle, boil: false);
 		}
 
 		/// <summary>As abas dos retratos que a conta pode usar, o de agora aceso; <paramref name="chosen"/> recebe o id e se é a forma desperta.</summary>
@@ -94,7 +94,7 @@ namespace Sigilos.UI.Components
 
 		/// <summary>Os de monstro pela raridade, família, elemento e o desperto depois; os especiais na ordem do catálogo.</summary>
 		private static IEnumerable<AccountAvatar> Ordered(GameDatabase database, AvatarKind kind, List<AccountAvatar> avatars) => kind == AvatarKind.Special
-			? avatars.OrderBy(a => SpecialAvatars.All.Select(s => s.Id).ToList().IndexOf(a.Id))
+			? avatars.OrderBy(a => SpecialAvatars.All.ToList().IndexOf(a.Id))
 			: avatars
 				.OrderByDescending(a => database.Summon(a.Id).Rarity)
 				.ThenBy(a => database.Summon(a.Id).FamilyId)
@@ -126,7 +126,7 @@ namespace Sigilos.UI.Components
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Panel, border, current ? 3 : 2, (int)(Side / 2), 4));
 			frame.AddChild(summon != null
 				? Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Circle, boil: false, aura: avatar.Awakened ? summon.Element : null)
-				: Doodle.Masked(Art.Icon(SpecialAvatars.IconOf(avatar.Id)), Palette.Gold, MaskShape.Circle, boil: false));
+				: Doodle.Masked(Art.SpecialAvatar(avatar.Id), Palette.Gold, MaskShape.Circle, boil: false));
 			column.AddChild(frame);
 			var name = new Label
 			{

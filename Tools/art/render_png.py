@@ -24,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 ASSETS = ROOT / "Assets"
 OUTPUT = ASSETS / "Rendered"
-FOLDERS = ("Icons", "Glyphs", "Creatures", "Elements", "Effects")
+FOLDERS = ("Icons", "Glyphs", "Creatures", "Elements", "Effects", "Avatars")
 SIZES = (32, 64, 128, 256, 512)
 DEFAULT_INKSCAPE = "C:/Program Files/Inkscape/bin/inkscape.exe"
 

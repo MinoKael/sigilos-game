@@ -390,11 +390,35 @@
   "skill": {
     "chance": "{0} de chance de ",
     "damage": "{0}{1} do Ataque {2}",
+    "damage_formula": "{0}{1} {2}",
+    "fixed": ", dano fixo (sem Defesa, elemento nem crítico)",
+    "term": {
+      "Attack": "{0} do Ataque",
+      "Defense": "{0} da Defesa",
+      "MaxHealth": "{0} da Vida máxima",
+      "Speed": "{0} da Velocidade",
+      "TargetMaxHealth": "{0} da Vida máxima do alvo",
+      "Level": "{0} por nível"
+    },
+    "measure": {
+      "HealthFraction": "a Vida atual em %",
+      "TargetHealthFraction": "a Vida atual do alvo em %",
+      "LivingAllies": "os aliados de pé em %"
+    },
+    "factor": {
+      "HealthFraction": "{0} com a Vida vazia a {1} com a Vida cheia",
+      "TargetHealthFraction": "{0} com o alvo sem Vida a {1} com o alvo de Vida cheia",
+      "LivingAllies": "{0} sem aliados de pé a {1} com todos de pé"
+    },
+    "speed": "(Velocidade{0}) / {1}",
+    "speed_target": "Velocidade do alvo",
     "hits": "{0} golpes de ",
     "ignores": ", ignora {0} da Defesa",
     "drain": ", drena {0} como Vida",
     "heal": "cura {0} da Vida {1}",
+    "heal_formula": "cura {0} {1}",
     "shield": "{0} de {1} da Vida {2} por {3}",
+    "shield_formula": "{0} de {1} {2} por {3}",
     "effect": "{0}{1} {2} por {3}",
     "impetus": "{0}{1}% de {2} {3}",
     "cleanse": "remove um efeito negativo {0}",
@@ -427,6 +451,10 @@
     "shorten": "{0}encurta em {1} {2} {3}",
     "equalize": "nivela a Vida {0} na mesma fração",
     "heal_team": "cura {0} da Vida dos {1} mais feridos {2}",
+    "heal_team_formula": "cura {0} nos {1} mais feridos {2}",
+    "revive": "traz de volta os aliados caídos com {0}",
+    "revive_some": "traz de volta {1} aliados caídos, sorteados, com {0}",
+    "revive_health": "{0} da Vida",
     "joint": "{0} aliados atacam junto, com a básica",
     "joint_all": "todos os aliados atacam junto, com a básica",
     "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}",
@@ -964,8 +992,10 @@
       "MultiHit": "Vários golpes",
       "IgnoreDefense": "Ignora Defesa",
       "Drain": "Drena Vida",
+      "FixedDamage": "Dano fixo",
       "Heal": "Cura",
       "Shield": "Escudo",
+      "Revive": "Revive aliados",
       "Buff": "Efeito positivo",
       "Debuff": "Efeito negativo",
       "Cleanse": "Remove negativos",
@@ -981,8 +1011,15 @@
     "scaling": "Escala em",
     "scaling_kind": {
       "Attack": "Ataque",
+      "Defense": "Defesa",
       "MaxHealth": "Vida máxima",
-      "TargetMaxHealth": "Vida máxima do alvo"
+      "Speed": "Velocidade",
+      "TargetMaxHealth": "Vida máxima do alvo",
+      "Level": "Nível",
+      "HealthFraction": "Vida atual",
+      "TargetHealthFraction": "Vida atual do alvo",
+      "TargetSpeed": "Velocidade do alvo",
+      "LivingAllies": "Aliados de pé"
     },
     "applies": "Põe o efeito",
     "monster_order": {
@@ -1432,9 +1469,7 @@
     },
     "special": {
       "default": "Padrão",
-      "sigil": "Sigilo de Invocação",
-      "grimoire": "Grimório",
-      "star": "Estrela-guia"
+      "astronaut_helmet": "Capacete de Astronauta"
     },
     "empty": "Invoque monstros para escolher entre eles o retrato da conta."
   },

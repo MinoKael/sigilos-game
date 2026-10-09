@@ -21,6 +21,7 @@ namespace Sigilos.Core.Battle.Effects
 			[EffectKind.HealTeam] = new HealEffect(),
 			[EffectKind.JointAttack] = new JointAttackEffect(),
 			[EffectKind.ExtraTurnOnKill] = new ExtraTurnOnKillEffect(),
+			[EffectKind.Revive] = new ReviveEffect(),
 		};
 
 		public static SkillEffect Of(EffectKind kind) => Table[kind];

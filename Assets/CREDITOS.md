@@ -155,6 +155,7 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Icons/hemisphere_boreal.svg` | [Night-sky - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Night-sky_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/hemisphere_equatorial.svg` | [Star-formation - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Star-formation_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/hemisphere_austral.svg` | [Galaxy - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Galaxy_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Avatars/astronaut-helmet.svg` (retrato especial) | [astronaut-helmet, em game-icons.net](https://game-icons.net/1x1/delapouite/astronaut-helmet.html) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 
 ## Fontes
 

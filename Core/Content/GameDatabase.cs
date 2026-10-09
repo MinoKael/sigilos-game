@@ -396,7 +396,7 @@ namespace Sigilos.Core.Content
 				yield return problem;
 		}
 
-		private static IEnumerable<string> ValidateSkill(SkillDefinition skill)
+		internal static IEnumerable<string> ValidateSkill(SkillDefinition skill)
 		{
 			if (skill.Effects.Count == 0 && !skill.IsPassive)
 				yield return $"'{skill.Name}' não tem efeitos.";
@@ -418,6 +418,16 @@ namespace Sigilos.Core.Content
 					yield return $"'{skill.Name}': bônus por efeito sem valor.";
 				if (effect.Count < 0)
 					yield return $"'{skill.Name}': quantidade {effect.Count} negativa.";
+				if (!EffectScaling.Scales(effect.Kind) && EffectScaling.IsCustom(effect))
+					yield return $"'{skill.Name}': {effect.Kind} não tem conta (stat, plus, factor e speed são de Damage, Heal, HealTeam, Shield e Revive).";
+				if (effect.Fixed && effect.Kind != EffectKind.Damage)
+					yield return $"'{skill.Name}': só o dano é fixo.";
+				if (effect.Speed is { OverTarget: false, Over: <= 0 })
+					yield return $"'{skill.Name}': speed sem divisor (over maior que 0, ou overTarget).";
+				if (effect.Factor is { Base: 0, Slope: 0 })
+					yield return $"'{skill.Name}': factor com base e slope 0: a conta dá sempre 0.";
+				if (effect.Kind == EffectKind.Revive && effect.Power <= 0 && effect.Plus.Count == 0)
+					yield return $"'{skill.Name}': Revive sem Vida para voltar.";
 			}
 
 			if (skill.Passive is { UsesEffects: true } && skill.Effects.Count == 0)

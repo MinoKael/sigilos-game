@@ -1,3 +1,5 @@
+using Sigilos.Core.Content;
+
 namespace Sigilos.Core.Battle
 {
 	/// <summary>
@@ -8,11 +10,14 @@ namespace Sigilos.Core.Battle
 	/// </summary>
 	internal sealed class Strike
 	{
-		public Strike(Cast cast, BattleUnit target, double power)
+		public Strike(Cast cast, BattleUnit target, EffectDefinition effect)
 		{
 			Cast = cast;
 			Target = target;
-			Power = power;
+			Effect = effect;
+			Power = effect.Power * cast.Scale;
+			IgnoreDefense = effect.IgnoreDefense;
+			Drain = effect.Drain;
 		}
 
 		/// <summary>A habilidade de que o golpe faz parte.</summary>
@@ -22,8 +27,14 @@ namespace Sigilos.Core.Battle
 		public BattleUnit Attacker => Cast.Caster;
 		public BattleUnit Target { get; }
 
-		/// <summary>Multiplicador sobre o Ataque (0,8 = 80%).</summary>
+		/// <summary>O efeito de dano: a conta do golpe (<see cref="EffectAmount"/>).</summary>
+		public EffectDefinition Effect { get; }
+
+		/// <summary>Multiplicador sobre o atributo do efeito (0,8 = 80% do Ataque), já com os bônus da habilidade.</summary>
 		public double Power { get; set; }
+
+		/// <summary>Dano fixo: não passa pela Defesa, pelo elemento nem pelo crítico.</summary>
+		public bool Fixed => Effect.Fixed;
 
 		/// <summary>Fração da Defesa do alvo que o golpe ignora (1 = toda).</summary>
 		public double IgnoreDefense { get; set; }

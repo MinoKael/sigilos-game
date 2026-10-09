@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Sigilos.Core.Progression;
 
 namespace Sigilos.Tests
 {
@@ -34,6 +35,8 @@ namespace Sigilos.Tests
 
 		private static int Main(string[] args)
 		{
+			SpecialAvatars.Register(TestData.AvatarFiles());
+
 			if (args.Contains("--balance"))
 				return BalanceLab.Run(TestData.LoadReal(), args);
 

@@ -105,6 +105,12 @@ table.edit input{width:86px;background:var(--input);border:1px solid var(--line)
 .fx-tools button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:6px;padding:2px 7px;font-size:12px}
 .fx-tools button:disabled{opacity:.35}
 .fx-doc{flex-basis:100%;font-size:11px;color:var(--muted);margin:0}
+details.fx-scale{flex-basis:100%;border-top:1px dashed var(--line);padding-top:5px}
+details.fx-scale summary{cursor:pointer;font-size:11.5px;color:#cdd7ef}
+.fx-formula{font:11.5px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--accent)}
+.fx-scale-cells{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 8px;margin-top:6px}
+.fx-term{display:flex;align-items:flex-end;gap:4px;border:1px solid var(--line);border-radius:6px;padding:3px 5px}
+.fx-term button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:6px;padding:2px 7px;font-size:12px;align-self:center}
 .fx-empty{font-size:12px;color:var(--muted);padding:4px 2px}
 details.fx-json{margin-top:6px}
 details.fx-json summary{cursor:pointer;font-size:11px;color:var(--muted)}
@@ -258,14 +264,16 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 {
   "roles": ["HP", "Attack", "Defense", "Support"],
   "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
-  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill"],
+  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive"],
   "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy"],
   "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "bonuses": ["Damage", "Heal", "Impeto"],
   "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying"],
-  "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"]
+  "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"],
+  "scaleStats": ["Attack", "Defense", "MaxHealth", "Speed", "TargetMaxHealth", "Level"],
+  "scaleMeasures": ["HealthFraction", "TargetHealthFraction", "LivingAllies"]
 }
 </script>
 
@@ -523,7 +531,7 @@ const Core = (() => {
   // O nome do elemento em português: os nomes dos dados nascem em português ("Dragão de Fogo").
   const ELEMENT_NAMES = {Fire: "Fogo", Water: "Água", Wind: "Vento", Light: "Luz", Dark: "Trevas"};
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed"];
   // Efeitos e status ---------------------------------------------------------------------------------
   // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
   // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
@@ -569,6 +577,69 @@ const Core = (() => {
     Crit: "a Chance Crítico", CritDamage: "o Dano Crítico", Resistance: "a Resistência", Accuracy: "a Precisão", Impeto: "o Ímpeto acumulado",
   };
   const SCOPE_DOCS = {All: "todos os efeitos", Buffs: "só os positivos", Debuffs: "só os negativos"};
+  // A conta dos efeitos com valor (Core/Content/EffectScaling.cs e Core/Battle/EffectAmount.cs): power × o
+  // atributo de sempre do tipo (ou stat), mais os termos de plus, vezes factor e speed. O BVP não vê a conta:
+  // o balanço de uma habilidade que escala em outra coisa é feito na mão.
+  const USUAL_STAT = {Damage: "Attack", Heal: "TargetMaxHealth", HealTeam: "TargetMaxHealth", Shield: "MaxHealth", Revive: "TargetMaxHealth"};
+  const SCALE_KEYS = ["stat", "plus", "factor", "speed", "fixed"];
+  const SCALE_STAT_DOCS = {
+    Attack: "o ATK de quem lança", Defense: "a DEF de quem lança", MaxHealth: "a Vida máxima de quem lança", Speed: "a Velocidade de quem lança",
+    TargetMaxHealth: "a Vida máxima do alvo", Level: "o nível de quem lança (o power é o valor por nível: 110 = 110 por nível)",
+  };
+  const SCALE_MEASURE_DOCS = {
+    HealthFraction: "a Vida atual de quem lança, de 0 a 1", TargetHealthFraction: "a Vida atual do alvo, de 0 a 1",
+    LivingAllies: "os aliados de pé, de 0 a 1 (quem lança conta)",
+  };
+  const SCALE_FIELDS = {
+    stat: "o atributo do power no lugar do de sempre (Attack, Defense, MaxHealth, Speed, TargetMaxHealth, Level)",
+    plus: "termos somados: [{\"stat\": \"MaxHealth\", \"power\": 0.08}] (os bônus de nível valem neles também)",
+    factor: "{by, base, slope}: vezes base + slope × a fração by (HealthFraction, TargetHealthFraction, LivingAllies)",
+    speed: "{add, over}: vezes (Velocidade + add) / over; com overTarget: true, dividido pela Velocidade do alvo",
+  };
+  const STAT_SHORT = {Attack: "ATK", Defense: "DEF", MaxHealth: "MAX HP", Speed: "SPD", TargetMaxHealth: "MAX HP do alvo", Level: "nível"};
+  const MEASURE_SHORT = {HealthFraction: "Vida atual %", TargetHealthFraction: "Vida atual do alvo %", LivingAllies: "aliados de pé %"};
+  const short = x => String(+num(x, 0).toFixed(4));
+
+  /** A conta vai além do de sempre (outro atributo, um termo ou um fator). Igual a EffectScaling.IsCustom. */
+  const isCustom = effect => ["stat", "plus", "factor", "speed"].some(key => effect[key] !== undefined);
+
+  /** A conta na notação da planilha: "0.5×ATK + 0.08×MAX HP", "1×DEF × (8.5 − 3×Vida atual %)". Vazio se o tipo não tem conta. */
+  function formulaText(effect) {
+    const usual = USUAL_STAT[effect.kind];
+    if (!usual) return "";
+    const term = (stat, power) => `${short(power)}×${STAT_SHORT[stat] || stat}`;
+    const terms = (Array.isArray(effect.plus) ? effect.plus.filter(isPlain) : []).map(t => term(t.stat, t.power));
+    if (num(effect.power, 0) !== 0 || terms.length === 0) terms.unshift(term(effect.stat || usual, effect.power));
+    const factors = [];
+    if (isPlain(effect.factor)) {
+      const measure = MEASURE_SHORT[effect.factor.by] || String(effect.factor.by), base = num(effect.factor.base, 0), slope = num(effect.factor.slope, 0);
+      factors.push(base === 0 ? (slope === 1 ? measure : `${short(slope)}×${measure}`) : `(${short(base)} ${slope < 0 ? "−" : "+"} ${short(Math.abs(slope))}×${measure})`);
+    }
+    if (isPlain(effect.speed)) {
+      const add = num(effect.speed.add, 0);
+      factors.push(`(SPD${add ? ` ${add < 0 ? "−" : "+"} ${short(Math.abs(add))}` : ""}) / ${effect.speed.overTarget ? "SPD do alvo" : short(effect.speed.over)}`);
+    }
+    const sum = terms.length > 1 && factors.length ? `(${terms.join(" + ")})` : terms.join(" + ");
+    return [sum, ...factors].join(" × ") + (effect.fixed ? " (fixo)" : "");
+  }
+
+  const SCALE_VALUES = {
+    Attack: c => c.atk, Defense: c => c.def, MaxHealth: c => c.hp, Speed: c => c.spd, TargetMaxHealth: (c, t) => t.hp, Level: c => c.level,
+  };
+  const SCALE_MEASURES = {HealthFraction: c => c.health, TargetHealthFraction: (c, t) => t.health, LivingAllies: c => c.living};
+
+  /**
+   * A conta do efeito, igual a Core/Battle/EffectAmount.cs (o dano, antes da Defesa). Unidades:
+   * {hp, atk, def, spd, level, health (Vida atual, 0 a 1), living (aliados de pé, 0 a 1)}.
+   */
+  function effectAmount(effect, caster, target) {
+    const value = stat => (SCALE_VALUES[stat] || (() => 0))(caster, target);
+    let amount = num(effect.power, 0) * value(effect.stat || USUAL_STAT[effect.kind]);
+    for (const term of Array.isArray(effect.plus) ? effect.plus.filter(isPlain) : []) amount += num(term.power, 0) * value(term.stat);
+    if (isPlain(effect.factor)) amount *= num(effect.factor.base, 0) + num(effect.factor.slope, 0) * (SCALE_MEASURES[effect.factor.by] || (() => 0))(caster, target);
+    if (isPlain(effect.speed)) amount *= (caster.spd + num(effect.speed.add, 0)) / (effect.speed.overTarget ? Math.max(1, target.spd) : num(effect.speed.over, 0));
+    return Math.max(0, amount);
+  }
   const BONUS_DOCS = {
     Damage: "+power de dano por efeito nos golpes seguintes da mesma habilidade (0.2 = +20%)",
     Heal: "+power de cura e escudo por efeito nos efeitos seguintes da mesma habilidade",
@@ -576,16 +647,17 @@ const Core = (() => {
   };
   const EFFECT_DOCS = {
     Damage: {label: "Dano", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
-      text: "Golpes de power × ATK. Cada efeito de dano é um golpe à parte: \"3 golpes e um quarto que ignora a Defesa\" são dois efeitos.",
-      fields: {power: "multiplicador do ATK (3.5 = 350%)", hits: "golpes (cada rodada acerta todos os alvos)", ignoreDefense: "fração da Defesa ignorada (0 a 1)", drain: "fração do dano que volta como Vida (0 a 1)"},
+      text: "Golpes de power × ATK (ou a conta: stat, plus, factor, speed). Cada efeito de dano é um golpe à parte: \"3 golpes e um quarto que ignora a Defesa\" são dois efeitos.",
+      fields: {power: "multiplicador do ATK (3.5 = 350%)", hits: "golpes (cada rodada acerta todos os alvos)", ignoreDefense: "fração da Defesa ignorada (0 a 1)", drain: "fração do dano que volta como Vida (0 a 1)",
+        ...SCALE_FIELDS, fixed: "true: dano fixo, sem Defesa, elemento nem crítico (o que mexe no dano recebido pelo alvo ainda conta)"},
       template: {kind: "Damage", target: "Target", power: 2.45}},
     Heal: {label: "Cura", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
-      text: "Cura power da Vida máxima de cada alvo. A Ferida barra.",
-      fields: {power: "fração da Vida máxima do alvo (0.15 = 15%)", count: "só os N alvos mais feridos (0 ou ausente = todos)"},
+      text: "Cura power da Vida máxima de cada alvo (ou a conta: stat, plus, factor, speed). A Ferida barra.",
+      fields: {power: "fração da Vida máxima do alvo (0.15 = 15%)", count: "só os N alvos mais feridos (0 ou ausente = todos)", ...SCALE_FIELDS},
       template: {kind: "Heal", target: "LowestAlly", power: 0.07}},
     Shield: {label: "Escudo", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
-      text: "Escudo de power da Vida máxima de quem lança. Escudos não somam: fica o maior. O Karma barra.",
-      fields: {power: "fração da Vida máxima de quem lança", turns: "duração"},
+      text: "Escudo de power da Vida máxima de quem lança (ou a conta: stat, plus, factor, speed). Escudos não somam: fica o maior. O Karma barra.",
+      fields: {power: "fração da Vida máxima de quem lança", turns: "duração", ...SCALE_FIELDS},
       template: {kind: "Shield", target: "AllAllies", power: 0.07, turns: 2}},
     Status: {label: "Efeito de status", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
       text: "Põe status com chance, por turns. Negativo no outro lado: a Imunidade e a Resistência barram. Positivo: o Karma barra.",
@@ -617,7 +689,7 @@ const Core = (() => {
       template: {kind: "EqualizeHealth", target: "AllAllies"}},
     HealTeam: {label: "Recuperar Vida da equipe", targets: ["AllAllies", "LowestAlly", "Self"],
       text: "A cura de sempre nos count aliados mais feridos (pela fração de Vida).",
-      fields: {power: "fração da Vida máxima de cada um", count: "quantos (0 = todos)"},
+      fields: {power: "fração da Vida máxima de cada um", count: "quantos (0 = todos)", ...SCALE_FIELDS},
       template: {kind: "HealTeam", target: "AllAllies", power: 0.15, count: 2}},
     JointAttack: {label: "Ataque conjunto", targets: ["AllAllies", "LowestAlly", "HighestAlly", "RandomAlly"],
       text: "count aliados sorteados (0 = todos; com LowestAlly, HighestAlly ou RandomAlly, um aliado sem quem lança) atacam o alvo da habilidade com a básica, com o dano inteiro. Quem perde o turno não vem; a básica deles não chama outros. O que eles derrubam conta para a habilidade.",
@@ -627,6 +699,10 @@ const Core = (() => {
       text: "Se a habilidade derrubou alguém até aqui (ponha depois do dano), quem lança ganha um turno extra na hora e esta recarga cai turns. Uma vez por habilidade.",
       fields: {turns: "turnos a menos na recarga (1 por padrão)"},
       template: {kind: "ExtraTurnOnKill", target: "Self", turns: 1}},
+    Revive: {label: "Reviver aliados", targets: ["AllAllies"],
+      text: "Os aliados caídos voltam na hora com power da Vida máxima de cada um (ou a conta), mais o bônus de cura da habilidade. Com count, só os N sorteados. Quem já ia voltar sozinho no turno dele (uma Passiva) fica de fora.",
+      fields: {power: "fração da Vida máxima de quem volta (0.3 = 30%)", count: "quantos, sorteados (0 = todos)", ...SCALE_FIELDS},
+      template: {kind: "Revive", target: "AllAllies", power: 0.3, count: 1}},
   };
   // Cada status: o nome no jogo, se é negativo e o que faz (os números de Core/Battle/BattleRules.cs).
   const STATUS_DOCS = {
@@ -1158,7 +1234,7 @@ const Core = (() => {
         const target = effect.target ?? "Target";
         if (doc.targets && !doc.targets.includes(target)) add("error", where, `${effect.kind} não vale com o alvo ${target} (vale: ${doc.targets.join(", ")}).`);
         for (const key of Object.keys(effect)) {
-          if (EFFECT_FIELDS.includes(key) && !COMMON_FIELDS.includes(key) && !(key in doc.fields)) add("warn", where, `${effect.kind} não lê o campo "${key}".`);
+          if (EFFECT_FIELDS.includes(key) && !COMMON_FIELDS.includes(key) && !SCALE_KEYS.includes(key) && !(key in doc.fields)) add("warn", where, `${effect.kind} não lê o campo "${key}".`);
         }
       }
       if (effect.onlyStatus !== undefined && !enums.statuses.includes(effect.onlyStatus)) add("error", where, `Status desconhecido em onlyStatus: "${effect.onlyStatus}".`);
@@ -1171,8 +1247,34 @@ const Core = (() => {
       if (effect.kind === "BonusPerStatus" && !(num(effect.power) > 0)) add("error", where, "BonusPerStatus sem valor por efeito (power).");
       if (effect.count !== undefined && !(Number.isInteger(effect.count) && effect.count >= 0)) add("error", where, `count ${effect.count}: tem de ser inteiro, 0 ou mais.`);
       if (effect.fallback !== undefined && typeof effect.fallback !== "boolean") add("error", where, "fallback é true ou false.");
+      validateScale(effect, enums, text => add("error", where, text));
       for (const key of Object.keys(effect)) if (!EFFECT_FIELDS.includes(key)) add("warn", where, `Campo "${key}" que o jogo não lê.`);
     }
+  }
+
+  /** Os campos da conta (stat, plus, factor, speed, fixed): as mesmas regras de GameDatabase.ValidateSkill. */
+  function validateScale(effect, enums, error) {
+    const stats = enums.scaleStats || Object.keys(SCALE_STAT_DOCS), measures = enums.scaleMeasures || Object.keys(SCALE_MEASURE_DOCS);
+    if (!USUAL_STAT[effect.kind] && isCustom(effect)) error(`${effect.kind} não tem conta (stat, plus, factor e speed são de ${Object.keys(USUAL_STAT).join(", ")}).`);
+    if (effect.fixed !== undefined && typeof effect.fixed !== "boolean") error("fixed é true ou false.");
+    if (effect.fixed && effect.kind !== "Damage") error("Só o dano é fixo.");
+    if (effect.stat !== undefined && !stats.includes(effect.stat)) error(`stat desconhecido: "${effect.stat}" (vale: ${stats.join(", ")}).`);
+    if (effect.plus !== undefined) {
+      if (!Array.isArray(effect.plus)) error('plus é uma lista: [{"stat": "MaxHealth", "power": 0.08}].');
+      else for (const term of effect.plus) {
+        if (!isPlain(term) || !stats.includes(term.stat)) error(`Termo de plus sem stat válido: ${JSON.stringify(term)} (vale: ${stats.join(", ")}).`);
+        else if (typeof term.power !== "number") error(`Termo de plus sem power: ${JSON.stringify(term)}.`);
+      }
+    }
+    if (effect.factor !== undefined) {
+      if (!isPlain(effect.factor) || !measures.includes(effect.factor.by)) error(`factor precisa de by (vale: ${measures.join(", ")}).`);
+      else if (num(effect.factor.base, 0) === 0 && num(effect.factor.slope, 0) === 0) error("factor com base e slope 0: a conta dá sempre 0.");
+    }
+    if (effect.speed !== undefined) {
+      if (!isPlain(effect.speed)) error("speed é {add, over} ou {add, overTarget: true}.");
+      else if (!effect.speed.overTarget && !(num(effect.speed.over, 0) > 0)) error("speed sem divisor: over maior que 0, ou overTarget: true.");
+    }
+    if (effect.kind === "Revive" && !(num(effect.power, 0) > 0) && !(Array.isArray(effect.plus) && effect.plus.length)) error("Revive sem Vida para voltar (power).");
   }
 
   // Chefes e enums do projeto -----------------------------------------------------------------------
@@ -1295,6 +1397,7 @@ const Core = (() => {
   return {
     ELEMENTS, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
     EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
+    USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,
     stripJsonc, parseJsonc, leadingComments, format,
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
     parseList, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
@@ -1317,7 +1420,7 @@ if (typeof module !== "undefined") module.exports = Core;
   const fmt = (n, d = 0) => Number(n).toLocaleString("pt-BR", {maximumFractionDigits: d});
   const readJson = id => JSON.parse($(id).textContent);
   const DRAFT_KEY = "sigilos.family_builder.draft";
-  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind", scopes: "StatusScope", bonuses: "BonusKind", ranks: "TargetRank"};
+  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind", scopes: "StatusScope", bonuses: "BonusKind", ranks: "TargetRank", scaleStats: "ScaleStat", scaleMeasures: "ScaleMeasure"};
   // O botão de cada tipo de efeito insere o modelo da documentação (Core.EFFECT_DOCS).
   const EFFECT_TEMPLATES = Object.fromEntries(Object.entries(C.EFFECT_DOCS).map(([kind, doc]) => [kind, doc.template]));
   const LEVEL_TEMPLATES = {Damage: 0.1, Recovery: 0.1, EffectRate: 0.1, Cooldown: 1};
@@ -1573,11 +1676,13 @@ if (typeof module !== "undefined") module.exports = Core;
   const SCOPE_LABELS = {All: "Todos", Buffs: "Positivos", Debuffs: "Negativos"};
   const BONUS_LABELS = {Damage: "Dano", Heal: "Cura e escudo", Impeto: "Ímpeto"};
   const LEVEL_LABELS = {Damage: "Dano +", Recovery: "Cura e escudo +", EffectRate: "Chance de efeito +", Cooldown: "Recarga −"};
+  const SCALE_LABELS = {Attack: "Ataque", Defense: "Defesa", MaxHealth: "Vida máxima", Speed: "Velocidade", TargetMaxHealth: "Vida máxima do alvo", Level: "Nível"};
+  const MEASURE_LABELS = {HealthFraction: "Vida atual de quem lança", TargetHealthFraction: "Vida atual do alvo", LivingAllies: "Aliados de pé"};
   // Os campos numéricos: rótulo, passo e o valor quando o campo não está no JSON.
   const FX_NUMBERS = {power: ["Poder", "0.01", ""], hits: ["Golpes", "1", "1"], ignoreDefense: ["Ignora Defesa", "0.05", "0"], drain: ["Dreno", "0.05", "0"],
     chance: ["Chance", "0.05", "1"], turns: ["Turnos", "1", "1"], count: ["Quantos", "1", "0 = todos"]};
   const FX_ORDER = ["status", "power", "hits", "ignoreDefense", "drain", "chance", "turns", "from", "scope", "onlyStatus", "bonus", "count", "fallback"];
-  const FX_STRUCTURAL = ["kind", "target", "from"];
+  const FX_STRUCTURAL = ["kind", "target", "from", "factor.by", "speed.mode"];
   const PICKS = ["LowestAlly", "HighestAlly"];
   // Os modelos de lista (vazia) de cada campo: Efeitos depois do Despertar vazios somem do arquivo.
   const emptyListText = field => field === "awakenedEffects" ? "" : "[]";
@@ -1627,14 +1732,90 @@ if (typeof module !== "undefined") module.exports = Core;
     if (PICKS.includes(effect.target) || PICKS.includes(effect.from) || "by" in effect)
       cells.push(fxSelect(a("by"), "Comparar por", ui.enums.ranks || Object.keys(RANK_LABELS), effect.by, r => `${RANK_LABELS[r] || r} (${r})`, "Vida (padrão)", C.RANK_DOCS[effect.by] || "o que LowestAlly e HighestAlly comparam"));
     cells.push(`<label class="fx-cell check" title="O efeito só acontece se o dano anterior desta habilidade derrubou o alvo"><input type="checkbox" ${effect.onKill ? "checked" : ""} ${a("onKill")}>só se derrubou</label>`);
-    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", ...FX_ORDER].includes(k));
+    const scales = !!C.USUAL_STAT[effect.kind];
+    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
     return `<div class="fx-row"><span class="fx-n">${index + 1}</span>${cells.join("")}
       <span class="fx-tools">
         <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="-1" ${index === 0 ? "disabled" : ""} title="Subir">↑</button>
         <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="1" ${index === count - 1 ? "disabled" : ""} title="Descer">↓</button>
         <button data-action="fx-remove" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" title="Remover">✕</button>
       </span>
+      ${scales ? scaleCells(effect, path, field, index) : ""}
       <p class="fx-doc">${esc(doc?.text || "Tipo sem documentação no construtor: os campos dele vão no JSON (avançado).")}${extra.length ? ` <b>Outros campos no JSON:</b> ${esc(extra.join(", "))}.` : ""}</p></div>`;
+  }
+
+  /**
+   * A conta do efeito (stat, plus, factor, speed e, no dano, fixed), recolhida quando é a de sempre. O resumo
+   * mostra a conta na notação da planilha e o quanto ela dá na variante aberta.
+   */
+  function scaleCells(effect, path, field, index) {
+    const usual = C.USUAL_STAT[effect.kind];
+    const a = key => fxAttrs(path, field, index, key);
+    const stats = ui.enums.scaleStats || Object.keys(SCALE_LABELS), measures = ui.enums.scaleMeasures || Object.keys(MEASURE_LABELS);
+    const statLabel = s => `${SCALE_LABELS[s] || s} (${s})`;
+    const number = (key, title, value, step, tip = "") =>
+      `<label class="fx-cell" title="${esc(tip)}"><span>${title}</span><input type="number" step="${step}" value="${esc(value ?? "")}" ${a(key)}></label>`;
+    const cells = [fxSelect(a("stat"), "Atributo do poder", stats, effect.stat, statLabel, `${SCALE_LABELS[usual] || usual} (padrão)`, C.SCALE_STAT_DOCS[effect.stat || usual] || "")];
+    (Array.isArray(effect.plus) ? effect.plus : []).forEach((term, i) => {
+      if (!isPlainItem(term)) return;
+      cells.push(`<span class="fx-term">${fxSelect(a(`plus.${i}.stat`), `+ termo ${i + 1}`, stats, term.stat, statLabel, null, C.SCALE_STAT_DOCS[term.stat] || "")}${number(`plus.${i}.power`, "× poder", term.power, "0.01")}<button data-action="fx-plus-remove" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-term="${i}" title="Tirar o termo">✕</button></span>`);
+    });
+    cells.push(`<button class="chip" data-action="fx-plus-add" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" title="Soma outro atributo à conta (0.08 da Vida máxima)">+ termo</button>`);
+    const factor = isPlainItem(effect.factor) ? effect.factor : null;
+    cells.push(fxSelect(a("factor.by"), "Fator", measures, factor?.by, m => `${MEASURE_LABELS[m] || m} (${m})`, "sem fator", "vezes base + slope × a fração (de 0 a 1)"));
+    if (factor) cells.push(number("factor.base", "base", factor.base, "0.1", "o fator com a fração em 0"), number("factor.slope", "slope", factor.slope, "0.1", "quanto o fator muda da fração 0 à fração 1"));
+    const speed = isPlainItem(effect.speed) ? effect.speed : null;
+    cells.push(fxSelect(a("speed.mode"), "Velocidade", ["over", "target"], speed ? (speed.overTarget ? "target" : "over") : "", m => m === "target" ? "÷ Velocidade do alvo" : "÷ número",
+      "sem Velocidade", "vezes (Velocidade de quem lança + add) / over, ou / a Velocidade do alvo"));
+    if (speed) {
+      cells.push(number("speed.add", "+ add", speed.add, "5"));
+      if (!speed.overTarget) cells.push(number("speed.over", "÷ over", speed.over, "5"));
+    }
+    if (effect.kind === "Damage")
+      cells.push(`<label class="fx-cell check" title="Sem Defesa, elemento nem crítico; o que mexe no dano recebido pelo alvo ainda conta"><input type="checkbox" ${effect.fixed ? "checked" : ""} ${a("fixed")}>dano fixo</label>`);
+    const open = C.isCustom(effect) || effect.fixed;
+    return `<details class="fx-scale" ${open ? "open" : ""}><summary>Conta: <span class="fx-formula">${esc(formulaSummary(effect, path, field))}</span></summary><div class="fx-scale-cells">${cells.join("")}</div></details>`;
+  }
+
+  /**
+   * A conta e, numa variante da família, o quanto ela dá (6★ nível 40, contra um alvo com os mesmos atributos):
+   * uma ajuda para o balanço na mão, já que o BVP não vê a conta. Com fator, também com a fração dele em 0.
+   */
+  function formulaSummary(effect, path, field) {
+    const text = C.formulaText(effect);
+    const match = /^variations\.([^.]+)\./.exec(path);
+    if (!match || !C.isCustom(effect)) return text;
+    const v = ui.family.variations[match[1]];
+    const st = v && C.variationStats(ui.model, ui.family, v, elementOf(match[1]), field === "awakenedEffects" || path.includes(".awakening."));
+    if (!st || !(st.atk > 0) || !(st.hp > 0)) return text;
+    const at = (health, living, targetHealth) => C.effectAmount(effect, {...st, level: 40, health, living}, {...st, health: targetHealth});
+    const show = amount => effect.kind === "Damage" ? `${fmt(amount / st.atk, 2)}× ATK` : `${fmt(amount / st.hp * 100, 1)}% da Vida máxima`;
+    const by = isPlainItem(effect.factor) ? effect.factor.by : null;
+    const full = at(1, 1, 1);
+    const low = by ? at(by === "HealthFraction" ? 0 : 1, by === "LivingAllies" ? 0 : 1, by === "TargetHealthFraction" ? 0 : 1) : full;
+    return `${text}  ≈ ${show(full)}${low !== full ? ` (${MEASURE_LABELS[by] || by} em 100%) a ${show(low)} (em 0%)` : ""}${C.num(effect.hits, 1) > 1 ? " por golpe" : ""} nesta variante, 6★ nv 40, contra um alvo igual`;
+  }
+
+  /** "plus.0.power", "factor.base", "speed.add": grava dentro do campo. "factor.by" e "speed.mode" criam ou tiram o objeto. */
+  function setNested(item, key, value) {
+    if (key === "factor.by") {
+      if (value === undefined) delete item.factor;
+      else item.factor = isPlainItem(item.factor) ? {...item.factor, by: value} : {by: value, base: 0, slope: 1};
+      return;
+    }
+    if (key === "speed.mode") {
+      const old = isPlainItem(item.speed) ? item.speed : {};
+      if (value === undefined) delete item.speed;
+      else item.speed = value === "target" ? {add: old.add ?? 0, overTarget: true} : {add: old.add ?? 0, over: old.over || 100};
+      return;
+    }
+    const parts = key.split("."), last = parts.pop();
+    let node = item;
+    for (const part of parts) {
+      node = node?.[part];
+      if (node === null || typeof node !== "object") return;
+    }
+    if (value === undefined) delete node[last]; else node[last] = value;
   }
 
   function levelRow(level, path, field, index, count) {
@@ -1712,6 +1893,8 @@ if (typeof module !== "undefined") module.exports = Core;
         list[index] = next;
       } else if (key === "kind" && field === "levels") {
         list[index] = {kind: value, value: LEVEL_TEMPLATES[value] ?? item.value};
+      } else if (key.includes(".")) {
+        setNested(item, key, value);
       } else if (value === undefined) {
         delete item[key];
       } else {
@@ -1720,6 +1903,12 @@ if (typeof module !== "undefined") module.exports = Core;
     });
     if (!ok) return;
     if (FX_STRUCTURAL.includes(key)) rerenderSkill(path);
+    else {
+      // A conta resumida muda junto, sem refazer a linha (tiraria o foco de quem digita).
+      const formula = node.closest(".fx-row")?.querySelector(".fx-formula");
+      const item = C.parseList(getAt(path)[field]).list?.[index];
+      if (formula && item) formula.textContent = formulaSummary(item, path, field);
+    }
     touchAt(path);
   }
 
@@ -1799,6 +1988,9 @@ if (typeof module !== "undefined") module.exports = Core;
       <code>status</code>: ${e.statuses.join(", ")}<br>
       Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
       Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém).<br>
+      A conta de Damage, Heal, HealTeam, Shield e Revive: <code>stat</code> (${(e.scaleStats || []).join(", ")}), <code>plus</code> [{stat, power}],
+      <code>factor</code> {by: ${(e.scaleMeasures || []).join(" | ")}, base, slope}, <code>speed</code> {add, over} ou {add, overTarget: true}; o dano também <code>fixed</code>.
+      Ex.: <code>{"kind": "Damage", "power": 0.5, "plus": [{"stat": "MaxHealth", "power": 0.08}], "hits": 2}</code>.<br>
       Os tipos novos leem também <code>fallback</code>, <code>scope</code>, <code>onlyStatus</code>, <code>from</code>, <code>bonus</code>, <code>count</code> e <code>by</code>:
       o que cada tipo faz, os campos e os alvos que ele aceita estão na aba <b>Efeitos e status</b>.<br>
       Os efeitos acontecem na ordem da lista. "4 golpes, o último ignorando a Defesa" são dois efeitos:
@@ -1937,6 +2129,15 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
       <h3>Alvos</h3><div class="table-wrap"><table><tr><th>target</th><th>Quem</th></tr>${targets}</table></div>
       <h3>Tipos de efeito</h3><div class="table-wrap"><table><tr><th>kind</th><th>O que faz</th><th>Alvos aceitos</th><th>Campos</th><th>Modelo</th></tr>${effects}</table></div>
       <h3>Passivas</h3><p class="note">${code("passive.kind")} e ${code("value")}; as genéricas leem os ${code("effects")} (e ${code("awakenedEffects")}) da habilidade passiva, e as que olham efeitos de status, ${code("passive.scope")} e ${code("passive.statuses")}.</p><p>${option(C.PASSIVE_DOCS)}</p>
+      <h3>Conta</h3><p class="note">Dano, cura, escudo e Revive: ${code("power")} × o atributo de sempre do tipo (dano: Attack; cura, HealTeam e Revive: TargetMaxHealth;
+        escudo: MaxHealth) ou ${code("stat")}, mais cada termo de ${code("plus")}, vezes ${code("factor")} e ${code("speed")}. Os bônus de nível de dano e de cura valem no power e nos termos.
+        O BVP não vê a conta: o balanço de uma habilidade assim é feito na mão (o editor mostra quanto ela dá na variante).</p>
+      <p>${code("stat")} e ${code("plus[].stat")}<br>${option(C.SCALE_STAT_DOCS)}</p><p>${code("factor.by")} (vezes base + slope × a fração)<br>${option(C.SCALE_MEASURE_DOCS)}</p>
+      <p>Exemplos:<br>${code('{"kind": "Damage", "power": 1, "stat": "Defense", "factor": {"by": "HealthFraction", "base": 8.5, "slope": -3}}')}<br>
+        ${code('{"kind": "Damage", "power": 1.8, "speed": {"add": 80, "overTarget": true}, "hits": 3}')}<br>
+        ${code('{"kind": "Shield", "target": "AllAllies", "power": 110, "stat": "Level", "turns": 2}')}<br>
+        ${code('{"kind": "Revive", "target": "AllAllies", "power": 0.5, "factor": {"by": "HealthFraction", "base": 0, "slope": 1}}')}<br>
+        ${code('{"kind": "Damage", "power": 2, "fixed": true}')}</p>
       <h3>Opções</h3><p>${code("by")} (LowestAlly e HighestAlly)<br>${option(C.RANK_DOCS)}</p><p>${code("scope")}<br>${option(C.SCOPE_DOCS)}</p><p>${code("bonus")}<br>${option(C.BONUS_DOCS)}</p>
       <h3>Status</h3><p class="note">Use em ${code("status")} (efeito Status) ou em ${code("onlyStatus")}. Negativo: a Resistência e a Imunidade barram, a Purificação tira. Positivo: o Karma barra, o Roubar efeito leva.</p>
       <div class="table-wrap"><table><tr><th>status</th><th>Nome</th><th>Tipo</th><th>O que faz</th></tr>${statuses}</table></div>`;
@@ -2025,6 +2226,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     const turns = e.turns ? ` ${e.turns}t` : "";
     if (e.kind === "Status") return `${e.status}${chance}${turns}${who}`;
     if (e.kind === "BonusPerStatus") return `+${fmt(e.power * 100)}% de ${e.bonus || "Damage"} por efeito ${e.onlyStatus || e.scope || "All"} em ${e.from || "Target"}`;
+    if (C.USUAL_STAT[e.kind] && (C.isCustom(e) || e.fixed)) return `${e.kind} ${C.formulaText(e)}${e.hits > 1 ? ` x${e.hits}` : ""}${turns}${who}`;
     return `${e.kind}${e.power !== undefined ? " " + e.power : ""}${chance}${turns}${who}`;
   }
 
@@ -2275,6 +2477,22 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     "fx-move": node => {
       const from = Number(node.dataset.index), to = from + Number(node.dataset.step);
       if (editList(node.dataset.skill, node.dataset.field, list => { if (to >= 0 && to < list.length) [list[from], list[to]] = [list[to], list[from]]; })) { rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill); }
+    },
+    "fx-plus-add": node => {
+      const index = Number(node.dataset.index);
+      if (editList(node.dataset.skill, node.dataset.field, list => {
+        const item = list[index];
+        if (item) item.plus = [...(Array.isArray(item.plus) ? item.plus : []), {stat: "MaxHealth", power: 0.1}];
+      })) { rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill); }
+    },
+    "fx-plus-remove": node => {
+      const index = Number(node.dataset.index), term = Number(node.dataset.term);
+      if (editList(node.dataset.skill, node.dataset.field, list => {
+        const item = list[index];
+        if (!item || !Array.isArray(item.plus)) return;
+        item.plus.splice(term, 1);
+        if (item.plus.length === 0) delete item.plus;
+      })) { rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill); }
     },
     "fx-copy-base": node => {
       const skill = getAt(node.dataset.skill);

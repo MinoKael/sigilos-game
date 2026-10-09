@@ -30,5 +30,8 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Se a habilidade derrubou alguém: turno extra e menos recarga nela.</summary>
 		ExtraTurnOnKill,
+
+		/// <summary>Traz de volta, na hora, aliados caídos, com uma fração da Vida máxima de cada um.</summary>
+		Revive,
 	}
 }

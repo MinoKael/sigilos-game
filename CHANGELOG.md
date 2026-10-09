@@ -1,5 +1,18 @@
 # Changelog — Sigilos
 
+## 09/10/2026
+- **Habilidades: a conta.** O dano, a cura, a cura do time, o escudo e o novo Reviver podem ter outra conta além de multiplicador × atributo de sempre:
+  - **Atributo** (`stat`): Ataque, Defesa, Vida máxima, Velocidade, Vida máxima do alvo ou Nível (o power vira valor por nível: escudo de 110 por nível).
+  - **Termos somados** (`plus`): 0,5 × ATQ + 0,08 × Vida máxima, 0,8 × ATQ + 1,3 × DEF, 2,9 × ATQ + 0,06 × Vida máxima do alvo.
+  - **Fator** (`factor`) que muda com a Vida atual de quem lança, a do alvo ou os aliados de pé: DEF × (8,5 − 3 × Vida atual %), ATQ × (4,1 − 1,6 × Vida atual % do alvo), ATQ × (13,5 − 5,5 × aliados vivos %).
+  - **Velocidade** (`speed`): ATQ × (VEL + 125) / 115, ou sobre a Velocidade do alvo: 1,8 × ATQ × (VEL + 80) / VEL do alvo.
+  - **Dano fixo** (`fixed`): a conta chega ao alvo sem Defesa, elemento nem crítico (o escudo absorve e a Maldição conta).
+  - **Reviver aliados:** um efeito novo que levanta os aliados caídos com uma parte da Vida máxima (ou com a conta: 0,5 × Vida atual % × Vida máxima do alvo).
+  - Sem esses campos, toda habilidade dá o mesmo número de antes. O orçamento de BVP não vê a conta: o balanço dessas habilidades é feito na mão, no simulador.
+  - O texto da habilidade mostra a conta, e o filtro de Escala dos Monstros lê cada atributo e fração que ela usa.
+- **Family Builder: a conta.** Cada efeito de dano, cura, escudo e Reviver tem a seção Conta: atributo, termos (+ termo), fator, Velocidade e dano fixo, com a prévia de quanto a conta dá na variante (6★ nv 40, contra um alvo igual). A aba de referência explica os campos com exemplos.
+- **Retratos especiais do correio:** são os desenhos de Assets/Avatars (por enquanto, o Capacete de Astronauta). Um desenho novo na pasta já vira retrato, com a chave avatar:<nome do arquivo> (minúsculas, "_" no lugar de "-"); os antigos (Sigilo de Invocação, Grimório, Estrela-guia) saíram. O template do correio lista os especiais.
+
 ## 08/10/2026
 - **Preparação da luta.** O Lutar da Campanha, de uma Masmorra ou da Exploração não mostra mais a Mana nem pede equipe: abre a preparação. No alto, à esquerda, a equipe em formação (três na frente, duas atrás; a primeira é a Líder), com a Liderança dela; à direita, a última onda, com o chefe sozinho na frente, e os botões Lutar (com a Mana) e Batalha automática. Embaixo, a coleção numa lista que rola de lado, com Filtros e Ordem.
   - Tocar num monstro da coleção põe ou tira da equipe. Tocar num da equipe o escolhe: o próximo da coleção entra no lugar dele (ou os dois trocam de lugar), e ali mesmo há Tornar Líder e Tirar da equipe. Equipe cheia, o aviso diz como trocar.

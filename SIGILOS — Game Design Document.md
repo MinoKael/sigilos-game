@@ -544,6 +544,12 @@ D = ATQ \times M \times \frac{K}{K + DEF} \times E \times C, \quad K = \frac{114
 
 Atributo em combate, como em Summoners War: runas + base × (1 + Liderança + conjuntos), vezes os efeitos (+50% de Ataque, +70% de Defesa, +30% de Velocidade; −50% de Ataque). Efeito negativo pega se passar pela Resistência do alvo menos a Precisão de quem lança, e essa chance de barrar nunca fica abaixo de 5%.
 
+### A conta da habilidade
+
+O multiplicador vale sobre o Ataque na maioria das habilidades, mas a conta de um efeito de dano, cura, escudo ou Reviver pode ler outros termos da planilha: Defesa, Vida máxima, Velocidade, Vida máxima do alvo e o nível de quem lança, somados; um fator que muda com a Vida atual (de quem lança ou do alvo) ou com os aliados de pé; a Velocidade sobre um número ou sobre a do alvo; e dano fixo, sem Defesa, elemento nem crítico. Por exemplo: 0,5 × ATQ + 0,08 × Vida máxima, em 2 golpes; DEF × (8,5 − 3 × Vida atual %); 1,8 × ATQ × (VEL + 80) / VEL do alvo; escudo de 110 por nível.
+
+O orçamento de BVP não vê a conta: uma habilidade que lê Defesa ou Vida dá mais a um monstro de Defesa ou de Vida. Por isso o balanço dessas habilidades é feito na mão, no simulador, e não pelo modelo. Ficam de fora a Vida atual e a perdida em número, a Velocidade relativa, os inimigos vivos e a soma fixa (+N). As regras estão em docs/COMBATE.md.
+
 ### Ímpeto
 
 ```latex

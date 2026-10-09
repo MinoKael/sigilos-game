@@ -4,8 +4,8 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Battle.Effects
 {
 	/// <summary>
-	/// Cura (Heal e HealTeam): <see cref="EffectDefinition.Power"/> é a fração da Vida máxima de cada alvo,
-	/// mais o bônus da habilidade (<see cref="Cast.HealBonus"/>). Com <see cref="EffectDefinition.Count"/>,
+	/// Cura (Heal e HealTeam): <see cref="EffectDefinition.Power"/> é a fração da Vida máxima de cada alvo (ou
+	/// a conta do efeito: <see cref="EffectAmount"/>), mais o bônus da habilidade (<see cref="Cast.HealBonus"/>). Com <see cref="EffectDefinition.Count"/>,
 	/// só os tantos alvos mais feridos (pela fração de Vida).
 	/// </summary>
 	internal sealed class HealEffect : SkillEffect
@@ -16,8 +16,9 @@ namespace Sigilos.Core.Battle.Effects
 			if (effect.Count > 0)
 				targets = targets.OrderBy(t => t.HealthFraction).Take(effect.Count);
 
+			var bonus = 1 + cast.HealBonus;
 			foreach (var target in targets.ToList())
-				cast.Resolver.Heal(target, effect.Power * (1 + cast.HealBonus) * target.MaxHealth);
+				cast.Resolver.Heal(target, EffectAmount.Of(effect, effect.Power * bonus, bonus, cast.Caster, target));
 		}
 	}
 }
