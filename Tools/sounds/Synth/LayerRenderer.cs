@@ -195,10 +195,18 @@ namespace Sigilos.Sounds.Synth
 			}
 		}
 
-		/// <summary>Karplus-Strong: um sopro de ruído circulando numa linha do tamanho de um período, perdendo brilho a cada volta.</summary>
+		/// <summary>
+		/// Karplus-Strong: um sopro de ruído circulando numa linha do tamanho de um período, perdendo brilho a
+		/// cada volta. A linha tem amostras inteiras; o resto do período é um passa-tudo, para a corda ficar
+		/// afinada também nas notas agudas.
+		/// </summary>
 		private static void Pluck(double[] samples, Layer layer, int sampleRate, Rng rng)
 		{
-			var size = Math.Max(2, (int)Math.Round(sampleRate / layer.Hz - 0.5));
+			var period = sampleRate / layer.Hz;
+			var size = Math.Max(2, (int)Math.Floor(period - 0.6));
+			var fraction = Math.Max(0.1, period - 0.5 - size);
+			var allpass = (1 - fraction) / (1 + fraction);
+			double before = 0, after = 0;
 			var line = new double[size];
 			var smooth = 0.0;
 			var pick = Math.Clamp(0.15 + 0.8 * layer.Brightness * 0.6, 0.05, 1);
@@ -214,7 +222,11 @@ namespace Sigilos.Sounds.Synth
 			{
 				var current = line[index];
 				var next = line[(index + 1) % size];
-				line[index] = loss * (0.5 * current + 0.5 * next);
+				var averaged = loss * (0.5 * current + 0.5 * next);
+				var tuned = allpass * averaged + before - allpass * after;
+				before = averaged;
+				after = tuned;
+				line[index] = tuned;
 				samples[i] = current;
 				index = (index + 1) % size;
 			}

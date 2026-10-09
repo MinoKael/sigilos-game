@@ -93,7 +93,7 @@ namespace Sigilos.Tests
 			}
 
 			Assert.Empty(problems, "sons fora do catálogo");
-			Assert.True(found > 80, $"o código toca os sons pelo nome ({found} achados)");
+			Assert.True(found > 30, $"o código toca os sons pelo nome ({found} achados)");
 		}
 
 		private static void Flatten(JsonElement node, string prefix, HashSet<string> keys)
@@ -113,27 +113,29 @@ namespace Sigilos.Tests
 		{
 			var hero = TestData.Unit("herói", Side.Allies);
 			var foe = TestData.Unit("inimigo", Side.Enemies);
-			var cues = Sounds(new BattleSounds(true), new SkillUsed(hero, TestData.Strike), new Damaged(foe, 120, 0, false, 1), new Died(foe));
+			var cues = Sounds(new BattleSounds(), new SkillUsed(hero, TestData.Strike), new Damaged(foe, 120, 0, false, 1), new Died(foe));
 
-			Assert.Equal("combat.attack_medium", cues[0].Name, "a básica corre calada e golpeia médio");
-			Assert.Equal(0d, cues[0].Delay, "o golpe na hora");
+			Assert.Equal("combat.hit", cues[0].Name, "a básica corre calada e acerta");
+			Assert.Equal(0d, cues[0].Delay, "o acerto na hora");
 			Assert.Equal("combat.knockout", cues[1].Name, "a queda");
-			Assert.Equal(BattleSounds.FollowDelay, cues[1].Delay, "a queda depois do golpe");
+			Assert.Equal(BattleSounds.FollowDelay, cues[1].Delay, "a queda depois do acerto");
 			Assert.Equal(2, cues.Count, "nada mais");
 		}
 
 		[Test]
-		private static void SkillsCastByElement()
+		private static void SkillsSoundByElement()
 		{
 			var mage = TestData.Unit("maga", Side.Allies, element: Element.Water);
 			var foe = TestData.Unit("inimigo", Side.Enemies);
 
-			var cues = Names(Sounds(new BattleSounds(true), new SkillUsed(mage, Wave), new Damaged(foe, 120, 0, false, 1)));
-			Assert.Equal("combat.elements.water_flow", cues[0], "a habilidade soa o feitiço do elemento");
-			Assert.Equal("combat.elements.water_impact", cues[1], "e o impacto dele");
+			var cues = Names(Sounds(new BattleSounds(), new SkillUsed(mage, Wave), new Damaged(foe, 120, 0, false, 1)));
+			Assert.Equal("combat.elements.water_impact", Line(cues), "a habilidade é o impacto do elemento, e a corrida é calada");
 
-			cues = Names(Sounds(new BattleSounds(true), new SkillUsed(mage, Deluge), new Damaged(foe, 120, 0, false, 1)));
-			Assert.Equal("combat.elements.water_grand", cues[0], "a de recarga longa é o grande feitiço");
+			cues = Names(Sounds(new BattleSounds(), new SkillUsed(mage, Deluge), new Damaged(foe, 120, 0, false, 1)));
+			Assert.Equal("combat.elements.water_grand", Line(cues), "a de recarga longa é o grande feitiço");
+
+			cues = Names(Sounds(new BattleSounds(), new SkillUsed(mage, Wave), new Damaged(foe, 60, 0, false, 1), new Damaged(foe, 60, 0, false, 1), new Damaged(foe, 60, 0, false, 1)));
+			Assert.Equal("combat.elements.water_impact combat.hit combat.hit", Line(cues), "os golpes seguintes da ação são o acerto simples");
 		}
 
 		[Test]
@@ -142,28 +144,29 @@ namespace Sigilos.Tests
 			var boss = TestData.Unit("chefe", Side.Enemies, boss: true);
 			var hero = TestData.Unit("herói", Side.Allies);
 
-			var cues = Names(Sounds(new BattleSounds(true), new SkillUsed(boss, Deluge), new Damaged(hero, 300, 0, false, 1)));
-			Assert.Equal("combat.boss.special", cues[0], "a habilidade do chefe");
-			Assert.Equal("combat.very_heavy_hit", cues[1], "o golpe muito pesado");
+			var cues = Names(Sounds(new BattleSounds(), new SkillUsed(boss, Deluge), new Damaged(hero, 300, 0, false, 1)));
+			Assert.Equal("combat.boss.special", Line(cues), "a habilidade do chefe é a voz dele");
 
-			cues = Names(Sounds(new BattleSounds(true), new SkillUsed(hero, TestData.Strike), new Damaged(boss, 300, 0, false, 1), new Died(boss)));
+			cues = Names(Sounds(new BattleSounds(), new SkillUsed(boss, TestData.Strike), new Damaged(hero, 300, 0, false, 1)));
+			Assert.Equal("combat.hit_heavy", Line(cues), "a básica do chefe é o acerto pesado");
+
+			cues = Names(Sounds(new BattleSounds(), new SkillUsed(hero, TestData.Strike), new Damaged(boss, 300, 0, false, 1), new Died(boss)));
 			Assert.True(cues.Contains("combat.boss.defeated"), "o chefe cai com o som dele");
 			Assert.False(cues.Contains("combat.knockout"), "não o nocaute comum");
 		}
 
 		[Test]
-		private static void CritAndAreaWinTheHit()
+		private static void CritAndAreaAreOneHit()
 		{
-			var hero = TestData.Unit("herói", Side.Allies);
-			var a = TestData.Unit("a", Side.Enemies);
-			var b = TestData.Unit("b", Side.Enemies);
+			var hero = TestData.Unit("herói", Side.Allies, element: Element.Fire);
+			var a = TestData.Unit("a", Side.Enemies, element: Element.Wind);
+			var b = TestData.Unit("b", Side.Enemies, element: Element.Wind);
 
-			var cues = Names(Sounds(new BattleSounds(true), new SkillUsed(hero, TestData.Strike), new Damaged(a, 120, 0, false, 1), new Damaged(b, 240, 0, true, 1)));
-			Assert.Equal("combat.critical_hit", cues[0], "o crítico ganha");
-			Assert.Equal(1, cues.Count(name => name.StartsWith("combat.critical") || name.StartsWith("combat.area") || name.StartsWith("combat.attack")), "um acerto só para o golpe inteiro");
+			var cues = Names(Sounds(new BattleSounds(), new SkillUsed(hero, TestData.Strike), new Damaged(a, 120, 30, false, 1.3), new Damaged(b, 240, 0, true, 1.3)));
+			Assert.Equal("combat.hit", Line(cues), "área, crítico, escudo e vantagem: um acerto só");
 
-			cues = Names(Sounds(new BattleSounds(true), new SkillUsed(hero, TestData.Strike), new Damaged(a, 120, 0, false, 1), new Damaged(b, 120, 0, false, 1)));
-			Assert.Equal("combat.area_attack", cues[0], "dois alvos de uma vez");
+			cues = Names(Sounds(new BattleSounds(), new SkillUsed(hero, TestData.Strike), new Missed(a), new Protected(b)));
+			Assert.Equal("", Line(cues), "o erro e a Égide são calados");
 		}
 
 		[Test]
@@ -171,63 +174,71 @@ namespace Sigilos.Tests
 		{
 			var hero = TestData.Unit("herói", Side.Allies);
 			var foe = TestData.Unit("inimigo", Side.Enemies);
-			var sounds = new BattleSounds(true);
+			var sounds = new BattleSounds();
 
 			var cues = Names(Sounds(sounds, new TurnStarted(foe, 2), new Damaged(foe, 80, 0, false, 1)));
-			Assert.Equal("combat.damage.poison", Line(cues), "o dano sem ninguém golpeando");
+			Assert.Equal("", Line(cues), "o Veneno é calado");
+
+			cues = Names(Sounds(sounds, new TurnStarted(foe, 3), new Damaged(foe, 80, 0, false, 1), new Died(foe)));
+			Assert.Equal("combat.knockout", Line(cues), "a queda pelo Veneno soa");
 
 			cues = Names(Sounds(sounds, new TurnStarted(foe, 3), new StatusRemoved(foe, StatusKind.Bomb), new Damaged(foe, 200, 0, false, 1)));
-			Assert.Equal("combat.explosion", Line(cues), "a Bomba explode, e o dano dela não soa de novo");
+			Assert.Equal("combat.hit_heavy", Line(cues), "a Bomba explode como o acerto pesado");
 
-			cues = Names(Sounds(sounds, new SkillUsed(hero, TestData.Strike), new Damaged(foe, 120, 0, false, 1), new TurnStarted(hero, 4), new StatusRemoved(hero, StatusKind.Shield)));
-			Assert.Equal("combat.attack_medium", Line(cues), "o efeito que vence sozinho fica calado");
+			cues = Names(Sounds(sounds, new SkillUsed(hero, TestData.Strike), new Damaged(foe, 120, 0, false, 1), new TurnStarted(hero, 4), new StatusRemoved(hero, StatusKind.Shield), new StatusApplied(hero, StatusKind.AttackUp, 1), new Healed(hero, 50)));
+			Assert.Equal("combat.hit", Line(cues), "o que vence, pega ou cura sozinho no turno fica calado");
 		}
 
 		[Test]
-		private static void OneSoundPerKindInAnAction()
+		private static void SupportSoundsOnce()
 		{
 			var healer = TestData.Unit("curandeira", Side.Allies, element: Element.Light);
+			var foe = TestData.Unit("inimigo", Side.Enemies);
 			var allies = Enumerable.Range(1, 5).Select(i => TestData.Unit($"aliado{i}", Side.Allies)).ToList();
 			var events = new List<BattleEvent> { new SkillUsed(healer, Wave) };
 			events.AddRange(allies.Select(ally => new Healed(ally, 100)));
 			events.AddRange(allies.Select(ally => new StatusApplied(ally, StatusKind.AttackUp, 2)));
+			events.Add(new StatusApplied(foe, StatusKind.Stun, 1));
+			events.Add(new Revived(allies[0]));
 
-			var cues = Names(Sounds(new BattleSounds(true), events.ToArray()));
-			Assert.Equal("combat.elements.light_glint combat.status.heal combat.status.buff_apply", Line(cues), "a cura e o fortalecer em cinco soam uma vez cada");
+			var cues = Names(Sounds(new BattleSounds(), events.ToArray()));
+			Assert.Equal("combat.status.boon", Line(cues), "curar, fortalecer, enfraquecer e reviver numa ação: um som só");
+
+			cues = Names(Sounds(new BattleSounds(), new SkillUsed(healer, Wave), new StatusApplied(foe, StatusKind.Stun, 1), new StatusApplied(foe, StatusKind.AttackDown, 2)));
+			Assert.Equal("combat.status.bane", Line(cues), "a ação que só enfraquece");
 		}
 
 		[Test]
-		private static void AMomentHasAtMostThreeSounds()
+		private static void WhatAHitCausesIsQuiet()
 		{
 			var hero = TestData.Unit("herói", Side.Allies, element: Element.Fire);
 			var foe = TestData.Unit("inimigo", Side.Enemies, element: Element.Wind);
-			var cues = Sounds(new BattleSounds(true),
+			var cues = Sounds(new BattleSounds(),
 				new SkillUsed(hero, TestData.Strike),
 				new Damaged(foe, 120, 30, false, 1.3),
 				new StatusApplied(foe, StatusKind.Stun, 1),
 				new StatusApplied(foe, StatusKind.Affliction, 2),
+				new Resisted(foe),
 				new ImpetoChanged(foe, -0.2),
-				new Died(foe));
+				new Died(foe),
+				new ExtraTurn(hero),
+				new TurnSkipped(foe, StatusKind.Stun));
 
-			Assert.Equal(3, cues.Count, "três sons no máximo");
-			Assert.Equal(3, cues.Select(cue => cue.Name).Distinct().Count(), "sem repetir");
+			Assert.Equal("combat.hit combat.knockout", Line(Names(cues)), "o acerto e a queda; efeitos, Ímpeto e turnos calados");
 		}
 
 		[Test]
-		private static void BossNearDefeatWarnsOnce()
+		private static void WavesAndTheEnd()
 		{
-			var hero = TestData.Unit("herói", Side.Allies);
+			var foe = TestData.Unit("inimigo", Side.Enemies);
 			var boss = TestData.Unit("chefe", Side.Enemies, boss: true);
-			boss.Health = boss.MaxHealth * 0.2;
-			var live = new BattleSounds(true);
+			var cues = Names(Sounds(new BattleSounds(),
+				new WaveStarted(1, 2, new[] { foe }),
+				new WaveStarted(2, 2, new[] { foe, boss }),
+				new BattleEnded(true)));
 
-			var first = Names(Sounds(live, new SkillUsed(hero, TestData.Strike), new Damaged(boss, 50, 0, false, 1)));
-			var second = Names(Sounds(live, new SkillUsed(hero, TestData.Strike), new Damaged(boss, 50, 0, false, 1)));
-			Assert.True(first.Contains("combat.boss.near_defeat"), "o chefe perto de cair avisa");
-			Assert.False(second.Contains("combat.boss.near_defeat"), "uma vez só");
-
-			var watched = Names(Sounds(new BattleSounds(false), new SkillUsed(hero, TestData.Strike), new Damaged(boss, 50, 0, false, 1)));
-			Assert.False(watched.Contains("combat.boss.near_defeat"), "a luta assistida não sabe a Vida de agora");
+			Assert.Equal("progression.new_wave combat.boss.enter progression.victory", Line(cues), "a onda, a do chefe e a vitória");
+			Assert.Equal("progression.defeat", Line(Names(Sounds(new BattleSounds(), new BattleEnded(false)))), "a derrota");
 		}
 	}
 }

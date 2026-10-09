@@ -12,7 +12,8 @@ namespace Sigilos.UI.Audio
 	///
 	/// - <see cref="Play(string, double)"/>: o som da ação (<c>Sfx.Play("rewards.star_up")</c>), na hora ou
 	///   depois de um atraso. Um efeito com variações sorteia uma, sem repetir a última; o mesmo som de novo
-	///   em menos de <see cref="RepeatMs"/> não toca (os acertos de um golpe em área caem juntos).
+	///   em menos de <see cref="RepeatMs"/> não toca (os acertos de um golpe em área caem juntos), e um som
+	///   toca no máximo <see cref="SameAtOnce"/> vezes junto: a próxima corta a mais antiga dele.
 	/// - <see cref="Fallback"/>: o som de reserva dos componentes (o clique do botão, a janela abrindo, a
 	///   aba trocando). Espera o fim do quadro e só toca se nenhum <c>Play</c> veio no mesmo quadro: a ação
 	///   com som próprio cala o clique que a pediu. Entre as reservas do quadro, ganha a de maior prioridade
@@ -30,11 +31,16 @@ namespace Sigilos.UI.Audio
 		private const int Voices = 16;
 
 		/// <summary>O mesmo som de novo antes disso, em milissegundos, não toca.</summary>
-		private const ulong RepeatMs = 40;
+		private const ulong RepeatMs = 80;
+
+		/// <summary>Quantas vezes o mesmo som toca junto; a próxima corta a mais antiga dele.</summary>
+		private const int SameAtOnce = 2;
 
 		private static Sfx? _instance;
 
 		private readonly List<AudioStreamPlayer> _voices = new();
+		private readonly string?[] _voiceNames = new string?[Voices];
+		private readonly ulong[] _voiceStarted = new ulong[Voices];
 		private readonly Dictionary<string, AudioStream?> _streams = new();
 		private readonly Dictionary<string, ulong> _played = new();
 		private readonly Dictionary<string, int> _lastFile = new();
@@ -175,9 +181,28 @@ namespace Sigilos.UI.Audio
 
 			if (Load(files[Pick(name, files.Count)]) is not { } stream)
 				return;
-			var voice = FreeVoice();
-			voice.Stream = stream;
-			voice.Play();
+			var index = VoiceFor(name);
+			_voiceNames[index] = name;
+			_voiceStarted[index] = now;
+			_voices[index].Stream = stream;
+			_voices[index].Play();
+		}
+
+		/// <summary>O tocador do som: o mais antigo dele se já toca <see cref="SameAtOnce"/> vezes; senão, um livre.</summary>
+		private int VoiceFor(string name)
+		{
+			var same = 0;
+			var oldest = -1;
+			for (var i = 0; i < _voices.Count; i++)
+			{
+				if (!_voices[i].Playing || _voiceNames[i] != name)
+					continue;
+				same++;
+				if (oldest < 0 || _voiceStarted[i] < _voiceStarted[oldest])
+					oldest = i;
+			}
+
+			return same >= SameAtOnce ? oldest : FreeVoice();
 		}
 
 		/// <summary>A variação: ao acaso, sem repetir a última do mesmo som.</summary>
@@ -194,7 +219,7 @@ namespace Sigilos.UI.Audio
 		}
 
 		/// <summary>O primeiro tocador livre, a partir do que vem depois do último usado; sem nenhum livre, o mais antigo.</summary>
-		private AudioStreamPlayer FreeVoice()
+		private int FreeVoice()
 		{
 			for (var i = 0; i < _voices.Count; i++)
 			{
@@ -202,10 +227,10 @@ namespace Sigilos.UI.Audio
 				if (_voices[index].Playing)
 					continue;
 				_next = (index + 1) % _voices.Count;
-				return _voices[index];
+				return index;
 			}
 
-			var oldest = _voices[_next];
+			var oldest = _next;
 			_next = (_next + 1) % _voices.Count;
 			return oldest;
 		}

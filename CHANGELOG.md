@@ -1,12 +1,13 @@
 # Changelog — Sigilos
 
 ## 08/10/2026
-- **Sons próprios.** Uma biblioteca de 224 efeitos sonoros (332 arquivos, com as variações), toda sintetizada para Sigilos, sem nenhum áudio de fora: interface, grimório, constelações, invocação, recompensas, combate (golpes, dano, os cinco elementos, efeitos de batalha e o chefe) e progressão.
-  - O som do jogo: grimório arcano, constelações e invocação. Interface delicada de madeira, papel e notinhas; magia de sinos, cristal e coro; tudo em Ré, com a assinatura Ré–Lá–Mi.
-  - **Os sons tocam no jogo.** Interface (botões, abas, janelas, telas, voltar), luta, resultado, invocação, Monstros, Runas, Equipes, Loja, Santuário, correio, Grimório, Exploração e Batalha automática.
-  - Na luta, cada momento soa no máximo três sons, acelerando junto com a luta: o feitiço do elemento, o golpe, a queda e os efeitos. A vista pequena da Batalha automática fica muda.
+- **Sons próprios.** Uma biblioteca de 62 efeitos sonoros, toda sintetizada para Sigilos, sem nenhum áudio de fora: interface, grimório, constelações, invocação, recompensas, combate (acertos, os cinco elementos, o chefe) e progressão.
+  - O som do jogo é o de um grimório mágico entre constelações, feito para morar dentro da música: harpa, celesta, sinos macios, taça e feltro, no mesmo tom dela (Mi menor / Sol maior), com a assinatura Ré–Lá–Mi. Nada de estalo duro, agudo agressivo, distorção ou explosão.
+  - Volume em degraus, sempre por baixo da música: o que se repete é o mais baixo, a navegação um pouco acima, a luta comum no meio, as habilidades grandes e as recompensas raras acima, e a invocação 5★ no topo. Importância vem das camadas (acorde maior, coro, a subida antes), não de volume.
+  - **Os sons tocam no jogo.** Interface (botões, abas, janelas, telas, voltar), luta, resultado, invocação, Monstros, Runas, Equipes, Loja, Santuário, correio, Grimório, Exploração e Batalha automática. O que é secundário divide o som de outro: bloquear e favoritar soam como ligar e desligar; afiar, encantar e reavaliar, como a tinta mágica.
+  - **Na luta, pouco som:** um acerto por golpe (o impacto do elemento na habilidade, o grande feitiço na de recarga longa, a voz do chefe), a queda e, na ação de apoio, um som de bem ou de mal. A corrida, o crítico, o Ímpeto, o Veneno e os efeitos pequenos ficam calados. No máximo dois sons por momento: uma luta longa de Masmorra toca uns 35 sons por minuto em 1× (eram 100), quase sem nenhum por cima do outro.
+  - O mesmo som não empilha: no máximo duas vezes junto, e não repete em menos de 80 ms.
   - A ação com som próprio cala o clique do botão que a pediu: o Evoluir soa a estrela, não o clique.
-  - Som novo de nocaute: o ar saindo, o corpo no chão e uma nota de vidro apagando.
 - **Ajustes:** volume de **Efeitos**, ao lado de Geral e Música.
 - **Masmorras: o andar 5 virou o das Lendárias.** Antes, o andar 4 rendia mais runas boas que o 5 (30,4% de Lendária contra 3%): umas 15 runas 6★ Lendárias por dia no 4 e 1,8 no 5.
   - Andar 4: Rara 60%, Heroica 32%, Lendária 8% (era 46,5 / 23,1 / 30,4). Continua o andar das runas 6★ (71,8%), agora com mais Heroicas: é com ele que o time se prepara para o 5.

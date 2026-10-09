@@ -20,7 +20,7 @@ namespace Sigilos.Sounds
 	/// <c>dotnet run --project Tools/sounds -c Release</c>
 	///   Gera tudo e apaga os WAV que não são mais de nenhum efeito.
 	///
-	/// <c>--only=ui</c>, <c>--only=combat/</c>, <c>--only=ui/button_click,combat.damage.fire</c>
+	/// <c>--only=ui</c>, <c>--only=combat/</c>, <c>--only=ui/button_click,combat.elements.fire_impact</c>
 	///   Só uma pasta (exata), uma pasta com as de dentro (terminada em /) ou efeitos soltos (com / ou .).
 	///
 	/// <c>--seed=7451</c>  a semente (a mesma semente dá os mesmos bytes; trocar muda a biblioteca inteira).

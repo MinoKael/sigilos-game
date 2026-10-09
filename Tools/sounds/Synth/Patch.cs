@@ -58,10 +58,10 @@ namespace Sigilos.Sounds.Synth
 			return layer;
 		}
 
-		/// <summary>Uma corda dedilhada em <paramref name="hz"/> que some em <paramref name="decay"/> segundos.</summary>
-		public Layer Pluck(double hz, double decay, double at = 0)
+		/// <summary>Uma corda dedilhada em <paramref name="hz"/> que some em <paramref name="decay"/> segundos; <paramref name="attack"/> maior é um dedo mais macio.</summary>
+		public Layer Pluck(double hz, double decay, double at = 0, double attack = 0.0005)
 		{
-			var layer = Add(LayerSource.Pluck, at, Envelope.Hit(0.0005, decay, 0.004, 1));
+			var layer = Add(LayerSource.Pluck, at, Envelope.Hit(attack, decay, 0.004, 1));
 			layer.Hz = hz;
 			return layer;
 		}

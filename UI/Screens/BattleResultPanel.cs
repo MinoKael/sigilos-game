@@ -166,24 +166,23 @@ namespace Sigilos.UI.Screens
 			Fanfare();
 		}
 
-		/// <summary>O que a vitória rendeu, um som depois do outro: o ouro, o destaque e o fecho.</summary>
+		/// <summary>
+		/// O que a vitória rendeu, em no máximo dois sons: o destaque (a criatura invocada, ou o prêmio raro
+		/// e a página nova do grimório) e a subida de nível da conta. O ouro e o resto ficam calados: a
+		/// vitória já soou na luta.
+		/// </summary>
 		private void Fanfare()
 		{
 			if (_outcome.Reward is not { } reward)
 				return;
 
-			Sfx.Play("rewards.gold", 0.2);
 			var highlight = reward.SummonResult != null ? "summon.creature_summoned"
-				: reward.Prize is { IsEmpty: false } ? "rewards.chest_rare"
-				: _outcome.Opened is { Count: > 0 } ? "grimoire.info_unlocked"
-				: reward.Scrolls > 0 || reward.Tools.Count > 0 ? "rewards.equipment"
+				: reward.Prize is { IsEmpty: false } || _outcome.Opened is { Count: > 0 } ? "rewards.item_rare"
 				: null;
 			if (highlight != null)
 				Sfx.Play(highlight, 0.6);
 			if (reward.AccountLevels > 0)
-				Sfx.Play("rewards.level_up", 1.2);
-			else if (_outcome.NewBest)
-				Sfx.Play("rewards.achievement_complete", 1.2);
+				Sfx.Play("rewards.level_up", 1.4);
 		}
 
 		private static Label Title(bool victory)

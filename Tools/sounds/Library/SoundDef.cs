@@ -30,10 +30,10 @@ namespace Sigilos.Sounds.Library
 		public int Variations { get; }
 		public double LevelDb { get; }
 
-		/// <summary>O caminho dentro da biblioteca, sem extensão: <c>combat/damage/fire</c>. É o que <c>--only</c> aceita.</summary>
+		/// <summary>O caminho dentro da biblioteca, sem extensão: <c>combat/elements/fire_impact</c>. É o que <c>--only</c> aceita.</summary>
 		public string Id => $"{Category}/{Name}";
 
-		/// <summary>O nome lógico que o jogo usa: <c>combat.damage.fire</c>.</summary>
+		/// <summary>O nome lógico que o jogo usa: <c>combat.elements.fire_impact</c>.</summary>
 		public string LogicalName => Id.Replace('/', '.');
 
 		/// <summary><c>nome.wav</c> com uma variação, <c>nome_01.wav</c>, <c>nome_02.wav</c>... com várias.</summary>

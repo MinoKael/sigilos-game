@@ -10,7 +10,7 @@ namespace Sigilos.Sounds.Library
 {
 	/// <summary>
 	/// O catálogo que o jogo lê (<c>sounds.json</c>, na pasta da biblioteca): para cada nome lógico
-	/// (<c>combat.damage.fire</c>), a pasta, a descrição, a classe de mixagem, os arquivos das variações
+	/// (<c>combat.elements.fire_impact</c>), a pasta, a descrição, a classe de mixagem, os arquivos das variações
 	/// (o jogo sorteia entre eles), a duração e o pico. É refeito inteiro a cada geração, lendo os WAV que
 	/// estão no disco: gerar só um grupo não tira os outros do catálogo.
 	/// </summary>

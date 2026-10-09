@@ -119,7 +119,7 @@ namespace Sigilos.UI.Screens
 			_auto = auto && coach == null;
 			_coach = coach;
 			_focusBoss = focusBoss;
-			_sounds = new BattleSounds(live: true);
+			_sounds = new BattleSounds();
 		}
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace Sigilos.UI.Screens
 			_hud = back != null;
 			_back = back;
 			_speedIndex = BattlePace.Speeds.Count - 1;
-			_sounds = new BattleSounds(live: false);
+			_sounds = new BattleSounds();
 		}
 
 		/// <summary>A luta acabou: verdadeiro na vitória.</summary>

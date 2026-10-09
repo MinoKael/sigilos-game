@@ -15,14 +15,14 @@ Da raiz do repositório:
 dotnet run --project Tools/sounds -c Release
 ```
 
-Gera os 224 efeitos (332 arquivos, uns 17 MB) em 2 segundos e apaga os `.wav` que não são mais de
-nenhum efeito. Opções:
+Gera os 62 efeitos (84 arquivos, uns 5 MB) em menos de um segundo e apaga os `.wav` que não são mais
+de nenhum efeito. Opções:
 
 | Opção | O que faz |
 | --- | --- |
-| `--only=ui` | só uma pasta (exata: `combat` não leva `combat/damage`) |
+| `--only=ui` | só uma pasta (exata: `combat` não leva `combat/elements`) |
 | `--only=combat/` | a pasta e as de dentro |
-| `--only=ui/button_click,combat.damage.fire` | efeitos soltos, com `/` ou com `.` (o nome lógico) |
+| `--only=ui/button_click,combat.elements.fire_impact` | efeitos soltos, com `/` ou com `.` (o nome lógico) |
 | `--seed=7451` | a semente (7451 é a da biblioteca; trocar muda todos os arquivos) |
 | `--out=pasta` | outra pasta de saída (o catálogo sai com caminhos relativos a ela) |
 | `--rate=44100` | taxa de amostragem |
@@ -38,63 +38,74 @@ git junto com os `.wav`; a ferramenta apaga o `.import` junto de um `.wav` que s
 
 ## Identidade
 
-Grimório arcano, constelações, invocação e fantasia medieval mística. Na prática:
+Um grimório mágico num universo de constelações, não uma interface cheia de avisos sonoros. A
+referência é a música do jogo: harpa contínua e sininhos delicados de canção de ninar. Os efeitos
+moram dentro dela.
 
-- **Interface:** delicada, tátil, quase de desenho animado: toques de madeira, papel e uma notinha
-  de marimba ou celesta. Curta e baixa, porque se repete o tempo todo.
-- **Grimório:** couro, papel, pena e tinta na frente; a magia entra por cima, em brilhos.
-- **Constelações:** cristal, sinos e ar, no modo lídio (o "céu").
-- **Invocação:** o ritual cresce em camadas (círculo, sigilo, energia, portal) e a revelação cresce
-  com a raridade: a 5★ e a lendária têm coro, sinos e cauda mais longa.
-- **Combate:** magia mais densa e escura; os golpes têm o corpo nos médios, para ler em volume baixo
-  e no alto-falante do celular.
-- **Chefe:** voz própria (rosnado, tambor, gongo e batimento), no modo frígio.
-- **Sintetizador discreto:** serras sempre filtradas e com coro, nada de varredura de ficção
-  científica. Madeira, papel e couro ficam em segunda camada, dando matéria à magia.
+- **Menos é mais.** Um som só quando ele diz alguma coisa; o que é secundário divide o som de outro
+  ou fica calado, e o redundante não existe.
+- **Harmonia antes de quantidade, suavidade antes de impacto.** Harpa, celesta, sinos macios, taça e
+  feltro. Nada de ataque duro, agudo agressivo, distorção, vidro, metal ou estouro; o brilho para em
+  6 a 8 kHz.
+- **Importância não é volume.** O evento importante é reconhecível pelas camadas (mais vozes no
+  acorde, coro, a subida antes), não por ser mais alto.
 
-**Tom:** tudo gira em Ré. Interface e recompensas em Ré maior ou pentatônico, o céu em Ré lídio, a
-sombra e o chefe em Ré frígio. A assinatura de Sigilos são as quintas empilhadas Ré–Lá–Mi
-(`Arcane.Sigil`): aparece no sigilo da invocação, nos grandes feitiços de cada elemento, no Ímpeto
-cheio e nas habilidades.
+**Tom:** Mi menor / Sol maior, o da música. A melodia fica na pentatônica (Mi Sol Lá Si Ré), que soa
+junto com qualquer acorde dela; os acordes são de Mi menor e Sol maior. A assinatura de Sigilos é a
+quinta empilhada Ré–Lá–Mi (`Arcane.Sigil`), que resolve em Mi: o sigilo da invocação, a revelação 5★
+e os grandes feitiços (no Vento sobre Lá, na Luz e nas Trevas sobre Sol, sempre dentro do tom).
+
+**A hierarquia** (volume percebido na janela de 400 ms, a música fica no meio, em torno de −25 dB):
+
+| Degrau | Sons | Volume |
+| --- | --- | --- |
+| Recorrente | aba, controle de volume, página, efeito na luta, sua vez | −33 a −38 dB |
+| Navegação | clique (a medida de tudo), voltar, janela, painel, equipar | −31 a −33 dB |
+| Combate comum | acerto, nocaute, impacto de elemento, nova onda | −29 a −31 dB |
+| Habilidades importantes | grande feitiço, chefe, recompensas raras, subir de nível | −26 a −28 dB |
+| Invocação e momentos especiais | revelação 4★ e 5★, item lendário, vitória | −24 a −26 dB |
+
+**O cansaço do farm:** o que se repete centenas de vezes é curto (o acerto tem 0,16 s), baixo e
+varia de nota a cada vez (o acerto em Mi, Sol, Si ou Lá, sem repetir a última). O mesmo som não
+empilha (ver "No jogo").
 
 ## As classes de mixagem
 
 Cada efeito tem uma classe (`Mix`), que decide o volume e os cortes; `levelDb` acerta um efeito em
-relação aos outros da mesma classe (o foco de botão 7 dB abaixo do clique, por exemplo).
+relação aos outros da mesma classe, para ele cair no degrau dele da hierarquia.
 
 | Classe | Volume percebido | Pico máximo | Corte grave | Corte agudo | Cauda até | Usada em |
 | --- | --- | --- | --- | --- | --- | --- |
 | `ui` | −25 dB | −6 dBFS | 160 Hz | 10 kHz | −48 dB | interface |
-| `soft` | −22 dB | −4 dBFS | 90 Hz | 13 kHz | −54 dB | grimório, constelações, progressão |
-| `reward` | −19 dB | −2 dBFS | 70 Hz | 14 kHz | −54 dB | invocação, recompensas |
-| `combat` | −18 dB | −1,5 dBFS | 55 Hz | 11 kHz | −50 dB | golpes, dano, elementos, efeitos |
-| `epic` | −18 dB | −1 dBFS | 40 Hz | 15 kHz | −60 dB | lendários, chefe, vitória, derrota |
+| `soft` | −27 dB | −6 dBFS | 90 Hz | 8 kHz | −54 dB | grimório, constelações, progressão, efeitos da luta |
+| `reward` | −24 dB | −4 dBFS | 70 Hz | 8 kHz | −54 dB | invocação, recompensas |
+| `combat` | −25 dB | −4 dBFS | 60 Hz | 7 kHz | −50 dB | acertos, nocaute, impactos dos elementos |
+| `epic` | −25 dB | −3 dBFS | 45 Hz | 8 kHz | −60 dB | grandes feitiços, chefe, vitória, derrota, lendários |
 
 O volume percebido é o da janela de 50 ms mais forte, com uma curva parecida com a K da EBU R128
-(grave pesa menos, presença acima de 1,5 kHz pesa mais): assim um clique e uma explosão da mesma
-classe soam do mesmo tamanho. A masterização (`Mastering/Master.cs`) corta grave e agudo da classe,
-apara a cauda, suaviza as pontas, leva ao volume da classe e passa pelo limitador (com antecipação de
-2 ms), que nunca deixa passar do pico máximo. Os arquivos são 16 bits, mono, com dither.
+(grave pesa menos, presença acima de 1,5 kHz pesa mais). A masterização (`Mastering/Master.cs`) corta
+grave e agudo da classe, apara a cauda, suaviza as pontas, leva ao volume da classe e passa pelo
+limitador (com antecipação de 2 ms), que nunca deixa passar do pico máximo. Os arquivos são 16 bits,
+mono, com dither.
 
 O `--report` avisa: pico acima do teto, volume 3 dB abaixo do alvo (pico demais para pouco corpo),
 mais de 45% da energia abaixo de 150 Hz, e mais de 20% acima de 6 kHz em interface e combate (30%
 nas outras), que é o que cansa num som repetido.
 
-## As pastas
+## Os efeitos
 
-| Pasta | O quê |
+| Pasta | Efeitos |
 | --- | --- |
-| `ui` | botões, abas, menus, janelas, rolagem, arrastar, equipar, alternar, erro |
-| `grimoire` | o livro: abrir, folhear, escrever, tinta mágica, descobertas, capítulo completo |
-| `constellation` | estrelas, linhas, constelação completa, nós e caminhos, evolução |
-| `summon` | o ritual, as revelações por raridade e por estrela, duplicata, Fragmentos e Essência |
-| `rewards` | Ouro, Essência, experiência, runas, itens por raridade, nível, baús |
-| `combat` | ataques leve a muito pesado, crítico, corte, perfuração, projéteis, área, erro, bloqueio |
-| `combat/damage` | dano por tipo e elemento, periódico, crítico, absorvido, reduzido, anulado |
-| `combat/elements` | Fogo, Água, Vento, Luz e Trevas, quatro de cada mais o grande feitiço |
-| `combat/status` | fortalecer e enfraquecer, cada efeito de batalha, cura, escudo |
-| `combat/boss` | chefe: entrada, especial, fúria, mecânica, regeneração, derrota |
-| `progression` | Ímpeto, habilidades, turnos, vitória e derrota, fase, onda, Batalha automática |
+| `ui` | clique, aba, painel, janela (abrir e fechar), voltar, equipar e desequipar, ligar e desligar, controle de volume (subir e descer), ação indisponível |
+| `grimoire` | abrir e fechar o livro, virar e escolher página, tinta mágica, criatura registrada |
+| `constellation` | estrela acendendo |
+| `summon` | começo do ritual, energia subindo, criatura invocada, revelação de 1★ a 5★ |
+| `rewards` | Ouro, Essência, experiência, runa, item raro, épico e lendário, subir de nível, subir estrela, recompensa |
+| `combat` | acerto, acerto pesado, nocaute |
+| `combat/elements` | o impacto e o grande feitiço de Fogo, Água, Vento, Luz e Trevas |
+| `combat/status` | o bem (curar, fortalecer, reviver) e o mal (enfraquecer) |
+| `combat/boss` | entrada, habilidade e queda do chefe |
+| `progression` | sua vez, nova onda, vitória, derrota, Batalha automática ligada e desligada |
 
 `dotnet run --project Tools/sounds -c Release -- --list` mostra todos, com a descrição de cada um.
 
@@ -114,7 +125,7 @@ pontos; um efeito com variações lista todas, e o jogo sorteia uma a cada vez:
     "res://Assets/Audio/ui/button_click_03.wav"
   ],
   "seconds": 0.09,
-  "peak_db": -9.3
+  "peak_db": -10.5
 }
 ```
 
@@ -123,20 +134,25 @@ lógico não muda quando o número de variações muda; é ele que o jogo deve u
 
 ## Adicionar um efeito
 
+Antes, veja se um som que já existe serve: um evento secundário divide o som de outro (bloquear e
+favoritar usam o ligar e desligar; afiar, encantar e reavaliar, a tinta mágica). Efeito novo só com
+uma necessidade clara.
+
 1. Na receita da pasta (`Tools/sounds/Recipes/<Pasta>Sounds.cs`), uma linha nova:
 
    ```csharp
-   yield return r.Of("rune_polish", "Polir runa: o pano no cristal e um brilho.", p =>
+   yield return r.Of("rune_polish", "Polir runa: o pano na pedra e uma nota de celesta.", p =>
    {
-       Foley.Swish(p, 0, 0.18, 1800, 3200, 0.4);
-       Arcane.Glass(p, A5, 0.12, 0.5, 0.6);
+       Foley.Swish(p, 0, 0.18, 900, 2200, 0.2);
+       Arcane.Celesta(p, Pick(p, B5, E6), 0.08, 0.4, 0.45);
        p.Reverb(0.12, 0.7);
-   }, variations: 2);
+   }, variations: 2, levelDb: -2);
    ```
 
    `r.With(Mix.Epic, ...)` troca a classe do efeito; `levelDb:` sobe ou desce. Nome em snake_case,
-   descrição em português.
-2. `dotnet run --project Tools/sounds -c Release -- --only=<pasta>/rune_polish --report` e ouvir.
+   descrição em português, notas da pentatônica de Mi.
+2. `dotnet run --project Tools/sounds -c Release -- --only=<pasta>/rune_polish --report` e ouvir junto
+   com a música. Acerte o `levelDb` para o efeito cair no degrau dele da hierarquia.
 3. Pasta nova: a pasta em `SoundCatalog.Categories`, um `Recipes/<Pasta>Sounds.cs` e a linha dele em
    `SoundCatalog.All()`.
 
@@ -148,7 +164,8 @@ pareça variação de outro da mesma pasta (`gold` e `gold_02`).
 `UI/Audio/Sfx.cs` é um nó do GameRoot, vivo o tempo todo, com 16 tocadores no barramento `Effects`
 (o volume de **Efeitos** nos Ajustes, salvo no aparelho como os outros dois). Lê o catálogo ao abrir,
 carrega os sons da interface na hora e o resto na primeira vez que toca. Sorteia a variação sem
-repetir a última, e o mesmo som de novo em menos de 40 ms não toca (os acertos de um golpe em área).
+repetir a última. Para os sons não empilharem: o mesmo som de novo em menos de 80 ms não toca, e um
+som toca no máximo duas vezes junto (a terceira corta a mais antiga dele).
 
 ```csharp
 Sfx.Play("rewards.star_up");               // agora
@@ -163,20 +180,40 @@ tela que entra (`GameRoot.Swap`), a seta de voltar e o toque curto (`Press`). A 
 do quadro e só toca se nenhum `Sfx.Play` veio no mesmo quadro; entre as reservas do quadro, ganha a
 de maior prioridade (voltar 3, janela 2, aba e tela 1, botão 0). Então o Evoluir soa a estrela, e não
 o clique; o botão que abre uma janela soa a janela. O toque longo que abriu um resumo cala o clique
-do soltar (`Sfx.Quiet`).
+do soltar (`Sfx.Quiet`). A ação pequena sem som próprio (trocar o retrato, escolher o líder) fica com
+o clique.
 
-**Onde cada parte soa:**
+**A luta** (`UI/Audio/BattleSounds.cs`): cada momento vira no máximo 2 sons.
+
+- A corrida até o alvo é calada.
+- Um acerto só por golpe, mesmo em área ou crítico. O primeiro golpe da ação diz o que ela é: a
+  básica, o acerto (do chefe, o acerto pesado); a habilidade com recarga, o impacto do elemento de
+  quem usa (recarga 5 ou mais, o grande feitiço; a do chefe, a voz dele). Os golpes seguintes da
+  mesma ação são o acerto simples.
+- A queda vem 0,12 s depois do golpe (a do chefe tem a dele).
+- A ação que só cura, fortalece, enfraquece ou revive soa uma vez: o bem ou o mal. A Bomba que
+  explode é o acerto pesado.
+- Calados: o erro e a Égide, o crítico, a vantagem de elemento, o escudo, o efeito que o golpe põe,
+  a resistência e a imunidade, o Ímpeto, o turno perdido, o Veneno e o que acontece sozinho no
+  começo e no fim do turno.
+- A onda (a do chefe tem a entrada dele), a vitória e a derrota.
+
+Os atrasos aceleram com a luta; a vista pequena da Batalha automática é muda. O turno manual soa ao
+chegar.
+
+**Onde o resto soa:**
 
 | Onde | Sons |
 | --- | --- |
-| Interface | clique, ligar/desligar, aba, janela, tela, voltar, os controles de volume (degrau a degrau, já no volume novo) |
-| Luta (`BattleSounds`) | um momento vira no máximo 3 sons: a habilidade soa o feitiço do elemento (recarga 5 ou mais, o grande feitiço; o chefe, a voz dele) e a básica corre calada; um acerto só por golpe (crítico, pesado do chefe, área, impacto do elemento ou médio); por cima, escudo que absorveu ou vantagem e desvantagem de elemento; 0,12 s depois, a queda e os efeitos. Veneno e Bomba têm o deles; o efeito que vence sozinho não soa; dentro de uma ação, o que já soou fora do golpe não repete (a cura em cinco é uma). Os atrasos aceleram com a luta; a vista pequena da Batalha automática é muda. O turno manual soa ao chegar |
-| Resultado | a runa que caiu (mais rica quanto mais rara); com as barras, o ouro, o destaque (monstro, prêmio de marco, o que abriu, Pergaminhos e ferramentas) e a conta que subiu ou o melhor tempo; cada nível de monstro |
+| Interface | clique, ligar/desligar, aba, janela, painel (a tela que entra), voltar, os controles de volume |
+| Resultado | a runa que caiu (mais rica quanto mais rara); com as barras, no máximo dois: o destaque (o monstro invocado, ou o prêmio de marco e a página nova do grimório) e a conta que subiu de nível; cada nível de monstro |
 | Invocação | o ritual (sigilo e energia subindo) e cada cartão pelas estrelas, em cascata; o monstro novo fecha com o registro no grimório |
-| Monstros, Runas, Equipes, Loja | cada ação com o som dela (Infundir, Despertar, Evoluir, Fundir, Soltar, Guardar, Bloquear, Equipar, Melhorar, Afiar, Encantar, Reavaliar, Vender, Comprar); a que não pegou soa só o clique, e a equipe cheia avisa |
-| Santuário e correio | coletar a Canalização, trocar o retrato, coletar cartas |
+| Monstros | Infundir (experiência ou nível), Despertar, Evoluir e Fundir (subir estrela), Soltar (Essência), Guardar e Tirar (desequipar e equipar), Bloquear e Favoritar (ligar e desligar) |
+| Runas | Equipar e Desequipar, Melhorar (a runa), Afiar, Encantar e Reavaliar (tinta mágica), Vender (Ouro), Bloquear (ligar e desligar) |
+| Equipes, Loja | pôr e tirar da equipe (equipar e desequipar; cheia, a ação indisponível), comprar (Ouro) |
+| Santuário e correio | coletar a Canalização (Essência), coletar cartas |
 | Grimório e livro do Invocador | abrir, virar página, escolher a família, fechar |
-| Exploração | o céu ao entrar e a estrela ao escolher a constelação |
+| Exploração | a estrela ao escolher a constelação |
 | Batalha automática | começar (e retomar) e parar; as lutas não soam |
 
 **Som novo no código:** gere o efeito (acima), escreva o nome lógico inteiro no código (sem montar
@@ -184,15 +221,27 @@ com `$"..."`: uma tabela de nomes quando depende de um valor, como `SummonScreen
 os testes. `SoundTests` confere que todo `"categoria.nome"` de `UI/` e `GameEntry/` que não é chave de
 texto está no catálogo, que os arquivos do catálogo existem e como a luta vira som.
 
+## Conferir
+
+```bash
+dotnet run --project Tests -- --battle-sounds=golem5
+```
+
+Joga a luta de verdade (uma fase como `40` ou uma Masmorra como `golem5`) e conta, em cada velocidade,
+quantos sons tocam por minuto, quanto do tempo tem som, quantos tocam juntos e os que mais tocam.
+`--timeline --speed=2` lista cada som com o tempo. Uma luta longa deve ficar perto de 30 sons por
+minuto em 1×, com quase nada sobreposto.
+
 ## Como é feito
 
 - **`Synth/`:** o motor. Um `Patch` é a mesa de uma variação: a receita põe camadas
-  (`Tone`, `Noise`, `Modal` para sinos, vidro, madeira e metal, `Pluck` para cordas, `Crackle` para
-  estalos), cada uma com envelope, filtros, glissando, vibrato, FM, coro, tremolo e vogal (formantes,
-  para o coro e o sussurro), e o espaço do efeito inteiro (`Reverb`, `Echo`).
-- **`Motifs/`:** o vocabulário, reaproveitado pelas receitas. `Foley` (madeira, papel, couro, pena,
-  moeda), `Arcane` (sinos, cristal, coro, ar, o sigilo Ré–Lá–Mi), `Strike` (sopro, impacto, corte,
-  estouro, cacos), `Elemental` (chama, bolhas, vento, sombra) e `Colossus` (a voz do chefe).
+  (`Tone`, `Noise`, `Modal` para sinos, celesta, madeira, taça e pedra, `Pluck` para a harpa,
+  `Crackle` para estalos), cada uma com envelope, filtros, glissando, vibrato, FM, coro, tremolo e
+  vogal (formantes, para o coro), e o espaço do efeito inteiro (`Reverb`, `Echo`). As notas estão em
+  `Notes`, já no tom.
+- **`Motifs/`:** o vocabulário, reaproveitado pelas receitas. `Arcane` (harpa, celesta, sinos, taça,
+  coro, ar, o sigilo Ré–Lá–Mi), `Foley` (madeira, feltro, papel, couro, moeda), `Strike` (o acerto de
+  feltro, o sopro e a florada grave) e `Elemental` (chama, bolhas, onda, vento, sombra).
 - **`Recipes/`:** uma classe por pasta, um efeito por entrada.
 - **`Mastering/`:** classes de mixagem, volume percebido, limitador e o WAV.
 - **Variações e semente:** cada variação tem o próprio sorteio, tirado da semente, do caminho do

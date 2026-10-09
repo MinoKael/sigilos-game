@@ -198,6 +198,29 @@ namespace Sigilos.Tests
 		/// </summary>
 		public static void PrintBattle(GameDatabase database, string fight)
 		{
+			foreach (var e in Fight(database, fight))
+			{
+				Console.WriteLine(e switch
+				{
+					TurnStarted t => $"\n[{t.Round,2}] {t.Actor.Name}",
+					SkillUsed s => $"     uses {s.Skill.Name}",
+					Damaged d => $"     {d.Target.Name} -{d.Amount}{(d.Crit ? " crit" : "")}",
+					Healed h => $"     {h.Target.Name} +{h.Amount}",
+					StatusApplied a => $"     {a.Target.Name} gets {a.Status} ({a.Turns})",
+					Died d => $"     {d.Unit.Name} falls",
+					WaveStarted w => $"\n=== wave {w.Wave}/{w.WaveCount}",
+					BattleEnded b => $"\n=== {(b.Victory ? "victory" : "defeat")}",
+					_ => $"     {e.GetType().Name}",
+				});
+			}
+		}
+
+		/// <summary>
+		/// Os eventos de uma luta inteira no automático, semente 1: <c>10</c> (a fase 10 contra quem chega a ela)
+		/// ou <c>golem5:powerful</c> (um andar de Masmorra contra um time de <see cref="ReferenceTeams"/>).
+		/// </summary>
+		public static List<BattleEvent> Fight(GameDatabase database, string fight)
+		{
 			var name = fight.Split(':')[0];
 			var team = fight.Contains(':') ? fight[(fight.IndexOf(':') + 1)..] : "specialist";
 			var dungeon = database.Dungeons.FirstOrDefault(d => name.StartsWith(d.Id, StringComparison.Ordinal));
@@ -222,21 +245,7 @@ namespace Sigilos.Tests
 					log.AddRange(session.Act(AutoPilot.For(session, turn.Actor)));
 			}
 
-			foreach (var e in log)
-			{
-				Console.WriteLine(e switch
-				{
-					TurnStarted t => $"\n[{t.Round,2}] {t.Actor.Name}",
-					SkillUsed s => $"     uses {s.Skill.Name}",
-					Damaged d => $"     {d.Target.Name} -{d.Amount}{(d.Crit ? " crit" : "")}",
-					Healed h => $"     {h.Target.Name} +{h.Amount}",
-					StatusApplied a => $"     {a.Target.Name} gets {a.Status} ({a.Turns})",
-					Died d => $"     {d.Unit.Name} falls",
-					WaveStarted w => $"\n=== wave {w.Wave}/{w.WaveCount}",
-					BattleEnded b => $"\n=== {(b.Victory ? "victory" : "defeat")}",
-					_ => $"     {e.GetType().Name}",
-				});
-			}
+			return log;
 		}
 
 		private static (double Wins, double Rounds, double Health) Run(GameDatabase database, Encounter encounter, BattleTeam team)

@@ -12,10 +12,10 @@ namespace Sigilos.Sounds.Mastering
 		public static MixProfile Of(Mix mix) => mix switch
 		{
 			Mix.Ui => new("ui", -25, -6, 0, 160, 10000, -48),
-			Mix.Soft => new("soft", -22, -4, 1, 90, 13000, -54),
-			Mix.Reward => new("reward", -19, -2, 2, 70, 14000, -54),
-			Mix.Combat => new("combat", -18, -1.5, 3, 55, 11000, -50),
-			_ => new("epic", -18, -1, 4, 40, 15000, -60),
+			Mix.Soft => new("soft", -27, -6, 1, 90, 8000, -54),
+			Mix.Reward => new("reward", -24, -4, 2, 70, 8000, -54),
+			Mix.Combat => new("combat", -25, -4, 3, 60, 7000, -50),
+			_ => new("epic", -25, -3, 3, 45, 8000, -60),
 		};
 	}
 }

@@ -8,8 +8,8 @@ using static Sigilos.Sounds.Synth.Notes;
 namespace Sigilos.Sounds.Recipes
 {
 	/// <summary>
-	/// O chefe: mais grave, mais largo e com voz própria (<see cref="Colossus"/>: o rosnado, o tambor, o gongo
-	/// e o batimento), em Ré frígio. Todos da classe épica.
+	/// O chefe: mais grave e mais largo que o resto, nunca mais alto. Tambores de feltro, a taça grave, a
+	/// sombra cantando em quinta. Três momentos só: a entrada, a habilidade e a queda.
 	/// </summary>
 	internal static class BossSounds
 	{
@@ -17,91 +17,33 @@ namespace Sigilos.Sounds.Recipes
 		{
 			var r = new Recipe("combat/boss", Mix.Epic);
 
-			yield return r.Of("enter", "Boss entrando: dois passos de tambor, o gongo e o rosnado.", p =>
+			yield return r.Of("enter", "Chefe entrando: dois passos de feltro, a taça grave e a sombra.", p =>
 			{
-				Colossus.Drum(p, 0, 0.9);
-				Colossus.Drum(p, 0.45, 0.9);
-				Colossus.Gong(p, D3, 0.9, 2.2, 0.7);
-				Colossus.Growl(p, 0.9, 1.2, Hz(D2), 0, 0.7);
-				Arcane.Pad(p, new[] { D3, A3, Ds4 }, 0.9, 0.4, 0.6, 1.0, 0.35, 900);
-				p.Reverb(0.18, 1.5);
-			});
+				Foley.Felt(p, 0, 62, 0.4, 0.9);
+				Foley.Felt(p, 0.42, 58, 0.45, 0.9);
+				Arcane.Bowl(p, E3, 0.8, 1.6, 0.6);
+				Arcane.Air(p, new[] { E3, B3 }, 0.75, 0.3, 0.4, 0.8, 0.35);
+				Elemental.Umbra(p, 0.8, 0.9, E2, 0.35);
+				p.Reverb(0.16, 1.3);
+			}, levelDb: -3);
 
-			yield return r.Of("special", "Boss usando habilidade especial: a subida grave, o rosnado e o estouro.", p =>
+			yield return r.Of("special", "Chefe usando habilidade especial: a subida grave, a sombra e a florada.", p =>
 			{
-				Arcane.Riser(p, 0, 0.7, Hz(D3), Hz(A3), 0.5);
-				Colossus.Growl(p, 0.3, 0.8, Hz(A2), Hz(D3), 0.6);
-				Elemental.Umbra(p, 0.2, 0.6, D3, 0.4);
-				Strike.Boom(p, 0.7, 0.6, 0.9);
-				p.Reverb(0.15, 1.2);
-			});
+				Arcane.Riser(p, 0, 0.6, Hz(E3), Hz(B3), 0.45);
+				Elemental.Umbra(p, 0.15, 0.55, E3, 0.35);
+				Strike.Bloom(p, 0.6, 0.5, 0.8);
+				Strike.Hit(p, 0.6, 0.85, E3, 0.6);
+				p.Reverb(0.14, 1.0);
+			}, levelDb: -0.5);
 
-			yield return r.Of("enrage", "Boss enfurecendo: o rosnado subindo e os tambores acelerando.", p =>
+			yield return r.Of("defeated", "Chefe derrotado: a taça descendo a Mi, a florada e o coro se abrindo.", p =>
 			{
-				Colossus.Growl(p, 0, 1.2, Hz(D2), Hz(A2), 1);
-				var steps = new[] { 0, 0.3, 0.55, 0.75, 0.9 };
-				foreach (var at in steps)
-					Colossus.Drum(p, at, 0.7);
-				Elemental.Flame(p, 0.3, 0.9, 0.4);
-				p.Reverb(0.12, 1);
-			});
-
-			yield return r.Of("mechanic", "Boss ativando mecânica: o gongo e o mecanismo girando.", p =>
-			{
-				Colossus.Gong(p, A3, 0, 1.4, 0.6);
-				for (var i = 0; i < 6; i++)
-				{
-					Foley.Clink(p, 0.1 + i * 0.09, i % 2 == 0 ? 900 : 1150, 0.3);
-					Foley.Knock(p, 0.1 + i * 0.09, 300, 0.04, 0.3);
-				}
-				Arcane.Bowl(p, D4, 0.5, 1.0, 0.35);
-				p.Reverb(0.15, 1.1);
-			});
-
-			yield return r.Of("regenerate", "Boss regenerando: a sombra cantando, bolhas graves e a taça ao contrário.", p =>
-			{
-				p.Modal(Modes.Bowl, Hz(D4), 0.9).Reverse().Gain(0.5);
-				Arcane.Choir(p, new[] { D3, A3 }, 0, 0.6, 0.2, 0.5, 0.5, Vowel.U, Vowel.O);
-				Elemental.Bubbles(p, 0.2, 0.8, 8, 150, 450, 0.35);
-				Elemental.Umbra(p, 0, 0.9, D2, 0.4);
-				p.Reverb(0.18, 1.2);
-			});
-
-			yield return r.Of("counter", "Boss contra-atacando: o metal, o rosnado curto e o golpe.", p =>
-			{
-				p.Modal(Modes.Metal, p.Vary(700, 0.05), 0.5).Bright(0.6).Gain(0.6);
-				Colossus.Growl(p, 0, 0.35, Hz(A2), 0, 0.6);
-				Strike.Whoosh(p, 0, 0.15, 400, 1600, 0.5);
-				Strike.Impact(p, 0.05, 0.8, 1);
-				p.Reverb(0.1, 0.8);
-			});
-
-			yield return r.Of("heavy_damage", "Boss recebendo dano pesado: o impacto máximo e o rosnado de dor.", p =>
-			{
-				Strike.Impact(p, 0, 1, 1);
-				Colossus.Growl(p, 0.03, 0.6, Hz(A2), Hz(D2), 0.7);
-				Strike.Shatter(p, 0, 0.3, 1500);
-				p.Reverb(0.1, 0.8);
-			});
-
-			yield return r.Of("near_defeat", "Boss quase derrotado: o batimento cansado e o rosnado fraco.", p =>
-			{
-				Colossus.Heartbeat(p, 0, 0.6);
-				Colossus.Heartbeat(p, 0.7, 0.5);
-				Colossus.Growl(p, 0.1, 0.9, Hz(D2), Hz(D2) * 0.85, 0.35);
-				Arcane.Whisper(p, 0.2, 0.8, 0.25);
-				p.Reverb(0.15, 1.1);
-			}, levelDb: -1);
-
-			yield return r.Of("defeated", "Boss derrotado: o rosnado caindo, o estouro, os cacos e o gongo.", p =>
-			{
-				Colossus.Growl(p, 0, 1.0, Hz(A2), Hz(D2) * 0.7, 0.8);
-				Strike.Boom(p, 0.5, 1, 1);
-				Strike.Shatter(p, 0.5, 0.5, 1800);
-				Colossus.Gong(p, D3, 0.5, 2.4, 0.6);
-				Arcane.Choir(p, new[] { D4, A4, D5 }, 0.6, 0.4, 0.4, 1.2, 0.4, Vowel.O, Vowel.A);
-				p.Reverb(0.2, 1.6);
-			});
+				Arcane.Bowl(p, B3, 0, 0.7, 0.5);
+				Arcane.Bowl(p, E3, 0.3, 1.3, 0.6);
+				Strike.Bloom(p, 0.3, 0.8, 0.8);
+				Arcane.Choir(p, new[] { E4, B4, E5 }, 0.45, 0.35, 0.25, 0.8, 0.35, Vowel.O, Vowel.A);
+				p.Reverb(0.18, 1.3);
+			}, levelDb: 2);
 		}
 	}
 }

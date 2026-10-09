@@ -14,7 +14,7 @@ namespace Sigilos.Sounds.Library
 	{
 		public static readonly IReadOnlyList<string> Categories = new[]
 		{
-			"ui", "grimoire", "constellation", "summon", "rewards", "combat", "combat/damage", "combat/elements", "combat/status", "combat/boss", "progression",
+			"ui", "grimoire", "constellation", "summon", "rewards", "combat", "combat/elements", "combat/status", "combat/boss", "progression",
 		};
 
 		private static readonly Regex SnakeCase = new("^[a-z][a-z0-9]*(_[a-z0-9]+)*$");
@@ -28,7 +28,6 @@ namespace Sigilos.Sounds.Library
 			all.AddRange(SummonSounds.All());
 			all.AddRange(RewardSounds.All());
 			all.AddRange(CombatSounds.All());
-			all.AddRange(DamageSounds.All());
 			all.AddRange(ElementSounds.All());
 			all.AddRange(StatusSounds.All());
 			all.AddRange(ProgressionSounds.All());

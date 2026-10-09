@@ -69,7 +69,6 @@ namespace Sigilos.UI.Screens
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("exploration.title"), _currencies, () => BackRequested?.Invoke()).Header);
-			Sfx.Play("constellation.stardust");
 
 			var body = Layout.Row(20).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
