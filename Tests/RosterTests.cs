@@ -180,6 +180,18 @@ namespace Sigilos.Tests
 			Assert.True(Teams.MakeLeader(player, Teams.Campaign, player.Monsters[3].Id), "troca a Líder");
 			Assert.Equal(player.Monsters[3].Id, Teams.Of(player, Teams.Campaign)[0], "a Líder vai para a frente");
 
+			var leader = Teams.Of(player, Teams.Campaign)[0];
+			Assert.True(Teams.Replace(player, Teams.Campaign, leader, extra.Id), "a equipe cheia ainda troca");
+			Assert.Equal(extra.Id, Teams.Of(player, Teams.Campaign)[0], "quem entra fica na vaga de quem saiu (a Líder)");
+			Assert.False(Teams.Of(player, Teams.Campaign).Contains(leader), "e quem saiu sai");
+			var last = Teams.Of(player, Teams.Campaign)[4];
+			Assert.True(Teams.Replace(player, Teams.Campaign, extra.Id, last), "quem já está na equipe troca de lugar");
+			Assert.Equal(last, Teams.Of(player, Teams.Campaign)[0], "um vai para a vaga do outro");
+			Assert.Equal(extra.Id, Teams.Of(player, Teams.Campaign)[4], "e o outro, para a dele");
+			Assert.False(Teams.Replace(player, Teams.Campaign, leader, last), "quem não está na equipe não sai");
+			Roster.Store(player, leader);
+			Assert.False(Teams.Replace(player, Teams.Campaign, last, leader), "monstro do Baú não entra");
+
 			Assert.Equal(5, PlayerTeam.Build(player, database, Teams.Campaign).Members.Count, "cinco na Campanha");
 			Assert.Equal("knight_fire", PlayerTeam.Build(player, database, "golem").Members.Single().Summon.Id, "um no Golem");
 		}

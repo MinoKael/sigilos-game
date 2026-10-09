@@ -14,7 +14,6 @@
     "auto_battle": "Batalha automática",
     "fight": "Lutar",
     "auto_short": "Automática",
-    "edit_team": "Editar equipe",
     "cancel": "Cancelar",
     "buy_mana": "Comprar Mana na Loja",
     "or": " ou "
@@ -827,17 +826,22 @@
     "make_leader": "Tornar Líder",
     "empty": "Vaga livre",
     "leadership_text": "{0}: +{1} de {2} para toda a equipe.",
-    "on_team": "Na equipe",
-    "hint": "Toque num monstro aqui embaixo para pôr ou tirar da equipe. Segure qualquer monstro para ver o resumo.",
-    "opens_at": "Fase {0}",
-    "leadership_title": "Liderança",
     "no_leadership": "A Líder desta equipe não tem Liderança.",
     "no_team": "A equipe está vazia.",
-    "leader_hint": "O primeiro monstro é a Líder: a Liderança dela vale para a equipe inteira. Toque num monstro da equipe para torná-lo Líder ou tirá-lo.",
-    "is_leader": "Este monstro é a Líder da equipe.",
-    "slot_text": "Na equipe.",
     "remove": "Tirar da equipe",
     "details": "Ver resumo"
+  },
+  "prep": {
+    "collection": "Coleção",
+    "team": "Equipe · {0}",
+    "chosen": "{0} escolhido: toque num monstro da coleção para pôr no lugar dele.",
+    "hint": "Toque num monstro da coleção para pôr ou tirar da equipe. Toque num da equipe para trocar ou tornar Líder. Segure qualquer monstro para ver o resumo.",
+    "saved": "A última equipe usada aqui fica guardada.",
+    "boss_room": "Sala do chefe",
+    "last_wave": "Última onda",
+    "wave": "Onda {0} (a última) · {1}",
+    "none": "Nenhum monstro nesta busca.",
+    "full": "Equipe cheia: toque num monstro da equipe e depois no que entra no lugar dele."
   },
 
   "runes": {
@@ -924,8 +928,10 @@
       "Rarity": "raridade",
       "Set": "conjunto",
       "Slot": "espaço",
-      "Newest": "mais nova"
+      "Newest": "mais nova",
+      "Substat": "subatributo"
     },
+    "order_substat": "{0} (sub)",
     "sort": "Ordem",
     "button": "Filtros",
     "button_active": "Filtros ({0})",
@@ -947,6 +953,10 @@
       "MaxLevel": "Nível máximo",
       "Runed": "Com runas",
       "Unruned": "Sem runas"
+    },
+    "rune_condition_kind": {
+      "Locked": "Bloqueadas",
+      "Unlocked": "Desbloqueadas"
     },
     "behavior": "Habilidades",
     "behavior_kind": {
@@ -1002,12 +1012,12 @@
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
       "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. O Místico tira Fogo, Água e Vento, com a garantia de 5★ sempre à vista; o de Luz e Trevas, só Luz e Trevas; o Lendário, só 4★ e 5★. Os dois especiais vêm dos marcos do jogo. A primeira 5★ da conta é garantida, e Fragmentos trocam por uma 4★ escolhida." },
       "monsters": { "title": "Monstros e Baú", "text": "A coleção começa com {0} vagas e cresce na Loja, com a Expansão de Coleção, até {2}; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas. Bloqueie um monstro ou uma runa (o cadeado) para nunca soltar, fundir ou vender por engano; desbloqueie para fazer isso." },
-      "teams": { "title": "Equipes", "text": "Uma equipe de até {0} monstros para a Campanha, uma para cada Masmorra e uma para a Exploração Estelar. A primeira é a Líder." },
+      "teams": { "title": "Equipes", "text": "A equipe, de até {0} monstros, se monta na preparação de cada luta (o Lutar). A Campanha, cada Masmorra e a Exploração Estelar guardam a última usada nelas. A primeira é a Líder." },
       "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Fragmentos para ganhar uma estrela: o monstro mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} Fragmentos; de 4★ para 5★: {2}; de 5★ para 6★: {3}." },
       "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser soltas em troca de Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
       "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada monstro tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
-      "sanctuary": { "title": "Santuário e controles", "text": "O Santuário é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Monstros, Runas, Equipes, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um monstro para ver o resumo dele." }
+      "sanctuary": { "title": "Santuário e controles", "text": "O Santuário é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Monstros, Runas, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um monstro para ver o resumo dele." }
     },
     "combat": {
       "impetus": { "title": "Ímpeto", "text": "Cada unidade tem uma barra de {0} que enche em proporção à Velocidade; quem chega a 100% age. Empurrar ou atrasar a barra muda a ordem — a faixa \"Próximos\" mostra quem vem." },
@@ -1168,7 +1178,6 @@
     "Summon": "Invocação",
     "Monsters": "Monstros",
     "Runes": "Runas",
-    "Teams": "Equipes",
     "Shop": "Loja",
     "Compendium": "Compêndio",
     "Grimoire": "Grimório",

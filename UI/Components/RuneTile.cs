@@ -161,6 +161,25 @@ namespace Sigilos.UI.Components
 			AddChild(center);
 		}
 
+		/// <summary>
+		/// Um valor escrito no alto da pedra ("+18"), numa plaquinha de ouro por cima das estrelas: o
+		/// subatributo da ordem da lista, para comparar sem abrir as runas.
+		/// </summary>
+		public void SetValue(string text)
+		{
+			var plate = new PanelContainer { Name = "Value", MouseFilter = MouseFilterEnum.Ignore };
+			var box = GameTheme.Box(Palette.Gold, Palette.Background, 1, (int)(6 * _scale), 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 4 * _scale;
+			plate.AddThemeStyleboxOverride("panel", box);
+			var label = Small(text, Palette.Background, 12).Named("Text");
+			label.AddThemeConstantOverride("outline_size", 0);
+			plate.AddChild(label);
+			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
+			plate.GrowHorizontal = GrowDirection.Both;
+			plate.OffsetTop = plate.OffsetBottom = 1;
+			_layer.AddChild(plate);
+		}
+
 		/// <summary>O cadeado da runa bloqueada: uma plaquinha no meio da linha de baixo, entre a seta e a melhora.</summary>
 		private void LockBadge()
 		{

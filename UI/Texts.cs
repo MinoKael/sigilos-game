@@ -46,6 +46,14 @@ namespace Sigilos.UI
 		public static string Name(RuneSort sort) => T($"filter.order.{sort}");
 		public static string Name(MonsterSort sort) => T($"filter.monster_order.{sort}");
 
+		/// <summary>O nome do conteúdo de uma equipe (<see cref="Teams"/>): a Campanha, a Exploração Estelar ou a Masmorra.</summary>
+		public static string ContentName(GameDatabase database, string content) => content switch
+		{
+			Teams.Campaign => T("teams.campaign"),
+			Teams.Exploration => T("exploration.title"),
+			_ => database.Dungeons.FirstOrDefault(d => d.Id == content)?.Name ?? content,
+		};
+
 		/// <summary>O feito do Chat global numa frase: "Fulano conseguiu um novo monstro 5★!".</summary>
 		public static string Describe(Feat feat, string by) => T(feat is RuneFeat ? "chat.feat_rune" : "chat.feat_summon", by);
 

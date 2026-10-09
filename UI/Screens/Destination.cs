@@ -11,7 +11,6 @@ namespace Sigilos.UI.Screens
 		Summon,
 		Monsters,
 		Runes,
-		Teams,
 		Shop,
 		Compendium,
 		Grimoire,
@@ -36,7 +35,6 @@ namespace Sigilos.UI.Screens
 			Destination.Summon => "summon",
 			Destination.Monsters => "monster",
 			Destination.Runes => "rune",
-			Destination.Teams => "team",
 			Destination.Shop => "shop",
 			Destination.Compendium => "compendium",
 			Destination.Grimoire => "grimoire",
@@ -51,7 +49,6 @@ namespace Sigilos.UI.Screens
 		public static (string Icon, string Name) Of(Feature feature) => feature switch
 		{
 			Feature.Monsters => (Icon(Destination.Monsters), Name(Destination.Monsters)),
-			Feature.Teams => (Icon(Destination.Teams), Name(Destination.Teams)),
 			Feature.Runes => (Icon(Destination.Runes), Name(Destination.Runes)),
 			Feature.Compendium => (Icon(Destination.Compendium), Name(Destination.Compendium)),
 			Feature.Shop => (Icon(Destination.Shop), Name(Destination.Shop)),

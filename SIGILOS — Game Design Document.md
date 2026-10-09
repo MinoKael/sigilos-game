@@ -158,7 +158,7 @@ Batalha por turnos sem tabuleiro, como em Summoners War: até 5 monstros contra 
 
 ### Montagem do time
 
-Uma equipe de até 5 monstros por conteúdo: uma para a Campanha e uma para cada Masmorra (tela de Equipes). A primeira é a Líder e aplica sua Liderança ao time, se tiver uma. Cada fase tem até 3 ondas, como as masmorras de Summoners War. Na luta, o botão Efeitos mostra o que está sobre cada aliado e inimigo.
+Uma equipe de até 5 monstros por conteúdo: a Campanha, cada Masmorra e a Exploração Estelar guardam a última usada nelas. Não há equipes prontas: o Lutar abre a preparação da luta, com a equipe em formação (três na frente, duas atrás) no alto à esquerda, a última onda (o chefe sozinho na frente) e o botão Lutar com a Mana no alto à direita, e a coleção numa lista que rola de lado embaixo, com Filtros e Ordem, para trocar à vontade. A primeira é a Líder e aplica sua Liderança ao time, se tiver uma. Cada fase tem até 3 ondas, como as masmorras de Summoners War. Na luta, o botão Efeitos mostra o que está sobre cada aliado e inimigo.
 
 O campo é um círculo de conjuração oval visto de cima: os aliados no arco de baixo à esquerda, os inimigos no de cima à direita, frente a frente pela diagonal, e o que acontece escrito no meio. Quem ataca corre até o alvo e para colado nele (num golpe em área, diante do grupo), dá um tranco a cada golpe e volta ao seu lugar; cura e reforço são um passo à frente. Cada alvo atingido ganha um respingo, e os golpes que caem juntos aparecem juntos: uma habilidade de 2 golpes no alvo e 1 em todos mostra o alvo, o alvo e então o grupo inteiro de uma vez. Os números e nomes de efeito sobem pequenos e em fila, um por linha. Em volta: o nome da luta, a onda e a rodada (escritas) no canto de cima à esquerda, com a ordem de turno em pé logo abaixo ("Próximos"); os botões Automático, velocidade e Efeitos embaixo à esquerda; as habilidades embaixo à direita, cada uma com o nome embaixo e a recarga no canto (tocar usa, segurar explica). Tocar ou segurar um monstro no campo ou na ordem de turno abre o resumo dele, com a Vida, os efeitos e as recargas de agora. A pausa, no canto de cima à direita (ou Esc, ou o Voltar do celular), para tudo e oferece continuar, recomeçar a luta do começo e sair. Recomeçar e sair não custam nada: a Mana só sai na vitória.
 
@@ -300,7 +300,7 @@ Há quatro eixos de poder: estrelas e nível, níveis de habilidade, Despertar e
 
 | Abre | Na |
 | --- | --- |
-| Monstros e Equipes | Primeira invocação |
+| Monstros | Primeira invocação |
 | Runas | Fase 1 (a primeira runa cai nela) |
 | Compêndio | Fase 2 |
 | Canalização | Fase 3 |

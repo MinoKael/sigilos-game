@@ -20,7 +20,8 @@ namespace Sigilos.UI.Screens
 	///   conjuração com os 6 espaços dele (tocar num espaço filtra a lista por ele), os conjuntos e a
 	///   ficha de atributos, sempre à vista.
 	/// - No meio, pelas abas escritas, o inventário de runas (com os botões Filtros, Ordenar e Onde, e
-	///   Vender várias para marcar e vender de uma vez), as Pedras de Afiar e as Gemas Encantadas.
+	///   Vender várias para marcar e vender de uma vez), as Pedras de Afiar e as Gemas Encantadas. Na
+	///   ordem por um subatributo (a maior primeiro), o valor dele fica escrito no alto de cada pedra.
 	/// - À direita, a runa escolhida, com os botões presos embaixo: Equipar, Provar, Remover, Melhorar,
 	///   Vender, cada um dizendo o custo; e, na linha de cada subatributo, Afiar e Encantar quando alguma
 	///   pedra serve.
@@ -60,6 +61,9 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>Os botões da runa escolhida: mais baixos que o toque padrão, para a ficha caber inteira.</summary>
 		private const float ActionHeight = 40;
+
+		/// <summary>Na escolha da ordem, as por subatributo vêm depois das outras: o valor é este mais o atributo.</summary>
+		private const int SubstatOrder = 100;
 
 		/// <summary>Nível de cada runa quando a tela abriu: o que passou disso ganha destaque.</summary>
 		private readonly Dictionary<int, int> _levelWhenOpened;
@@ -416,6 +420,9 @@ namespace Sigilos.UI.Screens
 				var tile = new RuneTile(rune, rune.Slot) { Name = $"Rune{rune.Id}" };
 				tile.SetSelected(rune.Id == _selectedRune);
 				tile.SetMarked(_marked.Contains(rune.Id));
+				// Na ordem por subatributo, o valor dele fica escrito na pedra: a comparação sem abrir uma por uma.
+				if (_filter.Sort == RuneSort.Substat && RuneFilter.SubstatValue(rune, _filter.SortStat) is var amount and > 0)
+					tile.SetValue(Texts.Amount(_filter.SortStat, amount));
 				if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
 				{
 					var summon = _database.Summon(holder.SummonId);
@@ -485,10 +492,13 @@ namespace Sigilos.UI.Screens
             var filters = GameButton.Of(active == 0 ? T("filter.button") : T("filter.button_active", active), OpenFilters, active == 0 ? ButtonKind.Secondary : ButtonKind.Primary, "search", 40).Named("Filters");
             grid.AddChild(filters);
 
-            var sort = new ChoiceButton(T("filter.sort"), Enum.GetValues<RuneSort>().Select(s => (new Choice(Texts.Name(s)), (int)s)).ToList(), (int)_filter.Sort, 40) { Name = "Sort" };
+            var current = _filter.Sort == RuneSort.Substat ? SubstatOrder + (int)_filter.SortStat : (int)_filter.Sort;
+            var sort = new ChoiceButton(T("filter.sort"), SortOptions(), current, 40) { Name = "Sort" };
             sort.Changed += value =>
             {
-                _filter = _filter with { Sort = (RuneSort)value };
+                _filter = value >= SubstatOrder
+                    ? _filter with { Sort = RuneSort.Substat, SortStat = (RuneStat)(value - SubstatOrder) }
+                    : _filter with { Sort = (RuneSort)value };
                 Callable.From(Refresh).CallDeferred();
             };
             grid.AddChild(sort);
@@ -512,7 +522,13 @@ namespace Sigilos.UI.Screens
 
         private int ActiveFilters() =>
 			(_filter.Set != null ? 1 : 0) + (_filter.Slot != null ? 1 : 0) + (_filter.Main != null ? 1 : 0) + (_filter.Substats.Count > 0 ? 1 : 0)
-			+ (_filter.MinGrade > 1 ? 1 : 0) + (_filter.MinRarity > RuneRarity.Normal ? 1 : 0) + (_filter.MinLevel > 0 ? 1 : 0);
+			+ (_filter.MinGrade > 1 ? 1 : 0) + (_filter.MinRarity > RuneRarity.Normal ? 1 : 0) + (_filter.MinLevel > 0 ? 1 : 0) + (_filter.Condition != null ? 1 : 0);
+
+		/// <summary>As ordens da grade e, depois, uma por subatributo (o valor dele fica escrito em cada pedra).</summary>
+		private static IReadOnlyList<(Choice Choice, int Value)> SortOptions() =>
+			Enum.GetValues<RuneSort>().Where(s => s != RuneSort.Substat).Select(s => (new Choice(Texts.Name(s)), (int)s))
+				.Concat(Enum.GetValues<RuneStat>().Select(s => (new Choice(T("filter.order_substat", Texts.Label(s).ToLower(Culture)), Rune: Texts.GlyphOf(s)), SubstatOrder + (int)s)))
+				.ToList();
 
 		/// <summary>A janela dos filtros (<see cref="FilterDialog"/>): um campo por linha. Muda na hora.</summary>
 		private void OpenFilters() => FilterDialog.Open(this, T("filter.title"), dialog =>
@@ -523,15 +539,20 @@ namespace Sigilos.UI.Screens
 				value => _filter = _filter with { Slot = value < 0 ? null : value });
 			dialog.Field("Main", T("filter.main"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Main is { } main ? (int)main : FilterDialog.All,
 				value => _filter = _filter with { Main = value < 0 ? null : (RuneStat)value });
+			// Procurar um subatributo já ordena por ele, a maior primeiro; a Ordem ainda muda depois.
 			dialog.Field("Substat", T("filter.substat"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Substats.Count > 0 ? (int)_filter.Substats[0] : FilterDialog.All,
-				value => _filter = _filter with { Substats = value < 0 ? Array.Empty<RuneStat>() : new[] { (RuneStat)value } });
+				value => _filter = value < 0
+					? _filter with { Substats = Array.Empty<RuneStat>() }
+					: _filter with { Substats = new[] { (RuneStat)value }, Sort = RuneSort.Substat, SortStat = (RuneStat)value });
 			dialog.Field("Stars", T("filter.stars"), Enumerable.Range(2, RuneRules.MaxGrade - 1).Select(g => (new Choice(T("filter.at_least", Texts.Stars(g))), g)), _filter.MinGrade > 1 ? _filter.MinGrade : FilterDialog.All,
 				value => _filter = _filter with { MinGrade = Math.Max(1, value) });
 			dialog.Field("Rarity", T("filter.rarity"), Enum.GetValues<RuneRarity>().Skip(1).Select(r => (new Choice(T("filter.at_least", Texts.Name(r)), Art.Icon("gem"), Palette.Of(r)), (int)r)), _filter.MinRarity > RuneRarity.Normal ? (int)_filter.MinRarity : FilterDialog.All,
 				value => _filter = _filter with { MinRarity = value < 0 ? RuneRarity.Normal : (RuneRarity)value });
 			dialog.Field("Upgrade", T("filter.upgrade"), new[] { 3, 6, 9, 12, 15 }.Select(l => (new Choice(T("filter.at_least", $"+{l}")), l)), _filter.MinLevel > 0 ? _filter.MinLevel : FilterDialog.All,
 				value => _filter = _filter with { MinLevel = Math.Max(0, value) });
-		}, Refresh, () => _filter = new RuneFilter { Sort = _filter.Sort });
+			dialog.Field("Condition", T("filter.condition"), Enum.GetValues<RuneCondition>().Select(c => (new Choice(T($"filter.rune_condition_kind.{c}")), (int)c)), _filter.Condition is { } condition ? (int)condition : FilterDialog.All,
+				value => _filter = _filter with { Condition = value < 0 ? null : (RuneCondition)value });
+		}, Refresh, () => _filter = new RuneFilter { Sort = _filter.Sort, SortStat = _filter.SortStat });
 
 		/// <summary>A faixa da seleção: a explicação numa linha só dela (quebra em vez de alargar a tela) e os botões embaixo.</summary>
 		private void RefreshSelection()

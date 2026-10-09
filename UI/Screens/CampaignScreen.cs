@@ -15,8 +15,9 @@ namespace Sigilos.UI.Screens
 	/// A Campanha: à esquerda as abas das regiões e a trilha das fases da aberta (<see cref="StagePath"/>),
 	/// com o nome dela; uma região fechada diz em que fase abre. À direita a ficha da
 	/// escolhida, tudo escrito — o nome, os inimigos (nível e estrelas, onda por onda; tocar num abre o
-	/// resumo dele), o que a vitória rende, a equipe com o botão de editar, e embaixo os botões Lutar
-	/// (com o custo em Mana) e Batalha automática, que só abre em fase já vencida (GDD, seção 7).
+	/// resumo dele), o que a vitória rende, a última equipe usada, e embaixo os botões Lutar, que abre a
+	/// preparação da luta (<see cref="PrepScreen"/>: a equipe se monta lá, e lá está a Mana), e Batalha
+	/// automática, que só abre em fase já vencida (GDD, seção 7).
 	/// </summary>
 	public partial class CampaignScreen : Control
 	{
@@ -45,8 +46,6 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>A Batalha automática da fase: o jogador toca o botão, e o GameRoot abre a escolha de quantas lutas.</summary>
 		public event Action<StageDefinition>? RepeatRequested;
-
-		public event Action? TeamRequested;
 
 		/// <summary>Falta Mana: o botão que leva à Loja.</summary>
 		public event Action? ShopRequested;
@@ -202,10 +201,9 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(rewards);
 
 			_detail.AddChild(Heading("TeamTitle", T("common.team")));
-			_detail.AddChild(new TeamStrip(_database, _player, Teams.Campaign, () => TeamRequested?.Invoke()));
+			_detail.AddChild(new TeamStrip(_database, _player, Teams.Campaign));
 
 			var problem = Campaign.Check(_player, stage);
-			var noTeam = Teams.Of(_player, Teams.Campaign).Count == 0;
 			if (problem is EntryProblem.NoMana or EntryProblem.RunesFull)
 			{
 				var refusal = Layout.Text(Texts.Refusal(problem, stage.Mana)).Named("Refusal");
@@ -217,15 +215,15 @@ namespace Sigilos.UI.Screens
 				_actions.AddChild(GameButton.Of(T("common.buy_mana"), () => ShopRequested?.Invoke(), ButtonKind.Secondary, "shop", 48).Named("Shop"));
 
 			var row2 = Layout.Row(14).Named("Buttons");
-			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(stage), ButtonKind.Primary, "fight", 68).WithCost("mana", stage.Mana.ToString()).Named("Fight");
-			fight.Disabled = noTeam || problem != EntryProblem.None;
+			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(stage), ButtonKind.Primary, "fight", 68).Named("Fight");
+			fight.Disabled = problem != EntryProblem.None;
 			row2.AddChild(fight.Wide(220));
 			// A Batalha automática só aparece quando a Campanha a apresenta (Features); depois, em fase já vencida.
 			var autoOpen = Features.IsOpen(_player, _database, Feature.AutoBattle);
 			if (autoOpen)
 			{
 				var repeat = GameButton.Of(T("common.auto_battle"), () => RepeatRequested?.Invoke(stage), ButtonKind.Secondary, "repeat", 68).Named("AutoBattle");
-				repeat.Disabled = !cleared || noTeam || problem != EntryProblem.None;
+				repeat.Disabled = !cleared || problem != EntryProblem.None;
 				row2.AddChild(repeat.Wide(240));
 			}
 

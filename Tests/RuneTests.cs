@@ -299,6 +299,17 @@ namespace Sigilos.Tests
 			Assert.Equal("1,2,3", string.Join(",", byLevel), "ordem de melhora");
 
 			Assert.Equal(1, new RuneFilter { Main = RuneStat.CritDamage, Slot = 4 }.Apply(runes).Count(), "principal e espaço");
+
+			// Velocidade só nos subatributos: a principal de Velocidade (a 1) não conta, e quem não tem vem por último.
+			var bySpeed = new RuneFilter { Sort = RuneSort.Substat, SortStat = RuneStat.Speed }.Apply(runes).Select(r => r.Id);
+			Assert.Equal("2,3,1", string.Join(",", bySpeed), "a maior Velocidade nos subatributos primeiro");
+			runes[2].Substats[0].Grind = 2;
+			Assert.Near(6, RuneFilter.SubstatValue(runes[2], RuneStat.Speed), "o afiado conta");
+			Assert.Equal("3,2,1", string.Join(",", new RuneFilter { Sort = RuneSort.Substat, SortStat = RuneStat.Speed }.Apply(runes).Select(r => r.Id)), "e muda a ordem");
+
+			runes[1].Locked = true;
+			Assert.Equal("2", string.Join(",", new RuneFilter { Condition = RuneCondition.Locked }.Apply(runes).Select(r => r.Id)), "bloqueadas");
+			Assert.Equal("1,3", string.Join(",", new RuneFilter { Condition = RuneCondition.Unlocked }.Apply(runes).Select(r => r.Id)), "desbloqueadas");
 		}
 
 		[Test]

@@ -18,8 +18,9 @@ namespace Sigilos.UI.Screens
 	/// constelação abre — e o mapa da aberta (<see cref="StarChart"/>), com o quanto do percurso foi vencido
 	/// no mês. À direita a ficha da constelação escolhida, tudo escrito: o nome (e o latino), a Influência
 	/// (a explicação, com como vencer, e cada regra com os números), os inimigos onda a onda com o guardião
-	/// (tocar num abre o resumo dele), a recompensa da primeira vitória do mês, a equipe da Exploração e o
-	/// botão Lutar, que não custa Mana. Uma constelação ainda fechada se olha, mas não se luta.
+	/// (tocar num abre o resumo dele), a recompensa da primeira vitória do mês, a última equipe usada na
+	/// Exploração e o botão Lutar, que não custa Mana e abre a preparação da luta (<see cref="PrepScreen"/>).
+	/// Uma constelação ainda fechada se olha, mas não se luta.
 	/// </summary>
 	public partial class ExplorationScreen : Control
 	{
@@ -51,10 +52,9 @@ namespace Sigilos.UI.Screens
 		}
 
 		public event Action<int>? FightRequested;
-		public event Action? TeamRequested;
 		public event Action? BackRequested;
 
-		/// <summary>A constelação escolhida agora: a tela volta nela depois da luta ou da tela de Equipes.</summary>
+		/// <summary>A constelação escolhida agora: a tela volta nela depois da luta ou da preparação.</summary>
 		public int Selected => _selected;
 
 		private ExplorationDefinition Exploration => _database.Exploration;
@@ -269,7 +269,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(rewards);
 
 			_detail.AddChild(Heading("TeamTitle", T("common.team")));
-			_detail.AddChild(new TeamStrip(_database, _player, Teams.Exploration, () => TeamRequested?.Invoke()));
+			_detail.AddChild(new TeamStrip(_database, _player, Teams.Exploration));
 			_detail.AddChild(Layout.Text(T("exploration.manual"), GameTheme.Faded).Named("ManualHint"));
 
 			var problem = Core.Progression.Exploration.Check(_player, Exploration, number, _now);
@@ -279,7 +279,7 @@ namespace Sigilos.UI.Screens
 				_actions.AddChild(Refusal(T("exploration.locked", number - 1)));
 
 			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(number), ButtonKind.Primary, "fight", 68).Named("Fight");
-			fight.Disabled = problem != EntryProblem.None || Teams.Of(_player, Teams.Exploration).Count == 0;
+			fight.Disabled = problem != EntryProblem.None;
 			var row = Layout.Row(14).Named("Buttons");
 			row.AddChild(fight.Wide(220));
 			row.AddChild(new Label { Name = "Free", Text = T("exploration.free"), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });

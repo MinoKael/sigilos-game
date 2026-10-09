@@ -13,7 +13,6 @@
     "auto_battle": "Auto Battle",
     "fight": "Fight",
     "auto_short": "Auto Battle",
-    "edit_team": "Edit team",
     "cancel": "Cancel",
     "buy_mana": "Buy Mana at the Shop",
     "or": " or "
@@ -826,17 +825,22 @@
     "make_leader": "Make Leader",
     "empty": "Free slot",
     "leadership_text": "{0}: +{1} {2} for the whole team.",
-    "on_team": "In the team",
-    "hint": "Touch a monster below to put it in or take it out of the team. Hold any monster to see its summary.",
-    "opens_at": "Stage {0}",
-    "leadership_title": "Leadership",
     "no_leadership": "The Leader of this team has no Leadership.",
     "no_team": "The team is empty.",
-    "leader_hint": "The first monster is the Leader: its Leadership applies to the whole team. Touch a monster of the team to make it Leader or take it out.",
-    "is_leader": "This monster is the Leader of the team.",
-    "slot_text": "In the team.",
     "remove": "Take out of the team",
     "details": "See summary"
+  },
+  "prep": {
+    "collection": "Collection",
+    "team": "Team · {0}",
+    "chosen": "{0} chosen: touch a monster of the collection to put it in its place.",
+    "hint": "Touch a monster of the collection to put it in or take it out of the team. Touch one of the team to swap it or make it Leader. Hold any monster to see its summary.",
+    "saved": "The last team used here is kept.",
+    "boss_room": "Boss room",
+    "last_wave": "Last wave",
+    "wave": "Wave {0} (the last) · {1}",
+    "none": "No monster in this search.",
+    "full": "Full team: touch a monster of the team and then the one that takes its place."
   },
 
   "runes": {
@@ -923,8 +927,10 @@
       "Rarity": "rarity",
       "Set": "set",
       "Slot": "slot",
-      "Newest": "newest"
+      "Newest": "newest",
+      "Substat": "substat"
     },
+    "order_substat": "{0} (sub)",
     "sort": "Order",
     "button": "Filters",
     "button_active": "Filters ({0})",
@@ -946,6 +952,10 @@
       "MaxLevel": "Max level",
       "Runed": "With runes",
       "Unruned": "Without runes"
+    },
+    "rune_condition_kind": {
+      "Locked": "Locked",
+      "Unlocked": "Unlocked"
     },
     "behavior": "Skills",
     "behavior_kind": {
@@ -1001,12 +1011,12 @@
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Scrolls." },
       "summon": { "title": "Summoning", "text": "Scrolls summon monsters. Every summon is a new copy, at its natural stars and level 1. The Mystic one brings Fire, Water and Wind, with the 5★ guarantee always on display; the Light and Dark one, only Light and Dark; the Legendary one, only 4★ and 5★. The two special ones come from game milestones. The account's first 5★ is guaranteed, and Fragments trade for a chosen 4★." },
       "monsters": { "title": "Monsters and Vault", "text": "The collection starts with {0} slots and grows in the Shop, with the Collection Expansion, up to {2}; the Vault keeps whatever goes past that, with no limit. A monster in the Vault doesn't fight, but keeps its runes: they don't take any of the {1} slots of the rune inventory. Lock a monster or a rune (the padlock) so it is never released, fused away or sold by mistake; unlock it to do so." },
-      "teams": { "title": "Teams", "text": "A team of up to {0} monsters for the Campaign, one for each Dungeon and one for the Star Exploration. The first one is the Leader." },
+      "teams": { "title": "Teams", "text": "The team, of up to {0} monsters, is set up in the preparation of each fight (Fight). The Campaign, each Dungeon and the Star Exploration keep the last one used in them. The first one is the Leader." },
       "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Monsters, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and rune upgrades." },
       "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a monster starts: every monster reaches {0}★. At max level, pay Fragments to gain a star: the monster keeps its level, its stats jump to the new star's and the max rises by 5. 3★ to 4★: {1} Fragments; 4★ to 5★: {2}; 5★ to 6★: {3}." },
       "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a copy of the same family (any element) raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some monsters have a Passive, which acts on its own." },
       "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the monster gets its own name, a living aura with the ring of its element, purple stars and higher HP, Attack and Defense (each monster has its own awakened stats: see the Grimoire), plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {3}, {4}, {5} or {6})." },
-      "sanctuary": { "title": "Sanctuary and controls", "text": "The Sanctuary is the home screen. The Channeling gathers Essence, Gold and Mana while you are away, up to {0} hours: collect it there. Battle leads to the Campaign and the Dungeons; the bar at the bottom leads to Monsters, Runes, Teams, the Shop and the books. Touch a currency, a reward or a word you don't know to see what it is; hold a monster to see its summary." }
+      "sanctuary": { "title": "Sanctuary and controls", "text": "The Sanctuary is the home screen. The Channeling gathers Essence, Gold and Mana while you are away, up to {0} hours: collect it there. Battle leads to the Campaign and the Dungeons; the bar at the bottom leads to Monsters, Runes, the Shop and the books. Touch a currency, a reward or a word you don't know to see what it is; hold a monster to see its summary." }
     },
     "combat": {
       "impetus": { "title": "Impetus", "text": "Each unit has a {0} bar that fills in proportion to Speed; whoever reaches 100% acts. Pushing or delaying the bar changes the order — the \"Next\" strip shows who is coming." },
@@ -1167,7 +1177,6 @@
     "Summon": "Summoning",
     "Monsters": "Monsters",
     "Runes": "Runes",
-    "Teams": "Teams",
     "Shop": "Shop",
     "Compendium": "Compendium",
     "Grimoire": "Grimoire",

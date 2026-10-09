@@ -313,7 +313,7 @@ namespace Sigilos.UI.Screens
 			// Amigos não depende da Campanha: está sempre lá (sem conta, a janela diz por quê).
 			var places = new (Destination, Feature?)[]
 			{
-				(Destination.Monsters, Feature.Monsters), (Destination.Runes, Feature.Runes), (Destination.Teams, Feature.Teams),
+				(Destination.Monsters, Feature.Monsters), (Destination.Runes, Feature.Runes),
 				(Destination.Shop, Feature.Shop), (Destination.Friends, null), (Destination.Grimoire, Feature.Grimoire),
 				(Destination.Compendium, Feature.Compendium),
 			};

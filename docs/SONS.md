@@ -210,7 +210,7 @@ chegar.
 | Invocação | o ritual (sigilo e energia subindo) e cada cartão pelas estrelas, em cascata; o monstro novo fecha com o registro no grimório |
 | Monstros | Infundir (experiência ou nível), Despertar, Evoluir e Fundir (subir estrela), Soltar (Essência), Guardar e Tirar (desequipar e equipar), Bloquear e Favoritar (ligar e desligar) |
 | Runas | Equipar e Desequipar, Melhorar (a runa), Afiar, Encantar e Reavaliar (tinta mágica), Vender (Ouro), Bloquear (ligar e desligar) |
-| Equipes, Loja | pôr e tirar da equipe (equipar e desequipar; cheia, a ação indisponível), comprar (Ouro) |
+| Preparação da luta, Loja | pôr, tirar e trocar na equipe (equipar e desequipar; cheia, a ação indisponível), escolher um da equipe (ligar e desligar), comprar (Ouro) |
 | Santuário e correio | coletar a Canalização (Essência), coletar cartas |
 | Grimório e livro do Invocador | abrir, virar página, escolher a família, fechar |
 | Exploração | a estrela ao escolher a constelação |

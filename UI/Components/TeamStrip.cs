@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
@@ -9,15 +8,15 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// A equipe de um conteúdo em miniatura: um medalhão por monstro (a Líder com moldura de ouro e a
-	/// palavra "Líder" embaixo), as vagas vazias como pedras, e o botão escrito que abre a tela de
-	/// Equipes. Toque longo num medalhão abre o resumo do monstro.
+	/// A última equipe usada num conteúdo, em miniatura: um medalhão por monstro (a Líder com moldura de
+	/// ouro e a palavra "Líder" embaixo) e as vagas vazias como pedras. Só mostra: a equipe se monta na
+	/// preparação da luta (o Lutar). Toque longo num medalhão abre o resumo do monstro.
 	/// </summary>
 	public partial class TeamStrip : HBoxContainer
 	{
 		private const float Medal = 58;
 
-		public TeamStrip(GameDatabase database, PlayerState player, string content, Action onEdit)
+		public TeamStrip(GameDatabase database, PlayerState player, string content)
 		{
 			Name = "Team";
 			AddThemeConstantOverride("separation", 8);
@@ -47,10 +46,6 @@ namespace Sigilos.UI.Components
 				column.AddChild(caption);
 				AddChild(column);
 			}
-
-			var edit = GameButton.Of(T("common.edit_team"), onEdit, team.Count == 0 ? ButtonKind.Primary : ButtonKind.Secondary, "team").Named("Edit");
-			edit.SizeFlagsVertical = SizeFlags.ShrinkBegin;
-			AddChild(edit);
 		}
 	}
 }

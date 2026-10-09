@@ -14,9 +14,10 @@ namespace Sigilos.UI.Screens
 {
 	/// <summary>
 	/// As Masmorras: à esquerda uma por Masmorra, com o nome, o chefe e os andares vencidos (fechada,
-	/// diz a fase que abre); à direita a escolhida — o que ela solta, escrito, a equipe dela e os
-	/// andares, cada um com o nível dos inimigos, o que rende e os botões Lutar (com a Mana) e Batalha
-	/// automática (em andar já vencido). Cada vitória custa a Mana do andar.
+	/// diz a fase que abre); à direita a escolhida — o que ela solta, escrito, a última equipe usada nela
+	/// e os andares, cada um com o nível dos inimigos, o que rende e os botões Lutar, que abre a
+	/// preparação da luta (<see cref="PrepScreen"/>), e Batalha automática (em andar já vencido). Cada
+	/// vitória custa a Mana do andar.
 	/// </summary>
 	public partial class DungeonScreen : Control
 	{
@@ -40,8 +41,6 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>A Batalha automática do andar: Masmorra e andar; o GameRoot abre a escolha de quantas lutas.</summary>
 		public event Action<DungeonDefinition, int>? RepeatRequested;
-
-		public event Action<DungeonDefinition>? TeamRequested;
 
 		/// <summary>Falta Mana: o botão que leva à Loja.</summary>
 		public event Action<DungeonDefinition>? ShopRequested;
@@ -145,7 +144,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(drops);
 			if (dungeon.Kind == DungeonKind.Runes)
 				_detail.AddChild(Layout.Text(T("dungeons.sets_hint"), GameTheme.Faded).Named("SetsHint"));
-			_detail.AddChild(new TeamStrip(_database, _player, dungeon.Id, () => TeamRequested?.Invoke(dungeon)));
+			_detail.AddChild(new TeamStrip(_database, _player, dungeon.Id));
 			_detail.AddChild(new HSeparator { Name = "FloorsLine" });
 
 			if (!Dungeons.IsUnlocked(_player, dungeon))
@@ -161,12 +160,11 @@ namespace Sigilos.UI.Screens
 				return;
 			}
 
-			var noTeam = Teams.Of(_player, dungeon.Id).Count == 0;
 			for (var number = 1; number <= dungeon.Floors.Count; number++)
-				_detail.AddChild(FloorRow(dungeon, number, noTeam).Named($"Floor{number}"));
+				_detail.AddChild(FloorRow(dungeon, number).Named($"Floor{number}"));
 		}
 
-		private Control FloorRow(DungeonDefinition dungeon, int number, bool noTeam)
+		private Control FloorRow(DungeonDefinition dungeon, int number)
 		{
 			var floor = dungeon.Floor(number);
 			var cleared = number <= Dungeons.Cleared(_player, dungeon);
@@ -236,8 +234,8 @@ namespace Sigilos.UI.Screens
 
 			var buttons = new VBoxContainer { Name = "Buttons", Alignment = BoxContainer.AlignmentMode.Center };
 			buttons.AddThemeConstantOverride("separation", 8);
-			var disabled = noTeam || problem != EntryProblem.None;
-			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(dungeon, number), ButtonKind.Primary, "fight").WithCost("mana", floor.Mana.ToString()).Named("Fight");
+			var disabled = problem != EntryProblem.None;
+			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(dungeon, number), ButtonKind.Primary, "fight").Named("Fight");
 			fight.Disabled = disabled;
 			buttons.AddChild(fight.Wide(190));
 			if (cleared)

@@ -1,6 +1,12 @@
 # Changelog — Sigilos
 
 ## 08/10/2026
+- **Preparação da luta.** O Lutar da Campanha, de uma Masmorra ou da Exploração não mostra mais a Mana nem pede equipe: abre a preparação. No alto, à esquerda, a equipe em formação (três na frente, duas atrás; a primeira é a Líder), com a Liderança dela; à direita, a última onda, com o chefe sozinho na frente, e os botões Lutar (com a Mana) e Batalha automática. Embaixo, a coleção numa lista que rola de lado, com Filtros e Ordem.
+  - Tocar num monstro da coleção põe ou tira da equipe. Tocar num da equipe o escolhe: o próximo da coleção entra no lugar dele (ou os dois trocam de lugar), e ali mesmo há Tornar Líder e Tirar da equipe. Equipe cheia, o aviso diz como trocar.
+  - Não há mais equipes prontas: a Campanha, cada Masmorra e a Exploração guardam a última equipe usada nelas, e a preparação abre com ela. A ficha da fase mostra essa equipe, só para ver.
+  - Saiu a tela de Equipes (e o botão dela no Santuário). Lutar de novo e Continuar, no resultado, seguem direto para a luta.
+- **Runas, filtro por situação** (bloqueadas ou desbloqueadas) e **Ordem por subatributo:** com um subatributo escolhido, as runas vêm da que tem o maior valor nele para a menor, e o valor fica escrito no alto de cada pedra. Escolher um subatributo no filtro já ordena por ele.
+- **Monstros:** Filtros e Ordem são os mesmos na tela de Monstros e na preparação da luta.
 - **Runas: a prévia antes de equipar.** Escolher uma runa que não está no monstro já mostra a ficha de agora ao lado da que ele teria com ela, e a diferença pronta: + em verde, − em vermelho, apagado o que não muda. Conta o valor fixo, o percentual e os conjuntos (os que fecham e os que abrem), e a runa aparece no espaço dela no círculo, em azul.
   - **Provar** guarda a runa numa prova, uma por espaço, e a prévia soma a prova à runa escolhida: dá para montar a combinação inteira e comparar outras sem perder a referência, porque a coluna "Agora" segue sendo o monstro como está. **Equipar N** põe a prova toda de uma vez; **Limpar** larga.
   - Tocar numa runa não remonta mais a grade: só troca o destaque, a coluna da esquerda e a ficha da runa. Com centenas de runas, a lista fica onde estava.

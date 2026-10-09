@@ -59,9 +59,6 @@ namespace Sigilos.UI.Screens
 		/// <summary>A largura do texto das habilidades na coluna larga da ficha.</summary>
 		private const float TextWidth = 300;
 
-		/// <summary>Na lista da Ordem, as por atributo valem isto mais o atributo; as outras, a própria <see cref="MonsterSort"/>.</summary>
-		private const int StatOrder = 100;
-
 		private enum Page
 		{
 			Stats,
@@ -223,14 +220,7 @@ namespace Sigilos.UI.Screens
 			_tools.AddChild(select);
 
 			Layout.Clear(_search);
-			var active = _filter.Active;
-			_search.AddChild(GameButton.Of(active == 0 ? T("filter.button") : T("filter.button_active", active), OpenFilters, active == 0 ? ButtonKind.Secondary : ButtonKind.Primary, "search", 44).Named("Filters"));
-			var current = _filter.Sort == MonsterSort.Stat ? StatOrder + (int)_filter.SortStat : (int)_filter.Sort;
-			var sort = new ChoiceButton(T("filter.sort"), SortOptions(), current, 44) { Name = "Sort" };
-			sort.Changed += value => Filter(value >= StatOrder
-				? _filter with { Sort = MonsterSort.Stat, SortStat = (Stat)(value - StatOrder) }
-				: _filter with { Sort = (MonsterSort)value });
-			_search.AddChild(sort);
+			MonsterSearch.Fill(_search, _database, _filter, Filter);
 		}
 
 		/// <summary>A contagem da aba e, se houver, quantos ali são novos.</summary>
@@ -239,37 +229,6 @@ namespace Sigilos.UI.Screens
 			var fresh = place.Count(m => Roster.IsNew(_player, m));
 			return fresh == 0 ? count : T("monsters.with_new", count, fresh);
 		}
-
-		/// <summary>As ordens da grade e, depois, uma por atributo.</summary>
-		private static IReadOnlyList<(Choice Choice, int Value)> SortOptions() =>
-			Enum.GetValues<MonsterSort>().Where(s => s != MonsterSort.Stat).Select(s => (new Choice(Texts.Name(s)), (int)s))
-				.Concat(Enum.GetValues<Stat>().Select(s => (new Choice(Texts.Name(s).ToLower(Culture), Rune: Texts.GlyphOf(s)), StatOrder + (int)s)))
-				.ToList();
-
-		/// <summary>A janela dos filtros (<see cref="FilterDialog"/>): um campo por linha. Muda na hora.</summary>
-		private void OpenFilters() => FilterDialog.Open(this, T("filter.title_monsters"), dialog =>
-		{
-			dialog.Field("Element", T("filter.element"), Enum.GetValues<Element>().Select(e => (new Choice(Texts.Name(e), Art.Element(e), Palette.Of(e)), (int)e)), _filter.Element is { } element ? (int)element : FilterDialog.All,
-				value => _filter = _filter with { Element = value < 0 ? null : (Element)value });
-			dialog.Field("Role", T("filter.role"), Enum.GetValues<Role>().Select(r => (new Choice(Texts.Name(r)), (int)r)), _filter.Role is { } role ? (int)role : FilterDialog.All,
-				value => _filter = _filter with { Role = value < 0 ? null : (Role)value });
-			dialog.Field("Stars", T("filter.stars"), Enumerable.Range(1, Growth.MaxStars).Select(s => (new Choice(Texts.Stars(s)), s)), _filter.Stars ?? FilterDialog.All,
-				value => _filter = _filter with { Stars = value < 0 ? null : value });
-			dialog.Field("Rarity", T("filter.natural"), _database.Summons.Select(s => s.Rarity).Distinct().OrderBy(r => r).Select(r => (new Choice(Texts.Stars(r)), r)), _filter.Rarity ?? FilterDialog.All,
-				value => _filter = _filter with { Rarity = value < 0 ? null : value });
-			dialog.Field("Awakening", T("filter.awakening"), new[] { (new Choice(T("filter.awakened")), 1), (new Choice(T("filter.not_awakened")), 0) }, _filter.Awakened is { } awakened ? (awakened ? 1 : 0) : FilterDialog.All,
-				value => _filter = _filter with { Awakened = value < 0 ? null : value == 1 });
-			dialog.Field("Condition", T("filter.condition"), Enum.GetValues<MonsterCondition>().Select(c => (new Choice(T($"filter.condition_kind.{c}")), (int)c)), _filter.Condition is { } condition ? (int)condition : FilterDialog.All,
-				value => _filter = _filter with { Condition = value < 0 ? null : (MonsterCondition)value });
-
-			// O que as habilidades fazem: só as opções que algum monstro do jogo tem.
-			dialog.Field("Behavior", T("filter.behavior"), SkillTraits.BehaviorsIn(_database.Summons).Select(b => (new Choice(T($"filter.behavior_kind.{b}")), (int)b)), _filter.Behavior is { } behavior ? (int)behavior : FilterDialog.All,
-				value => _filter = _filter with { Behavior = value < 0 ? null : (SkillBehavior)value });
-			dialog.Field("Scaling", T("filter.scaling"), SkillTraits.ScalingsIn(_database.Summons).Select(s => (new Choice(T($"filter.scaling_kind.{s}")), (int)s)), _filter.Scaling is { } scaling ? (int)scaling : FilterDialog.All,
-				value => _filter = _filter with { Scaling = value < 0 ? null : (SkillScaling)value });
-			dialog.Field("Applies", T("filter.applies"), SkillTraits.StatusesIn(_database.Summons).Select(s => (new Choice(Texts.Name(s)), (int)s)), _filter.Applies is { } status ? (int)status : FilterDialog.All,
-				value => _filter = _filter with { Applies = value < 0 ? null : (StatusKind)value });
-		}, () => Filter(_filter), () => _filter = new MonsterFilter { Sort = _filter.Sort, SortStat = _filter.SortStat });
 
 		/// <summary>A busca nova: desmarca quem saiu da grade, avisa o GameRoot e refaz a tela.</summary>
 		private void Filter(MonsterFilter filter)
@@ -718,7 +677,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(new HSeparator { Name = "ActionsLine" });
 			var copies = FusionDialog.Candidates(_database, _player, monster).Count(c => !c.Locked);
 			var left = Fusion.SkillUpsLeft(_database, monster);
-			_detail.AddChild(Layout.Text(left == 0 ? T("monsters.fuse_full") : T("monsters.fuse_hint", left, copies), GameTheme.Faded).Named("FuseHint"));
+			//_detail.AddChild(Layout.Text(left == 0 ? T("monsters.fuse_full") : T("monsters.fuse_hint", left, copies), GameTheme.Faded).Named("FuseHint"));
 			var actions = Layout.Grid(2, 10).Named("Actions");
 			var fuse = GameButton.Of(T("monsters.fuse_open"), () => FusionDialog.Open(this, _database, _player, monster, ids => FuseRequested?.Invoke(monster.Id, ids)), ButtonKind.Primary, "fuse").Named("Fuse");
 			fuse.Disabled = copies == 0 || left == 0;

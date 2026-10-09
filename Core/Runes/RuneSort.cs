@@ -20,5 +20,8 @@ namespace Sigilos.Core.Runes
 
 		/// <summary>A que chegou por último primeiro.</summary>
 		Newest,
+
+		/// <summary>O maior valor de um subatributo primeiro (<see cref="RuneFilter.SortStat"/>).</summary>
+		Substat,
 	}
 }

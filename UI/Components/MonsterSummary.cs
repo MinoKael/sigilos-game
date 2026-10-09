@@ -270,7 +270,7 @@ namespace Sigilos.UI.Components
 			if (UiSession.Player is { } player && UiSession.Database is { } database)
 			{
 				var teams = player.Teams.Where(pair => pair.Value.Contains(monster.Id))
-					.Select(pair => pair.Key == Teams.Campaign ? T("teams.campaign") : database.Dungeons.FirstOrDefault(d => d.Id == pair.Key)?.Name ?? pair.Key)
+					.Select(pair => Texts.ContentName(database, pair.Key))
 					.ToList();
 				if (teams.Count > 0)
 					parts.Add(T("monsters.teams", string.Join(", ", teams)));
