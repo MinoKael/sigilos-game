@@ -1468,7 +1468,11 @@
     },
     "special": {
       "default": "Default",
-      "astronaut_helmet": "Astronaut Helmet"
+      "astronaut_helmet": "Astronaut Helmet",
+      "rune": "Rune",
+      "natural_1": "Natural 1",
+      "natural_20": "Natural 20",
+      "plague_doctor": "Plague Doctor"
     },
     "empty": "Summon monsters to pick the account portrait from them."
   },

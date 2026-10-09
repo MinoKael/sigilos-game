@@ -1469,7 +1469,11 @@
     },
     "special": {
       "default": "Padrão",
-      "astronaut_helmet": "Capacete de Astronauta"
+      "astronaut_helmet": "Capacete de Astronauta",
+      "rune": "Runa",
+      "natural_1": "1 Natural",
+      "natural_20": "20 Natural",
+      "plague_doctor": "Doutor Peste"
     },
     "empty": "Invoque monstros para escolher entre eles o retrato da conta."
   },

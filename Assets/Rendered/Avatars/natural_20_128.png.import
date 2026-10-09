@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d7g6ev85k0w4"
-path="res://.godot/imported/astronaut-helmet.svg-35b24be1c801da418341a46380b4a7d3.ctex"
+uid="uid://b3303ndks6o8m"
+path="res://.godot/imported/natural_20_128.png-117c5fbd1be6dd80f4512c3df7dfc538.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Avatars/astronaut-helmet.svg"
-dest_files=["res://.godot/imported/astronaut-helmet.svg-35b24be1c801da418341a46380b4a7d3.ctex"]
+source_file="res://Assets/Rendered/Avatars/natural_20_128.png"
+dest_files=["res://.godot/imported/natural_20_128.png-117c5fbd1be6dd80f4512c3df7dfc538.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false
