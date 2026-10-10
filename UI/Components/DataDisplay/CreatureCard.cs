@@ -158,7 +158,7 @@ namespace Sigilos.UI.Components
 				return;
 
 			_count = new PanelContainer { Name = "Count", MouseFilter = MouseFilterEnum.Ignore };
-			var box = GameTheme.Box(Palette.Gold, Palette.Background, 2, 8, 0);
+			var box = GameTheme.Box(Palette.Gold, Palette.Background, 2, Radius.Medium, 0);
 			box.ContentMarginLeft = box.ContentMarginRight = 6;
 			_count.AddThemeStyleboxOverride("panel", box);
 			var label = new Label

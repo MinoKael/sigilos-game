@@ -225,7 +225,8 @@ Mudanças de nome em relação ao rascunho: o símbolo de `GameButton` é a prop
 | 5b | `0aa91d3` | Os componentes em subpastas por papel (`Actions`, `Overlays`, `Layout`, `DataDisplay`, `Battle`, `Art`). |
 | 5c | `b10a4f6` | As separações das telas e dos componentes pelos tokens `Space`. |
 | 5 (pendências) | `8d9f01b`, `e3ff9a5` | <ul><li>O botão-texto não quebra linha.</li><li>As escalas `FontSize` e `Space` completas (`Section`, `Spacious`; de `Caption` a `Emphasis`).</li><li>As 14 exceções fora da escala com o motivo em comentário.</li></ul> |
-| 6 | (o commit da documentação) | A documentação em `docs/ui/` e a conferência dos exemplos (`UiExamples.cs`, `UiDocTests`). |
+| 6 | `7237a5c` | A documentação em `docs/ui/` e a conferência dos exemplos (`UiExamples.cs`, `UiDocTests`). |
+| 7 | (o commit da validação) | <ul><li>Capturas antes e depois de todas as telas e janelas tocadas.</li><li>Os dois últimos `Button` crus (a conta e o "Sem conexão" do Santuário) passam para `SurfaceButton`.</li><li>Quatro raios soltos passam para `Radius`.</li><li>A [validação](#fase-7--validação) abaixo.</li></ul> |
 
 ### Desvios do plano
 
@@ -234,3 +235,45 @@ Mudanças de nome em relação ao rascunho: o símbolo de `GameButton` é a prop
 - **`SurfaceButton` é peça nova**, fora do plano original. Ele apareceu na migração: as linhas, as cápsulas e as células precisavam de um botão de caixa livre, e uma subclasse para cada uma seria abstração para peça única.
 - **`Opacity` virou `Fade`**, para não confundir com a transparência de `Modulate` da Godot.
 - **Os exemplos não compilam em `Tests/`.** O projeto de testes não compila código da Godot. Os exemplos compilam no build do jogo (`UI/Examples/UiExamples.cs`), e o teste confere o texto da documentação contra esse arquivo.
+
+---
+
+## Fase 7 — Validação
+
+### Capturas
+
+As telas e janelas foram capturadas no commit de partida (`5e6e2ab`, antes da biblioteca) e no fim, com o mesmo save, e comparadas pixel a pixel (diferença acima de 0,15 num canal).
+
+| Captura | Resultado |
+|---|---|
+| Mapa, Runas, Loja, Compêndio, a ordem das Runas | Iguais. |
+| Santuário, a explicação dos Pergaminhos, a Canalização, o Grimório do Invocador, a escolha de retrato, o balão do chat, Amigos | Só o relógio e a Essência acumulada, que andam entre as duas capturas. |
+| Campanha, Masmorras, Exploração, Invocação, Monstros, a ordem e os filtros dos Monstros, Preparação, Grimório, Batalha | Só a arte animada (os retratos, o sigilo que gira, a luta). |
+| Entrada (login) | "Esqueci a senha" (abaixo). |
+
+### Mudanças visuais intencionais
+
+1. **"Esqueci a senha"** é um botão-texto (`ButtonKind.Text`): 36 px de altura, texto em `FontSize.Strong` (20). O texto fica um pouco maior e o cartão de entrada, 3 px mais baixo.
+2. **As abas desligadas** apagam a 0,45, como todo botão desligado (antes 0,40). A diferença é pequena demais para o limiar da comparação.
+3. **Afundar e clique** ao tocar: as abas, as opções das listas de escolha, as cápsulas de moeda e o correio, a hora da Canalização e o retrato da conta. É movimento, então não aparece numa captura parada.
+
+### Implementações antigas apagadas
+
+- As cópias de foco, caixas, medida, desligado e pulso dentro de cada botão (fases 3 e 4).
+- Os `Button` crus das telas e dos componentes. Na fase 7 saíram os dois últimos, no Santuário: o retrato da conta (agora `SurfaceButton` com `Hug`) e o "Sem conexão" (`SurfaceButton` plano).
+- Os números soltos de separação, fonte e raio que têm token. Na fase 7 saíram quatro raios (`Radius.Button` e `Radius.Medium`).
+
+Conferido por busca no código:
+- nenhuma classe herda de `Button` fora de `TouchButton`;
+- `Juice.Attach` só é chamado em `TouchButton`;
+- nenhum `Opacity`, nenhuma cópia do seno do pulso.
+
+### Pendências
+
+- **"Sem conexão"** não aparece nas capturas: só surge sem servidor. Conferir o visual na próxima vez que o jogo abrir sem rede.
+- **Números fora das escalas**, de propósito:
+  - Os raios de círculo (metade do tamanho: 18, 22, 32, 34) e dois raios fora da escala (4 na faixa do Grimório do Invocador, 12 na célula do Armazém).
+  - As cinco fontes grandes (28 a 76) dos números de destaque.
+  - As fontes têm o motivo em comentário. Os raios de círculo se explicam pelo tamanho; os dois fora da escala ainda não têm comentário.
+- **A ferramenta de capturas** (abrir uma tela, tocar nós pelo nome, gravar e comparar) foi usada fora do repositório. Ela pode virar `Tools/` se as capturas antes e depois forem repetir.
+- **`check_texts.py`** acusa 346 problemas, todos de antes (nomes sobrando em `en.json`). Nenhum é novo.

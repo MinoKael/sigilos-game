@@ -51,7 +51,7 @@ namespace Sigilos.UI.Components
 			_press.Tapped += () => Pressed?.Invoke(this);
 			_press.Held += () => LongPressed?.Invoke(this);
 
-			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, 10, 5);
+			_box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 2, Radius.Button, 5);
 			AddThemeStyleboxOverride("panel", _box);
 
 			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore };

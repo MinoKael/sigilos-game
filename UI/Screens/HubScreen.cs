@@ -37,10 +37,10 @@ namespace Sigilos.UI.Screens
 		private readonly string? _accountName;
 
 		/// <summary>"Sem conexão", ao lado da conta: jogando a conta sem falar com o servidor. Tocar explica.</summary>
-		private readonly Button _offline = new() { Name = "Offline", Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand, SizeFlagsVertical = SizeFlags.ShrinkCenter };
+		private readonly SurfaceButton _offline = new() { Name = "Offline", Flat = true, SizeFlagsVertical = SizeFlags.ShrinkCenter };
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly Button _account = new() { Name = "Account", FocusMode = FocusModeEnum.None, Flat = true, MouseDefaultCursorShape = CursorShape.PointingHand };
+		private readonly SurfaceButton _account = new SurfaceButton { Name = "Account", Hug = true }.Boxes(null);
 		private readonly Constellation _constellation = ChatBubble.Dock(new Constellation { Name = "Constellation" });
 		private readonly SigilButton _core = new(Art.Icon("collect"), 128) { Name = "Core" };
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
@@ -170,7 +170,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>O retrato da conta, o nível e a barra de experiência.</summary>
 		private void RefreshAccount()
 		{
-			Layout.Clear(_account);
+			Layout.Clear(_account.Body);
 			var row = Layout.Row(Space.Large).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(68, 68), MouseFilter = MouseFilterEnum.Ignore };
@@ -192,8 +192,7 @@ namespace Sigilos.UI.Screens
 			column.AddChild(bar);
 			column.AddChild(new Label { Name = "Progress", Text = maxed ? T("hub.account_max_short") : T("hub.account_progress", _player.AccountExperience, toNext), ThemeTypeVariation = GameTheme.Faded, MouseFilter = MouseFilterEnum.Ignore });
 			row.AddChild(column);
-			_account.AddChild(row);
-			_account.CustomMinimumSize = row.GetCombinedMinimumSize();
+			_account.Body.AddChild(row);
 		}
 
 		/// <summary>O retrato abre o Grimório do Invocador; trocar o retrato de lá abre a escolha.</summary>

@@ -51,7 +51,7 @@ namespace Sigilos.UI.Components
 
 			// Por cima da luta: a moldura e o convite para a tela cheia, e o toque (que deixa arrastar a janela).
 			var frame = new Panel { Name = "Frame", MouseFilter = MouseFilterEnum.Ignore, ZIndex = OnTop };
-			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Colors.Transparent, Palette.Arcane, 2, 10, 0));
+			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Colors.Transparent, Palette.Arcane, 2, Radius.Button, 0));
 			frame.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			watch.AddChild(frame);
 

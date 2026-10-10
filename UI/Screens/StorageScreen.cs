@@ -480,7 +480,7 @@ namespace Sigilos.UI.Screens
 			column.AddThemeConstantOverride("separation", Space.Regular);
 			var row = Layout.Row(Space.Wide).Named("Row");
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(112, 112) };
-			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Gold, 3, 10, 8));
+			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Gold, 3, Radius.Button, 8));
 			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Gold, MaskShape.Rounded, 6));
 			row.AddChild(frame);
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
