@@ -1,6 +1,8 @@
 # Biblioteca de UI — auditoria e plano
 
-Este documento cobre a **Fase 1 (auditoria)** e a **Fase 2 (arquitetura)** da componentização da interface. Também define o que cada fase seguinte entrega.
+Este documento cobre a **Fase 1 (auditoria)** e a **Fase 2 (arquitetura)** da componentização da interface. Também define o que cada fase seguinte entrega e registra o que cada uma entregou de fato ([O que foi feito](#o-que-foi-feito)).
+
+A documentação das peças está em [README.md](README.md).
 
 Tudo aqui foi tirado do código atual da branch `revamp-tematica`. Os nomes de tipo, de método e de arquivo são os reais.
 
@@ -112,48 +114,55 @@ Consequências:
    - eventos C# (`event Action<T>`).
    As propriedades configuráveis depois de criar (o "props" do Vuetify) passam a ser **propriedades com `set`**. Assim, inicializador de objeto também funciona.
 3. **Nada de abstração para peça única.** Só vira genérico o que tem duas ou mais implementações hoje.
-4. **Mesmo namespace.** Tudo continua em `Sigilos.UI.Components` e `Sigilos.UI.Style`. As subpastas só organizam os arquivos, então nenhum `using` muda.
+4. **Mesmo namespace.** Os componentes continuam em `Sigilos.UI.Components` e o estilo em `Sigilos.UI.Style`. As subpastas só organizam os arquivos. A exceção é a pasta nova `UI/Animations/`, que tem o namespace próprio `Sigilos.UI.Animations` (`Juice` saiu dos componentes).
 
 ### Estrutura
 
 ```
 UI/
 ├── Components/
-│   ├── Actions/      TouchButton (novo), GameButton, SigilButton, BackButton, TileButton, ChoiceButton, TextTabs
-│   ├── Overlays/     Dialog, FilterDialog, RuneDialog, PauseMenu, TutorialCoach
-│   ├── Layout/       Layout, Pill (novo), DragScroll, Backdrop, ArtMask
-│   ├── DataDisplay/  CreatureCard, RuneTile, RuneCard, StatTable, StatusChip, SkillRow, CurrencyBar, ...
-│   ├── Battle/       BattleArena, UnitView, BossBar, TurnOrderBar, FloatingText, ImpactLayer, ...
-│   └── Art/          Doodle, RuneGlyph, Constellation, StarChart, SigilRing, SummonHalo, Starlight, ...
+│   ├── Actions/      TouchButton, SurfaceButton, GameButton, SigilButton, BackButton, TileButton, ChoiceButton, TextTabs, Press
+│   ├── Overlays/     Dialog, FilterDialog, RuneDialog, PauseMenu, TutorialCoach, AvatarPicker, MonsterPicker, MonsterSummary, ChatBubble, AutoBattleBadge
+│   ├── Layout/       Layout, DragScroll, TileGrid
+│   ├── DataDisplay/  CreatureCard, RuneTile, RuneCard, StatTable, StatusChip, SkillRow, CurrencyBar, MonsterSearch, TeamStrip, StagePath, RichText
+│   ├── Battle/       BattleArena, UnitView, BossBar, TurnOrderBar, FloatingText, ImpactLayer, AutoBattleWatch
+│   └── Art/          Doodle, RuneGlyph, Constellation, StarChart, SigilRing, SummonHalo, Starlight, ArtMask, Backdrop, EnergyRing
 ├── Style/
-│   ├── Palette.cs    (cores — já existe)
-│   ├── Tokens.cs     (novo: Space, Radius, FontSize, Opacity)
-│   ├── Tones.cs      (novo: ButtonKind → preenchimento, borda, tinta, contorno)
-│   ├── GameTheme.cs  (tema e caixas — já existe)
+│   ├── Palette.cs        cores
+│   ├── Tokens.cs         Space, Radius, FontSize, Fade
+│   ├── Tones.cs          ButtonKind → preenchimento, borda, tinta, contorno
+│   ├── States.cs         cores de escolhido, marcado, sob o mouse
+│   ├── SelectionFrame.cs moldura de seleção dos cartões
+│   ├── Pills.cs          caixas de cápsula
+│   ├── GameTheme.cs      tema, papéis de texto e caixas
 │   └── Ornament.cs, StarRule.cs, Art.cs
-├── Animations/
-│   ├── Juice.cs      (movido: apertar)
-│   ├── Pulse.cs      (novo: o chamado em verde, tirado de SigilButton/TileButton)
-│   └── Motion.cs     (novo: durações e curvas nomeadas)
+├── Animations/       (namespace Sigilos.UI.Animations)
+│   ├── Juice.cs      apertar
+│   ├── Pulse.cs      o chamado em verde
+│   └── Motion.cs     durações e curvas nomeadas
+├── Examples/
+│   └── UiExamples.cs os exemplos da documentação, compilados com o jogo
 └── Screens/          (sem mudança de lugar)
 docs/ui/
 ├── PLANO.md                      (este arquivo)
+├── README.md                     índice
 ├── componentes/                  "UI Components": uma página por componente genérico
-└── estilo-e-animacoes/           "Style and Animations": tokens, tons, estados, animações
+└── estilo-e-animacoes/           "Style and Animations": tokens, cores, tons, tipografia, estados, animações
 ```
 
 ### Peças novas (todas ligadas a uma duplicação da auditoria)
 
 | Peça | Resolve | Responsabilidade |
 |---|---|---|
-| `TouchButton : Button` | D1 | Base de todo botão de toque: <ul><li>sem foco, cursor de mão, `focus` vazio;</li><li>`Juice`, e apaga o conteúdo quando desligado (`Tokens.Opacity.Disabled`);</li><li>`Fit()` do conteúdo (`Content`);</li><li>`Highlight` via `Pulse`.</li></ul> |
+| `TouchButton : Button` | D1 | Base de todo botão de toque: <ul><li>sem foco, cursor de mão, `focus` vazio;</li><li>`Juice`, e apaga o conteúdo quando desligado (`Fade.Disabled`);</li><li>`Fit()` do conteúdo (`Content`);</li><li>`Highlight` via `Pulse`.</li></ul> |
 | `Tones` | D1 | Tons por `ButtonKind` num lugar só. A variação do `TileButton` vira parâmetro, não cópia. |
 | `ButtonKind.Text` | D1 | O botão sem moldura que parece texto (`HubScreen` "Time", `LoginScreen` "Forgot"). Já existem dois usos reais. |
 | `Pulse` | D2 | O pulso verde reutilizável: dá a fase (0..1) para quem desenha. |
-| `SelectionFrame` | D3 | A conta repouso/hover/selecionado/marcado sobre um `StyleBoxFlat`. É usada por `CreatureCard`, `RuneTile` e `Choices.Row`. |
-| `Pill` | D4 | Uma cápsula pública e opcionalmente tocável (`Layout.Chip`, cápsula de `CurrencyBar`, `ChatBubble`, `AutoBattleBadge`). |
-| `Tokens` | D5 | `Space.{None,Hair,Tight,Small,Medium,Large,Wide,Loose}` = 0,2,4,6,8,10,12,16. Também `Radius`, `FontSize` e `Opacity`, com os valores que já estão em uso, para a aparência não mudar. |
-| `Motion` | D6 | `Motion.Quick` (0,12 s, Back/Out, o de `Juice`). As outras durações nomeadas entram quando houver um segundo uso. |
+| `States` e `SelectionFrame` | D3 | As cores de escolhido, marcado e sob o mouse, e a conta repouso/hover/selecionado/marcado sobre um `StyleBoxFlat`. `SelectionFrame` é usada por `CreatureCard` e `RuneTile`; `Choices.Row` e `SigilButton` usam as cores de `States`. |
+| `Pills` e `SurfaceButton` | D4 | `Pills` faz as caixas de cápsula (`Carved`, `Lit`, `Floating`). A cápsula tocável é um `SurfaceButton` com essas caixas. Não existe um nó `Pill`: a cápsula fechada (`Layout.Chip`) e a tocável têm comportamento diferente, e o que elas repetiam era só a caixa. |
+| `Tokens` | D5 | <ul><li>`Space`: `None` 0, `Hair` 2, `Tight` 4, `Small` 6, `Medium` 8, `Regular` 10, `Large` 12, `Wide` 14, `Loose` 16, `Section` 20, `Spacious` 24.</li><li>`Radius`: `Small` 6, `Medium` 8, `Button` 10, `Tile` 14.</li><li>`FontSize`: de `Small` 12 a `Emphasis` 24.</li><li>`Fade`: `Disabled` 0,45, `Floating` 0,8.</li></ul>Os valores são os que já estavam em uso, para a aparência não mudar. |
+| `Motion` | D6 | `Motion.Quick` (0,12 s), `Spring` (Back), `Settle` (Out) e `SpringTo`, o de `Juice`. As outras durações nomeadas entram quando houver um segundo uso. |
+| `SurfaceButton` | D1 | O botão genérico sobre `TouchButton`: quem cria dá as caixas (`Boxes`) e o conteúdo (`Body`). Tirou os `Button` crus das telas e dos componentes. |
 
 ### Exemplos corrigidos (a API que vai existir)
 
@@ -163,23 +172,20 @@ O pedido original trazia três exemplos que não batem com o projeto:
 - **`Size = ComponentSize.Large`:** esse nome **colide** com `Control.Size` (um `Vector2`) e não compila. A altura já é um parâmetro (`height`), e `GameTheme.Touch` = 52 é o padrão.
 - **`SigilId = "fire"`:** não existe. O `SigilButton` recebe o nome do ícone em `Assets/Icons`.
 
+O `GameButton` como ficou (o mesmo exemplo está em [componentes/game-button.md](componentes/game-button.md) e compila em `UI/Examples/UiExamples.cs`):
+
 ```csharp
-// Hoje e depois: construtor + fábrica + encadeamento.
-var fight = GameButton.Of(T("prep.fight"), StartBattle, ButtonKind.Primary, "crossed_swords")
-    .WithCost("energy", "5")
+var fight = GameButton.Of(T("common.fight"), startBattle, ButtonKind.Primary, "fight")
+    .WithCost("mana", "5")
     .Named("Fight");
 
-// Depois da Fase 3: as propriedades também têm set (o inicializador de objeto funciona).
-var confirm = new GameButton(T("common.confirm")) { Kind = ButtonKind.Primary, Disabled = !canPay };
-confirm.Pressed += OnConfirm;
+var release = new GameButton(T("monsters.release")) { Name = "Release", Kind = ButtonKind.Danger, Disabled = !canRelease };
+release.Pressed += releaseSelected;
 
-// SigilButton: especialização de TouchButton (foco, Juice, Highlight vêm da base).
-var close = SigilButton.Of("cancel", dialog.Close, 48).Named("Close");
-close.Highlight = true;
-
-// Botão-texto (novo ButtonKind.Text), no lugar do Button Flat feito à mão.
-var forgot = GameButton.Of(T("account.forgot"), OpenReset, ButtonKind.Text).Named("Forgot");
+var forgot = GameButton.Of(T("account.forgot"), openReset, ButtonKind.Text, height: GameButton.TextHeight).Named("Forgot");
 ```
+
+Mudanças de nome em relação ao rascunho: o símbolo de `GameButton` é a propriedade `IconName` (o `Button.Icon` da Godot é uma textura e ficaria escondido), e o botão-texto pede `height: GameButton.TextHeight` (36 px), porque sem madeira não precisa da altura de toque inteira.
 
 ### Riscos e cuidados
 
@@ -202,7 +208,29 @@ var forgot = GameButton.Of(T("account.forgot"), OpenReset, ButtonKind.Text).Name
 | 1 Auditoria | Este documento, seção Fase 1. | — |
 | 2 Arquitetura | Este documento, seção Fase 2. | Aprovação do plano. |
 | 3 Base | <ul><li>`TouchButton`, `Tones`, `ButtonKind.Text`.</li><li>`GameButton`, `SigilButton`, `TileButton` e `TextTabs.TabButton` passam a herdar de `TouchButton`.</li><li>As cópias de foco, caixas, `Fit` e desligado são apagadas.</li></ul> | <ul><li>Build com 0 erros; 235 testes.</li><li>Capturas antes/depois de Santuário, Preparação, Runas e Monstros.</li></ul> |
-| 4 Estilos e animações | <ul><li>`Tokens`, `Motion`, `Pulse`, `SelectionFrame`, `Pill`.</li><li>`Juice` vai para `Animations/`.</li><li>`SigilButton` e `TileButton` usam `Pulse`.</li><li>`CreatureCard` e `RuneTile` usam `SelectionFrame`.</li></ul> | Build, testes, capturas, contagem de `"separation", <número>` em queda. |
-| 5 Migração | <ul><li>`Choices.Row`, a cápsula de `CurrencyBar`, a célula de `AvatarPicker`, `ChatBubble` e `AutoBattleBadge` passam para `TouchButton`/`Pill`.</li><li>"Time" e "Forgot" viram `ButtonKind.Text`.</li><li>Os arquivos vão para as subpastas.</li><li>As separações e fontes das telas passam para os `Tokens`, uma tela por commit.</li></ul> | <ul><li>Build e testes a cada commit.</li><li>`grep "new Button"` em `UI/` = 0 fora de `TouchButton`.</li></ul> |
-| 6 Documentação | <ul><li>`docs/ui/componentes/`: uma página para cada um de `TouchButton`, `GameButton`, `SigilButton`, `TileButton`, `ChoiceButton`, `TextTabs`, `Dialog`, `Pill`, `Layout`, `Press`.</li><li>`docs/ui/estilo-e-animacoes/`: `tokens`, `cores`, `tons`, `tipografia`, `estados`, `animacoes`.</li><li>Cada página tem tabelas de propriedades, composição e eventos, e exemplos tirados do código.</li></ul> | Cada exemplo é conferido contra a API: um teste de compilação em `Tests/` com os trechos. |
+| 4 Estilos e animações | <ul><li>`Tokens`, `Motion`, `Pulse`, `States`, `SelectionFrame`.</li><li>`Juice` vai para `Animations/`.</li><li>`SigilButton` e `TileButton` usam `Pulse`.</li><li>`CreatureCard` e `RuneTile` usam `SelectionFrame`.</li></ul> | Build, testes, capturas, contagem de `"separation", <número>` em queda. |
+| 5 Migração | <ul><li>`Choices.Row`, a cápsula de `CurrencyBar`, a célula de `AvatarPicker`, `ChatBubble` e `AutoBattleBadge` passam para `TouchButton`/`SurfaceButton` com `Pills`.</li><li>"Time" e "Forgot" viram `ButtonKind.Text`.</li><li>Os arquivos vão para as subpastas.</li><li>As separações e fontes das telas passam para os `Tokens`, uma tela por commit.</li></ul> | <ul><li>Build e testes a cada commit.</li><li>`grep "new Button"` em `UI/` = 0 fora de `TouchButton`.</li></ul> |
+| 6 Documentação | <ul><li>`docs/ui/componentes/`: uma página para cada um de `TouchButton`, `GameButton`, `SigilButton`, `TileButton`, `ChoiceButton`, `TextTabs`, `Dialog`, `Layout`, `Press`, mais `SurfaceButton`.</li><li>`docs/ui/estilo-e-animacoes/`: `tokens`, `cores`, `tons`, `tipografia`, `estados`, `animacoes`.</li><li>Cada página tem tabelas de propriedades, composição e eventos, e exemplos tirados do código.</li></ul> | Cada exemplo é conferido contra a API: os trechos estão em `UI/Examples/UiExamples.cs`, que o build compila, e `Tests/UiDocTests.cs` confere que a documentação mostra só o que está lá. |
 | 7 Validação | <ul><li>Capturas de todas as telas e janelas tocadas.</li><li>A lista de mudanças visuais intencionais.</li><li>As implementações antigas, apagadas.</li><li>As pendências.</li></ul> | Build, testes, `check_texts.py` sem problema novo. |
+
+---
+
+## O que foi feito
+
+| Fase | Commit | Entregue |
+|---|---|---|
+| 1–3 | `05bd0ec` | <ul><li>`TouchButton`, `Tones` e `ButtonKind.Text`.</li><li>`GameButton`, `SigilButton`, `TileButton` e as abas de `TextTabs` herdam de `TouchButton`; as cópias de foco, caixas, medida e desligado saíram.</li><li>As abas e as opções afundam e soam o clique; todo desligado apaga a 0,45.</li></ul> |
+| 4 | `5844eab` | <ul><li>`Tokens`, `Motion`, `Pulse`, `States` e `SelectionFrame`; `Juice` em `UI/Animations/`.</li><li>`SigilButton` e `TileButton` pulsam com `Pulse`; `CreatureCard` e `RuneTile` usam `SelectionFrame`.</li></ul> |
+| 5a | `e2b48ca` | <ul><li>`SurfaceButton` e `Pills`.</li><li>`Choices.Row`, a cápsula de `CurrencyBar`, a célula de `AvatarPicker`, a hora do Santuário, `ChatBubble` e `AutoBattleBadge` passam para a base; "Esqueci a senha" vira `ButtonKind.Text`.</li><li>Nenhum `new Button` fora de `TouchButton`.</li></ul> |
+| 5b | `0aa91d3` | Os componentes em subpastas por papel (`Actions`, `Overlays`, `Layout`, `DataDisplay`, `Battle`, `Art`). |
+| 5c | `b10a4f6` | As separações das telas e dos componentes pelos tokens `Space`. |
+| 5 (pendências) | `8d9f01b`, `e3ff9a5` | <ul><li>O botão-texto não quebra linha.</li><li>As escalas `FontSize` e `Space` completas (`Section`, `Spacious`; de `Caption` a `Emphasis`).</li><li>As 14 exceções fora da escala com o motivo em comentário.</li></ul> |
+| 6 | (o commit da documentação) | A documentação em `docs/ui/` e a conferência dos exemplos (`UiExamples.cs`, `UiDocTests`). |
+
+### Desvios do plano
+
+- **Tokens nas telas num commit só**, e não um por tela. A troca é de número por nome com o mesmo valor, então não muda a aparência; as capturas antes e depois de cada fase confirmam.
+- **Sem nó `Pill`.** Ver a tabela de peças novas: o que se repetia era a caixa (`Pills`), e a cápsula tocável é um `SurfaceButton`.
+- **`SurfaceButton` é peça nova**, fora do plano original. Ele apareceu na migração: as linhas, as cápsulas e as células precisavam de um botão de caixa livre, e uma subclasse para cada uma seria abstração para peça única.
+- **`Opacity` virou `Fade`**, para não confundir com a transparência de `Modulate` da Godot.
+- **Os exemplos não compilam em `Tests/`.** O projeto de testes não compila código da Godot. Os exemplos compilam no build do jogo (`UI/Examples/UiExamples.cs`), e o teste confere o texto da documentação contra esse arquivo.
