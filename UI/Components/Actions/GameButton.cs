@@ -72,7 +72,6 @@ namespace Sigilos.UI.Components
 
 			_label.Text = text;
 			_label.HorizontalAlignment = HorizontalAlignment.Center;
-			_label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			_label.ClipText = false;
 			_label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_label.SizeFlagsVertical = SizeFlags.ShrinkCenter;
@@ -111,6 +110,7 @@ namespace Sigilos.UI.Components
 			{
 				_kind = value;
 				Restyle();
+				Fit();
 			}
 		}
 
@@ -181,13 +181,18 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		protected override Vector2? MinimumFor(Vector2 content) => new Vector2(Mathf.Max(_width, MinimumWidth()), Mathf.Max(content.Y, _height));
 
-		/// <summary>As margens, o símbolo e a palavra mais longa do texto (ou o custo, se for maior) numa linha.</summary>
+		/// <summary>
+		/// As margens, o símbolo e a palavra mais longa do texto (ou o custo, se for maior) numa linha. O de peso
+		/// <see cref="ButtonKind.Text"/> não quebra: conta o texto inteiro (solto no meio de uma coluna, encolhido
+		/// ao centro, a palavra mais longa o partia em duas linhas).
+		/// </summary>
 		private float MinimumWidth()
 		{
 			var font = _label.GetThemeFont("font");
 			var size = _label.GetThemeFontSize("font_size");
 			var word = 0f;
-			foreach (var piece in _label.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+			var pieces = _kind == ButtonKind.Text ? new[] { _label.Text } : _label.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			foreach (var piece in pieces)
 				word = Mathf.Max(word, font.GetStringSize(piece, HorizontalAlignment.Left, -1, size).X);
 			var cost = _cost.Visible ? _cost.GetCombinedMinimumSize().X : 0;
 			var icon = _icon != null ? _icon.CustomMinimumSize.X + 10 : 0;
@@ -205,6 +210,7 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("hover_pressed", text ? new StyleBoxEmpty() : Box(fill.Darkened(0.18f), border, false, pressed: true));
 			AddThemeStyleboxOverride("disabled", text ? new StyleBoxEmpty() : Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
 			_label.AddThemeConstantOverride("outline_size", text ? 0 : 5);
+			_label.AutowrapMode = text ? TextServer.AutowrapMode.Off : TextServer.AutowrapMode.WordSmart;
 			_label.AddThemeFontSizeOverride("font_size", text || _height >= GameTheme.Touch ? FontSize.Button : FontSize.Compact);
 			_label.AddThemeColorOverride("font_color", text ? Tones.Ink(_kind) : Palette.Text);
 			_label.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
