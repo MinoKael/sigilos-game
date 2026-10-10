@@ -86,5 +86,8 @@ namespace Sigilos.UI.Style
 	{
 		/// <summary>O conteúdo de um botão desligado.</summary>
 		public const float Disabled = 0.45f;
+
+		/// <summary>O que flutua por cima de qualquer tela (o balão do chat, o aviso da Batalha automática): deixa ver o que está embaixo.</summary>
+		public const float Floating = 0.8f;
 	}
 }

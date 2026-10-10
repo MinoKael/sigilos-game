@@ -137,18 +137,14 @@ namespace Sigilos.UI.Components
 		private static PanelContainer Capsule(string name, Control icon, string value, string caption, Vector2 labelMinimumSize)
 		{
 			var capsule = new PanelContainer { Name = name, MouseFilter = Control.MouseFilterEnum.Ignore };
-			var box = GameTheme.Carved(Palette.Inset, 4);
-			box.SetCornerRadiusAll(16);
-			box.ContentMarginLeft = 5;
-			box.ContentMarginRight = 12;
-			capsule.AddThemeStyleboxOverride("panel", box);
+			capsule.AddThemeStyleboxOverride("panel", Pills.Carved(16, 5, 12));
 			var row = new HBoxContainer { Name = "Row", MouseFilter = Control.MouseFilterEnum.Ignore };
 			row.AddThemeConstantOverride("separation", Space.Small);
 			row.AddChild(icon);
 			if (value.Length > 0)
 			{
 				var label = new Label { Name = "Value", Text = value, ThemeTypeVariation = GameTheme.Number, MouseFilter = Control.MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
-				label.AddThemeFontSizeOverride("font_size", 17);
+				label.AddThemeFontSizeOverride("font_size", FontSize.Compact);
 				label.CustomMinimumSize = labelMinimumSize;
 				label.HorizontalAlignment = HorizontalAlignment.Right;
 				row.AddChild(label);

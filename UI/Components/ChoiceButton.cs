@@ -73,26 +73,20 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Uma opção: o símbolo e o texto num botão de lista, aceso em azul se é a atual.</summary>
-		public static Button Row(Choice choice, bool current, Action pressed)
+		public static SurfaceButton Row(Choice choice, bool current, Action pressed)
 		{
-			var button = new Button
+			var border = current ? States.Selected : Palette.GoldDark;
+			var held = GameTheme.Box(Palette.Inset, Palette.Arcane, 2, Radius.Medium, 6);
+			var button = new SurfaceButton
 			{
-				FocusMode = Control.FocusModeEnum.None,
 				CustomMinimumSize = new Vector2(0, 52),
 				SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
-				MouseDefaultCursorShape = Control.CursorShape.PointingHand,
-			};
-			var border = current ? States.Selected : Palette.GoldDark;
-			button.AddThemeStyleboxOverride("normal", GameTheme.Box(current ? States.LitFill : Palette.Inset, border, current ? 2 : 1, Radius.Medium, 6));
-			button.AddThemeStyleboxOverride("hover", GameTheme.Box(Palette.PanelLight, Palette.Gold, 1, Radius.Medium, 6));
-			button.AddThemeStyleboxOverride("pressed", GameTheme.Box(Palette.Inset, Palette.Arcane, 2, Radius.Medium, 6));
-			button.AddThemeStyleboxOverride("hover_pressed", GameTheme.Box(Palette.Inset, Palette.Arcane, 2, Radius.Medium, 6));
-			button.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
+			}
+				.Boxes(GameTheme.Box(current ? States.LitFill : Palette.Inset, border, current ? 2 : 1, Radius.Medium, 6),
+					GameTheme.Box(Palette.PanelLight, Palette.Gold, 1, Radius.Medium, 6), held)
+				.Padded(12, 12);
 
 			var row = new HBoxContainer { Name = "Row", MouseFilter = Control.MouseFilterEnum.Ignore };
-			row.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-			row.OffsetLeft = 12;
-			row.OffsetRight = -12;
 			row.AddThemeConstantOverride("separation", Space.Regular);
 			var ink = choice.Ink ?? Palette.Gold;
 			if (choice.Rune is { } glyph)
@@ -102,7 +96,7 @@ namespace Sigilos.UI.Components
 			var label = new Label { Name = "Text", Text = choice.Text, VerticalAlignment = VerticalAlignment.Center, SizeFlagsVertical = Control.SizeFlags.ExpandFill, MouseFilter = Control.MouseFilterEnum.Ignore };
 			label.AddThemeColorOverride("font_color", current ? Palette.Arcane.Lerp(Colors.White, 0.3f) : Palette.Text);
 			row.AddChild(label);
-			button.AddChild(row);
+			button.Body.AddChild(row);
 			button.Pressed += pressed;
 			return button;
 		}

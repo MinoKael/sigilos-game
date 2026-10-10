@@ -18,7 +18,7 @@ namespace Sigilos.UI.Components
 	/// <see cref="LastSeconds"/> segundos; a seguinte toma o lugar dela e conta de novo. Tocar na faixa também
 	/// abre o chat. Com a janela do chat aberta (<see cref="ChatFeed.Reading"/>), a faixa não aparece.
 	/// </summary>
-	public partial class ChatBubble : Button
+	public partial class ChatBubble : TouchButton
 	{
 		/// <summary>Pequeno: cabe ao lado do título das telas.</summary>
 		public const float Side = 36;
@@ -36,9 +36,6 @@ namespace Sigilos.UI.Components
 
 		/// <summary>Já há um <see cref="Place"/> marcado para o fim do quadro (só um por vez).</summary>
 		private bool _placing;
-
-		/// <summary>Meio transparente: o balão fica por cima de qualquer tela.</summary>
-		private const float Opacity = 0.8f;
 
 		private const int IconSize = 22;
 
@@ -67,24 +64,18 @@ namespace Sigilos.UI.Components
 		{
 			_feed = feed;
 			Name = "ChatBubble";
-			FocusMode = FocusModeEnum.None;
-			MouseDefaultCursorShape = CursorShape.PointingHand;
 			Visible = false;
 			ZIndex = 70;
-			Modulate = new Color(1, 1, 1, Opacity);
+			Modulate = new Color(1, 1, 1, Fade.Floating);
 
-			_box = GameTheme.Box(new Color(Palette.Inset, 0.94f), Palette.GoldDark, 2, (int)(Side / 2), 0);
-			_box.ShadowColor = new Color(0, 0, 0, 0.5f);
-			_box.ShadowSize = 6;
+			_box = Pills.Floating(Palette.GoldDark, Side);
 			foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed" })
 				AddThemeStyleboxOverride(state, _box);
-			AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
 
 			_icon.Name = "Icon";
 			_icon.MouseFilter = MouseFilterEnum.Ignore;
-			_icon.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
-			_icon.GrowHorizontal = _icon.GrowVertical = GrowDirection.Both;
-			AddChild(_icon);
+			_icon.SizeFlagsHorizontal = _icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
+			Content.AddChild(_icon);
 
 			SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
 			Place();
@@ -197,7 +188,7 @@ namespace Sigilos.UI.Components
 		/// <summary>A faixa da última linha, filha do balão: anda com ele para onde ele for.</summary>
 		private void BuildLast()
 		{
-			var box = GameTheme.Box(new Color(Palette.Inset, 0.94f), Palette.GoldDark, 1, (int)(LastHeight / 2), 0);
+			var box = Pills.Floating(Palette.GoldDark, LastHeight, 1, shadow: false);
 			box.ContentMarginLeft = box.ContentMarginRight = 12;
 			_last.AddThemeStyleboxOverride("panel", box);
 			_last.CustomMinimumSize = new Vector2(0, LastHeight);

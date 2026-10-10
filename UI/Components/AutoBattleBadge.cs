@@ -11,12 +11,9 @@ namespace Sigilos.UI.Components
 	/// verde concluída. Fica até o jogador abrir a janela e dispensar. Tocar abre a janela da Batalha
 	/// automática (<see cref="Pressed"/>); fechar a janela não para nada.
 	/// </summary>
-	public partial class AutoBattleBadge : Button
+	public partial class AutoBattleBadge : TouchButton
 	{
 		private const float Height = 44;
-
-		/// <summary>Meio transparente: o aviso fica por cima de qualquer tela.</summary>
-		private const float Opacity = 0.8f;
 
 		private const int IconSize = 28;
 
@@ -28,30 +25,24 @@ namespace Sigilos.UI.Components
 		public AutoBattleBadge()
 		{
 			Name = "AutoBattleBadge";
-			FocusMode = FocusModeEnum.None;
-			MouseDefaultCursorShape = CursorShape.PointingHand;
 			Visible = false;
 			ZIndex = 70;
-			Modulate = new Color(1, 1, 1, Opacity);
+			Modulate = new Color(1, 1, 1, Fade.Floating);
 
-			_box = GameTheme.Box(new Color(Palette.Inset, 0.94f), Palette.Arcane, 2, (int)(Height / 2), 0);
-			_box.ShadowColor = new Color(0, 0, 0, 0.5f);
-			_box.ShadowSize = 6;
+			_box = Pills.Floating(Palette.Arcane, Height);
 			foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed" })
 				AddThemeStyleboxOverride(state, _box);
-			AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
 
 			var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-			row.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			row.AddThemeConstantOverride("separation", 8);
+			row.AddThemeConstantOverride("separation", Space.Medium);
 			_icon.Name = "Icon";
 			_icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			_icon.PivotOffset = new Vector2(IconSize / 2f, IconSize / 2f);
 			row.AddChild(_icon);
-			_count.AddThemeFontSizeOverride("font_size", 20);
+			_count.AddThemeFontSizeOverride("font_size", FontSize.Button);
 			_count.SizeFlagsVertical = SizeFlags.ExpandFill;
 			row.AddChild(_count);
-			AddChild(row);
+			Content.AddChild(row);
 
 			// No alto, no centro, crescendo para os dois lados conforme o número.
 			SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
@@ -71,8 +62,16 @@ namespace Sigilos.UI.Components
 			Refresh();
 		}
 
+		/// <summary>O processo gira o símbolo (a base só o liga para o pulso de <see cref="TouchButton.Highlight"/>).</summary>
+		public override void _Ready()
+		{
+			base._Ready();
+			SetProcess(true);
+		}
+
 		public override void _Process(double delta)
 		{
+			base._Process(delta);
 			if (_run is { Running: true })
 				_icon.Rotation += (float)delta * 2.4f;
 		}

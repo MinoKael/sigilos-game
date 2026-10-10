@@ -35,6 +35,9 @@ namespace Sigilos.UI.Components
 		/// <summary>A margem de cada lado do conteúdo.</summary>
 		private const int Padding = 18;
 
+		/// <summary>A altura de um botão <see cref="ButtonKind.Text"/>: sem madeira, não precisa da altura de toque inteira.</summary>
+		public const float TextHeight = 36;
+
 		private readonly Label _label = new() { Name = "Label", MouseFilter = MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
 		private readonly HBoxContainer _cost = new() { Name = "Cost", MouseFilter = MouseFilterEnum.Ignore, Visible = false, Alignment = BoxContainer.AlignmentMode.Center };
 		private readonly HBoxContainer _row = new() { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center, SizeFlagsHorizontal = SizeFlags.ExpandFill };
@@ -74,8 +77,6 @@ namespace Sigilos.UI.Components
 			_label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_label.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			_label.AddThemeFontOverride("font", GameTheme.Serif);
-			_label.AddThemeFontSizeOverride("font_size", height >= GameTheme.Touch ? FontSize.Button : FontSize.Compact);
-			_label.AddThemeColorOverride("font_color", Palette.Text);
 			lines.AddChild(_label);
 
 			_cost.AddThemeConstantOverride("separation", Space.Tight);
@@ -193,7 +194,7 @@ namespace Sigilos.UI.Components
 			return Padding * 2 + icon + Mathf.Max(word, cost) + 6;
 		}
 
-		/// <summary>As caixas de cada estado, a tinta dos símbolos e o contorno das letras do peso atual.</summary>
+		/// <summary>As caixas de cada estado, a tinta dos símbolos e o contorno e a cor das letras do peso atual (o de texto é de ouro).</summary>
 		private void Restyle()
 		{
 			var (fill, border) = Tones.Of(_kind);
@@ -204,6 +205,8 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("hover_pressed", text ? new StyleBoxEmpty() : Box(fill.Darkened(0.18f), border, false, pressed: true));
 			AddThemeStyleboxOverride("disabled", text ? new StyleBoxEmpty() : Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
 			_label.AddThemeConstantOverride("outline_size", text ? 0 : 5);
+			_label.AddThemeFontSizeOverride("font_size", text || _height >= GameTheme.Touch ? FontSize.Button : FontSize.Compact);
+			_label.AddThemeColorOverride("font_color", text ? Tones.Ink(_kind) : Palette.Text);
 			_label.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
 
 			var ink = Tones.Ink(_kind);

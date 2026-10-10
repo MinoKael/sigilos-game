@@ -204,8 +204,7 @@ namespace Sigilos.UI.Screens
 				return;
 
 			// Sem botão grande: é o caminho de exceção, discreto embaixo de Entrar.
-			var forgot = new Button { Name = "Forgot", Text = T("account.forgot"), Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
-			forgot.AddThemeColorOverride("font_color", Palette.Gold);
+			var forgot = new GameButton(T("account.forgot"), ButtonKind.Text, height: GameButton.TextHeight) { Name = "Forgot", SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
 			forgot.Pressed += () =>
 			{
 				if (!_busy)

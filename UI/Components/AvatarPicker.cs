@@ -102,25 +102,17 @@ namespace Sigilos.UI.Components
 				.ThenBy(a => a.Awakened);
 
 		/// <summary>Um retrato na grade: o círculo na moldura da raridade (de ouro no especial, arcana no de agora) e o nome embaixo.</summary>
-		private static Button Cell(GameDatabase database, AccountAvatar avatar, bool current)
+		private static SurfaceButton Cell(GameDatabase database, AccountAvatar avatar, bool current)
 		{
 			var summon = avatar.Kind == AvatarKind.Summon ? database.Summon(avatar.Id) : null;
-			var cell = new Button
+			var cell = new SurfaceButton
 			{
 				Name = avatar.Awakened ? $"{avatar.Id}_awakened" : avatar.Id,
-				Flat = true,
-				FocusMode = Control.FocusModeEnum.None,
-				MouseDefaultCursorShape = Control.CursorShape.PointingHand,
 				CustomMinimumSize = new Vector2(CellWidth, Side + 46),
-			};
-			var lit = GameTheme.Box(new Color(Palette.Gold, 0.12f), new Color(Palette.Gold, 0), 0, 10, 0);
-			cell.AddThemeStyleboxOverride("hover", lit);
-			cell.AddThemeStyleboxOverride("pressed", lit);
-			cell.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
+			}.Boxes(null, GameTheme.Box(new Color(Palette.Gold, 0.12f), new Color(Palette.Gold, 0), 0, Radius.Button, 0));
 
 			var column = new VBoxContainer { Name = "Column", MouseFilter = Control.MouseFilterEnum.Ignore };
-			column.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-			column.AddThemeConstantOverride("separation", 4);
+			column.AddThemeConstantOverride("separation", Space.Tight);
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(Side, Side), SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter, MouseFilter = Control.MouseFilterEnum.Ignore };
 			var border = current ? Palette.Arcane : summon != null ? Palette.Frame(summon.Rarity) : Palette.GoldDark;
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Panel, border, current ? 3 : 2, (int)(Side / 2), 4));
@@ -140,7 +132,7 @@ namespace Sigilos.UI.Components
 			name.AddThemeFontSizeOverride("font_size", 13);
 			name.AddThemeColorOverride("font_color", avatar.Awakened ? Palette.Awakened : Palette.Text);
 			column.AddChild(name);
-			cell.AddChild(column);
+			cell.Body.AddChild(column);
 			return cell;
 		}
 	}

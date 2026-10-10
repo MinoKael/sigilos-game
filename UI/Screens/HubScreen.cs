@@ -238,16 +238,11 @@ namespace Sigilos.UI.Screens
 			plate.AddChild(column);
 
 			// O tempo é um botão sem moldura: parece texto, e o toque abre a explicação colada nele.
-			var time = new Button { Name = "Time", Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand };
-			time.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
-			time.AddThemeStyleboxOverride("hover", new StyleBoxEmpty());
-			time.AddThemeStyleboxOverride("pressed", new StyleBoxEmpty());
+			var time = new SurfaceButton { Name = "Time", Hug = true }.Boxes(null);
 			_time.HorizontalAlignment = HorizontalAlignment.Center;
 			_time.MouseFilter = MouseFilterEnum.Ignore;
-			_time.AddThemeFontSizeOverride("font_size", 22);
-			_time.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			time.AddChild(_time);
-			_time.MinimumSizeChanged += () => time.CustomMinimumSize = _time.GetCombinedMinimumSize();
+			_time.AddThemeFontSizeOverride("font_size", FontSize.Large);
+			time.Body.AddChild(_time);
 			time.Pressed += () => Dialog.Info(time, T("hub.channel"), T("hub.channel_text", Idle.CapHours));
 			column.AddChild(time);
 

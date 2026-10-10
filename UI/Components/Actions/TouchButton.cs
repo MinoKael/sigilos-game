@@ -57,10 +57,13 @@ namespace Sigilos.UI.Components
 		protected float PulsePhase => _pulse.Phase;
 
 		/// <summary>As margens do conteúdo: dos lados, em cima e embaixo.</summary>
-		protected void Pad(int sides, int top, int bottom)
+		protected void Pad(int sides, int top, int bottom) => Pad(sides, sides, top, bottom);
+
+		/// <summary>As margens do conteúdo, uma por lado.</summary>
+		protected void Pad(int left, int right, int top, int bottom)
 		{
-			Content.AddThemeConstantOverride("margin_left", sides);
-			Content.AddThemeConstantOverride("margin_right", sides);
+			Content.AddThemeConstantOverride("margin_left", left);
+			Content.AddThemeConstantOverride("margin_right", right);
 			Content.AddThemeConstantOverride("margin_top", top);
 			Content.AddThemeConstantOverride("margin_bottom", bottom);
 		}
