@@ -44,7 +44,7 @@ namespace Sigilos.UI.Components
 			box.Name = "Box";
 			box.MouseFilter = MouseFilterEnum.Ignore;
 			box.Alignment = BoxContainer.AlignmentMode.Center;
-			box.AddThemeConstantOverride("separation", horizontal ? 16 : 4);
+			box.AddThemeConstantOverride("separation", horizontal ? Space.Loose : Space.Tight);
 			Content.AddChild(box);
 
 			var ink = Tones.Ink(kind);
@@ -55,7 +55,7 @@ namespace Sigilos.UI.Components
 			box.AddChild(icon);
 
 			var lines = new VBoxContainer { Name = "Text", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-			lines.AddThemeConstantOverride("separation", 0);
+			lines.AddThemeConstantOverride("separation", Space.None);
 			lines.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			_title = new Label { Name = "Title", Text = title, HorizontalAlignment = horizontal ? HorizontalAlignment.Left : HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
 			_title.AddThemeFontOverride("font", GameTheme.Serif);
@@ -116,7 +116,7 @@ namespace Sigilos.UI.Components
 
 		private static StyleBoxFlat Box(Color fill, Color border)
 		{
-			var box = GameTheme.Box(fill, border, 2, 14, 0);
+			var box = GameTheme.Box(fill, border, 2, Radius.Tile, 0);
 			box.BorderWidthBottom = 5;
 			box.ShadowColor = new Color(0, 0, 0, 0.4f);
 			box.ShadowSize = 4;

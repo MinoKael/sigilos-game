@@ -24,8 +24,7 @@ namespace Sigilos.UI.Components
 	public partial class CreatureCard : PanelContainer
 	{
 		private readonly StyleBoxFlat _box;
-		private readonly Color _frame;
-		private readonly int _border;
+		private readonly SelectionFrame _selection;
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly Press _press = new();
 		private readonly Control _layer = new() { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
@@ -50,12 +49,17 @@ namespace Sigilos.UI.Components
 			_press.Tapped += () => Pressed?.Invoke(this);
 			_press.Held += () => MonsterSummary.Open(this, Summon, Monster);
 
-			_frame = Palette.Frame(summon.Rarity);
-			_border = summon.Rarity >= 3 ? 3 : 2;
-			_box = GameTheme.Box(Palette.Inset, _frame, _border, 8, 4);
-			_box.ShadowColor = new Color(0, 0, 0, 0.45f);
-			_box.ShadowSize = 3;
-			_box.ShadowOffset = new Vector2(0, 2);
+			var rarity = Palette.Frame(summon.Rarity);
+			var border = summon.Rarity >= 3 ? 3 : 2;
+			_box = GameTheme.Box(Palette.Inset, rarity, border, Radius.Medium, 4);
+			_selection = new SelectionFrame(_box, rarity, border)
+			{
+				HoverLighten = 0.35f,
+				GlowSize = 7,
+				Rest = (new Color(0, 0, 0, 0.45f), 3, new Vector2(0, 2)),
+				Hover = (new Color(Palette.Gold, 0.25f), 7, Vector2.Zero),
+			};
+			_selection.Apply(false, false, false);
 			AddThemeStyleboxOverride("panel", _box);
 
 			var layer = _layer;
@@ -247,12 +251,7 @@ namespace Sigilos.UI.Components
 		private void Restyle()
 		{
 			var hover = IsInsideTree() && Pressed != null && GetGlobalRect().HasPoint(GetGlobalMousePosition());
-			_box.BorderColor = _selected ? Palette.Arcane : hover ? _frame.Lightened(0.35f) : _frame;
-			_box.SetBorderWidthAll(_selected ? _border + 1 : _border);
-			_box.BgColor = _marked ? Palette.Inset.Lerp(Palette.Spirit, 0.18f) : hover ? Palette.Inset.Lightened(0.06f) : Palette.Inset;
-			_box.ShadowColor = _selected ? new Color(Palette.Arcane, 0.4f) : hover ? new Color(Palette.Gold, 0.25f) : new Color(0, 0, 0, 0.45f);
-			_box.ShadowSize = _selected || hover ? 7 : 3;
-			_box.ShadowOffset = _selected || hover ? Vector2.Zero : new Vector2(0, 2);
+			_selection.Apply(_selected, _marked, hover);
 		}
 	}
 }

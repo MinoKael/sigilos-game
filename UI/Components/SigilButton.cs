@@ -235,12 +235,12 @@ namespace Sigilos.UI.Components
 			var pressing = down && !ToggleMode;
 
 			var ring = Disabled ? Palette.Disabled.Lightened(0.15f)
-				: lit ? Palette.Arcane
+				: lit ? States.Selected
 				: hover ? Palette.Gold
 				: _accent ?? Palette.GoldDark;
 			var fill = Disabled ? Palette.Inset
 				: pressing ? Palette.Inset
-				: lit ? Palette.Inset.Lerp(Palette.Arcane, 0.14f)
+				: lit ? States.LitFill
 				: hover ? Palette.PanelLight
 				: Palette.Panel;
 

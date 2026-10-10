@@ -54,7 +54,7 @@ namespace Sigilos.UI.Components
 			CustomMinimumSize = new Vector2(0, height);
 
 			Pad(Padding, 4, 6);
-			_row.AddThemeConstantOverride("separation", 10);
+			_row.AddThemeConstantOverride("separation", Space.Regular);
 			Content.AddChild(_row);
 
 			var lines = new VBoxContainer
@@ -74,11 +74,11 @@ namespace Sigilos.UI.Components
 			_label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_label.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			_label.AddThemeFontOverride("font", GameTheme.Serif);
-			_label.AddThemeFontSizeOverride("font_size", height >= GameTheme.Touch ? 20 : 17);
+			_label.AddThemeFontSizeOverride("font_size", height >= GameTheme.Touch ? FontSize.Button : FontSize.Compact);
 			_label.AddThemeColorOverride("font_color", Palette.Text);
 			lines.AddChild(_label);
 
-			_cost.AddThemeConstantOverride("separation", 4);
+			_cost.AddThemeConstantOverride("separation", Space.Tight);
 			lines.AddChild(_cost);
 			_row.AddChild(lines);
 
@@ -153,7 +153,7 @@ namespace Sigilos.UI.Components
 				_cost.AddChild(Doodle.Icon(Art.Icon(icon), 18, Tones.Ink(_kind)).Named("Icon"));
 				var amount = new Label { Name = "Value", Text = value, MouseFilter = MouseFilterEnum.Ignore };
 				amount.AddThemeFontOverride("font", GameTheme.Serif);
-				amount.AddThemeFontSizeOverride("font_size", 16);
+				amount.AddThemeFontSizeOverride("font_size", FontSize.Body);
 				amount.AddThemeColorOverride("font_color", Palette.Text);
 				amount.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
 				amount.AddThemeConstantOverride("outline_size", 4);
@@ -220,7 +220,7 @@ namespace Sigilos.UI.Components
 		/// <summary>A madeira: cantos redondos, borda de baixo mais grossa (o degrau) que some ao apertar.</summary>
 		private static StyleBoxFlat Box(Color fill, Color border, bool glow, bool pressed = false)
 		{
-			var box = GameTheme.Box(fill, border, 2, 10, 0);
+			var box = GameTheme.Box(fill, border, 2, Radius.Button, 0);
 			box.BorderWidthBottom = pressed ? 2 : 5;
 			box.ExpandMarginTop = pressed ? -2 : 0;
 			box.ShadowColor = glow ? new Color(Palette.Gold, 0.25f) : new Color(0, 0, 0, 0.35f);

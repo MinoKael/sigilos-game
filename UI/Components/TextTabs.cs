@@ -24,7 +24,7 @@ namespace Sigilos.UI.Components
 			Vertical = vertical;
 			_height = height;
 			_compact = compact;
-			AddThemeConstantOverride("separation", vertical ? 8 : 6);
+			AddThemeConstantOverride("separation", vertical ? Space.Medium : Space.Small);
 		}
 
 		/// <summary>A aba aberta mudou.</summary>
@@ -86,7 +86,7 @@ namespace Sigilos.UI.Components
 				Pad(compact ? 10 : 16, 4, 4);
 
 				var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-				row.AddThemeConstantOverride("separation", 8);
+				row.AddThemeConstantOverride("separation", Space.Medium);
 				Content.AddChild(row);
 				if (icon != null)
 				{
@@ -99,12 +99,12 @@ namespace Sigilos.UI.Components
 				lines.AddThemeConstantOverride("separation", -4);
 				_label = new Label { Name = "Label", Text = text, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
 				_label.AddThemeFontOverride("font", GameTheme.Serif);
-				_label.AddThemeFontSizeOverride("font_size", compact ? 16 : 18);
+				_label.AddThemeFontSizeOverride("font_size", compact ? FontSize.Body : FontSize.Tab);
 				lines.AddChild(_label);
 				if (detail.Length > 0)
 				{
 					_detail = new Label { Name = "Detail", Text = detail, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
-					_detail.AddThemeFontSizeOverride("font_size", 14);
+					_detail.AddThemeFontSizeOverride("font_size", FontSize.Detail);
 					lines.AddChild(_detail);
 				}
 
@@ -130,7 +130,7 @@ namespace Sigilos.UI.Components
 
 			private static StyleBoxFlat Box(Color fill, Color border, int width)
 			{
-				var box = GameTheme.Box(fill, border, width, 8, 0);
+				var box = GameTheme.Box(fill, border, width, Radius.Medium, 0);
 				box.BorderWidthBottom = width + 1;
 				return box;
 			}

@@ -47,7 +47,7 @@ namespace Sigilos.UI.Components
 			screen.AddChild(margin);
 
 			var column = new VBoxContainer { Name = "Content" };
-			column.AddThemeConstantOverride("separation", 12);
+			column.AddThemeConstantOverride("separation", Space.Large);
 			margin.AddChild(column);
 			return column;
 		}
@@ -91,11 +91,11 @@ namespace Sigilos.UI.Components
 		public static (HBoxContainer Header, HBoxContainer Extra) Header(string title, CurrencyBar? currencies, Action onBack)
 		{
 			var header = new HBoxContainer { Name = "Header" };
-			header.AddThemeConstantOverride("separation", 14);
+			header.AddThemeConstantOverride("separation", Space.Wide);
 			header.AddChild(new Label { Name = "Title", Text = title, ThemeTypeVariation = GameTheme.Title, VerticalAlignment = VerticalAlignment.Center });
 			header.AddChild(ChatBubble.Slot());
 			var extra = new HBoxContainer { Name = "Extra", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Begin };
-			extra.AddThemeConstantOverride("separation", 10);
+			extra.AddThemeConstantOverride("separation", Space.Regular);
 			header.AddChild(extra);
 			if (currencies != null)
 			{
@@ -143,7 +143,7 @@ namespace Sigilos.UI.Components
 			box.ContentMarginRight = 12;
 			capsule.AddThemeStyleboxOverride("panel", box);
 			var row = new HBoxContainer { Name = "Row", MouseFilter = Control.MouseFilterEnum.Ignore };
-			row.AddThemeConstantOverride("separation", 6);
+			row.AddThemeConstantOverride("separation", Space.Small);
 			row.AddChild(icon);
 			if (value.Length > 0)
 			{
@@ -180,7 +180,7 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Fileira de sigilos, centralizada ou não.</summary>
-		public static HBoxContainer Row(int separation = 10, bool centered = false)
+		public static HBoxContainer Row(int separation = Space.Regular, bool centered = false)
 		{
 			var row = new HBoxContainer { Alignment = centered ? BoxContainer.AlignmentMode.Center : BoxContainer.AlignmentMode.Begin };
 			row.AddThemeConstantOverride("separation", separation);
@@ -192,7 +192,7 @@ namespace Sigilos.UI.Components
 		/// <see cref="GameButton"/> preenche a célula dele. É o jeito de pôr botões lado a lado; a
 		/// <see cref="Flow"/> fica para fichas e chips, que têm largura própria.
 		/// </summary>
-		public static GridContainer Grid(int columns, int separation = 8)
+		public static GridContainer Grid(int columns, int separation = Space.Medium)
 		{
 			var grid = new GridContainer { Columns = columns, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			grid.AddThemeConstantOverride("h_separation", separation);
@@ -201,7 +201,7 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Fileira que quebra linha (fichas, chips, cartões; botões vão na <see cref="Grid"/>).</summary>
-		public static HFlowContainer Flow(int separation = 8)
+		public static HFlowContainer Flow(int separation = Space.Medium)
 		{
 			var flow = new HFlowContainer();
 			flow.AddThemeConstantOverride("h_separation", separation);
@@ -267,7 +267,7 @@ namespace Sigilos.UI.Components
 		public static VBoxContainer Tab(TabContainer tabs, string name, string title)
 		{
 			var column = new VBoxContainer { Name = "Content" };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			tabs.AddChild(Scroll(column).Named(name));
 			tabs.SetTabTitle(tabs.GetTabCount() - 1, title);
 			return column;
@@ -287,7 +287,7 @@ namespace Sigilos.UI.Components
 		{
 			var panel = new PanelContainer { Name = "Section" };
 			var content = new VBoxContainer { Name = "Content" };
-			content.AddThemeConstantOverride("separation", 8);
+			content.AddThemeConstantOverride("separation", Space.Medium);
 			panel.AddChild(content);
 			if (title.Length > 0)
 				content.AddChild(new Label { Name = "Heading", Text = title, ThemeTypeVariation = GameTheme.Heading });

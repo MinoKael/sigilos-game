@@ -41,6 +41,7 @@ namespace Sigilos.UI.Components
 		private const float EmptySealRadius = 22;
 
 		private readonly StyleBoxFlat _box;
+		private readonly SelectionFrame _selection;
 		private readonly Color _color;
 		private readonly Control _layer = new() { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
@@ -68,6 +69,7 @@ namespace Sigilos.UI.Components
 
 			_color = rune == null ? Palette.GoldDark : Palette.Of(rune.Rarity);
 			_box = GameTheme.Box(Palette.Inset, _color, rune == null ? 1 : 2, (int)(9 * scale), 0);
+			_selection = new SelectionFrame(_box, _color, rune == null ? 1 : 2) { Hover = (new Color(_color, 0.3f), 5, Vector2.Zero) };
 			AddThemeStyleboxOverride("panel", _box);
 			AddChild(_layer);
 
@@ -271,12 +273,7 @@ namespace Sigilos.UI.Components
 		private void Restyle()
 		{
 			var hover = IsInsideTree() && GetGlobalRect().HasPoint(GetGlobalMousePosition());
-			var width = Rune == null ? 1 : 2;
-			_box.BorderColor = _selected ? Palette.Arcane : hover ? _color.Lightened(0.3f) : _color;
-			_box.SetBorderWidthAll(_selected ? width + 1 : width);
-			_box.BgColor = _marked ? Palette.Inset.Lerp(Palette.Spirit, 0.18f) : hover ? Palette.Inset.Lightened(0.06f) : Palette.Inset;
-			_box.ShadowColor = _selected ? new Color(Palette.Arcane, 0.4f) : new Color(_color, hover ? 0.3f : 0);
-			_box.ShadowSize = _selected || hover ? 5 : 0;
+			_selection.Apply(_selected, _marked, hover);
 		}
 
 		private Label Small(string text, Color color, int size, HorizontalAlignment? horizontalAlignment = null, VerticalAlignment? verticalAlignment = null)

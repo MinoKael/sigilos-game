@@ -106,11 +106,11 @@ namespace Sigilos.UI.Components
 			AddChild(_panel);
 
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 12);
+			column.AddThemeConstantOverride("separation", Space.Large);
 			_panel.AddChild(column);
 
 			var header = new HBoxContainer { Name = "Header" };
-			header.AddThemeConstantOverride("separation", 10);
+			header.AddThemeConstantOverride("separation", Space.Regular);
 			var heading = new Label
 			{
 				Name = "Title",
@@ -128,7 +128,7 @@ namespace Sigilos.UI.Components
 			header.AddChild(_right);
 			column.AddChild(header);
 
-			Body.AddThemeConstantOverride("separation", 12);
+			Body.AddThemeConstantOverride("separation", Space.Large);
 			Body.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_scroll.AddChild(Body);
 			DragScroll.Enable(_scroll);
@@ -144,7 +144,7 @@ namespace Sigilos.UI.Components
 				column.AddChild(_scroll);
 			}
 
-			_actions.AddThemeConstantOverride("separation", 14);
+			_actions.AddThemeConstantOverride("separation", Space.Wide);
 			column.AddChild(_actions);
 
 			Body.MinimumSizeChanged += QueueFit;

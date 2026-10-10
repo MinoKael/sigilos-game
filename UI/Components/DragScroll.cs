@@ -96,7 +96,7 @@ namespace Sigilos.UI.Components
 
 		/// <summary>
 		/// Desligar e religar o botão desfaz o aperto (soltar não vira clique); o "soltou" avisado à mão
-		/// desfaz o que começou no aperto (o salto do <see cref="Juice"/>, o toque longo do <see cref="Press"/>).
+		/// desfaz o que começou no aperto (o salto do <see cref="Animations.Juice"/>, o toque longo do <see cref="Press"/>).
 		/// </summary>
 		private void CancelPress()
 		{

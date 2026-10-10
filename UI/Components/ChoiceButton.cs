@@ -56,8 +56,8 @@ namespace Sigilos.UI.Components
 			var columns = options.Count > 8 ? 2 : 1;
 			var dialog = Dialog.Open(from, title, columns == 1 ? 420 : 640, anchored ? from : null, "ChoiceDialog");
 			var grid = new GridContainer { Name = "Options", Columns = columns, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-			grid.AddThemeConstantOverride("h_separation", 8);
-			grid.AddThemeConstantOverride("v_separation", 8);
+			grid.AddThemeConstantOverride("h_separation", Space.Medium);
+			grid.AddThemeConstantOverride("v_separation", Space.Medium);
 			for (var i = 0; i < options.Count; i++)
 			{
 				var index = i;
@@ -82,18 +82,18 @@ namespace Sigilos.UI.Components
 				SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
 				MouseDefaultCursorShape = Control.CursorShape.PointingHand,
 			};
-			var border = current ? Palette.Arcane : Palette.GoldDark;
-			button.AddThemeStyleboxOverride("normal", GameTheme.Box(current ? Palette.Inset.Lerp(Palette.Arcane, 0.14f) : Palette.Inset, border, current ? 2 : 1, 8, 6));
-			button.AddThemeStyleboxOverride("hover", GameTheme.Box(Palette.PanelLight, Palette.Gold, 1, 8, 6));
-			button.AddThemeStyleboxOverride("pressed", GameTheme.Box(Palette.Inset, Palette.Arcane, 2, 8, 6));
-			button.AddThemeStyleboxOverride("hover_pressed", GameTheme.Box(Palette.Inset, Palette.Arcane, 2, 8, 6));
+			var border = current ? States.Selected : Palette.GoldDark;
+			button.AddThemeStyleboxOverride("normal", GameTheme.Box(current ? States.LitFill : Palette.Inset, border, current ? 2 : 1, Radius.Medium, 6));
+			button.AddThemeStyleboxOverride("hover", GameTheme.Box(Palette.PanelLight, Palette.Gold, 1, Radius.Medium, 6));
+			button.AddThemeStyleboxOverride("pressed", GameTheme.Box(Palette.Inset, Palette.Arcane, 2, Radius.Medium, 6));
+			button.AddThemeStyleboxOverride("hover_pressed", GameTheme.Box(Palette.Inset, Palette.Arcane, 2, Radius.Medium, 6));
 			button.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
 
 			var row = new HBoxContainer { Name = "Row", MouseFilter = Control.MouseFilterEnum.Ignore };
 			row.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 			row.OffsetLeft = 12;
 			row.OffsetRight = -12;
-			row.AddThemeConstantOverride("separation", 10);
+			row.AddThemeConstantOverride("separation", Space.Regular);
 			var ink = choice.Ink ?? Palette.Gold;
 			if (choice.Rune is { } glyph)
 				row.AddChild(new RuneGlyph(glyph, 26, ink) { Name = "Glyph", SizeFlagsVertical = Control.SizeFlags.ShrinkCenter });
