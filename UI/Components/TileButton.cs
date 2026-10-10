@@ -9,29 +9,27 @@ namespace Sigilos.UI.Components
 	/// Santuário (<see cref="Nav"/>), os cartões de Batalha e Invocar, os portais da escolha de batalha.
 	/// Pulsa em verde com <see cref="Highlight"/> para guiar quem está começando.
 	/// </summary>
-	public partial class TileButton : Button
+	public partial class TileButton : TouchButton
 	{
-		private readonly MarginContainer _content = new() { Name = "Content", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Label _title;
 		private readonly Label? _detail;
 		private readonly StyleBoxFlat _normal;
 		private readonly Color _border;
-		private bool _highlight;
-		private float _time;
 
 		/// <param name="texture">O desenho (ícone, criatura).</param>
 		/// <param name="horizontal">Símbolo à esquerda e texto à direita; senão, símbolo em cima.</param>
 		public TileButton(string title, string detail, Texture2D? texture, Vector2 size, ButtonKind kind = ButtonKind.Secondary, bool horizontal = false, float iconSize = 0)
+			: base(0.97f)
 		{
-			FocusMode = FocusModeEnum.None;
-			MouseDefaultCursorShape = CursorShape.PointingHand;
 			CustomMinimumSize = size;
 
-			var (fill, border) = kind switch
+			// Os tons do botão de texto, um pouco mais escuros: o cartão é grande e fica atrás do que está escrito nele.
+			var (fill, border) = Tones.Of(kind);
+			fill = kind switch
 			{
-				ButtonKind.Primary => (Palette.Primary.Darkened(0.12f), Palette.PrimaryDark),
-				ButtonKind.Danger => (Palette.Danger, Palette.DangerDark),
-				_ => (Palette.Panel, Palette.GoldDark),
+				ButtonKind.Primary => fill.Darkened(0.12f),
+				ButtonKind.Secondary => Palette.Panel,
+				_ => fill,
 			};
 			_border = border;
 			_normal = Box(fill, border);
@@ -40,23 +38,16 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("pressed", Box(fill.Darkened(0.15f), border));
 			AddThemeStyleboxOverride("hover_pressed", Box(fill.Darkened(0.15f), border));
 			AddThemeStyleboxOverride("disabled", Box(Palette.Inset, Palette.Disabled));
-			AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
-
-			_content.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			foreach (var side in new[] { "left", "right" })
-				_content.AddThemeConstantOverride($"margin_{side}", 12);
-			foreach (var side in new[] { "top", "bottom" })
-				_content.AddThemeConstantOverride($"margin_{side}", 8);
-			AddChild(_content);
+			Pad(12, 8, 8);
 
 			BoxContainer box = horizontal ? new HBoxContainer() : new VBoxContainer();
 			box.Name = "Box";
 			box.MouseFilter = MouseFilterEnum.Ignore;
 			box.Alignment = BoxContainer.AlignmentMode.Center;
 			box.AddThemeConstantOverride("separation", horizontal ? 16 : 4);
-			_content.AddChild(box);
+			Content.AddChild(box);
 
-			var ink = kind == ButtonKind.Secondary ? Palette.Gold : Palette.Text;
+			var ink = Tones.Ink(kind);
 			var iconSide = iconSize > 0 ? iconSize : horizontal ? size.Y * 0.62f : size.Y * 0.46f;
 			var icon = Doodle.Icon(texture, (int)iconSide, ink);
 			icon.SizeFlagsHorizontal = horizontal ? SizeFlags.ShrinkBegin : SizeFlags.ShrinkCenter;
@@ -69,8 +60,8 @@ namespace Sigilos.UI.Components
 			_title = new Label { Name = "Title", Text = title, HorizontalAlignment = horizontal ? HorizontalAlignment.Left : HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
 			_title.AddThemeFontOverride("font", GameTheme.Serif);
 			_title.AddThemeFontSizeOverride("font_size", horizontal ? (size.Y >= 120 ? 30 : 23) : size.Y >= 100 ? 19 : 16);
-			_title.AddThemeColorOverride("font_color", kind == ButtonKind.Secondary ? Palette.Gold : Palette.Text);
-			_title.AddThemeColorOverride("font_outline_color", new Color(0.08f, 0.05f, 0.03f));
+			_title.AddThemeColorOverride("font_color", ink);
+			_title.AddThemeColorOverride("font_outline_color", Tones.WoodOutline);
 			_title.AddThemeConstantOverride("outline_size", 5);
 			lines.AddChild(_title);
 			if (detail.Length > 0)
@@ -84,29 +75,30 @@ namespace Sigilos.UI.Components
 			if (horizontal)
 				lines.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			box.AddChild(lines);
-			Juice.Attach(this, 0.97f);
 		}
 
 		/// <summary>O botão da barra de baixo do Santuário: símbolo em cima e o nome embaixo.</summary>
 		public static TileButton Nav(string title, string icon, float width = 128) => new(title, "", Art.Icon(icon), new Vector2(width, 86)) { Name = Layout.NodeName(icon) };
 
-		/// <summary>Pulsa em verde até o jogador tocar.</summary>
-		public bool Highlight
+		/// <summary>O chamado apagou (ou acendeu): a moldura volta ao repouso, e o pulso a pinta de novo a cada quadro.</summary>
+		protected override void OnHighlightChanged()
 		{
-			get => _highlight;
-			set
-			{
-				_highlight = value;
-				SetProcess(value);
-				_normal.BorderColor = _border;
-				_normal.ShadowColor = new Color(0, 0, 0, 0.4f);
-				_normal.ShadowSize = 4;
-			}
+			_normal.BorderColor = _border;
+			_normal.ShadowColor = new Color(0, 0, 0, 0.4f);
+			_normal.ShadowSize = 4;
+		}
+
+		/// <summary>A moldura e a sombra respiram em verde.</summary>
+		protected override void OnPulse(float phase)
+		{
+			_normal.BorderColor = _border.Lerp(Palette.Spirit, phase);
+			_normal.ShadowColor = new Color(Palette.Spirit, 0.25f + 0.3f * phase);
+			_normal.ShadowSize = 10;
 		}
 
 		public override void _Ready()
 		{
-			SetProcess(_highlight);
+			base._Ready();
 
 			// Botão de ligar (a Masmorra escolhida na lista): o ligado fica com a moldura azul arcana.
 			if (ToggleMode)
@@ -121,17 +113,6 @@ namespace Sigilos.UI.Components
 				AddThemeStyleboxOverride("hover_pressed", lit);
 			}
 		}
-
-		public override void _Process(double delta)
-		{
-			_time += (float)delta;
-			var pulse = 0.5f + 0.5f * Mathf.Sin(_time * 3.2f);
-			_normal.BorderColor = _border.Lerp(Palette.Spirit, pulse);
-			_normal.ShadowColor = new Color(Palette.Spirit, 0.25f + 0.3f * pulse);
-			_normal.ShadowSize = 10;
-		}
-
-		public override void _Draw() => _content.Modulate = Disabled ? new Color(1, 1, 1, 0.45f) : Colors.White;
 
 		private static StyleBoxFlat Box(Color fill, Color border)
 		{

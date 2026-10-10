@@ -66,10 +66,9 @@ namespace Sigilos.UI.Components
 				_tabs[i].SetPressedNoSignal(i == index);
 		}
 
-		/// <summary>Uma aba: botão de ligar com o símbolo, o nome e o detalhe, que mede o próprio conteúdo.</summary>
-		private sealed partial class TabButton : Button
+		/// <summary>Uma aba: botão de ligar com o símbolo, o nome e o detalhe, da largura do próprio conteúdo.</summary>
+		private sealed partial class TabButton : TouchButton
 		{
-			private readonly MarginContainer _content = new() { Name = "Content", MouseFilter = MouseFilterEnum.Ignore };
 			private readonly Label _label;
 			private readonly Label? _detail;
 			private readonly Doodle? _icon;
@@ -79,25 +78,16 @@ namespace Sigilos.UI.Components
 			{
 				_height = height;
 				ToggleMode = true;
-				FocusMode = FocusModeEnum.None;
-				MouseDefaultCursorShape = CursorShape.PointingHand;
 				AddThemeStyleboxOverride("normal", Box(Palette.Inset, Palette.GoldDark, 1));
 				AddThemeStyleboxOverride("hover", Box(Palette.Inset.Lightened(0.05f), Palette.Gold, 1));
 				AddThemeStyleboxOverride("pressed", Box(Palette.PanelLight, Palette.Gold, 2));
 				AddThemeStyleboxOverride("hover_pressed", Box(Palette.PanelLight, Palette.Gold, 2));
 				AddThemeStyleboxOverride("disabled", Box(Palette.Inset.Darkened(0.2f), Palette.Disabled, 1));
-				AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
-
-				_content.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-				_content.AddThemeConstantOverride("margin_left", compact ? 10 : 16);
-				_content.AddThemeConstantOverride("margin_right", compact ? 10 : 16);
-				_content.AddThemeConstantOverride("margin_top", 4);
-				_content.AddThemeConstantOverride("margin_bottom", 4);
-				AddChild(_content);
+				Pad(compact ? 10 : 16, 4, 4);
 
 				var row = new HBoxContainer { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
 				row.AddThemeConstantOverride("separation", 8);
-				_content.AddChild(row);
+				Content.AddChild(row);
 				if (icon != null)
 				{
 					_icon = Doodle.Icon(Art.Icon(icon), 26, Palette.Gold);
@@ -120,23 +110,15 @@ namespace Sigilos.UI.Components
 
 				row.AddChild(lines);
 				Toggled += _ => Recolor();
-				_content.MinimumSizeChanged += Fit;
 			}
 
 			public override void _Ready()
 			{
+				base._Ready();
 				Recolor();
-				Fit();
 			}
 
-			/// <summary>O <c>Button</c> não mede filhos: o tamanho mínimo acompanha o conteúdo.</summary>
-			private void Fit()
-			{
-				var content = _content.GetCombinedMinimumSize();
-				CustomMinimumSize = new Vector2(content.X, Mathf.Max(content.Y, _height));
-			}
-
-			public override void _Draw() => _content.Modulate = Disabled ? new Color(1, 1, 1, 0.4f) : Colors.White;
+			protected override Vector2? MinimumFor(Vector2 content) => new Vector2(content.X, Mathf.Max(content.Y, _height));
 
 			private void Recolor()
 			{

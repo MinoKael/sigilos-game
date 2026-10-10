@@ -23,7 +23,7 @@ namespace Sigilos.UI.Components
 	/// pulsa em verde para chamar o jogador. No PC, sob o mouse a moldura vira ouro; nada depende disso.
 	/// O redondo grande (a partir de <see cref="Bezel"/>) tem a moldura graduada como um astrolábio.
 	/// </summary>
-	public partial class SigilButton : Button
+	public partial class SigilButton : TouchButton
 	{
 		/// <summary>O tamanho a partir do qual o sigilo redondo ganha as marcas de grau entre as duas molduras.</summary>
 		public const float Bezel = 56;
@@ -53,20 +53,16 @@ namespace Sigilos.UI.Components
 		/// <summary>A plaquinha escura com borda de ouro onde o número fica: destaca do fundo e do sigilo.</summary>
 		private readonly PanelContainer _plaque = new() { Name = "Plaque", MouseFilter = MouseFilterEnum.Ignore, Visible = false };
 
-		private bool _highlight;
 		private Glyph? _rune;
-		private float _time;
 		private Color _ink = Palette.Gold;
 		private Color? _accent;
 		private Vector2[]? _ticks;
 
-		public SigilButton(Texture2D? icon, float size = 56, SigilShape shape = SigilShape.Circle)
+		public SigilButton(Texture2D? icon, float size = 56, SigilShape shape = SigilShape.Circle) : base(0.93f)
 		{
 			Shape = shape;
 			Flat = true;
-			FocusMode = FocusModeEnum.None;
 			CustomMinimumSize = new Vector2(size, size);
-			MouseDefaultCursorShape = CursorShape.PointingHand;
 
 			// Símbolo e letras ficam dentro da máscara da forma: recortados no contorno interno do sigilo.
 			var mask = new ArtMask(shape switch
@@ -108,7 +104,6 @@ namespace Sigilos.UI.Components
 			_plaque.AddChild(_badge);
 			AddChild(_plaque);
 
-			Juice.Attach(this, 0.93f);
 			Toggled += _ => RefreshInk();
 			MouseEntered += RefreshInk;
 			MouseExited += RefreshInk;
@@ -201,18 +196,6 @@ namespace Sigilos.UI.Components
 			SetIcon(symbol.Icon);
 		}
 
-		/// <summary>Pulsa em verde espiritual até o jogador tocar.</summary>
-		public bool Highlight
-		{
-			get => _highlight;
-			set
-			{
-				_highlight = value;
-				SetProcess(value);
-				QueueRedraw();
-			}
-		}
-
 		public void SetIcon(Texture2D? icon) => _icon.SetArt(icon);
 
 		/// <summary>Botão pronto: símbolo de Assets/Icons e ação. O nó leva o nome do símbolo (<c>level_max</c> → <c>LevelMax</c>).</summary>
@@ -225,15 +208,14 @@ namespace Sigilos.UI.Components
 
 		public override void _Ready()
 		{
-			SetProcess(_highlight);
+			base._Ready();
 			RefreshInk();
 		}
 
-		public override void _Process(double delta)
-		{
-			_time += (float)delta;
-			QueueRedraw();
-		}
+		/// <summary>O chamado acende e apaga a aura verde, desenhada em <see cref="_Draw"/>.</summary>
+		protected override void OnHighlightChanged() => QueueRedraw();
+
+		protected override void OnPulse(float phase) => QueueRedraw();
 
 		public override void _Notification(int what)
 		{
@@ -243,6 +225,7 @@ namespace Sigilos.UI.Components
 
 		public override void _Draw()
 		{
+			base._Draw();
 			var center = Size / 2;
 			var radius = Mathf.Min(Size.X, Size.Y) / 2 - 4;
 			var mode = GetDrawMode();
@@ -262,9 +245,9 @@ namespace Sigilos.UI.Components
 				: Palette.Panel;
 
 			// A aura: anéis cada vez mais apagados em volta do contorno.
-			var pulse = 0.5f + 0.5f * Mathf.Sin(_time * 3.2f);
+			var pulse = PulsePhase;
 			var glow = !Disabled && (hover || lit) ? Palette.Arcane
-				: _highlight && !Disabled ? Palette.Spirit
+				: Highlight && !Disabled ? Palette.Spirit
 				: (Color?)null;
 			if (glow is { } aura)
 			{

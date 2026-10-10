@@ -15,6 +15,9 @@ namespace Sigilos.UI.Components
 
 		/// <summary>O que não tem volta: vermelho (Soltar, Vender, Parar).</summary>
 		Danger,
+
+		/// <summary>Sem madeira nem moldura: parece texto solto (o "Esqueci a senha" do login).</summary>
+		Text,
 	}
 
 	/// <summary>
@@ -24,116 +27,110 @@ namespace Sigilos.UI.Components
 	/// só ícone (<see cref="SigilButton"/>) fica para fechar, voltar, pausar.
 	///
 	/// O conteúdo (<c>Content/Row</c>: <c>Icon</c>, <c>Text</c> com <c>Label</c> e <c>Cost</c>) é desenhado
-	/// por cima do botão e não recebe toque. O <c>Button</c> não mede filhos (e ignora
-	/// <c>_GetMinimumSize</c>), então o tamanho mínimo é refeito a cada mudança do conteúdo.
+	/// por cima do botão; foco, afundar, apagar desligado e medir o conteúdo vêm de <see cref="TouchButton"/>.
+	/// As cores de cada peso vêm de <see cref="Tones"/>.
 	/// </summary>
-	public partial class GameButton : Button
+	public partial class GameButton : TouchButton
 	{
-		private readonly MarginContainer _content = new() { Name = "Content", MouseFilter = MouseFilterEnum.Ignore };
+		/// <summary>A margem de cada lado do conteúdo.</summary>
+		private const int Padding = 18;
+
 		private readonly Label _label = new() { Name = "Label", MouseFilter = MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
 		private readonly HBoxContainer _cost = new() { Name = "Cost", MouseFilter = MouseFilterEnum.Ignore, Visible = false, Alignment = BoxContainer.AlignmentMode.Center };
-		private readonly Doodle? _icon;
+		private readonly HBoxContainer _row = new() { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 		private readonly float _height;
-		private readonly ButtonKind _kind;
+		private Doodle? _icon;
+		private string? _iconName;
+		private ButtonKind _kind;
 		private float _width;
 
-        public GameButton(string text, ButtonKind kind = ButtonKind.Secondary, string? icon = null, float height = GameTheme.Touch)
-        {
-            _kind = kind;
-            _height = height;
+		public GameButton(string text, ButtonKind kind = ButtonKind.Secondary, string? icon = null, float height = GameTheme.Touch)
+		{
+			_height = height;
 
-            Name = "Button";
-            FocusMode = FocusModeEnum.None;
-            MouseDefaultCursorShape = CursorShape.PointingHand;
-            ClipContents = true;
+			Name = "Button";
+			ClipContents = true;
+			SizeFlagsHorizontal = SizeFlags.ExpandFill;
+			CustomMinimumSize = new Vector2(0, height);
 
-            SizeFlagsHorizontal = SizeFlags.ExpandFill;
-            CustomMinimumSize = new Vector2(0, height);
+			Pad(Padding, 4, 6);
+			_row.AddThemeConstantOverride("separation", 10);
+			Content.AddChild(_row);
 
-            var (fill, border) = Tones(kind);
+			var lines = new VBoxContainer
+			{
+				Name = "Text",
+				MouseFilter = MouseFilterEnum.Ignore,
+				Alignment = BoxContainer.AlignmentMode.Center,
+				SizeFlagsHorizontal = SizeFlags.ExpandFill
+			};
 
-            AddThemeStyleboxOverride("normal", Box(fill, border, false));
-            AddThemeStyleboxOverride("hover", Box(fill.Lightened(0.12f), border.Lightened(0.2f), true));
-            AddThemeStyleboxOverride("pressed", Box(fill.Darkened(0.18f), border, false, pressed: true));
-            AddThemeStyleboxOverride("hover_pressed", Box(fill.Darkened(0.18f), border, false, pressed: true));
-            AddThemeStyleboxOverride("disabled", Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
-            AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
+			lines.AddThemeConstantOverride("separation", -2);
 
-            _content.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-            _content.AddThemeConstantOverride("margin_left", 18);
-            _content.AddThemeConstantOverride("margin_right", 18);
-            _content.AddThemeConstantOverride("margin_top", 4);
-            _content.AddThemeConstantOverride("margin_bottom", 6);
-            _content.CustomMinimumSize = new Vector2(0, 0);
-            AddChild(_content);
+			_label.Text = text;
+			_label.HorizontalAlignment = HorizontalAlignment.Center;
+			_label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+			_label.ClipText = false;
+			_label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+			_label.SizeFlagsVertical = SizeFlags.ShrinkCenter;
+			_label.AddThemeFontOverride("font", GameTheme.Serif);
+			_label.AddThemeFontSizeOverride("font_size", height >= GameTheme.Touch ? 20 : 17);
+			_label.AddThemeColorOverride("font_color", Palette.Text);
+			lines.AddChild(_label);
 
-            var row = new HBoxContainer
-            {
-                Name = "Row",
-                MouseFilter = MouseFilterEnum.Ignore,
-                Alignment = BoxContainer.AlignmentMode.Center
-            };
+			_cost.AddThemeConstantOverride("separation", 4);
+			lines.AddChild(_cost);
+			_row.AddChild(lines);
 
-            row.AddThemeConstantOverride("separation", 10);
-            row.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+			Kind = kind;
+			IconName = icon;
+		}
 
-            _content.AddChild(row);
+		/// <summary>Um botão vazio de peso secundário, para o inicializador de objeto (<c>new GameButton { Text = ..., Kind = ... }</c>).</summary>
+		public GameButton() : this("")
+		{
+		}
 
-            var size = height >= GameTheme.Touch ? 20 : 17;
-
-            if (icon != null)
-            {
-                _icon = Doodle.Icon(
-                    Art.Icon(icon),
-                    (int)(height * 0.5f),
-                    Ink);
-
-                _icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-                row.AddChild(_icon);
-            }
-
-            var lines = new VBoxContainer
-            {
-                Name = "Text",
-                MouseFilter = MouseFilterEnum.Ignore,
-                Alignment = BoxContainer.AlignmentMode.Center,
-                SizeFlagsHorizontal = SizeFlags.ExpandFill
-            };
-
-            lines.AddThemeConstantOverride("separation", -2);
-
-            _label.Text = text;
-            _label.HorizontalAlignment = HorizontalAlignment.Center;
-            _label.AutowrapMode = TextServer.AutowrapMode.WordSmart;
-            _label.ClipText = false;
-            _label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-            _label.SizeFlagsVertical = SizeFlags.ShrinkCenter;
-
-            _label.AddThemeFontOverride("font", GameTheme.Serif);
-            _label.AddThemeFontSizeOverride("font_size", size);
-            _label.AddThemeColorOverride("font_color", Palette.Text);
-            _label.AddThemeColorOverride("font_outline_color", Outline);
-            _label.AddThemeConstantOverride("outline_size", 5);
-
-            lines.AddChild(_label);
-
-            _cost.AddThemeConstantOverride("separation", 4);
-            lines.AddChild(_cost);
-
-            row.AddChild(lines);
-
-            _content.MinimumSizeChanged += Fit;
-
-            Juice.Attach(this, 0.95f);
-        }
-
-        /// <summary>O texto do botão (o <c>Button.Text</c> fica vazio: quem desenha é o rótulo de dentro).</summary>
-        public new string Text
+		/// <summary>O texto do botão (o <c>Button.Text</c> fica vazio: quem desenha é o rótulo de dentro).</summary>
+		public new string Text
 		{
 			get => _label.Text;
 			set
 			{
 				_label.Text = value;
+				Fit();
+			}
+		}
+
+		/// <summary>O peso do botão: troca as caixas, a tinta dos símbolos e o contorno das letras.</summary>
+		public ButtonKind Kind
+		{
+			get => _kind;
+			set
+			{
+				_kind = value;
+				Restyle();
+			}
+		}
+
+		/// <summary>O símbolo na frente do texto, pelo nome em Assets/Icons (<c>"grindstone"</c>); nulo tira. (O <c>Button.Icon</c> da Godot fica sem uso.)</summary>
+		public string? IconName
+		{
+			get => _iconName;
+			set
+			{
+				_iconName = value;
+				if (_icon != null)
+					Layout.Discard(_icon);
+				_icon = null;
+				if (value != null)
+				{
+					_icon = Doodle.Icon(Art.Icon(value), (int)(_height * 0.5f), Tones.Ink(_kind));
+					_icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
+					_row.AddChild(_icon);
+					_row.MoveChild(_icon, 0);
+				}
+
 				Fit();
 			}
 		}
@@ -153,12 +150,12 @@ namespace Sigilos.UI.Components
 			_cost.Visible = value.Length > 0;
 			if (value.Length > 0)
 			{
-				_cost.AddChild(Doodle.Icon(Art.Icon(icon), 18, Ink).Named("Icon"));
+				_cost.AddChild(Doodle.Icon(Art.Icon(icon), 18, Tones.Ink(_kind)).Named("Icon"));
 				var amount = new Label { Name = "Value", Text = value, MouseFilter = MouseFilterEnum.Ignore };
 				amount.AddThemeFontOverride("font", GameTheme.Serif);
 				amount.AddThemeFontSizeOverride("font_size", 16);
 				amount.AddThemeColorOverride("font_color", Palette.Text);
-				amount.AddThemeColorOverride("font_outline_color", Outline);
+				amount.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
 				amount.AddThemeConstantOverride("outline_size", 4);
 				_cost.AddChild(amount);
 			}
@@ -175,58 +172,50 @@ namespace Sigilos.UI.Components
 			return this;
 		}
 
-		public override void _Ready() => Fit();
+		/// <summary>
+		/// O tamanho mínimo: a altura de toque (ou a do conteúdo) e, na largura, a pedida em <see cref="Wide"/> ou
+		/// pelo menos as margens, o símbolo e a palavra mais longa. O rótulo quebra linha e não tem largura mínima
+		/// própria: sem esse piso, numa fileira sem largura (HBox, HFlow) o botão encolhia a zero e o texto saía
+		/// uma letra por linha. Numa célula de grade mais larga, o botão continua preenchendo a célula.
+		/// </summary>
+		protected override Vector2? MinimumFor(Vector2 content) => new Vector2(Mathf.Max(_width, MinimumWidth()), Mathf.Max(content.Y, _height));
 
-        /// <summary>
-        /// O tamanho mínimo: a altura de toque (ou a do conteúdo) e, na largura, a pedida em <see cref="Wide"/> ou
-        /// pelo menos as margens, o símbolo e a palavra mais longa. O rótulo quebra linha e não tem largura mínima
-        /// própria: sem esse piso, numa fileira sem largura (HBox, HFlow) o botão encolhia a zero e o texto saía
-        /// uma letra por linha. Numa célula de grade mais larga, o botão continua preenchendo a célula.
-        /// </summary>
-        private void Fit()
-        {
-            var content = _content.GetCombinedMinimumSize();
-
-            CustomMinimumSize = new Vector2(
-                Mathf.Max(_width, MinimumWidth()),
-                Mathf.Max(content.Y, _height));
-        }
-
-        /// <summary>As margens, o símbolo e a palavra mais longa do texto (ou o custo, se for maior) numa linha.</summary>
-        private float MinimumWidth()
-        {
-            var font = _label.GetThemeFont("font");
-            var size = _label.GetThemeFontSize("font_size");
-            var word = 0f;
-            foreach (var piece in _label.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-                word = Mathf.Max(word, font.GetStringSize(piece, HorizontalAlignment.Left, -1, size).X);
-            var cost = _cost.Visible ? _cost.GetCombinedMinimumSize().X : 0;
-            var icon = _icon != null ? _icon.CustomMinimumSize.X + 10 : 0;
-            return 18 * 2 + icon + Mathf.Max(word, cost) + 6;
-        }
-
-        public override void _Draw()
+		/// <summary>As margens, o símbolo e a palavra mais longa do texto (ou o custo, se for maior) numa linha.</summary>
+		private float MinimumWidth()
 		{
-			// Desligado, o conteúdo apaga junto com a madeira.
-			_content.Modulate = Disabled ? new Color(1, 1, 1, 0.45f) : Colors.White;
+			var font = _label.GetThemeFont("font");
+			var size = _label.GetThemeFontSize("font_size");
+			var word = 0f;
+			foreach (var piece in _label.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+				word = Mathf.Max(word, font.GetStringSize(piece, HorizontalAlignment.Left, -1, size).X);
+			var cost = _cost.Visible ? _cost.GetCombinedMinimumSize().X : 0;
+			var icon = _icon != null ? _icon.CustomMinimumSize.X + 10 : 0;
+			return Padding * 2 + icon + Mathf.Max(word, cost) + 6;
 		}
 
-		/// <summary>A cor do símbolo: creme no âmbar e no vermelho, ouro na madeira.</summary>
-		private Color Ink => _kind == ButtonKind.Secondary ? Palette.Gold : Palette.Text;
-
-		private Color Outline => _kind switch
+		/// <summary>As caixas de cada estado, a tinta dos símbolos e o contorno das letras do peso atual.</summary>
+		private void Restyle()
 		{
-			ButtonKind.Primary => Palette.PrimaryDark.Darkened(0.35f),
-			ButtonKind.Danger => Palette.DangerDark.Darkened(0.3f),
-			_ => new Color(0.08f, 0.05f, 0.03f),
-		};
+			var (fill, border) = Tones.Of(_kind);
+			var text = _kind == ButtonKind.Text;
+			AddThemeStyleboxOverride("normal", text ? new StyleBoxEmpty() : Box(fill, border, false));
+			AddThemeStyleboxOverride("hover", text ? new StyleBoxEmpty() : Box(fill.Lightened(0.12f), border.Lightened(0.2f), true));
+			AddThemeStyleboxOverride("pressed", text ? new StyleBoxEmpty() : Box(fill.Darkened(0.18f), border, false, pressed: true));
+			AddThemeStyleboxOverride("hover_pressed", text ? new StyleBoxEmpty() : Box(fill.Darkened(0.18f), border, false, pressed: true));
+			AddThemeStyleboxOverride("disabled", text ? new StyleBoxEmpty() : Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
+			_label.AddThemeConstantOverride("outline_size", text ? 0 : 5);
+			_label.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
 
-		private static (Color Fill, Color Border) Tones(ButtonKind kind) => kind switch
-		{
-			ButtonKind.Primary => (Palette.Primary, Palette.PrimaryDark),
-			ButtonKind.Danger => (Palette.Danger, Palette.DangerDark),
-			_ => (Palette.Button, Palette.GoldDark),
-		};
+			var ink = Tones.Ink(_kind);
+			_icon?.SetInk(ink);
+			foreach (var child in _cost.GetChildren())
+			{
+				if (child is Doodle icon)
+					icon.SetInk(ink);
+				else if (child is Label amount)
+					amount.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
+			}
+		}
 
 		/// <summary>A madeira: cantos redondos, borda de baixo mais grossa (o degrau) que some ao apertar.</summary>
 		private static StyleBoxFlat Box(Color fill, Color border, bool glow, bool pressed = false)
