@@ -43,8 +43,9 @@ namespace Sigilos.UI.Screens
 	/// Baú, tirar dele ou soltar de uma vez; soltar deixa de fora os bloqueados. No Baú, tocar num grupo
 	/// marca (ou desmarca) as cópias todas; o cartão diz quantas estão marcadas ("3/7"). Fundir é só pela
 	/// janela da fusão, para uma escolha não se confundir com a outra. Mudar o filtro desmarca os que somem da
-	/// grade, para não soltar nada que não se vê. Toque longo em qualquer cartão abre o resumo. Cada botão vira um evento; o GameRoot aplica a regra e
-	/// chama <see cref="Refresh"/>.
+	/// grade, para não soltar nada que não se vê. Toque longo em qualquer cartão abre o resumo. Tocar num
+	/// cartão muda só ele, a faixa da seleção e a ficha: a grade não é refeita, e a rolagem fica onde está.
+	/// Cada botão vira um evento; o GameRoot aplica a regra e chama <see cref="Refresh"/>.
 	/// </summary>
 	public partial class StorageScreen : Control
 	{
@@ -84,10 +85,9 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
 		private readonly TextTabs _pages = new(vertical: true, 64) { Name = "Pages" };
 		private readonly VBoxContainer _sideActions = new() { Name = "Actions" };
-		private ScrollContainer _rosterScroll = null!;
 
-		/// <summary>O cartão que o jogador acabou de tocar: a rolagem o mostra inteiro.</summary>
-		private int? _touched;
+		/// <summary>O cartão de cada monstro da grade (as cópias de um grupo dão no mesmo): o toque muda só ele.</summary>
+		private readonly Dictionary<int, CreatureCard> _cards = new();
 
 		/// <param name="filter">A busca da última vez (nula: sem filtro, por estrelas).</param>
 		public StorageScreen(GameDatabase database, PlayerState player, int? selected, MonsterFilter? filter = null)
@@ -150,8 +150,7 @@ namespace Sigilos.UI.Screens
 			rosterColumn.AddChild(_tools);
 			rosterColumn.AddChild(_search);
 			rosterColumn.AddChild(_selection);
-			_rosterScroll = Layout.Scroll(_roster);
-			rosterColumn.AddChild(_rosterScroll);
+			rosterColumn.AddChild(Layout.Scroll(_roster));
 			body.AddChild(rosterPanel);
 
 			var detailPanel = new PanelContainer { Name = "Sheet", CustomMinimumSize = new Vector2(DetailWidth, 0) };
@@ -325,6 +324,7 @@ namespace Sigilos.UI.Screens
 		private void RefreshRoster()
 		{
 			Layout.Clear(_roster);
+			_cards.Clear();
 			var place = (_showStorage ? _player.Storage : _player.Collection).ToList();
 			// Os novos na frente; entre eles e entre os outros, a ordem do filtro.
 			var monsters = _filter.Apply(place, _database, _player).OrderByDescending(m => Roster.IsNew(_player, m)).ToList();
@@ -333,14 +333,7 @@ namespace Sigilos.UI.Screens
 				: monsters.Select(m => new MonsterStack(new[] { m })).ToList();
 
 			foreach (var stack in stacks)
-			{
-				var card = Card(stack);
-				_roster.AddChild(card);
-				if (stack.Copies.Any(c => c.Id == _touched))
-					Layout.Reveal(_rosterScroll, card);
-			}
-
-			_touched = null;
+				_roster.AddChild(Card(stack));
 
 			if (monsters.Count == 0)
 			{
@@ -363,29 +356,42 @@ namespace Sigilos.UI.Screens
 			card.SetSelected(stack.Copies.Any(c => c.Id == _selected));
 			card.SetMarked(marked == stack.Count);
 			card.SetCount(stack.Count, marked);
-			card.Pressed += _ => Tap(stack);
+			card.Pressed += pressed => Tap(stack, pressed);
+			foreach (var copy in stack.Copies)
+				_cards[copy.Id] = card;
 			return card;
 		}
 
-		/// <summary>Na seleção, marca ou desmarca (o grupo inteiro); fora dela, escolhe e, num grupo, abre as cópias.</summary>
-		private void Tap(MonsterStack stack)
+		/// <summary>
+		/// Na seleção, marca ou desmarca (o grupo inteiro); fora dela, escolhe e, num grupo, abre as cópias.
+		/// Só os cartões tocados, a faixa da seleção e a ficha mudam; a grade fica, e a rolagem com ela.
+		/// </summary>
+		private void Tap(MonsterStack stack, CreatureCard card)
 		{
 			var ids = stack.Copies.Select(c => c.Id).ToList();
-			_touched = ids[0];
 			if (_selecting)
 			{
 				if (ids.All(_marked.Contains))
 					_marked.ExceptWith(ids);
 				else
 					_marked.UnionWith(ids);
-			}
-			else if (!ids.Contains(_selected ?? -1))
-			{
-				_selected = ids[0];
+				var marked = ids.Count(_marked.Contains);
+				card.SetMarked(marked == stack.Count);
+				card.SetCount(stack.Count, marked);
+				RefreshSelection();
+				return;
 			}
 
-			Refresh();
-			if (!_selecting && stack.Count > 1)
+			if (!ids.Contains(_selected ?? -1))
+			{
+				if (_selected is { } previous && _cards.TryGetValue(previous, out var before))
+					before.SetSelected(false);
+				_selected = ids[0];
+				card.SetSelected(true);
+				RefreshDetail();
+			}
+
+			if (stack.Count > 1)
 				CopiesDialog.Open(this, _database, _player, stack,
 					retrieved => RetrieveManyRequested?.Invoke(retrieved),
 					(target, materials) => FuseRequested?.Invoke(target, materials),

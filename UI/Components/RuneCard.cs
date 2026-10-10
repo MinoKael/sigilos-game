@@ -18,9 +18,9 @@ namespace Sigilos.UI.Components
 	///
 	/// Com <c>opened</c> (o nível da runa quando a tela abriu), o que ela ganhou desde então fica em verde
 	/// ao lado do valor, e o subatributo novo inteiro em verde, com "new". <c>tools</c> põe sigilos no fim
-	/// de cada linha de subatributo (as pedras da tela de Runas); <c>note</c> é uma linha apagada no pé
-	/// (quem usa a runa). Sem <c>title</c>, o título fica de fora: a <see cref="RuneDialog"/> o põe no
-	/// cabeçalho da janela.
+	/// de cada linha de subatributo (as pedras da janela Afiar e Encantar, na tela de Runas); <c>note</c>
+	/// é uma linha apagada no pé (quem usa a runa). Sem <c>title</c>, o título fica de fora: a
+	/// <see cref="RuneDialog"/> o põe no cabeçalho da janela.
 	/// </summary>
 	public partial class RuneCard : VBoxContainer
 	{

@@ -146,7 +146,9 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		public void SetCount(int count, int marked = 0)
 		{
-			_count?.QueueFree();
+			// Chamado de novo a cada marca no grupo: a plaquinha velha sai sem segurar o nome da nova.
+			if (_count != null)
+				Layout.Discard(_count);
 			_count = null;
 			if (count <= 1)
 				return;

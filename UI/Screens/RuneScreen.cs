@@ -23,8 +23,9 @@ namespace Sigilos.UI.Screens
 	///   Vender várias para marcar e vender de uma vez), as Pedras de Afiar e as Gemas Encantadas. Na
 	///   ordem por um subatributo (a maior primeiro), o valor dele fica escrito no alto de cada pedra.
 	/// - À direita, a runa escolhida, com os botões presos embaixo: Equipar, Provar, Remover, Melhorar,
-	///   Vender, cada um dizendo o custo; e, na linha de cada subatributo, Afiar e Encantar quando alguma
-	///   pedra serve.
+	///   Vender, cada um dizendo o custo; e, quando alguma pedra serve, Afiar e Encantar, que abre a ficha
+	///   numa janela com as pedras na linha de cada subatributo (na ficha da tela, elas a alargavam e
+	///   empurravam os botões).
 	///
 	/// A prévia: escolher uma runa que não está no monstro já mostra, sem equipar, a ficha de agora ao
 	/// lado da que ele teria com ela (<see cref="StatTable.Compare"/>), os conjuntos que fecham (+) e os
@@ -99,6 +100,8 @@ namespace Sigilos.UI.Screens
             SizeFlagsHorizontal = SizeFlags.ExpandFill
         };
 
+		/// <summary>A janela de Afiar e Encantar, se aberta: cada pedra usada refaz a ficha dentro dela.</summary>
+		private Dialog? _forge;
 
         public RuneScreen(GameDatabase database, PlayerState player, int? monsterId)
 		{
@@ -621,6 +624,7 @@ namespace Sigilos.UI.Screens
 
 		private void RefreshDetail()
 		{
+			RefreshForge();
 			Layout.Clear(_detail);
 			Layout.Clear(_actions);
 			var rune = _player.Runes.FirstOrDefault(r => r.Id == _selectedRune);
@@ -635,7 +639,7 @@ namespace Sigilos.UI.Screens
 			if (!_levelWhenOpened.ContainsKey(rune.Id))
 				_levelWhenOpened[rune.Id] = rune.Level;
 
-			_detail.AddChild(new RuneCard(rune, 300, opened, index => SubstatTools(rune, index)));
+			_detail.AddChild(new RuneCard(rune, 300, opened));
 			if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
 				_detail.AddChild(OwnerRow(holder));
 
@@ -700,6 +704,10 @@ namespace Sigilos.UI.Screens
 			{
                 _actions.AddChild(sellBtn);
             }
+
+			// O último da grade de duas colunas: na runa solta que já mudou, em geral cai embaixo de Reavaliar.
+			if (Forgeable(rune))
+				_actions.AddChild(GameButton.Of(T("runes.forge"), OpenForge, ButtonKind.Secondary, "grindstone", ActionHeight).Named("Forge"));
         }
 
 		/// <summary>Quem usa a runa escolhida: o rosto dele (toque longo abre o resumo) e "Equipada em ...".</summary>
@@ -762,7 +770,43 @@ namespace Sigilos.UI.Screens
 			return string.Join("\n", lines.Select(line => "• " + line)) + "\n\n" + T("runes.reappraise_cost", gems);
 		}
 
-		/// <summary>Os botões das pedras que servem num subatributo, no fim da linha dele na ficha.</summary>
+		/// <summary>Alguma pedra do jogador serve em algum subatributo da runa.</summary>
+		private bool Forgeable(Rune rune) => Enumerable.Range(0, rune.Substats.Count)
+			.Any(index => _player.Tools.Any(t => RuneForge.CanGrind(rune, index, t) || RuneForge.CanEnchant(rune, index, t)));
+
+		/// <summary>Afiar e Encantar: a ficha da runa escolhida numa janela, com as pedras na linha de cada subatributo.</summary>
+		private void OpenForge()
+		{
+			var dialog = Dialog.Open(this, T("runes.forge"), 480, null, "ForgeDialog");
+			dialog.Closed += () =>
+			{
+				if (_forge == dialog)
+					_forge = null;
+			};
+			_forge = dialog;
+			RefreshForge();
+		}
+
+		/// <summary>
+		/// Refaz a janela de Afiar e Encantar com a runa como está agora (a pedra que acabou de usar já
+		/// aparece no valor); sem runa escolhida, ela fecha.
+		/// </summary>
+		private void RefreshForge()
+		{
+			if (_forge == null)
+				return;
+			if (Selected is not { } rune)
+			{
+				_forge.Close();
+				return;
+			}
+
+			Layout.Clear(_forge.Body);
+			_forge.Body.AddChild(Layout.Text(T("runes.forge_hint"), GameTheme.Faded, 440).Named("Hint"));
+			_forge.Body.AddChild(new RuneCard(rune, 440, _levelWhenOpened.GetValueOrDefault(rune.Id, rune.Level), index => SubstatTools(rune, index)));
+		}
+
+		/// <summary>Os botões das pedras que servem num subatributo, no fim da linha dele na janela de Afiar e Encantar.</summary>
 		private IEnumerable<Control> SubstatTools(Rune rune, int index)
 		{
 			var grindstones = Usable(t => RuneForge.CanGrind(rune, index, t));
