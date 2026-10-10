@@ -68,7 +68,7 @@ namespace Sigilos.UI.Components
 				SizeFlagsHorizontal = SizeFlags.ExpandFill
 			};
 
-			lines.AddThemeConstantOverride("separation", -2);
+			lines.AddThemeConstantOverride("separation", -2); // Negativo: o texto e o custo colados, uma peça só.
 
 			_label.Text = text;
 			_label.HorizontalAlignment = HorizontalAlignment.Center;
@@ -211,7 +211,7 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("disabled", text ? new StyleBoxEmpty() : Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
 			_label.AddThemeConstantOverride("outline_size", text ? 0 : 5);
 			_label.AutowrapMode = text ? TextServer.AutowrapMode.Off : TextServer.AutowrapMode.WordSmart;
-			_label.AddThemeFontSizeOverride("font_size", text || _height >= GameTheme.Touch ? FontSize.Button : FontSize.Compact);
+			_label.AddThemeFontSizeOverride("font_size", text || _height >= GameTheme.Touch ? FontSize.Strong : FontSize.Compact);
 			_label.AddThemeColorOverride("font_color", text ? Tones.Ink(_kind) : Palette.Text);
 			_label.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
 

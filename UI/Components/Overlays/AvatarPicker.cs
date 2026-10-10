@@ -129,7 +129,7 @@ namespace Sigilos.UI.Components
 				CustomMinimumSize = new Vector2(CellWidth, 0),
 				MouseFilter = Control.MouseFilterEnum.Ignore,
 			};
-			name.AddThemeFontSizeOverride("font_size", 13);
+			name.AddThemeFontSizeOverride("font_size", FontSize.Caption);
 			name.AddThemeColorOverride("font_color", avatar.Awakened ? Palette.Awakened : Palette.Text);
 			column.AddChild(name);
 			cell.Body.AddChild(column);

@@ -99,7 +99,7 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Summon"), _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = Layout.Row(28).Named("Body");
+			var body = Layout.Row(28).Named("Body"); // Fora da escala: as duas metades da tela de Invocação.
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 

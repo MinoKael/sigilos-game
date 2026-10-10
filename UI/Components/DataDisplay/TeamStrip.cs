@@ -41,7 +41,7 @@ namespace Sigilos.UI.Components
 				box.SetContentMarginAll(3);
 				column.AddChild(slot);
 				var caption = new Label { Name = "Caption", Text = i == 0 && team.Count > 0 ? T("teams.leader") : "", HorizontalAlignment = HorizontalAlignment.Center };
-				caption.AddThemeFontSizeOverride("font_size", 13);
+				caption.AddThemeFontSizeOverride("font_size", FontSize.Caption);
 				caption.AddThemeColorOverride("font_color", Palette.Gold);
 				column.AddChild(caption);
 				AddChild(column);

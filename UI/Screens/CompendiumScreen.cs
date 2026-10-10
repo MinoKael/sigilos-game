@@ -89,7 +89,7 @@ namespace Sigilos.UI.Screens
 		{
 			column.AddChild(new Label { Name = "RarityTitle", Text = T("compendium.rarity.title"), ThemeTypeVariation = GameTheme.Heading });
 			column.AddChild(RichText.Label(T("compendium.rarity.text"), 1150, GameTheme.Faded).Named("RarityText"));
-			var row = Layout.Flow(24).Named("Rarities");
+			var row = Layout.Flow(Space.Spacious).Named("Rarities");
 			if (UiSession.Database is { } database)
 			{
 				for (var stars = 2; stars <= 5; stars++)
@@ -135,7 +135,7 @@ namespace Sigilos.UI.Screens
 			column.AddChild(new Label { Name = "ElementsTitle", Text = T("compendium.combat.elements"), ThemeTypeVariation = GameTheme.Heading });
 			column.AddChild(Layout.Text(T("compendium.combat.elements_text", Texts.Percent(BattleRules.AdvantageMultiplier - 1), Texts.Percent(1 - BattleRules.DisadvantageMultiplier)), GameTheme.Faded).Named("ElementsText"));
 			var elements = new HFlowContainer { Name = "Elements" };
-			elements.AddThemeConstantOverride("h_separation", 24);
+			elements.AddThemeConstantOverride("h_separation", Space.Spacious);
 			foreach (var element in Enum.GetValues<Element>())
 			{
 				var beats = Enum.GetValues<Element>().Where(other => ElementChart.HasAdvantage(element, other)).Select(Texts.Name);
@@ -236,7 +236,7 @@ namespace Sigilos.UI.Screens
 
 			column.AddChild(new Label { Name = "RarityTitle", Text = T("compendium.runes.rarity.title"), ThemeTypeVariation = GameTheme.Heading });
 			column.AddChild(RichText.Label(T("compendium.runes.rarity.text"), 1150, GameTheme.Faded).Named("RarityText"));
-			var row = Layout.Flow(24).Named("Rarities");
+			var row = Layout.Flow(Space.Spacious).Named("Rarities");
 			foreach (var rarity in Enum.GetValues<RuneRarity>())
 			{
 				var stone = new PanelContainer { Name = "Stone", CustomMinimumSize = RuneTile.TileSize };

@@ -31,6 +31,12 @@ namespace Sigilos.UI.Style
 
 		/// <summary>16 px: partes de uma tela.</summary>
 		public const int Loose = 16;
+
+		/// <summary>20 px: as colunas grandes de uma tela (o corpo da Campanha, o meio do Santuário).</summary>
+		public const int Section = 20;
+
+		/// <summary>24 px: vitrines lado a lado (as ofertas da loja, as raridades do Compêndio).</summary>
+		public const int Spacious = 24;
 	}
 
 	/// <summary>O raio dos cantos das caixas.</summary>
@@ -50,32 +56,45 @@ namespace Sigilos.UI.Style
 	}
 
 	/// <summary>
-	/// Os tamanhos de letra fora dos papéis do tema (<see cref="GameTheme.Title"/>, <see cref="GameTheme.Heading"/>,
+	/// A escala de tamanhos de letra fora dos papéis do tema (<see cref="GameTheme.Title"/>, <see cref="GameTheme.Heading"/>,
 	/// <see cref="GameTheme.Number"/>...). Quem tem um papel usa o papel; estes são para o texto de dentro dos
-	/// componentes.
+	/// componentes e das telas. Acima de <see cref="Emphasis"/> só ficam os números de vitrine, um por lugar (o
+	/// "Vitória" do resultado, a contagem da Batalha automática), escritos onde são usados.
 	/// </summary>
 	public static class FontSize
 	{
 		/// <summary>12 px: legendas e valores secundários (<see cref="GameTheme.SmallSize"/>).</summary>
 		public const int Small = GameTheme.SmallSize;
 
-		/// <summary>14 px: o detalhe embaixo de um nome (aba, cartão).</summary>
+		/// <summary>13 px: o nome embaixo de um retrato ou miniatura, a linha de um selo.</summary>
+		public const int Caption = 13;
+
+		/// <summary>14 px: o detalhe embaixo de um nome (aba, cartão, habilidade).</summary>
 		public const int Detail = 14;
+
+		/// <summary>15 px: a nota de um bloco (a recusa de uma masmorra, o número do correio).</summary>
+		public const int Note = 15;
 
 		/// <summary>16 px: o texto corrido (<see cref="GameTheme.BodySize"/>) e o custo de um botão.</summary>
 		public const int Body = GameTheme.BodySize;
 
-		/// <summary>17 px: o texto de um botão baixo e o número de uma cápsula.</summary>
+		/// <summary>17 px: o texto de um botão baixo, o número de uma cápsula, o nome de uma habilidade.</summary>
 		public const int Compact = 17;
 
 		/// <summary>18 px: o nome de uma aba.</summary>
-		public const int Tab = 18;
+		public const int Label = 18;
 
-		/// <summary>20 px: o texto de um botão da altura de toque.</summary>
-		public const int Button = 20;
+		/// <summary>19 px: o título de um bloco dentro de uma janela.</summary>
+		public const int Subheading = 19;
+
+		/// <summary>20 px: o texto de um botão da altura de toque, um nome ou número que se destaca na linha.</summary>
+		public const int Strong = 20;
 
 		/// <summary>22 px: um número ou nome em destaque fora do cabeçalho.</summary>
 		public const int Large = 22;
+
+		/// <summary>24 px: os números do resultado de uma luta.</summary>
+		public const int Emphasis = 24;
 	}
 
 	/// <summary>

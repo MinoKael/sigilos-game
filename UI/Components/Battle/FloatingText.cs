@@ -12,7 +12,7 @@ namespace Sigilos.UI.Components
 	public static class FloatingText
 	{
 		/// <summary>O tamanho de efeito, erro e aviso; o dano é maior.</summary>
-		public const int SmallSize = 12;
+		public const int SmallSize = FontSize.Small;
 
 		private const float Rise = 22;
 		private const float Line = 12;

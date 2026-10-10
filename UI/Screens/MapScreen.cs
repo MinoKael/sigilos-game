@@ -40,7 +40,7 @@ namespace Sigilos.UI.Screens
 			_currencies.Refresh(_player);
 
 			var center = new CenterContainer { Name = "Center", SizeFlagsVertical = SizeFlags.ExpandFill };
-			var row = Layout.Row(32, true).Named("Doors");
+			var row = Layout.Row(32, true).Named("Doors"); // Fora da escala: as portas grandes do mapa.
 			center.AddChild(row);
 			page.AddChild(center);
 

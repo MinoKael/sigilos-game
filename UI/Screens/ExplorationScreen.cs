@@ -70,7 +70,7 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("exploration.title"), _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = Layout.Row(20).Named("Body");
+			var body = Layout.Row(Space.Section).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
@@ -233,7 +233,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(Heading("EnemiesTitle", T("exploration.enemies", Texts.Stars(constellation.Stars), constellation.Level)));
 			if (constellation.Guardian(Variation) is { } guardian)
 				_detail.AddChild(Layout.Text(GuardianText(guardian), GameTheme.Faded).Named("Guardian"));
-			var waves = Layout.Flow(22).Named("Waves");
+			var waves = Layout.Flow(22).Named("Waves"); // Fora da escala: as ondas lado a lado cabem sem rolar.
 			var challenge = constellation.Challenge(Variation);
 			for (var i = 0; i < challenge.Waves.Count; i++)
 			{
@@ -350,7 +350,7 @@ namespace Sigilos.UI.Screens
 		{
 			var label = new Label { Name = name, Text = text };
 			label.AddThemeColorOverride("font_color", Palette.Gold);
-			label.AddThemeFontSizeOverride("font_size", 20);
+			label.AddThemeFontSizeOverride("font_size", FontSize.Strong);
 			return label;
 		}
 	}

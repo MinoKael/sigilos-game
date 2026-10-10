@@ -128,10 +128,10 @@ namespace Sigilos.UI.Screens
 			art.AddChild(Doodle.Masked(Art.Creature(family.Image), Palette.Grey, MaskShape.Rounded, 6, aura: _awakened ? Element.Light : null));
 			column.AddChild(art);
 			var name = new Label { Name = "Name", Text = family.BaseName, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore, ClipText = true };
-			name.AddThemeFontSizeOverride("font_size", 15);
+			name.AddThemeFontSizeOverride("font_size", FontSize.Note);
 			column.AddChild(name);
 			var count = new Label { Name = "Copies", Text = copies == 0 ? T("grimoire.not_owned") : T("grimoire.copies", copies), ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
-			count.AddThemeFontSizeOverride("font_size", 13);
+			count.AddThemeFontSizeOverride("font_size", FontSize.Caption);
 			column.AddChild(count);
 			card.AddChild(column);
 
@@ -213,7 +213,7 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(identity);
 
 			var table = new GridContainer { Name = "Stats", Columns = 4 };
-			table.AddThemeConstantOverride("h_separation", 22);
+			table.AddThemeConstantOverride("h_separation", 22); // Fora da escala: quatro colunas de número na largura da ficha.
 			table.AddThemeConstantOverride("v_separation", Space.Hair);
 			table.AddChild(new Control { Name = Layout.NextCell(table) });
 			Cell(table, "", true);
@@ -355,7 +355,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { Name = name, ThemeTypeVariation = GameTheme.InsetPanel };
 			var table = new GridContainer { Name = "Table", Columns = columns };
-			table.AddThemeConstantOverride("h_separation", 18);
+			table.AddThemeConstantOverride("h_separation", 18); // Fora da escala: as tabelas dentro de um painel rebaixado, mais estreitas que a ficha.
 			table.AddThemeConstantOverride("v_separation", Space.Tight);
 			foreach (var title in header)
 				Cell(table, title, true);

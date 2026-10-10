@@ -69,7 +69,7 @@ namespace Sigilos.UI.Components
             };
 
             mainValue.AddThemeFontOverride("font", GameTheme.Serif);
-            mainValue.AddThemeFontSizeOverride("font_size", 22);
+            mainValue.AddThemeFontSizeOverride("font_size", FontSize.Large);
             mainValue.HorizontalAlignment = HorizontalAlignment.Left;
 
             valuesBox.AddChild(mainValue);
@@ -176,7 +176,7 @@ namespace Sigilos.UI.Components
 			box.ContentMarginTop = box.ContentMarginBottom = 2;
 			tag.AddThemeStyleboxOverride("panel", box);
 			var label = new Label { Name = "Label", Text = Texts.Name(rarity), MouseFilter = MouseFilterEnum.Ignore };
-			label.AddThemeFontSizeOverride("font_size", 13);
+			label.AddThemeFontSizeOverride("font_size", FontSize.Caption);
 			label.AddThemeColorOverride("font_color", color.Lightened(0.35f));
 			tag.AddChild(label);
 			return tag;

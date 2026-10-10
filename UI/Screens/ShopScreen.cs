@@ -22,7 +22,7 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HBoxContainer _offers = Layout.Row(24).Named("Offers");
+		private readonly HBoxContainer _offers = Layout.Row(Space.Spacious).Named("Offers");
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
 		/// <summary>A troca de nome só vale para quem joga numa conta que já tem nome.</summary>

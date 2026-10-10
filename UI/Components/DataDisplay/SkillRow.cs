@@ -35,7 +35,7 @@ namespace Sigilos.UI.Components
 			title.AddThemeConstantOverride("v_separation", Space.None);
 			var name = new Label { Name = "Name", Text = skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name };
 			name.AddThemeFontOverride("font", GameTheme.Serif);
-			name.AddThemeFontSizeOverride("font_size", 17);
+			name.AddThemeFontSizeOverride("font_size", FontSize.Compact);
 			name.AddThemeColorOverride("font_color", locked ? Palette.TextFaded : Palette.Gold);
 			title.AddChild(name);
 			if (!skill.IsPassive && skill.Cooldown > 0)
@@ -61,7 +61,7 @@ namespace Sigilos.UI.Components
 			if (levels && level > 0 && level < skill.MaxLevel)
 			{
 				var next = new Label { Name = "Levels", Text = Texts.LevelUps(skill, level), AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(width, 0) };
-				next.AddThemeFontSizeOverride("font_size", 14);
+				next.AddThemeFontSizeOverride("font_size", FontSize.Detail);
 				next.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.35f));
 				column.AddChild(next);
 			}

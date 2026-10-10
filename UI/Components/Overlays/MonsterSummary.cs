@@ -160,7 +160,7 @@ namespace Sigilos.UI.Components
 			{
 				var starLabel = new Label { Name = "Stars", Text = Texts.Stars(stars) };
 				starLabel.AddThemeColorOverride("font_color", Palette.Stars(awakened));
-				starLabel.AddThemeFontSizeOverride("font_size", 22);
+				starLabel.AddThemeFontSizeOverride("font_size", FontSize.Large);
 				info.AddChild(starLabel);
 			}
 
@@ -182,7 +182,7 @@ namespace Sigilos.UI.Components
 		private static Control Stats(Func<Stat, double> value, Func<Stat, double> bonus)
 		{
 			var grid = new GridContainer { Name = "Stats", Columns = 2 };
-			grid.AddThemeConstantOverride("h_separation", 34);
+			grid.AddThemeConstantOverride("h_separation", 34); // Fora da escala: separa as duas colunas de atributos.
 			grid.AddThemeConstantOverride("v_separation", Space.Tight);
             var stats = Enum.GetValues<Stat>();
 
@@ -253,7 +253,7 @@ namespace Sigilos.UI.Components
 			column.AddChild(new HSeparator { Name = "Line" });
 			var heading = new Label { Name = "Heading", Text = title };
 			heading.AddThemeColorOverride("font_color", Palette.Gold);
-			heading.AddThemeFontSizeOverride("font_size", 19);
+			heading.AddThemeFontSizeOverride("font_size", FontSize.Subheading);
 			column.AddChild(heading);
 			column.AddChild(content);
 			return column;

@@ -47,11 +47,11 @@ namespace Sigilos.UI.Components
 			top.MouseFilter = MouseFilterEnum.Ignore;
 			var tag = new Label { Name = "Tag", Text = T("battle.boss"), VerticalAlignment = VerticalAlignment.Center };
 			tag.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.25f));
-			tag.AddThemeFontSizeOverride("font_size", 14);
+			tag.AddThemeFontSizeOverride("font_size", FontSize.Detail);
 			top.AddChild(tag);
 			top.AddChild(_element);
 			_name.AddThemeFontOverride("font", GameTheme.Serif);
-			_name.AddThemeFontSizeOverride("font_size", 20);
+			_name.AddThemeFontSizeOverride("font_size", FontSize.Strong);
 			_name.AddThemeColorOverride("font_color", Palette.Gold);
 			_name.AddThemeColorOverride("font_outline_color", Palette.Background);
 			_name.AddThemeConstantOverride("outline_size", 4);
@@ -81,7 +81,7 @@ namespace Sigilos.UI.Components
 			bars.AddChild(_shield);
 			_healthText.MouseFilter = MouseFilterEnum.Ignore;
 			_healthText.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			_healthText.AddThemeFontSizeOverride("font_size", 13);
+			_healthText.AddThemeFontSizeOverride("font_size", FontSize.Caption);
 			_healthText.AddThemeColorOverride("font_outline_color", Palette.Background);
 			_healthText.AddThemeConstantOverride("outline_size", 4);
 			bars.AddChild(_healthText);

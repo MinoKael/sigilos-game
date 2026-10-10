@@ -23,7 +23,7 @@ namespace Sigilos.UI.Components
 		{
 			Layout.Clear(this);
 			var title = new Label { Name = "NextUp", Text = T("battle.next_up"), HorizontalAlignment = HorizontalAlignment.Center };
-			title.AddThemeFontSizeOverride("font_size", 14);
+			title.AddThemeFontSizeOverride("font_size", FontSize.Detail);
 			title.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.35f));
 			AddChild(title);
 

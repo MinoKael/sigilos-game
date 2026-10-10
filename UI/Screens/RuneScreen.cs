@@ -235,7 +235,7 @@ namespace Sigilos.UI.Screens
 			var row = Layout.Row(Space.Regular).Named("Row");
 			row.AddChild(Portrait(summon, monster, 52));
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			info.AddThemeConstantOverride("separation", -2);
+			info.AddThemeConstantOverride("separation", -2); // Negativo: as linhas da ficha coladas, uma peça só.
 			info.AddChild(new Label { Name = "Name", Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading, ClipText = true, TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis });
 			info.AddChild(new Label { Name = "Level", Text = T("common.stars_level", Texts.Stars(monster.Stars), monster.Level) + (monster.Stored ? " · " + T("monsters.vault") : ""), ThemeTypeVariation = GameTheme.Faded });
 			row.AddChild(info);

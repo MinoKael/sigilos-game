@@ -78,7 +78,7 @@ namespace Sigilos.UI.Screens
 			// O anel do fundo gira em volta do sigilo da esquerda.
 			AddChild(Layout.Background(_sigil));
 			var page = Layout.Page(this);
-			var row = Layout.Row(40).Named("Row");
+			var row = Layout.Row(40).Named("Row"); // Fora da escala: o sigilo e o cartão de entrar, bem separados.
 			row.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(row);
 			row.AddChild(Intro());

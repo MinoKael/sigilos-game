@@ -111,7 +111,7 @@ namespace Sigilos.UI.Screens
 			AddChild(Rewards(outcome, defeat));
 			AddChild(Team(outcome.Team));
 
-			var actions = Layout.Row(20, true).Named("Actions");
+			var actions = Layout.Row(Space.Section, true).Named("Actions");
 			if (next is { } following)
 			{
 				actions.AddChild(GameButton.Of(T("battle.leave"), onClose, ButtonKind.Secondary, "back", 64).Named("Leave").Wide(200));
@@ -238,11 +238,11 @@ namespace Sigilos.UI.Screens
 				row.AddChild(Doodle.Icon(Art.Icon(icon), 26, Palette.Gold).Named("Icon"));
 			var caption = new Label { Name = "Label", Text = label };
 			caption.AddThemeFontOverride("font", GameTheme.Serif);
-			caption.AddThemeFontSizeOverride("font_size", 24);
+			caption.AddThemeFontSizeOverride("font_size", FontSize.Emphasis);
 			caption.AddThemeColorOverride("font_color", Palette.Gold);
 			row.AddChild(caption);
 			var value = new Label { Name = "Value", Text = TimeSpan.FromSeconds(seconds).ToString(@"mm\:ss"), ThemeTypeVariation = GameTheme.Number };
-			value.AddThemeFontSizeOverride("font_size", 24);
+			value.AddThemeFontSizeOverride("font_size", FontSize.Emphasis);
 			value.AddThemeColorOverride("font_color", color);
 			row.AddChild(value);
 			return row;
@@ -386,7 +386,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>A equipe embaixo, cada um com a barra de experiência subindo.</summary>
 		private HBoxContainer Team(IReadOnlyList<ResultMonster> team)
 		{
-			var row = Layout.Row(22, true).Named("Team");
+			var row = Layout.Row(22, true).Named("Team"); // Fora da escala: os retratos da equipe, cada um com o nível e a barra ao lado.
 			row.AnchorLeft = 0;
 			row.AnchorRight = 1;
 			row.AnchorTop = row.AnchorBottom = 0.66f;
@@ -423,12 +423,12 @@ namespace Sigilos.UI.Screens
 			var column = new VBoxContainer { Name = "Experience", Alignment = BoxContainer.AlignmentMode.Center, MouseFilter = MouseFilterEnum.Ignore };
 			column.AddThemeConstantOverride("separation", Space.Tight);
 			var name = new Label { Name = "Name", Text = monster.Name, MouseFilter = MouseFilterEnum.Ignore, ClipText = true, CustomMinimumSize = new Vector2(130, 0) };
-			name.AddThemeFontSizeOverride("font_size", 15);
+			name.AddThemeFontSizeOverride("font_size", FontSize.Note);
 			name.AddThemeColorOverride("font_outline_color", Palette.Background);
 			name.AddThemeConstantOverride("outline_size", 4);
 			column.AddChild(name);
 			var level = new Label { Name = "Level", ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
-			level.AddThemeFontSizeOverride("font_size", 17);
+			level.AddThemeFontSizeOverride("font_size", FontSize.Compact);
 			level.AddThemeColorOverride("font_outline_color", Palette.Background);
 			level.AddThemeConstantOverride("outline_size", 4);
 			column.AddChild(level);

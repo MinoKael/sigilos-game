@@ -49,7 +49,7 @@ namespace Sigilos.UI.Components
 
 		private const float LastGap = 6;
 
-		private const int LastFontSize = 15;
+		private const int LastFontSize = FontSize.Note;
 
 		private readonly ChatFeed _feed;
 		private readonly Doodle _icon = Doodle.Icon(Art.Icon("chat"), IconSize, Palette.Gold);

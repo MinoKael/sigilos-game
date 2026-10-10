@@ -96,10 +96,10 @@ namespace Sigilos.UI.Components
 				}
 
 				var lines = new VBoxContainer { Name = "Text", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-				lines.AddThemeConstantOverride("separation", -4);
+				lines.AddThemeConstantOverride("separation", -4); // Negativo: o nome e o detalhe colados, uma peça só.
 				_label = new Label { Name = "Label", Text = text, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
 				_label.AddThemeFontOverride("font", GameTheme.Serif);
-				_label.AddThemeFontSizeOverride("font_size", compact ? FontSize.Body : FontSize.Tab);
+				_label.AddThemeFontSizeOverride("font_size", compact ? FontSize.Body : FontSize.Label);
 				lines.AddChild(_label);
 				if (detail.Length > 0)
 				{

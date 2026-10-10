@@ -157,7 +157,7 @@ namespace Sigilos.UI.Screens
 			var detailRow = Layout.Row(Space.Wide).Named("Row");
 
 			var side = new VBoxContainer { Name = "Side", CustomMinimumSize = new Vector2(SideWidth, 0) };
-			side.AddThemeConstantOverride("separation", 22);
+			side.AddThemeConstantOverride("separation", 22); // Fora da escala: a coluna do lado, mais aberta que os blocos da ficha.
 			_pages.Add(T("monsters.page.stats"), "", "stats").Name = nameof(Page.Stats);
 			_pages.Add(T("monsters.page.skills"), "", "skill").Name = nameof(Page.Skills);
 			_pages.Add(T("monsters.page.awaken"), "", "awaken").Name = nameof(Page.Awaken);
@@ -529,7 +529,7 @@ namespace Sigilos.UI.Screens
 
 			var stars = new Label { Name = "Stars", Text = Texts.Stars(monster.Stars) };
 			stars.AddThemeColorOverride("font_color", Palette.Stars(monster.Awakened));
-			stars.AddThemeFontSizeOverride("font_size", 20);
+			stars.AddThemeFontSizeOverride("font_size", FontSize.Strong);
 			info.AddChild(stars);
 
 			var line = Layout.Row(Space.Medium).Named("Line");

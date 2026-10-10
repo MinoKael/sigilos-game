@@ -105,7 +105,7 @@ namespace Sigilos.UI.Screens
 
 			var top = Layout.Row(Space.Loose).Named("Top");
 			var team = new PanelContainer { Name = "Team", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var teamRow = Layout.Row(20).Named("Row");
+			var teamRow = Layout.Row(Space.Section).Named("Row");
 			_formation.AddThemeConstantOverride("separation", Space.Medium);
 			teamRow.AddChild(_formation);
 			_side.SizeFlagsHorizontal = SizeFlags.ExpandFill;

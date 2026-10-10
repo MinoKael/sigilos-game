@@ -62,7 +62,7 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Campaign"), _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = Layout.Row(20).Named("Body");
+			var body = Layout.Row(Space.Section).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
@@ -162,7 +162,7 @@ namespace Sigilos.UI.Screens
 
 			_detail.AddChild(Heading("EnemiesTitle", T("campaign.enemies", stage.Level, Texts.Stars(stage.Stars))));
 			// As ondas lado a lado (o nome em cima, os inimigos embaixo): cabe a equipe sem rolar.
-			var waves = Layout.Flow(22).Named("Waves");
+			var waves = Layout.Flow(22).Named("Waves"); // Fora da escala: as ondas lado a lado cabem sem rolar.
 			for (var i = 0; i < stage.Waves.Count; i++)
 			{
 				var column = new VBoxContainer { Name = $"Wave{i + 1}" };
@@ -248,7 +248,7 @@ namespace Sigilos.UI.Screens
 		{
 			var label = new Label { Name = name, Text = text };
 			label.AddThemeColorOverride("font_color", Palette.Gold);
-			label.AddThemeFontSizeOverride("font_size", 20);
+			label.AddThemeFontSizeOverride("font_size", FontSize.Strong);
 			return label;
 		}
 	}

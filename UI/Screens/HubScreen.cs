@@ -98,7 +98,7 @@ namespace Sigilos.UI.Screens
 			_offline.Pressed += () => Dialog.Info(_offline, T("hub.offline"), T("hub.offline_text"));
 
 			_channelOpen = Features.IsOpen(_player, _database, Feature.Channel);
-			var middle = Layout.Row(20).Named("Middle");
+			var middle = Layout.Row(Space.Section).Named("Middle");
 			middle.SizeFlagsVertical = SizeFlags.ExpandFill;
 			middle.AddChild(Channel());
 			middle.AddChild(Paths());
@@ -143,7 +143,7 @@ namespace Sigilos.UI.Screens
 			_mailBadge.AddThemeStyleboxOverride("panel", box);
 			_mailBadge.CustomMinimumSize = new Vector2(side, side);
 			_mailCount.AddThemeColorOverride("font_color", Colors.White);
-			_mailCount.AddThemeFontSizeOverride("font_size", 15);
+			_mailCount.AddThemeFontSizeOverride("font_size", FontSize.Note);
 			_mailBadge.AddChild(_mailCount);
 			_mailBadge.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
 			_mailBadge.GrowHorizontal = GrowDirection.Begin;

@@ -224,7 +224,7 @@ namespace Sigilos.UI.Screens
 			{
 				var refusal = Layout.Text(Texts.Refusal(problem, floor.Mana)).Named("Refusal");
 				refusal.AddThemeColorOverride("font_color", Palette.Negative);
-				refusal.AddThemeFontSizeOverride("font_size", 15);
+				refusal.AddThemeFontSizeOverride("font_size", FontSize.Note);
 				info.AddChild(refusal);
 				if (problem == EntryProblem.NoMana)
 					info.AddChild(GameButton.Of(T("common.buy_mana"), () => ShopRequested?.Invoke(dungeon), ButtonKind.Secondary, "shop", 44).Named("Shop"));

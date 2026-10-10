@@ -272,7 +272,7 @@ namespace Sigilos.UI.Screens
 			header.AddThemeConstantOverride("separation", Space.Tight);
 			var title = new Label { Name = "Title", Text = _title, VerticalAlignment = VerticalAlignment.Center };
 			title.AddThemeFontOverride("font", GameTheme.Serif);
-			title.AddThemeFontSizeOverride("font_size", 20);
+			title.AddThemeFontSizeOverride("font_size", FontSize.Strong);
 			title.AddThemeColorOverride("font_color", Palette.Gold);
 			header.AddChild(title);
 			// O balão do chat fica ao lado da onda e da rodada (as cápsulas se refazem; o lugar dele não).
@@ -291,7 +291,7 @@ namespace Sigilos.UI.Screens
 			_banner.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			_banner.MouseFilter = MouseFilterEnum.Ignore;
 			_banner.AddThemeFontOverride("font", GameTheme.Serif);
-			_banner.AddThemeFontSizeOverride("font_size", 22);
+			_banner.AddThemeFontSizeOverride("font_size", FontSize.Large);
 			_banner.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.7f));
 			return OnArenaMiddle(_banner, new Vector2(300, 80));
 		}
@@ -628,7 +628,7 @@ namespace Sigilos.UI.Screens
 				}, () => Dialog.Info(button, skill.Name, Texts.Describe(skill)));
 				slot.AddChild(button);
 				var name = new Label { Name = "Name", Text = skill.Name, HorizontalAlignment = HorizontalAlignment.Center, CustomMinimumSize = new Vector2(92, 0), AutowrapMode = TextServer.AutowrapMode.WordSmart };
-				name.AddThemeFontSizeOverride("font_size", 14);
+				name.AddThemeFontSizeOverride("font_size", FontSize.Detail);
 				name.AddThemeColorOverride("font_color", ready ? Palette.Text : Palette.TextFaded);
 				name.AddThemeColorOverride("font_outline_color", Palette.Background);
 				name.AddThemeConstantOverride("outline_size", 4);

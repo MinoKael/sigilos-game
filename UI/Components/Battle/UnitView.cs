@@ -55,7 +55,7 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("panel", _box);
 
 			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore };
-			column.AddThemeConstantOverride("separation", 3);
+			column.AddThemeConstantOverride("separation", 3); // Fora da escala: o cartão da luta é pequeno, cada pixel de altura conta.
 			AddChild(column);
 
 			// O desenho, com as quatro marcas nos cantos por cima dele.

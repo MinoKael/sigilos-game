@@ -39,7 +39,7 @@ namespace Sigilos.UI.Components
 			_icon.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			_icon.PivotOffset = new Vector2(IconSize / 2f, IconSize / 2f);
 			row.AddChild(_icon);
-			_count.AddThemeFontSizeOverride("font_size", FontSize.Button);
+			_count.AddThemeFontSizeOverride("font_size", FontSize.Strong);
 			_count.SizeFlagsVertical = SizeFlags.ExpandFill;
 			row.AddChild(_count);
 			Content.AddChild(row);

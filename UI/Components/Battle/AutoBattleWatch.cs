@@ -56,7 +56,7 @@ namespace Sigilos.UI.Components
 			watch.AddChild(frame);
 
 			var hint = new Label { Name = "Hint", Text = T("auto.watch_full"), MouseFilter = MouseFilterEnum.Ignore, ZIndex = OnTop, HorizontalAlignment = HorizontalAlignment.Center };
-			hint.AddThemeFontSizeOverride("font_size", 14);
+			hint.AddThemeFontSizeOverride("font_size", FontSize.Detail);
 			hint.AddThemeColorOverride("font_color", Palette.Text);
 			hint.AddThemeColorOverride("font_outline_color", Palette.Background);
 			hint.AddThemeConstantOverride("outline_size", 4);

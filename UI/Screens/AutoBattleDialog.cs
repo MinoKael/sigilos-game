@@ -95,7 +95,7 @@ namespace Sigilos.UI.Screens
 			Layout.Clear(dialog.Body);
 			dialog.ClearActions();
 
-			var columns = Layout.Row(24).Named("Columns");
+			var columns = Layout.Row(Space.Spacious).Named("Columns");
 			dialog.Body.AddChild(columns);
 			columns.AddChild(Status(run, actions, clock, watch));
 			columns.AddChild(Rewards(dialog, run, player, actions));
