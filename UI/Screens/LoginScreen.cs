@@ -85,7 +85,7 @@ namespace Sigilos.UI.Screens
 
 			var panel = new PanelContainer { Name = "Account", CustomMinimumSize = new Vector2(CardWidth, 0), SizeFlagsVertical = SizeFlags.ShrinkBegin };
 			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.Gold, 22));
-			_card.AddThemeConstantOverride("separation", 12);
+			_card.AddThemeConstantOverride("separation", Space.Large);
 			panel.AddChild(_card);
 			row.AddChild(panel);
 			Build();
@@ -120,7 +120,7 @@ namespace Sigilos.UI.Screens
 		private Control Intro()
 		{
 			var column = new VBoxContainer { Name = "Intro", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			column.AddThemeConstantOverride("separation", 14);
+			column.AddThemeConstantOverride("separation", Space.Wide);
 			column.AddChild(new Label { Name = "Title", Text = ProjectSettings.GetSetting("application/config/name").AsString(), ThemeTypeVariation = GameTheme.Title });
 			column.AddChild(Layout.Text(T("account.subtitle")).Named("Subtitle"));
 			_sigil.Name = "Sigil";
@@ -217,7 +217,7 @@ namespace Sigilos.UI.Screens
 		private LineEdit Field(string name, string title, string placeholder, LineEdit.VirtualKeyboardTypeEnum keyboard)
 		{
 			var box = new VBoxContainer { Name = name };
-			box.AddThemeConstantOverride("separation", 4);
+			box.AddThemeConstantOverride("separation", Space.Tight);
 			box.AddChild(new Label { Name = "Title", Text = title, ThemeTypeVariation = GameTheme.Faded });
 			var field = new LineEdit
 			{

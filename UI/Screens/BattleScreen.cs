@@ -79,11 +79,11 @@ namespace Sigilos.UI.Screens
 		private const float ArenaMiddle = 0.52f;
 
 		private readonly BattleArena _arena = new() { Name = "Arena" };
-		private readonly HBoxContainer _counters = Layout.Row(8).Named("Counters");
+		private readonly HBoxContainer _counters = Layout.Row(Space.Medium).Named("Counters");
 		private string _wave = "";
 		private string _round = "";
 		private readonly Label _banner = new() { Name = "Banner" };
-		private readonly HBoxContainer _actions = Layout.Row(12).Named("Skills");
+		private readonly HBoxContainer _actions = Layout.Row(Space.Large).Named("Skills");
 		private readonly GameButton _autoButton = new("", ButtonKind.Secondary, "auto", 56) { Name = "Auto", ToggleMode = true };
 		private readonly SigilButton _speedButton = new(null, 56, SigilShape.Square) { Name = "Speed" };
 		private readonly GameButton _effectsButton = new("", ButtonKind.Secondary, "effects", 56) { Name = "Effects", ToggleMode = true };
@@ -269,14 +269,14 @@ namespace Sigilos.UI.Screens
 		private Control Header()
 		{
 			var header = new VBoxContainer { Name = "Header" };
-			header.AddThemeConstantOverride("separation", 4);
+			header.AddThemeConstantOverride("separation", Space.Tight);
 			var title = new Label { Name = "Title", Text = _title, VerticalAlignment = VerticalAlignment.Center };
 			title.AddThemeFontOverride("font", GameTheme.Serif);
 			title.AddThemeFontSizeOverride("font_size", 20);
 			title.AddThemeColorOverride("font_color", Palette.Gold);
 			header.AddChild(title);
 			// O balão do chat fica ao lado da onda e da rodada (as cápsulas se refazem; o lugar dele não).
-			var counters = Layout.Row(8).Named("Status");
+			var counters = Layout.Row(Space.Medium).Named("Status");
 			counters.AddChild(_counters);
 			counters.AddChild(ChatBubble.Slot());
 			header.AddChild(counters);
@@ -415,13 +415,13 @@ namespace Sigilos.UI.Screens
             _effects.ZIndex = 21;
 
             var column = new VBoxContainer { Name = "Column" };
-            var header = Layout.Row(8).Named("Header");
+            var header = Layout.Row(Space.Medium).Named("Header");
             header.AddChild(Doodle.Icon(Art.Icon("effects"), 30, Palette.Gold).Named("Icon"));
             header.AddChild(new Label { Name = "Title", Text = T("battle.effects"), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
             header.AddChild(SigilButton.Of("cancel", () => _effectsButton.ButtonPressed = false, 48).Named("Close"));
             column.AddChild(header);
 
-            _effectsList.AddThemeConstantOverride("separation", 8);
+            _effectsList.AddThemeConstantOverride("separation", Space.Medium);
             column.AddChild(Layout.Scroll(_effectsList));
             _effects.AddChild(column);
 
@@ -442,7 +442,7 @@ namespace Sigilos.UI.Screens
             foreach (var kind in kinds)
             {
                 var negative = BattleRules.IsNegative(kind);
-                var row = Layout.Row(10).Named(kind.ToString());
+                var row = Layout.Row(Space.Regular).Named(kind.ToString());
                 var icon = Doodle.Icon(Art.Effect(kind), 36, negative ? Palette.Negative : Palette.Positive).Named("Icon");
                 icon.SizeFlagsVertical = SizeFlags.ShrinkBegin;
                 row.AddChild(icon);
@@ -460,13 +460,13 @@ namespace Sigilos.UI.Screens
             Layout.Clear(_effectsList);
 
             var columnsContainer = new HBoxContainer { Name = "Columns", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-            columnsContainer.AddThemeConstantOverride("separation", 16);
+            columnsContainer.AddThemeConstantOverride("separation", Space.Loose);
 
             var alliesColumn = new VBoxContainer { Name = "AlliesColumn", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-            alliesColumn.AddThemeConstantOverride("separation", 8);
+            alliesColumn.AddThemeConstantOverride("separation", Space.Medium);
 
             var enemiesColumn = new VBoxContainer { Name = "EnemiesColumn", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-            enemiesColumn.AddThemeConstantOverride("separation", 8);
+            enemiesColumn.AddThemeConstantOverride("separation", Space.Medium);
 
             columnsContainer.AddChild(alliesColumn);
             columnsContainer.AddChild(enemiesColumn);
@@ -484,7 +484,7 @@ namespace Sigilos.UI.Screens
                 for (var i = 0; i < units.Count; i++)
                 {
                     var unit = units[i];
-                    var row = Layout.Row(8).Named($"Unit{i + 1}");
+                    var row = Layout.Row(Space.Medium).Named($"Unit{i + 1}");
                     var frame = new PanelContainer { Name = "Portrait", MouseFilter = MouseFilterEnum.Stop };
                     var ring = unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow;
 
@@ -494,7 +494,7 @@ namespace Sigilos.UI.Screens
                     Press.On(frame, () => MonsterSummary.Open(frame, shown), () => MonsterSummary.Open(frame, shown));
                     row.AddChild(frame);
 
-                    var statuses = Layout.Flow(6).Named("Statuses");
+                    var statuses = Layout.Flow(Space.Small).Named("Statuses");
                     statuses.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 
                     for (var k = 0; k < unit.Statuses.Count; k++)
@@ -611,7 +611,7 @@ namespace Sigilos.UI.Screens
 				var skill = ally.Skill(index);
 				var ready = ally.IsReady(index);
 				var slot = new VBoxContainer { Name = $"Skill{index + 1}" };
-				slot.AddThemeConstantOverride("separation", 2);
+				slot.AddThemeConstantOverride("separation", Space.Hair);
 				var button = new SigilButton(null, 74, SigilShape.Square)
 				{
 					Name = "Button",

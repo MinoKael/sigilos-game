@@ -79,7 +79,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { CustomMinimumSize = new Vector2(260, 340) };
 			var content = new VBoxContainer { Name = "Content", Alignment = BoxContainer.AlignmentMode.Center };
-			content.AddThemeConstantOverride("separation", 14);
+			content.AddThemeConstantOverride("separation", Space.Wide);
 			panel.AddChild(content);
 
 			var name = new Label { Name = "Name", Text = Texts.Amount(offer.Item, offer.Amount), HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading };

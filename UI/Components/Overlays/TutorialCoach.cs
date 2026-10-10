@@ -55,12 +55,12 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("panel", Ornament.Panel(new Color(Palette.Panel, 0.96f), Palette.Gold, 10));
 			_continue = GameButton.Of(T("tutorial.continue"), Next, ButtonKind.Primary, "confirm", 48).Named("Continue");
 
-			var row = Layout.Row(14).Named("Row");
+			var row = Layout.Row(Space.Wide).Named("Row");
 			var portrait = Doodle.Icon(Art.Icon("compendium"), 56, Palette.Gold).Named("Portrait");
 			portrait.SizeFlagsVertical = SizeFlags.ShrinkBegin;
 			row.AddChild(portrait);
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 8);
+			column.AddThemeConstantOverride("separation", Space.Medium);
 			var title = new Label { Name = "Title", Text = T("tutorial.title"), ThemeTypeVariation = GameTheme.Heading };
 			title.AddThemeColorOverride("font_color", Palette.Gold);
 			column.AddChild(title);

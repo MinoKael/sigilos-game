@@ -47,8 +47,8 @@ namespace Sigilos.UI.Screens
 		private readonly Label _pityText = new() { Name = "PityText", AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private readonly ProgressBar _pityBar = Layout.Energy(Palette.Awakened, 10).Named("PityBar");
 		private readonly Control _stage = new() { Name = "Stage", SizeFlagsVertical = SizeFlags.ExpandFill, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-		private readonly HBoxContainer _kindRow = Layout.Row(0).Named("Scrolls");
-		private readonly HBoxContainer _rates = Layout.Row(14).Named("Rates");
+		private readonly HBoxContainer _kindRow = Layout.Row(Space.None).Named("Scrolls");
+		private readonly HBoxContainer _rates = Layout.Row(Space.Wide).Named("Rates");
 		private readonly VBoxContainer _pityBox = new() { Name = "Pity" };
 		private readonly GameButton _exchange;
 
@@ -105,7 +105,7 @@ namespace Sigilos.UI.Screens
 
 			var panel = new PanelContainer { Name = "Pulls", CustomMinimumSize = new Vector2(360, 0) };
 			var column = new VBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Center };
-			column.AddThemeConstantOverride("separation", 14);
+			column.AddThemeConstantOverride("separation", Space.Wide);
 			panel.AddChild(column);
 			column.AddChild(_kindRow);
 			column.AddChild(_single);
@@ -131,11 +131,11 @@ namespace Sigilos.UI.Screens
 			body.AddChild(panel);
 
 			body.AddChild(_stage);
-			_results.AddThemeConstantOverride("separation", 16);
-			_cards.AddThemeConstantOverride("h_separation", 12);
-			_cards.AddThemeConstantOverride("v_separation", 12);
+			_results.AddThemeConstantOverride("separation", Space.Loose);
+			_cards.AddThemeConstantOverride("h_separation", Space.Large);
+			_cards.AddThemeConstantOverride("v_separation", Space.Large);
 			_results.AddChild(_cards);
-			var after = Layout.Row(12, true).Named("After");
+			var after = Layout.Row(Space.Large, true).Named("After");
 			after.AddChild(GameButton.Of(T("summon.view_monsters"), () => MonstersRequested?.Invoke(), ButtonKind.Secondary, "monster").Wide(300).Named("ViewMonsters"));
 			_results.AddChild(after);
 			_stage.AddChild(_results);
@@ -226,8 +226,8 @@ namespace Sigilos.UI.Screens
 			var dialog = Dialog.Open(this, T("summon.exchange_title"), 820, null, "ExchangeDialog");
 			dialog.Body.AddChild(Layout.Text(T("summon.exchange_hint", Texts.Number(FragmentExchange.Cost), Texts.Number(_player.Fragments)), GameTheme.Faded).Named("Hint"));
 			var grid = new GridContainer { Name = "Options", Columns = 5 };
-			grid.AddThemeConstantOverride("h_separation", 10);
-			grid.AddThemeConstantOverride("v_separation", 10);
+			grid.AddThemeConstantOverride("h_separation", Space.Regular);
+			grid.AddThemeConstantOverride("v_separation", Space.Regular);
 			foreach (var summon in FragmentExchange.Options(_database))
 			{
 				var card = new CreatureCard(summon, null, 112) { Name = summon.Id };

@@ -65,7 +65,7 @@ namespace Sigilos.UI.Screens
 			};
 			_dialog.Body.AddChild(tabs);
 
-			_spread.AddThemeConstantOverride("separation", 10);
+			_spread.AddThemeConstantOverride("separation", Space.Regular);
 			_left = Page("Left");
 			_right = Page("Right");
 			_dialog.Body.AddChild(_spread);
@@ -101,7 +101,7 @@ namespace Sigilos.UI.Screens
 			var page = new PanelContainer { Name = name, ThemeTypeVariation = GameTheme.PagePanel, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, CustomMinimumSize = new Vector2(0, PageHeight) };
 			var column = new VBoxContainer { Name = "Column" };
 			var content = new VBoxContainer { Name = "Content", SizeFlagsVertical = Control.SizeFlags.ExpandFill };
-			content.AddThemeConstantOverride("separation", 8);
+			content.AddThemeConstantOverride("separation", Space.Medium);
 			column.AddChild(content);
 			var folio = new Label { Name = "Folio", ThemeTypeVariation = GameTheme.PageFaded, HorizontalAlignment = HorizontalAlignment.Center };
 			column.AddChild(folio);
@@ -178,11 +178,11 @@ namespace Sigilos.UI.Screens
 			{
 				var cleared = Dungeons.Cleared(_player, dungeon);
 				var open = Dungeons.IsUnlocked(_player, dungeon);
-				var row = Layout.Row(12).Named(Layout.NodeName(dungeon.Id));
+				var row = Layout.Row(Space.Large).Named(Layout.NodeName(dungeon.Id));
 				var art = Doodle.Icon(Art.Creature(dungeon.Image), 46, open ? Palette.Ink : Palette.InkFaded);
 				row.AddChild(art);
 				var text = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-				text.AddThemeConstantOverride("separation", 0);
+				text.AddThemeConstantOverride("separation", Space.None);
 				text.AddChild(new Label { Name = "Name", Text = dungeon.Name, ThemeTypeVariation = GameTheme.PageText });
 				var detail = open ? T("book.dungeon_floors", cleared, dungeon.Floors.Count) : T("dungeons.opens_at", dungeon.UnlockStage);
 				text.AddChild(new Label { Name = "Detail", Text = detail, ThemeTypeVariation = GameTheme.PageFaded });
@@ -197,7 +197,7 @@ namespace Sigilos.UI.Screens
 			times.AddChild(Heading(T("book.best_times"), T("book.best_times_hint")));
 			var floors = _database.Dungeons.Count == 0 ? 0 : _database.Dungeons.Max(d => d.Floors.Count);
 			var table = Layout.Grid(floors + 1, 10).Named("Times");
-			table.AddThemeConstantOverride("v_separation", 14);
+			table.AddThemeConstantOverride("v_separation", Space.Wide);
 			table.AddChild(new Control { Name = "Corner" });
 			for (var floor = 1; floor <= floors; floor++)
 				table.AddChild(Cell(Texts.Roman(floor), GameTheme.PageFaded).Named($"Floor{floor}"));
@@ -296,10 +296,10 @@ namespace Sigilos.UI.Screens
 			page.AddChild(Heading(T($"book.seals_{id}"), T("book.of", seals.Count(s => s.Done), seals.Count)));
 			foreach (var seal in seals)
 			{
-				var row = Layout.Row(12).Named(Layout.NodeName(seal.Id));
+				var row = Layout.Row(Space.Large).Named(Layout.NodeName(seal.Id));
 				row.AddChild(new SealMark(seal.Done) { Name = "Seal" });
 				var text = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-				text.AddThemeConstantOverride("separation", 0);
+				text.AddThemeConstantOverride("separation", Space.None);
 				var title = new Label { Name = "Title", Text = T($"book.seal.{seal.Id}"), ThemeTypeVariation = seal.Done ? GameTheme.PageHeading : GameTheme.PageText };
 				if (seal.Done)
 					title.AddThemeFontSizeOverride("font_size", GameTheme.BodySize + 2);
@@ -319,7 +319,7 @@ namespace Sigilos.UI.Screens
 		private static Control Heading(string title, string note)
 		{
 			var column = new VBoxContainer { Name = "Heading" };
-			column.AddThemeConstantOverride("separation", 0);
+			column.AddThemeConstantOverride("separation", Space.None);
 			column.AddChild(new Label { Name = "Title", Text = title, ThemeTypeVariation = GameTheme.PageHeading });
 			if (note.Length > 0)
 				column.AddChild(new Label { Name = "Note", Text = note, ThemeTypeVariation = GameTheme.PageFaded, AutowrapMode = TextServer.AutowrapMode.WordSmart });
@@ -329,7 +329,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Uma linha do registro: o ícone a tinta, o nome, a linha pontilhada e o valor.</summary>
 		private static Control Entry(string name, string icon, string label, string value)
 		{
-			var row = Layout.Row(10).Named(name);
+			var row = Layout.Row(Space.Regular).Named(name);
 			row.AddChild(Doodle.Icon(Art.Icon(icon), 26, Palette.Ink));
 			row.AddChild(new Label { Name = "Label", Text = label, ThemeTypeVariation = GameTheme.PageText, VerticalAlignment = VerticalAlignment.Center });
 			row.AddChild(new Leader { Name = "Leader", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
@@ -360,7 +360,7 @@ namespace Sigilos.UI.Screens
 			if (members.Count == 0)
 				return null;
 
-			var row = Layout.Row(4).Named("Team");
+			var row = Layout.Row(Space.Tight).Named("Team");
 			foreach (var member in members)
 			{
 				var summon = _database.Summon(member.Summon);

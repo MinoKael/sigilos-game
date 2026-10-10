@@ -117,7 +117,7 @@ namespace Sigilos.UI.Screens
 		private static Control Status(AutoBattleRun run, AutoBattleActions actions, AutoClock clock, AutoBattleWatch watch)
 		{
 			var column = new VBoxContainer { Name = "Status", CustomMinimumSize = new Vector2(StatusWidth, 0) };
-			column.AddThemeConstantOverride("separation", 12);
+			column.AddThemeConstantOverride("separation", Space.Large);
 			if (run.Running)
 				column.AddChild(watch);
 			column.AddChild(new Label { Name = "Fight", Text = run.Title, ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart });
@@ -137,7 +137,7 @@ namespace Sigilos.UI.Screens
 			if (run.Running)
 				column.AddChild(clock);
 
-			var score = Layout.Row(10, true).Named("Score");
+			var score = Layout.Row(Space.Regular, true).Named("Score");
 			score.AddChild(Layout.Labeled("confirm", run.Victories.ToString(), T("auto.victories"), Palette.Spirit).Named("Victories"));
 			score.AddChild(Layout.Labeled("cancel", run.Defeats.ToString(), T("auto.defeats"), Palette.Negative).Named("Defeats"));
 			column.AddChild(score);
@@ -151,13 +151,13 @@ namespace Sigilos.UI.Screens
 		private static Control RunsStepper(AutoBattleRun run, AutoBattleActions actions)
 		{
 			var column = new VBoxContainer { Name = "Runs" };
-			column.AddThemeConstantOverride("separation", 8);
+			column.AddThemeConstantOverride("separation", Space.Medium);
 			column.AddChild(new Label { Name = "Title", Text = T("auto.runs"), HorizontalAlignment = HorizontalAlignment.Center });
 
 			var minimum = Math.Max(1, run.Number);
 			void Set(int value) => actions.SetRuns(Math.Clamp(value, minimum, AutoBattle.MaxRuns));
 
-			var row = Layout.Row(12, true).Named("Stepper");
+			var row = Layout.Row(Space.Large, true).Named("Stepper");
 			var fewer = new SigilButton(null, 52) { Name = "Fewer", Letters = "−", Disabled = run.Runs <= minimum };
 			fewer.SetLetterSize(32);
 			fewer.Pressed += () => Set(run.Runs - 1);
@@ -171,7 +171,7 @@ namespace Sigilos.UI.Screens
 			row.AddChild(more);
 			column.AddChild(row);
 
-			var presets = Layout.Row(8, true).Named("Presets");
+			var presets = Layout.Row(Space.Medium, true).Named("Presets");
 			foreach (var preset in new[] { 10, 20, AutoBattle.MaxRuns }.Distinct().Where(p => p <= AutoBattle.MaxRuns))
 			{
 				var button = GameButton.Of(preset.ToString(), () => Set(preset), ButtonKind.Secondary, null, 44).Named($"Preset{preset}");
@@ -190,10 +190,10 @@ namespace Sigilos.UI.Screens
 		private static Control Rewards(Dialog dialog, AutoBattleRun run, PlayerState player, AutoBattleActions actions)
 		{
 			var column = new VBoxContainer { Name = "Rewards", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			column.AddChild(new Label { Name = "Title", Text = T("auto.rewards"), ThemeTypeVariation = GameTheme.Heading });
 
-			var totals = Layout.Flow(8).Named("Totals");
+			var totals = Layout.Flow(Space.Medium).Named("Totals");
 			totals.AddChild(Layout.Labeled("mana", $"−{run.ManaSpent}", T("currency.mana")).Named("Mana"));
 			totals.AddChild(Layout.Labeled("essence", $"+{Texts.Number(run.Essence)}", T("currency.essence")).Named("Essence"));
 			if (run.Gold > 0)
@@ -214,7 +214,7 @@ namespace Sigilos.UI.Screens
 			{
 				column.AddChild(new Label { Name = "MonstersTitle", Text = T("auto.monsters", run.Monsters.Count) });
 				column.AddChild(Layout.Text(T("auto.monsters_hint"), GameTheme.Faded).Named("MonstersHint"));
-				var monsters = Layout.Flow(8).Named("Monsters");
+				var monsters = Layout.Flow(Space.Medium).Named("Monsters");
 				for (var i = 0; i < run.Monsters.Count; i++)
 				{
 					var result = run.Monsters[i];
@@ -236,7 +236,7 @@ namespace Sigilos.UI.Screens
 			}
 
 			column.AddChild(Layout.Text(T("auto.runes_hint"), GameTheme.Faded).Named("RunesHint"));
-			var grid = Layout.Flow(8).Named("Runes");
+			var grid = Layout.Flow(Space.Medium).Named("Runes");
 			foreach (var rune in run.Runes)
 			{
 				var tile = new RuneTile(rune, rune.Slot, 1.1f) { Name = $"Rune{rune.Id}" };
@@ -322,7 +322,7 @@ namespace Sigilos.UI.Screens
 			public AutoClock(AutoBattleRun run)
 			{
 				_run = run;
-				AddThemeConstantOverride("separation", 6);
+				AddThemeConstantOverride("separation", Space.Small);
 				_bar.MaxValue = 1;
 				_bar.Step = 0;
 				AddChild(_bar);

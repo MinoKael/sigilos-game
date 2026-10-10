@@ -48,13 +48,13 @@ namespace Sigilos.UI.Screens
 
 			fewer.Pressed += () => Set(runs - 1);
 			more.Pressed += () => Set(runs + 1);
-			var row = Layout.Row(16, true).Named("Stepper");
+			var row = Layout.Row(Space.Loose, true).Named("Stepper");
 			row.AddChild(fewer);
 			row.AddChild(value);
 			row.AddChild(more);
 			body.AddChild(row);
 
-			var presets = Layout.Row(8, true).Named("Presets");
+			var presets = Layout.Row(Space.Medium, true).Named("Presets");
 			foreach (var preset in new[] { 1, 5, 10, 20, AutoBattle.MaxRuns })
 			{
 				if (preset > AutoBattle.MaxRuns)

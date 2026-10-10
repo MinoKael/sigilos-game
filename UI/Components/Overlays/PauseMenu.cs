@@ -31,7 +31,7 @@ namespace Sigilos.UI.Components
 			center.AddChild(panel);
 
 			var column = new VBoxContainer { Name = "Content" };
-			column.AddThemeConstantOverride("separation", 16);
+			column.AddThemeConstantOverride("separation", Space.Loose);
 			panel.AddChild(column);
 			column.AddChild(new Label { Name = "Title", Text = T("battle.paused"), ThemeTypeVariation = GameTheme.Title, HorizontalAlignment = HorizontalAlignment.Center });
 			column.AddChild(GameButton.Of(T("battle.continue"), Resume, ButtonKind.Primary, "play", 64).Named("Continue"));
@@ -64,7 +64,7 @@ namespace Sigilos.UI.Components
 		private static Control FocusBoss(bool on, Action<bool> changed)
 		{
 			var column = new VBoxContainer { Name = "FocusBoss" };
-			column.AddThemeConstantOverride("separation", 4);
+			column.AddThemeConstantOverride("separation", Space.Tight);
 			var button = new GameButton(Label(on), ButtonKind.Secondary, "fight") { Name = "Toggle", ToggleMode = true, ButtonPressed = on };
 			button.Toggled += value =>
 			{

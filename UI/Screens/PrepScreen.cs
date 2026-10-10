@@ -51,7 +51,7 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _formation = new() { Name = "Formation", Alignment = BoxContainer.AlignmentMode.Center };
 		private readonly VBoxContainer _side = new() { Name = "Side" };
 		private readonly GridContainer _search = Layout.Grid(2, 8).Named("Search");
-		private readonly HBoxContainer _cards = Layout.Row(8).Named("Cards");
+		private readonly HBoxContainer _cards = Layout.Row(Space.Medium).Named("Cards");
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private ScrollContainer _scroll = null!;
 		private GameButton _fight = null!;
@@ -103,13 +103,13 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(_title, _currencies, () => BackRequested?.Invoke()).Header);
 
-			var top = Layout.Row(16).Named("Top");
+			var top = Layout.Row(Space.Loose).Named("Top");
 			var team = new PanelContainer { Name = "Team", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			var teamRow = Layout.Row(20).Named("Row");
-			_formation.AddThemeConstantOverride("separation", 8);
+			_formation.AddThemeConstantOverride("separation", Space.Medium);
 			teamRow.AddChild(_formation);
 			_side.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-			_side.AddThemeConstantOverride("separation", 10);
+			_side.AddThemeConstantOverride("separation", Space.Regular);
 			teamRow.AddChild(_side);
 			team.AddChild(teamRow);
 			top.AddChild(team);
@@ -118,8 +118,8 @@ namespace Sigilos.UI.Screens
 
 			var collection = new PanelContainer { Name = "Collection", SizeFlagsVertical = SizeFlags.ExpandFill };
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 8);
-			var tools = Layout.Row(12).Named("Tools");
+			column.AddThemeConstantOverride("separation", Space.Medium);
+			var tools = Layout.Row(Space.Large).Named("Tools");
 			tools.AddChild(new Label { Name = "Title", Text = T("prep.collection"), ThemeTypeVariation = GameTheme.Heading, VerticalAlignment = VerticalAlignment.Center, SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			_search.SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
 			_search.CustomMinimumSize = new Vector2(420, 0);
@@ -182,8 +182,8 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_formation);
 			var team = Members();
-			var front = Layout.Row(10, centered: true).Named("Front");
-			var back = Layout.Row(10, centered: true).Named("Back");
+			var front = Layout.Row(Space.Regular, centered: true).Named("Front");
+			var back = Layout.Row(Space.Regular, centered: true).Named("Back");
 			for (var i = 0; i < PlayerState.TeamSize; i++)
 				(i < FrontRow ? front : back).AddChild(Slot(i, i < team.Count ? team[i] : null));
 			_formation.AddChild(front);
@@ -226,7 +226,7 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_side);
 			var team = Members();
-			var header = Layout.Row(10).Named("Header");
+			var header = Layout.Row(Space.Regular).Named("Header");
 			header.AddChild(new Label { Name = "Title", Text = T("prep.team", Texts.ContentName(_database, _content)), ThemeTypeVariation = GameTheme.Heading });
 			header.AddChild(new Label { Name = "Count", Text = $"{team.Count}/{PlayerState.TeamSize}", ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
 			_side.AddChild(header);
@@ -265,7 +265,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { Name = "Enemies", CustomMinimumSize = new Vector2(440, 0) };
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 8);
+			column.AddThemeConstantOverride("separation", Space.Medium);
 
 			var last = _encounter.Waves[^1];
 			var lead = Enumerable.Range(0, last.Count).Where(i => IsBoss(last[i])).ToList();
@@ -276,7 +276,7 @@ namespace Sigilos.UI.Screens
 				lead.Add(0);
 
 			var formation = new VBoxContainer { Name = "Formation", SizeFlagsVertical = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			formation.AddThemeConstantOverride("separation", 10);
+			formation.AddThemeConstantOverride("separation", Space.Regular);
 			formation.AddChild(FoeRow("Front", lead.Select(i => last[i]), 84));
 			var rest = Enumerable.Range(0, last.Count).Where(i => !lead.Contains(i)).Select(i => last[i]).ToList();
 			if (rest.Count > 0)
@@ -303,7 +303,7 @@ namespace Sigilos.UI.Screens
 
 		private Control FoeRow(string name, IEnumerable<StageEnemy> slots, float size)
 		{
-			var row = Layout.Row(10, centered: true).Named(name);
+			var row = Layout.Row(Space.Regular, centered: true).Named(name);
 			var number = 0;
 			foreach (var slot in slots)
 				row.AddChild(Foe(slot, size).Named($"Foe{++number}"));

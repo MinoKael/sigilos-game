@@ -45,7 +45,7 @@ namespace Sigilos.UI.Components
 			body.AddChild(Stats(stat => sheet.Total.Get(stat), stat => sheet.Runes.Stats.Get(stat)));
 			if (sheet.Runes.ActiveSets.Count > 0)
 			{
-				var sets = Layout.Flow(6).Named("Sets");
+				var sets = Layout.Flow(Space.Small).Named("Sets");
 				for (var i = 0; i < sheet.Runes.ActiveSets.Count; i++)
 				{
 					var set = sheet.Runes.ActiveSets[i];
@@ -56,7 +56,7 @@ namespace Sigilos.UI.Components
 			}
 
 			var skills = new VBoxContainer { Name = "Skills" };
-			skills.AddThemeConstantOverride("separation", 10);
+			skills.AddThemeConstantOverride("separation", Space.Regular);
 			var list = summon.SkillsFor(awakened);
 			for (var i = 0; i < list.Count; i++)
 				skills.AddChild(SkillRow.Build(list[i], monster?.SkillLevel(i) ?? 1, awakened, false, Width - 110).Named($"Skill{i + 1}"));
@@ -85,7 +85,7 @@ namespace Sigilos.UI.Components
 			var health = Layout.Energy(unit.HealthFraction < 0.3 ? Palette.HealthLow : Palette.Health, 20).Named("Health");
 			health.MaxValue = Math.Max(1, unit.MaxHealth);
 			health.Value = unit.Health;
-			var healthRow = Layout.Row(10).Named("HealthRow");
+			var healthRow = Layout.Row(Space.Regular).Named("HealthRow");
 			health.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 			health.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
 			healthRow.AddChild(health);
@@ -102,12 +102,12 @@ namespace Sigilos.UI.Components
 			if (effects.Count > 0)
 			{
 				var column = new VBoxContainer { Name = "Effects" };
-				column.AddThemeConstantOverride("separation", 6);
+				column.AddThemeConstantOverride("separation", Space.Small);
 				for (var i = 0; i < effects.Count; i++)
 				{
 					var status = effects[i];
 					var ink = BattleRules.IsNegative(status.Kind) ? Palette.Negative : Palette.Positive;
-					var row = Layout.Row(8).Named($"{status.Kind}{i + 1}");
+					var row = Layout.Row(Space.Medium).Named($"{status.Kind}{i + 1}");
 					row.AddChild(Doodle.Icon(Art.Effect(status.Kind), 28, ink).Named("Icon"));
 					row.AddChild(RichText.Label($"[color=#{ink.ToHtml(false)}]{Texts.Name(status.Kind)}[/color] · {Texts.Turns(status.Turns)} — {Texts.Explain(status.Kind)}", Width - 120, null, GameTheme.SmallSize).Named("Text"));
 					column.AddChild(row);
@@ -117,7 +117,7 @@ namespace Sigilos.UI.Components
 			}
 
 			var skills = new VBoxContainer { Name = "Skills" };
-			skills.AddThemeConstantOverride("separation", 10);
+			skills.AddThemeConstantOverride("separation", Space.Regular);
 			for (var i = 0; i < unit.Skills.Count; i++)
 			{
 				var row = SkillRow.Build(unit.Skills[i], 0, unit.Awakened, false, Width - 110).Named($"Skill{i + 1}");
@@ -134,7 +134,7 @@ namespace Sigilos.UI.Components
 			if (unit.Influences.Count > 0)
 			{
 				var influences = new VBoxContainer { Name = "Influences" };
-				influences.AddThemeConstantOverride("separation", 6);
+				influences.AddThemeConstantOverride("separation", Space.Small);
 				for (var i = 0; i < unit.Influences.Count; i++)
 					influences.AddChild(RichText.Label(Texts.Describe(unit.Influences[i], false), Width - 60, GameTheme.Faded, GameTheme.SmallSize).Named($"Influence{i + 1}"));
 				body.AddChild(Section(T("summary.influence"), influences));
@@ -148,14 +148,14 @@ namespace Sigilos.UI.Components
 		/// <summary>Retrato na moldura da raridade e, ao lado, estrelas, elemento, papel e nível.</summary>
 		private static Control Identity(string image, Element element, int rarity, int stars, bool awakened, string role, string level)
 		{
-			var row = Layout.Row(14).Named("Identity");
+			var row = Layout.Row(Space.Wide).Named("Identity");
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(104, 104) };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, rarity > 0 ? Palette.Frame(rarity) : Palette.GoldDark, 3, 10, 8));
 			frame.AddChild(Doodle.Masked(Art.Creature(image), Palette.Of(element), MaskShape.Rounded, 6, aura: awakened ? element : null));
 			row.AddChild(frame);
 
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			info.AddThemeConstantOverride("separation", 4);
+			info.AddThemeConstantOverride("separation", Space.Tight);
 			if (stars > 0)
 			{
 				var starLabel = new Label { Name = "Stars", Text = Texts.Stars(stars) };
@@ -164,7 +164,7 @@ namespace Sigilos.UI.Components
 				info.AddChild(starLabel);
 			}
 
-			var line = Layout.Row(8).Named("Element");
+			var line = Layout.Row(Space.Medium).Named("Element");
 			line.AddChild(Doodle.Icon(Art.Element(element), 26, Palette.Of(element)).Named("Icon"));
 			var name = new Label { Name = "Name", Text = Texts.Name(element), VerticalAlignment = VerticalAlignment.Center };
 			name.AddThemeColorOverride("font_color", Palette.Of(element));
@@ -183,7 +183,7 @@ namespace Sigilos.UI.Components
 		{
 			var grid = new GridContainer { Name = "Stats", Columns = 2 };
 			grid.AddThemeConstantOverride("h_separation", 34);
-			grid.AddThemeConstantOverride("v_separation", 4);
+			grid.AddThemeConstantOverride("v_separation", Space.Tight);
             var stats = Enum.GetValues<Stat>();
 
             for (var i = 0; i < stats.Length; i++)
@@ -199,7 +199,7 @@ namespace Sigilos.UI.Components
                     grid.AddChild(columnContainer);
                 }
 
-                var row = Layout.Row(8).Named(stat.ToString());
+                var row = Layout.Row(Space.Medium).Named(stat.ToString());
                 row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 
                 row.AddChild(new RuneGlyph(Texts.GlyphOf(stat), 20, Palette.Gold) { Name = "Glyph" });
@@ -228,7 +228,7 @@ namespace Sigilos.UI.Components
 
 		private static Control PassiveRow(PassiveDefinition passive, bool awakened)
 		{
-			var row = Layout.Row(10).Named("Passive");
+			var row = Layout.Row(Space.Regular).Named("Passive");
 			row.AddChild(Doodle.Icon(Art.Icon("skill"), 40, Palette.Gold).Named("Icon"));
 			var column = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
 			column.AddChild(new Label { Name = "Name", Text = T("skill.passive_only"), ThemeTypeVariation = GameTheme.Heading });
@@ -239,7 +239,7 @@ namespace Sigilos.UI.Components
 
 		private static Control Leadership(LeaderDefinition leader)
 		{
-			var row = Layout.Row(10).Named("Leader");
+			var row = Layout.Row(Space.Regular).Named("Leader");
 			row.AddChild(Doodle.Icon(Art.Icon("leader"), 32, Palette.Gold).Named("Icon"));
 			row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), Width - 100).Named("Text"));
 			return row;
@@ -249,7 +249,7 @@ namespace Sigilos.UI.Components
 		private static Control Section(string title, Control content)
 		{
 			var column = new VBoxContainer { Name = content.Name + "Section" };
-			column.AddThemeConstantOverride("separation", 6);
+			column.AddThemeConstantOverride("separation", Space.Small);
 			column.AddChild(new HSeparator { Name = "Line" });
 			var heading = new Label { Name = "Heading", Text = title };
 			heading.AddThemeColorOverride("font_color", Palette.Gold);

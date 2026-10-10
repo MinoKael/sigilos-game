@@ -205,7 +205,7 @@ namespace Sigilos.UI.Screens
 		private static VBoxContainer Time(double seconds, BattleOutcome outcome)
 		{
 			var column = new VBoxContainer { Name = "Time" };
-			column.AddThemeConstantOverride("separation", 2);
+			column.AddThemeConstantOverride("separation", Space.Hair);
 			column.AddChild(TimeRow("Now", T("battle.time"), seconds, Palette.Text, "resolve"));
 			if (outcome.Best is { } best)
 			{
@@ -232,7 +232,7 @@ namespace Sigilos.UI.Screens
 
 		private static HBoxContainer TimeRow(string name, string label, double seconds, Color color, string? icon)
 		{
-			var row = Layout.Row(10).Named(name);
+			var row = Layout.Row(Space.Regular).Named(name);
 			row.Alignment = BoxContainer.AlignmentMode.End;
 			if (icon != null)
 				row.AddChild(Doodle.Icon(Art.Icon(icon), 26, Palette.Gold).Named("Icon"));
@@ -269,9 +269,9 @@ namespace Sigilos.UI.Screens
 			}
 
 			var lines = new VBoxContainer { Name = "Lines", MouseFilter = MouseFilterEnum.Ignore };
-			lines.AddThemeConstantOverride("separation", 10);
+			lines.AddThemeConstantOverride("separation", Space.Regular);
 			band.AddChild(lines);
-			var chips = Layout.Row(14, true).Named("Chips");
+			var chips = Layout.Row(Space.Wide, true).Named("Chips");
 			lines.AddChild(chips);
 			if (outcome.Opened is { Count: > 0 } opened)
 				lines.AddChild(Opened(opened));
@@ -313,7 +313,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>O que a primeira vitória abriu: "Abriu no Santuário", e cada parte com o símbolo e o nome.</summary>
 		private static Control Opened(IReadOnlyList<Feature> opened)
 		{
-			var row = Layout.Row(14, true).Named("Opened");
+			var row = Layout.Row(Space.Wide, true).Named("Opened");
 			var caption = new Label { Name = "Caption", Text = T("battle.opened"), VerticalAlignment = VerticalAlignment.Center };
 			caption.AddThemeColorOverride("font_color", Palette.Spirit);
 			row.AddChild(caption);
@@ -334,8 +334,8 @@ namespace Sigilos.UI.Screens
 		{
 			const float width = 760;
 			var column = new VBoxContainer { Name = "Defeat", Alignment = BoxContainer.AlignmentMode.Center };
-			column.AddThemeConstantOverride("separation", 8);
-			var top = Layout.Row(14, true).Named("Reason");
+			column.AddThemeConstantOverride("separation", Space.Medium);
+			var top = Layout.Row(Space.Wide, true).Named("Reason");
 			top.AddChild(Layout.Labeled(reason.Icon, "", reason.Text, Palette.Negative).Named("Chip"));
 			column.AddChild(top);
 
@@ -351,7 +351,7 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < tips.Count; i++)
 			{
 				var tip = tips[i];
-				var row = Layout.Row(10, true).Named($"Tip{i + 1}");
+				var row = Layout.Row(Space.Regular, true).Named($"Tip{i + 1}");
 				row.AddChild(Doodle.Icon(Art.Icon(TipIcon(tip.Kind)), 28, Palette.Gold).Named("Icon"));
 				var text = Layout.Text(TipText(tip), GameTheme.Faded, width - 40).Named("Text");
 				row.AddChild(text);
@@ -401,7 +401,7 @@ namespace Sigilos.UI.Screens
 		private Control Monster(ResultMonster monster)
 		{
 			var view = new Control { CustomMinimumSize = new Vector2(220, 72), MouseFilter = MouseFilterEnum.Ignore };
-			var row = Layout.Row(8).Named("Row");
+			var row = Layout.Row(Space.Medium).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
             view.AddChild(row);
 
@@ -421,7 +421,7 @@ namespace Sigilos.UI.Screens
 			row.AddChild(frame);
 
 			var column = new VBoxContainer { Name = "Experience", Alignment = BoxContainer.AlignmentMode.Center, MouseFilter = MouseFilterEnum.Ignore };
-			column.AddThemeConstantOverride("separation", 4);
+			column.AddThemeConstantOverride("separation", Space.Tight);
 			var name = new Label { Name = "Name", Text = monster.Name, MouseFilter = MouseFilterEnum.Ignore, ClipText = true, CustomMinimumSize = new Vector2(130, 0) };
 			name.AddThemeFontSizeOverride("font_size", 15);
 			name.AddThemeColorOverride("font_outline_color", Palette.Background);

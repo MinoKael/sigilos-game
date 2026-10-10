@@ -38,7 +38,7 @@ namespace Sigilos.UI.Screens
 		private readonly Action<int, IReadOnlyList<int>> _fuse;
 		private readonly Action<IReadOnlyList<int>> _release;
 		private readonly Dialog _dialog;
-		private readonly HBoxContainer _tools = Layout.Row(10).Named("Tools");
+		private readonly HBoxContainer _tools = Layout.Row(Space.Regular).Named("Tools");
 		private readonly TileGrid _grid = new(Gap) { Name = "Copies" };
 		private readonly ScrollContainer _scroll;
 		private readonly Label _note = new() { Name = "Note", ThemeTypeVariation = GameTheme.Faded, AutowrapMode = TextServer.AutowrapMode.WordSmart };

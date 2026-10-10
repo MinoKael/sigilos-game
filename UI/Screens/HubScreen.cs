@@ -44,7 +44,7 @@ namespace Sigilos.UI.Screens
 		private readonly Constellation _constellation = ChatBubble.Dock(new Constellation { Name = "Constellation" });
 		private readonly SigilButton _core = new(Art.Icon("collect"), 128) { Name = "Core" };
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
-		private readonly HBoxContainer _pending = Layout.Row(8, true).Named("Pending");
+		private readonly HBoxContainer _pending = Layout.Row(Space.Medium, true).Named("Pending");
 		private readonly GameButton _collect;
 		/// <summary>A cápsula do correio, da altura das moedas e só com a carta.</summary>
 		private static readonly Vector2 MailSize = new(58, CurrencyBar.Height);
@@ -80,12 +80,12 @@ namespace Sigilos.UI.Screens
 			AddChild(Layout.Background(_core, ring: false));
 			var page = Layout.Page(this);
 
-			var top = Layout.Row(12).Named("Top");
+			var top = Layout.Row(Space.Large).Named("Top");
 			top.AddChild(_account);
 			top.AddChild(_offline);
 			top.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			// O correio colado nas moedas, no mesmo espaçamento entre as cápsulas.
-			var corner = Layout.Row(6).Named("Corner");
+			var corner = Layout.Row(Space.Small).Named("Corner");
 			corner.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			corner.AddChild(MailButton());
 			corner.AddChild(_currencies);
@@ -171,7 +171,7 @@ namespace Sigilos.UI.Screens
 		private void RefreshAccount()
 		{
 			Layout.Clear(_account);
-			var row = Layout.Row(12).Named("Row");
+			var row = Layout.Row(Space.Large).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(68, 68), MouseFilter = MouseFilterEnum.Ignore };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Panel, Palette.Gold, 2, 34, 4));
@@ -179,7 +179,7 @@ namespace Sigilos.UI.Screens
 			row.AddChild(frame);
 
 			var column = new VBoxContainer { Name = "Info", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-			column.AddThemeConstantOverride("separation", 4);
+			column.AddThemeConstantOverride("separation", Space.Tight);
 			var maxed = _player.AccountLevel >= Account.MaxLevel;
 			var toNext = Account.ExperienceToNext(_player.AccountLevel);
 			column.AddChild(new Label { Name = "Level", Text = AccountTitle(), ThemeTypeVariation = GameTheme.Heading, MouseFilter = MouseFilterEnum.Ignore });
@@ -234,7 +234,7 @@ namespace Sigilos.UI.Screens
 			box.ContentMarginTop = box.ContentMarginBottom = 8;
 			plate.AddThemeStyleboxOverride("panel", box);
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 6);
+			column.AddThemeConstantOverride("separation", Space.Small);
 			plate.AddChild(column);
 
 			// O tempo é um botão sem moldura: parece texto, e o toque abre a explicação colada nele.
@@ -247,7 +247,7 @@ namespace Sigilos.UI.Screens
 			column.AddChild(time);
 
 			column.AddChild(_pending);
-			var actions = Layout.Row(0, true).Named("Actions");
+			var actions = Layout.Row(Space.None, true).Named("Actions");
 			column.AddChild(actions);
 			if (!_channelOpen)
 			{
@@ -268,7 +268,7 @@ namespace Sigilos.UI.Screens
 		private Control Paths()
 		{
 			var column = new VBoxContainer { Name = "Paths", CustomMinimumSize = new Vector2(380, 0) };
-			column.AddThemeConstantOverride("separation", 16);
+			column.AddThemeConstantOverride("separation", Space.Loose);
 			column.Alignment = BoxContainer.AlignmentMode.Center;
 
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
@@ -292,7 +292,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { Name = "Nav" };
 			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.GoldDark, 8));
-			var row = Layout.Row(8).Named("Row");
+			var row = Layout.Row(Space.Medium).Named("Row");
 			panel.AddChild(row);
 
 			// A versão e o vão da direita dividem a sobra igual: os botões ficam no centro.

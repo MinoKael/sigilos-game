@@ -82,11 +82,11 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _left = new() { Name = "Column" };
 		private readonly VBoxContainer _head = new() { Name = "Monster" };
 		private readonly SigilRing _ring = new(220) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
-		private readonly HFlowContainer _sets = Layout.Flow(6).Named("Sets");
-		private readonly HBoxContainer _trialBar = Layout.Row(8).Named("Trial");
+		private readonly HFlowContainer _sets = Layout.Flow(Space.Small).Named("Sets");
+		private readonly HBoxContainer _trialBar = Layout.Row(Space.Medium).Named("Trial");
 		private readonly StatTable _stats = new() { Name = "Stats" };
 		private VBoxContainer? _selection;
-		private readonly HBoxContainer _tabs = Layout.Row(8).Named("TabRow");
+		private readonly HBoxContainer _tabs = Layout.Row(Space.Medium).Named("TabRow");
 		private readonly VBoxContainer _middle = new() { Name = "List", SizeFlagsVertical = SizeFlags.ExpandFill };
 
 		/// <summary>A rolagem da lista do meio e de que aba ela é: a lista é remontada a cada toque, e a posição passa para a nova.</summary>
@@ -145,13 +145,13 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Runes"), _currencies, () => BackRequested?.Invoke(_monsterId)).Header);
 
-			var body = Layout.Row(12).Named("Body");
+			var body = Layout.Row(Space.Large).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
 			var left = new PanelContainer { Name = "Left", CustomMinimumSize = new Vector2(340, 0) };
-			_left.AddThemeConstantOverride("separation", 8);
-			_head.AddThemeConstantOverride("separation", 8);
+			_left.AddThemeConstantOverride("separation", Space.Medium);
+			_head.AddThemeConstantOverride("separation", Space.Medium);
 			foreach (var part in new Control[] { _head, _ring, _sets, _trialBar, _stats })
 				_left.AddChild(part);
 			left.AddChild(Layout.Scroll(_left));
@@ -159,7 +159,7 @@ namespace Sigilos.UI.Screens
 
 			var middle = new PanelContainer { Name = "Middle", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			var middleColumn = new VBoxContainer { Name = "Column" };
-			middleColumn.AddThemeConstantOverride("separation", 8);
+			middleColumn.AddThemeConstantOverride("separation", Space.Medium);
 			middleColumn.AddChild(_tabs);
 			middleColumn.AddChild(_middle);
 			middle.AddChild(middleColumn);
@@ -167,8 +167,8 @@ namespace Sigilos.UI.Screens
 
 			var right = new PanelContainer { Name = "Right", CustomMinimumSize = new Vector2(360, 0) };
 			var rightColumn = new VBoxContainer { Name = "Column" };
-			rightColumn.AddThemeConstantOverride("separation", 8);
-			_detail.AddThemeConstantOverride("separation", 8);
+			rightColumn.AddThemeConstantOverride("separation", Space.Medium);
+			_detail.AddThemeConstantOverride("separation", Space.Medium);
 			rightColumn.AddChild(Layout.Scroll(_detail));
 			ConfigureGrid(_actions, 8);
 			rightColumn.AddChild(_actions);
@@ -232,7 +232,7 @@ namespace Sigilos.UI.Screens
 			}
 
 			var summon = _database.Summon(monster.SummonId);
-			var row = Layout.Row(10).Named("Row");
+			var row = Layout.Row(Space.Regular).Named("Row");
 			row.AddChild(Portrait(summon, monster, 52));
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
 			info.AddThemeConstantOverride("separation", -2);
@@ -412,7 +412,7 @@ namespace Sigilos.UI.Screens
 			if (_selecting)
 			{
 				_selection = new VBoxContainer { Name = "Selection" };
-				_selection.AddThemeConstantOverride("separation", 6);
+				_selection.AddThemeConstantOverride("separation", Space.Small);
 				_middle.AddChild(_selection);
 				RefreshSelection();
 			}
@@ -602,11 +602,11 @@ namespace Sigilos.UI.Screens
 			}
 
 			var list = new VBoxContainer { Name = "Tools" };
-			list.AddThemeConstantOverride("separation", 6);
+			list.AddThemeConstantOverride("separation", Space.Small);
 			for (var i = 0; i < groups.Count; i++)
 			{
 				var group = groups[i];
-				var row = Layout.Row(10).Named($"Tool{i + 1}");
+				var row = Layout.Row(Space.Regular).Named($"Tool{i + 1}");
 				row.AddChild(Doodle.Icon(Art.Icon(kind == RuneToolKind.Grindstone ? "grindstone" : "gem"), 32, Palette.Of(group.Key.Grade)).Named("Icon"));
 				var name = new Label { Name = "Name", Text = Texts.Name(group.Key), SizeFlagsHorizontal = SizeFlags.ExpandFill, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 				name.AddThemeColorOverride("font_color", Palette.Of(group.Key.Grade));
@@ -714,7 +714,7 @@ namespace Sigilos.UI.Screens
 		private Control OwnerRow(OwnedSummon holder)
 		{
 			var summon = _database.Summon(holder.SummonId);
-			var row = Layout.Row(10).Named("Owner");
+			var row = Layout.Row(Space.Regular).Named("Owner");
 			row.AddChild(Portrait(summon, holder, 44));
 			var name = Layout.Text(T(holder.Stored ? "rune.owner_vault" : "rune.owner", summon.NameFor(holder.Awakened)), GameTheme.Faded, 240).Named("Name");
 			name.SizeFlagsVertical = SizeFlags.ShrinkCenter;

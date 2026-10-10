@@ -19,12 +19,12 @@ namespace Sigilos.UI.Components
 		public TeamStrip(GameDatabase database, PlayerState player, string content)
 		{
 			Name = "Team";
-			AddThemeConstantOverride("separation", 8);
+			AddThemeConstantOverride("separation", Space.Medium);
 			var team = Teams.Of(player, content).Select(player.Monster).OfType<OwnedSummon>().Where(m => database.HasSummon(m.SummonId)).ToList();
 			for (var i = 0; i < PlayerState.TeamSize; i++)
 			{
 				var column = new VBoxContainer { Name = $"Slot{i + 1}", MouseFilter = MouseFilterEnum.Ignore };
-				column.AddThemeConstantOverride("separation", 0);
+				column.AddThemeConstantOverride("separation", Space.None);
 				var slot = new PanelContainer { Name = "Medal", CustomMinimumSize = new Vector2(Medal, Medal), MouseFilter = MouseFilterEnum.Pass };
 				var box = GameTheme.Box(Palette.Inset, Palette.GoldDark, 1, (int)(Medal / 2), 3);
 				if (i < team.Count)

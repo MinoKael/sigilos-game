@@ -30,7 +30,7 @@ namespace Sigilos.UI.Screens
 		{
 			_database = database;
 			_dialog = Dialog.Open(from, T("mail.title"), Width, null, "MailboxDialog");
-			_letters.AddThemeConstantOverride("separation", 12);
+			_letters.AddThemeConstantOverride("separation", Space.Large);
 			_dialog.Body.AddChild(_letters);
 			_dialog.Closed += () => Closed?.Invoke();
 			ShowMessage(T("mail.loading"));
@@ -71,10 +71,10 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel };
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 8);
+			column.AddThemeConstantOverride("separation", Space.Medium);
 			panel.AddChild(column);
 
-			var head = Layout.Row(10).Named("Head");
+			var head = Layout.Row(Space.Regular).Named("Head");
 			head.AddChild(Doodle.Icon(Art.Icon("mail"), 30, Palette.Gold));
 			head.AddChild(new Label { Name = "Title", Text = mail.Title, ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, VerticalAlignment = VerticalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart });
 			head.AddChild(new Label { Name = "Sent", Text = mail.SentAt.ToLocalTime().ToString("d", Culture), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
@@ -85,7 +85,7 @@ namespace Sigilos.UI.Screens
 
 			if (mail.Rewards.Count > 0 || mail.Gifts.Count > 0)
 			{
-				var rewards = Layout.Flow(6).Named("Rewards");
+				var rewards = Layout.Flow(Space.Small).Named("Rewards");
 				foreach (var (item, amount) in mail.Rewards)
 					rewards.AddChild(Layout.Labeled(Icon(item), Texts.Number(amount), T($"mail.item.{item}")).Named(item.ToString()));
 				for (var i = 0; i < mail.Gifts.Count; i++)
@@ -93,7 +93,7 @@ namespace Sigilos.UI.Screens
 				column.AddChild(rewards);
 			}
 
-			var foot = Layout.Row(10).Named("Foot");
+			var foot = Layout.Row(Space.Regular).Named("Foot");
 			var until = new Label
 			{
 				Name = "Until",

@@ -76,7 +76,7 @@ namespace Sigilos.UI.Screens
 
 			var mapPanel = new PanelContainer { Name = "Sky", CustomMinimumSize = new Vector2(600, 0) };
 			var mapColumn = new VBoxContainer { Name = "SkyColumn" };
-			mapColumn.AddThemeConstantOverride("separation", 8);
+			mapColumn.AddThemeConstantOverride("separation", Space.Medium);
 			mapColumn.AddChild(Month());
 			mapColumn.AddChild(_tabs);
 			_progress.ThemeTypeVariation = GameTheme.Faded;
@@ -88,11 +88,11 @@ namespace Sigilos.UI.Screens
 
 			var panel = new PanelContainer { Name = "Constellation", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 10);
-			_detail.AddThemeConstantOverride("separation", 12);
+			column.AddThemeConstantOverride("separation", Space.Regular);
+			_detail.AddThemeConstantOverride("separation", Space.Large);
 			_detailScroll = Layout.Scroll(_detail);
 			column.AddChild(_detailScroll);
-			_actions.AddThemeConstantOverride("separation", 8);
+			_actions.AddThemeConstantOverride("separation", Space.Medium);
 			column.AddChild(_actions);
 			panel.AddChild(column);
 			body.AddChild(panel);
@@ -214,12 +214,12 @@ namespace Sigilos.UI.Screens
 			var constellation = Exploration.Constellation(number);
 			var cleared = Core.Progression.Exploration.IsCleared(_player, number, _now);
 
-			var title = Layout.Row(12).Named("Header");
+			var title = Layout.Row(Space.Large).Named("Header");
 			// Sem o desenho da constelação (docs/exploracao_estelar_icones.md), o título não guarda o lugar dele.
 			if (Art.Icon(constellation.Icon) is { } icon)
 				title.AddChild(Doodle.Icon(icon, 56, Palette.Gold).Named("Icon"));
 			var names = new VBoxContainer { Name = "Names", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			names.AddThemeConstantOverride("separation", 0);
+			names.AddThemeConstantOverride("separation", Space.None);
 			names.AddChild(new Label { Name = "Title", Text = constellation.Name, ThemeTypeVariation = GameTheme.Heading });
 			names.AddChild(new Label { Name = "Latin", Text = $"{constellation.Latin} · {T("exploration.number", number, Exploration.Constellations.Count)}", ThemeTypeVariation = GameTheme.Faded });
 			title.AddChild(names);
@@ -238,11 +238,11 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < challenge.Waves.Count; i++)
 			{
 				var column = new VBoxContainer { Name = $"Wave{i + 1}" };
-				column.AddThemeConstantOverride("separation", 4);
+				column.AddThemeConstantOverride("separation", Space.Tight);
 				var wave = new Label { Name = "Number", Text = T("campaign.wave", i + 1) };
 				wave.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.35f));
 				column.AddChild(wave);
-				var foes = Layout.Row(6).Named("Foes");
+				var foes = Layout.Row(Space.Small).Named("Foes");
 				for (var k = 0; k < challenge.Waves[i].Count; k++)
 					foes.AddChild(Foe(challenge.Waves[i][k], encounter).Named($"Foe{k + 1}"));
 				column.AddChild(foes);
@@ -255,7 +255,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(Heading("RewardsTitle", T("exploration.rewards")));
 			if (cleared)
 				_detail.AddChild(Layout.Text(T("exploration.rewards_done"), GameTheme.Faded).Named("RewardsDone"));
-			var rewards = Layout.Flow(8).Named("Rewards");
+			var rewards = Layout.Flow(Space.Medium).Named("Rewards");
 			var reward = constellation.Reward;
 			rewards.AddChild(Layout.Labeled("essence", reward.Essence.ToString(), T("currency.essence")));
 			if (reward.Gold > 0)
@@ -280,7 +280,7 @@ namespace Sigilos.UI.Screens
 
 			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(number), ButtonKind.Primary, "fight", 68).Named("Fight");
 			fight.Disabled = problem != EntryProblem.None;
-			var row = Layout.Row(14).Named("Buttons");
+			var row = Layout.Row(Space.Wide).Named("Buttons");
 			row.AddChild(fight.Wide(220));
 			row.AddChild(new Label { Name = "Free", Text = T("exploration.free"), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
 			_actions.AddChild(row);
@@ -294,7 +294,7 @@ namespace Sigilos.UI.Screens
 		{
 			var box = new PanelContainer { Name = "Influence", ThemeTypeVariation = GameTheme.InsetPanel };
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 6);
+			column.AddThemeConstantOverride("separation", Space.Small);
 			box.AddChild(column);
 
 			var heading = Layout.Labeled("influence", "", T("exploration.influence", constellation.Influence.Name), Palette.Arcane).Named("Name");

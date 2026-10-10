@@ -78,7 +78,7 @@ namespace Sigilos.UI.Screens
 		private readonly HashSet<int> _marked = new();
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HBoxContainer _tools = Layout.Row(10).Named("Tools");
+		private readonly HBoxContainer _tools = Layout.Row(Space.Regular).Named("Tools");
 		private readonly GridContainer _search = Layout.Grid(2, 8).Named("Search");
 		private readonly VBoxContainer _selection = new() { Name = "Selection" };
 		private readonly TileGrid _roster = new(10) { Name = "Roster" };
@@ -139,13 +139,13 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Monsters"), _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = Layout.Row(16).Named("Body");
+			var body = Layout.Row(Space.Loose).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
 			var rosterPanel = new PanelContainer { Name = "Collection", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			var rosterColumn = new VBoxContainer { Name = "Column" };
-			rosterColumn.AddThemeConstantOverride("separation", 10);
+			rosterColumn.AddThemeConstantOverride("separation", Space.Regular);
 			rosterPanel.AddChild(rosterColumn);
 			rosterColumn.AddChild(_tools);
 			rosterColumn.AddChild(_search);
@@ -154,7 +154,7 @@ namespace Sigilos.UI.Screens
 			body.AddChild(rosterPanel);
 
 			var detailPanel = new PanelContainer { Name = "Sheet", CustomMinimumSize = new Vector2(DetailWidth, 0) };
-			var detailRow = Layout.Row(14).Named("Row");
+			var detailRow = Layout.Row(Space.Wide).Named("Row");
 
 			var side = new VBoxContainer { Name = "Side", CustomMinimumSize = new Vector2(SideWidth, 0) };
 			side.AddThemeConstantOverride("separation", 22);
@@ -168,10 +168,10 @@ namespace Sigilos.UI.Screens
 				RefreshDetail();
 			};
 			side.AddChild(_pages);
-			_sideActions.AddThemeConstantOverride("separation", 10);
+			_sideActions.AddThemeConstantOverride("separation", Space.Regular);
 			side.AddChild(_sideActions);
 
-			_detail.AddThemeConstantOverride("separation", 12);
+			_detail.AddThemeConstantOverride("separation", Space.Large);
 			detailRow.AddChild(Layout.Scroll(_detail));
 			detailRow.AddChild(side);
 			detailPanel.AddChild(detailRow);
@@ -477,8 +477,8 @@ namespace Sigilos.UI.Screens
 		private VBoxContainer CoreDetail(SummonDefinition summon, OwnedSummon monster)
 		{
 			var column = new VBoxContainer { Name = "Core" };
-			column.AddThemeConstantOverride("separation", 10);
-			var row = Layout.Row(14).Named("Row");
+			column.AddThemeConstantOverride("separation", Space.Regular);
+			var row = Layout.Row(Space.Wide).Named("Row");
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(112, 112) };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Gold, 3, 10, 8));
 			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Gold, MaskShape.Rounded, 6));
@@ -509,16 +509,16 @@ namespace Sigilos.UI.Screens
 		private VBoxContainer Identity(SummonDefinition summon, OwnedSummon monster)
 		{
 			var column = new VBoxContainer { Name = "Identity" };
-			column.AddThemeConstantOverride("separation", 6);
-			var row = Layout.Row(14).Named("Row");
+			column.AddThemeConstantOverride("separation", Space.Small);
+			var row = Layout.Row(Space.Wide).Named("Row");
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(112, 112) };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 3, 10, 8));
 			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Rounded, 6, aura: monster.Awakened ? summon.Element : null));
 			row.AddChild(frame);
 
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			info.AddThemeConstantOverride("separation", 4);
-			var title = Layout.Row(8).Named("Title");
+			info.AddThemeConstantOverride("separation", Space.Tight);
+			var title = Layout.Row(Space.Medium).Named("Title");
 			var name = new Label { Name = "Name", Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			if (monster.Awakened)
 				name.AddThemeColorOverride("font_color", Palette.Awakened);
@@ -532,7 +532,7 @@ namespace Sigilos.UI.Screens
 			stars.AddThemeFontSizeOverride("font_size", 20);
 			info.AddChild(stars);
 
-			var line = Layout.Row(8).Named("Line");
+			var line = Layout.Row(Space.Medium).Named("Line");
 			line.AddChild(Doodle.Icon(Art.Element(summon.Element), 24, Palette.Of(summon.Element)).Named("Element"));
 			var element = new Label { Name = "ElementName", Text = Texts.Name(summon.Element), VerticalAlignment = VerticalAlignment.Center };
 			element.AddThemeColorOverride("font_color", Palette.Of(summon.Element));
@@ -553,7 +553,7 @@ namespace Sigilos.UI.Screens
 			column.AddChild(Layout.Text(string.Join(" · ", where), GameTheme.Faded).Named("Where"));
 
 			var max = Leveling.MaxLevel(monster);
-			var level = Layout.Row(10).Named("Level");
+			var level = Layout.Row(Space.Regular).Named("Level");
 			level.AddChild(new Label { Name = "Text", Text = T("monsters.level", monster.Level, max), ThemeTypeVariation = GameTheme.Number });
 			var bar = Layout.Energy(Palette.Gold, 12).Named("Experience");
 			bar.SizeFlagsHorizontal = SizeFlags.ExpandFill;
@@ -584,7 +584,7 @@ namespace Sigilos.UI.Screens
 		private void StatsPage(SummonDefinition summon, OwnedSummon monster)
 		{
 			var id = monster.Id;
-			var actions = Layout.Row(10).Named("Actions");
+			var actions = Layout.Row(Space.Regular).Named("Actions");
 
 			if (!Leveling.IsMaxLevel(monster))
 			{
@@ -633,7 +633,7 @@ namespace Sigilos.UI.Screens
 			var runes = _player.RunesOn(monster.Id);
 			var sheet = SummonStats.For(summon, monster.Stars, monster.Level, monster.Awakened, runes);
 
-			var actions = Layout.Row(0, true).Named("Actions");
+			var actions = Layout.Row(Space.None, true).Named("Actions");
 			actions.AddChild(GameButton.Of(T("monsters.runes_button"), () => RunesRequested?.Invoke(monster.Id), ButtonKind.Primary, "rune").Named("OpenRunes"));
 			_detail.AddChild(actions);
 
@@ -653,7 +653,7 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < sheet.Runes.ActiveSets.Count; i++)
 			{
 				var set = sheet.Runes.ActiveSets[i];
-				var row = Layout.Row(8).Named($"{set.Set}{i + 1}");
+				var row = Layout.Row(Space.Medium).Named($"{set.Set}{i + 1}");
 				row.AddChild(new RuneGlyph(RuneSets.For(set.Set).Glyph, 26, Palette.Gold) { Name = "Glyph" });
 				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", TextWidth + 30).Named("Effect"));
 				_detail.AddChild(row);
@@ -674,7 +674,7 @@ namespace Sigilos.UI.Screens
 
 			if (summon.Leader is { } leader)
 			{
-				var row = Layout.Row(10).Named("Leader");
+				var row = Layout.Row(Space.Regular).Named("Leader");
 				row.AddChild(Doodle.Icon(Art.Icon("leader"), 34, Palette.Gold).Named("Icon"));
 				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), TextWidth + 10).Named("Text"));
 				_detail.AddChild(row);
@@ -693,7 +693,7 @@ namespace Sigilos.UI.Screens
 
 		private void AwakenPage(SummonDefinition summon, OwnedSummon monster)
 		{
-			var forms = Layout.Row(14, true).Named("Forms");
+			var forms = Layout.Row(Space.Wide, true).Named("Forms");
 			forms.AddChild(Form(summon, false, !monster.Awakened).Named("Normal"));
 			forms.AddChild(Doodle.Icon(Art.Icon("awaken"), 40, monster.Awakened ? Palette.Awakened : Palette.GoldDark).Named("Arrow"));
 			forms.AddChild(Form(summon, true, monster.Awakened).Named("Awakened"));
@@ -704,7 +704,7 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(name);
 			_detail.AddChild(Layout.Text(monster.Awakened ? T("monsters.awakened_already") : T("monsters.awaken_gains"), GameTheme.Faded).Named("Explain"));
 
-			var gains = Layout.Flow(8).Named("Gains");
+			var gains = Layout.Flow(Space.Medium).Named("Gains");
 			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
 				gains.AddChild(Layout.Labeled(Texts.GlyphOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
 			_detail.AddChild(gains);
@@ -720,7 +720,7 @@ namespace Sigilos.UI.Screens
 			if (monster.Awakened)
 				return;
 
-			var row = Layout.Row(0, true).Named("Actions");
+			var row = Layout.Row(Space.None, true).Named("Actions");
 			var cost = Awakening.Cost(summon.Rarity);
 			var awaken = GameButton.Of(T("monsters.awaken_button"), () => Dialog.Confirm(this,
 				T("monsters.awaken_title"),

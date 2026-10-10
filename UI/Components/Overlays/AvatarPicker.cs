@@ -53,7 +53,7 @@ namespace Sigilos.UI.Components
 				tabs.Add(T($"avatar.kind.{kind}"), avatars.Count(a => a.Kind == kind).ToString()).Name = kind.ToString();
 			dialog.Body.AddChild(tabs);
 			var page = new VBoxContainer { Name = "Page" };
-			page.AddThemeConstantOverride("separation", 10);
+			page.AddThemeConstantOverride("separation", Space.Regular);
 			dialog.Body.AddChild(page);
 
 			void Show(int index)
@@ -69,8 +69,8 @@ namespace Sigilos.UI.Components
 
 				page.AddChild(Layout.Text(T($"avatar.hint.{kind}"), GameTheme.Faded, 580).Named("Hint"));
 				var grid = new GridContainer { Name = "Avatars", Columns = Columns };
-				grid.AddThemeConstantOverride("h_separation", 10);
-				grid.AddThemeConstantOverride("v_separation", 10);
+				grid.AddThemeConstantOverride("h_separation", Space.Regular);
+				grid.AddThemeConstantOverride("v_separation", Space.Regular);
 				foreach (var avatar in Ordered(database, kind, shown))
 				{
 					var cell = Cell(database, avatar, avatar == current);

@@ -194,7 +194,7 @@ namespace Sigilos.UI.Components
 			_last.CustomMinimumSize = new Vector2(0, LastHeight);
 			_last.Position = new Vector2(Side + LastGap, (Side - LastHeight) / 2);
 
-			var row = Layout.Row(0).Named("Row");
+			var row = Layout.Row(Space.None).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
 			foreach (var label in new[] { _lastFrom, _lastText })
 			{

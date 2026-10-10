@@ -41,7 +41,7 @@ namespace Sigilos.UI.Screens
 
 			_empty = Layout.Text(T("chat.empty"), GameTheme.Faded).Named("Empty");
 			_dialog.Body.AddChild(_empty);
-			_lines.AddThemeConstantOverride("separation", 6);
+			_lines.AddThemeConstantOverride("separation", Space.Small);
 			_dialog.Body.AddChild(_lines);
 			foreach (var line in feed.Lines)
 				_lines.AddChild(Row(line));
@@ -159,7 +159,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { MouseDefaultCursorShape = Control.CursorShape.PointingHand };
 			panel.AddThemeStyleboxOverride("panel", GameTheme.Box(new Color(Palette.Inset, 0.85f), Palette.GoldDark, 1, 10, 6));
-			var row = Layout.Row(10).Named("Row");
+			var row = Layout.Row(Space.Regular).Named("Row");
 			row.MouseFilter = Control.MouseFilterEnum.Ignore;
 
 			var summon = feat is SummonFeat { SummonId: var id } && UiSession.Database is { } database && database.HasSummon(id) ? database.Summon(id) : null;

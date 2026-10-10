@@ -29,22 +29,22 @@ namespace Sigilos.UI.Components
 			Name = "RuneCard";
 			CustomMinimumSize = new Vector2(width, 0);
 			MouseFilter = MouseFilterEnum.Pass;
-			AddThemeConstantOverride("separation", 8);
+			AddThemeConstantOverride("separation", Space.Medium);
 			var color = Palette.Of(rune.Rarity);
 
 			if (title)
 			{
-				var header = Layout.Row(10).Named("Header");
+				var header = Layout.Row(Space.Regular).Named("Header");
 				var name = new Label { Name = "Title", Text = Texts.Title(rune), HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 				name.AddThemeColorOverride("font_color", color);
 				header.AddChild(name);
 				AddChild(header);
 			}
 
-            var body = Layout.Row(14).Named("Body");
+            var body = Layout.Row(Space.Wide).Named("Body");
             body.AddChild(new RuneTile(rune, rune.Slot, 1.35f) { Name = "Tile", MouseFilter = MouseFilterEnum.Ignore });
             var stats = new VBoxContainer { Name = "Stats", Alignment = AlignmentMode.Begin, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-            stats.AddThemeConstantOverride("separation", 4);
+            stats.AddThemeConstantOverride("separation", Space.Tight);
 
             var main = new VBoxContainer { Name = "Main", SizeFlagsHorizontal = SizeFlags.ExpandFill };
             main.SizeFlagsHorizontal = SizeFlags.ExpandFill;
@@ -58,7 +58,7 @@ namespace Sigilos.UI.Components
 
             var valuesBox = new HBoxContainer { Name = "ValuesBox", SizeFlagsHorizontal = SizeFlags.ExpandFill};
 
-            valuesBox.AddThemeConstantOverride("separation", 4);
+            valuesBox.AddThemeConstantOverride("separation", Space.Tight);
 
             var mainValue = new Label
             {
@@ -117,7 +117,7 @@ namespace Sigilos.UI.Components
 		private static HBoxContainer Substat(Rune rune, int index, int? opened, Func<int, IEnumerable<Control>>? tools)
 		{
 			var substat = rune.Substats[index];
-			var row = Layout.Row(6);
+			var row = Layout.Row(Space.Small);
 			var isNew = opened is { } level && substat.Rolls.Count > 0 && substat.Rolls[0].Level > level;
 			var gained = opened is { } since ? substat.Rolls.Where(r => r.Level > since).Sum(r => r.Amount) : 0;
 			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Glyph" });

@@ -40,7 +40,7 @@ namespace Sigilos.UI.Screens
 			var dialog = Dialog.Open(from, T("destination.Config"), 520, null, "ConfigDialog");
 			dialog.Body.AddChild(new Label { Name = "LanguageTitle", Text = T("config.language"), ThemeTypeVariation = GameTheme.Heading });
 			var column = new VBoxContainer { Name = "Languages" };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			foreach (var language in languages)
 			{
 				var code = language;
@@ -71,7 +71,7 @@ namespace Sigilos.UI.Screens
 		private static Control Sound(IReadOnlyList<ConfigVolume> volumes)
 		{
 			var column = new VBoxContainer { Name = "Sound" };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			column.AddChild(new Label { Name = "SoundTitle", Text = T("config.sound"), ThemeTypeVariation = GameTheme.Heading });
 			var grid = Layout.Grid(3, 14).Named("Volumes");
 			foreach (var volume in volumes)
@@ -118,7 +118,7 @@ namespace Sigilos.UI.Screens
 		private static Control Account(Dialog dialog, ConfigAccount account)
 		{
 			var column = new VBoxContainer { Name = "Account" };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			column.AddChild(new Label { Name = "AccountTitle", Text = T("config.account"), ThemeTypeVariation = GameTheme.Heading });
 			if (account.Email != null)
 			{
@@ -132,7 +132,7 @@ namespace Sigilos.UI.Screens
 					account.SignOut();
 				}).Named("SignOut");
 				signOut.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-				var buttons = Layout.Row(10).Named("Buttons");
+				var buttons = Layout.Row(Space.Regular).Named("Buttons");
 				// Trocar o nome é na Loja; aqui só a conta que ainda não tem nome escolhe o primeiro, de graça.
 				if (account.Name == null)
 				{

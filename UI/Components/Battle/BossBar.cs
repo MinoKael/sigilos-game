@@ -40,10 +40,10 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("panel", Ornament.Panel(new Color(Palette.Panel, 0.92f), Palette.Negative, 6));
 
 			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore };
-			column.AddThemeConstantOverride("separation", 2);
+			column.AddThemeConstantOverride("separation", Space.Hair);
 			AddChild(column);
 
-			var top = Layout.Row(8).Named("Top");
+			var top = Layout.Row(Space.Medium).Named("Top");
 			top.MouseFilter = MouseFilterEnum.Ignore;
 			var tag = new Label { Name = "Tag", Text = T("battle.boss"), VerticalAlignment = VerticalAlignment.Center };
 			tag.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.25f));
@@ -58,7 +58,7 @@ namespace Sigilos.UI.Components
 			top.AddChild(_name);
 			top.AddChild(_level);
 			top.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
-			_statuses.AddThemeConstantOverride("separation", 10);
+			_statuses.AddThemeConstantOverride("separation", Space.Regular);
 			top.AddChild(_statuses);
 			column.AddChild(top);
 

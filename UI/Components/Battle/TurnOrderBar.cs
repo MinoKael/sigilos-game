@@ -16,7 +16,7 @@ namespace Sigilos.UI.Components
 		public TurnOrderBar()
 		{
 			Name = "TurnOrder";
-			AddThemeConstantOverride("separation", 6);
+			AddThemeConstantOverride("separation", Space.Small);
 		}
 
 		public void Show(IReadOnlyList<BattleUnit> order)

@@ -33,8 +33,8 @@ namespace Sigilos.UI.Components
 		public StatTable()
 		{
 			Columns = 4;
-			AddThemeConstantOverride("h_separation", 12);
-			AddThemeConstantOverride("v_separation", 0);
+			AddThemeConstantOverride("h_separation", Space.Large);
+			AddThemeConstantOverride("v_separation", Space.None);
 		}
 
 		public void Show(StatSheet sheet)
@@ -42,7 +42,7 @@ namespace Sigilos.UI.Components
 			Layout.Clear(this);
 			_cells = null;
 			Columns = 4;
-			AddThemeConstantOverride("h_separation", 12);
+			AddThemeConstantOverride("h_separation", Space.Large);
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
 				// Quatro células por atributo, com o nome dele na frente: HpGlyph, HpName, HpTotal, HpBonus.
@@ -97,7 +97,7 @@ namespace Sigilos.UI.Components
 		{
 			Layout.Clear(this);
 			Columns = 5;
-			AddThemeConstantOverride("h_separation", 8);
+			AddThemeConstantOverride("h_separation", Space.Medium);
 			var stats = Enum.GetValues<Stat>();
 			var cells = new Label[stats.Length + 1, 3];
 			AddChild(new Control { Name = "HeadGlyph", MouseFilter = MouseFilterEnum.Ignore });

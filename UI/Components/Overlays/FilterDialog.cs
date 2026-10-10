@@ -65,7 +65,7 @@ namespace Sigilos.UI.Components
 
 			Layout.Clear(_dialog.Body);
 			_fields = new VBoxContainer { Name = "Fields" };
-			_fields.AddThemeConstantOverride("separation", 10);
+			_fields.AddThemeConstantOverride("separation", Space.Regular);
 			_build(this);
 			_dialog.Body.AddChild(_fields);
 		}

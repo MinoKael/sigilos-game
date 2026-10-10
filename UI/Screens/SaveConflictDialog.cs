@@ -27,7 +27,7 @@ namespace Sigilos.UI.Screens
 			dialog.Dismissable = false;
 			dialog.Body.AddChild(RichText.Label(T(adopting ? "account.conflict_adopt_text" : "account.conflict_text"), Width - 40).Named("Text"));
 
-			var row = Layout.Row(16).Named("Saves");
+			var row = Layout.Row(Space.Loose).Named("Saves");
 			row.AddChild(Summary("Local", T(adopting ? "account.conflict_offline" : "account.conflict_local"), local, localSavedAt));
 			row.AddChild(Summary("Cloud", T("account.conflict_cloud"), cloud, cloudSavedAt));
 			dialog.Body.AddChild(row);

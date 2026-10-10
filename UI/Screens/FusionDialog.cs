@@ -36,7 +36,7 @@ namespace Sigilos.UI.Screens
 		private readonly TileGrid _grid = new(8) { Name = "Copies" };
 		private readonly RichTextLabel _summary;
 		private readonly Label _message = new() { Name = "Message", AutowrapMode = TextServer.AutowrapMode.WordSmart, Visible = false };
-		private readonly HBoxContainer _tools = Layout.Row(10).Named("Tools");
+		private readonly HBoxContainer _tools = Layout.Row(Space.Regular).Named("Tools");
 
 		private FusionDialog(Control from, GameDatabase database, PlayerState player, OwnedSummon target, Action<IReadOnlyList<int>> fuse, IEnumerable<int>? marked)
 		{

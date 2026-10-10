@@ -4,6 +4,7 @@ using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
+using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Components
@@ -36,8 +37,8 @@ namespace Sigilos.UI.Components
 			var dialog = Dialog.Open(from, title, 820, null, "MonsterPicker");
 			dialog.Body.AddChild(Layout.Text(hint, Style.GameTheme.Faded).Named("Hint"));
 			var grid = new GridContainer { Name = "Monsters", Columns = 6 };
-			grid.AddThemeConstantOverride("h_separation", 10);
-			grid.AddThemeConstantOverride("v_separation", 10);
+			grid.AddThemeConstantOverride("h_separation", Space.Regular);
+			grid.AddThemeConstantOverride("v_separation", Space.Regular);
 			foreach (var monster in monsters)
 			{
 				var card = new CreatureCard(database.Summon(monster.SummonId), monster, 112, null, monster.Stored ? T("monsters.vault") : null) { Name = $"Monster{monster.Id}" };

@@ -109,7 +109,7 @@ namespace Sigilos.UI.Screens
 		private static VBoxContainer Swatch(string name, Control sample, string stars, string meaning, Color color)
 		{
 			var swatch = new VBoxContainer { Name = name, Alignment = BoxContainer.AlignmentMode.Center };
-			swatch.AddThemeConstantOverride("separation", 4);
+			swatch.AddThemeConstantOverride("separation", Space.Tight);
 			sample.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
 			swatch.AddChild(sample.Named("Sample"));
 			var top = new Label { Name = "Stars", Text = stars, HorizontalAlignment = HorizontalAlignment.Center };
@@ -166,13 +166,13 @@ namespace Sigilos.UI.Screens
 		{
 			column.AddChild(RichText.Label(T("compendium.glyphs.intro"), 1150, GameTheme.Faded).Named("Intro"));
 			var grid = new GridContainer { Name = "Glyphs", Columns = 4 };
-			grid.AddThemeConstantOverride("h_separation", 10);
-			grid.AddThemeConstantOverride("v_separation", 10);
+			grid.AddThemeConstantOverride("h_separation", Space.Regular);
+			grid.AddThemeConstantOverride("v_separation", Space.Regular);
 			foreach (var set in RuneSets.All)
 			{
 				var panel = new PanelContainer { Name = set.Glyph.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(284, 0) };
 				var row = new HBoxContainer { Name = "Row" };
-				row.AddThemeConstantOverride("separation", 10);
+				row.AddThemeConstantOverride("separation", Space.Regular);
 				row.AddChild(new RuneGlyph(set.Glyph, 56, Palette.Gold) { Name = "Glyph" });
 				var text = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 				text.AddChild(new Label { Name = "Title", Text = Texts.Name(set.Glyph), ThemeTypeVariation = GameTheme.Heading });
@@ -215,7 +215,7 @@ namespace Sigilos.UI.Screens
 			var tag = negative ? T("compendium.effects.negative") : T("compendium.effects.positive");
 			var panel = new PanelContainer { Name = kind.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
 			var row = new HBoxContainer { Name = "Row" };
-			row.AddThemeConstantOverride("separation", 10);
+			row.AddThemeConstantOverride("separation", Space.Regular);
 			row.AddChild(Doodle.Icon(Art.Effect(kind), 44, negative ? Palette.Negative : Palette.Positive).Named("Icon"));
 			row.AddChild(RichText.Label($"{Texts.Term(kind)}  [color=#{Palette.TextFaded.ToHtml(false)}]{tag}[/color]\n{Texts.Explain(kind)}", CardWidth - 80).Named("Text"));
 			panel.AddChild(row);
@@ -252,8 +252,8 @@ namespace Sigilos.UI.Screens
 		private static GridContainer Cards(VBoxContainer column)
 		{
 			var grid = new GridContainer { Name = "Cards", Columns = 2 };
-			grid.AddThemeConstantOverride("h_separation", 12);
-			grid.AddThemeConstantOverride("v_separation", 12);
+			grid.AddThemeConstantOverride("h_separation", Space.Large);
+			grid.AddThemeConstantOverride("v_separation", Space.Large);
 			column.AddChild(grid);
 			return grid;
 		}
@@ -267,7 +267,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { Name = name, ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(CardWidth, 0) };
 			var row = new HBoxContainer { Name = "Row" };
-			row.AddThemeConstantOverride("separation", 12);
+			row.AddThemeConstantOverride("separation", Space.Large);
 			row.AddChild(icon.Named("Icon"));
 			var content = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			content.AddChild(new Label { Name = "Title", Text = title, ThemeTypeVariation = GameTheme.Heading });

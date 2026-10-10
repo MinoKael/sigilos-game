@@ -16,7 +16,7 @@ namespace Sigilos.UI.Components
 		/// <param name="level">O nível de agora; 0 esconde o nível (na luta, a habilidade já vem no dela).</param>
 		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400, bool levels = false)
 		{
-			var row = Layout.Row(10).Named("Skill");
+			var row = Layout.Row(Space.Regular).Named("Skill");
 			var icon = new SigilButton(null, 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
 			{
 				Name = "Symbol",
@@ -28,11 +28,11 @@ namespace Sigilos.UI.Components
 			row.AddChild(icon);
 
 			var column = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
-			column.AddThemeConstantOverride("separation", 2);
+			column.AddThemeConstantOverride("separation", Space.Hair);
 			// Em fileira que quebra: nome, recarga, nível e o "ao despertar" não cabem sempre numa linha, e o
 			// que não cabe alargava a ficha inteira.
-			var title = Layout.Flow(8).Named("Title");
-			title.AddThemeConstantOverride("v_separation", 0);
+			var title = Layout.Flow(Space.Medium).Named("Title");
+			title.AddThemeConstantOverride("v_separation", Space.None);
 			var name = new Label { Name = "Name", Text = skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name };
 			name.AddThemeFontOverride("font", GameTheme.Serif);
 			name.AddThemeFontSizeOverride("font_size", 17);
