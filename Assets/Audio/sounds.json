@@ -1,0 +1,647 @@
+{
+  "generator": "Tools/sounds (docs/SONS.md)",
+  "sounds": {
+    "ui.button_click": {
+      "category": "ui",
+      "description": "Clique de botão: toc de madeira com uma notinha de marimba.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/button_click_01.wav",
+        "res://Assets/Audio/ui/button_click_02.wav",
+        "res://Assets/Audio/ui/button_click_03.wav"
+      ],
+      "seconds": 0.09,
+      "peak_db": -9.3
+    },
+    "ui.tab_switch": {
+      "category": "ui",
+      "description": "Trocar aba: um toc de madeira e uma nota de celesta.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/tab_switch_01.wav",
+        "res://Assets/Audio/ui/tab_switch_02.wav"
+      ],
+      "seconds": 0.12,
+      "peak_db": -15.4
+    },
+    "ui.panel_open": {
+      "category": "ui",
+      "description": "Abrir painel: uma nota de harpa, a celesta por cima e um sopro leve.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/panel_open_01.wav",
+        "res://Assets/Audio/ui/panel_open_02.wav"
+      ],
+      "seconds": 0.306,
+      "peak_db": -19.7
+    },
+    "ui.dialog_open": {
+      "category": "ui",
+      "description": "Abrir diálogo: o bilhete abrindo e a quarta subindo na celesta.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/dialog_open.wav"
+      ],
+      "seconds": 0.253,
+      "peak_db": -19.8
+    },
+    "ui.dialog_close": {
+      "category": "ui",
+      "description": "Fechar diálogo: o bilhete fechando e a quarta descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/dialog_close.wav"
+      ],
+      "seconds": 0.221,
+      "peak_db": -19.2
+    },
+    "ui.back": {
+      "category": "ui",
+      "description": "Voltar: a folha passando para trás e duas notas descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/back.wav"
+      ],
+      "seconds": 0.168,
+      "peak_db": -14.6
+    },
+    "ui.equip_item": {
+      "category": "ui",
+      "description": "Equipar item: o couro, um toc e a quinta subindo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/equip_item.wav"
+      ],
+      "seconds": 0.239,
+      "peak_db": -19.1
+    },
+    "ui.unequip_item": {
+      "category": "ui",
+      "description": "Desequipar item: um toc, o couro e a quinta descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/unequip_item.wav"
+      ],
+      "seconds": 0.176,
+      "peak_db": -15.3
+    },
+    "ui.toggle_on": {
+      "category": "ui",
+      "description": "Ativar toggle: o estalo da chave e um tom subindo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/toggle_on.wav"
+      ],
+      "seconds": 0.104,
+      "peak_db": -11.8
+    },
+    "ui.toggle_off": {
+      "category": "ui",
+      "description": "Desativar toggle: o estalo mais grave e o tom descendo.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/toggle_off.wav"
+      ],
+      "seconds": 0.088,
+      "peak_db": -10.7
+    },
+    "ui.slider_up": {
+      "category": "ui",
+      "description": "Slider aumentando: um dente com o tom subindo um pouco.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/slider_up.wav"
+      ],
+      "seconds": 0.041,
+      "peak_db": -16.7
+    },
+    "ui.slider_down": {
+      "category": "ui",
+      "description": "Slider diminuindo: um dente com o tom descendo um pouco.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/slider_down.wav"
+      ],
+      "seconds": 0.041,
+      "peak_db": -13.1
+    },
+    "ui.action_unavailable": {
+      "category": "ui",
+      "description": "Ação indisponível: um toc-toc de madeira abafado.",
+      "mix": "ui",
+      "files": [
+        "res://Assets/Audio/ui/action_unavailable.wav"
+      ],
+      "seconds": 0.15,
+      "peak_db": -12.6
+    },
+    "grimoire.book_open": {
+      "category": "grimoire",
+      "description": "Abrir grimório: o livro respira, a taça acorda e a harpa abre Mi menor com sétima.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/book_open.wav"
+      ],
+      "seconds": 1.257,
+      "peak_db": -18.9
+    },
+    "grimoire.book_close": {
+      "category": "grimoire",
+      "description": "Fechar grimório: o ar empurrado, a capa encostando no feltro e Si descendo a Mi.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/book_close.wav"
+      ],
+      "seconds": 0.581,
+      "peak_db": -18.4
+    },
+    "grimoire.page_turn": {
+      "category": "grimoire",
+      "description": "Virar página: a folha passando no ar, macia.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/page_turn_01.wav",
+        "res://Assets/Audio/grimoire/page_turn_02.wav",
+        "res://Assets/Audio/grimoire/page_turn_03.wav"
+      ],
+      "seconds": 0.236,
+      "peak_db": -19.3
+    },
+    "grimoire.page_select": {
+      "category": "grimoire",
+      "description": "Escolher página: o dedo na folha e uma nota de celesta.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/page_select_01.wav",
+        "res://Assets/Audio/grimoire/page_select_02.wav"
+      ],
+      "seconds": 0.25,
+      "peak_db": -21.6
+    },
+    "grimoire.magic_ink": {
+      "category": "grimoire",
+      "description": "Tinta mágica: duas bolhas no tinteiro e a celesta brilhando baixinho.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/magic_ink_01.wav",
+        "res://Assets/Audio/grimoire/magic_ink_02.wav"
+      ],
+      "seconds": 0.504,
+      "peak_db": -22
+    },
+    "grimoire.creature_registered": {
+      "category": "grimoire",
+      "description": "Nova criatura no grimório: o carimbo de feltro, o sino e o coro curto.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/grimoire/creature_registered.wav"
+      ],
+      "seconds": 0.988,
+      "peak_db": -21.2
+    },
+    "constellation.star_activate": {
+      "category": "constellation",
+      "description": "Ativar estrela: dois sininhos e o sopro do céu.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/constellation/star_activate_01.wav",
+        "res://Assets/Audio/constellation/star_activate_02.wav",
+        "res://Assets/Audio/constellation/star_activate_03.wav"
+      ],
+      "seconds": 0.631,
+      "peak_db": -22.1
+    },
+    "summon.summon_start": {
+      "category": "summon",
+      "description": "Iniciar invocação: o sigilo acende sobre a taça grave.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/summon_start.wav"
+      ],
+      "seconds": 0.977,
+      "peak_db": -18.6
+    },
+    "summon.energy_build": {
+      "category": "summon",
+      "description": "Energia acumulando: a quinta subindo e o pulso acelerando.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/energy_build.wav"
+      ],
+      "seconds": 1.545,
+      "peak_db": -19
+    },
+    "summon.creature_summoned": {
+      "category": "summon",
+      "description": "Criatura invocada: a chegada de feltro, o sino e o acorde de Sol maior.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/creature_summoned.wav"
+      ],
+      "seconds": 0.964,
+      "peak_db": -18.5
+    },
+    "summon.reveal_star_1": {
+      "category": "summon",
+      "description": "Revelação 1★: uma nota de celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_1.wav"
+      ],
+      "seconds": 0.363,
+      "peak_db": -19.2
+    },
+    "summon.reveal_star_2": {
+      "category": "summon",
+      "description": "Revelação 2★: a quarta em celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_2.wav"
+      ],
+      "seconds": 0.486,
+      "peak_db": -20.3
+    },
+    "summon.reveal_star_3": {
+      "category": "summon",
+      "description": "Revelação 3★: o acorde de Sol maior em sinos.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_3.wav"
+      ],
+      "seconds": 0.906,
+      "peak_db": -17.9
+    },
+    "summon.reveal_star_4": {
+      "category": "summon",
+      "description": "Revelação 4★: subida curta, quatro sinos e coro.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_4.wav"
+      ],
+      "seconds": 1.375,
+      "peak_db": -17.5
+    },
+    "summon.reveal_star_5": {
+      "category": "summon",
+      "description": "Revelação 5★: a subida inteira, o sigilo, coro e seis sinos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/summon/reveal_star_5.wav"
+      ],
+      "seconds": 1.954,
+      "peak_db": -16.9
+    },
+    "rewards.gold": {
+      "category": "rewards",
+      "description": "Ganhar ouro: duas a quatro moedas macias.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/gold_01.wav",
+        "res://Assets/Audio/rewards/gold_02.wav",
+        "res://Assets/Audio/rewards/gold_03.wav"
+      ],
+      "seconds": 0.388,
+      "peak_db": -19.7
+    },
+    "rewards.essence": {
+      "category": "rewards",
+      "description": "Ganhar essência: a taça, bolhas de luz e a celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/essence.wav"
+      ],
+      "seconds": 0.529,
+      "peak_db": -18.9
+    },
+    "rewards.experience": {
+      "category": "rewards",
+      "description": "Ganhar experiência: a pentatônica subindo em celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/experience.wav"
+      ],
+      "seconds": 0.428,
+      "peak_db": -22.8
+    },
+    "rewards.rune": {
+      "category": "rewards",
+      "description": "Ganhar runa: a pedra entalhada e a celesta acendendo.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/rune.wav"
+      ],
+      "seconds": 0.534,
+      "peak_db": -19.4
+    },
+    "rewards.item_rare": {
+      "category": "rewards",
+      "description": "Item raro: três sinos em Sol maior e a celesta.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/item_rare.wav"
+      ],
+      "seconds": 0.789,
+      "peak_db": -18.6
+    },
+    "rewards.item_epic": {
+      "category": "rewards",
+      "description": "Item épico: quatro sinos em Mi, o tapete e os sininhos.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/item_epic.wav"
+      ],
+      "seconds": 1.029,
+      "peak_db": -18.1
+    },
+    "rewards.item_legendary": {
+      "category": "rewards",
+      "description": "Item lendário: subida, cinco sinos em Sol maior, coro, moeda e sininhos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/rewards/item_legendary.wav"
+      ],
+      "seconds": 1.847,
+      "peak_db": -18.3
+    },
+    "rewards.level_up": {
+      "category": "rewards",
+      "description": "Subir de nível: a harpa subindo o acorde de Mi, sinos e um coro curto.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/level_up.wav"
+      ],
+      "seconds": 1.157,
+      "peak_db": -20.3
+    },
+    "rewards.star_up": {
+      "category": "rewards",
+      "description": "Subir estrela (e despertar, fundir): duas celestas e o sino.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/star_up.wav"
+      ],
+      "seconds": 0.87,
+      "peak_db": -19.7
+    },
+    "rewards.daily_reward": {
+      "category": "rewards",
+      "description": "Recompensa: o embrulho abrindo, a pentatônica em celesta e a moeda.",
+      "mix": "reward",
+      "files": [
+        "res://Assets/Audio/rewards/daily_reward.wav"
+      ],
+      "seconds": 0.942,
+      "peak_db": -22.2
+    },
+    "combat.hit": {
+      "category": "combat",
+      "description": "Golpe: o feltro e uma nota de madeira.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/hit_01.wav",
+        "res://Assets/Audio/combat/hit_02.wav",
+        "res://Assets/Audio/combat/hit_03.wav",
+        "res://Assets/Audio/combat/hit_04.wav"
+      ],
+      "seconds": 0.164,
+      "peak_db": -13.4
+    },
+    "combat.hit_heavy": {
+      "category": "combat",
+      "description": "Golpe pesado (chefe, Bomba): o feltro grave, a nota baixa e o ar abrindo.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/hit_heavy_01.wav",
+        "res://Assets/Audio/combat/hit_heavy_02.wav"
+      ],
+      "seconds": 0.249,
+      "peak_db": -13.6
+    },
+    "combat.knockout": {
+      "category": "combat",
+      "description": "Nocaute: a harpa descendo até Mi e o corpo no chão, macio.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/knockout_01.wav",
+        "res://Assets/Audio/combat/knockout_02.wav"
+      ],
+      "seconds": 0.605,
+      "peak_db": -17.8
+    },
+    "combat.elements.fire_impact": {
+      "category": "combat/elements",
+      "description": "Fogo: o sopro morno e o golpe.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/fire_impact_01.wav",
+        "res://Assets/Audio/combat/elements/fire_impact_02.wav"
+      ],
+      "seconds": 0.38,
+      "peak_db": -16.1
+    },
+    "combat.elements.water_impact": {
+      "category": "combat/elements",
+      "description": "Água: a onda abafada, as bolhas e o golpe.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/water_impact_01.wav",
+        "res://Assets/Audio/combat/elements/water_impact_02.wav"
+      ],
+      "seconds": 0.258,
+      "peak_db": -12.2
+    },
+    "combat.elements.wind_impact": {
+      "category": "combat/elements",
+      "description": "Vento: o ar passando e o golpe.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/wind_impact_01.wav",
+        "res://Assets/Audio/combat/elements/wind_impact_02.wav"
+      ],
+      "seconds": 0.281,
+      "peak_db": -15
+    },
+    "combat.elements.light_impact": {
+      "category": "combat/elements",
+      "description": "Luz: o sino, a celesta e o golpe.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/light_impact_01.wav",
+        "res://Assets/Audio/combat/elements/light_impact_02.wav"
+      ],
+      "seconds": 0.414,
+      "peak_db": -13.1
+    },
+    "combat.elements.dark_impact": {
+      "category": "combat/elements",
+      "description": "Trevas: o sopro ao contrário até o golpe e a sombra depois.",
+      "mix": "combat",
+      "files": [
+        "res://Assets/Audio/combat/elements/dark_impact_01.wav",
+        "res://Assets/Audio/combat/elements/dark_impact_02.wav"
+      ],
+      "seconds": 0.769,
+      "peak_db": -16.7
+    },
+    "combat.elements.fire_grand": {
+      "category": "combat/elements",
+      "description": "Fogo: grande magia. O sigilo, a chama crescendo e a florada quente.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/fire_grand.wav"
+      ],
+      "seconds": 1.389,
+      "peak_db": -14.8
+    },
+    "combat.elements.water_grand": {
+      "category": "combat/elements",
+      "description": "Água: grande magia. O sigilo, a maré subindo e a onda chegando.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/water_grand.wav"
+      ],
+      "seconds": 1.492,
+      "peak_db": -10.8
+    },
+    "combat.elements.wind_grand": {
+      "category": "combat/elements",
+      "description": "Vento: grande magia. O sigilo, o redemoinho e a rajada.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/wind_grand.wav"
+      ],
+      "seconds": 1.338,
+      "peak_db": -17
+    },
+    "combat.elements.light_grand": {
+      "category": "combat/elements",
+      "description": "Luz: grande magia. O sigilo, o coro abrindo e o acorde de sinos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/light_grand.wav"
+      ],
+      "seconds": 1.769,
+      "peak_db": -17.1
+    },
+    "combat.elements.dark_grand": {
+      "category": "combat/elements",
+      "description": "Trevas: grande magia. O sigilo, o coro em \"u\", a sombra subindo e o golpe.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/elements/dark_grand.wav"
+      ],
+      "seconds": 1.724,
+      "peak_db": -16.5
+    },
+    "combat.status.boon": {
+      "category": "combat/status",
+      "description": "Efeito bom: a celesta subindo de Mi a Si.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/combat/status/boon.wav"
+      ],
+      "seconds": 0.452,
+      "peak_db": -23.4
+    },
+    "combat.status.bane": {
+      "category": "combat/status",
+      "description": "Efeito ruim: a harpa descendo de Sol a Mi, abafada, com a sombra.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/combat/status/bane.wav"
+      ],
+      "seconds": 0.556,
+      "peak_db": -21.6
+    },
+    "progression.turn_start": {
+      "category": "progression",
+      "description": "Sua vez: Mi e Si na harpa, baixinho.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/turn_start.wav"
+      ],
+      "seconds": 0.312,
+      "peak_db": -21.4
+    },
+    "progression.new_wave": {
+      "category": "progression",
+      "description": "Nova onda: um passo de feltro e o arpejo de Mi subindo até o sino.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/new_wave.wav"
+      ],
+      "seconds": 0.911,
+      "peak_db": -20.2
+    },
+    "progression.victory": {
+      "category": "progression",
+      "description": "Vitória: a harpa subindo em Sol maior, o acorde de sinos e os sininhos.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/progression/victory.wav"
+      ],
+      "seconds": 1.916,
+      "peak_db": -16.7
+    },
+    "progression.defeat": {
+      "category": "progression",
+      "description": "Derrota: a harpa descendo devagar até Mi sobre um tapete grave.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/progression/defeat.wav"
+      ],
+      "seconds": 2.595,
+      "peak_db": -20.2
+    },
+    "progression.auto_battle_start": {
+      "category": "progression",
+      "description": "Combate automático ligado: a quinta subindo na harpa.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/auto_battle_start.wav"
+      ],
+      "seconds": 0.472,
+      "peak_db": -19.8
+    },
+    "progression.auto_battle_end": {
+      "category": "progression",
+      "description": "Combate automático desligado: a quinta descendo na harpa.",
+      "mix": "soft",
+      "files": [
+        "res://Assets/Audio/progression/auto_battle_end.wav"
+      ],
+      "seconds": 0.477,
+      "peak_db": -20.1
+    },
+    "combat.boss.enter": {
+      "category": "combat/boss",
+      "description": "Chefe entrando: dois passos de feltro, a taça grave e a sombra.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/enter.wav"
+      ],
+      "seconds": 2.45,
+      "peak_db": -17.4
+    },
+    "combat.boss.special": {
+      "category": "combat/boss",
+      "description": "Chefe usando habilidade especial: a subida grave, a sombra e a florada.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/special.wav"
+      ],
+      "seconds": 1.447,
+      "peak_db": -13.4
+    },
+    "combat.boss.defeated": {
+      "category": "combat/boss",
+      "description": "Chefe derrotado: a taça descendo a Mi, a florada e o coro se abrindo.",
+      "mix": "epic",
+      "files": [
+        "res://Assets/Audio/combat/boss/defeated.wav"
+      ],
+      "seconds": 2.164,
+      "peak_db": -13.1
+    }
+  }
+}

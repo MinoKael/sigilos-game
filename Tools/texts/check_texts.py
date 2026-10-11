@@ -1,7 +1,8 @@
 """Confere Data/texts/pt-BR.json (a base) contra o código e as traduções contra a base.
 
 Procura as chaves literais usadas em T("...") dentro de UI/ e GameEntry/ e diz quais faltam no
-arquivo de textos e quais sobram nele. Chaves montadas a partir de enum (T($"stat.{stat}"))
+arquivo de textos e quais sobram nele. Os nomes dos sons (Assets/Audio/sounds.json, docs/SONS.md) têm
+a mesma cara de "grupo.chave" e ficam de fora. Chaves montadas a partir de enum (T($"stat.{stat}"))
 não aparecem aqui: essas o jogo confere ao abrir e avisa no console (Texts.MissingEnumKeys).
 Depois confere cada tradução (en.json...): mesmas chaves e mesmos marcadores {0}, {1}... da base,
 e o grupo "names": a tradução de cada nome dos dados (invocações, habilidades, fases, Masmorras,
@@ -22,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CODE = [ROOT / "UI", ROOT / "GameEntry"]
 DATA = ROOT / "Data"
 TEXTS = DATA / "texts"
+SOUNDS = ROOT / "Assets" / "Audio" / "sounds.json"
 BASE = "pt-BR"
 NAMES = "names"
 LITERAL = re.compile(r'\bT\(\s*"([a-z0-9_.]+)"')
@@ -32,13 +34,18 @@ DYNAMIC = re.compile(r'\bT\(\s*\$"([a-z0-9_.]+)\{')
 HOLE = re.compile(r"\{\d+\}")
 
 
+def sound_names():
+    return set(json.loads(SOUNDS.read_text(encoding="utf-8"))["sounds"]) if SOUNDS.exists() else set()
+
+
 def code_keys():
     literal, prefixes = set(), set()
+    sounds = sound_names()
     for folder in CODE:
         for path in folder.rglob("*.cs"):
             text = path.read_text(encoding="utf-8")
             literal.update(LITERAL.findall(text))
-            literal.update(k for k in KEYLIKE.findall(text) if not k.endswith((".svg", ".json", ".cs")))
+            literal.update(k for k in KEYLIKE.findall(text) if not k.endswith((".svg", ".json", ".cs")) and k not in sounds)
             prefixes.update(DYNAMIC.findall(text))
     return literal, prefixes
 

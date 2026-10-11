@@ -26,10 +26,15 @@ namespace Sigilos.Tests
 				enemies: Read("enemies.json"),
 				stages: Read("stages.json"),
 				dungeons: Read("dungeons.json"),
-				shop: Read("shop.json"));
+				shop: Read("shop.json"),
+				exploration: Read("exploration.json"));
 		}
 
 		private static GameDatabase? _database;
+
+		/// <summary>Os desenhos de Assets/Avatars, sem a extensão: os retratos especiais (no jogo, o ContentLoader lê a pasta).</summary>
+		public static IEnumerable<string> AvatarFiles() =>
+			Directory.GetFiles(Path.Combine(Program.ProjectRoot, "Assets", "Avatars"), "*.svg").Select(file => Path.GetFileNameWithoutExtension(file));
 
 		/// <summary>O banco de verdade, lido uma vez só.</summary>
 		public static GameDatabase Database => _database ??= LoadReal();

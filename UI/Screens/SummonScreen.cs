@@ -7,6 +7,7 @@ using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Summoning;
 using Sigilos.Core.Progression;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -28,6 +29,12 @@ namespace Sigilos.UI.Screens
 	public partial class SummonScreen : Control
 	{
 		private const double RitualSeconds = 1.4;
+
+		/// <summary>O som de cada cartão que aparece, por estrelas (1★ a 5★).</summary>
+		private static readonly string[] RevealSounds =
+		{
+			"summon.reveal_star_1", "summon.reveal_star_2", "summon.reveal_star_3", "summon.reveal_star_4", "summon.reveal_star_5",
+		};
 		private const float PortalSize = 360;
 
 		private readonly GameDatabase _database;
@@ -40,8 +47,8 @@ namespace Sigilos.UI.Screens
 		private readonly Label _pityText = new() { Name = "PityText", AutowrapMode = TextServer.AutowrapMode.WordSmart };
 		private readonly ProgressBar _pityBar = Layout.Energy(Palette.Awakened, 10).Named("PityBar");
 		private readonly Control _stage = new() { Name = "Stage", SizeFlagsVertical = SizeFlags.ExpandFill, SizeFlagsHorizontal = SizeFlags.ExpandFill };
-		private readonly HBoxContainer _kindRow = Layout.Row(0).Named("Scrolls");
-		private readonly HBoxContainer _rates = Layout.Row(14).Named("Rates");
+		private readonly HBoxContainer _kindRow = Layout.Row(Space.None).Named("Scrolls");
+		private readonly HBoxContainer _rates = Layout.Row(Space.Wide).Named("Rates");
 		private readonly VBoxContainer _pityBox = new() { Name = "Pity" };
 		private readonly GameButton _exchange;
 
@@ -57,6 +64,12 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>A lição ainda espera a ×10: a ×1 fica apagada.</summary>
 		private bool _lesson;
+
+		/// <summary>
+		/// Do começo do ritual até os cartões aparecerem: nada invoca de novo, nem depois de trocar a aba
+		/// (<see cref="Refresh"/> reabilitaria os botões e a segunda leva empurraria a primeira para fora).
+		/// </summary>
+		private bool _ritual;
 
 		public SummonScreen(GameDatabase database, PlayerState player, TutorialCoach? coach = null)
 		{
@@ -86,13 +99,13 @@ namespace Sigilos.UI.Screens
 			var page = Layout.Page(this);
 			page.AddChild(Layout.Header(T("destination.Summon"), _currencies, () => BackRequested?.Invoke()).Header);
 
-			var body = Layout.Row(28).Named("Body");
+			var body = Layout.Row(28).Named("Body"); // Fora da escala: as duas metades da tela de Invocação.
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
-			var panel = new PanelContainer { Name = "Pulls", CustomMinimumSize = new Vector2(360, 0) };
-			var column = new VBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Center };
-			column.AddThemeConstantOverride("separation", 14);
+			var panel = new PanelContainer { Name = "Pulls", CustomMinimumSize = new Vector2(440, 0) };
+			var column = new VBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Begin };
+			column.AddThemeConstantOverride("separation", Space.Wide);
 			panel.AddChild(column);
 			column.AddChild(_kindRow);
 			column.AddChild(_single);
@@ -118,11 +131,11 @@ namespace Sigilos.UI.Screens
 			body.AddChild(panel);
 
 			body.AddChild(_stage);
-			_results.AddThemeConstantOverride("separation", 16);
-			_cards.AddThemeConstantOverride("h_separation", 12);
-			_cards.AddThemeConstantOverride("v_separation", 12);
+			_results.AddThemeConstantOverride("separation", Space.Loose);
+			_cards.AddThemeConstantOverride("h_separation", Space.Large);
+			_cards.AddThemeConstantOverride("v_separation", Space.Large);
 			_results.AddChild(_cards);
-			var after = Layout.Row(12, true).Named("After");
+			var after = Layout.Row(Space.Large, true).Named("After");
 			after.AddChild(GameButton.Of(T("summon.view_monsters"), () => MonstersRequested?.Invoke(), ButtonKind.Secondary, "monster").Wide(300).Named("ViewMonsters"));
 			_results.AddChild(after);
 			_stage.AddChild(_results);
@@ -167,9 +180,11 @@ namespace Sigilos.UI.Screens
 			Cost(_single, 1);
 			Cost(_ten, 10);
 			_exchange.WithCost("fragments", Texts.Number(FragmentExchange.Cost));
-			_exchange.Disabled = _lesson || _player.Fragments < FragmentExchange.Cost;
-			if (_lesson)
+			_exchange.Disabled = _ritual || _lesson || _player.Fragments < FragmentExchange.Cost;
+			if (_lesson || _ritual)
 				_single.Disabled = true;
+			if (_ritual)
+				_ten.Disabled = true;
 		}
 
 		/// <summary>As abas dos pergaminhos, com quantos a conta tem de cada; o tutorial só mostra o Místico.</summary>
@@ -211,8 +226,8 @@ namespace Sigilos.UI.Screens
 			var dialog = Dialog.Open(this, T("summon.exchange_title"), 820, null, "ExchangeDialog");
 			dialog.Body.AddChild(Layout.Text(T("summon.exchange_hint", Texts.Number(FragmentExchange.Cost), Texts.Number(_player.Fragments)), GameTheme.Faded).Named("Hint"));
 			var grid = new GridContainer { Name = "Options", Columns = 5 };
-			grid.AddThemeConstantOverride("h_separation", 10);
-			grid.AddThemeConstantOverride("v_separation", 10);
+			grid.AddThemeConstantOverride("h_separation", Space.Regular);
+			grid.AddThemeConstantOverride("v_separation", Space.Regular);
 			foreach (var summon in FragmentExchange.Options(_database))
 			{
 				var card = new CreatureCard(summon, null, 112) { Name = summon.Id };
@@ -234,14 +249,15 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>
 		/// O círculo gira e brilha; depois os cartões aparecem um a um. Com <paramref name="saved"/> (o envio
-		/// para a nuvem), o resultado só aparece depois dele, ou de <see cref="SaveWaitSeconds"/>.
+		/// para a nuvem), o resultado só aparece depois dele, ou de <see cref="SaveWaitSeconds"/>. O sigilo
+		/// acende com som e a energia sobe até o fim do giro.
 		/// </summary>
 		public void ShowResults(IReadOnlyList<SummonResult> results, Task? saved = null)
 		{
+			_ritual = true;
 			Refresh();
 			Layout.Clear(_cards);
 			_results.Visible = false;
-			_single.Disabled = _ten.Disabled = true;
 			_coach?.Clear();
 
 			if (_idle != null)
@@ -262,6 +278,8 @@ namespace Sigilos.UI.Screens
 			tween.Parallel().TweenMethod(Callable.From<Color>(c => _sigil.SetInk(c)), Palette.Gold, Palette.Frame(best).Lerp(Colors.White, 0.3f), RitualSeconds);
 			tween.TweenProperty(_sigil, "modulate:a", 0f, 0.25);
 			tween.TweenCallback(Callable.From(() => RevealWhenSaved(results, saved)));
+			Sfx.Play("summon.summon_start");
+			Sfx.Play("summon.energy_build", 0.3);
 		}
 
 		private async void RevealWhenSaved(IReadOnlyList<SummonResult> results, Task? saved)
@@ -276,15 +294,19 @@ namespace Sigilos.UI.Screens
 		/// Os cartões aparecem um a um. 4★ e 5★ ganham destaque: um halo de raios atrás, a faixa no alto
 		/// ("4★!", "5★!") e o cartão que salta; o 5★ ainda acende a tela num clarão. Luz e Trevas, os
 		/// elementos mais raros, trocam o ouro e a prata pela cor do elemento, com raios em duas cores e
-		/// o nome do elemento na faixa.
+		/// o nome do elemento na faixa. Cada cartão soa as estrelas dele, na mesma cascata; o monstro novo na
+		/// conta fecha com o registro no grimório.
 		/// </summary>
 		private void Reveal(IReadOnlyList<SummonResult> results)
 		{
+			_ritual = false;
 			_sigil?.QueueFree();
 			_sigil = null;
+			// Só a leva desta invocação: nunca soma cartões a uma anterior.
+			Layout.Clear(_cards);
 			_cards.Columns = Math.Min(5, results.Count);
 			_cards.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
-            _results.Visible = true;
+			_results.Visible = true;
 			var width = results.Count == 1 ? 180 : 124;
 
 			for (var i = 0; i < results.Count; i++)
@@ -296,6 +318,7 @@ namespace Sigilos.UI.Screens
 				var slot = new Control { Name = $"Result{i + 1}", CustomMinimumSize = new Vector2(width, width * 1.25f), MouseFilter = MouseFilterEnum.Ignore };
 				var card = new CreatureCard(result.Summon, result.Monster, width, null, tag) { Name = "Card", Modulate = new Color(1, 1, 1, 0) };
 				var delay = 0.08 * i;
+				Sfx.Play(RevealSounds[Math.Clamp(result.Summon.Rarity, 1, RevealSounds.Length) - 1], delay);
 				var rare = result.Summon.Rarity >= 4;
 				if (rare)
 				{
@@ -320,6 +343,9 @@ namespace Sigilos.UI.Screens
 
 				_cards.AddChild(slot);
 			}
+
+			if (results.Any(result => result.FirstCopy))
+				Sfx.Play("grimoire.creature_registered", 0.08 * results.Count + 0.4);
 
 			// Espera o grid medir os cartões antes de centralizar.
 			Callable.From(Center).CallDeferred();

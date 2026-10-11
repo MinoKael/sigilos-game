@@ -20,10 +20,16 @@ namespace Sigilos.Core.Player
 		/// <summary>Cura uma parte do dano causado.</summary>
 		Drain,
 
+		/// <summary>Dano fixo: sem Defesa, elemento nem crítico.</summary>
+		FixedDamage,
+
 		/// <summary>Cura, de um aliado ou do time.</summary>
 		Heal,
 
 		Shield,
+
+		/// <summary>Traz de volta aliados caídos.</summary>
+		Revive,
 
 		/// <summary>Põe um efeito positivo nos aliados.</summary>
 		Buff,
@@ -55,20 +61,41 @@ namespace Sigilos.Core.Player
 	}
 
 	/// <summary>
-	/// Em que atributo a habilidade escala: só os que o jogo tem (docs/COMBATE.md, "Em que atributo a
-	/// habilidade escala"), cada um com o termo dele na planilha de referência (docs/allstats.xlsx). Os outros
-	/// termos de lá (Defesa, Velocidade, Vida perdida...) não entram: escalar neles seria regra nova.
+	/// Em que a habilidade escala (docs/COMBATE.md, "Em que atributo a habilidade escala"), cada um com o
+	/// termo dele na planilha de referência (docs/allstats.xlsx): os atributos da conta do efeito
+	/// (<see cref="EffectScaling"/>) e o que os fatores dela leem.
 	/// </summary>
 	public enum SkillScaling
 	{
 		/// <summary>{ATK}: o dano e a Bomba, no Ataque de quem lança.</summary>
 		Attack,
 
+		/// <summary>{DEF}: a Defesa de quem lança.</summary>
+		Defense,
+
 		/// <summary>{MAX HP}: o escudo, na Vida máxima de quem lança.</summary>
 		MaxHealth,
 
+		/// <summary>{SPD}: a Velocidade de quem lança.</summary>
+		Speed,
+
 		/// <summary>{Target MAX HP}: a cura, na Vida máxima do alvo.</summary>
 		TargetMaxHealth,
+
+		/// <summary>{Attacker's Level}: o nível de quem lança.</summary>
+		Level,
+
+		/// <summary>{Current HP %}: a Vida atual de quem lança.</summary>
+		HealthFraction,
+
+		/// <summary>{Target Current HP %}: a Vida atual do alvo.</summary>
+		TargetHealthFraction,
+
+		/// <summary>{Target SPD}: a Velocidade do alvo.</summary>
+		TargetSpeed,
+
+		/// <summary>{Living Ally %}: os aliados de pé.</summary>
+		LivingAllies,
 	}
 
 	/// <summary>
@@ -83,8 +110,10 @@ namespace Sigilos.Core.Player
 			(SkillBehavior.MultiHit, e => e.Kind == EffectKind.Damage && e.Hits > 1),
 			(SkillBehavior.IgnoreDefense, e => e.Kind == EffectKind.Damage && e.IgnoreDefense > 0),
 			(SkillBehavior.Drain, e => e.Kind == EffectKind.Damage && e.Drain > 0),
+			(SkillBehavior.FixedDamage, e => e.Kind == EffectKind.Damage && e.Fixed),
 			(SkillBehavior.Heal, e => e.Kind is EffectKind.Heal or EffectKind.HealTeam),
 			(SkillBehavior.Shield, e => e.Kind == EffectKind.Shield || e is { Kind: EffectKind.Status, Status: StatusKind.Shield }),
+			(SkillBehavior.Revive, e => e.Kind == EffectKind.Revive),
 			(SkillBehavior.Buff, e => e.Kind == EffectKind.Status && e.Status != StatusKind.Shield && !BattleRules.IsNegative(e.Status) && OnAllies(e.Target)),
 			(SkillBehavior.Debuff, e => e.Kind == EffectKind.Status && BattleRules.IsNegative(e.Status) && !OnAllies(e.Target)),
 			(SkillBehavior.Cleanse, e => e.Kind == EffectKind.Cleanse),
@@ -100,9 +129,16 @@ namespace Sigilos.Core.Player
 		/// <summary>A tabela de docs/COMBATE.md: que efeito escala em quê.</summary>
 		private static readonly (SkillScaling Scaling, Func<EffectDefinition, bool> Has)[] Scalings =
 		{
-			(SkillScaling.Attack, e => e.Kind == EffectKind.Damage || e is { Kind: EffectKind.Status, Status: StatusKind.Bomb }),
-			(SkillScaling.MaxHealth, e => e.Kind == EffectKind.Shield),
-			(SkillScaling.TargetMaxHealth, e => e.Kind is EffectKind.Heal or EffectKind.HealTeam),
+			(SkillScaling.Attack, e => Reads(e, ScaleStat.Attack) || e is { Kind: EffectKind.Status, Status: StatusKind.Bomb }),
+			(SkillScaling.Defense, e => Reads(e, ScaleStat.Defense)),
+			(SkillScaling.MaxHealth, e => Reads(e, ScaleStat.MaxHealth)),
+			(SkillScaling.Speed, e => Reads(e, ScaleStat.Speed) || (EffectScaling.Scales(e.Kind) && e.Speed != null)),
+			(SkillScaling.TargetMaxHealth, e => Reads(e, ScaleStat.TargetMaxHealth)),
+			(SkillScaling.Level, e => Reads(e, ScaleStat.Level)),
+			(SkillScaling.HealthFraction, e => Measures(e, ScaleMeasure.HealthFraction)),
+			(SkillScaling.TargetHealthFraction, e => Measures(e, ScaleMeasure.TargetHealthFraction)),
+			(SkillScaling.TargetSpeed, e => EffectScaling.Scales(e.Kind) && e.Speed is { OverTarget: true }),
+			(SkillScaling.LivingAllies, e => Measures(e, ScaleMeasure.LivingAllies)),
 		};
 
 		/// <summary>O que as habilidades do monstro fazem, na forma dele (desperto ou não).</summary>
@@ -133,6 +169,11 @@ namespace Sigilos.Core.Player
 
 		private static IEnumerable<EffectDefinition> Effects(IEnumerable<SkillDefinition> skills, bool awakened) =>
 			skills.SelectMany(s => awakened && s.AwakenedEffects.Count > 0 ? s.AwakenedEffects : s.Effects);
+
+		private static bool Reads(EffectDefinition effect, ScaleStat stat) => EffectScaling.StatsOf(effect).Contains(stat);
+
+		private static bool Measures(EffectDefinition effect, ScaleMeasure measure) =>
+			EffectScaling.Scales(effect.Kind) && effect.Factor?.By == measure;
 
 		private static bool OnAllies(TargetKind target) =>
 			target is TargetKind.Self or TargetKind.LowestAlly or TargetKind.AllAllies or TargetKind.HighestAlly or TargetKind.RandomAlly;

@@ -6,6 +6,7 @@ using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -59,25 +60,30 @@ namespace Sigilos.UI.Screens
 			sigils.Add(T("grimoire.tab.runes"), "", "grimoire").Name = "RuneTables";
 			sigils.Add(T("grimoire.tab.grindstones"), "", "grindstone").Name = "Grindstones";
 			sigils.Add(T("grimoire.tab.gems"), "", "gem").Name = "Gems";
-			sigils.Changed += index => tabs.CurrentTab = index;
+			sigils.Changed += index =>
+			{
+				Sfx.Play("grimoire.page_turn");
+				tabs.CurrentTab = index;
+			};
+			Sfx.Play("grimoire.book_open");
 		}
 
 		// Invocações --------------------------------------------------------------------------------
 
 		private void Summons(TabContainer tabs)
 		{
-			var body = Layout.Row(14).Named("Summons");
+			var body = Layout.Row(Space.Wide).Named("Summons");
 			tabs.AddChild(body);
 			tabs.SetTabTitle(tabs.GetTabCount() - 1, T("grimoire.tab.summons"));
 
-			_gallery.AddThemeConstantOverride("h_separation", 10);
-			_gallery.AddThemeConstantOverride("v_separation", 10);
+			_gallery.AddThemeConstantOverride("h_separation", Space.Regular);
+			_gallery.AddThemeConstantOverride("v_separation", Space.Regular);
 			var gallery = Layout.Scroll(_gallery).Named("Gallery");
 			gallery.CustomMinimumSize = new Vector2(540, 0);
 			gallery.SizeFlagsHorizontal = SizeFlags.Fill;
 			body.AddChild(gallery);
 
-			_sheet.AddThemeConstantOverride("separation", 10);
+			_sheet.AddThemeConstantOverride("separation", Space.Regular);
 			body.AddChild(Layout.Scroll(_sheet).Named("Sheet"));
 
 			RefreshSummons();
@@ -122,10 +128,10 @@ namespace Sigilos.UI.Screens
 			art.AddChild(Doodle.Masked(Art.Creature(family.Image), Palette.Grey, MaskShape.Rounded, 6, aura: _awakened ? Element.Light : null));
 			column.AddChild(art);
 			var name = new Label { Name = "Name", Text = family.BaseName, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore, ClipText = true };
-			name.AddThemeFontSizeOverride("font_size", 15);
+			name.AddThemeFontSizeOverride("font_size", FontSize.Note);
 			column.AddChild(name);
 			var count = new Label { Name = "Copies", Text = copies == 0 ? T("grimoire.not_owned") : T("grimoire.copies", copies), ThemeTypeVariation = GameTheme.Faded, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
-			count.AddThemeFontSizeOverride("font_size", 13);
+			count.AddThemeFontSizeOverride("font_size", FontSize.Caption);
 			column.AddChild(count);
 			card.AddChild(column);
 
@@ -136,6 +142,7 @@ namespace Sigilos.UI.Screens
 
 				// Troca de família mantendo o elemento, quando a nova tem.
 				_selected = Variants(family.Id).FirstOrDefault(s => s.Element == _selected.Element) ?? Variants(family.Id).First();
+				Sfx.Play("grimoire.page_select");
 				Callable.From(RefreshSummons).CallDeferred();
 			}
 
@@ -150,7 +157,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Um sigilo por elemento da família (o aceso é o da ficha), e o do Despertar, que troca a ficha para a forma desperta.</summary>
 		private Control ElementPicker(SummonDefinition current)
 		{
-			var row = Layout.Row(10).Named("Elements");
+			var row = Layout.Row(Space.Regular).Named("Elements");
 			var variants = Variants(current.FamilyId).ToList();
 			var tabs = new TextTabs(false, 48) { Name = "Tabs" };
 			foreach (var variant in variants)
@@ -183,7 +190,7 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(new Label { Name = "Family", Text = family.BaseName, ThemeTypeVariation = GameTheme.Title });
 			_sheet.AddChild(ElementPicker(summon));
 
-			var identity = Layout.Row(12).Named("Identity");
+			var identity = Layout.Row(Space.Large).Named("Identity");
 			var portrait = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(96, 96), MouseFilter = MouseFilterEnum.Stop };
 			portrait.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 3, 10, 6));
 			portrait.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Rounded, 6, aura: _awakened ? summon.Element : null));
@@ -194,7 +201,7 @@ namespace Sigilos.UI.Screens
 			if (_awakened)
 				name.AddThemeColorOverride("font_color", Palette.Awakened);
 			info.AddChild(name);
-			var line = Layout.Row(8).Named("Line");
+			var line = Layout.Row(Space.Medium).Named("Line");
 			var stars = new Label { Name = "Stars", Text = Texts.Stars(summon.Rarity) };
 			stars.AddThemeColorOverride("font_color", Palette.Stars(_awakened));
 			line.AddChild(stars);
@@ -206,8 +213,8 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(identity);
 
 			var table = new GridContainer { Name = "Stats", Columns = 4 };
-			table.AddThemeConstantOverride("h_separation", 22);
-			table.AddThemeConstantOverride("v_separation", 2);
+			table.AddThemeConstantOverride("h_separation", 22); // Fora da escala: quatro colunas de número na largura da ficha.
+			table.AddThemeConstantOverride("v_separation", Space.Hair);
 			table.AddChild(new Control { Name = Layout.NextCell(table) });
 			Cell(table, "", true);
 			Cell(table, T("common.stars_level", Texts.Stars(summon.Rarity), 1), true);
@@ -231,7 +238,7 @@ namespace Sigilos.UI.Screens
 
 			if (summon.Leader is { } leader)
 			{
-				var row = Layout.Row(10).Named("Leader");
+				var row = Layout.Row(Space.Regular).Named("Leader");
 				row.AddChild(Doodle.Icon(Art.Icon("leader"), 32, Palette.Gold).Named("Icon"));
 				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 480).Named("Text"));
 				_sheet.AddChild(row);
@@ -239,7 +246,7 @@ namespace Sigilos.UI.Screens
 
 			_sheet.AddChild(new HSeparator { Name = "AwakeningLine" });
 			_sheet.AddChild(new Label { Name = "AwakeningTitle", Text = T("grimoire.awakening_title", summon.Awakening.Name), ThemeTypeVariation = GameTheme.Heading });
-			var awaken = Layout.Flow(8).Named("Awakening");
+			var awaken = Layout.Flow(Space.Medium).Named("Awakening");
 			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
 				awaken.AddChild(Layout.Labeled(Texts.GlyphOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
 			awaken.AddChild(Layout.Labeled("essence", Texts.Number(Awakening.Cost(summon.Rarity)), T("grimoire.awaken_cost")).Named("Cost"));
@@ -253,7 +260,7 @@ namespace Sigilos.UI.Screens
 			foreach (var set in RuneSets.All)
 			{
 				var panel = new PanelContainer { Name = set.Set.ToString(), ThemeTypeVariation = GameTheme.InsetPanel };
-				var row = Layout.Row(12).Named("Row");
+				var row = Layout.Row(Space.Large).Named("Row");
 				row.AddChild(new RuneGlyph(set.Glyph, 44, Palette.Gold) { Name = "Glyph" });
 				var text = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 				text.AddChild(RichText.Label(Texts.Term(set.Set)).Named("Title"));
@@ -338,7 +345,7 @@ namespace Sigilos.UI.Screens
 		private static Control Heading(string text, string explain)
 		{
 			var column = new VBoxContainer();
-			column.AddThemeConstantOverride("separation", 2);
+			column.AddThemeConstantOverride("separation", Space.Hair);
 			column.AddChild(new Label { Name = "Title", Text = text, ThemeTypeVariation = GameTheme.Heading });
 			column.AddChild(Layout.Text(explain, GameTheme.Faded).Named("Explain"));
 			return column;
@@ -348,8 +355,8 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { Name = name, ThemeTypeVariation = GameTheme.InsetPanel };
 			var table = new GridContainer { Name = "Table", Columns = columns };
-			table.AddThemeConstantOverride("h_separation", 18);
-			table.AddThemeConstantOverride("v_separation", 4);
+			table.AddThemeConstantOverride("h_separation", 18); // Fora da escala: as tabelas dentro de um painel rebaixado, mais estreitas que a ficha.
+			table.AddThemeConstantOverride("v_separation", Space.Tight);
 			foreach (var title in header)
 				Cell(table, title, true);
 			panel.AddChild(table);

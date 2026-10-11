@@ -29,6 +29,7 @@ namespace Sigilos.Core.Content
 			[EffectKind.HealTeam] = new[] { TargetKind.AllAllies, TargetKind.LowestAlly, TargetKind.Self },
 			[EffectKind.JointAttack] = new[] { TargetKind.AllAllies, TargetKind.LowestAlly, TargetKind.HighestAlly, TargetKind.RandomAlly },
 			[EffectKind.ExtraTurnOnKill] = new[] { TargetKind.Self },
+			[EffectKind.Revive] = new[] { TargetKind.AllAllies },
 		};
 
 		public static bool Allows(EffectKind kind, TargetKind target) =>

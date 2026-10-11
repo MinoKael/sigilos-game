@@ -305,7 +305,8 @@ namespace Sigilos.Tests
             Assert.Equal(NewGame.StartingMana, Mana.Max(player), "e a cheia do nível 1 é a do NewGame");
 
             player.Mana = 0;
-            Assert.Equal((int)(Mana.PerHour * 2), Idle.Collect(player, Start.AddHours(2)).Mana, "12 por hora");
+            Assert.Equal((int)(Mana.PerHour * 2), Idle.Collect(player, Start.AddHours(2)).Mana, "20 por hora");
+            Assert.Equal(Mana.BaseMax, (int)(Mana.PerHour * Mana.RefillHours), "a Mana do nível 1 enche do zero em 5 horas");
 
             Idle.Collect(player, Start.AddHours(2 + (Idle.CapHours * 2)));
             Assert.Equal(Mana.Max(player) * 2, player.Mana, "para no dobro do máximo");

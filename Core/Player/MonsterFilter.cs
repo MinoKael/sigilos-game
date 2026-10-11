@@ -87,6 +87,7 @@ namespace Sigilos.Core.Player
 		{
 			MonsterCondition.Favorite => monster.Favorite,
 			MonsterCondition.Locked => monster.Locked,
+			MonsterCondition.Unlocked => !monster.Locked,
 			MonsterCondition.InTeam => player.Teams.Values.Any(team => team.Contains(monster.Id)),
 			MonsterCondition.MaxLevel => Leveling.IsMaxLevel(monster),
 			MonsterCondition.Runed => player.Runes.Any(r => r.EquippedOn == monster.Id),

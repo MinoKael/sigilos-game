@@ -12,6 +12,7 @@ using Sigilos.Core.Summoning;
 using Sigilos.GameEntry.Account;
 using Sigilos.GameEntry.Update;
 using Sigilos.UI;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Screens;
 using Sigilos.UI.Style;
@@ -27,10 +28,11 @@ namespace Sigilos.GameEntry
 	/// escolheu; quem muda o <see cref="PlayerState"/> e salva é esta classe.
 	///
 	/// A navegação: o Santuário leva à escolha de batalha (Campanha, Masmorras), à Invocação e, pela
-	/// barra de baixo, a Monstros, Runas, Equipes, Loja, Grimório, Compêndio e Ajustes; cada tela volta
+	/// barra de baixo, a Monstros, Runas, Loja, Grimório, Compêndio e Ajustes; cada tela volta
 	/// para onde veio (seta, Esc ou o Voltar do celular). A Batalha automática roda fora das telas
 	/// (<see cref="AutoBattleRunner"/>), com o aviso flutuante no alto de todas.
 	/// A música acompanha a tela (<see cref="MusicPlayer"/>): a Batalha na luta, o Plano Celestial no resto.
+	/// Os efeitos sonoros tocam pelo <see cref="Sfx"/> (docs/SONS.md): cada ação daqui soa o seu.
 	///
 	/// Antes do Santuário vem a conta (<see cref="AccountSession"/>, docs/SAVE_NUVEM.md): a tela de login
 	/// (Entrar, Criar conta, Jogar sem conta), a pergunta "desconectar o outro aparelho?" e, quando o
@@ -45,7 +47,8 @@ namespace Sigilos.GameEntry
 	/// save e de conta (outro "aparelho"); <c>--language=nome</c> usa Data/texts/nome.json (padrão: o do
 	/// save, ou pt-BR); <c>--server=url</c> usa outro servidor de contas; <c>--updates=url</c> procura
 	/// versões novas em outra pasta (só no executável exportado);
-	/// <c>--screen=map|campaign|dungeons|summon|shop|monsters|teams|runes|compendium|grimoire|battle</c> abre essa tela direto, no save sem conta.
+	/// <c>--screen=map|campaign|dungeons|summon|shop|monsters|prep|runes|compendium|grimoire|battle</c> abre essa tela direto, no save sem conta
+	/// (<c>prep</c>: a preparação da próxima fase da Campanha).
 	/// </summary>
 	public partial class GameRoot : Node
 	{
@@ -59,6 +62,7 @@ namespace Sigilos.GameEntry
 		private readonly Random _random = new();
 		private readonly AutoBattleRunner _runner = new();
 		private readonly MusicPlayer _music = new();
+		private readonly Sfx _sfx = new();
 		private readonly AutoBattleBadge _badge = new();
 		private readonly ChatFeed _chat = new();
 		private ChatBubble _bubble = null!;
@@ -99,15 +103,19 @@ namespace Sigilos.GameEntry
 		// Para onde cada tela de conteúdo volta: vale também depois de uma luta ou da Loja.
 		private Action _campaignBack = null!;
 		private Action _dungeonsBack = null!;
+		private Action _explorationBack = null!;
 		private Action _storageBack = null!;
 
 		/// <summary>A busca da tela de Monstros, que fica enquanto o jogo está aberto.</summary>
 		private MonsterFilter _monsterFilter = new();
+
+		/// <summary>A busca da coleção na preparação das lutas, que fica enquanto o jogo está aberto.</summary>
+		private MonsterFilter _prepFilter = new();
 		private Action _summonBack = null!;
 
 		public override void _Ready()
 		{
-			_campaignBack = _dungeonsBack = ShowMap;
+			_campaignBack = _dungeonsBack = _explorationBack = ShowMap;
 			_storageBack = _summonBack = ShowHub;
 			_account = new AccountSession(Argument("--save=") ?? DefaultSlot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
 			AddChild(_account);
@@ -134,6 +142,7 @@ namespace Sigilos.GameEntry
 			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles. Antes de abrir um save
 			// (a tela de login), vale o idioma do último jogo deste aparelho.
 			_language = Argument("--language=") ?? _account.Language ?? _account.OfflineStore.Load()?.Language ?? ContentLoader.BaseLanguage;
+			ContentLoader.LoadAvatars();
 			ContentLoader.LoadTexts(_language);
 			_database = ContentLoader.Load();
 			UiSession.Database = _database;
@@ -166,10 +175,13 @@ namespace Sigilos.GameEntry
 			_account.Chat.Refused += _chat.Refuse;
 			_account.Chat.LiveChanged += RefreshChat;
 			AddChild(_music);
+			AddChild(_sfx);
 			ApplyVolume(MasterBus, _account.MasterVolume);
 			ApplyVolume(MusicPlayer.Bus, _account.MusicVolume);
+			ApplyVolume(Sfx.Bus, _account.EffectsVolume);
 			// No PC, a janela fica sempre em 16:9; no celular, a interface ocupa a tela toda.
 			AddChild(new WindowAspect(OS.HasFeature("mobile") || Argument("--mobile") != null));
+			AddChild(new MinimizeGuard(_ui));
 
 			// Com --screen (desenvolvimento), ou depois de escolher jogar sem conta, abre direto o save local.
 			var screen = Argument("--screen=");
@@ -211,6 +223,7 @@ namespace Sigilos.GameEntry
 			Core.Progression.Account.Open(player, _database, DateTime.Now);
 			_playing = true;
 			_monsterFilter = new MonsterFilter();
+			_prepFilter = new MonsterFilter();
 			UiSession.Player = player;
 			RefreshChat();
 			// A chave que chegou no cadastro ou na entrada aparece por cima da primeira tela.
@@ -229,6 +242,9 @@ namespace Sigilos.GameEntry
 				case "dungeons":
 					Go(Destination.Dungeons, ShowMap);
 					break;
+				case "exploration":
+					Go(Destination.Exploration, ShowMap);
+					break;
 				case "summon":
 					Go(Destination.Summon, ShowHub);
 					break;
@@ -238,8 +254,8 @@ namespace Sigilos.GameEntry
 				case "monsters":
 					Go(Destination.Monsters, ShowHub);
 					break;
-				case "teams":
-					Go(Destination.Teams, ShowHub);
+				case "prep":
+					PrepStage(_database.Stage(Math.Min(_player.HighestStage + 1, _database.Stages.Count)));
 					break;
 				case "runes":
 					ShowRunes(Teams.Of(_player, Teams.Campaign).FirstOrDefault(), ShowHub);
@@ -612,6 +628,11 @@ namespace Sigilos.GameEntry
 				_account.MusicVolume = volume;
 				ApplyVolume(MusicPlayer.Bus, volume);
 			}),
+			new ConfigVolume("Effects", T("config.volume_effects"), _account.EffectsVolume, volume =>
+			{
+				_account.EffectsVolume = volume;
+				ApplyVolume(Sfx.Bus, volume);
+			}),
 		};
 
 		/// <summary>O volume escolhido (0 a 1) no barramento; 0 cala. As transições da música mexem nos tocadores, não aqui.</summary>
@@ -825,7 +846,7 @@ namespace Sigilos.GameEntry
 				UseLanguage(language);
 				ShowHub();
 			}, Volumes(), AccountSettings(), ShowTutorial);
-			hub.CollectRequested += () => Change(() => Idle.Collect(_player, DateTime.Now), () => hub.Refresh(DateTime.Now));
+			hub.CollectRequested += () => Change(() => Sfx.PlayIf(!Idle.Collect(_player, DateTime.Now).IsEmpty, "rewards.essence"), () => hub.Refresh(DateTime.Now));
 			hub.MailRequested += () => OpenMailbox(hub);
 			hub.AvatarRequested += (summon, awakened) => Change(() => Core.Progression.Account.SetAvatar(_player, summon, awakened), () => hub.Refresh(DateTime.Now));
 			Swap(hub, ShowHub);
@@ -904,6 +925,7 @@ namespace Sigilos.GameEntry
 			if (claimed.Count == 0)
 				return;
 
+			Sfx.Play("rewards.daily_reward");
 			Save();
 			foreach (var mail in claimed)
 				_ = _account.ClaimMail(mail.Id);
@@ -1046,6 +1068,10 @@ namespace Sigilos.GameEntry
 					_dungeonsBack = back;
 					ShowDungeons(null);
 					break;
+				case Destination.Exploration:
+					_explorationBack = back;
+					ShowExploration(null);
+					break;
 				case Destination.Summon:
 					_summonBack = back;
 					ShowSummon();
@@ -1056,9 +1082,6 @@ namespace Sigilos.GameEntry
 					break;
 				case Destination.Runes:
 					ShowRunes(null, back);
-					break;
-				case Destination.Teams:
-					ShowTeams(Teams.Campaign, back);
 					break;
 				case Destination.Shop:
 					ShowShop(back);
@@ -1083,18 +1106,9 @@ namespace Sigilos.GameEntry
 		{
 			var campaign = new CampaignScreen(_database, _player, selected);
 			campaign.BackRequested += () => _campaignBack();
-			campaign.FightRequested += FightStage;
-			campaign.TeamRequested += () => ShowTeams(Teams.Campaign, () => ShowCampaign(campaign.Selected, null));
+			campaign.FightRequested += PrepStage;
 			campaign.ShopRequested += () => ShowShop(() => ShowCampaign(campaign.Selected, null));
-			campaign.RepeatRequested += stage => StartAutoBattle(
-				campaign,
-				T("battle.title_stage", stage.Number, stage.Name),
-				Teams.Campaign,
-				() => Campaign.Check(_player, stage),
-				stage.Mana,
-				stage.Encounter,
-				() => Campaign.ApplyVictory(_random, _player, stage, _database),
-				() => ShowCampaign(stage.Number, null));
+			campaign.RepeatRequested += stage => RepeatStage(campaign, stage);
 			Swap(campaign, () => ShowCampaign(campaign.Selected, null));
 			if (message != null)
 				campaign.ShowMessage(message);
@@ -1104,21 +1118,29 @@ namespace Sigilos.GameEntry
 		{
 			var dungeons = new DungeonScreen(_database, _player, selected);
 			dungeons.BackRequested += () => _dungeonsBack();
-			dungeons.FightRequested += FightFloor;
-			dungeons.TeamRequested += dungeon => ShowTeams(dungeon.Id, () => ShowDungeons(dungeon.Id));
+			dungeons.FightRequested += PrepFloor;
 			dungeons.ShopRequested += dungeon => ShowShop(() => ShowDungeons(dungeon.Id));
-			dungeons.RepeatRequested += (dungeon, floor) => StartAutoBattle(
-				dungeons,
-				T("battle.title_floor", dungeon.Name, floor),
-				dungeon.Id,
-				() => Dungeons.Check(_player, dungeon, floor),
-				dungeon.Floor(floor).Mana,
-				dungeon.Floor(floor).Encounter,
-				() => Dungeons.ApplyVictory(_random, _player, dungeon, floor),
-				() => ShowDungeons(dungeon.Id));
+			dungeons.RepeatRequested += (dungeon, floor) => RepeatFloor(dungeons, dungeon, floor);
 			Swap(dungeons, () => ShowDungeons(selected));
 			if (message != null)
 				dungeons.ShowMessage(message);
+		}
+
+		/// <summary>
+		/// A Exploração Estelar na constelação <paramref name="selected"/> (nula: a próxima a vencer no mês). Num
+		/// mês novo o percurso recomeça antes de a tela abrir, e o save guarda o mês novo.
+		/// </summary>
+		private void ShowExploration(int? selected, string? message = null)
+		{
+			var now = DateTime.Now;
+			if (Exploration.Renew(_player, now))
+				Save();
+			var exploration = new ExplorationScreen(_database, _player, now, selected);
+			exploration.BackRequested += () => _explorationBack();
+			exploration.FightRequested += PrepConstellation;
+			Swap(exploration, () => ShowExploration(exploration.Selected));
+			if (message != null)
+				exploration.ShowMessage(message);
 		}
 
 		private void ShowSummon()
@@ -1159,24 +1181,32 @@ namespace Sigilos.GameEntry
 		private void ShowStorage(int? selected)
 		{
 			var storage = new StorageScreen(_database, _player, selected, _monsterFilter);
-			storage.BackRequested += () => _storageBack();
+			storage.BackRequested += () =>
+			{
+				// Saiu da tela: os novos foram vistos.
+				if (Roster.MarkSeen(_player))
+					Save();
+				_storageBack();
+			};
 			storage.FilterChanged += filter => _monsterFilter = filter;
 			storage.RunesRequested += id => ShowRunes(id, () => ShowStorage(id));
 			storage.InfuseRequested += (id, toMax) => Change(() =>
 			{
 				var monster = _player.Monster(id)!;
-				Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.InfuseCosts(monster).Next);
+				var level = monster.Level;
+				if (Leveling.Infuse(_player, monster, toMax ? int.MaxValue : Leveling.InfuseCosts(monster).Next) > 0)
+					Sfx.Play(monster.Level > level ? "rewards.level_up" : "rewards.experience");
 			}, storage.Refresh);
-			storage.AwakenRequested += id => Change(() => Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), storage.Refresh);
-			storage.EvolveRequested += id => Change(() => Evolution.Evolve(_player, _player.Monster(id)!), storage.Refresh);
-			storage.StoreRequested += id => Change(() => Roster.Store(_player, id), storage.Refresh);
-			storage.RetrieveRequested += id => Change(() => Roster.Retrieve(_player, id), storage.Refresh);
-			storage.StoreManyRequested += ids => Change(() => Roster.StoreMany(_player, ids), storage.Refresh);
-			storage.RetrieveManyRequested += ids => Change(() => Roster.RetrieveMany(_player, ids), storage.Refresh);
-			storage.FuseRequested += (target, materials) => Change(() => Fusion.FuseMany(_random, _player, _database, target, materials), storage.Refresh);
-			storage.ReleaseRequested += ids => Change(() => Fusion.ReleaseMany(_player, _database, ids), storage.Refresh);
-			storage.LockRequested += id => Change(() => _player.Monster(id)!.Locked = !_player.Monster(id)!.Locked, storage.Refresh);
-			storage.FavoriteRequested += id => Change(() => _player.Monster(id)!.Favorite = !_player.Monster(id)!.Favorite, storage.Refresh);
+			storage.AwakenRequested += id => Change(() => Sfx.PlayIf(Awakening.Awaken(_player, _player.Monster(id)!, _database.Summon(_player.Monster(id)!.SummonId)), "rewards.star_up"), storage.Refresh);
+			storage.EvolveRequested += id => Change(() => Sfx.PlayIf(Evolution.Evolve(_player, _player.Monster(id)!), "rewards.star_up"), storage.Refresh);
+			storage.StoreRequested += id => Change(() => Sfx.PlayIf(Roster.Store(_player, id), "ui.unequip_item"), storage.Refresh);
+			storage.RetrieveRequested += id => Change(() => Sfx.PlayIf(Roster.Retrieve(_player, id), "ui.equip_item"), storage.Refresh);
+			storage.StoreManyRequested += ids => Change(() => Sfx.PlayIf(Roster.StoreMany(_player, ids) > 0, "ui.unequip_item"), storage.Refresh);
+			storage.RetrieveManyRequested += ids => Change(() => Sfx.PlayIf(Roster.RetrieveMany(_player, ids) > 0, "ui.equip_item"), storage.Refresh);
+			storage.FuseRequested += (target, materials) => Change(() => Sfx.PlayIf(Fusion.FuseMany(_random, _player, _database, target, materials) > 0, "rewards.star_up"), storage.Refresh);
+			storage.ReleaseRequested += ids => Change(() => Sfx.PlayIf(Fusion.ReleaseMany(_player, _database, ids) > 0, "rewards.essence"), storage.Refresh);
+			storage.LockRequested += id => Change(() => Sfx.Play((_player.Monster(id)!.Locked = !_player.Monster(id)!.Locked) ? "ui.toggle_on" : "ui.toggle_off"), storage.Refresh);
+			storage.FavoriteRequested += id => Change(() => Sfx.Play((_player.Monster(id)!.Favorite = !_player.Monster(id)!.Favorite) ? "ui.toggle_on" : "ui.toggle_off"), storage.Refresh);
 			Swap(storage, () => ShowStorage(selected));
 		}
 
@@ -1191,43 +1221,39 @@ namespace Sigilos.GameEntry
 				{
 					ChooseName(false, offer.Price, () => Change(() =>
 					{
-						if (Shop.Buy(_player, offer))
-							shop.ShowMessage(T("shop.renamed", _account.AccountName ?? ""));
+						if (!Shop.Buy(_player, offer))
+							return;
+						Sfx.Play("rewards.gold");
+						shop.ShowMessage(T("shop.renamed", _account.AccountName ?? ""));
 					}, shop.Refresh));
 					return;
 				}
 
 				Change(() =>
 				{
-					if (Shop.Buy(_player, offer))
-						shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
+					if (!Shop.Buy(_player, offer))
+						return;
+					Sfx.Play("rewards.gold");
+					shop.ShowMessage(T("shop.bought", Texts.Amount(offer.Item, offer.Amount)));
 				}, shop.Refresh);
 			};
 			Swap(shop, () => ShowShop(back));
-		}
-
-		private void ShowTeams(string content, Action back)
-		{
-			var teams = new TeamScreen(_database, _player, content);
-			teams.BackRequested += back;
-			teams.ToggleRequested += (key, id) => Change(() => Teams.Toggle(_player, key, id), teams.Refresh);
-			teams.LeaderRequested += (key, id) => Change(() => Teams.MakeLeader(_player, key, id), teams.Refresh);
-			Swap(teams, () => ShowTeams(content, back));
 		}
 
 		private void ShowRunes(int? monsterId, Action back)
 		{
 			var runes = new RuneScreen(_database, _player, monsterId);
 			runes.BackRequested += _ => back();
-			runes.EquipRequested += (id, monster) => Change(() => RuneInventory.Equip(_player, Rune(id), monster), runes.Refresh);
-			runes.UnequipRequested += id => Change(() => RuneInventory.Unequip(_player, Rune(id)), runes.Refresh);
+			runes.EquipRequested += (id, monster) => Change(() => Sfx.PlayIf(RuneInventory.Equip(_player, Rune(id), monster), "ui.equip_item"), runes.Refresh);
+			runes.EquipManyRequested += (ids, monster) => Change(() => Sfx.PlayIf(RuneInventory.EquipMany(_player, ids.Select(Rune), monster) > 0, "ui.equip_item"), runes.Refresh);
+			runes.UnequipRequested += id => Change(() => Sfx.PlayIf(RuneInventory.Unequip(_player, Rune(id)), "ui.unequip_item"), runes.Refresh);
 			runes.UpgradeRequested += (id, target) => Change(() => UpgradeRune(Rune(id), target), runes.Refresh);
-			runes.GrindRequested += (id, index, tool) => Change(() => RuneInventory.Grind(_random, _player, Rune(id), index, tool), runes.Refresh);
-			runes.EnchantRequested += (id, index, tool) => Change(() => RuneInventory.Enchant(_random, _player, Rune(id), index, tool), runes.Refresh);
-			runes.SellRequested += id => Change(() => RuneInventory.Sell(_player, Rune(id)), runes.Refresh);
-			runes.SellManyRequested += ids => Change(() => RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))), runes.Refresh);
-			runes.LockRequested += id => Change(() => Rune(id).Locked = !Rune(id).Locked, runes.Refresh);
-			runes.ReappraiseRequested += id => Change(() => Core.Runes.RuneReappraisal.Reappraise(_player, Rune(id)), runes.Refresh);
+			runes.GrindRequested += (id, index, tool) => Change(() => Sfx.PlayIf(RuneInventory.Grind(_random, _player, Rune(id), index, tool), "grimoire.magic_ink"), runes.Refresh);
+			runes.EnchantRequested += (id, index, tool) => Change(() => Sfx.PlayIf(RuneInventory.Enchant(_random, _player, Rune(id), index, tool), "grimoire.magic_ink"), runes.Refresh);
+			runes.SellRequested += id => Change(() => Sfx.PlayIf(RuneInventory.Sell(_player, Rune(id)) > 0, "rewards.gold"), runes.Refresh);
+			runes.SellManyRequested += ids => Change(() => Sfx.PlayIf(RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))) > 0, "rewards.gold"), runes.Refresh);
+			runes.LockRequested += id => Change(() => Sfx.Play((Rune(id).Locked = !Rune(id).Locked) ? "ui.toggle_on" : "ui.toggle_off"), runes.Refresh);
+			runes.ReappraiseRequested += id => Change(() => Sfx.PlayIf(Core.Runes.RuneReappraisal.Reappraise(_player, Rune(id)), "grimoire.magic_ink"), runes.Refresh);
 			Swap(runes, () => ShowRunes(monsterId, back));
 		}
 
@@ -1247,12 +1273,71 @@ namespace Sigilos.GameEntry
 
 		// Lutas -------------------------------------------------------------------------------------
 
+		/// <summary>
+		/// A preparação de uma luta (<see cref="PrepScreen"/>): a equipe do conteúdo <paramref name="content"/>
+		/// se monta lá, e cada troca já fica guardada. <paramref name="auto"/> nula: a luta ainda não tem
+		/// Batalha automática.
+		/// </summary>
+		private void ShowPrep(string title, string content, Encounter encounter, int mana, Action fight, Action<Control>? auto, Action back)
+		{
+			var prep = new PrepScreen(_database, _player, title, content, encounter, mana, auto != null, _prepFilter);
+			prep.BackRequested += back;
+			prep.FightRequested += fight;
+			if (auto != null)
+				prep.AutoBattleRequested += () => auto(prep);
+			prep.ToggleRequested += id => Change(() =>
+			{
+				if (Teams.Toggle(_player, content, id))
+					Sfx.Play(Teams.Of(_player, content).Contains(id) ? "ui.equip_item" : "ui.unequip_item");
+				else
+					Sfx.Play("ui.action_unavailable");
+			}, prep.Refresh);
+			prep.ReplaceRequested += (outgoing, incoming) => Change(() => Sfx.Play(Teams.Replace(_player, content, outgoing, incoming) ? "ui.equip_item" : "ui.action_unavailable"), prep.Refresh);
+			prep.LeaderRequested += id => Change(() => Sfx.PlayIf(Teams.MakeLeader(_player, content, id), "ui.equip_item"), prep.Refresh);
+			prep.FilterChanged += filter => _prepFilter = filter;
+			Swap(prep, () => ShowPrep(title, content, encounter, mana, fight, auto, back));
+		}
+
+		/// <summary>O Lutar de uma fase da Campanha: a preparação, que volta para a fase.</summary>
+		private void PrepStage(StageDefinition stage) => ShowPrep(
+			T("battle.title_stage", stage.Number, stage.Name),
+			Teams.Campaign,
+			stage.Encounter,
+			stage.Mana,
+			() => FightStage(stage),
+			Features.IsOpen(_player, _database, Feature.AutoBattle) && Campaign.IsCleared(_player, stage.Number) ? from => RepeatStage(from, stage) : null,
+			() => ShowCampaign(stage.Number, null));
+
+		/// <summary>O Lutar de um andar de Masmorra: a preparação, com a equipe da Masmorra.</summary>
+		private void PrepFloor(DungeonDefinition dungeon, int floor) => ShowPrep(
+			T("battle.title_floor", dungeon.Name, floor),
+			dungeon.Id,
+			dungeon.Floor(floor).Encounter,
+			dungeon.Floor(floor).Mana,
+			() => FightFloor(dungeon, floor),
+			floor <= Dungeons.Cleared(_player, dungeon) ? from => RepeatFloor(from, dungeon, floor) : null,
+			() => ShowDungeons(dungeon.Id));
+
+		/// <summary>O Lutar de uma constelação: a preparação, sem Mana, com o desafio da Exploração do mês.</summary>
+		private void PrepConstellation(int number)
+		{
+			var constellation = _database.Exploration.Constellation(number);
+			ShowPrep(
+				T("battle.title_constellation", number, constellation.Name),
+				Teams.Exploration,
+				constellation.Encounter(Exploration.VariationOf(DateTime.Now)),
+				0,
+				() => FightConstellation(number),
+				null,
+				() => ShowExploration(number));
+		}
+
 		private void FightStage(StageDefinition stage)
 		{
 			// Fase nova vencida: a Campanha volta já na próxima. Fase repetida: volta nela, para farmar.
 			var repeat = Campaign.IsCleared(_player, stage.Number);
 			void Back() => ShowCampaign(repeat ? stage.Number : null, null);
-			if (NeedsTeam(Teams.Campaign, Back) || BusyWithAutoBattle(() => FightStage(stage)))
+			if (NeedsTeam(Teams.Campaign, () => PrepStage(stage)) || BusyWithAutoBattle(() => FightStage(stage)))
 				return;
 
 			var problem = Campaign.Check(_player, stage);
@@ -1279,7 +1364,7 @@ namespace Sigilos.GameEntry
 		private void FightFloor(DungeonDefinition dungeon, int floor)
 		{
 			void Back() => ShowDungeons(dungeon.Id);
-			if (NeedsTeam(dungeon.Id, Back) || BusyWithAutoBattle(() => FightFloor(dungeon, floor)))
+			if (NeedsTeam(dungeon.Id, () => PrepFloor(dungeon, floor)) || BusyWithAutoBattle(() => FightFloor(dungeon, floor)))
 				return;
 
 			var problem = Dungeons.Check(_player, dungeon, floor);
@@ -1292,13 +1377,53 @@ namespace Sigilos.GameEntry
 			Fight(T("battle.title_floor", dungeon.Name, floor), dungeon.Floor(floor).Encounter, dungeon.Id, Records.FloorKey(dungeon.Id, floor), () => Dungeons.ApplyVictory(_random, _player, dungeon, floor), Back, () => FightFloor(dungeon, floor));
 		}
 
-		/// <summary>Sem ninguém na equipe do conteúdo, abre a tela de Equipes em vez da luta.</summary>
-		private bool NeedsTeam(string content, Action back)
+		/// <summary>
+		/// Uma constelação da Exploração Estelar, com o desafio da Exploração do mês. A vitória não custa Mana;
+		/// a primeira do mês paga a recompensa da constelação, e o Continuar do resultado já entra na seguinte.
+		/// </summary>
+		private void FightConstellation(int number)
+		{
+			var exploration = _database.Exploration;
+			void Back() => ShowExploration(null);
+			if (NeedsTeam(Teams.Exploration, () => PrepConstellation(number)) || BusyWithAutoBattle(() => FightConstellation(number)))
+				return;
+
+			var now = DateTime.Now;
+			Exploration.Renew(_player, now);
+			if (Exploration.Check(_player, exploration, number, now) != EntryProblem.None)
+			{
+				ShowExploration(number, T("exploration.locked", number - 1));
+				return;
+			}
+
+			var variation = Exploration.VariationOf(now);
+			var constellation = exploration.Constellation(number);
+			Fight(
+				T("battle.title_constellation", number, constellation.Name),
+				constellation.Encounter(variation),
+				Teams.Exploration,
+				Records.ConstellationKey(constellation.Id, variation),
+				() => Exploration.ApplyVictory(_player, exploration, number, DateTime.Now),
+				Back,
+				() => FightConstellation(number),
+				next: Next);
+
+			(int Mana, Action Start)? Next()
+			{
+				var following = number + 1;
+				return following <= exploration.Constellations.Count && Exploration.Check(_player, exploration, following, DateTime.Now) == EntryProblem.None
+					? (0, () => FightConstellation(following))
+					: null;
+			}
+		}
+
+		/// <summary>Sem ninguém na equipe do conteúdo, abre a preparação (<paramref name="prep"/>) em vez da luta.</summary>
+		private bool NeedsTeam(string content, Action prep)
 		{
 			if (Teams.Of(_player, content).Any(id => _player.Monster(id) is { Stored: false }))
 				return false;
 
-			ShowTeams(content, back);
+			prep();
 			return true;
 		}
 
@@ -1398,9 +1523,10 @@ namespace Sigilos.GameEntry
 		/// a janela dela abre em seguida (e pode ser fechada sem parar nada). Já havendo uma rodando,
 		/// pergunta antes de trocar.
 		/// </summary>
-		private void StartAutoBattle(Control from, string title, string content, Func<EntryProblem> check, int mana, Encounter encounter, Func<VictoryReward> victory, Action back)
+		/// <param name="prep">Sem equipe no conteúdo, a preparação abre no lugar.</param>
+		private void StartAutoBattle(Control from, string title, string content, Func<EntryProblem> check, int mana, Encounter encounter, Func<VictoryReward> victory, Action prep)
 		{
-			if (NeedsTeam(content, back))
+			if (NeedsTeam(content, prep))
 				return;
 
 			void Setup() => AutoBattleSetup.Open(from, title, mana, _player.Mana, runs =>
@@ -1433,6 +1559,26 @@ namespace Sigilos.GameEntry
 			else
 				Setup();
 		}
+
+		private void RepeatStage(Control from, StageDefinition stage) => StartAutoBattle(
+			from,
+			T("battle.title_stage", stage.Number, stage.Name),
+			Teams.Campaign,
+			() => Campaign.Check(_player, stage),
+			stage.Mana,
+			stage.Encounter,
+			() => Campaign.ApplyVictory(_random, _player, stage, _database),
+			() => PrepStage(stage));
+
+		private void RepeatFloor(Control from, DungeonDefinition dungeon, int floor) => StartAutoBattle(
+			from,
+			T("battle.title_floor", dungeon.Name, floor),
+			dungeon.Id,
+			() => Dungeons.Check(_player, dungeon, floor),
+			dungeon.Floor(floor).Mana,
+			dungeon.Floor(floor).Encounter,
+			() => Dungeons.ApplyVictory(_random, _player, dungeon, floor),
+			() => PrepFloor(dungeon, floor));
 
 		/// <summary>A janela da Batalha automática, por cima de qualquer tela; fechar não para nada.</summary>
 		private void OpenAutoBattle()
@@ -1505,7 +1651,7 @@ namespace Sigilos.GameEntry
 		private void UpgradeRune(Core.Runes.Rune rune, int target)
 		{
 			var before = rune.Level;
-			RuneInventory.Upgrade(_random, _player, rune, target);
+			Sfx.PlayIf(RuneInventory.Upgrade(_random, _player, rune, target), "rewards.rune");
 			if (Feats.Of(rune, before) is { } feat)
 				Share(new[] { feat });
 		}
@@ -1551,6 +1697,7 @@ namespace Sigilos.GameEntry
 			_current = reshow;
 			screen.Name = screen.GetType().Name;
 			_screens.AddChild(screen);
+			Sfx.Fallback("ui.panel_open", 1);
 			_bubble.Follow(screen);
 			// A Batalha toca na tela de luta; todo o resto é o Plano Celestial (a Batalha automática não tem tela).
 			_music.Play(screen is BattleScreen ? MusicPlayer.Track.Battle : MusicPlayer.Track.Celestial);

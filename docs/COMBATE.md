@@ -1,14 +1,30 @@
 # Regras de combate: onde moram e de onde vêm
 
 As regras do combate conferidas com a referência (as páginas de teoria da wiki de Summoners War: Turn
-Order, Attack Bar, Equations, Fixed Damage, Guide: Stat Scaling e Ignore Damage Reduction Effects, lidas
-em 2026-10-07) e com a planilha `docs/allstats.xlsx`. A referência valida e sugere; ela não manda. O que
-o Sigilos faz diferente de propósito está escrito aqui, com o motivo.
+Order, Attack Bar, Equations, Fixed Damage, Guide: Stat Scaling e Ignore Damage Reduction Effects) e com
+a planilha `docs/allstats.xlsx`. Lidas em 2026-10-07 e de novo em 2026-10-08, as páginas renderizadas
+pelo Chromium headless (`chrome.exe --headless=new --dump-dom`), com o código conferido outra vez: as
+conclusões abaixo continuam valendo. A referência valida e sugere; ela não manda e não é importada. O
+que o Sigilos faz diferente de propósito está escrito aqui, com o motivo.
 
-Os números moram em `Core/Battle/BattleRules.cs`. A fórmula de dano mora em `DamageFormula`, a barra de
-Ímpeto em `BattleSession.Step`, e cada efeito, Passiva e conjunto na estratégia dele
-(`Core/Battle/{Statuses,Passives,Sets,Effects}`). Número novo de combate vai para `BattleRules`, não
-para dentro da estratégia.
+## Onde mora cada coisa
+
+Um número de combate mora em um lugar só; a estratégia lê de lá, nunca guarda o seu.
+
+| O quê | Onde |
+| --- | --- |
+| Números do combate (Defesa, elemento, efeitos, Bomba, Aflição, limites) | `Core/Battle/BattleRules.cs` |
+| A fórmula de dano | `Core/Battle/DamageFormula.cs` (`Compute`) |
+| A barra de Ímpeto e a ordem de turno | `BattleSession.Step` (e `PredictOrder`, que usa o mesmo passo) |
+| As fases do turno | `BattleSession.BeginTurn` e `FinishTurn` |
+| Vantagem de elemento | `ElementChart` (lê os multiplicadores de `BattleRules`) |
+| Números dos conjuntos de runa (Contra-ataque, Perdição, Oblívio...) | `Core/Runes/RuneSets.cs` |
+| Cada efeito, Passiva e conjunto | a estratégia dele em `Core/Battle/{Statuses,Passives,Sets,Effects}`, com o valor vindo dos dados ou de uma das duas classes acima |
+| Força dos inimigos (calibragem, não regra) | `BattleFactory.FoeBoost`, `FoeScale`, `GuardianHealth` e o `scale` das fases e andares |
+
+Os testes que prendem estas regras: `DamageTests` (curva de Defesa, Ignorar Defesa, Passiva de redução,
+elemento, crítico, escudo), `TurnOrderTests` (quem age primeiro, Velocidade em dobro, empurrão, rodada) e
+`StatusTests` (Atordoamento, Bomba, Bênção e afins).
 
 ## Ordem de turno (Ímpeto)
 
@@ -49,7 +65,8 @@ dele). A Bomba já trata o atordoamento dela para acabar no mesmo turno (`BombSt
 ## Dano
 
 D = ATQ × M × K / (K + DEF) × E × C × (dano recebido pelo alvo) × (dano causado por quem bate),
-`DamageFormula.Compute`.
+`DamageFormula.Apply`. ATQ × M é a conta do efeito na habilidade de sempre; com outra conta (veja "Em
+que atributo a habilidade escala"), ela entra no lugar.
 
 - **Defesa.** A curva é a da referência, 1000 / (1140 + 3,5 × DEF), mas normalizada para Defesa 0
   valer o golpe cheio: K = 1140 / 3,5 ≈ 326 (`BattleRules.DefenseConstant`). Na referência, ignorar a
@@ -70,7 +87,12 @@ D = ATQ × M × K / (K + DEF) × E × C × (dano recebido pelo alvo) × (dano ca
 Na referência, dano fixo ignora a Defesa, não tem crítico nem acaso, e ainda sofre o que mexe no dano
 recebido (Marca) e as Passivas de redução.
 
-Nenhuma habilidade do Sigilos dá dano fixo. O dano que não passa pela fórmula é dano de efeito:
+No Sigilos é o campo `fixed` de um efeito de dano (`EffectDefinition.Fixed`): a conta inteira chega ao
+alvo sem Defesa, elemento nem crítico, e sem sortear o crítico. Conta o dano recebido pelo alvo
+(Maldição, Passivas de redução) e o escudo absorve; o dano causado por quem bate não entra. Dano no
+mínimo 1, como o resto (`DamageFormula.Apply`).
+
+Fora ele, o dano que não passa pela fórmula é dano de efeito:
 
 - **Bomba:** ATQ de quem pôs × `BattleRules.BombDamageMultiplier`; sem Defesa, elemento ou crítico;
   conta o dano recebido pelo alvo (Maldição) e o escudo absorve. É o mesmo comportamento do dano fixo
@@ -88,19 +110,56 @@ alvo em %, Vida atual em %, Vida atual, Vida perdida, nível de quem ataca, Velo
 Velocidade do alvo, aliados vivos em %, inimigos vivos, e as marcas de dano fixo, de vários golpes
 (xN), de soma fixa (+N) e de Passiva.
 
-O Sigilos escala só no que o design dele tem, e não importa os outros:
+Os efeitos de dano, cura, cura do time, escudo e Revive têm uma conta (`Core/Content/EffectScaling.cs`,
+feita em `Core/Battle/EffectAmount.cs`):
+
+conta = (power × atributo + Σ plus.power × plus.stat) × (factor.base + factor.slope × fração) × (VEL + speed.add) / (speed.over ou VEL do alvo)
+
+- **Atributo:** o de sempre do tipo (dano: Ataque de quem lança; cura, cura do time e Revive: Vida
+  máxima do alvo; escudo: Vida máxima de quem lança) ou o de `stat`: Attack, Defense, MaxHealth, Speed,
+  TargetMaxHealth ou Level. Todos são de quem lança, menos TargetMaxHealth; Level usa o power como valor
+  por nível (110 = 110 por nível).
+- **plus:** termos somados, cada um com o atributo e o power dele. Os bônus da habilidade (nível de dano
+  ou de cura, `BonusPerStatus`) valem no power e nos termos.
+- **factor:** `by` é HealthFraction (Vida atual de quem lança), TargetHealthFraction (a do alvo) ou
+  LivingAllies (aliados de pé, quem lança conta), de 0 a 1. Base e slope 0 juntos não valem.
+- **speed:** a Velocidade de agora de quem lança mais `add`, dividida por `over` ou, com `overTarget`,
+  pela Velocidade do alvo.
+- **fixed** (só dano): veja Dano fixo.
+
+A conta nunca é negativa. Sem esses campos ela é a de sempre e dá o mesmo número de antes (o `--digest`
+não muda). O orçamento de BVP não vê a conta: uma habilidade que lê Defesa, Vida ou Velocidade dá mais a
+um monstro forte nisso, e o balanço dela é feito na mão, no simulador (o Family Builder mostra quanto a
+conta dá na variante). Da planilha, ficam de fora a Vida atual e a perdida em número, a Velocidade
+relativa, os inimigos vivos e a soma fixa (+N).
 
 | Efeito | Escala em | Onde |
 | --- | --- | --- |
-| Dano | Ataque de quem lança (× multiplicador, em N golpes) | `DamageFormula`, `DamageEffect` |
-| Cura | Vida máxima do alvo | `HealEffect` |
-| Cura do time | Vida máxima de cada alvo | `HealTeam` |
-| Escudo | Vida máxima de quem lança | `ShieldEffect` |
+| Dano | Ataque de quem lança (× multiplicador, em N golpes), ou a conta | `EffectAmount`, `DamageFormula`, `DamageEffect` |
+| Cura | Vida máxima do alvo, ou a conta | `HealEffect` |
+| Cura do time | Vida máxima de cada alvo, ou a conta | `HealTeam` |
+| Escudo | Vida máxima de quem lança, ou a conta | `ShieldEffect` |
+| Revive | Vida máxima de quem volta, ou a conta; quem já ia voltar sozinho (Passiva) fica de fora | `ReviveEffect` |
 | Bomba | Ataque de quem pôs | `BombStatus` |
 | Aflição | Vida máxima do dono | `DamageOverTime` |
+| Bênção | Vida máxima do dono | `HealOverTime` |
+| Espinhos | O dano que o golpe causou | `ThornsPassive` |
+| Dreno (Passiva e conjunto) | O dano que o golpe causou | `LifestealPassive`, `DrainSet` |
+| Contra-ataque | O golpe básico de quem revida (`RuneSets.CounterDamage`) | `CounterSet` |
+| Oblívio | O dano causado, com teto na Vida máxima do alvo (`RuneSets.DestroyShare`, `DestroyLimit`) | `OblivionSet` |
+| Perdição | Ímpeto por fatia da Vida máxima do dono perdida num golpe (`RuneSets.BaneStep`) | `BaneSet` |
+| Nivelar Vida | Não é dano: a média das frações de Vida | `EqualizeHealthEffect` |
 
-Escalar em Defesa, Velocidade ou na Vida do alvo seria uma regra nova de design, não uma correção.
-Os filtros de Monstros usam esta mesma tabela (`Core/Player/SkillTraits.cs`).
+O teto do Oblívio e o passo da Perdição usam a Vida máxima só como limite ou medida, não como dano: um
+golpe só tira uma fração da Vida máxima do alvo com um termo TargetMaxHealth na conta.
+
+Os filtros de Monstros (Escala) leem a conta (`Core/Player/SkillTraits.cs`): cada atributo e fração que
+ela usa, mais a Velocidade do alvo.
+
+**Termo novo.** Um atributo é uma linha em `ScaleStat` e em `EffectAmount.Values`; uma fração, em
+`ScaleMeasure` e em `EffectAmount.Measures`. Mais a linha em `SkillTraits`, os textos (`skill.term`,
+`skill.measure`, `skill.factor`), as linhas do Family Builder (`SCALE_VALUES` ou `SCALE_MEASURES` e as
+docs) e um teste. Os números de cada habilidade são do balanço do Sigilos, nunca copiados da planilha.
 
 ## Ignorar redução de dano
 
@@ -109,4 +168,6 @@ cortam o dano (Invencível, Defender, escudos, Defesa+, Refletir) não contam; P
 efeitos negativos que aumentam o dano continuam valendo.
 
 O Sigilos não tem essa regra em nenhuma habilidade, e ela não entra sem uma habilidade que a use.
-O mais perto é Ignorar Defesa, que já deixa de fora a Defesa+ (veja Dano).
+O mais perto é Ignorar Defesa, que já deixa de fora a Defesa+ (veja Dano); a Passiva de redução e a
+Maldição continuam valendo contra ela, como na referência (`DamageTests.IgnoringDefenseActsOnTheFinalDefense`
+e `ReductionPassiveStillCountsWhenIgnoringDefense`). Nivelar Vida não é dano, então nada reduz.

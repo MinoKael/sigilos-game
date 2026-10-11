@@ -35,6 +35,10 @@
     <Compile Include="..\UI\BattlePace.cs" LinkBase="UI" />
     <Compile Include="..\UI\AutoBattleFight.cs" LinkBase="UI" />
     <Compile Include="..\UI\ChatFeed.cs" LinkBase="UI" />
+    <!-- Os efeitos sonoros: o catálogo e a luta em sons, sem o nó que toca. -->
+    <Compile Include="..\UI\Audio\Cue.cs" LinkBase="UI\Audio" />
+    <Compile Include="..\UI\Audio\SfxCatalog.cs" LinkBase="UI\Audio" />
+    <Compile Include="..\UI\Audio\BattleSounds.cs" LinkBase="UI\Audio" />
   </ItemGroup>
 
 </Project>

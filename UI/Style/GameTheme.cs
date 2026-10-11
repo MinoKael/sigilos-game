@@ -3,9 +3,12 @@ using Godot;
 namespace Sigilos.UI.Style
 {
 	/// <summary>
-	/// O tema da interface: painéis de couro com moldura de ouro (<see cref="Ornament.Panel"/>), pedra
-	/// entalhada nos fundos rebaixados, barra de rolagem que é só uma gema deslizando, caixinhas de marcar
-	/// que são sigilos acesos e barras de energia entalhadas.
+	/// O tema da interface, o de um grimório de estudo das estrelas: painéis de couro de capa com moldura
+	/// gravada a ouro (<see cref="Ornament.Panel"/>), tinta de noite nos fundos rebaixados, o divisor de
+	/// estrela entre as partes (<see cref="StarRule"/>), barra de rolagem que é só uma gema deslizando,
+	/// caixinhas de marcar que são sigilos que acendem uma estrela e barras de energia entalhadas. As
+	/// páginas de pergaminho (<see cref="Ornament.Page"/>) têm os papéis próprios de texto, em tinta
+	/// (<see cref="PageHeading"/>, <see cref="PageText"/>, <see cref="PageFaded"/>).
 	///
 	/// Tudo é pensado para o dedo primeiro (celular deitado, 1280×720 de base): texto grande, botões com
 	/// pelo menos <see cref="Touch"/> px de altura e nada que dependa de passar o mouse — não existe dica
@@ -41,7 +44,7 @@ namespace Sigilos.UI.Style
 		/// <summary>Número em destaque (moedas, custos, níveis).</summary>
 		public const string Number = "NumberLabel";
 
-		/// <summary>Pedra entalhada dentro de um painel (listas, barras, cápsulas).</summary>
+		/// <summary>Tinta de noite rebaixada dentro de um painel (listas, barras, cápsulas).</summary>
 		public const string InsetPanel = "InsetPanel";
 
 		/// <summary>Uma página do Grimório do Invocador.</summary>
@@ -68,6 +71,12 @@ namespace Sigilos.UI.Style
 		/// <summary>A mesma fonte do jogo (o nome fica para quem pede "a fonte do texto").</summary>
 		public static readonly Font Sans = Serif;
 
+		/// <summary>
+		/// A fonte de destaque, serifada, só para títulos (<see cref="Title"/>, <see cref="Heading"/>,
+		/// <see cref="PageHeading"/>); o texto e os números ficam na fonte do jogo.
+		/// </summary>
+		public static readonly Font Display = DisplayFont();
+
 		/// <summary>A fonte das runas: cada Glifo é uma letra (<see cref="Texts.Rune"/>).</summary>
 		public static readonly Font Runes = GD.Load<Font>("res://Assets/Fonts/Kehdrai.ttf");
 
@@ -78,6 +87,15 @@ namespace Sigilos.UI.Style
 			var reserve = new SystemFont { FontNames = new[] { "Georgia", "Segoe UI Symbol", "Segoe UI", "Arial" } };
 			font.Fallbacks = new Godot.Collections.Array<Font> { reserve };
 			return font;
+		}
+
+		/// <summary>A Cinzel no peso 600, que fica legível no tamanho dos títulos, com a reserva da fonte do jogo.</summary>
+		private static Font DisplayFont()
+		{
+			var font = GD.Load<FontFile>("res://Assets/Fonts/Cinzel.ttf");
+			font.Fallbacks = new Godot.Collections.Array<Font> { Serif };
+			var weight = TextServerManager.GetPrimaryInterface().NameToTag("wght");
+			return new FontVariation { BaseFont = font, VariationOpentype = new Godot.Collections.Dictionary { { weight, 600 } } };
 		}
 
 		public static Theme Build()
@@ -100,16 +118,18 @@ namespace Sigilos.UI.Style
 			theme.SetColor("font_color", "Label", Palette.Text);
 
 			theme.SetTypeVariation(Title, "Label");
-			theme.SetFont("font", Title, Serif);
+			theme.SetFont("font", Title, Display);
 			theme.SetFontSize("font_size", Title, 32);
 			theme.SetColor("font_color", Title, Palette.Gold);
-			theme.SetColor("font_shadow_color", Title, new Color(0, 0, 0, 0.6f));
+			theme.SetColor("font_shadow_color", Title, new Color(Palette.Background, 0.85f));
 			theme.SetConstant("shadow_offset_y", Title, 2);
 
 			theme.SetTypeVariation(Heading, "Label");
-			theme.SetFont("font", Heading, Serif);
+			theme.SetFont("font", Heading, Display);
 			theme.SetFontSize("font_size", Heading, 23);
 			theme.SetColor("font_color", Heading, Palette.Gold);
+			theme.SetColor("font_shadow_color", Heading, new Color(Palette.Background, 0.6f));
+			theme.SetConstant("shadow_offset_y", Heading, 1);
 
 			theme.SetTypeVariation(Faded, "Label");
 			theme.SetFontSize("font_size", Faded, SmallSize);
@@ -124,14 +144,10 @@ namespace Sigilos.UI.Style
 
 			theme.SetColor("default_color", "RichTextLabel", Palette.Text);
 
-			var line = new StyleBoxLine { Color = Palette.GoldDark, Thickness = 1, GrowBegin = -6, GrowEnd = -6 };
-			theme.SetStylebox("separator", "HSeparator", line);
-			theme.SetConstant("separation", "HSeparator", 10);
-
 			theme.SetTypeVariation(PageHeading, "Label");
-			theme.SetFont("font", PageHeading, Serif);
+			theme.SetFont("font", PageHeading, Display);
 			theme.SetFontSize("font_size", PageHeading, 22);
-			theme.SetColor("font_color", PageHeading, Palette.Gold);
+			theme.SetColor("font_color", PageHeading, Palette.Rubric);
 
 			theme.SetTypeVariation(PageText, "Label");
 			theme.SetColor("font_color", PageText, Palette.Ink);
@@ -140,8 +156,11 @@ namespace Sigilos.UI.Style
 			theme.SetFontSize("font_size", PageFaded, 13);
 			theme.SetColor("font_color", PageFaded, Palette.InkFaded);
 
+			theme.SetStylebox("separator", "HSeparator", new StarRule());
+			theme.SetConstant("separation", "HSeparator", 14);
+
 			theme.SetTypeVariation(PageRule, "HSeparator");
-			theme.SetStylebox("separator", PageRule, line);
+			theme.SetStylebox("separator", PageRule, new StarRule(Palette.InkFaded, Palette.Rubric));
 		}
 
 		private static void Panels(Theme theme)
@@ -151,16 +170,16 @@ namespace Sigilos.UI.Style
 			theme.SetTypeVariation(InsetPanel, "PanelContainer");
 			theme.SetStylebox("panel", InsetPanel, Carved(Palette.Inset, 8));
 			theme.SetTypeVariation(PagePanel, "PanelContainer");
-			theme.SetStylebox("panel", PagePanel, Carved(Palette.Inset, 22));
+			theme.SetStylebox("panel", PagePanel, Ornament.Page(22));
 		}
 
 		private static void Buttons(Theme theme)
 		{
-			theme.SetStylebox("normal", "Button", Wood(Palette.Button, Palette.GoldDark, false));
-			theme.SetStylebox("hover", "Button", Wood(Palette.ButtonHover, Palette.Gold, true));
-			theme.SetStylebox("pressed", "Button", Wood(Palette.Inset, Palette.Arcane, true));
-			theme.SetStylebox("hover_pressed", "Button", Wood(Palette.Inset, Palette.Arcane, true));
-			theme.SetStylebox("disabled", "Button", Wood(Palette.Disabled, Palette.Disabled.Lightened(0.1f), false));
+			theme.SetStylebox("normal", "Button", Binding(Palette.Button, Palette.GoldDark, false));
+			theme.SetStylebox("hover", "Button", Binding(Palette.ButtonHover, Palette.Gold, true));
+			theme.SetStylebox("pressed", "Button", Binding(Palette.Inset, Palette.Arcane, true));
+			theme.SetStylebox("hover_pressed", "Button", Binding(Palette.Inset, Palette.Arcane, true));
+			theme.SetStylebox("disabled", "Button", Binding(Palette.Disabled, Palette.Disabled.Lightened(0.1f), false));
 			theme.SetStylebox("focus", "Button", new StyleBoxEmpty());
 			theme.SetColor("font_color", "Button", Palette.Text);
 			theme.SetColor("font_hover_color", "Button", Palette.Text);
@@ -174,10 +193,10 @@ namespace Sigilos.UI.Style
 			// MenuButton e OptionButton herdam do Button, mas precisam das caixas próprias.
 			foreach (var type in new[] { "MenuButton", "OptionButton" })
 			{
-				theme.SetStylebox("normal", type, Wood(Palette.Button, Palette.GoldDark, false));
-				theme.SetStylebox("hover", type, Wood(Palette.ButtonHover, Palette.Gold, true));
-				theme.SetStylebox("pressed", type, Wood(Palette.Inset, Palette.Arcane, true));
-				theme.SetStylebox("disabled", type, Wood(Palette.Disabled, Palette.Disabled, false));
+				theme.SetStylebox("normal", type, Binding(Palette.Button, Palette.GoldDark, false));
+				theme.SetStylebox("hover", type, Binding(Palette.ButtonHover, Palette.Gold, true));
+				theme.SetStylebox("pressed", type, Binding(Palette.Inset, Palette.Arcane, true));
+				theme.SetStylebox("disabled", type, Binding(Palette.Disabled, Palette.Disabled, false));
 				theme.SetStylebox("focus", type, new StyleBoxEmpty());
 			}
 		}
@@ -200,7 +219,7 @@ namespace Sigilos.UI.Style
 			}
 		}
 
-		/// <summary>Campo de texto (e-mail, senha): pedra entalhada, que ganha a moldura de ouro ao receber o foco.</summary>
+		/// <summary>Campo de texto (e-mail, senha): tinta de noite rebaixada, que ganha a moldura de ouro ao receber o foco.</summary>
 		private static void Fields(Theme theme)
 		{
 			var normal = Carved(Palette.Inset, 10);
@@ -299,7 +318,7 @@ namespace Sigilos.UI.Style
 			return gem;
 		}
 
-		/// <summary>Barras de energia entalhadas: sulco escuro na pedra e o brilho por dentro.</summary>
+		/// <summary>Barras de energia entalhadas: o sulco escuro e o brilho por dentro.</summary>
 		private static void Bars(Theme theme)
 		{
 			var groove = Carved(Palette.Inset, 0);
@@ -309,7 +328,7 @@ namespace Sigilos.UI.Style
 			theme.SetColor("font_color", "ProgressBar", Palette.Text);
 
 			theme.SetTypeVariation(PageBar, "ProgressBar");
-			theme.SetStylebox("background", PageBar, groove);
+			theme.SetStylebox("background", PageBar, Box(Palette.ParchmentShade, Palette.InkFaded, 1, 4, 0));
 
 			// O controle deslizante é a mesma barra entalhada, com a energia até a gema.
 			var track = Carved(Palette.Inset, 0);
@@ -329,9 +348,9 @@ namespace Sigilos.UI.Style
 		private static void Popups(Theme theme)
 		{
 			theme.SetStylebox("panel", "TabContainer", Ornament.Panel(Palette.Panel, Palette.GoldDark, 12));
-			theme.SetStylebox("tab_selected", "TabContainer", Wood(Palette.Panel, Palette.Gold, true));
-			theme.SetStylebox("tab_unselected", "TabContainer", Wood(Palette.Inset, Palette.GoldDark, false));
-			theme.SetStylebox("tab_hovered", "TabContainer", Wood(Palette.PanelLight, Palette.Gold, true));
+			theme.SetStylebox("tab_selected", "TabContainer", Binding(Palette.Panel, Palette.Gold, true));
+			theme.SetStylebox("tab_unselected", "TabContainer", Binding(Palette.Inset, Palette.GoldDark, false));
+			theme.SetStylebox("tab_hovered", "TabContainer", Binding(Palette.PanelLight, Palette.Gold, true));
 			theme.SetStylebox("tabbar_background", "TabContainer", new StyleBoxEmpty());
 			theme.SetColor("font_selected_color", "TabContainer", Palette.Gold);
 			theme.SetColor("font_unselected_color", "TabContainer", Palette.TextFaded);
@@ -355,20 +374,20 @@ namespace Sigilos.UI.Style
 			return box;
 		}
 
-		/// <summary>Pedra entalhada: fundo escuro com sombra no alto (o sulco) e um filete de luz embaixo.</summary>
+		/// <summary>Tinta de noite rebaixada: fundo escuro com sombra no alto (o sulco) e um filete de luz violeta embaixo.</summary>
 		public static StyleBoxFlat Carved(Color background, int margin, Color? border = null)
 		{
 			var box = Box(background, border ?? background.Darkened(0.5f), 1, 8, margin);
 			box.BorderWidthTop = 2;
 			box.BorderColor = border ?? new Color(0, 0, 0, 0.55f);
-			box.ShadowColor = new Color(Palette.Gold, 0.06f);
+			box.ShadowColor = new Color(Palette.Violet, 0.16f);
 			box.ShadowSize = 1;
 			box.ShadowOffset = new Vector2(0, 1);
 			return box;
 		}
 
-		/// <summary>Madeira com borda de ouro; <paramref name="glow"/> acende a aura arcana (hover, apertado).</summary>
-		public static StyleBoxFlat Wood(Color background, Color border, bool glow)
+		/// <summary>Couro de lombada com borda de ouro; <paramref name="glow"/> acende a luz de estrela (hover, apertado).</summary>
+		public static StyleBoxFlat Binding(Color background, Color border, bool glow)
 		{
 			var box = Box(background, border, 2, 7, 8);
 			box.BorderWidthBottom = 3;

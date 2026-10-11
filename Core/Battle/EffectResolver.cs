@@ -150,15 +150,17 @@ namespace Sigilos.Core.Battle
 				}
 			}
 
-			var crit = strike.Crit ?? Random.NextDouble() < attacker.Current(Stat.Crit) * target.CritTaken();
+			var crit = !strike.Fixed && (strike.Crit ?? Random.NextDouble() < attacker.Current(Stat.Crit) * target.CritTaken());
 			strike.Crit = crit;
-			strike.Amount = DamageFormula.Compute(attacker, target, strike.Power, strike.IgnoreDefense, crit);
+			var amount = EffectAmount.Of(strike.Effect, strike.Power, strike.Cast.Scale, attacker, target);
+			strike.Amount = DamageFormula.Apply(attacker, target, amount, strike.IgnoreDefense, crit, strike.Fixed);
 			strike.Absorbed = Absorb(target, strike.Amount);
 
 			var dealt = strike.Dealt;
 			target.Health = Math.Max(0, target.Health - dealt);
 			strike.Cast.Dealt[target] = strike.Cast.Dealt.GetValueOrDefault(target) + dealt;
-			Emit(new Damaged(target, (int)dealt, (int)strike.Absorbed, crit, ElementChart.Multiplier(attacker.Element, target.Element)));
+			var element = strike.Fixed ? 1 : ElementChart.Multiplier(attacker.Element, target.Element);
+			Emit(new Damaged(target, (int)dealt, (int)strike.Absorbed, crit, element));
 
 			if (strike.Drain > 0)
 				Heal(attacker, strike.Drain * strike.Amount);
@@ -276,6 +278,14 @@ namespace Sigilos.Core.Battle
 		public void Revive(BattleUnit unit)
 		{
 			unit.Health = Math.Round(unit.MaxHealth * unit.RevivalHealth);
+			unit.RevivalHealth = 0;
+			Emit(new Revived(unit));
+		}
+
+		/// <summary>A unidade caída volta agora, com <paramref name="health"/> de Vida (pelo menos 1, até a Vida máxima).</summary>
+		public void Revive(BattleUnit unit, double health)
+		{
+			unit.Health = Math.Clamp(Math.Round(health), 1, Math.Max(1, unit.MaxHealth));
 			unit.RevivalHealth = 0;
 			Emit(new Revived(unit));
 		}

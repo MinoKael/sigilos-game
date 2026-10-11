@@ -38,6 +38,23 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void TenSummonThroughThePityBringsTheFiveStar()
+		{
+			// Em 148/150, a ×10 passa pela garantia: a segunda é a 150ª, e ela vem na lista dos dez.
+			var database = TestData.LoadReal();
+			for (var seed = 1; seed <= 20; seed++)
+			{
+				var player = Player();
+				player.TotalPulls = 400;
+				player.PullsSinceFiveStar = SummonRates.Pity - 2;
+				var results = SummonRitual.Perform(new Random(seed), database, player, 10);
+				Assert.Equal(10, results.Count, "dez");
+				Assert.True(results.Take(2).Any(r => r.Summon.Rarity == 5), $"a 5★ até a 150ª, semente {seed}");
+				Assert.True(results.Where(r => r.Summon.Rarity == 5).All(r => player.Monsters.Contains(r.Monster)), "e ela entra na coleção");
+			}
+		}
+
+		[Test]
 		private static void RatesAreCloseToTheTable()
 		{
 			var database = TestData.LoadReal();

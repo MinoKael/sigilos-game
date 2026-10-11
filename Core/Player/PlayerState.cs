@@ -61,10 +61,10 @@ namespace Sigilos.Core.Player
 		/// </summary>
 		public int CollectionCapacity { get; set; } = StartingCollectionCapacity;
 
-		/// <summary>Paga cada vitória; a derrota não custa nada. A ociosidade recarrega até o máximo (Core/Progression/Mana).</summary>
+		/// <summary>Paga cada vitória; a derrota não custa nada. A ociosidade recarrega até o dobro do máximo (Core/Progression/Mana).</summary>
 		public int Mana { get; set; }
 
-		/// <summary>Nível da conta, de 1 a 60: sobe com a experiência de toda vitória e aumenta a Mana máxima.</summary>
+		/// <summary>Nível da conta, de 1 a 100: sobe com a experiência de toda vitória e aumenta a Mana máxima.</summary>
 		public int AccountLevel { get; set; } = 1;
 
 		/// <summary>Experiência da conta dentro do nível atual.</summary>
@@ -76,6 +76,18 @@ namespace Sigilos.Core.Player
 		/// <summary>Maior andar vencido em cada Masmorra, pelo id de Data/dungeons.json.</summary>
 		public Dictionary<string, int> DungeonFloors { get; set; } = new();
 
+		/// <summary>
+		/// O mês do progresso da Exploração Estelar ("2026-10"); nulo antes da primeira entrada. Num mês
+		/// novo o percurso recomeça (<see cref="Progression.Exploration"/>).
+		/// </summary>
+		public string? ExplorationMonth { get; set; }
+
+		/// <summary>Constelações vencidas no mês de <see cref="ExplorationMonth"/>, na ordem do percurso. 0 = nenhuma.</summary>
+		public int ExplorationCleared { get; set; }
+
+		/// <summary>O mais longe que a conta já foi no percurso, em qualquer mês.</summary>
+		public int ExplorationBest { get; set; }
+
 		/// <summary>Invocações desde a última 5★: a garantia visível do gacha.</summary>
 		public int PullsSinceFiveStar { get; set; }
 
@@ -85,6 +97,13 @@ namespace Sigilos.Core.Player
 		public List<OwnedSummon> Monsters { get; set; } = new();
 
 		public int NextMonsterId { get; set; } = 1;
+
+		/// <summary>
+		/// O monstro mais novo (o maior id) que a conta já viu na tela de Monstros: os que chegaram depois
+		/// são os novos (<see cref="Roster.IsNew"/>). Num save anterior ao campo, ao abrir a conta, todos
+		/// contam como vistos (<see cref="Progression.Account.Open"/>).
+		/// </summary>
+		public int? SeenMonster { get; set; }
 
 		/// <summary>Uma equipe por conteúdo (<see cref="Player.Teams"/>): ids de monstro, a primeira é a Líder.</summary>
 		public Dictionary<string, List<int>> Teams { get; set; } = new();

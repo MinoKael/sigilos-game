@@ -8,23 +8,26 @@ namespace Sigilos.Core.Progression
 {
 	/// <summary>
 	/// Os selos do Grimório do Invocador: marcos da conta lidos do save, sem guardar nada e sem prêmio. O
-	/// livro só mostra o que o jogador já fez e quanto falta para o resto — os da jornada (Campanha e
-	/// Masmorras) e os da coleção (invocações, famílias, Despertar, 6★, a conta).
+	/// livro só mostra o que o jogador já fez e quanto falta para o resto — os da jornada (Campanha,
+	/// Masmorras, o céu da Exploração) e os da coleção (invocações, famílias, Despertar, 6★, a conta).
 	/// </summary>
 	public static class Seals
 	{
 		public const int ManyPulls = 100;
 
-		/// <summary>Campanha e Masmorras.</summary>
+		/// <summary>Campanha, Masmorras e a Exploração Estelar (o mais longe que já chegou no céu).</summary>
 		public static IReadOnlyList<Seal> Journey(PlayerState player, GameDatabase database)
 		{
 			var deep = database.Dungeons.Count(d => Dungeons.Cleared(player, d) >= d.Floors.Count);
+			var boreal = database.Exploration.Range(Hemisphere.Boreal).Last;
 			return
 			[
 				new("first_victory", Math.Min(player.HighestStage, 1), 1),
 				new("campaign", player.HighestStage, database.Stages.Count),
 				new("deep_dungeon", Math.Min(deep, 1), 1),
 				new("all_dungeons", deep, database.Dungeons.Count),
+				new("northern_sky", Math.Min(player.ExplorationBest, boreal), Math.Max(boreal, 1)),
+				new("whole_sky", player.ExplorationBest, database.Exploration.Constellations.Count),
 			];
 		}
 

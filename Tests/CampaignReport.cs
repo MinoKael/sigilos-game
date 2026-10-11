@@ -128,6 +128,62 @@ namespace Sigilos.Tests
 			}
 		}
 
+		/// <summary>
+		/// A Exploração Estelar, constelação a constelação: <c>dotnet run --project Tests -- --exploration</c> (ou
+		/// <c>--exploration=22-51</c>, só esses andares). Em cada uma das três Explorações, a vitória de cinco times
+		/// genéricos, do mais fraco ao mais forte: quem chega à fase 30 (quando a Exploração abre), o fim da
+		/// Campanha, 6★ nível 40 com runas 5★ +12 e com runas 6★ +15, e o time forte (desperto, habilidades no
+		/// máximo). O percurso é para o manual e para times feitos para cada Influência: o automático com time
+		/// genérico mede a curva, não o teto.
+		/// </summary>
+		public static void PrintExploration(GameDatabase database, string? range)
+		{
+			CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+			var exploration = database.Exploration;
+			var (first, last) = (1, exploration.Constellations.Count);
+			if (range is { Length: > 0 })
+			{
+				var parts = range.Split('-');
+				first = int.Parse(parts[0]);
+				last = parts.Length > 1 ? int.Parse(parts[1]) : first;
+			}
+
+			var teams = new (string Name, BattleTeam Team)[]
+			{
+				("st30", ReferenceTeams.AtStage(database, 30)),
+				("st50", ReferenceTeams.AtStage(database, 50)),
+				("r5", ReferenceTeams.AtFloor(database, 4)),
+				("r6", ReferenceTeams.AtFloor(database, 5)),
+				("pow", ReferenceTeams.Powerful(database)),
+			};
+			Console.WriteLine($"{ExplorationSeeds} fights per cell; wins of {string.Join(" ", teams.Select(t => t.Name))} in each exploration");
+			Console.WriteLine("  n  constellation         enemies      | " + string.Join(" | ", exploration.Explorations.Select(e => $"{e.Id,-19}")));
+			for (var number = first; number <= last; number++)
+			{
+				var constellation = exploration.Constellation(number);
+				var cells = Enumerable.Range(0, exploration.Explorations.Count).Select(variation =>
+				{
+					var encounter = constellation.Encounter(variation);
+					return string.Join(" ", teams.Select(t => $"{Wins(database, encounter, t.Team) * 100,3:0}"));
+				});
+				Console.WriteLine($"{number,3}  {constellation.Id,-20}  {constellation.Stars + "★" + constellation.Level + " ×" + constellation.Scale.ToString("0.00"),-11} | " + string.Join(" | ", cells));
+			}
+		}
+
+		private const int ExplorationSeeds = 10;
+
+		private static double Wins(GameDatabase database, Encounter encounter, BattleTeam team)
+		{
+			var wins = 0;
+			for (var seed = 1; seed <= ExplorationSeeds; seed++)
+			{
+				if (AutoBattle.Run(BattleFactory.Create(database, team, encounter, seed)))
+					wins++;
+			}
+
+			return wins / (double)ExplorationSeeds;
+		}
+
 		private static string Cell((double Wins, double Rounds, double Health) result) =>
 			$"{result.Wins,4:P0} ({result.Rounds,4:F0})".PadRight(12);
 
@@ -141,6 +197,29 @@ namespace Sigilos.Tests
 		/// do Golem contra a equipe pedida: generic, specialist, sweet, prepared ou powerful; o padrão é specialist).
 		/// </summary>
 		public static void PrintBattle(GameDatabase database, string fight)
+		{
+			foreach (var e in Fight(database, fight))
+			{
+				Console.WriteLine(e switch
+				{
+					TurnStarted t => $"\n[{t.Round,2}] {t.Actor.Name}",
+					SkillUsed s => $"     uses {s.Skill.Name}",
+					Damaged d => $"     {d.Target.Name} -{d.Amount}{(d.Crit ? " crit" : "")}",
+					Healed h => $"     {h.Target.Name} +{h.Amount}",
+					StatusApplied a => $"     {a.Target.Name} gets {a.Status} ({a.Turns})",
+					Died d => $"     {d.Unit.Name} falls",
+					WaveStarted w => $"\n=== wave {w.Wave}/{w.WaveCount}",
+					BattleEnded b => $"\n=== {(b.Victory ? "victory" : "defeat")}",
+					_ => $"     {e.GetType().Name}",
+				});
+			}
+		}
+
+		/// <summary>
+		/// Os eventos de uma luta inteira no automático, semente 1: <c>10</c> (a fase 10 contra quem chega a ela)
+		/// ou <c>golem5:powerful</c> (um andar de Masmorra contra um time de <see cref="ReferenceTeams"/>).
+		/// </summary>
+		public static List<BattleEvent> Fight(GameDatabase database, string fight)
 		{
 			var name = fight.Split(':')[0];
 			var team = fight.Contains(':') ? fight[(fight.IndexOf(':') + 1)..] : "specialist";
@@ -166,21 +245,7 @@ namespace Sigilos.Tests
 					log.AddRange(session.Act(AutoPilot.For(session, turn.Actor)));
 			}
 
-			foreach (var e in log)
-			{
-				Console.WriteLine(e switch
-				{
-					TurnStarted t => $"\n[{t.Round,2}] {t.Actor.Name}",
-					SkillUsed s => $"     uses {s.Skill.Name}",
-					Damaged d => $"     {d.Target.Name} -{d.Amount}{(d.Crit ? " crit" : "")}",
-					Healed h => $"     {h.Target.Name} +{h.Amount}",
-					StatusApplied a => $"     {a.Target.Name} gets {a.Status} ({a.Turns})",
-					Died d => $"     {d.Unit.Name} falls",
-					WaveStarted w => $"\n=== wave {w.Wave}/{w.WaveCount}",
-					BattleEnded b => $"\n=== {(b.Victory ? "victory" : "defeat")}",
-					_ => $"     {e.GetType().Name}",
-				});
-			}
+			return log;
 		}
 
 		private static (double Wins, double Rounds, double Health) Run(GameDatabase database, Encounter encounter, BattleTeam team)

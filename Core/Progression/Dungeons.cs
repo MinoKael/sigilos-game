@@ -47,7 +47,7 @@ namespace Sigilos.Core.Progression
 			var prize = firstClear ? Milestones.ForFirstClear(floor) : Prize.None;
 			var levelUps = Leveling.GiveExperience(player, Teams.Of(player, dungeon.Id), floor.Experience);
 			var level = player.AccountLevel;
-			var accountLevels = Account.GiveExperience(player, floor.Experience);
+			var account = Account.GiveExperience(player, floor.Experience);
 			prize += Milestones.ForAccountLevels(level, player.AccountLevel);
 
 			Rune? rune = null;
@@ -76,7 +76,7 @@ namespace Sigilos.Core.Progression
 			Milestones.Grant(player, (firstClear ? Milestones.ForFirstClear(floor) : Prize.None) + core);
 			prize += core;
 
-			return new VictoryReward(mana, scrolls, gold, floor.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, accountLevels, prize);
+			return new VictoryReward(mana, scrolls, gold, floor.Essence + account.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, account.Levels, prize);
 		}
 
 		/// <summary>Sorteia pela tabela de chances do andar (em %), na ordem das chaves.</summary>

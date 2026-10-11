@@ -6,6 +6,7 @@ using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -65,6 +66,10 @@ namespace Sigilos.UI.Screens
 	/// item escrito; embaixo, a equipe, cada monstro com o nome e a barra de experiência subindo nível a
 	/// nível (ou "nível máximo"), e os botões Lutar de novo e Continuar. A runa que caiu abre por cima,
 	/// na <see cref="RuneCard"/>, com Vender, Bloquear (guarda e tranca) e Guardar.
+	///
+	/// Os sons vêm depois da vitória que a luta já tocou, quando o jogador pode ver: a runa ao abrir (mais
+	/// rica quanto mais rara); com as barras, o ouro, o destaque do que veio e, por último, a conta que
+	/// subiu de nível ou o melhor tempo batido; cada nível que um monstro sobe, o seu.
 	/// </summary>
 	public partial class BattleResultPanel : ColorRect
 	{
@@ -106,12 +111,12 @@ namespace Sigilos.UI.Screens
 			AddChild(Rewards(outcome, defeat));
 			AddChild(Team(outcome.Team));
 
-			var actions = Layout.Row(20, true).Named("Actions");
+			var actions = Layout.Row(Space.Section, true).Named("Actions");
 			if (next is { } following)
 			{
 				actions.AddChild(GameButton.Of(T("battle.leave"), onClose, ButtonKind.Secondary, "back", 64).Named("Leave").Wide(200));
 				actions.AddChild(GameButton.Of(T("battle.again"), onRestart, ButtonKind.Secondary, "repeat", 64).Named("Again").Wide(240));
-				actions.AddChild(GameButton.Of(T("common.continue"), following.Start, ButtonKind.Primary, "confirm", 64).WithCost("mana", following.Mana.ToString()).Named("Continue").Wide(240));
+				actions.AddChild(GameButton.Of(T("common.continue"), following.Start, ButtonKind.Primary, "confirm", 64).WithCost("mana", following.Mana > 0 ? following.Mana.ToString() : "").Named("Continue").Wide(240));
 			}
 			else
 			{
@@ -135,6 +140,13 @@ namespace Sigilos.UI.Screens
 			}
 
 			// A runa que caiu, por cima de tudo: o jogador decide antes de ver o resto.
+			Sfx.Play(rune.Rarity switch
+			{
+				RuneRarity.Legendary => "rewards.item_legendary",
+				RuneRarity.Hero => "rewards.item_epic",
+				RuneRarity.Rare => "rewards.item_rare",
+				_ => "rewards.rune",
+			});
 			var value = RuneRules.SellValue(rune);
 			var dialog = RuneDialog.Show(this, rune, anchored: false);
 			dialog.Dismissable = false;
@@ -151,6 +163,26 @@ namespace Sigilos.UI.Screens
 			foreach (var animation in _animations)
 				animation();
 			_animations.Clear();
+			Fanfare();
+		}
+
+		/// <summary>
+		/// O que a vitória rendeu, em no máximo dois sons: o destaque (a criatura invocada, ou o prêmio raro
+		/// e a página nova do grimório) e a subida de nível da conta. O ouro e o resto ficam calados: a
+		/// vitória já soou na luta.
+		/// </summary>
+		private void Fanfare()
+		{
+			if (_outcome.Reward is not { } reward)
+				return;
+
+			var highlight = reward.SummonResult != null ? "summon.creature_summoned"
+				: reward.Prize is { IsEmpty: false } || _outcome.Opened is { Count: > 0 } ? "rewards.item_rare"
+				: null;
+			if (highlight != null)
+				Sfx.Play(highlight, 0.6);
+			if (reward.AccountLevels > 0)
+				Sfx.Play("rewards.level_up", 1.4);
 		}
 
 		private static Label Title(bool victory)
@@ -173,7 +205,7 @@ namespace Sigilos.UI.Screens
 		private static VBoxContainer Time(double seconds, BattleOutcome outcome)
 		{
 			var column = new VBoxContainer { Name = "Time" };
-			column.AddThemeConstantOverride("separation", 2);
+			column.AddThemeConstantOverride("separation", Space.Hair);
 			column.AddChild(TimeRow("Now", T("battle.time"), seconds, Palette.Text, "resolve"));
 			if (outcome.Best is { } best)
 			{
@@ -200,17 +232,17 @@ namespace Sigilos.UI.Screens
 
 		private static HBoxContainer TimeRow(string name, string label, double seconds, Color color, string? icon)
 		{
-			var row = Layout.Row(10).Named(name);
+			var row = Layout.Row(Space.Regular).Named(name);
 			row.Alignment = BoxContainer.AlignmentMode.End;
 			if (icon != null)
 				row.AddChild(Doodle.Icon(Art.Icon(icon), 26, Palette.Gold).Named("Icon"));
 			var caption = new Label { Name = "Label", Text = label };
 			caption.AddThemeFontOverride("font", GameTheme.Serif);
-			caption.AddThemeFontSizeOverride("font_size", 24);
+			caption.AddThemeFontSizeOverride("font_size", FontSize.Emphasis);
 			caption.AddThemeColorOverride("font_color", Palette.Gold);
 			row.AddChild(caption);
 			var value = new Label { Name = "Value", Text = TimeSpan.FromSeconds(seconds).ToString(@"mm\:ss"), ThemeTypeVariation = GameTheme.Number };
-			value.AddThemeFontSizeOverride("font_size", 24);
+			value.AddThemeFontSizeOverride("font_size", FontSize.Emphasis);
 			value.AddThemeColorOverride("font_color", color);
 			row.AddChild(value);
 			return row;
@@ -237,9 +269,9 @@ namespace Sigilos.UI.Screens
 			}
 
 			var lines = new VBoxContainer { Name = "Lines", MouseFilter = MouseFilterEnum.Ignore };
-			lines.AddThemeConstantOverride("separation", 10);
+			lines.AddThemeConstantOverride("separation", Space.Regular);
 			band.AddChild(lines);
-			var chips = Layout.Row(14, true).Named("Chips");
+			var chips = Layout.Row(Space.Wide, true).Named("Chips");
 			lines.AddChild(chips);
 			if (outcome.Opened is { Count: > 0 } opened)
 				lines.AddChild(Opened(opened));
@@ -281,7 +313,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>O que a primeira vitória abriu: "Abriu no Santuário", e cada parte com o símbolo e o nome.</summary>
 		private static Control Opened(IReadOnlyList<Feature> opened)
 		{
-			var row = Layout.Row(14, true).Named("Opened");
+			var row = Layout.Row(Space.Wide, true).Named("Opened");
 			var caption = new Label { Name = "Caption", Text = T("battle.opened"), VerticalAlignment = VerticalAlignment.Center };
 			caption.AddThemeColorOverride("font_color", Palette.Spirit);
 			row.AddChild(caption);
@@ -302,8 +334,8 @@ namespace Sigilos.UI.Screens
 		{
 			const float width = 760;
 			var column = new VBoxContainer { Name = "Defeat", Alignment = BoxContainer.AlignmentMode.Center };
-			column.AddThemeConstantOverride("separation", 8);
-			var top = Layout.Row(14, true).Named("Reason");
+			column.AddThemeConstantOverride("separation", Space.Medium);
+			var top = Layout.Row(Space.Wide, true).Named("Reason");
 			top.AddChild(Layout.Labeled(reason.Icon, "", reason.Text, Palette.Negative).Named("Chip"));
 			column.AddChild(top);
 
@@ -319,7 +351,7 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < tips.Count; i++)
 			{
 				var tip = tips[i];
-				var row = Layout.Row(10, true).Named($"Tip{i + 1}");
+				var row = Layout.Row(Space.Regular, true).Named($"Tip{i + 1}");
 				row.AddChild(Doodle.Icon(Art.Icon(TipIcon(tip.Kind)), 28, Palette.Gold).Named("Icon"));
 				var text = Layout.Text(TipText(tip), GameTheme.Faded, width - 40).Named("Text");
 				row.AddChild(text);
@@ -354,7 +386,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>A equipe embaixo, cada um com a barra de experiência subindo.</summary>
 		private HBoxContainer Team(IReadOnlyList<ResultMonster> team)
 		{
-			var row = Layout.Row(22, true).Named("Team");
+			var row = Layout.Row(22, true).Named("Team"); // Fora da escala: os retratos da equipe, cada um com o nível e a barra ao lado.
 			row.AnchorLeft = 0;
 			row.AnchorRight = 1;
 			row.AnchorTop = row.AnchorBottom = 0.66f;
@@ -369,7 +401,7 @@ namespace Sigilos.UI.Screens
 		private Control Monster(ResultMonster monster)
 		{
 			var view = new Control { CustomMinimumSize = new Vector2(220, 72), MouseFilter = MouseFilterEnum.Ignore };
-			var row = Layout.Row(8).Named("Row");
+			var row = Layout.Row(Space.Medium).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
             view.AddChild(row);
 
@@ -389,14 +421,14 @@ namespace Sigilos.UI.Screens
 			row.AddChild(frame);
 
 			var column = new VBoxContainer { Name = "Experience", Alignment = BoxContainer.AlignmentMode.Center, MouseFilter = MouseFilterEnum.Ignore };
-			column.AddThemeConstantOverride("separation", 4);
+			column.AddThemeConstantOverride("separation", Space.Tight);
 			var name = new Label { Name = "Name", Text = monster.Name, MouseFilter = MouseFilterEnum.Ignore, ClipText = true, CustomMinimumSize = new Vector2(130, 0) };
-			name.AddThemeFontSizeOverride("font_size", 15);
+			name.AddThemeFontSizeOverride("font_size", FontSize.Note);
 			name.AddThemeColorOverride("font_outline_color", Palette.Background);
 			name.AddThemeConstantOverride("outline_size", 4);
 			column.AddChild(name);
 			var level = new Label { Name = "Level", ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore };
-			level.AddThemeFontSizeOverride("font_size", 17);
+			level.AddThemeFontSizeOverride("font_size", FontSize.Compact);
 			level.AddThemeColorOverride("font_outline_color", Palette.Background);
 			level.AddThemeConstantOverride("outline_size", 4);
 			column.AddChild(level);
@@ -442,6 +474,7 @@ namespace Sigilos.UI.Screens
 						bar.Value = step.From;
 						ShowLevel(level, step.Level, monster.MaxLevel && last);
 						FloatingText.Spawn(view, T("battle.level_up"), Palette.Spirit, 15);
+						Sfx.Play("rewards.experience");
 					}));
 				}
 

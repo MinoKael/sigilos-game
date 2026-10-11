@@ -1,10 +1,75 @@
 # Changelog — Sigilos
 
+## 09/10/2026
+- **Habilidades: a conta.** O dano, a cura, a cura do time, o escudo e o novo Reviver podem ter outra conta além de multiplicador × atributo de sempre:
+  - **Atributo** (`stat`): Ataque, Defesa, Vida máxima, Velocidade, Vida máxima do alvo ou Nível (o power vira valor por nível: escudo de 110 por nível).
+  - **Termos somados** (`plus`): 0,5 × ATQ + 0,08 × Vida máxima, 0,8 × ATQ + 1,3 × DEF, 2,9 × ATQ + 0,06 × Vida máxima do alvo.
+  - **Fator** (`factor`) que muda com a Vida atual de quem lança, a do alvo ou os aliados de pé: DEF × (8,5 − 3 × Vida atual %), ATQ × (4,1 − 1,6 × Vida atual % do alvo), ATQ × (13,5 − 5,5 × aliados vivos %).
+  - **Velocidade** (`speed`): ATQ × (VEL + 125) / 115, ou sobre a Velocidade do alvo: 1,8 × ATQ × (VEL + 80) / VEL do alvo.
+  - **Dano fixo** (`fixed`): a conta chega ao alvo sem Defesa, elemento nem crítico (o escudo absorve e a Maldição conta).
+  - **Reviver aliados:** um efeito novo que levanta os aliados caídos com uma parte da Vida máxima (ou com a conta: 0,5 × Vida atual % × Vida máxima do alvo).
+  - Sem esses campos, toda habilidade dá o mesmo número de antes. O orçamento de BVP não vê a conta: o balanço dessas habilidades é feito na mão, no simulador.
+  - O texto da habilidade mostra a conta, e o filtro de Escala dos Monstros lê cada atributo e fração que ela usa.
+- **Family Builder: a conta.** Cada efeito de dano, cura, escudo e Reviver tem a seção Conta: atributo, termos (+ termo), fator, Velocidade e dano fixo, com a prévia de quanto a conta dá na variante (6★ nv 40, contra um alvo igual). A aba de referência explica os campos com exemplos.
+- **Retratos especiais do correio:** são os desenhos de Assets/Avatars (por enquanto, o Capacete de Astronauta). Um desenho novo na pasta já vira retrato, com a chave avatar:<nome do arquivo> (minúsculas, "_" no lugar de "-"); os antigos (Sigilo de Invocação, Grimório, Estrela-guia) saíram. O template do correio lista os especiais.
+
+## 08/10/2026
+- **Preparação da luta.** O Lutar da Campanha, de uma Masmorra ou da Exploração não mostra mais a Mana nem pede equipe: abre a preparação. No alto, à esquerda, a equipe em formação (três na frente, duas atrás; a primeira é a Líder), com a Liderança dela; à direita, a última onda, com o chefe sozinho na frente, e os botões Lutar (com a Mana) e Batalha automática. Embaixo, a coleção numa lista que rola de lado, com Filtros e Ordem.
+  - Tocar num monstro da coleção põe ou tira da equipe. Tocar num da equipe o escolhe: o próximo da coleção entra no lugar dele (ou os dois trocam de lugar), e ali mesmo há Tornar Líder e Tirar da equipe. Equipe cheia, o aviso diz como trocar.
+  - Não há mais equipes prontas: a Campanha, cada Masmorra e a Exploração guardam a última equipe usada nelas, e a preparação abre com ela. A ficha da fase mostra essa equipe, só para ver.
+  - Saiu a tela de Equipes (e o botão dela no Santuário). Lutar de novo e Continuar, no resultado, seguem direto para a luta.
+- **Runas, filtro por situação** (bloqueadas ou desbloqueadas) e **Ordem por subatributo:** com um subatributo escolhido, as runas vêm da que tem o maior valor nele para a menor, e o valor fica escrito no alto de cada pedra. Escolher um subatributo no filtro já ordena por ele.
+- **Monstros:** Filtros e Ordem são os mesmos na tela de Monstros e na preparação da luta.
+- **Runas: a prévia antes de equipar.** Escolher uma runa que não está no monstro já mostra a ficha de agora ao lado da que ele teria com ela, e a diferença pronta: + em verde, − em vermelho, apagado o que não muda. Conta o valor fixo, o percentual e os conjuntos (os que fecham e os que abrem), e a runa aparece no espaço dela no círculo, em azul.
+  - **Provar** guarda a runa numa prova, uma por espaço, e a prévia soma a prova à runa escolhida: dá para montar a combinação inteira e comparar outras sem perder a referência, porque a coluna "Agora" segue sendo o monstro como está. **Equipar N** põe a prova toda de uma vez; **Limpar** larga.
+  - Tocar numa runa não remonta mais a grade: só troca o destaque, a coluna da esquerda e a ficha da runa. Com centenas de runas, a lista fica onde estava.
+  - Botões mais baixos (Filtros, Ordenar, Onde, as ações da runa), e a coluna da esquerda com a ficha sempre à vista.
+- **Monstros: os novos na frente.** Os que chegaram desde a última visita à tela vêm antes de todos, com a faixa "Novo!", e a aba diz quantos ("90/100 · Novos: 1"). Abrindo a tela, o mais novo já vem escolhido. Ao sair, deixam de ser novos (o save guarda até onde a conta viu).
+- **Monstros, filtro por situação:** Desbloqueados.
+- **Cadeado bem à vista:** o monstro bloqueado leva um disco de ouro, maior, com o cadeado escuro.
+- **Baú: cópias iguais num cartão só.** Monstros iguais em estrelas, nível, Despertar, habilidades, bloqueio, favorito e runas viram um cartão com "×7"; os que diferem em algo disso ficam em cartões separados (bloqueadas de um lado, novas de outro).
+  - Tocar no cartão abre as cópias uma a uma: marcar algumas ou todas e, só com as marcadas, **Tirar do Baú** (até onde a coleção tiver vaga), **Fundir em…** (a escolha do monstro que as recebe, e a fusão abre com elas já marcadas) ou **Soltar**.
+  - Depois de cada ação a janela mostra as que sobraram; sobrando uma, o cartão volta a ser normal.
+  - Em Selecionar vários, tocar num grupo marca as cópias todas; o cartão diz quantas estão marcadas ("3/7").
+- **Santuário:** a constelação fica no meio exato do quadro, em qualquer altura dele.
+
+- **Sons próprios.** Uma biblioteca de 62 efeitos sonoros, toda sintetizada para Sigilos, sem nenhum áudio de fora: interface, grimório, constelações, invocação, recompensas, combate (acertos, os cinco elementos, o chefe) e progressão.
+  - O som do jogo é o de um grimório mágico entre constelações, feito para morar dentro da música: harpa, celesta, sinos macios, taça e feltro, no mesmo tom dela (Mi menor / Sol maior), com a assinatura Ré–Lá–Mi. Nada de estalo duro, agudo agressivo, distorção ou explosão.
+  - Volume em degraus, sempre por baixo da música: o que se repete é o mais baixo, a navegação um pouco acima, a luta comum no meio, as habilidades grandes e as recompensas raras acima, e a invocação 5★ no topo. Importância vem das camadas (acorde maior, coro, a subida antes), não de volume.
+  - **Os sons tocam no jogo.** Interface (botões, abas, janelas, telas, voltar), luta, resultado, invocação, Monstros, Runas, Equipes, Loja, Santuário, correio, Grimório, Exploração e Batalha automática. O que é secundário divide o som de outro: bloquear e favoritar soam como ligar e desligar; afiar, encantar e reavaliar, como a tinta mágica.
+  - **Na luta, pouco som:** um acerto por golpe (o impacto do elemento na habilidade, o grande feitiço na de recarga longa, a voz do chefe), a queda e, na ação de apoio, um som de bem ou de mal. A corrida, o crítico, o Ímpeto, o Veneno e os efeitos pequenos ficam calados. No máximo dois sons por momento: uma luta longa de Masmorra toca uns 35 sons por minuto em 1× (eram 100), quase sem nenhum por cima do outro.
+  - O mesmo som não empilha: no máximo duas vezes junto, e não repete em menos de 80 ms.
+  - A ação com som próprio cala o clique do botão que a pediu: o Evoluir soa a estrela, não o clique.
+- **Ajustes:** volume de **Efeitos**, ao lado de Geral e Música.
+- **Masmorras: o andar 5 virou o das Lendárias.** Antes, o andar 4 rendia mais runas boas que o 5 (30,4% de Lendária contra 3%): umas 15 runas 6★ Lendárias por dia no 4 e 1,8 no 5.
+  - Andar 4: Rara 60%, Heroica 32%, Lendária 8% (era 46,5 / 23,1 / 30,4). Continua o andar das runas 6★ (71,8%), agora com mais Heroicas: é com ele que o time se prepara para o 5.
+  - Andar 5: Rara 46,5%, Heroica 23,1%, Lendária 30,4% (era 61,8 / 35,2 / 3,0). Quem o vence rende mais nele em tudo: por dia de Mana, 60 runas 6★ e 18 Lendárias 6★, contra 49 e 3,9 no andar 4.
+  - Forja: o andar 5 solta 1 pedra por vitória (eram 2), com a mesma tabela de grau das outras Masmorras.
+  - O andar 5 de toda Masmorra dá o dobro de Essência: 1.760 por vitória (eram 880), 105.600 num dia de Mana.
+- **Conferência do drop das Masmorras** (`dotnet run --project Tests -- --drops`): cada andar vence 20 000 vezes pelo jogo de verdade e o que caiu é comparado com a tabela do andar (estrelas, raridade, conjunto, pedras da Forja, Pergaminho Místico, Núcleo de Infusão, Mana, Essência, experiência e o Ouro e o marco da primeira vitória). No fim, o que cada andar rende por dia de Mana. O teste `EveryFloorDropsByItsTable` faz a mesma conferência em toda Masmorra.
+- **Nível da conta até 100.** A experiência para o próximo nível segue 500 × 1,075^(nível − 1): suave no começo, bem maior nos níveis altos.
+  - A Mana máxima vai de 100 no nível 1 a 300 no nível 100 (+2 por nível).
+  - Os marcos dos níveis passam a somar 20 Núcleos de Infusão do 1 ao 100.
+  - **No nível máximo, a experiência não se perde:** um terço dela vira Essência. A tela da vitória já mostra essa Essência junto da outra.
+- **Canalização da Mana:** 20 por hora, uma a cada 3 minutos (era 12). A Mana máxima do nível 1 enche do zero em 5 horas.
+- **Loja:** Frasco de Mana com 120 por 75 de Ouro e Cântaro com 300 por 150.
+- **Invocação:** os botões ficam travados do começo do ritual até os cartões aparecerem, mesmo trocando a aba do pergaminho. Antes, trocar a aba no meio do ritual liberava outra invocação, e a segunda leva somava cartões à primeira e empurrava os de cima (a 5★ da garantia, por exemplo) para fora do palco.
+
 ## 07/10/2026
-- **Grimório do Invocador:** tocar na conta, no Santuário, abre o livro da conta, com três capítulos.
-  - I, Invocador: retrato, nome, desde quando a conta existe, nível e os registros.
+- **Visual: o grimório do invocador.** A interface inteira virou o gabinete de um invocador que estuda constelações.
+  - Paleta sóbria: violeta (místico), índigo (céu), ouro só no que é precioso, couro e pergaminho.
+  - Fundo de céu noturno com nebulosa e astrolábio; separadores com estrela; páginas de pergaminho escritas a tinta.
+  - A Canalização ganhou a carta do céu por baixo, o mapa da Exploração a grade do céu, e os sigilos grandes a moldura graduada.
+  - Ícones novos da Exploração Estelar: a porta, a Influência e as três faixas do céu.
+  - Títulos numa fonte serifada de destaque (Cinzel); o texto e os números continuam na fonte do jogo.
+  - O Santuário perdeu o anel girando no fundo: a constelação da Canalização já faz esse papel.
+  - A estrela que pisca nos orbes do mapa da Exploração é a estrela polar desenhada, lisa, no lugar do polígono serrilhado.
+- **Exploração:** escolher outra constelação volta a coluna da direita para o topo, como ao entrar na tela.
+- **Grimório do Invocador:** tocar na conta, no Santuário, abre o livro da conta, com quatro capítulos, em páginas de pergaminho.
+  - I, Invocador: retrato, nome, desde quando a conta existe, nível e os registros (com o mais longe no céu).
   - II, Masmorras: andares vencidos, a equipe do melhor tempo do andar mais fundo e os melhores tempos de cada andar.
-  - III, Selos: dez marcos da jornada e da coleção, lacrados quando cumpridos (só registro, sem prêmio).
+  - III, Céu: a Exploração do mês, o mais longe que já chegou e o céu da faixa desenhado a tinta.
+  - IV, Selos: doze marcos da jornada e da coleção (dois deles do céu), lacrados em cera quando cumpridos (só registro, sem prêmio).
   - Trocar o retrato passou a ser pelo livro.
 - **Recordes com a equipe:** o melhor tempo de cada luta guarda a equipe que o fez, a partir de agora.
   - Nos tempos antigos, o andar mais fundo vencido de cada Masmorra recebe a equipe salva hoje para ela, a mais provável de ter feito o tempo.
@@ -33,6 +98,16 @@
 - **Música:** faixa de batalha adicionada.
 
 ## 05/10/2026
+- **Exploração Estelar (antiga Torre):** o modo de onde vêm os recursos, na terceira porta da tela Batalha. Um percurso pelas 88 constelações do céu:
+  - Boreais (1 a 21, de Ursa Menor a Andrômeda), Equatoriais (22 a 51, com o zodíaco, de Peixes a Pégaso) e Austrais (52 a 88, até o Cruzeiro do Sul).
+  - Abre depois da fase 30 da Campanha. Não custa Mana, tem equipe própria e é feita para o manual.
+  - **Influência:** cada constelação tem a sua mecânica, regras que valem a luta inteira nos inimigos, só no guardião, no seu time ou em todos (o Esquecimento não cala). A ficha explica a mecânica e como vencer, com os números; segurar uma unidade na luta mostra as regras dela.
+  - **Guardiões:** em quatro de cada cinco desafios, o guardião é uma invocação desperta com as habilidades no máximo e Vida de chefe: as habilidades dela são o desafio. Doze chefes novos (Urso Celeste, Carneiro de Ouro, Touro Celeste, Caçador das Estrelas, Unicórnio Celeste, Caranguejo Celeste, Leão de Nemeia, Hidra de Lerna, Balança de Astreia, Escorpião Celeste, Cabra-Marinha e Centauro Celeste).
+  - **Rodízio mensal:** no dia 1 o percurso recomeça e entra a Exploração seguinte (Aurora, Zênite e Crepúsculo), com outros guardiões e escoltas. A recompensa de cada constelação é sempre a mesma e volta todo mês.
+  - **Recompensa do mês inteiro:** 91.850 de Essência, 1.980 de Ouro, 22 Pergaminhos Místicos, 8 Núcleos de Infusão, 3 Pergaminhos Lendários e 1 de Luz e Trevas.
+  - **Mapa:** o céu de verdade de cada faixa, com os orbes e os fios de luz da constelação da Canalização (as duas desenham com as mesmas peças).
+- **Equipes:** aba da Exploração Estelar. **Compêndio:** cartão da Exploração Estelar.
+- **Simulador:** `dotnet run --project Tests -- --exploration` mede cada constelação nas três Explorações contra cinco times.
 - **19 famílias novas (95 invocações):**
   - 5★: Unicórnio, Princesa, Anjo e Monge.
   - 4★: Pirata, Dríade, Gorila, Minerador Anão, Múmia, Lich e Samurai.

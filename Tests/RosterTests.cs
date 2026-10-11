@@ -180,6 +180,18 @@ namespace Sigilos.Tests
 			Assert.True(Teams.MakeLeader(player, Teams.Campaign, player.Monsters[3].Id), "troca a Líder");
 			Assert.Equal(player.Monsters[3].Id, Teams.Of(player, Teams.Campaign)[0], "a Líder vai para a frente");
 
+			var leader = Teams.Of(player, Teams.Campaign)[0];
+			Assert.True(Teams.Replace(player, Teams.Campaign, leader, extra.Id), "a equipe cheia ainda troca");
+			Assert.Equal(extra.Id, Teams.Of(player, Teams.Campaign)[0], "quem entra fica na vaga de quem saiu (a Líder)");
+			Assert.False(Teams.Of(player, Teams.Campaign).Contains(leader), "e quem saiu sai");
+			var last = Teams.Of(player, Teams.Campaign)[4];
+			Assert.True(Teams.Replace(player, Teams.Campaign, extra.Id, last), "quem já está na equipe troca de lugar");
+			Assert.Equal(last, Teams.Of(player, Teams.Campaign)[0], "um vai para a vaga do outro");
+			Assert.Equal(extra.Id, Teams.Of(player, Teams.Campaign)[4], "e o outro, para a dele");
+			Assert.False(Teams.Replace(player, Teams.Campaign, leader, last), "quem não está na equipe não sai");
+			Roster.Store(player, leader);
+			Assert.False(Teams.Replace(player, Teams.Campaign, last, leader), "monstro do Baú não entra");
+
 			Assert.Equal(5, PlayerTeam.Build(player, database, Teams.Campaign).Members.Count, "cinco na Campanha");
 			Assert.Equal("knight_fire", PlayerTeam.Build(player, database, "golem").Members.Single().Summon.Id, "um no Golem");
 		}
@@ -212,6 +224,9 @@ namespace Sigilos.Tests
 			Assert.Equal($"{phoenix.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Runed }), "com runas");
 			Assert.Equal(3, new MonsterFilter { Condition = MonsterCondition.Unruned }.Apply(all, database, player).Count(), "sem runas");
 			Assert.Equal($"{light.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Favorite }), "favoritos");
+			water.Locked = true;
+			Assert.Equal($"{water.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Locked }), "bloqueados");
+			Assert.Equal(3, new MonsterFilter { Condition = MonsterCondition.Unlocked }.Apply(all, database, player).Count(), "desbloqueados");
 
 			var speeds = new MonsterFilter { Sort = MonsterSort.Stat, SortStat = Stat.Speed }.Apply(all, database, player)
 				.Where(m => !m.Favorite)
@@ -219,6 +234,51 @@ namespace Sigilos.Tests
 				.ToList();
 			Assert.True(speeds.Zip(speeds.Skip(1)).All(pair => pair.First >= pair.Second), "por Velocidade, a maior primeiro");
 			Assert.Equal(2, new MonsterFilter { Element = Element.Fire, Awakened = false }.Active, "dois campos filtrando");
+		}
+
+		[Test]
+		private static void VaultGroupsOnlyCopiesThatMatchInEverything()
+		{
+			var player = TestData.PlayerWith();
+			var copies = Enumerable.Range(0, 5).Select(_ => Roster.Add(player, TestData.Summon("imp_fire"))).ToList();
+			var water = Roster.Add(player, TestData.Summon("imp_water"));
+			var all = copies.Append(water).ToList();
+			string Shape() => string.Join(",", MonsterStack.Group(all, player).Select(stack => stack.Count));
+
+			Assert.Equal("5,1", Shape(), "cinco iguais e um diferente");
+			copies[0].SkillLevels.Add(1);
+			Assert.Equal("5,1", Shape(), "habilidade no nível 1 escrita ou não é a mesma");
+
+			copies[1].Locked = true;
+			copies[2].Level = 10;
+			RuneInventory.Equip(player, RuneInventory.Create(new Random(3), player, 2), copies[3].Id);
+			var stacks = MonsterStack.Group(all, player);
+			Assert.Equal("2,1,1,1,1", Shape(), "bloqueio, nível e runas separam");
+			Assert.Equal(copies[0].Id, stacks[0].First.Id, "o grupo fica onde a primeira cópia estava");
+			Assert.True(stacks[0].Copies.Contains(copies[4]), "as que sobraram iguais seguem juntas");
+
+			copies[4].RaiseSkill(0);
+			Assert.Equal(6, MonsterStack.Group(all, player).Count, "habilidade a mais separa");
+		}
+
+		[Test]
+		private static void NewMonstersAreTheOnesSinceTheLastVisit()
+		{
+			var player = TestData.PlayerWith("imp_fire");
+			Account.Open(player, TestData.Database, DateTime.UnixEpoch);
+			Assert.False(player.Monsters.Any(m => Roster.IsNew(player, m)), "num save sem o campo, o que já havia conta como visto");
+
+			var arrived = Roster.Add(player, TestData.Summon("imp_fire"));
+			Roster.Add(player, TestData.Summon("imp_fire"));
+			string Shape() => string.Join(",", MonsterStack.Group(player.Monsters.Where(m => m.SummonId == "imp_fire"), player).Select(stack => stack.Count));
+			Assert.True(Roster.IsNew(player, arrived), "o que chega depois é novo");
+			Assert.Equal("1,2", Shape(), "os novos não se juntam aos já vistos");
+			Assert.Equal(player.SeenMonster, PlayerSave.FromJson(PlayerSave.ToJson(player))!.SeenMonster, "o save guarda até onde viu");
+
+			Assert.True(Roster.MarkSeen(player), "ver os monstros tira o novo");
+			Assert.False(Roster.IsNew(player, arrived), "de todos");
+			Assert.False(Roster.MarkSeen(player), "ver de novo não muda nada");
+			Assert.Equal("3", Shape(), "vistos, as cópias se juntam");
 		}
 
 		[Test]

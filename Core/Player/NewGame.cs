@@ -15,8 +15,8 @@ namespace Sigilos.Core.Player
 		public const int StartingEssence = 3000;
 		public const int StartingGold = 50;
 
-		/// <summary>A Mana cheia de um nível 1 (Core/Progression/Mana: 60).</summary>
-		public const int StartingMana = 60;
+		/// <summary>A Mana cheia de um nível 1.</summary>
+		public const int StartingMana = Progression.Mana.BaseMax;
 		public const int StarterRunes = 0;
 		public const int StarterRuneGrade = 2;
 

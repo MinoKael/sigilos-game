@@ -37,14 +37,14 @@ namespace Sigilos.UI.Screens
 		private readonly string? _accountName;
 
 		/// <summary>"Sem conexão", ao lado da conta: jogando a conta sem falar com o servidor. Tocar explica.</summary>
-		private readonly Button _offline = new() { Name = "Offline", Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand, SizeFlagsVertical = SizeFlags.ShrinkCenter };
+		private readonly SurfaceButton _offline = new() { Name = "Offline", Flat = true, SizeFlagsVertical = SizeFlags.ShrinkCenter };
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly Button _account = new() { Name = "Account", FocusMode = FocusModeEnum.None, Flat = true, MouseDefaultCursorShape = CursorShape.PointingHand };
+		private readonly SurfaceButton _account = new SurfaceButton { Name = "Account", Hug = true }.Boxes(null);
 		private readonly Constellation _constellation = ChatBubble.Dock(new Constellation { Name = "Constellation" });
 		private readonly SigilButton _core = new(Art.Icon("collect"), 128) { Name = "Core" };
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
-		private readonly HBoxContainer _pending = Layout.Row(8, true).Named("Pending");
+		private readonly HBoxContainer _pending = Layout.Row(Space.Medium, true).Named("Pending");
 		private readonly GameButton _collect;
 		/// <summary>A cápsula do correio, da altura das moedas e só com a carta.</summary>
 		private static readonly Vector2 MailSize = new(58, CurrencyBar.Height);
@@ -76,16 +76,16 @@ namespace Sigilos.UI.Screens
 		public override void _Ready()
 		{
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			// O anel do fundo gira em volta do sigilo da Canalização.
-			AddChild(Layout.Background(_core));
+			// Sem o anel do fundo: a constelação já faz esse papel em volta do sigilo da Canalização.
+			AddChild(Layout.Background(_core, ring: false));
 			var page = Layout.Page(this);
 
-			var top = Layout.Row(12).Named("Top");
+			var top = Layout.Row(Space.Large).Named("Top");
 			top.AddChild(_account);
 			top.AddChild(_offline);
 			top.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			// O correio colado nas moedas, no mesmo espaçamento entre as cápsulas.
-			var corner = Layout.Row(6).Named("Corner");
+			var corner = Layout.Row(Space.Small).Named("Corner");
 			corner.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			corner.AddChild(MailButton());
 			corner.AddChild(_currencies);
@@ -98,7 +98,7 @@ namespace Sigilos.UI.Screens
 			_offline.Pressed += () => Dialog.Info(_offline, T("hub.offline"), T("hub.offline_text"));
 
 			_channelOpen = Features.IsOpen(_player, _database, Feature.Channel);
-			var middle = Layout.Row(20).Named("Middle");
+			var middle = Layout.Row(Space.Section).Named("Middle");
 			middle.SizeFlagsVertical = SizeFlags.ExpandFill;
 			middle.AddChild(Channel());
 			middle.AddChild(Paths());
@@ -143,7 +143,7 @@ namespace Sigilos.UI.Screens
 			_mailBadge.AddThemeStyleboxOverride("panel", box);
 			_mailBadge.CustomMinimumSize = new Vector2(side, side);
 			_mailCount.AddThemeColorOverride("font_color", Colors.White);
-			_mailCount.AddThemeFontSizeOverride("font_size", 15);
+			_mailCount.AddThemeFontSizeOverride("font_size", FontSize.Note);
 			_mailBadge.AddChild(_mailCount);
 			_mailBadge.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
 			_mailBadge.GrowHorizontal = GrowDirection.Begin;
@@ -170,8 +170,8 @@ namespace Sigilos.UI.Screens
 		/// <summary>O retrato da conta, o nível e a barra de experiência.</summary>
 		private void RefreshAccount()
 		{
-			Layout.Clear(_account);
-			var row = Layout.Row(12).Named("Row");
+			Layout.Clear(_account.Body);
+			var row = Layout.Row(Space.Large).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
 			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(68, 68), MouseFilter = MouseFilterEnum.Ignore };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Panel, Palette.Gold, 2, 34, 4));
@@ -179,7 +179,7 @@ namespace Sigilos.UI.Screens
 			row.AddChild(frame);
 
 			var column = new VBoxContainer { Name = "Info", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
-			column.AddThemeConstantOverride("separation", 4);
+			column.AddThemeConstantOverride("separation", Space.Tight);
 			var maxed = _player.AccountLevel >= Account.MaxLevel;
 			var toNext = Account.ExperienceToNext(_player.AccountLevel);
 			column.AddChild(new Label { Name = "Level", Text = AccountTitle(), ThemeTypeVariation = GameTheme.Heading, MouseFilter = MouseFilterEnum.Ignore });
@@ -192,8 +192,7 @@ namespace Sigilos.UI.Screens
 			column.AddChild(bar);
 			column.AddChild(new Label { Name = "Progress", Text = maxed ? T("hub.account_max_short") : T("hub.account_progress", _player.AccountExperience, toNext), ThemeTypeVariation = GameTheme.Faded, MouseFilter = MouseFilterEnum.Ignore });
 			row.AddChild(column);
-			_account.AddChild(row);
-			_account.CustomMinimumSize = row.GetCombinedMinimumSize();
+			_account.Body.AddChild(row);
 		}
 
 		/// <summary>O retrato abre o Grimório do Invocador; trocar o retrato de lá abre a escolha.</summary>
@@ -234,25 +233,20 @@ namespace Sigilos.UI.Screens
 			box.ContentMarginTop = box.ContentMarginBottom = 8;
 			plate.AddThemeStyleboxOverride("panel", box);
 			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", 6);
+			column.AddThemeConstantOverride("separation", Space.Small);
 			plate.AddChild(column);
 
 			// O tempo é um botão sem moldura: parece texto, e o toque abre a explicação colada nele.
-			var time = new Button { Name = "Time", Flat = true, FocusMode = FocusModeEnum.None, MouseDefaultCursorShape = CursorShape.PointingHand };
-			time.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
-			time.AddThemeStyleboxOverride("hover", new StyleBoxEmpty());
-			time.AddThemeStyleboxOverride("pressed", new StyleBoxEmpty());
+			var time = new SurfaceButton { Name = "Time", Hug = true }.Boxes(null);
 			_time.HorizontalAlignment = HorizontalAlignment.Center;
 			_time.MouseFilter = MouseFilterEnum.Ignore;
-			_time.AddThemeFontSizeOverride("font_size", 22);
-			_time.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			time.AddChild(_time);
-			_time.MinimumSizeChanged += () => time.CustomMinimumSize = _time.GetCombinedMinimumSize();
+			_time.AddThemeFontSizeOverride("font_size", FontSize.Large);
+			time.Body.AddChild(_time);
 			time.Pressed += () => Dialog.Info(time, T("hub.channel"), T("hub.channel_text", Idle.CapHours));
 			column.AddChild(time);
 
 			column.AddChild(_pending);
-			var actions = Layout.Row(0, true).Named("Actions");
+			var actions = Layout.Row(Space.None, true).Named("Actions");
 			column.AddChild(actions);
 			if (!_channelOpen)
 			{
@@ -273,7 +267,7 @@ namespace Sigilos.UI.Screens
 		private Control Paths()
 		{
 			var column = new VBoxContainer { Name = "Paths", CustomMinimumSize = new Vector2(380, 0) };
-			column.AddThemeConstantOverride("separation", 16);
+			column.AddThemeConstantOverride("separation", Space.Loose);
 			column.Alignment = BoxContainer.AlignmentMode.Center;
 
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
@@ -297,7 +291,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { Name = "Nav" };
 			panel.AddThemeStyleboxOverride("panel", Ornament.Panel(Palette.Panel, Palette.GoldDark, 8));
-			var row = Layout.Row(8).Named("Row");
+			var row = Layout.Row(Space.Medium).Named("Row");
 			panel.AddChild(row);
 
 			// A versão e o vão da direita dividem a sobra igual: os botões ficam no centro.
@@ -313,7 +307,7 @@ namespace Sigilos.UI.Screens
 			// Amigos não depende da Campanha: está sempre lá (sem conta, a janela diz por quê).
 			var places = new (Destination, Feature?)[]
 			{
-				(Destination.Monsters, Feature.Monsters), (Destination.Runes, Feature.Runes), (Destination.Teams, Feature.Teams),
+				(Destination.Monsters, Feature.Monsters), (Destination.Runes, Feature.Runes),
 				(Destination.Shop, Feature.Shop), (Destination.Friends, null), (Destination.Grimoire, Feature.Grimoire),
 				(Destination.Compendium, Feature.Compendium),
 			};

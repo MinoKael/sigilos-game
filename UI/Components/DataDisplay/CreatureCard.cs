@@ -1,0 +1,257 @@
+using System;
+using Godot;
+using Sigilos.Core.Content;
+using Sigilos.Core.Player;
+using Sigilos.Core.Progression;
+using Sigilos.UI.Style;
+
+namespace Sigilos.UI.Components
+{
+	/// <summary>
+	/// Cartão de monstro: estrelas de agora no alto à esquerda (douradas, roxas depois do Despertar), o
+	/// elemento no alto à direita, o desenho na cor do elemento e o nível embaixo à direita. A moldura é
+	/// pelas estrelas naturais (bronze, prata, ouro). Um símbolo pequeno embaixo à esquerda marca o que
+	/// importa ali (na equipe, Líder), o disco de ouro com o cadeado ao lado dele diz que o monstro está
+	/// bloqueado, o coração abaixo das estrelas marca o favorito, do outro lado, abaixo do elemento, os
+	/// níveis de habilidade subidos ("3/8", ou "Max" com todas no máximo), e uma faixa escrita embaixo
+	/// diz o que o jogador precisa saber na hora ("Novo!", "Líder"). Um cartão que junta cópias iguais
+	/// (o Baú) leva a plaquinha "×7" na borda de baixo (<see cref="SetCount"/>).
+	///
+	/// Toque curto é <see cref="Pressed"/> (escolher, marcar); toque longo abre o resumo do monstro
+	/// (<see cref="MonsterSummary"/>), em qualquer tela. Escolhido, fica azul arcano; marcado na seleção
+	/// de vários (fundir, soltar, mudar de lugar), ganha o ✓ verde. O toque passa para cima, então arrastar rola a lista.
+	/// </summary>
+	public partial class CreatureCard : PanelContainer
+	{
+		private readonly StyleBoxFlat _box;
+		private readonly SelectionFrame _selection;
+		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
+		private readonly Press _press = new();
+		private readonly Control _layer = new() { Name = "Layer", MouseFilter = MouseFilterEnum.Ignore };
+		private readonly float _width;
+		private PanelContainer? _count;
+		private bool _selected;
+		private bool _marked;
+
+		/// <param name="monster">Nulo quando não é um monstro da conta (Grimório): nível 1, sem Despertar.</param>
+		/// <param name="marker">Símbolo de Assets/Icons embaixo à esquerda (leader, team).</param>
+		/// <param name="tag">Faixa escrita embaixo do desenho ("Novo!", "Líder").</param>
+		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, float width = 104, string? marker = null, string? tag = null, bool awakenedPreview = false)
+		{
+			Summon = summon;
+			Monster = monster;
+			_width = width;
+			var awakened = monster?.Awakened ?? awakenedPreview;
+
+			CustomMinimumSize = new Vector2(width, width * 1.25f);
+			MouseFilter = MouseFilterEnum.Pass;
+			MouseDefaultCursorShape = CursorShape.PointingHand;
+			_press.Tapped += () => Pressed?.Invoke(this);
+			_press.Held += () => MonsterSummary.Open(this, Summon, Monster);
+
+			var rarity = Palette.Frame(summon.Rarity);
+			var border = summon.Rarity >= 3 ? 3 : 2;
+			_box = GameTheme.Box(Palette.Inset, rarity, border, Radius.Medium, 4);
+			_selection = new SelectionFrame(_box, rarity, border)
+			{
+				HoverLighten = 0.35f,
+				GlowSize = 7,
+				Rest = (new Color(0, 0, 0, 0.45f), 3, new Vector2(0, 2)),
+				Hover = (new Color(Palette.Gold, 0.25f), 7, Vector2.Zero),
+			};
+			_selection.Apply(false, false, false);
+			AddThemeStyleboxOverride("panel", _box);
+
+			var layer = _layer;
+			AddChild(layer);
+
+			// O desenho cabe inteiro entre as estrelas e o nível, recortado no miolo arredondado do cartão.
+			var frame = new ArtMask(MaskShape.Rounded, 6) { Name = "Frame" };
+			frame.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			layer.AddChild(frame);
+			var art = new Doodle(Art.Creature(summon.Image), Palette.Of(summon.Element), aura: awakened ? summon.Element : null) { Name = "Art" };
+			art.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			art.OffsetTop = width * 0.18f;
+			art.OffsetBottom = -width * 0.14f;
+			art.OffsetLeft = width * 0.05f;
+			art.OffsetRight = -width * 0.05f;
+			frame.AddChild(art);
+
+			var stars = new Label { Name = "Stars", Text = Texts.Stars(monster?.Stars ?? summon.Rarity), MouseFilter = MouseFilterEnum.Ignore };
+			stars.AddThemeColorOverride("font_color", Palette.Stars(awakened));
+			stars.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.12f), 10, 16));
+			stars.AddThemeColorOverride("font_outline_color", Palette.Background);
+			stars.AddThemeConstantOverride("outline_size", 3);
+			stars.Position = new Vector2(2, -2);
+			layer.AddChild(stars);
+
+			var element = Doodle.Icon(Art.Element(summon.Element), (int)(width * 0.17f), Palette.Of(summon.Element)).Named("Element");
+			element.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
+			element.OffsetLeft = -width * 0.17f;
+			layer.AddChild(element);
+
+			var level = new Label { Name = "Level", Text = (monster?.Level ?? 1).ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore, HorizontalAlignment = HorizontalAlignment.Right };
+			level.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.16f), 12, 22));
+			level.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomRight);
+			level.GrowHorizontal = GrowDirection.Begin;
+			level.GrowVertical = GrowDirection.Begin;
+			layer.AddChild(level);
+
+			if (marker != null)
+			{
+				var icon = Doodle.Icon(Art.Icon(marker), (int)(width * 0.2f), Palette.Gold).Named("Marker");
+				icon.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
+				icon.OffsetTop = -width * 0.2f;
+				layer.AddChild(icon);
+			}
+
+			if (monster is { Locked: true })
+				layer.AddChild(LockBadge(width, marker != null));
+			if (monster is { Favorite: true })
+				layer.AddChild(FavoriteBadge(width));
+			if (monster is { IsInfusionCore: false } && UiSession.Database is { } database)
+				layer.AddChild(SkillUps(Fusion.SkillUps(database, monster), width));
+
+			if (tag != null)
+				layer.AddChild(Tag(tag, width));
+
+			_check.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
+			_check.OffsetLeft = _check.OffsetTop = -width * 0.25f;
+			_check.OffsetRight = _check.OffsetBottom = width * 0.25f;
+			layer.AddChild(_check);
+
+			MouseEntered += Restyle;
+			MouseExited += Restyle;
+		}
+
+		public event Action<CreatureCard>? Pressed;
+
+		public SummonDefinition Summon { get; }
+		public OwnedSummon? Monster { get; }
+
+		/// <summary>Destaque de escolhido: moldura azul arcana com aura.</summary>
+		public void SetSelected(bool selected)
+		{
+			_selected = selected;
+			Restyle();
+		}
+
+		/// <summary>Marcado na seleção de vários (fundir, soltar, mudar de lugar): ✓ verde e fundo esverdeado.</summary>
+		public void SetMarked(bool marked)
+		{
+			_marked = marked;
+			_check.Visible = marked;
+			Restyle();
+		}
+
+		/// <summary>
+		/// Quantas cópias o cartão junta: "×7" numa plaquinha de ouro no meio da borda de baixo, ou
+		/// "3/7" quando parte delas está marcada. Uma cópia só tira a plaquinha.
+		/// </summary>
+		public void SetCount(int count, int marked = 0)
+		{
+			// Chamado de novo a cada marca no grupo: a plaquinha velha sai sem segurar o nome da nova.
+			if (_count != null)
+				Layout.Discard(_count);
+			_count = null;
+			if (count <= 1)
+				return;
+
+			_count = new PanelContainer { Name = "Count", MouseFilter = MouseFilterEnum.Ignore };
+			var box = GameTheme.Box(Palette.Gold, Palette.Background, 2, Radius.Medium, 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 6;
+			_count.AddThemeStyleboxOverride("panel", box);
+			var label = new Label
+			{
+				Name = "Text",
+				Text = marked > 0 && marked < count ? $"{marked}/{count}" : $"×{count}",
+				ThemeTypeVariation = GameTheme.Number,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				MouseFilter = MouseFilterEnum.Ignore,
+			};
+			label.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(_width * 0.16f), 12, 20));
+			label.AddThemeColorOverride("font_color", Palette.Background);
+			label.AddThemeConstantOverride("outline_size", 0);
+			_count.AddChild(label);
+			_count.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
+			_count.GrowHorizontal = GrowDirection.Both;
+			_count.GrowVertical = GrowDirection.Begin;
+			_layer.AddChild(_count);
+		}
+
+		public override void _GuiInput(InputEvent @event) => _press.Feed(this, @event);
+
+		/// <summary>
+		/// O cadeado do monstro bloqueado: disco de ouro com o cadeado escuro, embaixo à esquerda (ao lado
+		/// do símbolo, se houver um). Cheio e claro, não se confunde com nada mais do cartão.
+		/// </summary>
+		private static Control LockBadge(float width, bool besideMarker)
+		{
+			var size = Math.Max(20, width * 0.24f);
+			var badge = new PanelContainer { Name = "Lock", MouseFilter = MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(size, size) };
+			badge.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Gold, Palette.Background, 2, (int)size, 3));
+			badge.AddChild(Doodle.Icon(Art.Icon("lock"), (int)(size - 8), Palette.Background).Named("Icon"));
+			badge.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomLeft);
+			badge.GrowVertical = GrowDirection.Begin;
+			badge.OffsetLeft = badge.OffsetRight = besideMarker ? width * 0.21f : 0;
+			badge.OffsetTop = badge.OffsetBottom = 0;
+			return badge;
+		}
+
+		/// <summary>O coração do favorito, logo abaixo das estrelas, à esquerda.</summary>
+		private static Control FavoriteBadge(float width)
+		{
+			var size = (int)Math.Max(14, width * 0.16f);
+			var heart = Doodle.Icon(Art.Icon("favorite"), size, Palette.Negative.Lightened(0.15f)).Named("Favorite");
+			heart.Position = new Vector2(width * 0.04f, width * 0.17f);
+			return heart;
+		}
+
+		/// <summary>Os níveis de habilidade subidos, à direita, na altura do coração; "Max" em ouro quando não sobe mais nada.</summary>
+		private static Control SkillUps((int Done, int Total) ups, float width)
+		{
+			var max = ups.Done >= ups.Total;
+			var label = new Label
+			{
+				Name = "SkillUps",
+				Text = max ? Locale.T("monsters.skills_max") : $"{ups.Done}/{ups.Total}",
+				ThemeTypeVariation = GameTheme.Number,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				MouseFilter = MouseFilterEnum.Ignore,
+			};
+			label.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.12f), 10, 16));
+			label.AddThemeColorOverride("font_color", max ? Palette.Gold : Palette.Text);
+			label.AddThemeColorOverride("font_outline_color", Palette.Background);
+			label.AddThemeConstantOverride("outline_size", 3);
+			label.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight);
+			label.GrowHorizontal = GrowDirection.Begin;
+			label.OffsetRight = -width * 0.04f;
+			label.OffsetTop = width * 0.15f;
+			return label;
+		}
+
+		/// <summary>A faixa escrita, em ouro sobre pedra, presa na borda de baixo do desenho.</summary>
+		private static Control Tag(string text, float width)
+		{
+			var plate = new PanelContainer { Name = "Tag", MouseFilter = MouseFilterEnum.Ignore };
+			var box = GameTheme.Box(new Color(Palette.Inset, 0.92f), Palette.Gold, 1, 6, 0);
+			box.ContentMarginLeft = box.ContentMarginRight = 6;
+			plate.AddThemeStyleboxOverride("panel", box);
+			var label = new Label { Name = "Text", Text = text, HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
+			label.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.13f), 12, 17));
+			label.AddThemeColorOverride("font_color", Palette.Gold);
+			plate.AddChild(label);
+			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterBottom);
+			plate.GrowHorizontal = GrowDirection.Both;
+			plate.GrowVertical = GrowDirection.Begin;
+			plate.OffsetBottom = -width * 0.2f;
+			return plate;
+		}
+
+		private void Restyle()
+		{
+			var hover = IsInsideTree() && Pressed != null && GetGlobalRect().HasPoint(GetGlobalMousePosition());
+			_selection.Apply(_selected, _marked, hover);
+		}
+	}
+}

@@ -22,7 +22,7 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HBoxContainer _offers = Layout.Row(24).Named("Offers");
+		private readonly HBoxContainer _offers = Layout.Row(Space.Spacious).Named("Offers");
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
 		/// <summary>A troca de nome só vale para quem joga numa conta que já tem nome.</summary>
@@ -79,7 +79,7 @@ namespace Sigilos.UI.Screens
 		{
 			var panel = new PanelContainer { CustomMinimumSize = new Vector2(260, 340) };
 			var content = new VBoxContainer { Name = "Content", Alignment = BoxContainer.AlignmentMode.Center };
-			content.AddThemeConstantOverride("separation", 14);
+			content.AddThemeConstantOverride("separation", Space.Wide);
 			panel.AddChild(content);
 
 			var name = new Label { Name = "Name", Text = Texts.Amount(offer.Item, offer.Amount), HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading };

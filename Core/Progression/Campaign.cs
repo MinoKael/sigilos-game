@@ -59,7 +59,8 @@ namespace Sigilos.Core.Progression
 			Milestones.Grant(player, prize);
 			var levelUps = Leveling.GiveExperience(player, Teams.Of(player, Teams.Campaign), stage.Experience);
 			var level = player.AccountLevel;
-			var accountLevels = Account.GiveExperience(player, stage.Experience);
+			var account = Account.GiveExperience(player, stage.Experience);
+			essence += account.Essence;
 			prize += Milestones.ForAccountLevels(level, player.AccountLevel);
 			var rune = firstClear || random.NextDouble() < RepeatRuneChance
 				? RuneInventory.Create(random, player, stage.RuneGrade)
@@ -75,7 +76,7 @@ namespace Sigilos.Core.Progression
 				summonResult = new SummonResult(summon, Roster.Add(player, summon), firstCopy);
 			}
 
-			return new VictoryReward(mana, scrolls, 0, essence, stage.Experience, firstClear, rune, summonResult, Array.Empty<RuneTool>(), levelUps, accountLevels, prize);
+			return new VictoryReward(mana, scrolls, 0, essence, stage.Experience, firstClear, rune, summonResult, Array.Empty<RuneTool>(), levelUps, account.Levels, prize);
 		}
 	}
 }

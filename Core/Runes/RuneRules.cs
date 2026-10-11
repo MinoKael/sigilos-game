@@ -102,8 +102,11 @@ namespace Sigilos.Core.Runes
 
 		public static double RollGem(Random random, RuneStat stat, RuneRarity grade) => Roll(random, stat, GemTable(stat)[ToolIndex(grade)]);
 
-		/// <summary>Chance de sucesso da melhora para chegar a <paramref name="level"/>.</summary>
-		public static double SummonersWarChance(int level) => level switch
+		/// <summary>
+		/// A chance de sucesso que entra no preço da melhora para chegar a <paramref name="level"/>: a melhora
+		/// nunca falha, mas custa a média contando as falhas.
+		/// </summary>
+		public static double PricedChance(int level) => level switch
 		{
 			<= 3 => 1.00,
 			4 => 0.85,
@@ -130,7 +133,7 @@ namespace Sigilos.Core.Runes
 
 			var target = level + 1;
 			var cost = BaseCost[target - 1][GradeIndex(grade)];
-			return (int)Math.Ceiling(cost / SummonersWarChance(target) / CostPerEssence);
+			return (int)Math.Ceiling(cost / PricedChance(target) / CostPerEssence);
 		}
 
 		/// <summary>Essência para ir do nível atual até <paramref name="target"/>.</summary>

@@ -15,7 +15,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>Os nomes dos conteúdos em que o monstro está na equipe.</summary>
 		public static List<string> Teams(GameDatabase database, PlayerState player, int monsterId) => player.Teams
 			.Where(pair => pair.Value.Contains(monsterId))
-			.Select(pair => pair.Key == Core.Player.Teams.Campaign ? T("teams.campaign") : database.Dungeons.FirstOrDefault(d => d.Id == pair.Key)?.Name ?? pair.Key)
+			.Select(pair => Texts.ContentName(database, pair.Key))
 			.ToList();
 
 		/// <summary>Aviso (com a linha em branco antes) quando a escolha leva monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas.</summary>

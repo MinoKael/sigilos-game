@@ -17,6 +17,11 @@ namespace Sigilos.Core.Battle
 	/// multiplicados (<see cref="FoeScale"/>), e depois pela força do encontro. Todo inimigo, comum ou
 	/// chefe, ainda leva <see cref="FoeBoost"/> em Vida, Ataque e Defesa, e passa do 6★ nível 40 até o
 	/// nível 60 (<see cref="Growth.FoeFraction"/>).
+	///
+	/// O guardião de uma constelação (<see cref="StageEnemy.Guardian"/>) é uma invocação que luta como
+	/// chefe: desperta, com todas as habilidades no máximo e a Vida multiplicada por <see cref="GuardianHealth"/>.
+	/// As regras da Influência da constelação (<see cref="Encounter.Rules"/>) entram em cada unidade do lado
+	/// delas antes da primeira onda, e valem a luta inteira.
 	/// </summary>
 	public static class BattleFactory
 	{
@@ -25,6 +30,12 @@ namespace Sigilos.Core.Battle
 		/// Velocidade fica: 30% a mais nela tiraria o primeiro turno de qualquer equipe.
 		/// </summary>
 		public const double FoeBoost = 1.3;
+
+		/// <summary>
+		/// Quanto a Vida da invocação que guarda uma constelação é multiplicada, além do reforço de toda
+		/// invocação inimiga: ela vale um chefe, não um inimigo comum.
+		/// </summary>
+		public const double GuardianHealth = 3.0;
 
 		/// <summary>Quanto Vida e Ataque de invocação inimiga são multiplicados, pelas estrelas naturais.</summary>
 		public static (double Health, double Attack) FoeScale(int rarity) => rarity switch
@@ -45,7 +56,27 @@ namespace Sigilos.Core.Battle
 				.Select(wave => Wave(database, wave, encounter))
 				.ToList();
 
+			foreach (var rule in encounter.Rules ?? System.Array.Empty<InfluenceRule>())
+			{
+				var passive = rule.Prepared;
+				foreach (var unit in Bearers(rule.Side, allies, waves))
+					unit.AddInfluence(passive);
+			}
+
 			return new BattleSession(allies, waves, seed, encounter.Victory);
+		}
+
+		/// <summary>Quem leva uma regra da Influência: os inimigos de todas as ondas, só o guardião, o time do jogador ou todos.</summary>
+		private static IEnumerable<BattleUnit> Bearers(InfluenceSide side, IReadOnlyList<BattleUnit> allies, IReadOnlyList<IReadOnlyList<BattleUnit>> waves)
+		{
+			var foes = waves.SelectMany(wave => wave);
+			return side switch
+			{
+				InfluenceSide.Allies => allies,
+				InfluenceSide.Guardian => foes.Where(unit => unit.IsBoss),
+				InfluenceSide.Everyone => allies.Concat(foes),
+				_ => foes,
+			};
 		}
 
 		/// <summary>Separa as ativas (no nível e na versão certa) da Passiva.</summary>
@@ -83,7 +114,9 @@ namespace Sigilos.Core.Battle
 		/// mostrar o resumo dele antes da luta (os números que o jogador vê são os que lutam).
 		/// </summary>
 		public static BattleUnit Foe(GameDatabase database, StageEnemy slot, Encounter encounter) =>
-			slot.Summon is { } id ? SummonFoe(database.Summon(id), encounter) : EnemyFoe(database.Enemy(slot.Enemy!), slot.Element, encounter);
+			slot.Summon is { } id
+				? slot.Guardian ? GuardianFoe(database.Summon(id), encounter) : SummonFoe(database.Summon(id), encounter)
+				: EnemyFoe(database.Enemy(slot.Enemy!), slot.Element, encounter);
 
 		private static IReadOnlyList<BattleUnit> Wave(GameDatabase database, IReadOnlyList<StageEnemy> slots, Encounter encounter)
 		{
@@ -111,6 +144,35 @@ namespace Sigilos.Core.Battle
 				actives,
 				passive,
 				RuneSetEffects.None);
+		}
+
+		/// <summary>
+		/// A invocação que guarda uma constelação: a forma desperta (atributos, bônus e nome do Despertar),
+		/// todas as habilidades no nível máximo, e a Vida de chefe.
+		/// </summary>
+		private static BattleUnit GuardianFoe(SummonDefinition summon, Encounter encounter)
+		{
+			var stats = Awakening.Apply(Growth.FoeStats(summon.AwakenedStats, encounter.Stars, encounter.Level), summon.Awakening);
+			var (health, attack) = FoeScale(summon.Rarity);
+			stats = Boosted(stats with
+			{
+				Health = stats.Health * health * GuardianHealth * encounter.Scale,
+				Attack = stats.Attack * attack * encounter.Scale,
+			});
+			var skills = summon.AllSkills;
+			var (actives, passive) = Prepare(skills, skills.Select(skill => skill.MaxLevel).ToList(), true);
+			return new BattleUnit(
+				summon.Id,
+				summon.Awakening.Name,
+				summon.Image,
+				Side.Enemies,
+				summon.Element,
+				encounter.Level,
+				true,
+				stats,
+				actives,
+				passive,
+				RuneSetEffects.None) { IsBoss = true };
 		}
 
 		private static BattleUnit EnemyFoe(EnemyDefinition enemy, Element element, Encounter encounter)

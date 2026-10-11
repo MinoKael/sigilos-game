@@ -39,8 +39,20 @@ namespace Sigilos.UI
 		public static string Name(RuneRarity rarity) => T($"rarity.{rarity}");
 		public static string Name(StatusKind status) => T($"effect.{status}.name");
 		public static string Name(DungeonKind kind) => T($"dungeons.kind.{kind}");
+		public static string Name(Hemisphere hemisphere) => T($"exploration.hemisphere.{hemisphere}");
+
+		/// <summary>Em quem uma regra da Influência vale: "Inimigos", "Guardião", "Seu time", "Todos".</summary>
+		public static string Name(InfluenceSide side) => T($"exploration.side.{side}");
 		public static string Name(RuneSort sort) => T($"filter.order.{sort}");
 		public static string Name(MonsterSort sort) => T($"filter.monster_order.{sort}");
+
+		/// <summary>O nome do conteúdo de uma equipe (<see cref="Teams"/>): a Campanha, a Exploração Estelar ou a Masmorra.</summary>
+		public static string ContentName(GameDatabase database, string content) => content switch
+		{
+			Teams.Campaign => T("teams.campaign"),
+			Teams.Exploration => T("exploration.title"),
+			_ => database.Dungeons.FirstOrDefault(d => d.Id == content)?.Name ?? content,
+		};
 
 		/// <summary>O feito do Chat global numa frase: "Fulano conseguiu um novo monstro 5★!".</summary>
 		public static string Describe(Feat feat, string by) => T(feat is RuneFeat ? "chat.feat_rune" : "chat.feat_summon", by);
@@ -347,8 +359,10 @@ namespace Sigilos.UI
 			var text = effect.Kind switch
 			{
 				EffectKind.Damage => DamageText(effect, where),
-				EffectKind.Heal => T("skill.heal", Percent(effect.Power), where),
-				EffectKind.Shield => T("skill.shield", Term(StatusKind.Shield), Percent(effect.Power), where, Turns(effect.Turns)),
+				EffectKind.Heal => HealText(effect, where),
+				EffectKind.Shield => EffectScaling.IsCustom(effect)
+					? T("skill.shield_formula", Term(StatusKind.Shield), Formula(effect), where, Turns(effect.Turns))
+					: T("skill.shield", Term(StatusKind.Shield), Percent(effect.Power), where, Turns(effect.Turns)),
 				EffectKind.Status => T("skill.effect", chance, Term(effect.Status), where, Turns(effect.Turns)),
 				EffectKind.Impeto => T("skill.impetus", effect.Power >= 0 ? "+" : "−", Math.Abs(effect.Power), Impeto, where),
 				EffectKind.Cleanse => T("skill.cleanse", where),
@@ -356,10 +370,11 @@ namespace Sigilos.UI
 				EffectKind.BonusPerStatus => BonusText(effect, where),
 				EffectKind.ChangeDuration => T(effect.Turns >= 0 ? "skill.prolong" : "skill.shorten", chance, Turns(Math.Abs(effect.Turns)), Statuses(effect, many: true), where),
 				EffectKind.EqualizeHealth => T("skill.equalize", where),
-				EffectKind.HealTeam => effect.Count > 0 ? T("skill.heal_team", Percent(effect.Power), effect.Count, where) : T("skill.heal", Percent(effect.Power), where),
+				EffectKind.HealTeam => HealText(effect, where),
 				EffectKind.JointAttack => effect.Target != TargetKind.AllAllies ? T("skill.joint_one", Ally(effect.Target, effect.By))
 					: effect.Count > 0 ? T("skill.joint", effect.Count) : T("skill.joint_all"),
 				EffectKind.ExtraTurnOnKill => T("skill.extra_turn_on_kill", Turns(effect.Turns)),
+				EffectKind.Revive => ReviveText(effect),
 				_ => effect.Kind.ToString(),
 			};
 			return effect.OnKill ? T("skill.on_kill", text) : text;
@@ -405,13 +420,67 @@ namespace Sigilos.UI
 		private static string DamageText(EffectDefinition effect, string where)
 		{
 			var hits = effect.Hits > 1 ? T("skill.hits", effect.Hits) : "";
-			var text = T("skill.damage", hits, Percent(effect.Power), where);
+			var text = EffectScaling.IsCustom(effect)
+				? T("skill.damage_formula", hits, Formula(effect), where)
+				: T("skill.damage", hits, Percent(effect.Power), where);
 			if (effect.IgnoreDefense > 0)
 				text += T("skill.ignores", Percent(effect.IgnoreDefense));
 			if (effect.Drain > 0)
 				text += T("skill.drain", Percent(effect.Drain));
+			if (effect.Fixed)
+				text += T("skill.fixed");
 			return text;
 		}
+
+		/// <summary>Heal e HealTeam: "cura 15% da Vida", ou a conta inteira quando ela vai além do de sempre.</summary>
+		private static string HealText(EffectDefinition effect, string where)
+		{
+			var custom = EffectScaling.IsCustom(effect);
+			var amount = custom ? Formula(effect) : Percent(effect.Power);
+			return effect is { Kind: EffectKind.HealTeam, Count: > 0 }
+				? T(custom ? "skill.heal_team_formula" : "skill.heal_team", amount, effect.Count, where)
+				: T(custom ? "skill.heal_formula" : "skill.heal", amount, where);
+		}
+
+		/// <summary>"traz de volta 1 aliado caído, sorteado, com 30% da Vida".</summary>
+		private static string ReviveText(EffectDefinition effect)
+		{
+			var health = EffectScaling.IsCustom(effect) ? Formula(effect) : T("skill.revive_health", Percent(effect.Power));
+			return effect.Count > 0 ? T("skill.revive_some", health, effect.Count) : T("skill.revive", health);
+		}
+
+		/// <summary>
+		/// A conta do efeito (<see cref="EffectScaling"/>) em palavras: "(50% do Ataque + 8% da Vida máxima)",
+		/// "100% da Defesa × (8,5 com a Vida vazia a 5,5 com a Vida cheia)", "180% do Ataque × (Velocidade + 80) / Velocidade do alvo".
+		/// </summary>
+		private static string Formula(EffectDefinition effect)
+		{
+			var terms = effect.Plus.Select(term => Amount(term.Stat, term.Power)).ToList();
+			if (effect.Power != 0 || terms.Count == 0)
+				terms.Insert(0, Amount(EffectScaling.MainStat(effect), effect.Power));
+
+			var factors = new List<string>();
+			if (effect.Factor is { } factor)
+				factors.Add(factor is { Base: 0, Slope: 1 }
+					? T($"skill.measure.{factor.By}")
+					: $"({T($"skill.factor.{factor.By}", Plain(factor.Base), Plain(factor.Base + factor.Slope))})");
+			if (effect.Speed is { } speed)
+				factors.Add(T("skill.speed",
+					speed.Add == 0 ? "" : $" {(speed.Add > 0 ? "+" : "−")} {Plain(Math.Abs(speed.Add))}",
+					speed.OverTarget ? T("skill.speed_target") : Plain(speed.Over)));
+
+			var sum = string.Join(" + ", terms);
+			if (terms.Count > 1 && factors.Count > 0)
+				sum = $"({sum})";
+			return string.Join(" × ", factors.Prepend(sum));
+		}
+
+		/// <summary>"50% do Ataque", "110 por nível": um termo da conta.</summary>
+		private static string Amount(ScaleStat stat, double power) =>
+			T($"skill.term.{stat}", stat == ScaleStat.Level ? Plain(power) : Percent(power));
+
+		/// <summary>"8,5": um número da conta, com até duas casas.</summary>
+		private static string Plain(double value) => string.Format(Culture, "{0:0.##}", value);
 
 		/// <summary>Chaves que vêm de enum e faltam no arquivo de textos: o GameEntry avisa no console.</summary>
 		public static IEnumerable<string> MissingEnumKeys()
@@ -434,8 +503,16 @@ namespace Sigilos.UI
 				.Concat(Keys<TargetKind>("target.{0}"))
 				.Concat(Keys<PassiveKind>("passive.{0}"))
 				.Concat(Keys<SkillLevelKind>("skill.level_up.{0}"))
+				.Concat(SpecialAvatars.All.Select(id => $"avatar.special.{id}"))
+				.Concat(Keys<ScaleStat>("skill.term.{0}"))
+				.Concat(Keys<ScaleMeasure>("skill.measure.{0}"))
+				.Concat(Keys<ScaleMeasure>("skill.factor.{0}"))
+				.Concat(Keys<SkillBehavior>("filter.behavior_kind.{0}"))
+				.Concat(Keys<SkillScaling>("filter.scaling_kind.{0}"))
 				.Concat(Keys<RuneToolKind>("tool.{0}"))
 				.Concat(Keys<DungeonKind>("dungeons.kind.{0}"))
+				.Concat(Keys<Hemisphere>("exploration.hemisphere.{0}"))
+				.Concat(Keys<InfluenceSide>("exploration.side.{0}"))
 				.Concat(Keys<RuneSort>("filter.order.{0}"))
 				.Concat(Keys<MonsterSort>("filter.monster_order.{0}").Where(k => !k.EndsWith(".Stat")))
 				.Concat(Keys<MonsterCondition>("filter.condition_kind.{0}"))

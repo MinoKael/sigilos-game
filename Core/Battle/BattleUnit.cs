@@ -24,6 +24,8 @@ namespace Sigilos.Core.Battle
 		/// <summary>A regra da Passiva (também em <see cref="_innate"/>): o Esquecimento a cala.</summary>
 		private readonly UnitRule? _passive;
 
+		private readonly List<PassiveDefinition> _influences = new();
+
 		private readonly int[] _cooldowns;
 
 		public BattleUnit(
@@ -88,6 +90,12 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>A Passiva, se a unidade tem uma.</summary>
 		public PassiveDefinition? Passive { get; }
+
+		/// <summary>
+		/// As regras da Influência de uma constelação que valem nesta unidade (<see cref="AddInfluence"/>):
+		/// Passivas a mais, que o Esquecimento não cala, porque são do céu e não dela.
+		/// </summary>
+		public IReadOnlyList<PassiveDefinition> Influences => _influences;
 
 		/// <summary>O número da Passiva, já melhorado se a invocação despertou.</summary>
 		public double PassiveValue => Passive?.ValueFor(Awakened) ?? 0;
@@ -222,6 +230,17 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>As regras da luta inteira em vigor agora: sem a Passiva, se ela está calada.</summary>
 		private IEnumerable<UnitRule> Innates() => PassiveSuppressed ? _innate.Where(rule => rule != _passive) : _innate;
+
+		/// <summary>
+		/// Uma regra da Influência de uma constelação: vale a luta inteira, como a Passiva, e é avisada antes
+		/// dela. Só o <see cref="BattleFactory"/> põe, antes da luta começar.
+		/// </summary>
+		internal void AddInfluence(PassiveDefinition passive)
+		{
+			var rule = new UnitRule(PassiveBehaviors.Of(passive), passive.Value) { Owner = this };
+			_innate.Insert(_passive == null ? _innate.Count : _innate.IndexOf(_passive), rule);
+			_influences.Add(passive);
+		}
 
 		/// <summary>A regra desta estratégia que vale a luta inteira (conjunto de runas ou Passiva), se a unidade tem.</summary>
 		internal UnitRule? Innate(UnitBehavior behavior) => _innate.FirstOrDefault(rule => rule.Behavior == behavior);

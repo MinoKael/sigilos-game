@@ -8,7 +8,7 @@
 // "firstClearLegendary" and "firstClearCores" are milestone prizes of the first victory (Legendary Scrolls and
 // Infusion Cores, Core/Progression/Milestones): the stages that close a region (20, 40, 50) pay them.
 // "mana" is the cost of each victory (a defeat costs nothing). Scrolls only
-// on the first victory; Essence and experience (per team monster, on the Summoners War scale; the account gets the same) on every victory. The rune
+// on the first victory; Essence and experience (per team monster, on the reference scale in the GDD; the account gets the same) on every victory. The rune
 // (up to 4 stars) always drops on the first victory and with a 50% chance on later ones. 5 and 6 star
 // runes and the tools come from the Dungeons (Data/dungeons.json).
 [

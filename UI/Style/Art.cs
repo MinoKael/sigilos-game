@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 using Sigilos.Core.Content;
+using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
 
 namespace Sigilos.UI.Style
@@ -81,6 +82,8 @@ namespace Sigilos.UI.Style
 						return Symbol.Of(RuneSets.For(RuneSet.Siphon).Glyph);
 					case EffectKind.HealTeam or EffectKind.EqualizeHealth:
 						return Symbol.Of(Texts.GlyphOf(Stat.Health));
+					case EffectKind.Revive:
+						return new Symbol(Effect(StatusKind.Revive));
 					case EffectKind.StealBuff:
 						return Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph);
 					case EffectKind.ExtraTurnOnKill:
@@ -95,6 +98,10 @@ namespace Sigilos.UI.Style
 
 		/// <summary>Ícones de Assets/Icons: scroll, essence, gold, summon, config, map, bag, fight...</summary>
 		public static Texture2D? Icon(string name) => Load("Icons", name);
+
+		/// <summary>O desenho de um retrato especial (<see cref="SpecialAvatars"/>): o de Assets/Avatars, ou o ícone do padrão.</summary>
+		public static Texture2D? SpecialAvatar(string id) =>
+			SpecialAvatars.FileOf(id) is { } file ? Load("Avatars", file) : Icon(SpecialAvatars.DefaultIcon);
 
 		/// <summary>O nome do desenho (<c>lock</c>, <c>fire_golem</c>), para o nó que o mostra; null se a imagem não veio daqui.</summary>
 		public static string? NameOf(Texture2D? texture) =>

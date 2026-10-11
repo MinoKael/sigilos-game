@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Godot;
 using Sigilos.Core.Content;
+using Sigilos.Core.Progression;
 using Sigilos.UI;
 
 namespace Sigilos.GameEntry
@@ -35,13 +36,23 @@ namespace Sigilos.GameEntry
 				enemies: Localize(Read("enemies.json")),
 				stages: Localize(Read("stages.json")),
 				dungeons: Localize(Read("dungeons.json")),
-				shop: Localize(Read("shop.json")));
+				shop: Localize(Read("shop.json")),
+				exploration: Localize(Read("exploration.json")));
 
 			foreach (var problem in database.Validate())
 				GD.PushError($"Data/: {problem}");
 
 			return database;
 		}
+
+		/// <summary>
+		/// Os retratos especiais de recompensa (<see cref="SpecialAvatars"/>): um por desenho de Assets/Avatars.
+		/// O <see cref="ResourceLoader.ListDirectory"/> acha os desenhos também no jogo exportado, em que a pasta
+		/// só tem os importados. Antes dos textos, que conferem o nome de cada um.
+		/// </summary>
+		public static void LoadAvatars() => SpecialAvatars.Register(ResourceLoader.ListDirectory("res://Assets/Avatars")
+			.Where(file => file.EndsWith(".svg", StringComparison.Ordinal))
+			.Select(file => file[..^".svg".Length]));
 
 		/// <summary>O idioma base: todo texto e todo nome dos dados nascem em português; os outros arquivos são traduções.</summary>
 		public const string BaseLanguage = "pt-BR";

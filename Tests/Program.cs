@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Sigilos.Core.Progression;
 
 namespace Sigilos.Tests
 {
@@ -19,8 +20,11 @@ namespace Sigilos.Tests
 	///   dotnet run --project Tests -- --only=Summon só os testes com "Summon" no nome
 	///   dotnet run --project Tests -- --simulate    relatório de balanceamento da campanha
 	///   dotnet run --project Tests -- --dungeons    relatório das Masmorras de especialização
+	///   dotnet run --project Tests -- --drops       o drop das Masmorras conferido com a tabela, e por dia (--drops=golem, --victories=, --seed=)
+	///   dotnet run --project Tests -- --exploration relatório da Exploração Estelar (ou --exploration=22-51)
 	///   dotnet run --project Tests -- --fight=10    uma luta da fase 10, turno a turno
 	///   dotnet run --project Tests -- --fight=golem5:powerful   o andar 5 do Golem contra o time forte genérico
+	///   dotnet run --project Tests -- --battle-sounds=golem5   a luta em sons: por minuto, quantos juntos (--timeline --speed=2: a lista)
 	///   dotnet run --project Tests -- --digest      impressão digital do combate, para refatorar sem mudar a regra
 	///   dotnet run --project Tests -c Release -- --balance --vs=golem5   bancada de balanceamento (--balance --help: as opções)
 	/// </summary>
@@ -31,12 +35,27 @@ namespace Sigilos.Tests
 
 		private static int Main(string[] args)
 		{
+			SpecialAvatars.Register(TestData.AvatarFiles());
+
 			if (args.Contains("--balance"))
 				return BalanceLab.Run(TestData.LoadReal(), args);
+
+			if (args.Any(a => a == "--drops" || a.StartsWith("--drops=", StringComparison.Ordinal)))
+				return DropReport.Run(TestData.LoadReal(), args);
+
+			if (args.Any(a => a == "--battle-sounds" || a.StartsWith("--battle-sounds=", StringComparison.Ordinal)))
+				return SoundScene.Run(TestData.LoadReal(), args);
 
 			if (args.Contains("--dungeons"))
 			{
 				CampaignReport.PrintDungeons(TestData.LoadReal());
+				return 0;
+			}
+
+			var exploration = args.FirstOrDefault(a => a.StartsWith("--exploration", StringComparison.Ordinal));
+			if (exploration != null)
+			{
+				CampaignReport.PrintExploration(TestData.LoadReal(), exploration.Contains('=') ? exploration[(exploration.IndexOf('=') + 1)..] : null);
 				return 0;
 			}
 

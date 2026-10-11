@@ -30,19 +30,24 @@ namespace Sigilos.Tests
 			var database = TestData.Database;
 			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), database);
 			var seals = Seals.Journey(player, database).Concat(Seals.Collection(player, database)).ToList();
-			Assert.Equal(10, seals.Count, "quatro da jornada e seis da coleção");
+			Assert.Equal(12, seals.Count, "seis da jornada e seis da coleção");
 			Assert.Equal(seals.Count, seals.Select(s => s.Id).Distinct().Count(), "ids diferentes (são as chaves dos textos)");
 			Assert.False(seals.Any(s => s.Done), "a conta nova não tem selo");
 			Assert.True(seals.All(s => s.Goal >= 1), "toda meta pede alguma coisa");
 
+			var boreal = database.Exploration.Range(Hemisphere.Boreal).Last;
 			player.HighestStage = database.Stages.Count;
 			foreach (var dungeon in database.Dungeons)
 				player.DungeonFloors[dungeon.Id] = dungeon.Floors.Count;
+			player.ExplorationBest = boreal;
 			var before = PlayerSave.ToJson(player);
 			var journey = Seals.Journey(player, database).ToDictionary(s => s.Id);
 			Assert.Equal(before, PlayerSave.ToJson(player), "ler os selos não muda o save");
 			Assert.True(journey["campaign"].Done && journey["first_victory"].Done, "a Campanha inteira lacra os dois");
 			Assert.True(journey["all_dungeons"].Done && journey["deep_dungeon"].Done, "todos os andares de todas as Masmorras");
+			Assert.True(journey["northern_sky"].Done, "o céu do norte acaba na última Boreal");
+			Assert.False(journey["whole_sky"].Done, "o céu inteiro ainda não");
+			Assert.Equal(boreal, journey["whole_sky"].Progress, "e mostra quanto já foi");
 
 			Milestones.Grant(player, new Prize(InfusionCores: 2));
 			Assert.Equal(0, Seals.Monsters(player).Count(), "Núcleo de Infusão não conta como monstro");

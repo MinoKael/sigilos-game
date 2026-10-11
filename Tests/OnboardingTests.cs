@@ -20,7 +20,6 @@ namespace Sigilos.Tests
 			Roster.Add(player, database.Summon("imp_fire"));
 			player.TotalPulls = 1;
 			Assert.True(Features.IsOpen(player, database, Feature.Monsters), "a primeira invocação abre Monstros");
-			Assert.True(Features.IsOpen(player, database, Feature.Teams), "e Equipes");
 
 			player.HighestStage = 1;
 			Assert.True(Features.IsOpen(player, database, Feature.Runes), "a fase 1 abre as Runas (a primeira runa cai nela)");

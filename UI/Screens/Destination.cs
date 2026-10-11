@@ -11,7 +11,6 @@ namespace Sigilos.UI.Screens
 		Summon,
 		Monsters,
 		Runes,
-		Teams,
 		Shop,
 		Compendium,
 		Grimoire,
@@ -19,7 +18,10 @@ namespace Sigilos.UI.Screens
 		/// <summary>A janela dos amigos (só a conta conectada tem).</summary>
 		Friends,
 
-		/// <summary>A escolha de batalha: Campanha, Masmorras e o que ainda vem.</summary>
+		/// <summary>A Exploração Estelar: o percurso pelas 88 constelações, que recomeça todo mês.</summary>
+		Exploration,
+
+		/// <summary>A escolha de batalha: Campanha, Masmorras e a Exploração Estelar.</summary>
 		Map,
 	}
 
@@ -33,11 +35,11 @@ namespace Sigilos.UI.Screens
 			Destination.Summon => "summon",
 			Destination.Monsters => "monster",
 			Destination.Runes => "rune",
-			Destination.Teams => "team",
 			Destination.Shop => "shop",
 			Destination.Compendium => "compendium",
 			Destination.Grimoire => "grimoire",
 			Destination.Friends => "friends",
+			Destination.Exploration => "star_exploration",
 			_ => "fight",
 		};
 
@@ -47,12 +49,12 @@ namespace Sigilos.UI.Screens
 		public static (string Icon, string Name) Of(Feature feature) => feature switch
 		{
 			Feature.Monsters => (Icon(Destination.Monsters), Name(Destination.Monsters)),
-			Feature.Teams => (Icon(Destination.Teams), Name(Destination.Teams)),
 			Feature.Runes => (Icon(Destination.Runes), Name(Destination.Runes)),
 			Feature.Compendium => (Icon(Destination.Compendium), Name(Destination.Compendium)),
 			Feature.Shop => (Icon(Destination.Shop), Name(Destination.Shop)),
 			Feature.Grimoire => (Icon(Destination.Grimoire), Name(Destination.Grimoire)),
 			Feature.Dungeons => (Icon(Destination.Dungeons), Name(Destination.Dungeons)),
+			Feature.Exploration => (Icon(Destination.Exploration), Name(Destination.Exploration)),
 			Feature.Channel => ("collect", T("hub.channel")),
 			_ => ("repeat", T("common.auto_battle")),
 		};

@@ -53,7 +53,7 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void MainStatMatchesTheSummonersWarTable()
+		private static void MainStatMatchesTheReferenceTable()
 		{
 			Assert.Near(0.11, RuneRules.MainValue(RuneStat.AttackPercent, 6, 0), "6★ Ataque% +0", 1e-9);
 			Assert.Near(0.47, RuneRules.MainValue(RuneStat.AttackPercent, 6, 12), "6★ Ataque% +12", 1e-9);
@@ -126,7 +126,7 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void UpgradeCostIsTheSummonersWarAverage()
+		private static void UpgradeCostIsTheReferenceAverage()
 		{
 			Assert.Equal(10, RuneRules.UpgradeCost(1, 0), "1★ +0→+1: 100 da tabela, 10 de Essência");
 			Assert.Equal(32700, RuneRules.UpgradeCost(6, 14), "6★ +14→+15: 16350 da tabela com 5% de chance");
@@ -178,6 +178,32 @@ namespace Sigilos.Tests
 			var bonus = RuneBonuses.Compute(new StatBlock { Defense = 1000 }, runes);
 			Assert.Equal(3, bonus.ActiveSets.Count, "três Guardas");
 			Assert.True(bonus.Stats.Defense >= 450, "+45% de Defesa dos conjuntos");
+		}
+
+		[Test]
+		private static void SwapPreviewReplacesTheSlotAndClosesSets()
+		{
+			var baseStats = new StatBlock { Health = 1000, Attack = 100, Defense = 100, Speed = 100 };
+			var equipped = new List<Rune>
+			{
+				Rune(RuneSet.Haste, 1, RuneStat.AttackFlat, level: 15),
+				Rune(RuneSet.Haste, 2, RuneStat.Speed, level: 15),
+				Rune(RuneSet.Haste, 3, RuneStat.DefenseFlat, level: 15),
+				Rune(RuneSet.Vigor, 4, RuneStat.AttackPercent, level: 15),
+			};
+			var fourth = Rune(RuneSet.Haste, 4, RuneStat.AttackPercent, level: 15);
+			var swapped = RuneSwap.Apply(equipped, new[] { fourth });
+
+			Assert.Equal("1,2,3,4", string.Join(",", swapped.Select(r => r.Slot)), "um por espaço, em ordem");
+			Assert.True(swapped.Contains(fourth) && !swapped.Contains(equipped[3]), "a nova toma o espaço 4");
+			Assert.Equal(0, RuneBonuses.Compute(baseStats, equipped).ActiveSets.Count, "três de Rapidez não fecham");
+			Assert.Equal(1, RuneBonuses.Compute(baseStats, swapped).ActiveSets.Count, "com a quarta, fecha");
+			Assert.Equal(4, equipped.Count, "a lista de agora fica como estava");
+
+			var sixth = Rune(RuneSet.Vigor, 6, RuneStat.Accuracy, level: 15);
+			Assert.Equal(5, RuneSwap.Apply(equipped, new[] { fourth, sixth }).Count, "espaço vazio ganha runa");
+			var other = Rune(RuneSet.Vigor, 4, RuneStat.HealthPercent);
+			Assert.True(RuneSwap.Apply(equipped, new[] { fourth, other }).Contains(other), "no mesmo espaço, fica a última");
 		}
 
 		[Test]
@@ -273,6 +299,17 @@ namespace Sigilos.Tests
 			Assert.Equal("1,2,3", string.Join(",", byLevel), "ordem de melhora");
 
 			Assert.Equal(1, new RuneFilter { Main = RuneStat.CritDamage, Slot = 4 }.Apply(runes).Count(), "principal e espaço");
+
+			// Velocidade só nos subatributos: a principal de Velocidade (a 1) não conta, e quem não tem vem por último.
+			var bySpeed = new RuneFilter { Sort = RuneSort.Substat, SortStat = RuneStat.Speed }.Apply(runes).Select(r => r.Id);
+			Assert.Equal("2,3,1", string.Join(",", bySpeed), "a maior Velocidade nos subatributos primeiro");
+			runes[2].Substats[0].Grind = 2;
+			Assert.Near(6, RuneFilter.SubstatValue(runes[2], RuneStat.Speed), "o afiado conta");
+			Assert.Equal("3,2,1", string.Join(",", new RuneFilter { Sort = RuneSort.Substat, SortStat = RuneStat.Speed }.Apply(runes).Select(r => r.Id)), "e muda a ordem");
+
+			runes[1].Locked = true;
+			Assert.Equal("2", string.Join(",", new RuneFilter { Condition = RuneCondition.Locked }.Apply(runes).Select(r => r.Id)), "bloqueadas");
+			Assert.Equal("1,3", string.Join(",", new RuneFilter { Condition = RuneCondition.Unlocked }.Apply(runes).Select(r => r.Id)), "desbloqueadas");
 		}
 
 		[Test]

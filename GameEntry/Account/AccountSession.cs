@@ -233,6 +233,17 @@ namespace Sigilos.GameEntry.Account
 			}
 		}
 
+		/// <summary>O volume dos efeitos sonoros deste aparelho, de 0 a 1.</summary>
+		public float EffectsVolume
+		{
+			get => _data.EffectsVolume;
+			set
+			{
+				_data.EffectsVolume = value;
+				_data.Save();
+			}
+		}
+
 		/// <summary>O e-mail da última conta que entrou neste aparelho.</summary>
 		public string? Email => _data.Email;
 

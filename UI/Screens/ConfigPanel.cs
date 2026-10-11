@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -21,7 +22,7 @@ namespace Sigilos.UI.Screens
 	/// Os Ajustes, numa janela:
 	/// - um botão por idioma, com o nome escrito no próprio idioma (o atual aceso). Trocar de idioma avisa o
 	///   GameRoot, que recarrega os textos e remonta a tela;
-	/// - o som: um controle deslizante por volume (geral e música), que vale na hora;
+	/// - o som: um controle deslizante por volume (geral, música e efeitos), que vale na hora;
 	/// - a conta: o nome e o e-mail, Trocar nome e Sair da conta, ou, sem conta, Entrar ou criar conta;
 	/// - a luta de treino, para refazer as lições do começo.
 	/// </summary>
@@ -39,7 +40,7 @@ namespace Sigilos.UI.Screens
 			var dialog = Dialog.Open(from, T("destination.Config"), 520, null, "ConfigDialog");
 			dialog.Body.AddChild(new Label { Name = "LanguageTitle", Text = T("config.language"), ThemeTypeVariation = GameTheme.Heading });
 			var column = new VBoxContainer { Name = "Languages" };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			foreach (var language in languages)
 			{
 				var code = language;
@@ -70,7 +71,7 @@ namespace Sigilos.UI.Screens
 		private static Control Sound(IReadOnlyList<ConfigVolume> volumes)
 		{
 			var column = new VBoxContainer { Name = "Sound" };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			column.AddChild(new Label { Name = "SoundTitle", Text = T("config.sound"), ThemeTypeVariation = GameTheme.Heading });
 			var grid = Layout.Grid(3, 14).Named("Volumes");
 			foreach (var volume in volumes)
@@ -94,10 +95,14 @@ namespace Sigilos.UI.Screens
 					CustomMinimumSize = new Vector2(0, 44),
 					SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
 				};
+				var last = volume.Value;
+				// Cada degrau soa já no volume novo (o de Efeitos ouve a si mesmo).
 				slider.ValueChanged += value =>
 				{
 					amount.Text = Percent(value);
 					volume.Changed((float)value);
+					Sfx.Play(value > last ? "ui.slider_up" : "ui.slider_down");
+					last = (float)value;
 				};
 				grid.AddChild(new Label { Name = volume.Id + "Title", Text = volume.Title });
 				grid.AddChild(slider);
@@ -113,7 +118,7 @@ namespace Sigilos.UI.Screens
 		private static Control Account(Dialog dialog, ConfigAccount account)
 		{
 			var column = new VBoxContainer { Name = "Account" };
-			column.AddThemeConstantOverride("separation", 10);
+			column.AddThemeConstantOverride("separation", Space.Regular);
 			column.AddChild(new Label { Name = "AccountTitle", Text = T("config.account"), ThemeTypeVariation = GameTheme.Heading });
 			if (account.Email != null)
 			{
@@ -127,7 +132,7 @@ namespace Sigilos.UI.Screens
 					account.SignOut();
 				}).Named("SignOut");
 				signOut.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-				var buttons = Layout.Row(10).Named("Buttons");
+				var buttons = Layout.Row(Space.Regular).Named("Buttons");
 				// Trocar o nome é na Loja; aqui só a conta que ainda não tem nome escolhe o primeiro, de graça.
 				if (account.Name == null)
 				{

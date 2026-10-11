@@ -4,7 +4,6 @@ namespace Sigilos.Core.Progression
 	public enum Feature
 	{
 		Monsters,
-		Teams,
 		Runes,
 		Compendium,
 		Channel,
@@ -12,5 +11,6 @@ namespace Sigilos.Core.Progression
 		AutoBattle,
 		Grimoire,
 		Dungeons,
+		Exploration,
 	}
 }

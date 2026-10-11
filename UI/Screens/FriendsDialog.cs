@@ -38,7 +38,7 @@ namespace Sigilos.UI.Screens
 			_dialog = Dialog.Open(from, T("friends.title"), Width, null, "FriendsDialog");
 			_dialog.Closed += () => Closed?.Invoke();
 
-			var invite = Layout.Row(10).Named("Invite");
+			var invite = Layout.Row(Space.Regular).Named("Invite");
 			_name = new LineEdit
 			{
 				Name = "Name",
@@ -58,7 +58,7 @@ namespace Sigilos.UI.Screens
 			_notice.Visible = false;
 			_dialog.Body.AddChild(_notice);
 
-			_lists.AddThemeConstantOverride("separation", 14);
+			_lists.AddThemeConstantOverride("separation", Space.Wide);
 			_dialog.Body.AddChild(_lists);
 			ShowMessage(T("friends.loading"));
 		}
@@ -121,7 +121,7 @@ namespace Sigilos.UI.Screens
 		private void Section(string name, string title, IReadOnlyList<Friend> people, Func<Friend, Control> row, string? empty = null)
 		{
 			var section = new VBoxContainer { Name = name };
-			section.AddThemeConstantOverride("separation", 6);
+			section.AddThemeConstantOverride("separation", Space.Small);
 			section.AddChild(new Label { Name = "Title", Text = title, ThemeTypeVariation = GameTheme.Heading });
 			if (people.Count == 0 && empty != null)
 				section.AddChild(Layout.Text(empty, GameTheme.Faded, Width - 40).Named("Empty"));
@@ -166,13 +166,13 @@ namespace Sigilos.UI.Screens
 		private static (PanelContainer Panel, HBoxContainer Row) Row(Friend friend, string? status, Color color, bool presence = false)
 		{
 			var panel = new PanelContainer { ThemeTypeVariation = GameTheme.InsetPanel };
-			var row = Layout.Row(10).Named("Row");
+			var row = Layout.Row(Space.Regular).Named("Row");
 			panel.AddChild(row);
 			if (presence)
 				row.AddChild(Dot(color));
 
 			var who = new VBoxContainer { Name = "Who", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			who.AddThemeConstantOverride("separation", 0);
+			who.AddThemeConstantOverride("separation", Space.None);
 			who.AddChild(new Label { Name = "Name", Text = friend.Name, TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis });
 			if (status != null)
 			{
