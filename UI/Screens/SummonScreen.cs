@@ -103,8 +103,8 @@ namespace Sigilos.UI.Screens
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
-			var panel = new PanelContainer { Name = "Pulls", CustomMinimumSize = new Vector2(360, 0) };
-			var column = new VBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Center };
+			var panel = new PanelContainer { Name = "Pulls", CustomMinimumSize = new Vector2(440, 0) };
+			var column = new VBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Begin };
 			column.AddThemeConstantOverride("separation", Space.Wide);
 			panel.AddChild(column);
 			column.AddChild(_kindRow);
