@@ -28,21 +28,32 @@ namespace Sigilos.UI.Components
 			canvas.DrawCircle(at, 2.2f, new Color(spark, 0.85f * alpha * Mathf.Sin(t * Mathf.Pi)));
 		}
 
-		/// <summary>A estrela de quatro pontas, de raio <paramref name="size"/>.</summary>
-		public static void Sparkle(CanvasItem canvas, Vector2 at, float size, Color color)
-		{
-			var waist = size * 0.24f;
-			canvas.DrawColoredPolygon(new[]
-			{
-				at + new Vector2(0, -size), at + new Vector2(waist, -waist),
-				at + new Vector2(size, 0), at + new Vector2(waist, waist),
-				at + new Vector2(0, size), at + new Vector2(-waist, waist),
-				at + new Vector2(-size, 0), at + new Vector2(-waist, -waist),
-			}, color);
-		}
+        /// <summary>A estrela de quatro pontas, de raio <paramref name="size"/>.</summary>
+        public static void Sparkle(CanvasItem canvas, Vector2 at, float size, Color color)
+        {
+            var waist = size * 0.24f;
 
-		/// <summary>A estrela que pisca no seu tempo (<paramref name="phase"/>): um brilho largo e o miolo aceso.</summary>
-		public static void Twinkle(CanvasItem canvas, Vector2 at, float radius, float time, float phase, Color color)
+            var points = new[]
+            {
+                at + new Vector2(0, -size), at + new Vector2(waist, -waist),
+                at + new Vector2(size, 0), at + new Vector2(waist, waist),
+                at + new Vector2(0, size), at + new Vector2(-waist, waist),
+                at + new Vector2(-size, 0), at + new Vector2(-waist, -waist),
+            };
+
+            canvas.DrawColoredPolygon(points, color);
+
+            var outlinePoints = new[]
+            {
+                points[0], points[1], points[2], points[3],
+                points[4], points[5], points[6], points[7], points[0]
+            };
+
+            canvas.DrawPolyline(outlinePoints, color, 1.0f, antialiased: true);
+        }
+
+        /// <summary>A estrela que pisca no seu tempo (<paramref name="phase"/>): um brilho largo e o miolo aceso.</summary>
+        public static void Twinkle(CanvasItem canvas, Vector2 at, float radius, float time, float phase, Color color)
 		{
 			var twinkle = 0.55f + 0.45f * Mathf.Sin(time * 1.7f + phase);
 			Sparkle(canvas, at, radius * 0.75f, new Color(color, 0.12f * twinkle));

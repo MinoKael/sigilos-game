@@ -42,7 +42,7 @@ namespace Sigilos.UI.Style
 		{
 			_box.BorderColor = selected ? States.Selected : hover ? Frame.Lightened(HoverLighten) : Frame;
 			_box.SetBorderWidthAll(selected ? Width + 1 : Width);
-			_box.BgColor = marked ? States.MarkedFill : hover ? States.HoverFill : Palette.Inset;
+			_box.BgColor = marked ? States.MarkedFill : hover ? States.HoverFill : Palette.InsetFaded;
 			var (color, size, offset) = selected ? (States.SelectedGlow, GlowSize, Vector2.Zero) : hover ? Hover : Rest;
 			_box.ShadowColor = color;
 			_box.ShadowSize = size;

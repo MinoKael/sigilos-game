@@ -128,17 +128,28 @@ namespace Sigilos.UI.Components
 			_layer.AddChild(OnBottomLine(holder, 0, (Inset + SlotWidth / 2) * _scale, GrowDirection.Both));
 		}
 
-		/// <summary>
-		/// Para onde o lado do espaço olha, em graus: o 1 para cima (como no círculo das runas, o
-		/// <see cref="SigilRing"/>), os outros a cada 60° no sentido do relógio.
-		/// </summary>
-		public static float SlotAngle(int slot) => -90 + 60 * (slot - 1);
+        /// <summary>
+        /// Para onde o lado do espaço olha, em graus: o 1 para cima, pulando os slots 0 e 3, 
+        /// distribuídos a cada 45° no sentido do relógio.
+        /// </summary>
+        public static float SlotAngle(int slot) => slot switch
+        {
+            1 => -45f,
+            2 => 0f,
+            3 => 45f,
+            4 => 135f,
+            5 => 180f,
+            6 => 225f,
+			7 => -90f,
+			8 => 90f,
+            _ => 0f
+        };
 
-		/// <summary>
-		/// Uma faixa escrita por cima da runa ("Vendida"), no centro da pedra, e a runa apagada por baixo.
-		/// Só o desenho e a moldura apagam: a faixa fica inteira, para ler.
-		/// </summary>
-		public void SetStamp(string text)
+        /// <summary>
+        /// Uma faixa escrita por cima da runa ("Vendida"), no centro da pedra, e a runa apagada por baixo.
+        /// Só o desenho e a moldura apagam: a faixa fica inteira, para ler.
+        /// </summary>
+        public void SetStamp(string text)
 		{
 			_layer.Modulate = new Color(1, 1, 1, 0.35f);
 			SelfModulate = new Color(1, 1, 1, 0.55f);
@@ -242,35 +253,46 @@ namespace Sigilos.UI.Components
 			}
 		}
 
-		/// <summary>
-		/// O selo do espaço, atrás do Glifo: um hexágono de lados chatos em cima e embaixo, um pouco mais claro
-		/// que a pedra, com o contorno entalhado em ouro escuro. O lado que olha para o espaço da runa
-		/// (<see cref="SlotAngle"/>) vira uma barra acesa na cor da raridade.
-		/// </summary>
-		private void DrawSeal()
-		{
-			var empty = Rune == null;
-			var radius = (empty ? EmptySealRadius : SealRadius) * _scale;
-			// Com runa, o centro do Glifo: a pedra menos a fileira das estrelas, um pouco acima para não
-			// encostar na linha de baixo.
-			var center = new Vector2(Size.X / 2, Size.Y / 2 + (empty ? 0 : 2 * _scale));
-			var corners = new Vector2[7];
-			for (var i = 0; i < 6; i++)
-				corners[i] = center + Vector2.FromAngle(Mathf.DegToRad(60 * i)) * radius;
-			corners[6] = corners[0];
+        /// <summary>
+        /// O selo do espaço, atrás do Glifo: um octógono de lados chatos em cima e embaixo, um pouco mais claro
+        /// que a pedra, com o contorno entalhado em ouro escuro. O lado que olha para o espaço da runa
+        /// (<see cref="SlotAngle"/>) vira uma barra acesa na cor da raridade.
+        /// </summary>
+        private void DrawSeal()
+        {
+            var empty = Rune == null;
+            var radius = (empty ? EmptySealRadius : SealRadius) * _scale;
+            // Com runa, o centro do Glifo: a pedra menos a fileira das estrelas, um pouco acima para não
+            // encostar na linha de baixo.
+            var center = new Vector2(Size.X / 2, Size.Y / 2 + (empty ? 0 : 2 * _scale));
 
-			var lit = empty ? new Color(Palette.Gold, 0.55f) : _color;
-			DrawColoredPolygon(corners[..6], empty ? new Color(Palette.Inset.Lightened(0.04f), 0.9f) : Palette.Inset.Lightened(0.07f));
+            // Um octógono precisa de 8 vértices únicos + 1 para fechar o polyline (total 9)
+            var corners = new Vector2[9];
 
-			var facing = SlotAngle(Slot);
-			var from = center + Vector2.FromAngle(Mathf.DegToRad(facing - 30)) * radius;
-			var to = center + Vector2.FromAngle(Mathf.DegToRad(facing + 30)) * radius;
-			DrawPolyline(corners, new Color(Palette.GoldDark, empty ? 0.5f : 0.7f), 1.2f * _scale, true);
-			DrawLine(from, to, new Color(lit, 0.35f), 7 * _scale, true);
-			DrawLine(from, to, lit, 3 * _scale, true);
-		}
+            // Para deixar os lados chatos em cima e embaixo, rotacionamos em 22.5 graus (ou -22.5 dependendo da orientação)
+            // Cada vértice fica separado por 360 / 8 = 45 graus.
+            for (var i = 0; i < 8; i++)
+            {
+                var angleDeg = 22.5f + (45f * i);
+                corners[i] = center + Vector2.FromAngle(Mathf.DegToRad(angleDeg)) * radius;
+            }
+            corners[8] = corners[0]; // Fecha o loop do octógono
 
-		private void Restyle()
+            var lit = empty ? new Color(Palette.Gold, 0.55f) : _color;
+            // Desenha o polígono usando os 8 primeiros vértices
+            DrawColoredPolygon(corners[..8], empty ? new Color(Palette.Inset.Lightened(0.04f), 0.9f) : Palette.Inset.Lightened(0.07f));
+
+            var facing = SlotAngle(Slot);
+            // Ajustado para o espaçamento do octógono (lados cobrindo 45 graus)
+            var from = center + Vector2.FromAngle(Mathf.DegToRad(facing - 22.5f)) * radius;
+            var to = center + Vector2.FromAngle(Mathf.DegToRad(facing + 22.5f)) * radius;
+
+            DrawPolyline(corners, new Color(Palette.GoldDark, empty ? 0.5f : 0.7f), 1.2f * _scale, true);
+            DrawLine(from, to, new Color(lit, 0.35f), 7 * _scale, true);
+            DrawLine(from, to, lit, 3 * _scale, true);
+        }
+
+        private void Restyle()
 		{
 			var hover = IsInsideTree() && GetGlobalRect().HasPoint(GetGlobalMousePosition());
 			_selection.Apply(_selected, _marked, hover);

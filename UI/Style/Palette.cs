@@ -31,9 +31,10 @@ namespace Sigilos.UI.Style
 
 		/// <summary>Tinta de noite: listas, barras, cartões, o que fica rebaixado no painel.</summary>
 		public static readonly Color Inset = Color.Color8(17, 15, 30);
+		public static readonly Color InsetFaded = Color.Color8(17, 15, 30, 235);
 
-		/// <summary>Pergaminho: o texto.</summary>
-		public static readonly Color Text = Color.Color8(240, 230, 208);
+        /// <summary>Pergaminho: o texto.</summary>
+        public static readonly Color Text = Color.Color8(240, 230, 208);
 
 		/// <summary>O texto secundário: cinza de lavanda, frio, para não competir com o pergaminho.</summary>
 		public static readonly Color TextFaded = Color.Color8(170, 160, 186);

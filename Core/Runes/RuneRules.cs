@@ -34,15 +34,15 @@ namespace Sigilos.Core.Runes
 		/// <summary>Quantos subatributos a runa tem de ter neste nível de melhora: 1 em +3, 2 em +6, 3 em +9 e 4 em +12.</summary>
 		public static int SubstatsAt(int level) => Math.Min(MaxSubstats, level / 3);
 
-		/// <summary>Principais possíveis por espaço: 1, 3 e 5 fixos; 2, 4 e 6 variam.</summary>
+		/// <summary>Principais possíveis por espaço: 1, 2 e 3 variam; 4, 5 e 6 fixos.</summary>
 		public static IReadOnlyList<RuneStat> MainOptions(int slot) => slot switch
 		{
-			1 => new[] { RuneStat.AttackFlat },
-			2 => new[] { RuneStat.AttackFlat, RuneStat.AttackPercent, RuneStat.DefenseFlat, RuneStat.DefensePercent, RuneStat.HealthFlat, RuneStat.HealthPercent, RuneStat.Speed },
-			3 => new[] { RuneStat.DefenseFlat },
-			4 => new[] { RuneStat.AttackFlat, RuneStat.AttackPercent, RuneStat.DefenseFlat, RuneStat.DefensePercent, RuneStat.HealthFlat, RuneStat.HealthPercent, RuneStat.Crit, RuneStat.CritDamage },
+			1 => new[] { RuneStat.AttackFlat, RuneStat.AttackPercent, RuneStat.DefenseFlat, RuneStat.DefensePercent, RuneStat.HealthFlat, RuneStat.HealthPercent, RuneStat.Crit, RuneStat.CritDamage },
+			2 => new[] { RuneStat.AttackFlat, RuneStat.AttackPercent, RuneStat.DefenseFlat, RuneStat.DefensePercent, RuneStat.HealthFlat, RuneStat.HealthPercent, RuneStat.Resistance, RuneStat.Accuracy },
+			3 => new[] { RuneStat.AttackFlat, RuneStat.AttackPercent, RuneStat.DefenseFlat, RuneStat.DefensePercent, RuneStat.HealthFlat, RuneStat.HealthPercent, RuneStat.Speed },
+			4 => new[] { RuneStat.DefenseFlat },
 			5 => new[] { RuneStat.HealthFlat },
-			_ => new[] { RuneStat.AttackFlat, RuneStat.AttackPercent, RuneStat.DefenseFlat, RuneStat.DefensePercent, RuneStat.HealthFlat, RuneStat.HealthPercent, RuneStat.Resistance, RuneStat.Accuracy },
+			_ => new[] { RuneStat.AttackFlat },
 		};
 
 		/// <summary>
