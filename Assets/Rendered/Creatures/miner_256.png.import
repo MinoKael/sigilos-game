@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dbtm78gnsv1f6"
-path="res://.godot/imported/dwarf_miner_256.png-7bf418328b75e08229ba7d6b8a7f4cd9.ctex"
+path="res://.godot/imported/miner_256.png-9b7ca2d3be8e7341275c9e3ed0f44318.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Rendered/Creatures/dwarf_miner_256.png"
-dest_files=["res://.godot/imported/dwarf_miner_256.png-7bf418328b75e08229ba7d6b8a7f4cd9.ctex"]
+source_file="res://Assets/Rendered/Creatures/miner_256.png"
+dest_files=["res://.godot/imported/miner_256.png-9b7ca2d3be8e7341275c9e3ed0f44318.ctex"]
 
 [params]
 
