@@ -4,6 +4,7 @@
   "name": "Samurais",
   "star_grade": 4,
   "image": "samurai",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "samurai_fire",
@@ -80,7 +81,7 @@
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
             {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.5, "turns": 1}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5, "turns": 1}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -90,7 +91,7 @@
           "awakenedEffects": [
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 3},
             {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 3},
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7, "turns": 1}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.7, "turns": 1}
           ]
         },
         {
@@ -192,7 +193,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.43},
-            {"kind": "Status", "target": "Target", "status": "Taunt", "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "turns": 1},
             {"kind": "Status", "target": "Self", "status": "Aegis", "turns": 1}
           ],
           "levels": [

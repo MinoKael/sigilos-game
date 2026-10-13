@@ -24,6 +24,18 @@ namespace Sigilos.Core.Content
 
 		public IReadOnlyList<DungeonFloor> Floors { get; init; } = new List<DungeonFloor>();
 
+		/// <summary>
+		/// Em jogo na versão atual. Uma Masmorra com <c>"active": false</c> fica no arquivo (o progresso de
+		/// saves antigos continua legível), mas não abre, não é simulada e não aparece nas telas.
+		/// </summary>
+		public bool Active { get; init; } = true;
+
+		/// <summary>
+		/// A mecânica própria da Masmorra: regras da Influência (as mesmas de uma constelação) que valem em
+		/// toda luta dos andares dela, por lado: "Guardian" (o chefe), "Foes" (todos os inimigos), "Allies" (o time do jogador).
+		/// </summary>
+		public IReadOnlyList<InfluenceRule> Rules { get; init; } = new List<InfluenceRule>();
+
 		/// <summary>Andar de 1 em diante.</summary>
 		public DungeonFloor Floor(int number) => Floors[number - 1];
 	}

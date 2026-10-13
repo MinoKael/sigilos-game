@@ -24,8 +24,18 @@ namespace Sigilos.Core.Progression
 		/// <summary>O retrato padrão: o da conta que ainda não escolheu (no save, <see cref="Player.PlayerState.Avatar"/> nulo).</summary>
 		public const string Default = "default";
 
-		/// <summary>O desenho do padrão, em Assets/Icons.</summary>
-		public const string DefaultIcon = "avatar";
+		/// <summary>
+		/// O desenho do padrão, em Assets/Avatars (a runa que era um retrato especial). Na 0.1 o padrão usa a
+		/// runa e o desenho que era o padrão virou o especial <see cref="Classic"/>: troca de referência, sem
+		/// copiar nem apagar arquivo.
+		/// </summary>
+		public const string DefaultFile = "rune";
+
+		/// <summary>O retrato especial que é o padrão de antes da 0.1 (Assets/Icons/avatar).</summary>
+		public const string Classic = "classic";
+
+		/// <summary>O desenho do <see cref="Classic"/>, em Assets/Icons.</summary>
+		public const string ClassicIcon = "avatar";
 
 		private static Dictionary<string, string> _files = new();
 
@@ -38,11 +48,12 @@ namespace Sigilos.Core.Progression
 		/// </summary>
 		public static void Register(IEnumerable<string> files)
 		{
+			// O desenho do padrão (a runa) deixou de ser um especial: é o padrão.
 			_files = files
 				.GroupBy(IdOf)
-				.Where(group => group.Key != Default)
+				.Where(group => group.Key != Default && group.Key != IdOf(DefaultFile))
 				.ToDictionary(group => group.Key, group => group.OrderBy(file => file, StringComparer.Ordinal).First());
-			All = [Default, .. _files.Keys.OrderBy(id => id, StringComparer.Ordinal)];
+			All = [Default, Classic, .. _files.Keys.OrderBy(id => id, StringComparer.Ordinal)];
 		}
 
 		/// <summary>
@@ -51,9 +62,12 @@ namespace Sigilos.Core.Progression
 		/// </summary>
 		public static string IdOf(string file) => file.ToLowerInvariant().Replace('-', '_');
 
-		public static bool Has(string id) => id == Default || _files.ContainsKey(id);
+		public static bool Has(string id) => id == Default || id == Classic || _files.ContainsKey(id);
 
-		/// <summary>O desenho de um especial em Assets/Avatars (sem a extensão); nulo no padrão e no que não existe.</summary>
-		public static string? FileOf(string id) => _files.GetValueOrDefault(id);
+		/// <summary>
+		/// O desenho de um retrato em Assets/Avatars (sem a extensão): o do padrão é a runa; nulo no
+		/// <see cref="Classic"/> (que é um ícone) e no que não existe.
+		/// </summary>
+		public static string? FileOf(string id) => id == Default ? DefaultFile : _files.GetValueOrDefault(id);
 	}
 }

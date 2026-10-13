@@ -57,6 +57,8 @@ def monsters():
     by_stars = {}
     for path in sorted(SUMMONS.glob("*.json")):
         family = json.loads(path.read_text(encoding="utf-8-sig"))
+        if family.get("active", True) is False:
+            continue  # família fora do elenco: o correio descarta o presente
         for variation in family["variations"].values():
             by_stars.setdefault(family["star_grade"], {})[variation["variation_id"]] = \
                 f'{variation["name"]} ({variation["element"]})'
@@ -112,7 +114,11 @@ def main():
     items["infusionCores"] += f", 1 a {MAX_MONSTERS} (cada um chega como monstro; igual a monster:{INFUSION_CORE})"
     rarities = {r: f"{texts['rarity'][r]}, {i} subatributo{'s' if i != 1 else ''}"
                 for i, r in enumerate(enum_members(CONTENT / "RuneRarity.cs"))}
-    sets = {s: texts["set"][s] for s in enum_members(CONTENT / "RuneSet.cs")}
+    # Só os conjuntos em jogo (Core/Runes/RuneSets.cs, ActiveSets): o correio descarta runa de conjunto fora dele.
+    import re
+    active_block = re.search(r"ActiveSets\s*=\s*new\[\]\s*\{(.*?)\};", (ROOT / "Core" / "Runes" / "RuneSets.cs").read_text(encoding="utf-8-sig"), re.S)
+    active = set(re.findall(r"RuneSet\.(\w+)", active_block.group(1))) if active_block else None
+    sets = {s: texts["set"][s] for s in enum_members(CONTENT / "RuneSet.cs") if active is None or s in active}
     catalog_monsters = monsters()
     monster_ids = {i for group in catalog_monsters.values() for i in group} | {INFUSION_CORE}
     catalog_specials = specials(texts)
@@ -126,7 +132,7 @@ def main():
                     "rune:5": 2,
                     "rune:5:Hero": 1,
                     "rune:6:Legendary:Vigor": 1,
-                    "avatar:imp_fire:awakened": 1},
+                    "avatar:fox_fire:awakened": 1},
         "expiresInDays": 30,
     }
     examples = {
@@ -171,14 +177,14 @@ def main():
             "to": "*",
             "title": "Runas de presente",
             "text": "Sorteadas como as da vitória.",
-            "rewards": {"rune:4": 5, "rune:5:Rare": 2, "rune:6:Legendary:Frenzy": 1},
+            "rewards": {"rune:4": 5, "rune:5:Rare": 2, "rune:6:Legendary:Lethal": 1},
             "expiresInDays": 14,
         },
         "retrato": {
             "to": "Mestre",
             "title": "Retrato exclusivo",
             "text": "Libera o retrato da conta, mesmo sem ter o monstro.",
-            "rewards": {"avatar:imp_fire": 1, "avatar:dragon_dark:awakened": 1},
+            "rewards": {"avatar:fox_fire": 1, "avatar:druid_dark:awakened": 1},
         },
     }
     if catalog_specials:

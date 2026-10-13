@@ -12,7 +12,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void ChestKeepsMonstersOutOfTeamsAndBackWhenThereIsRoom()
 		{
-			var player = TestData.PlayerWith("imp_fire", "imp_water");
+			var player = TestData.PlayerWith("wolf_fire", "wolf_water");
 			var id = player.Monsters[0].Id;
 			Teams.Toggle(player, "golem", id);
 			var rune = RuneInventory.Create(new Random(1), player, 2);
@@ -28,16 +28,16 @@ namespace Sigilos.Tests
 			Assert.False(player.Monster(id)!.Stored, "na coleção");
 
 			for (var i = player.Collection.Count(); i < player.CollectionCapacity; i++)
-				Roster.Add(player, TestData.Summon("imp_light"));
+				Roster.Add(player, TestData.Summon("wolf_light"));
 			Roster.Store(player, id);
-			Roster.Add(player, TestData.Summon("imp_light"));
+			Roster.Add(player, TestData.Summon("wolf_light"));
 			Assert.False(Roster.Retrieve(player, id), "coleção cheia: fica no Baú");
 		}
 
 		[Test]
 		private static void ManyGoToTheChestAndComeBackWhileThereIsRoom()
 		{
-			var player = TestData.PlayerWith("imp_fire", "imp_water", "imp_wind");
+			var player = TestData.PlayerWith("wolf_fire", "wolf_water", "wolf_wind");
 			var ids = player.Monsters.Select(m => m.Id).ToList();
 
 			Assert.Equal(3, Roster.StoreMany(player, ids), "os três vão para o Baú");
@@ -46,7 +46,7 @@ namespace Sigilos.Tests
 			Assert.False(ids.Any(id => Teams.Of(player, Teams.Campaign).Contains(id)), "e fora das equipes");
 
 			while (Roster.FreeSlots(player) > 2)
-				Roster.Add(player, TestData.Summon("imp_light"));
+				Roster.Add(player, TestData.Summon("wolf_light"));
 			Assert.Equal(2, Roster.RetrieveMany(player, ids), "só os que cabem voltam");
 			Assert.Equal(0, Roster.FreeSlots(player), "a coleção enche");
 			Assert.True(player.Monster(ids[2])!.Stored, "o terceiro fica no Baú");
@@ -56,7 +56,7 @@ namespace Sigilos.Tests
 		private static void FusingACopyRaisesARandomSkill()
 		{
 			var database = TestData.Database;
-			var player = TestData.PlayerWith("phoenix_fire", "phoenix_fire", "phoenix_water", "dragon_fire");
+			var player = TestData.PlayerWith("wizard_fire", "wizard_fire", "wizard_water", "druid_fire");
 			var (target, copy, other, stranger) = (player.Monsters[0], player.Monsters[1], player.Monsters[2], player.Monsters[3]);
 			var rune = RuneInventory.Create(new Random(1), player, 3);
 			RuneInventory.Equip(player, rune, copy.Id);
@@ -70,8 +70,8 @@ namespace Sigilos.Tests
 			Assert.Equal(null, rune.EquippedOn, "as runas da cópia voltam ao inventário");
 			Assert.False(Teams.Of(player, Teams.Campaign).Contains(copy.Id), "e ela sai da equipe");
 
-			target.SkillLevels = database.Summon("phoenix_fire").Skills.Select(s => s.MaxLevel).ToList();
-			var more = Roster.Add(player, TestData.Summon("phoenix_fire"));
+			target.SkillLevels = database.Summon("wizard_fire").Skills.Select(s => s.MaxLevel).ToList();
+			var more = Roster.Add(player, TestData.Summon("wizard_fire"));
 			Assert.Equal(0, Fusion.SkillUpsLeft(database, target), "tudo no máximo");
 			Assert.Equal(-1, Fusion.Fuse(new Random(1), player, database, target.Id, more.Id), "com tudo no máximo não funde mais");
 		}
@@ -80,8 +80,8 @@ namespace Sigilos.Tests
 		private static void AwakeningSkillLevelsOnlyAfterAwakening()
 		{
 			var database = TestData.Database;
-			var imp = database.Summon("imp_fire");
-			var player = TestData.PlayerWith("imp_fire");
+			var imp = database.Summon("wolf_fire");
+			var player = TestData.PlayerWith("wolf_fire");
 			var monster = player.Monsters[0];
 			monster.SkillLevels = imp.Skills.Select(s => s.MaxLevel).ToList();
 			Assert.Equal(0, Fusion.SkillUpsLeft(database, monster), "sem despertar, a do Despertar não conta");
@@ -95,7 +95,7 @@ namespace Sigilos.Tests
 		private static void LockedMonsterIsNeitherReleasedNorUsedAsMaterial()
 		{
 			var database = TestData.Database;
-			var player = TestData.PlayerWith("phoenix_fire", "phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire", "wizard_fire");
 			var (target, copy) = (player.Monsters[0], player.Monsters[1]);
 			copy.Locked = true;
 
@@ -117,7 +117,7 @@ namespace Sigilos.Tests
 		private static void ReleasingGivesFragmentsByRarity()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire", "imp_fire");
+			var player = TestData.PlayerWith("wizard_fire", "wolf_fire");
 			Assert.Equal(50, Fusion.Release(player, database, player.Monsters[0].Id), "5★ vale 50");
 			Assert.Equal(15, Fusion.Release(player, database, player.Monsters[0].Id), "3★ vale 15");
 			Assert.Equal(65, player.Fragments, "Fragmentos na conta");
@@ -128,10 +128,10 @@ namespace Sigilos.Tests
 		private static void SelectingManyFusesUntilSkillsAreMaxedAndReleasesAll()
 		{
 			var database = TestData.Database;
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			var target = player.Monsters[0];
 			var room = Fusion.SkillUpsLeft(database, target);
-			var copies = Enumerable.Range(0, room + 2).Select(_ => Roster.Add(player, TestData.Summon("phoenix_fire")).Id).ToList();
+			var copies = Enumerable.Range(0, room + 2).Select(_ => Roster.Add(player, TestData.Summon("wizard_fire")).Id).ToList();
 
 			Assert.Equal(room, Fusion.FuseMany(new Random(1), player, database, target.Id, copies), "funde até as habilidades chegarem ao máximo");
 			Assert.Equal(0, Fusion.SkillUpsLeft(database, target), "tudo no máximo");
@@ -146,7 +146,7 @@ namespace Sigilos.Tests
 		private static void RunesOnChestMonstersDoNotFillTheInventory()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			player.HighestStage = database.Stages.Count;
 			var random = new Random(3);
 			for (var i = 0; i < RuneInventory.Capacity; i++)
@@ -158,7 +158,7 @@ namespace Sigilos.Tests
 			Assert.Equal(EntryProblem.RunesFull, Dungeons.Check(player, golem, 1), "e a Masmorra de runas também");
 			Assert.Equal(EntryProblem.None, Dungeons.Check(player, forge, 1), "a Forja não solta runa");
 
-			var holder = Roster.Add(player, TestData.Summon("imp_fire"));
+			var holder = Roster.Add(player, TestData.Summon("wolf_fire"));
 			Roster.Store(player, holder.Id);
 			Assert.True(RuneInventory.Equip(player, player.Runes[0], holder.Id), "monstro do Baú recebe runa");
 			Assert.Equal(RuneInventory.Capacity - 1, RuneInventory.Count(player), "e ela sai do inventário");
@@ -201,10 +201,10 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.Database;
 			var player = TestData.PlayerWith();
-			var fire = Roster.Add(player, TestData.Summon("imp_fire"));
-			var water = Roster.Add(player, TestData.Summon("imp_water"));
-			var phoenix = Roster.Add(player, TestData.Summon("phoenix_fire"));
-			var light = Roster.Add(player, TestData.Summon("imp_light"));
+			var fire = Roster.Add(player, TestData.Summon("wolf_fire"));
+			var water = Roster.Add(player, TestData.Summon("wolf_water"));
+			var phoenix = Roster.Add(player, TestData.Summon("wizard_fire"));
+			var light = Roster.Add(player, TestData.Summon("wolf_light"));
 			var all = new[] { fire, water, phoenix, light };
 			string Ids(MonsterFilter filter) => string.Join(",", filter.Apply(all, database, player).Select(m => m.Id));
 
@@ -240,8 +240,8 @@ namespace Sigilos.Tests
 		private static void VaultGroupsOnlyCopiesThatMatchInEverything()
 		{
 			var player = TestData.PlayerWith();
-			var copies = Enumerable.Range(0, 5).Select(_ => Roster.Add(player, TestData.Summon("imp_fire"))).ToList();
-			var water = Roster.Add(player, TestData.Summon("imp_water"));
+			var copies = Enumerable.Range(0, 5).Select(_ => Roster.Add(player, TestData.Summon("wolf_fire"))).ToList();
+			var water = Roster.Add(player, TestData.Summon("wolf_water"));
 			var all = copies.Append(water).ToList();
 			string Shape() => string.Join(",", MonsterStack.Group(all, player).Select(stack => stack.Count));
 
@@ -264,13 +264,13 @@ namespace Sigilos.Tests
 		[Test]
 		private static void NewMonstersAreTheOnesSinceTheLastVisit()
 		{
-			var player = TestData.PlayerWith("imp_fire");
+			var player = TestData.PlayerWith("wolf_fire");
 			Account.Open(player, TestData.Database, DateTime.UnixEpoch);
 			Assert.False(player.Monsters.Any(m => Roster.IsNew(player, m)), "num save sem o campo, o que já havia conta como visto");
 
-			var arrived = Roster.Add(player, TestData.Summon("imp_fire"));
-			Roster.Add(player, TestData.Summon("imp_fire"));
-			string Shape() => string.Join(",", MonsterStack.Group(player.Monsters.Where(m => m.SummonId == "imp_fire"), player).Select(stack => stack.Count));
+			var arrived = Roster.Add(player, TestData.Summon("wolf_fire"));
+			Roster.Add(player, TestData.Summon("wolf_fire"));
+			string Shape() => string.Join(",", MonsterStack.Group(player.Monsters.Where(m => m.SummonId == "wolf_fire"), player).Select(stack => stack.Count));
 			Assert.True(Roster.IsNew(player, arrived), "o que chega depois é novo");
 			Assert.Equal("1,2", Shape(), "os novos não se juntam aos já vistos");
 			Assert.Equal(player.SeenMonster, PlayerSave.FromJson(PlayerSave.ToJson(player))!.SeenMonster, "o save guarda até onde viu");

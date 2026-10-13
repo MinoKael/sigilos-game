@@ -531,12 +531,12 @@ const Core = (() => {
   // O nome do elemento em português: os nomes dos dados nascem em português ("Dragão de Fogo").
   const ELEMENT_NAMES = {Fire: "Fogo", Water: "Água", Wind: "Vento", Light: "Luz", Dark: "Trevas"};
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove"];
   // Efeitos e status ---------------------------------------------------------------------------------
   // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
   // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
   // onKill, e o modelo que o botão do tipo insere.
-  const COMMON_FIELDS = ["kind", "target", "onKill", "by"];
+  const COMMON_FIELDS = ["kind", "target", "onKill", "by", "ifAlly", "ifDefenseAbove"];
   const TARGET_DOCS = {
     Target: "o inimigo escolhido (o alvo da habilidade)",
     AllEnemies: "todos os inimigos de pé",
@@ -561,6 +561,9 @@ const Core = (() => {
     Dodge: "value: chance de esquivar de cada golpe",
     CleanseAllyEachTurn: "value: chance de tirar um efeito negativo de um aliado no começo do turno",
     BonusVsStatusOrEffect: "value: dano a mais em quem tem algum efeito que conta (statuses, ou o scope)",
+    BonusPerStatusOrEffect: "value: dano a mais para cada efeito que conta no alvo (scope e statuses; 0.1 = +10% por efeito). Com partner (o id de uma variante, ex.: crow_light) vivo no time e partnerTurns, os efeitos negativos que o dono põe duram partnerTurns turnos a mais",
+    RunicCore: "Masmorra (Golem Rúnico): value: fração da Defesa de base que ganha a cada rodada nova (0.15 = +15%), até 8 vezes; o Esquecimento cala",
+    Drowning: "Masmorra (Santuário): value: fração da Vida máxima que o dono perde a cada rodada (0.1 = 10%) e fica com Velocidade−; vem de uma regra da Masmorra (rules), não da habilidade de um monstro",
     StatusOrEffectOnHit: "effects em cada alvo atingido que ficou de pé, uma vez por habilidade (Target = o atingido)",
     StatusOrEffectOnAttacker: "effects em quem atinge o dono, uma vez por habilidade (Target = quem atacou)",
     StatusOrEffectEachTurn: "effects no começo de cada turno do dono",
@@ -1987,7 +1990,7 @@ if (typeof module !== "undefined") module.exports = Core;
       <code>target</code>: ${e.targets.join(", ")}<br>
       <code>status</code>: ${e.statuses.join(", ")}<br>
       Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
-      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém).<br>
+      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém), <code>ifAlly</code> (o id de uma variante que precisa estar viva no time, ex.: <code>wolf_light</code>) e <code>ifDefenseAbove</code> (só se a Defesa de quem lança passa a do alvo).<br>
       A conta de Damage, Heal, HealTeam, Shield e Revive: <code>stat</code> (${(e.scaleStats || []).join(", ")}), <code>plus</code> [{stat, power}],
       <code>factor</code> {by: ${(e.scaleMeasures || []).join(" | ")}, base, slope}, <code>speed</code> {add, over} ou {add, overTarget: true}; o dano também <code>fixed</code>.
       Ex.: <code>{"kind": "Damage", "power": 0.5, "plus": [{"stat": "MaxHealth", "power": 0.08}], "hits": 2}</code>.<br>

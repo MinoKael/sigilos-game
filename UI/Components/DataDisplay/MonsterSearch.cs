@@ -36,7 +36,7 @@ namespace Sigilos.UI.Components
 		/// <summary>As ordens da grade e, depois, uma por atributo.</summary>
 		private static IReadOnlyList<(Choice Choice, int Value)> SortOptions() =>
 			Enum.GetValues<MonsterSort>().Where(s => s != MonsterSort.Stat).Select(s => (new Choice(Texts.Name(s)), (int)s))
-				.Concat(Enum.GetValues<Stat>().Select(s => (new Choice(Texts.Name(s).ToLower(Culture), Rune: Texts.GlyphOf(s)), StatOrder + (int)s)))
+				.Concat(Enum.GetValues<Stat>().Select(s => (new Choice(Texts.Name(s).ToLower(Culture), Symbol: Texts.PlanetOf(s)), StatOrder + (int)s)))
 				.ToList();
 
 		/// <summary>A janela dos filtros: um campo por linha. Muda na hora.</summary>
@@ -47,7 +47,7 @@ namespace Sigilos.UI.Components
 			{
 				dialog.Field("Element", T("filter.element"), Enum.GetValues<Element>().Select(e => (new Choice(Texts.Name(e), Art.Element(e), Palette.Of(e)), (int)e)), current.Element is { } element ? (int)element : FilterDialog.All,
 					value => current = current with { Element = value < 0 ? null : (Element)value });
-				dialog.Field("Role", T("filter.role"), Enum.GetValues<Role>().Select(r => (new Choice(Texts.Name(r)), (int)r)), current.Role is { } role ? (int)role : FilterDialog.All,
+				dialog.Field("Role", T("filter.role"), RoleGroups.Representatives.Select(r => (new Choice(Texts.Name(r)), (int)r)), current.Role is { } role ? (int)RoleGroups.Representatives.First(r => RoleGroups.Of(r) == RoleGroups.Of(role)) : FilterDialog.All,
 					value => current = current with { Role = value < 0 ? null : (Role)value });
 				dialog.Field("Stars", T("filter.stars"), Enumerable.Range(1, Growth.MaxStars).Select(s => (new Choice(Texts.Stars(s)), s)), current.Stars ?? FilterDialog.All,
 					value => current = current with { Stars = value < 0 ? null : value });

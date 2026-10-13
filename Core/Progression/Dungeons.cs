@@ -67,14 +67,20 @@ namespace Sigilos.Core.Progression
 				}
 			}
 
-			// Sorteado depois do drop, para o Pergaminho não mudar as runas e pedras que cada semente dá.
-			var scrolls = random.NextDouble() * 100 < floor.ScrollChance ? 1 : 0;
+			// Núcleo de Infusão, Transmutação Alquímica e Núcleo de Fragmento: um sorteio só, com faixas (RewardDrops), então
+			// os três sorteados nunca saem juntos. Os marcos fixos (primeira vitória, nível da conta) pagam o que está nos
+			// dados. Sorteado depois do drop de sigilo e pedra, para não mudar o que cada semente dá.
+			var category = RewardDrops.Roll(random, floor.CoreChance, floor.ScrollChance, floor.FragmentChance);
+			var scrolls = category == DropCategory.Scroll ? 1 : 0;
 			player.Scrolls += scrolls;
-
-			// O Núcleo de toda vitória é sorteado por último, e só nos andares que têm chance dele.
-			var core = floor.CoreChance > 0 && random.NextDouble() * 100 < floor.CoreChance ? new Prize(InfusionCores: 1) : Prize.None;
-			Milestones.Grant(player, (firstClear ? Milestones.ForFirstClear(floor) : Prize.None) + core);
-			prize += core;
+			var special = category switch
+			{
+				DropCategory.InfusionCore => new Prize(InfusionCores: 1),
+				DropCategory.FragmentCore => new Prize(FragmentCores: 1),
+				_ => Prize.None,
+			};
+			Milestones.Grant(player, (firstClear ? Milestones.ForFirstClear(floor) : Prize.None) + special);
+			prize += special;
 
 			return new VictoryReward(mana, scrolls, gold, floor.Essence + account.Essence, floor.Experience, firstClear, rune, null, tools, levelUps, account.Levels, prize);
 		}

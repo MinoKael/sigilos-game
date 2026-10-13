@@ -1,13 +1,13 @@
 {
   "family_id": "pixie",
-  "base_name": "Pixie",
-  "name": "Pixies",
+  "base_name": "Fada",
+  "name": "Fadas",
   "star_grade": 2,
   "image": "pixie",
   "variations": {
     "fire": {
       "variation_id": "pixie_fire",
-      "name": "Pixie de Fogo",
+      "name": "Fada de Fogo",
       "element": "Fire",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
@@ -57,7 +57,7 @@
     },
     "water": {
       "variation_id": "pixie_water",
-      "name": "Pixie de Água",
+      "name": "Fada de Água",
       "element": "Water",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
@@ -99,7 +99,7 @@
     },
     "wind": {
       "variation_id": "pixie_wind",
-      "name": "Pixie de Vento",
+      "name": "Fada de Vento",
       "element": "Wind",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
@@ -140,7 +140,7 @@
     },
     "light": {
       "variation_id": "pixie_light",
-      "name": "Pixie de Luz",
+      "name": "Fada de Luz",
       "element": "Light",
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
@@ -182,7 +182,7 @@
     },
     "dark": {
       "variation_id": "pixie_dark",
-      "name": "Pixie de Trevas",
+      "name": "Fada de Trevas",
       "element": "Dark",
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},

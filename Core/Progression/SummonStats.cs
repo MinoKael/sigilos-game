@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Runes;
 
@@ -24,7 +25,9 @@ namespace Sigilos.Core.Progression
 			if (awakened)
 				stats = Awakening.Apply(stats, summon.Awakening);
 
-			return new StatSheet(stats, RuneBonuses.Compute(stats, runes));
+			// Runa de conjunto fora do jogo (RuneSets.ActiveSets) fica no save, mas não soma atributo nem conjunto.
+			var active = runes.Where(rune => RuneSets.IsActive(rune.Set)).ToList();
+			return new StatSheet(stats, RuneBonuses.Compute(stats, active));
 		}
 	}
 }

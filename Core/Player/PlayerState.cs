@@ -25,7 +25,7 @@ namespace Sigilos.Core.Player
 		public int Version { get; set; }
 
 		/// <summary>
-		/// Quando a conta começou (o Grimório do Invocador mostra). Num save anterior ao campo existir, a
+		/// Quando a conta começou (o Grimório do Alquimista mostra). Num save anterior ao campo existir, a
 		/// primeira vez que a conta abre depois dele (<see cref="Progression.Account.Open"/>).
 		/// </summary>
 		public DateTime? Started { get; set; }

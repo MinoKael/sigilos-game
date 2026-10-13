@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Sigilos.UI.Style;
 
@@ -18,14 +20,25 @@ namespace Sigilos.UI.Components
 	/// </summary>
 	public partial class Constellation : Control
 	{
-		/// <summary>Ângulo (graus, 0 à direita, sentido horário) e distância relativa de cada orbe.</summary>
-		private static readonly (float Angle, float Distance)[] Places =
+		/// <summary>
+		/// Os doze signos do zodíaco irradiando do planeta central, igualmente espaçados (a cada 30°, de
+		/// Áries à esquerda, no sentido horário), todos à mesma distância relativa: a composição fica
+		/// equilibrada em qualquer tamanho do painel. O ângulo é em graus (0 à direita).
+		/// </summary>
+		private static readonly (float Angle, float Distance)[] Places = Enumerable.Range(0, 12)
+			.Select(i => (180f + 30f * i, 1.0f))
+			.ToArray();
+
+		/// <summary>O raio dos orbes em volta (cada um leva um signo).</summary>
+		private const float Orb = 24;
+
+		/// <summary>Os desenhos dos signos, na ordem de <see cref="Places"/>: Assets/Zodiac.</summary>
+		private static readonly string[] Signs =
 		{
-			(-152, 0.96f), (-98, 0.82f), (-42, 1.0f), (6, 0.92f), (42, 0.78f), (142, 0.96f),
+			"aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces",
 		};
 
-		/// <summary>O raio dos orbes em volta.</summary>
-		private const float Orb = 30;
+		private readonly List<Control> _signs = new();
 
 		/// <summary>
 		/// A altura do centro, em fração do painel: o meio, então a carta do céu e os orbes ficam centrados
@@ -56,6 +69,17 @@ namespace Sigilos.UI.Components
 		{
 			MouseFilter = MouseFilterEnum.Ignore;
 			Resized += Arrange;
+
+			// Um signo em cada orbe, tingido pelo shader (os SVG são pretos); só desenho, sem toque.
+			foreach (var sign in Signs)
+			{
+				var icon = (Control)Doodle.Icon(Art.Zodiac(sign), (int)(Orb * 1.2f), Palette.Gold);
+				icon.Name = Layout.NodeName(sign);
+				icon.MouseFilter = MouseFilterEnum.Ignore;
+				icon.Size = new Vector2(Orb * 1.2f, Orb * 1.2f);
+				_signs.Add(icon);
+				AddChild(icon);
+			}
 		}
 
 		/// <summary>Quanto o anel do centro encheu, de 0 a 1.</summary>
@@ -114,7 +138,7 @@ namespace Sigilos.UI.Components
 				DrawCircle(target, Orb, Palette.Panel);
 				DrawArc(target, Orb, 0, Mathf.Tau, 48, Palette.GoldDark, 2, true);
 				DrawArc(target, Orb - 4, 0, Mathf.Tau, 48, new Color(Palette.GoldDark, 0.35f), 1, true);
-				Starlight.Twinkle(this, target, Orb, _time, i * 1.3f, Palette.Gold);
+				//Starlight.Twinkle(this, target, Orb, _time, i * 1.3f, Palette.Gold);
 			}
 
 			// O anel da canalização em volta do centro.
@@ -162,6 +186,9 @@ namespace Sigilos.UI.Components
 				var top = middle.Y + _center.Size.Y / 2 + 36;
 				_attached.Position = new Vector2(middle.X - _attached.Size.X / 2, Mathf.Min(top, Size.Y - _attached.Size.Y));
 			}
+
+			for (var i = 0; i < _signs.Count; i++)
+				_signs[i].Position = OrbAt(i, middle, Radii) - _signs[i].Size / 2f;
 
 			QueueRedraw();
 		}

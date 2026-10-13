@@ -17,7 +17,7 @@ namespace Sigilos.Tests
 		private static (BattleSession Session, BattleUnit Hero, BattleUnit Wolf, BattleUnit Boss) Fight()
 		{
 			var database = TestData.LoadReal();
-			var team = PlayerTeam.Build(TestData.PlayerWith("imp_fire"), database, Teams.Campaign);
+			var team = PlayerTeam.Build(TestData.PlayerWith("wolf_fire"), database, Teams.Campaign);
 			var encounter = new Encounter(4, 20, new IReadOnlyList<StageEnemy>[]
 			{
 				new[] { new StageEnemy { Summon = "wolf_wind" }, new StageEnemy { Enemy = "chain_master", Element = Element.Dark } },
@@ -182,7 +182,7 @@ namespace Sigilos.Tests
 		private static void TauntStillBeatsTheBossFocus()
 		{
 			var (session, hero, wolf, _) = Fight();
-			hero.AddStatus(new StatusEffect(StatusKind.Taunt, 1, 0, wolf));
+			wolf.AddStatus(new StatusEffect(StatusKind.Taunt, 1, 0, wolf));
 			Assert.Equal(wolf, AutoPilot.ForAlly(session, hero, focusBoss: true).Target, "provocado, ataca quem provocou");
 		}
 	}

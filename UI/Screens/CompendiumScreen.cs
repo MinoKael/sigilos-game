@@ -14,7 +14,7 @@ namespace Sigilos.UI.Screens
 {
 	/// <summary>
 	/// O Compêndio: as regras do jogo por inteiro, em abas escritas — como jogar, combate, atributos,
-	/// Glifos, efeitos e runas —, cada tópico um cartão curto com o seu símbolo. As telas explicam o que
+	/// planetas, efeitos e runas —, cada tópico um cartão curto com o seu símbolo. As telas explicam o que
 	/// o jogador precisa na hora (textos curtos e janelas ao tocar); aqui fica o porquê completo. Todo
 	/// número vem das regras do Core, então a explicação acompanha o balanceamento. As cores de raridade
 	/// (a moldura dos monstros, a cor das runas) têm legenda com exemplos de verdade. O que existe no
@@ -44,14 +44,14 @@ namespace Sigilos.UI.Screens
 			Basics(Layout.Tab(tabs, "Basics", T("compendium.tab.basic")));
 			Combat(Layout.Tab(tabs, "Combat", T("compendium.tab.combat")));
 			Stats(Layout.Tab(tabs, "Stats", T("compendium.tab.stats")));
-			Glyphs(Layout.Tab(tabs, "Glyphs", T("compendium.tab.glyphs")));
+			Planets(Layout.Tab(tabs, "Planets", T("compendium.tab.planets")));
 			Statuses(Layout.Tab(tabs, "Effects", T("compendium.tab.effects")));
 			Runes(Layout.Tab(tabs, "Runes", T("compendium.tab.runes")));
 
 			sigils.Add(T("compendium.tab.basic"), "", "region").Name = "Basics";
 			sigils.Add(T("compendium.tab.combat"), "", "fight").Name = "Combat";
 			sigils.Add(T("compendium.tab.stats"), "", "stats").Name = "Stats";
-			sigils.Add(T("compendium.tab.glyphs"), "", "rune").Name = "Glyphs";
+			sigils.Add(T("compendium.tab.planets"), "", "rune").Name = "Planets";
 			sigils.Add(T("compendium.tab.effects"), "", "effects").Name = "Effects";
 			sigils.Add(T("compendium.tab.runes"), "", "grindstone").Name = "Runes";
 			sigils.Changed += index => tabs.CurrentTab = index;
@@ -66,7 +66,7 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Exploration", "star_exploration", T("compendium.basic.exploration.title"), T("compendium.basic.exploration.text", Exploration.Rotation));
 			Card(grid, "Mana", "mana", T("compendium.basic.mana.title"), T("compendium.basic.mana.text", Mana.BaseMax, Mana.BaseMax + Mana.MaxFromLevels, Mana.PerHour, Account.MaxLevel));
 			Card(grid, "Gold", "gold", T("compendium.basic.gold.title"), T("compendium.basic.gold.text", Account.LevelUpGold));
-			Card(grid, "Summon", "summon", T("compendium.basic.summon.title"), T("compendium.basic.summon.text"));
+			Card(grid, "Summon", "summon", T("compendium.basic.summon.title"), T("compendium.basic.summon.text", Texts.Percent(Sigilos.Core.Summoning.SummonRates.MysticLightDark)));
 			Card(grid, "Monsters", "monster", T("compendium.basic.monsters.title"), T("compendium.basic.monsters.text", PlayerState.StartingCollectionCapacity, RuneInventory.Capacity, Account.MaxCollectionCapacity));
 			Card(grid, "Teams", "team", T("compendium.basic.teams.title"), T("compendium.basic.teams.text", PlayerState.TeamSize));
 			Card(grid, "Level", "essence", T("compendium.basic.level.title"), T("compendium.basic.level.text", Growth.MaxLevel(3), Growth.MaxLevel(Growth.MaxStars), Leveling.ExperiencePerEssence));
@@ -124,11 +124,11 @@ namespace Sigilos.UI.Screens
 		private static void Combat(VBoxContainer column)
 		{
 			var grid = Cards(column);
-			Card(grid, "Impetus", RuneSets.For(RuneSet.Bane).Glyph, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
+			Card(grid, "Impetus", Core.Content.Planet.Mercury, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
 			Card(grid, "Fight", "campaign", T("compendium.combat.fight.title"), T("compendium.combat.fight.text", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
-			Card(grid, "Damage", Texts.GlyphOf(Stat.Defense), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
-			Card(grid, "Crit", Texts.GlyphOf(Stat.Crit), T("compendium.combat.crit.title"), T("compendium.combat.crit.text"));
-			Card(grid, "Resistance", Texts.GlyphOf(Stat.Resistance), T("compendium.combat.resistance.title"), T("compendium.combat.resistance.text", Texts.Percent(BattleRules.MinResistChance)));
+			Card(grid, "Damage", Texts.PlanetOf(Stat.Defense), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
+			Card(grid, "Crit", Texts.PlanetOf(Stat.Crit), T("compendium.combat.crit.title"), T("compendium.combat.crit.text"));
+			Card(grid, "Resistance", Texts.PlanetOf(Stat.Resistance), T("compendium.combat.resistance.title"), T("compendium.combat.resistance.text", Texts.Percent(BattleRules.MinResistChance)));
 			Card(grid, "Leader", "team", T("compendium.combat.leader.title"), T("compendium.combat.leader.text"));
 			Card(grid, "Auto", "search", T("compendium.combat.auto.title"), T("compendium.combat.auto.text", AutoBattle.RepeatRuns));
 
@@ -158,28 +158,28 @@ namespace Sigilos.UI.Screens
 
             foreach (var stat in ordemDesejada)
             {
-                Card(grid, stat.ToString(), Texts.GlyphOf(stat), Texts.Name(stat), Texts.Explain(stat));
+                Card(grid, stat.ToString(), Texts.PlanetOf(stat), Texts.Name(stat), Texts.Explain(stat));
             };
 		}
 
-		private static void Glyphs(VBoxContainer column)
+		private static void Planets(VBoxContainer column)
 		{
-			column.AddChild(RichText.Label(T("compendium.glyphs.intro"), 1150, GameTheme.Faded).Named("Intro"));
-			var grid = new GridContainer { Name = "Glyphs", Columns = 4 };
+			column.AddChild(RichText.Label(T("compendium.planets.intro"), 1150, GameTheme.Faded).Named("Intro"));
+			var grid = new GridContainer { Name = "Planets", Columns = 4 };
 			grid.AddThemeConstantOverride("h_separation", Space.Regular);
 			grid.AddThemeConstantOverride("v_separation", Space.Regular);
-			foreach (var set in RuneSets.All)
+			foreach (var set in RuneSets.Active)
 			{
-				var panel = new PanelContainer { Name = set.Glyph.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(284, 0) };
+				var panel = new PanelContainer { Name = set.Planet.ToString(), ThemeTypeVariation = GameTheme.InsetPanel, CustomMinimumSize = new Vector2(284, 0) };
 				var row = new HBoxContainer { Name = "Row" };
 				row.AddThemeConstantOverride("separation", Space.Regular);
-				row.AddChild(new RuneGlyph(set.Glyph, 56, Palette.Gold) { Name = "Glyph" });
+				row.AddChild(new PlanetSymbol(set.Planet, 56, Palette.Gold) { Name = "Planet" });
 				var text = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-				text.AddChild(new Label { Name = "Title", Text = Texts.Name(set.Glyph), ThemeTypeVariation = GameTheme.Heading });
-				var meaning = new Label { Name = "Meaning", Text = Texts.Meaning(set.Glyph) };
+				text.AddChild(new Label { Name = "Title", Text = Texts.Name(set.Planet!.Value), ThemeTypeVariation = GameTheme.Heading });
+				var meaning = new Label { Name = "Meaning", Text = Texts.Name(set.Set) };
 				meaning.AddThemeColorOverride("font_color", Palette.Gold);
 				text.AddChild(meaning);
-				text.AddChild(new Label { Name = "Set", Text = T("compendium.glyphs.set", Texts.Name(set.Set)), ThemeTypeVariation = GameTheme.Faded });
+				text.AddChild(new Label { Name = "Set", Text = T("compendium.planets.set", Texts.Name(set.Planet!.Value)), ThemeTypeVariation = GameTheme.Faded });
 				row.AddChild(text);
 				panel.AddChild(row);
 				grid.AddChild(panel);
@@ -228,7 +228,7 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Slots", "rune", T("compendium.runes.slots.title"), T("compendium.runes.slots.text"));
 			Card(grid, "Stars", "rune", T("compendium.runes.stars.title"), T("compendium.runes.stars.text", RuneRules.MaxGrade));
 			Card(grid, "Upgrade", "essence", T("compendium.runes.upgrade.title"), T("compendium.runes.upgrade.text", RuneRules.MaxLevel, RuneRules.MaxSubstats));
-			Card(grid, "Sets", RuneSets.For(RuneSet.Frenzy).Glyph, T("compendium.runes.sets.title"), T("compendium.runes.sets.text"));
+			Card(grid, "Sets", Core.Content.Planet.Earth, T("compendium.runes.sets.title"), T("compendium.runes.sets.text"));
 			Card(grid, "Grind", "grindstone", T("compendium.runes.grind.title"), T("compendium.runes.grind.text"));
 			Card(grid, "Gem", "gem", T("compendium.runes.gem.title"), T("compendium.runes.gem.text", RuneForge.EnchantLevel));
 			Card(grid, "Where", "dungeon", T("compendium.runes.where.title"), T("compendium.runes.where.text", GameDatabase.MaxCampaignRuneGrade, Texts.Percent(Campaign.RepeatRuneChance)));
@@ -241,8 +241,8 @@ namespace Sigilos.UI.Screens
 			{
 				var stone = new PanelContainer { Name = "Stone", CustomMinimumSize = RuneTile.TileSize };
 				stone.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Of(rarity), 2, 9, 0));
-				var glyph = new RuneGlyph(RuneSets.For(RuneSet.Vigor).Glyph, 40, Palette.Of(rarity), outline: true) { Name = "Glyph" };
-				stone.AddChild(glyph);
+				var symbol = new PlanetSymbol(RuneSets.PlanetOf(RuneSet.Vigor), 40, Palette.Of(rarity), outline: true) { Name = "Planet" };
+				stone.AddChild(symbol);
 				row.AddChild(Swatch(rarity.ToString(), stone, Texts.Name(rarity), T("compendium.runes.rarity.subs", (int)rarity), Palette.Of(rarity)));
 			}
 
@@ -260,7 +260,7 @@ namespace Sigilos.UI.Screens
 
 		private static void Card(GridContainer grid, string name, string icon, string title, string text) => Card(grid, name, Doodle.Icon(Art.Icon(icon), 44, Palette.Gold), title, text);
 
-		private static void Card(GridContainer grid, string name, Glyph glyph, string title, string text) => Card(grid, name, new RuneGlyph(glyph, 44, Palette.Gold), title, text);
+		private static void Card(GridContainer grid, string name, Core.Content.Planet planet, string title, string text) => Card(grid, name, new PlanetSymbol(planet, 44, Palette.Gold), title, text);
 
 		/// <summary>Um tópico: símbolo à esquerda, título e texto rico.</summary>
 		private static void Card(GridContainer grid, string name, Control icon, string title, string text)

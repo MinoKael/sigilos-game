@@ -4,6 +4,7 @@
   "name": "Princesas",
   "star_grade": 5,
   "image": "princess",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "princess_fire",

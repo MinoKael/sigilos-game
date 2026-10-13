@@ -110,9 +110,9 @@ namespace Sigilos.UI.Components
 		/// <summary>Cápsula de símbolo e número: custo, contagem, recompensa. O nó leva o nome do símbolo (<c>Essence</c>).</summary>
 		public static PanelContainer Chip(string icon, string value, Color? ink = null, Vector2 labelMinimumSize = default) => Chip(Art.Icon(icon), value, ink, labelMinimumSize);
 
-		/// <summary>Cápsula com um Glifo, escrito na fonte das runas; o nó leva o nome do Glifo.</summary>
-		public static PanelContainer Chip(Core.Content.Glyph glyph, string value, Color? ink = null, Vector2 labelMinimumSize = default) =>
-			Capsule(glyph.ToString(), new RuneGlyph(glyph, 22, ink ?? Palette.Gold) { Name = "Glyph" }, value, "", labelMinimumSize);
+		/// <summary>Cápsula com um planeta; o nó leva o nome do planeta.</summary>
+		public static PanelContainer Chip(Core.Content.Planet? planet, string value, Color? ink = null, Vector2 labelMinimumSize = default) =>
+			Capsule(planet?.ToString() ?? "Symbol", new PlanetSymbol(planet, 22, ink ?? Palette.Gold) { Name = "Planet" }, value, "", labelMinimumSize);
 
 		/// <summary>Cápsula com qualquer desenho (efeito, criatura); o nó leva o nome do desenho.</summary>
 		public static PanelContainer Chip(Texture2D? icon, string value, Color? ink = null, Vector2 labelMinimumSize = default) =>
@@ -125,9 +125,9 @@ namespace Sigilos.UI.Components
         public static PanelContainer Labeled(string icon, string value, string caption, Color? ink = null, Vector2 labelMinimumSize = default) =>
             Capsule(NodeName(icon), Medal(Art.Icon(icon), ink ?? Palette.Gold, 24).Named("Icon"), value, caption, labelMinimumSize);
 
-        /// <summary>A cápsula labeled com um Glifo no lugar do símbolo.</summary>
-        public static PanelContainer Labeled(Core.Content.Glyph glyph, string value, string caption, Color? ink = null) =>
-			Capsule(glyph.ToString(), new RuneGlyph(glyph, 22, ink ?? Palette.Gold) { Name = "Glyph" }, value, caption, default);
+        /// <summary>A cápsula labeled com um planeta no lugar do símbolo.</summary>
+        public static PanelContainer Labeled(Core.Content.Planet? planet, string value, string caption, Color? ink = null) =>
+			Capsule(planet?.ToString() ?? "Symbol", new PlanetSymbol(planet, 22, ink ?? Palette.Gold) { Name = "Planet" }, value, caption, default);
 
 		/// <summary>A cápsula labeled com qualquer desenho (efeito, criatura).</summary>
 		public static PanelContainer Labeled(Texture2D? icon, string value, string caption, Color? ink = null) =>

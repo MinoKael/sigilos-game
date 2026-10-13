@@ -114,7 +114,7 @@ namespace Sigilos.UI.Screens
 			RefreshDetail();
 		}
 
-		/// <summary>"Nova Exploração em 12 dias" (em horas no último dia): também o Grimório do Invocador mostra.</summary>
+		/// <summary>"Nova Exploração em 12 dias" (em horas no último dia): também o Grimório do Alquimista mostra.</summary>
 		public static string NextRotation(DateTime now)
 		{
 			var left = Core.Progression.Exploration.NextRotation(now) - now;

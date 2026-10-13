@@ -4,6 +4,7 @@
   "name": "Piratas",
   "star_grade": 4,
   "image": "pirate",
+  "theme": "Adversaries",
   "variations": {
     "fire": {
       "variation_id": "pirate_fire",

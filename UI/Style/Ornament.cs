@@ -11,7 +11,7 @@ namespace Sigilos.UI.Style
 	/// e um filete por dentro) e uma estrela de quatro pontas em cada canto, onde os filetes se cruzam; vira
 	/// um <see cref="StyleBoxTexture"/> de 9 partes: os cantos ficam fixos e o miolo repete (Tile), então o
 	/// grão não estica em painel grande. <see cref="Page"/> é a folha de pergaminho das páginas do
-	/// Grimório do Invocador. <see cref="Gem"/> é a pedra da barra de rolagem e <see cref="Sigil"/> o
+	/// Grimório do Alquimista. <see cref="Gem"/> é a pedra da barra de rolagem e <see cref="Sigil"/> o
 	/// círculo que acende uma estrela no lugar da caixinha de marcar.
 	/// </summary>
 	public static class Ornament

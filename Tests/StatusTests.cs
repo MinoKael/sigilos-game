@@ -10,7 +10,7 @@ namespace Sigilos.Tests
 	{
 		/// <summary>Põe o efeito direto, sem sorteio: a Resistência mínima de 15% não entra no teste.</summary>
 		private static void Give(BattleUnit caster, BattleUnit target, StatusKind status, int turns = 1) =>
-			target.AddStatus(new StatusEffect(status, turns, 0, status == StatusKind.Taunt ? caster : null));
+			target.AddStatus(new StatusEffect(status, turns, 0, caster));
 
 		[Test]
 		private static void HiddenCannotBeChosen()
@@ -34,10 +34,11 @@ namespace Sigilos.Tests
 			var b = TestData.Unit("b", Side.Enemies);
 			var session = TestData.Session(new[] { hero }, new[] { a, b });
 
-			Give(b, hero, StatusKind.Taunt);
+			Give(b, b, StatusKind.Taunt);
 			var choosable = session.ChoosableTargets(hero);
-			Assert.Equal(1, choosable.Count, "provocado tem um alvo só");
-			Assert.Equal(b, choosable[0], "quem provocou");
+			Assert.Equal(1, choosable.Count, "com um inimigo Provocando, o herói tem um alvo só");
+			Assert.Equal(b, choosable[0], "quem tem Provocar");
+			Assert.False(BattleRules.IsNegative(StatusKind.Taunt), "Provocar é um efeito positivo");
 		}
 
 		[Test]

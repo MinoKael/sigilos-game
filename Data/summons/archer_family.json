@@ -4,6 +4,7 @@
   "name": "Arqueiros",
   "star_grade": 3,
   "image": "archer",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "archer_fire",

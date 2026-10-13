@@ -51,7 +51,7 @@ namespace Sigilos.Tests
 
 			Milestones.Grant(player, new Prize(InfusionCores: 2));
 			Assert.Equal(0, Seals.Monsters(player).Count(), "Núcleo de Infusão não conta como monstro");
-			Roster.Add(player, database.Summon("phoenix_fire"));
+			Roster.Add(player, database.Summon("wizard_fire"));
 			player.TotalPulls = Seals.ManyPulls;
 			player.AccountLevel = Account.MaxLevel;
 			var collection = Seals.Collection(player, database).ToDictionary(s => s.Id);

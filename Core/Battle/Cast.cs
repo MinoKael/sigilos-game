@@ -17,8 +17,9 @@ namespace Sigilos.Core.Battle
 		private readonly HashSet<(UnitRule Rule, BattleUnit Target)> _once = new();
 		private readonly Dictionary<(TargetKind Kind, bool ExceptCaster), IReadOnlyList<BattleUnit>> _drawn = new();
 
-		public Cast(EffectResolver resolver, BattleUnit caster, BattleUnit? main, IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> opponents, bool counter, bool joint = false)
+		public Cast(EffectResolver resolver, BattleUnit caster, BattleUnit? main, IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> opponents, bool counter, bool joint = false, bool trigger = false)
 		{
+			IsTrigger = trigger;
 			Resolver = resolver;
 			Caster = caster;
 			Main = main;
@@ -36,6 +37,9 @@ namespace Sigilos.Core.Battle
 		/// que vinha depois não pula para outro inimigo. Nulo quando não sobrou inimigo.
 		/// </summary>
 		public BattleUnit? Main { get; }
+
+		/// <summary>Os efeitos de uma Passiva genérica: nelas, "Target" é o atingido ou quem atacou, não o alvo da habilidade.</summary>
+		public bool IsTrigger { get; }
 
 		/// <summary>Contra-ataque: dano reduzido, e quem apanha não contra-ataca de volta.</summary>
 		public bool IsCounter { get; }
@@ -64,8 +68,31 @@ namespace Sigilos.Core.Battle
 		/// <summary>O dano que cada alvo atingido levou nesta habilidade, na ordem em que foram atingidos.</summary>
 		public Dictionary<BattleUnit, double> Dealt { get; } = new();
 
+		/// <summary>
+		/// As condições do efeito (<see cref="EffectDefinition.IfAlly"/>, <see cref="EffectDefinition.IfDefenseAbove"/>)
+		/// valem agora. Sem condição, sempre.
+		/// </summary>
+		public bool Allows(EffectDefinition effect)
+		{
+			if (effect.IfAlly.Length > 0 && !_allies.Any(unit => unit != Caster && unit.IsAlive && unit.DefinitionId == effect.IfAlly))
+				return false;
+
+			return !effect.IfDefenseAbove || (Main is { } main && Caster.Defense > main.Defense);
+		}
+
 		/// <summary>As unidades que um efeito atinge, do ponto de vista de quem lança.</summary>
-		public IReadOnlyList<BattleUnit> Targets(EffectDefinition effect) => Targets(effect.Target, effect.By);
+		public IReadOnlyList<BattleUnit> Targets(EffectDefinition effect) => Targets(Scope(effect), effect.By);
+
+		/// <summary>
+		/// Todo golpe de chefe é em área: o efeito ofensivo de uma habilidade dele que miraria o alvo único atinge todos
+		/// os inimigos. Vale para qualquer chefe (os de Data/enemies.json já vêm em área; o guardião de uma constelação
+		/// usa as habilidades da família, compartilhadas com o jogador) e fica fora das Passivas, onde "Target" é o atingido.
+		/// </summary>
+		private TargetKind Scope(EffectDefinition effect) =>
+			Caster.IsBoss && !IsTrigger && effect.Target == TargetKind.Target
+			&& effect.Kind is EffectKind.Damage or EffectKind.Status or EffectKind.Impeto or EffectKind.StealBuff
+				? TargetKind.AllEnemies
+				: effect.Target;
 
 		/// <summary>
 		/// As unidades de <paramref name="kind"/>, do ponto de vista de quem lança. O sorteio dos ao acaso vale

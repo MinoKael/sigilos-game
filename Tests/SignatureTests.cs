@@ -277,9 +277,9 @@ namespace Sigilos.Tests
 		private static void CommonEnemiesAreBuffedSummons()
 		{
 			var database = TestData.LoadReal();
-			var troll = database.Summon("troll_water");
+			var troll = database.Summon("knight_water");
 			var encounter = new Encounter(4, 20, new[] { new[] { new StageEnemy { Summon = troll.Id } } }, Scale: 1.5);
-			var team = PlayerTeam.Build(TestData.PlayerWith("imp_fire"), database, Teams.Campaign);
+			var team = PlayerTeam.Build(TestData.PlayerWith("wolf_fire"), database, Teams.Campaign);
 			var session = BattleFactory.Create(database, team, encounter, 1);
 			session.Start();
 

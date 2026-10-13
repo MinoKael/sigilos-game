@@ -34,8 +34,11 @@ namespace Sigilos.Core.Progression
 			_ => 0,
 		};
 
+		/// <summary>Homúnculos de 2 estrelas naturais não despertam (versão 0.1): a regra mora aqui, não nas telas.</summary>
+		public static bool CanBeAwakened(SummonDefinition summon) => summon.Rarity > 2;
+
 		public static bool CanAwaken(PlayerState player, OwnedSummon monster, SummonDefinition summon) =>
-			!monster.Awakened && !monster.IsInfusionCore && player.Essence >= Cost(summon.Rarity);
+			CanBeAwakened(summon) && !monster.Awakened && !monster.IsInfusionCore && player.Essence >= Cost(summon.Rarity);
 
 		public static bool Awaken(PlayerState player, OwnedSummon monster, SummonDefinition summon)
 		{

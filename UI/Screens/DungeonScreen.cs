@@ -127,7 +127,7 @@ namespace Sigilos.UI.Screens
 				drops.AddChild(new Label { Name = "Title", Text = T("dungeons.drops_sets"), VerticalAlignment = VerticalAlignment.Center });
 				foreach (var set in dungeon.Sets)
 				{
-					var chip = Layout.Labeled(RuneSets.For(set).Glyph, "", Texts.Name(set)).Named(set.ToString());
+					var chip = Layout.Labeled(RuneSets.PlanetOf(set), "", Texts.Name(set)).Named(set.ToString());
 					chip.MouseFilter = MouseFilterEnum.Stop;
 					var captured = set;
 					Press.On(chip, () => Dialog.Info(chip, Texts.Name(captured), Texts.Describe(RuneSets.For(captured))), () => Dialog.Info(chip, Texts.Name(captured), Texts.Describe(RuneSets.For(captured))));

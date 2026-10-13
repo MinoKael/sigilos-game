@@ -7,7 +7,7 @@ using Sigilos.Core.Player;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// Os selos do Grimório do Invocador: marcos da conta lidos do save, sem guardar nada e sem prêmio. O
+	/// Os selos do Grimório do Alquimista: marcos da conta lidos do save, sem guardar nada e sem prêmio. O
 	/// livro só mostra o que o jogador já fez e quanto falta para o resto — os da jornada (Campanha,
 	/// Masmorras, o céu da Exploração) e os da coleção (invocações, famílias, Despertar, 6★, a conta).
 	/// </summary>

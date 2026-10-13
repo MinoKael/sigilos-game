@@ -149,8 +149,10 @@ namespace Sigilos.UI.Screens
 			_pity.Size = new Vector2(PortalSize, PortalSize);
 			idle.AddChild(_pity);
 			var portal = new Control { Name = "Portal", Position = new Vector2(PortalSize * 0.16f, PortalSize * 0.16f), Size = new Vector2(PortalSize * 0.68f, PortalSize * 0.68f), MouseFilter = MouseFilterEnum.Ignore };
-			portal.AddChild(Doodle.Masked(Art.Icon("summon"), Palette.GoldDark, MaskShape.Circle, inset: 12));
+			portal.AddChild(Doodle.Masked(Art.Transmutation(), Palette.GoldDark, MaskShape.Circle, inset: 12));
 			idle.AddChild(portal);
+			// O texto decorativo em volta do símbolo de Transmutação.
+			idle.AddChild(new RingText(MottoText, PortalSize * 0.43f, 17, Palette.Gold) { Name = "Motto", Size = new Vector2(PortalSize, PortalSize) });
 			_idle = idle;
 			_stage.AddChild(idle);
 
@@ -208,7 +210,9 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_rates);
 			var (five, four) = SummonRates.Of(_kind);
-			foreach (var (stars, chance) in new[] { (3, 1 - five - four), (4, four), (5, five) })
+			// Alquímica: o 0,1% de Luz e Trevas sai da fatia das 3★, e aparece à parte, com a regra de repartição.
+			var lightDark = _kind == ScrollKind.Mystic ? SummonRates.MysticLightDark : 0;
+			foreach (var (stars, chance) in new[] { (3, 1 - five - four - lightDark), (4, four), (5, five) })
 			{
 				if (chance <= 1e-9)
 					continue;
@@ -217,7 +221,17 @@ namespace Sigilos.UI.Screens
 				_rates.AddChild(rate);
 			}
 
+
 			_rates.AddChild(new Label { Name = "Elements", Text = T($"summon.elements.{_kind}") });
+
+			if (lightDark > 0)
+			{
+				var eligible = _database.Summons.Count(SummonRates.MysticLightDarkEligible);
+				var ld = new Label { Name = "RateLightDark", Text = T("summon.light_dark_rate", Texts.Percent(lightDark), Texts.PercentFine(lightDark / eligible)), AutowrapMode = TextServer.AutowrapMode.WordSmart };
+				ld.CustomMaximumSize = new Vector2(500, 200);
+				ld.AddThemeColorOverride("font_color", Palette.Arcane);
+				_rates.AddChild(ld);
+			}
 		}
 
 		/// <summary>A troca de Fragmentos: as 4★ de Fogo, Água e Vento numa grade; tocar pede confirmação.</summary>
@@ -244,6 +258,9 @@ namespace Sigilos.UI.Screens
 			dialog.Body.AddChild(grid);
 		}
 
+		/// <summary>O texto em volta do símbolo de Transmutação: exatamente assim, sem mudar a grafia.</summary>
+		public const string MottoText = "sit aliquid boni venire";
+
 		/// <summary>Quanto o resultado espera, no máximo, a invocação chegar à nuvem.</summary>
 		private const double SaveWaitSeconds = 4;
 
@@ -265,7 +282,8 @@ namespace Sigilos.UI.Screens
 
 			if (_sigil != null)
 				Layout.Discard(_sigil);
-			_sigil = new Doodle(Art.Icon("summon"), Palette.Gold) { Name = "Ritual", CustomMinimumSize = new Vector2(240, 240), Size = new Vector2(240, 240) };
+			_sigil = new Doodle(Art.Transmutation(), Palette.Gold) { Name = "Ritual", CustomMinimumSize = new Vector2(240, 240), Size = new Vector2(240, 240) };
+			_sigil.AddChild(new RingText(MottoText, 112, 14, Palette.Gold) { Name = "Motto", Size = new Vector2(240, 240), MouseFilter = MouseFilterEnum.Ignore });
 			_stage.AddChild(_sigil);
 			_sigil.Position = (_stage.Size - _sigil.Size) / 2;
 			_sigil.PivotOffset = _sigil.Size / 2;

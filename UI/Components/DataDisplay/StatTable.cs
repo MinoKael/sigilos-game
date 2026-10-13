@@ -10,7 +10,7 @@ namespace Sigilos.UI.Components
 	/// <summary>
 	/// A ficha de atributos, de dois jeitos:
 	///
-	/// - <see cref="Show"/>: Glifo e nome, o total (base mais runas e conjuntos) em branco e, em verde e um
+	/// - <see cref="Show"/>: planeta e nome, o total (base mais runas e conjuntos) em branco e, em verde e um
 	///   pouco menor, quanto disso as runas somaram.
 	/// - <see cref="Compare"/>: a ficha de agora ao lado da que o monstro teria com outras runas, e a
 	///   diferença já feita (+ em verde, − em vermelho; o que não muda fica apagado). Sem troca para
@@ -45,8 +45,8 @@ namespace Sigilos.UI.Components
 			AddThemeConstantOverride("h_separation", Space.Large);
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
-				// Quatro células por atributo, com o nome dele na frente: HpGlyph, HpName, HpTotal, HpBonus.
-				AddChild(new RuneGlyph(Texts.GlyphOf(stat), 20, Palette.Gold) { Name = $"{stat}Glyph" });
+				// Quatro células por atributo, com o nome dele na frente: HpPlanet, HpName, HpTotal, HpBonus.
+				AddChild(new PlanetSymbol(Texts.PlanetOf(stat), 20, Palette.Gold) { Name = $"{stat}Planet" });
 				AddChild(new Label { Name = $"{stat}Name", Text = Texts.Name(stat) });
 
 				var total = new Label { Name = $"{stat}Total", Text = Texts.Value(stat, sheet.Total.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };
@@ -100,7 +100,7 @@ namespace Sigilos.UI.Components
 			AddThemeConstantOverride("h_separation", Space.Medium);
 			var stats = Enum.GetValues<Stat>();
 			var cells = new Label[stats.Length + 1, 3];
-			AddChild(new Control { Name = "HeadGlyph", MouseFilter = MouseFilterEnum.Ignore });
+			AddChild(new Control { Name = "HeadPlanet", MouseFilter = MouseFilterEnum.Ignore });
 			AddChild(new Control { Name = "HeadName", MouseFilter = MouseFilterEnum.Ignore });
 			string[] heads = { "HeadNow", "HeadNext", "HeadChange" };
 			for (var column = 0; column < 3; column++)
@@ -113,8 +113,8 @@ namespace Sigilos.UI.Components
 			for (var i = 0; i < stats.Length; i++)
 			{
 				var stat = stats[i];
-				// Cinco células por atributo, com o nome dele na frente: HealthGlyph, HealthName, HealthNow, HealthNext, HealthChange.
-				AddChild(new RuneGlyph(Texts.GlyphOf(stat), 20, Palette.Gold) { Name = $"{stat}Glyph" });
+				// Cinco células por atributo, com o nome dele na frente: HealthPlanet, HealthName, HealthNow, HealthNext, HealthChange.
+				AddChild(new PlanetSymbol(Texts.PlanetOf(stat), 20, Palette.Gold) { Name = $"{stat}Planet" });
 				AddChild(new Label { Name = $"{stat}Name", Text = Texts.Name(stat), SizeFlagsHorizontal = SizeFlags.ExpandFill, ClipText = true, TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis });
 				string[] names = { "Now", "Next", "Change" };
 				for (var column = 0; column < 3; column++)

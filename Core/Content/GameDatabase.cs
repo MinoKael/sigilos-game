@@ -39,10 +39,14 @@ namespace Sigilos.Core.Content
 			ExplorationDefinition? exploration = null)
 		{
 			StatModel = statModel;
-			Families = families;
+			// Famílias e Masmorras fora do jogo (Active = false) saem das listas do jogador, mas os ids
+			// continuam resolvendo: saves, inimigos de fases e rotas antigas ainda os encontram.
+			AllFamilies = families;
+			Families = families.Where(f => f.Active).ToList();
 			Enemies = enemies;
 			Stages = stages.OrderBy(s => s.Number).ToList();
-			Dungeons = dungeons;
+			AllDungeons = dungeons.Select(d => d with { Floors = d.Floors.Select(f => f with { Rules = d.Rules }).ToList() }).ToList();
+			Dungeons = AllDungeons.Where(d => d.Active).ToList();
 			Shop = shop;
 			Exploration = exploration ?? new ExplorationDefinition();
 
@@ -63,7 +67,8 @@ namespace Sigilos.Core.Content
 			foreach (var enemy in enemies)
 				enemy.Stats = statModel.Complete(enemy.Stats);
 
-			Summons = summons;
+			AllSummons = summons;
+			Summons = summons.Where(s => s.Family.Active).ToList();
 			_summonsById = summons.GroupBy(s => s.Id).ToDictionary(g => g.Key, g => g.First());
 			// O Núcleo de Infusão é guardado como monstro, mas não é invocação: só o id o encontra.
 			_summonsById[InfusionCore.Id] = InfusionCore.Summon;
@@ -73,17 +78,27 @@ namespace Sigilos.Core.Content
 		/// <summary>Os parâmetros com que os atributos de Data/summons foram calculados.</summary>
 		public StatModel StatModel { get; }
 
-		/// <summary>Uma por arquivo de Data/summons.</summary>
+		/// <summary>As famílias em jogo (Data/summons, menos as de <c>"active": false</c>): o elenco da versão.</summary>
 		public IReadOnlyList<FamilyDefinition> Families { get; }
 
-		/// <summary>Todas as variantes de todas as famílias.</summary>
+		/// <summary>Todas as famílias dos arquivos, também as fora do jogo.</summary>
+		public IReadOnlyList<FamilyDefinition> AllFamilies { get; }
+
+		/// <summary>As variantes em jogo: a fonte de toda invocação, drop, filtro e Grimório.</summary>
 		public IReadOnlyList<SummonDefinition> Summons { get; }
+
+		/// <summary>Todas as variantes dos arquivos, também as de famílias fora do jogo.</summary>
+		public IReadOnlyList<SummonDefinition> AllSummons { get; }
 		public IReadOnlyList<EnemyDefinition> Enemies { get; }
 
 		/// <summary>Em ordem de número.</summary>
 		public IReadOnlyList<StageDefinition> Stages { get; }
 
+		/// <summary>As Masmorras em jogo.</summary>
 		public IReadOnlyList<DungeonDefinition> Dungeons { get; }
+
+		/// <summary>Todas as Masmorras do arquivo, também as fora do jogo.</summary>
+		public IReadOnlyList<DungeonDefinition> AllDungeons { get; }
 
 		/// <summary>As ofertas da Loja, na ordem de Data/shop.json.</summary>
 		public IReadOnlyList<ShopOffer> Shop { get; }
@@ -94,9 +109,16 @@ namespace Sigilos.Core.Content
 		public SummonDefinition Summon(string id) => _summonsById[id];
 		public EnemyDefinition Enemy(string id) => _enemiesById[id];
 		public StageDefinition Stage(int number) => Stages.First(s => s.Number == number);
-		public DungeonDefinition Dungeon(string id) => Dungeons.First(d => d.Id == id);
+		public DungeonDefinition Dungeon(string id) => AllDungeons.First(d => d.Id == id);
 
-		public bool HasSummon(string id) => _summonsById.ContainsKey(id);
+		/// <summary>
+		/// O id é de uma invocação em jogo (ou do Núcleo de Infusão). Variante de família fora do jogo, que um
+		/// save antigo ainda guarda, dá falso: some das listas e das equipes, sem apagar o que o save tem.
+		/// </summary>
+		public bool HasSummon(string id) => _summonsById.TryGetValue(id, out var summon) && (summon.Family == null || summon.Family.Active);
+
+		/// <summary>O id existe nos arquivos, esteja a invocação em jogo ou não (inimigos de fases usam).</summary>
+		public bool Knows(string id) => _summonsById.ContainsKey(id);
 
 		/// <summary>Nome, desenho e elemento de um inimigo de onda, seja invocação ou criatura única.</summary>
 		public (string Name, string Image, Element Element) Foe(StageEnemy slot)
@@ -218,6 +240,13 @@ namespace Sigilos.Core.Content
 					yield return $"Masmorra {dungeon.Id}: sem andares.";
 				if (dungeon.Kind == DungeonKind.Runes && dungeon.Sets.Count == 0)
 					yield return $"Masmorra {dungeon.Id}: de runas, mas sem conjuntos.";
+				if (dungeon.Sets.Any(set => !Runes.RuneSets.IsActive(set)))
+					yield return $"Masmorra {dungeon.Id}: solta conjunto fora do jogo (Runes/RuneSets.ActiveSets).";
+				foreach (var rule in dungeon.Rules)
+				{
+					foreach (var problem in ValidateSkill(rule.Skill))
+						yield return $"Masmorra {dungeon.Id}: regra: {problem}";
+				}
 				for (var i = 0; i < dungeon.Floors.Count; i++)
 				{
 					var floor = dungeon.Floors[i];

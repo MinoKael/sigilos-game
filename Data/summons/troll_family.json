@@ -4,6 +4,7 @@
   "name": "Trolls",
   "star_grade": 4,
   "image": "troll",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "troll_fire",
@@ -244,7 +245,7 @@
           "name": "Ameaça",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.5},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
           ],
           "levels": [
@@ -253,7 +254,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.8},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
             {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
           ]

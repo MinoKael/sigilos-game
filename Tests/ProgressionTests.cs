@@ -57,7 +57,7 @@ namespace Sigilos.Tests
 		{
 			var player = NewPlayer();
 			player.Essence = 1_000_000;
-			var monster = Roster.Add(player, TestData.Summon("imp_fire"));
+			var monster = Roster.Add(player, TestData.Summon("wolf_fire"));
 			var needed = Leveling.EssenceFor(Leveling.MissingToMax(monster));
 
 			Assert.Equal(needed, Leveling.Infuse(player, monster, int.MaxValue), "gasta só o que falta até o máximo");
@@ -70,7 +70,7 @@ namespace Sigilos.Tests
 		private static void EvolutionNeedsMaxLevelAndFragments()
 		{
 			var player = NewPlayer();
-			var monster = Roster.Add(player, TestData.Summon("imp_fire"));
+			var monster = Roster.Add(player, TestData.Summon("wolf_fire"));
 			player.Essence = 1_000_000;
 			Assert.Equal(3, monster.Stars, "nasce nas estrelas naturais");
 			Assert.False(Evolution.IsReady(monster), "precisa do nível máximo");
@@ -99,7 +99,7 @@ namespace Sigilos.Tests
 		{
 			// Do 3★ nível 1 ao 6★ nível 40: a estrela natural inteira e, de cada evolução, só os 5 níveis novos.
 			var player = NewPlayer();
-			var monster = Roster.Add(player, TestData.Summon("imp_fire"));
+			var monster = Roster.Add(player, TestData.Summon("wolf_fire"));
 			player.Essence = 1_000_000;
 			player.Fragments = 1_000;
 
@@ -128,7 +128,7 @@ namespace Sigilos.Tests
 			Assert.Equal(75_000, Awakening.Cost(5), "5★ natural");
 
 			var player = NewPlayer();
-			var summon = database.Summon("phoenix_fire");
+			var summon = database.Summon("wizard_fire");
 			var monster = Roster.Add(player, summon);
 			player.Essence = Awakening.Cost(summon.Rarity) - 1;
 			Assert.False(Awakening.Awaken(player, monster, summon), "sem Essência não desperta");
@@ -153,7 +153,7 @@ namespace Sigilos.Tests
 		private static void FirstVictoryPaysScrollsRuneAndExperience()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("imp_fire");
+			var player = TestData.PlayerWith("wolf_fire");
 			var stage = database.Stage(1);
 
 			var first = Campaign.ApplyVictory(new Random(1), player, stage, database);
@@ -193,7 +193,7 @@ namespace Sigilos.Tests
 				Assert.Near(0, summon.AwakenedStats.Accuracy, $"{summon.Id}: Precisão de base 0%");
 			}
 
-			var phoenix = database.Summon("phoenix_fire");
+			var phoenix = database.Summon("wizard_fire");
 			var top = Growth.Stats(phoenix.Stats, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars));
 			Assert.Near(phoenix.Stats.Health, top.Health, "no 6★ nível 40, os atributos são os do arquivo");
 			Assert.Near(phoenix.Stats.Speed, Growth.Stats(phoenix.Stats, 5, 1).Speed, "a Velocidade não muda com o nível");
@@ -202,7 +202,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void SaveRoundTripsAndOldSavesAreRefused()
 		{
-			var player = TestData.PlayerWith("imp_fire", "phoenix_fire");
+			var player = TestData.PlayerWith("wolf_fire", "wizard_fire");
 			var monster = player.Monsters[0];
 			monster.Level = 12;
 			var rune = RuneInventory.Create(new Random(1), player, 3);
@@ -257,22 +257,22 @@ namespace Sigilos.Tests
 			var player = NewPlayer();
 			var key = Records.FloorKey("golem", 2);
 			Assert.Equal(0, Records.Team(player, key).Count, "recorde sem equipe gravada: nenhuma");
-			Records.Submit(player, key, 80, [new RecordMember("imp_fire", false), new RecordMember("phoenix_fire", true)]);
-			Records.Submit(player, key, 95, [new RecordMember("imp_dark", false)]);
-			Assert.Equal("imp_fire,phoenix_fire", string.Join(",", Records.Team(player, key).Select(m => m.Summon)), "a mais lenta não troca a equipe; a ordem fica");
+			Records.Submit(player, key, 80, [new RecordMember("wolf_fire", false), new RecordMember("wizard_fire", true)]);
+			Records.Submit(player, key, 95, [new RecordMember("wolf_dark", false)]);
+			Assert.Equal("wolf_fire,wizard_fire", string.Join(",", Records.Team(player, key).Select(m => m.Summon)), "a mais lenta não troca a equipe; a ordem fica");
 			Assert.True(Records.Team(player, key)[1].Awakened, "e lembra quem lutou desperto");
 
 			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
 			Assert.Equal(2, Records.Team(loaded, key).Count, "o save guarda a equipe");
-			Records.Submit(loaded, key, 60, [new RecordMember("imp_dark", false)]);
-			Assert.Equal("imp_dark", Records.Team(loaded, key).Single().Summon, "o recorde novo traz a equipe dele");
+			Records.Submit(loaded, key, 60, [new RecordMember("wolf_dark", false)]);
+			Assert.Equal("wolf_dark", Records.Team(loaded, key).Single().Summon, "o recorde novo traz a equipe dele");
 		}
 
 		[Test]
 		private static void OpeningAnOldSaveFillsTheStartAndTheDeepestTeam()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("imp_fire", "phoenix_fire");
+			var player = TestData.PlayerWith("wolf_fire", "wizard_fire");
 			player.Started = null;
 			foreach (var monster in player.Monsters)
 				Teams.Toggle(player, "golem", monster.Id);
@@ -284,13 +284,13 @@ namespace Sigilos.Tests
 
 			Account.Open(player, database, Start);
 			Assert.Equal<DateTime?>(Start, player.Started, "o save sem começo começa ao abrir");
-			Assert.Equal("imp_fire,phoenix_fire", string.Join(",", Records.Team(player, deepest).Select(m => m.Summon)), "o andar mais fundo ganha a equipe salva da Masmorra");
+			Assert.Equal("wolf_fire,wizard_fire", string.Join(",", Records.Team(player, deepest).Select(m => m.Summon)), "o andar mais fundo ganha a equipe salva da Masmorra");
 			Assert.Equal(0, Records.Team(player, older).Count, "os andares de antes ficam sem equipe");
 
-			player.BestTeams[deepest] = [new RecordMember("imp_dark", false)];
+			player.BestTeams[deepest] = [new RecordMember("wolf_dark", false)];
 			Account.Open(player, database, Start.AddDays(5));
 			Assert.Equal<DateTime?>(Start, player.Started, "abrir de novo não muda o começo");
-			Assert.Equal("imp_dark", Records.Team(player, deepest).Single().Summon, "nem a equipe que já existe");
+			Assert.Equal("wolf_dark", Records.Team(player, deepest).Single().Summon, "nem a equipe que já existe");
 
 			Assert.Equal<DateTime?>(null, player.GuildJoined, "sem guilda, sem data de entrada");
 			player.GuildJoined = Start.AddDays(2);

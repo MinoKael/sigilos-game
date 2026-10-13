@@ -2,7 +2,7 @@
   "family_id": "crow",
   "base_name": "Corvo",
   "name": "Corvos",
-  "star_grade": 4,
+  "star_grade": 3,
   "image": "crow",
   "variations": {
     "fire": {
@@ -10,8 +10,8 @@
       "name": "Corvo de Fogo",
       "element": "Fire",
       "role": "Attack",
-      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
-      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "leader": {"stat": "Crit", "value": 0.1},
       "awakening": {"name": "Hugi"},
       "skills": [
@@ -62,8 +62,8 @@
       "name": "Corvo de Água",
       "element": "Water",
       "role": "Defense",
-      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
-      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
+      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
+      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
       "leader": {"stat": "Accuracy", "value": 0.2},
       "awakening": {"name": "Muni"},
       "skills": [
@@ -117,8 +117,8 @@
       "name": "Corvo de Vento",
       "element": "Wind",
       "role": "Attack",
-      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
-      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "leader": {"stat": "Speed", "value": 0.1},
       "awakening": {"name": "Ninn"},
       "skills": [
@@ -168,8 +168,8 @@
       "name": "Corvo de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
-      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "leader": {"stat": "Resistance", "value": 0.2},
       "awakening": {"name": "Neva"},
       "skills": [
@@ -221,8 +221,8 @@
       "name": "Corvo de Trevas",
       "element": "Dark",
       "role": "Attack",
-      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
-      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
+      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "leader": {"stat": "Attack", "value": 0.15},
       "awakening": {"name": "Evermor"},
       "skills": [

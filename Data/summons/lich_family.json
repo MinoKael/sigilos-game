@@ -2,7 +2,7 @@
   "family_id": "lich",
   "base_name": "Lich",
   "name": "Liches",
-  "star_grade": 4,
+  "star_grade": 5,
   "image": "lich",
   "variations": {
     "fire": {
@@ -10,8 +10,8 @@
       "name": "Lich de Fogo",
       "element": "Fire",
       "role": "Attack",
-      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
-      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Crit", "value": 0.1},
       "awakening": {"name": "Cinder"},
       "skills": [
@@ -57,8 +57,8 @@
       "name": "Lich de Água",
       "element": "Water",
       "role": "Support",
-      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
-      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
       "leader": {"stat": "Accuracy", "value": 0.2},
       "awakening": {"name": "Drowner"},
       "skills": [
@@ -102,8 +102,8 @@
       "name": "Lich de Vento",
       "element": "Wind",
       "role": "Attack",
-      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
-      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "Speed", "value": 0.1},
       "awakening": {"name": "Whimper"},
       "skills": [
@@ -157,8 +157,8 @@
       "name": "Lich de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
-      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
       "leader": {"stat": "Resistance", "value": 0.2},
       "awakening": {"name": "Hoper"},
       "skills": [
@@ -201,8 +201,8 @@
       "name": "Lich de Trevas",
       "element": "Dark",
       "role": "Attack",
-      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
-      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
       "leader": {"stat": "CritDamage", "value": 0.25},
       "awakening": {"name": "Deather"},
       "skills": [

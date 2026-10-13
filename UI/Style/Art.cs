@@ -13,10 +13,10 @@ namespace Sigilos.UI.Style
 	/// (<see cref="Sized"/>) — assim nada fica serrilhado nem pesado. Sem o PNG, cai para o SVG; sem os
 	/// dois, devolve nulo e a tela mostra só a cor — o jogo roda mesmo antes de baixar a arte.
 	/// </summary>
-	/// <summary>O símbolo de uma coisa do jogo: um desenho (ícone, efeito) ou um Glifo escrito na fonte das runas.</summary>
-	public readonly record struct Symbol(Texture2D? Icon, Glyph? Rune = null)
+	/// <summary>O símbolo de uma coisa do jogo: um desenho (ícone, efeito) ou o planeta dela.</summary>
+	public readonly record struct Symbol(Texture2D? Icon, Planet? Planet = null)
 	{
-		public static Symbol Of(Glyph glyph) => new(null, glyph);
+		public static Symbol Of(Planet planet) => new(null, planet);
 	}
 
 	public static class Art
@@ -32,14 +32,40 @@ namespace Sigilos.UI.Style
 
 		public static Texture2D? Creature(string image) => Load("Creatures", image);
 
-		public static Texture2D? Element(Element element) => Load("Elements", element.ToString().ToLowerInvariant());
+		/// <summary>
+		/// O símbolo do elemento. Trevas usa o símbolo alquímico da Lua (Assets/Elements/moon.svg); o desenho
+		/// antigo (dark.svg) fica na pasta, sem uso.
+		/// </summary>
+		public static Texture2D? Element(Element element) =>
+			(element == Sigilos.Core.Content.Element.Dark ? Load("Elements", "moon") : null) ?? Load("Elements", element.ToString().ToLowerInvariant());
+
+		/// <summary>
+		/// O símbolo de Transmutação (Assets/Icons/transmutation.svg), que substitui o de Invocação nas telas
+		/// do ritual. Sem o arquivo, cai no ícone de antes (<c>summon</c>), que segue na pasta.
+		/// </summary>
+		public static Texture2D? Transmutation() => Load("Icons", "transmutation") ?? Icon("summon");
+
+		/// <summary>
+		/// O símbolo alquímico de Criação, o do encaixe de Sigilo (Assets/Icons/creation.svg). Sem o arquivo,
+		/// cai no ícone de sigilo de antes (<c>rune</c>), que segue na pasta.
+		/// </summary>
+		public static Texture2D? SigilSlot() => Load("Icons", "creation") ?? Icon("rune");
+
+		/// <summary>O símbolo de Criação para marcar um encaixe vazio; nulo enquanto Assets/Icons/creation.svg não existe.</summary>
+		public static Texture2D? SigilSlotMark() => Load("Icons", "creation");
+
+		/// <summary>O desenho de um signo do zodíaco (Assets/Zodiac): aries, taurus, gemini...</summary>
+		public static Texture2D? Zodiac(string sign) => Load("Zodiac", sign);
+
+		/// <summary>O desenho do planeta de um Sigilo (Assets/Planets).</summary>
+		public static Texture2D? PlanetImage(Planet planet) => Load("Planets", planet.ToString().ToLowerInvariant());
 
 		/// <summary>O símbolo de um efeito de batalha (Assets/Effects): Queimadura, Atordoar, Ataque+...</summary>
 		public static Texture2D? Effect(StatusKind status) => Load("Effects", status.ToString().ToLowerInvariant());
 
 		/// <summary>
 		/// O símbolo de uma habilidade: o do efeito que mais a define (o que ela aplica, o escudo), senão o
-		/// Glifo do que ela faz (cura, Ímpeto, dreno, dano). A Passiva usa o símbolo do que ela faz.
+		/// planeta do que ela faz (cura, Ímpeto, dreno, dano). A Passiva usa o símbolo do que ela faz.
 		/// </summary>
 		public static Symbol Skill(SkillDefinition skill)
 		{
@@ -51,12 +77,13 @@ namespace Sigilos.UI.Style
 					PassiveKind.SpeedWhenLowest => new Symbol(Effect(StatusKind.SpeedUp)),
 					PassiveKind.DamageReduction => new Symbol(Effect(StatusKind.DefenseUp)),
 					PassiveKind.CleanseAllyEachTurn => new Symbol(Effect(StatusKind.Immunity)),
-					PassiveKind.RebirthOnce => Symbol.Of(RuneSets.For(RuneSet.Wrath).Glyph),
-					PassiveKind.ImpetoAtWaveStart => Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph),
-					PassiveKind.Lifesteal => Symbol.Of(RuneSets.For(RuneSet.Siphon).Glyph),
-					PassiveKind.CooldownEachTurn => Symbol.Of(RuneSets.For(RuneSet.Frenzy).Glyph),
-					PassiveKind.Dodge => Symbol.Of(RuneSets.For(RuneSet.Haste).Glyph),
-					_ => Symbol.Of(RuneSets.For(RuneSet.Counter).Glyph),
+					PassiveKind.RebirthOnce => Symbol.Of(Planet.Earth),
+					PassiveKind.ImpetoAtWaveStart => Symbol.Of(Planet.Mercury),
+					PassiveKind.Lifesteal => Symbol.Of(Planet.Earth),
+					PassiveKind.CooldownEachTurn => Symbol.Of(Planet.Mercury),
+					PassiveKind.RunicCore => Symbol.Of(Planet.Sun),
+					PassiveKind.Dodge => Symbol.Of(Planet.Mercury),
+					_ => Symbol.Of(Planet.Venus),
 				};
 			}
 
@@ -73,35 +100,38 @@ namespace Sigilos.UI.Style
 					case EffectKind.Shield:
 						return new Symbol(Effect(StatusKind.Shield));
 					case EffectKind.Heal:
-						return Symbol.Of(Texts.GlyphOf(Stat.Health));
+						return Symbol.Of(Planet.Earth);
 					case EffectKind.Impeto:
-						return Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph);
+						return Symbol.Of(Planet.Mercury);
 					case EffectKind.Cleanse:
 						return new Symbol(Effect(StatusKind.Immunity));
 					case EffectKind.Damage when effect.Drain > 0:
-						return Symbol.Of(RuneSets.For(RuneSet.Siphon).Glyph);
+						return Symbol.Of(Planet.Earth);
 					case EffectKind.HealTeam or EffectKind.EqualizeHealth:
-						return Symbol.Of(Texts.GlyphOf(Stat.Health));
+						return Symbol.Of(Planet.Earth);
 					case EffectKind.Revive:
 						return new Symbol(Effect(StatusKind.Revive));
 					case EffectKind.StealBuff:
-						return Symbol.Of(RuneSets.For(RuneSet.Bane).Glyph);
+						return Symbol.Of(Planet.Saturn);
 					case EffectKind.ExtraTurnOnKill:
-						return Symbol.Of(RuneSets.For(RuneSet.Frenzy).Glyph);
+						return Symbol.Of(Planet.Mercury);
 					case EffectKind.JointAttack:
 						return new Symbol(Effect(StatusKind.Counter));
 				}
 			}
 
-			return Symbol.Of(Texts.GlyphOf(Stat.Attack));
+			return Symbol.Of(Planet.Mars);
 		}
 
 		/// <summary>Ícones de Assets/Icons: scroll, essence, gold, summon, config, map, bag, fight...</summary>
-		public static Texture2D? Icon(string name) => Load("Icons", name);
+		public static Texture2D? Icon(string name) =>
+			// O ícone de invocação virou o de Transmutação (Assets/Icons/transmutation.svg), quando o arquivo existe:
+			// todo lugar que pede "summon" mostra o novo, sem mudar o nome do ícone nos botões.
+			name == "summon" ? Load("Icons", "transmutation") ?? Load("Icons", name) : Load("Icons", name);
 
 		/// <summary>O desenho de um retrato especial (<see cref="SpecialAvatars"/>): o de Assets/Avatars, ou o ícone do padrão.</summary>
 		public static Texture2D? SpecialAvatar(string id) =>
-			SpecialAvatars.FileOf(id) is { } file ? Load("Avatars", file) : Icon(SpecialAvatars.DefaultIcon);
+			SpecialAvatars.FileOf(id) is { } file ? Load("Avatars", file) : Icon(SpecialAvatars.ClassicIcon);
 
 		/// <summary>O nome do desenho (<c>lock</c>, <c>fire_golem</c>), para o nó que o mostra; null se a imagem não veio daqui.</summary>
 		public static string? NameOf(Texture2D? texture) =>
@@ -133,6 +163,9 @@ namespace Sigilos.UI.Style
 
 		/// <summary>O ícone em branco, para tingir ao desenhar direto num <c>_Draw</c> (<see cref="Ink"/>).</summary>
 		public static Texture2D? IconInk(string name) => Ink("Icons", name);
+
+		/// <summary>O planeta do Sigilo em branco, para tingir no texto rico; nulo no planeta sem planeta (conjunto fora do jogo).</summary>
+		public static Texture2D? PlanetInk(Planet planet) => Ink("Planets", planet.ToString().ToLowerInvariant());
 
 		/// <summary>O símbolo do efeito em branco, para tingir no texto rico (<see cref="Ink"/>).</summary>
 		public static Texture2D? EffectInk(StatusKind status) => Ink("Effects", status.ToString().ToLowerInvariant());

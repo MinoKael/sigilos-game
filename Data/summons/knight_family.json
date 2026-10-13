@@ -4,6 +4,7 @@
   "name": "Cavaleiros",
   "star_grade": 4,
   "image": "knight",
+  "theme": "Adversaries",
   "variations": {
     "fire": {
       "variation_id": "knight_fire",
@@ -178,7 +179,7 @@
           "name": "Juramento",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.35, "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.35, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

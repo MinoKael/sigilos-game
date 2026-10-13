@@ -2,16 +2,17 @@
   "family_id": "bandit",
   "base_name": "Bandido",
   "name": "Bandidos",
-  "star_grade": 3,
+  "star_grade": 4,
   "image": "bandit",
+  "theme": "Adversaries",
   "variations": {
     "fire": {
       "variation_id": "bandit_fire",
       "name": "Bandido de Fogo",
       "element": "Fire",
       "role": "Attack",
-      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "awakening": {
         "name": "James",
         "skill": {
@@ -62,8 +63,8 @@
       "name": "Bandido de Água",
       "element": "Water",
       "role": "Defense",
-      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "awakening": {
         "name": "Cassidy",
         "skill": {
@@ -112,8 +113,8 @@
       "name": "Bandido de Vento",
       "element": "Wind",
       "role": "Attack",
-      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "awakening": {
         "name": "Morgan",
         "skill": {
@@ -155,8 +156,8 @@
       "name": "Bandido de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "awakening": {
         "name": "Robin",
         "skill": {
@@ -204,8 +205,8 @@
       "name": "Bandido de Trevas",
       "element": "Dark",
       "role": "Defense",
-      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "awakening": {
         "name": "Billy",
         "skill": {

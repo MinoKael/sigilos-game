@@ -19,7 +19,7 @@ namespace Sigilos.UI
 	/// diz exatamente o que o combate faz.
 	///
 	/// Texto rico (<see cref="Term"/>, <see cref="Describe(SkillDefinition)"/>...) é BBCode do Godot
-	/// mais a marca [glyph=Nome], que o <see cref="Components.RichText"/> desenha; em dica de mouse,
+	/// mais a marca [planet=Nome], que o <see cref="Components.RichText"/> desenha; em dica de mouse,
 	/// use <see cref="Plain"/>.
 	/// </summary>
 	public static class Texts
@@ -34,8 +34,7 @@ namespace Sigilos.UI
 		/// <summary>A sigla que cabe num sigilo: "HP%", "ATK", "SPD".</summary>
 		public static string Short(RuneStat stat) => T($"rune_stat.short.{stat}");
 		public static string Name(RuneSet set) => T($"set.{set}");
-		public static string Name(Glyph glyph) => T($"glyph.{glyph}.name");
-		public static string Meaning(Glyph glyph) => T($"glyph.{glyph}.meaning");
+		public static string Name(Planet planet) => T($"planet.{planet}");
 		public static string Name(RuneRarity rarity) => T($"rarity.{rarity}");
 		public static string Name(StatusKind status) => T($"effect.{status}.name");
 		public static string Name(DungeonKind kind) => T($"dungeons.kind.{kind}");
@@ -156,27 +155,6 @@ namespace Sigilos.UI
 
 		public static string Stars(int count) => new('★', count);
 
-		/// <summary>A letra que desenha o Glifo na fonte das runas (<see cref="Style.GameTheme.Runes"/>).</summary>
-		public static string Rune(Glyph glyph) => glyph switch
-		{
-			Glyph.Uruz => "U",
-			Glyph.Raido => "R",
-			Glyph.Algiz => "Z",
-			Glyph.Othalan => "O",
-			Glyph.Kauna => "K",
-			Glyph.Pertho => "P",
-			Glyph.Jeran => "J",
-			Glyph.Thurisaz => "Þ",
-			Glyph.Gebo => "G",
-			Glyph.Dagaz => "D",
-			Glyph.Sowilo => "S",
-			Glyph.Tiwaz => "T",
-			Glyph.Iwaz => "Y",
-			Glyph.Naudiz => "N",
-			Glyph.Laukaz => "L",
-			_ => "H",
-		};
-
 		/// <summary>Número romano pequeno: ondas e habilidades (I, II, III).</summary>
 		public static string Roman(int number) => number switch
 		{
@@ -194,6 +172,9 @@ namespace Sigilos.UI
 
 		public static string Percent(double fraction) => string.Format(Culture, "{0:0.#}%", fraction * 100);
 
+		/// <summary>Uma porcentagem pequena, com até três casas (0,01%): para chances individuais muito baixas.</summary>
+		public static string PercentFine(double fraction) => string.Format(Culture, "{0:0.###}%", fraction * 100);
+
 		/// <summary>
 		/// O número com o separador de milhar do idioma: 12345 → 12.345 (12,345 em inglês). Só de um milhão para
 		/// cima abrevia, em milhões com três casas, cortando o resto (nunca mostra mais do que o jogador tem):
@@ -205,13 +186,13 @@ namespace Sigilos.UI
 
 		private const int Million = 1_000_000;
 
-		// Termos e Glifos --------------------------------------------------------------------------
+		// Termos e símbolos --------------------------------------------------------------------------
 
-		/// <summary>O Glifo que quer dizer este atributo: o do conjunto que o aumenta.</summary>
-		public static Glyph GlyphOf(Stat stat) => RuneSets.All.First(s => s.Stat == stat).Glyph;
+		/// <summary>O planeta que quer dizer este atributo: o do conjunto que o aumenta (a Defesa leva o Sol).</summary>
+		public static Planet PlanetOf(Stat stat) => RuneSets.PlanetOf(stat);
 
-		/// <summary>O Glifo de um atributo de runa: o do atributo que ele soma (fixo ou percentual).</summary>
-		public static Glyph GlyphOf(RuneStat stat) => GlyphOf(stat switch
+		/// <summary>O planeta de um atributo de sigilo: o do atributo que ele soma (fixo ou percentual).</summary>
+		public static Planet PlanetOf(RuneStat stat) => PlanetOf(stat switch
 		{
 			RuneStat.HealthFlat or RuneStat.HealthPercent => Stat.Health,
 			RuneStat.AttackFlat or RuneStat.AttackPercent => Stat.Attack,
@@ -223,19 +204,19 @@ namespace Sigilos.UI
 			_ => Stat.Accuracy,
 		});
 
-		/// <summary>Um termo único do jogo, em dourado, com o Glifo na frente quando tem.</summary>
-		public static string Term(string text, Glyph? glyph = null) =>
-			$"{(glyph is { } g ? $"[glyph={g}]" : "")}[color=#{Palette.Gold.ToHtml(false)}]{text}[/color]";
+		/// <summary>Um termo único do jogo, em dourado, com o planeta na frente quando tem.</summary>
+		public static string Term(string text, Planet? planet = null) =>
+			$"{(planet is { } p ? $"[planet={p}]" : "")}[color=#{Palette.Gold.ToHtml(false)}]{text}[/color]";
 
 		/// <summary>Um efeito de batalha em dourado, com o símbolo dele na frente ([effect=Nome]).</summary>
 		public static string Term(StatusKind status) => $"[effect={status}][color=#{Palette.Gold.ToHtml(false)}]{Name(status)}[/color]";
 
 		public static string Term(RuneSet set) => Name(set);
 
-		public static string Impeto => Term(T("term.impetus"), RuneSets.For(RuneSet.Bane).Glyph);
+		public static string Impeto => Term(T("term.impetus"), Planet.Mercury);
 
 
-		/// <summary>Tira BBCode e Glifos: para dica de mouse, que é texto puro.</summary>
+		/// <summary>Tira BBCode e planetas: para dica de mouse, que é texto puro.</summary>
 		public static string Plain(string rich) => System.Text.RegularExpressions.Regex.Replace(rich, @"\[[^\]]*\]", "");
 
 		// Descrições geradas -------------------------------------------------------------------------
@@ -279,8 +260,20 @@ namespace Sigilos.UI
 				PassiveKind.ImpetoAtWaveStart => T("passive.ImpetoAtWaveStart", value, Impeto),
 				PassiveKind.BonusVsWounded => T("passive.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
 				PassiveKind.BonusVsStatusOrEffect => T("passive.BonusVsStatusOrEffect", value, Counted(passive)),
+				PassiveKind.BonusPerStatusOrEffect => T("passive.BonusPerStatusOrEffect", value, Counted(passive)) + Partner(passive),
+				PassiveKind.RunicCore => T("passive.RunicCore", value, BattleRules.RunicCoreMaxSteps),
 				_ => T($"passive.{passive.Kind}", value),
 			};
+		}
+
+		/// <summary>"Com Corvo de Luz vivo no time, os efeitos negativos duram 1 turno a mais."</summary>
+		private static string Partner(PassiveDefinition passive)
+		{
+			if (passive.Partner.Length == 0 || passive.PartnerTurns == 0)
+				return "";
+
+			var name = UiSession.Database is { } database && database.Knows(passive.Partner) ? database.Summon(passive.Partner).Name : passive.Partner;
+			return " " + T("passive.partner", name, passive.PartnerTurns);
 		}
 
 		/// <summary>Os efeitos que a Passiva olha: os escolhidos ("Aflição ou Maldição") ou os do escopo ("efeito negativo").</summary>
@@ -490,13 +483,13 @@ namespace Sigilos.UI
 
 			return Keys<Element>("element.{0}")
 				.Concat(Keys<Role>("role.{0}"))
+				.Concat(Keys<FamilyTheme>("theme.{0}"))
 				.Concat(Keys<Stat>("stat.{0}"))
 				.Concat(Keys<Stat>("stat_info.{0}"))
 				.Concat(Keys<RuneStat>("rune_stat.{0}"))
 				.Concat(Keys<RuneStat>("rune_stat.short.{0}"))
 				.Concat(Keys<RuneSet>("set.{0}"))
-				.Concat(Keys<Glyph>("glyph.{0}.name"))
-				.Concat(Keys<Glyph>("glyph.{0}.meaning"))
+				.Concat(Keys<Planet>("planet.{0}"))
 				.Concat(Keys<RuneRarity>("rarity.{0}"))
 				.Concat(Keys<StatusKind>("effect.{0}.name"))
 				.Concat(Keys<StatusKind>("effect.{0}.info"))

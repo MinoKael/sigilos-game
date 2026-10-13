@@ -41,7 +41,7 @@ namespace Sigilos.Tests
 		private static void AccountAtMaxTurnsAThirdOfTheExperienceIntoEssence()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			player.AccountLevel = Account.MaxLevel - 1;
 			player.AccountExperience = Account.ExperienceToNext(Account.MaxLevel - 1) - 30;
 			var essence = player.Essence;
@@ -62,25 +62,25 @@ namespace Sigilos.Tests
 		[Test]
 		private static void AccountPortraitIsAMonsterTheAccountHas()
 		{
-			var player = TestData.PlayerWith("imp_fire", "imp_fire", "knight_fire");
+			var player = TestData.PlayerWith("wolf_fire", "wolf_fire", "knight_fire");
 			Assert.Equal(2, Account.Avatars(player).Count(a => a.Kind == AvatarKind.Summon), "uma vez cada variante");
-			Assert.False(Account.SetAvatar(player, "phoenix_fire", false), "quem a conta não tem não vira retrato");
-			Assert.False(Account.SetAvatar(player, "imp_fire", true), "nem o desperto sem uma cópia desperta");
+			Assert.False(Account.SetAvatar(player, "wizard_fire", false), "quem a conta não tem não vira retrato");
+			Assert.False(Account.SetAvatar(player, "wolf_fire", true), "nem o desperto sem uma cópia desperta");
 
 			player.Monsters[1].Awakened = true;
-			Assert.True(Account.SetAvatar(player, "imp_fire", true), "com uma cópia desperta, o desperto vale");
-			Assert.Equal("imp_fire", player.Avatar, "o retrato fica na conta");
+			Assert.True(Account.SetAvatar(player, "wolf_fire", true), "com uma cópia desperta, o desperto vale");
+			Assert.Equal("wolf_fire", player.Avatar, "o retrato fica na conta");
 			Assert.True(player.AvatarAwakened, "na forma desperta");
-			Assert.True(Account.SetAvatar(player, "imp_fire", false), "e a forma comum continua valendo");
+			Assert.True(Account.SetAvatar(player, "wolf_fire", false), "e a forma comum continua valendo");
 
 			var saved = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
-			Assert.Equal("imp_fire", saved.Avatar, "o retrato vai no save");
+			Assert.Equal("wolf_fire", saved.Avatar, "o retrato vai no save");
 		}
 
 		[Test]
 		private static void SpecialPortraitsAreApartFromMonsters()
 		{
-			var player = TestData.PlayerWith("imp_fire");
+			var player = TestData.PlayerWith("wolf_fire");
 			Assert.True(SpecialAvatars.All.Count > 1, "Assets/Avatars tem desenhos");
 			var special = SpecialAvatars.All[1];
 			var first = Account.Avatars(player)[0];
@@ -90,19 +90,19 @@ namespace Sigilos.Tests
 
 			var mail = new Mail("m1", "", "", new Dictionary<MailItem, int>(), DateTimeOffset.UnixEpoch, null)
 			{
-				Gifts = [new MailGift(MailGiftKind.Avatar, special, 1, Awakened: true), new MailGift(MailGiftKind.Avatar, "phoenix_fire", 1)],
+				Gifts = [new MailGift(MailGiftKind.Avatar, special, 1, Awakened: true), new MailGift(MailGiftKind.Avatar, "wizard_fire", 1)],
 			};
 			Assert.True(Mailbox.Claim(player, mail, TestData.Database), "o correio entrega os dois");
 			var unlocked = Account.Avatars(player);
 			Assert.True(unlocked.Contains(new AccountAvatar(special, false, AvatarKind.Special)), "o especial do correio é especial, sem forma desperta");
-			Assert.True(unlocked.Contains(new AccountAvatar("phoenix_fire", false, AvatarKind.Summon)), "o de monstro do correio é de monstro");
+			Assert.True(unlocked.Contains(new AccountAvatar("wizard_fire", false, AvatarKind.Summon)), "o de monstro do correio é de monstro");
 
 			Assert.True(Account.SetAvatar(player, special, false), "o especial vira retrato");
 			Assert.Equal(new AccountAvatar(special, false, AvatarKind.Special), Account.Current(player), "e é o de agora");
 			Assert.True(Account.SetAvatar(player, SpecialAvatars.Default, false), "o padrão sempre vale");
 			Assert.Equal(null, player.Avatar, "e volta a ser nulo no save");
 
-			player.Avatar = "imp_dark";
+			player.Avatar = "wolf_dark";
 			Assert.Equal(SpecialAvatars.Default, Account.Current(player).Id, "um retrato que a conta não tem mais mostra o padrão");
 		}
 
@@ -117,7 +117,8 @@ namespace Sigilos.Tests
 			foreach (var file in files)
 			{
 				var id = SpecialAvatars.IdOf(file);
-				Assert.Equal(file, SpecialAvatars.FileOf(id), $"{id} aponta para o desenho");
+				// O desenho da runa é o padrão (SpecialAvatars.DefaultFile), não um especial.
+				Assert.Equal(file, SpecialAvatars.FileOf(file == SpecialAvatars.DefaultFile ? SpecialAvatars.Default : id), $"{id} aponta para o desenho");
 				Assert.True(Regex.IsMatch(id, "^[a-z0-9_]+$"), $"{id} cabe na chave do correio (avatar:<id>)");
 				Assert.True(File.Exists(Path.Combine(Program.ProjectRoot, "Assets", "Rendered", "Avatars", $"{file}_128.png")), $"{file}: falta rodar Tools/art/render_png.py");
 			}
@@ -155,7 +156,7 @@ namespace Sigilos.Tests
 		private static void VictoryExperienceAlsoGoesToTheAccount()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			var stage = database.Stage(1);
 
 			var reward = Campaign.ApplyVictory(new Random(1), player, stage, database);
@@ -168,7 +169,7 @@ namespace Sigilos.Tests
 		private static void CampaignChargesManaOnlyOnVictory()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			player.AccountLevel = Account.MaxLevel;
 			var stage = database.Stage(1);
 			var mana = player.Mana;

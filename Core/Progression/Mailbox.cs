@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
+using Sigilos.Core.Runes;
 
 namespace Sigilos.Core.Progression
 {
@@ -50,7 +51,8 @@ namespace Sigilos.Core.Progression
 					for (var i = 0; i < gift.Count; i++)
 						Roster.Add(player, database.Summon(gift.Id));
 					break;
-				case MailGiftKind.Rune:
+				// Sigilo de conjunto fora do jogo (RuneSets.ActiveSets) não é entregue: o correio o descarta em silêncio.
+				case MailGiftKind.Rune when gift.Set is not { } retired || RuneSets.IsActive(retired):
 					for (var i = 0; i < gift.Count; i++)
 						RuneInventory.Create(random, player, gift.Grade, gift.Set is { } set ? new[] { set } : null, gift.Rarity);
 					break;

@@ -154,7 +154,7 @@ namespace Sigilos.UI.Screens
 			return label;
 		}
 
-		/// <summary>O feito numa faixa que se toca: o símbolo (o retrato do monstro, o Glifo da runa) e a frase.</summary>
+		/// <summary>O feito numa faixa que se toca: o símbolo (o retrato do monstro, o planeta da runa) e a frase.</summary>
 		private Control FeatRow(ChatLine line, Feat feat)
 		{
 			var panel = new PanelContainer { MouseDefaultCursorShape = Control.CursorShape.PointingHand };
@@ -162,11 +162,11 @@ namespace Sigilos.UI.Screens
 			var row = Layout.Row(Space.Regular).Named("Row");
 			row.MouseFilter = Control.MouseFilterEnum.Ignore;
 
-			var summon = feat is SummonFeat { SummonId: var id } && UiSession.Database is { } database && database.HasSummon(id) ? database.Summon(id) : null;
+			var summon = feat is SummonFeat { SummonId: var id } && UiSession.Database is { } database && database.Knows(id) ? database.Summon(id) : null;
 			Control? icon = feat switch
 			{
 				SummonFeat when summon != null => Layout.Medal(Art.Creature(summon.Image), Palette.Of(summon.Element), 36),
-				RuneFeat rune => new RuneGlyph(RuneSets.For(rune.Set).Glyph, 28, Palette.Of(RuneFeatRarity), outline: true) { Name = "Glyph", MouseFilter = Control.MouseFilterEnum.Ignore },
+				RuneFeat rune => new PlanetSymbol(RuneSets.PlanetOf(rune.Set), 28, Palette.Of(RuneFeatRarity), outline: true) { Name = "Planet", MouseFilter = Control.MouseFilterEnum.Ignore },
 				_ => null,
 			};
 			if (icon != null)

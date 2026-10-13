@@ -4,6 +4,7 @@
   "name": "Lagartos",
   "star_grade": 2,
   "image": "lizard",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "lizard_fire",
@@ -27,7 +28,7 @@
           "name": "Mordida Quente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.2, "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.2, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

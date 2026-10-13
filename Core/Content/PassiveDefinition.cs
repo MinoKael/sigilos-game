@@ -26,6 +26,12 @@ namespace Sigilos.Core.Content
 		/// <summary>Genéricas que olham efeitos de status: os positivos, os negativos ou todos.</summary>
 		public StatusScope Scope { get; init; }
 
+		/// <summary>Passivas que dependem de um parceiro: o id da variante (ex.: "crow_light") que precisa estar viva no time.</summary>
+		public string Partner { get; init; } = "";
+
+		/// <summary>Com o <see cref="Partner"/> vivo: turnos a mais nos efeitos negativos que o dono põe.</summary>
+		public int PartnerTurns { get; init; }
+
 		/// <summary>A Passiva dispara os efeitos da habilidade (as genéricas, menos o bônus de dano).</summary>
 		public bool UsesEffects => Kind is PassiveKind.StatusOrEffectOnHit or PassiveKind.StatusOrEffectOnAttacker
 			or PassiveKind.StatusOrEffectEachTurn or PassiveKind.StatusOrEffectOnWaveStart or PassiveKind.StatusOrEffectOnDeath

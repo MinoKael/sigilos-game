@@ -155,7 +155,7 @@
           "name": "Investida de Galhada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Taunt", "chance": 0.35}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.35}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -168,7 +168,7 @@
           "name": "Bosque Sagrado",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.7},
             {"kind": "Shield", "target": "Self", "power": 0.17, "turns": 2},
             {"kind": "Heal", "target": "Self", "power": 0.1}
           ],

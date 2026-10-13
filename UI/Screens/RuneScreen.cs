@@ -307,7 +307,7 @@ namespace Sigilos.UI.Screens
 			for (var i = 0; i < chips.Count; i++)
 			{
 				var (set, sign, ink) = chips[i];
-				var chip = Layout.Labeled(RuneSets.For(set).Glyph, sign, Texts.Name(set), ink).Named($"{set}{i + 1}");
+				var chip = Layout.Labeled(RuneSets.PlanetOf(set), sign, Texts.Name(set), ink).Named($"{set}{i + 1}");
 				if (ink is { } color)
 					chip.GetNode<Label>("Row/Value").AddThemeColorOverride("font_color", color);
 				if (sign == "−")
@@ -530,20 +530,20 @@ namespace Sigilos.UI.Screens
 		/// <summary>As ordens da grade e, depois, uma por subatributo (o valor dele fica escrito em cada pedra).</summary>
 		private static IReadOnlyList<(Choice Choice, int Value)> SortOptions() =>
 			Enum.GetValues<RuneSort>().Where(s => s != RuneSort.Substat).Select(s => (new Choice(Texts.Name(s)), (int)s))
-				.Concat(Enum.GetValues<RuneStat>().Select(s => (new Choice(T("filter.order_substat", Texts.Label(s).ToLower(Culture)), Rune: Texts.GlyphOf(s)), SubstatOrder + (int)s)))
+				.Concat(Enum.GetValues<RuneStat>().Select(s => (new Choice(T("filter.order_substat", Texts.Label(s).ToLower(Culture)), Symbol: Texts.PlanetOf(s)), SubstatOrder + (int)s)))
 				.ToList();
 
 		/// <summary>A janela dos filtros (<see cref="FilterDialog"/>): um campo por linha. Muda na hora.</summary>
 		private void OpenFilters() => FilterDialog.Open(this, T("filter.title"), dialog =>
 		{
-			dialog.Field("Set", T("filter.set"), Enum.GetValues<RuneSet>().Select(s => (new Choice(Texts.Name(s), Rune: RuneSets.For(s).Glyph), (int)s)), _filter.Set is { } set ? (int)set : FilterDialog.All,
+			dialog.Field("Set", T("filter.set"), RuneSets.ActiveSets.Select(s => (new Choice(Texts.Name(s), Symbol: RuneSets.PlanetOf(s)), (int)s)), _filter.Set is { } set ? (int)set : FilterDialog.All,
 				value => _filter = _filter with { Set = value < 0 ? null : (RuneSet)value });
 			dialog.Field("Slot", T("filter.slot"), Enumerable.Range(1, RuneRules.Slots).Select(s => (new Choice(T("filter.slot_n", s)), s)), _filter.Slot ?? FilterDialog.All,
 				value => _filter = _filter with { Slot = value < 0 ? null : value });
-			dialog.Field("Main", T("filter.main"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Main is { } main ? (int)main : FilterDialog.All,
+			dialog.Field("Main", T("filter.main"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Symbol: Texts.PlanetOf(s)), (int)s)), _filter.Main is { } main ? (int)main : FilterDialog.All,
 				value => _filter = _filter with { Main = value < 0 ? null : (RuneStat)value });
 			// Procurar um subatributo já ordena por ele, a maior primeiro; a Ordem ainda muda depois.
-			dialog.Field("Substat", T("filter.substat"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Rune: Texts.GlyphOf(s)), (int)s)), _filter.Substats.Count > 0 ? (int)_filter.Substats[0] : FilterDialog.All,
+			dialog.Field("Substat", T("filter.substat"), Enum.GetValues<RuneStat>().Select(s => (new Choice(Texts.Label(s), Symbol: Texts.PlanetOf(s)), (int)s)), _filter.Substats.Count > 0 ? (int)_filter.Substats[0] : FilterDialog.All,
 				value => _filter = value < 0
 					? _filter with { Substats = Array.Empty<RuneStat>() }
 					: _filter with { Substats = new[] { (RuneStat)value }, Sort = RuneSort.Substat, SortStat = (RuneStat)value });
@@ -832,8 +832,11 @@ namespace Sigilos.UI.Screens
 			return button;
 		}
 
-		/// <summary>Onde a runa está, para a busca.</summary>
-		private bool InPlace(Rune rune) => _place switch
+		/// <summary>
+		/// Onde o sigilo está, para a busca. Sigilo de conjunto fora do jogo (RuneSets.ActiveSets) segue no
+		/// save mas não aparece em lista nenhuma.
+		/// </summary>
+		private bool InPlace(Rune rune) => RuneSets.IsActive(rune.Set) && _place switch
 		{
 			RunePlace.Inventory => rune.EquippedOn == null,
 			RunePlace.Collection => _player.Monster(rune.EquippedOn ?? -1) is { Stored: false },

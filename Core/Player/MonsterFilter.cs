@@ -42,7 +42,7 @@ namespace Sigilos.Core.Player
 
 		public bool Matches(OwnedSummon monster, SummonDefinition summon, PlayerState player) =>
 			(Element == null || summon.Element == Element) &&
-			(Role == null || summon.Role == Role) &&
+			(Role == null || RoleGroups.Of(summon.Role) == RoleGroups.Of(Role.Value)) &&
 			(Stars == null || monster.Stars == Stars) &&
 			(Rarity == null || summon.Rarity == Rarity) &&
 			(Awakened == null || monster.Awakened == Awakened) &&

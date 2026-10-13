@@ -4,6 +4,7 @@
   "name": "Vampiros",
   "star_grade": 4,
   "image": "vampire",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "vampire_fire",

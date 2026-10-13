@@ -6,9 +6,9 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// Uma runa em miniatura, quadrada de cantos redondos: as estrelas no alto, o Glifo do conjunto grande
-	/// no meio (na fonte das runas, na cor da raridade) e, embaixo, numa linha só, o número do espaço à
-	/// esquerda e a melhora à direita. Atrás do Glifo, o selo do espaço: um hexágono entalhado em que cada
+	/// Uma runa em miniatura, quadrada de cantos redondos: as estrelas no alto, o planeta do conjunto grande
+	/// no meio (na cor da raridade) e, embaixo, numa linha só, o número do espaço à
+	/// esquerda e a melhora à direita. Atrás do planeta, o selo do espaço: um hexágono entalhado em que cada
 	/// lado é um lugar do círculo das runas (o de cima é o 1, os outros seguem no sentido do relógio), e o
 	/// lado do espaço da runa fica aceso na cor da raridade (<see cref="DrawSeal"/>). Sem runa, só o selo,
 	/// maior e apagado, com o número no meio.
@@ -35,7 +35,7 @@ namespace Sigilos.UI.Components
 		/// <summary>A largura reservada ao número do espaço (ao medalhão de quem usa a runa) e, espelhada, à melhora, na escala 1.</summary>
 		private const float SlotWidth = 18;
 
-		/// <summary>O raio do selo do espaço (até o vértice), na escala 1: atrás do Glifo, e maior sem runa.</summary>
+		/// <summary>O raio do selo do espaço (até o vértice), na escala 1: atrás do planeta, e maior sem runa.</summary>
 		private const float SealRadius = 20;
 
 		private const float EmptySealRadius = 22;
@@ -71,22 +71,33 @@ namespace Sigilos.UI.Components
 			_box = GameTheme.Box(Palette.Inset, _color, rune == null ? 1 : 2, (int)(9 * scale), 0);
 			_selection = new SelectionFrame(_box, _color, rune == null ? 1 : 2) { Hover = (new Color(_color, 0.3f), 5, Vector2.Zero) };
 			AddThemeStyleboxOverride("panel", _box);
+
 			AddChild(_layer);
 
 			if (rune == null)
 			{
+				// O encaixe vazio leva o símbolo alquímico de Criação, quando ele existe (Art.SigilSlotMark).
+				if (Art.SigilSlotMark() is { } mark)
+				{
+					var seal = (Control)Doodle.Icon(mark, (int)(36 * scale), new Color(Palette.GoldDark, 0.55f));
+					seal.Name = "SlotSeal";
+					seal.MouseFilter = MouseFilterEnum.Ignore;
+					seal.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+					_layer.AddChild(seal);
+				}
+
 				var number = Small(slot.ToString(), new Color(Palette.Gold, 0.85f), 18).Named("Slot");
 				number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				_layer.AddChild(number);
 			}
 			else
 			{
-				// O Glifo ocupa o miolo, um pouco abaixo do centro para deixar a fileira de cima livre.
-				var glyph = new RuneGlyph(RuneSets.For(rune.Set).Glyph, (int)(33 * scale), _color, outline: true) { Name = "Glyph" };
-				glyph.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-				glyph.OffsetTop = 6 * scale;
-				glyph.OffsetLeft = 2.5f;
-				_layer.AddChild(glyph);
+				// O planeta ocupa o miolo, um pouco abaixo do centro para deixar a fileira de cima livre.
+				var symbol = new PlanetSymbol(RuneSets.PlanetOf(rune.Set), (int)(33 * scale), _color, outline: true) { Name = "Planet" };
+				symbol.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+				symbol.OffsetTop = 6 * scale;
+				symbol.OffsetLeft = 2.5f;
+				_layer.AddChild(symbol);
 
 				// A linha de baixo: cada peça é centrada num ponto fixo dela, então o espaço, o cadeado e a
 				// melhora ficam no mesmo lugar em qualquer escala e com qualquer texto.
@@ -254,7 +265,7 @@ namespace Sigilos.UI.Components
 		}
 
         /// <summary>
-        /// O selo do espaço, atrás do Glifo: um octógono de lados chatos em cima e embaixo, um pouco mais claro
+        /// O selo do espaço, atrás do planeta: um octógono de lados chatos em cima e embaixo, um pouco mais claro
         /// que a pedra, com o contorno entalhado em ouro escuro. O lado que olha para o espaço da runa
         /// (<see cref="SlotAngle"/>) vira uma barra acesa na cor da raridade.
         /// </summary>
@@ -262,7 +273,7 @@ namespace Sigilos.UI.Components
         {
             var empty = Rune == null;
             var radius = (empty ? EmptySealRadius : SealRadius) * _scale;
-            // Com runa, o centro do Glifo: a pedra menos a fileira das estrelas, um pouco acima para não
+            // Com runa, o centro do planeta: a pedra menos a fileira das estrelas, um pouco acima para não
             // encostar na linha de baixo.
             var center = new Vector2(Size.X / 2, Size.Y / 2 + (empty ? 0 : 2 * _scale));
 

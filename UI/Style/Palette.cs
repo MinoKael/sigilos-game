@@ -5,7 +5,7 @@ using Sigilos.Core.Runes;
 namespace Sigilos.UI.Style
 {
 	/// <summary>
-	/// As cores do jogo num lugar só. O grimório de um invocador que estuda as estrelas: couro de capa
+	/// As cores do jogo num lugar só. O grimório de um alquimista que estuda as estrelas: couro de capa
 	/// de livro (ameixa, violeta escuro) nos painéis, tinta de noite (índigo quase preto) nos fundos
 	/// rebaixados, pergaminho no texto e nas páginas, ouro velho só no que é destaque e pontos de luz
 	/// de estrela no que está aceso. A regra das cores:
@@ -92,7 +92,7 @@ namespace Sigilos.UI.Style
 		/// <summary>O ponto de luz de estrela: o brilho de fundo, as estrelas do mapa.</summary>
 		public static readonly Color Starlight = Color.Color8(232, 236, 255);
 
-		/// <summary>A página de pergaminho (o Grimório do Invocador): o papel e a mancha das bordas.</summary>
+		/// <summary>A página de pergaminho (o Grimório do Alquimista): o papel e a mancha das bordas.</summary>
 		public static readonly Color Parchment = Color.Color8(226, 210, 174);
 
 		public static readonly Color ParchmentShade = Color.Color8(178, 150, 108);
@@ -106,6 +106,15 @@ namespace Sigilos.UI.Style
 		public static readonly Color Rubric = Color.Color8(98, 54, 138);
 
 		public static Color Stars(bool awakened) => awakened ? Awakened : Gold;
+
+		/// <summary>As estrelas prateadas: só dos homúnculos de 2 estrelas naturais (versão 0.1).</summary>
+		public static readonly Color Silver = Color.Color8(204, 210, 224);
+
+		/// <summary>
+		/// A cor das estrelas de um homúnculo pelas estrelas naturais dele: prata nas de 2★, e a de sempre nas
+		/// outras (dourada, ou roxa se despertou). A regra de representação por raridade mora só aqui.
+		/// </summary>
+		public static Color Stars(int naturalStars, bool awakened) => naturalStars == 2 ? Silver : Stars(awakened);
 
 		/// <summary>Moldura por raridade: bronze, prata e ouro a partir da 3★ (GDD, seção 5).</summary>
 		public static Color Frame(int stars) => stars switch

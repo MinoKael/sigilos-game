@@ -4,6 +4,7 @@
   "name": "Paladinos",
   "star_grade": 5,
   "image": "paladin",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "paladin_fire",
@@ -216,7 +217,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.7},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.7},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
           ],
           "levels": [

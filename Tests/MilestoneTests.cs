@@ -17,7 +17,7 @@ namespace Sigilos.Tests
 		private static void InfusionCoreOnlyFusesButRaisesAnyFamily()
 		{
 			var database = TestData.Database;
-			var player = TestData.PlayerWith("imp_fire");
+			var player = TestData.PlayerWith("wolf_fire");
 			var imp = player.Monsters.Single();
 			Milestones.Grant(player, new Prize(InfusionCores: 2));
 			var cores = player.Monsters.Where(m => m.IsInfusionCore).ToList();
@@ -87,7 +87,7 @@ namespace Sigilos.Tests
 			Assert.Equal(20, player.AccountLevel, "sobe para o 20");
 			Assert.Equal(1, player.LightDarkScrolls, "o nível 20 dá um Pergaminho de Luz e Trevas");
 			Assert.Equal(cores + 1, player.Monsters.Count(m => m.IsInfusionCore), "e um Núcleo (a cada 5 níveis)");
-			Assert.Equal(new Prize(0, 5, 20), Milestones.ForAccountLevels(0, Account.MaxLevel), "do 1 ao 100: 5 de Luz e Trevas e 20 Núcleos");
+			Assert.Equal(new Prize(0, Milestones.LightDarkLevels.Length, 20), Milestones.ForAccountLevels(0, Account.MaxLevel), "do 1 ao 100: um de Luz e Trevas por nível da tabela e 20 Núcleos");
 		}
 
 		[Test]
@@ -114,12 +114,12 @@ namespace Sigilos.Tests
 			var player = NewPlayer();
 			var options = FragmentExchange.Options(database);
 			Assert.True(options.Count > 0 && options.All(s => s.Rarity == 4 && s.Element is not (Element.Light or Element.Dark)), "as 4★ de Fogo, Água e Vento");
-			var choice = options.First(s => s.Id == "gargoyle_water");
+			var choice = options.First(s => s.Id == "pirate_water");
 			player.Fragments = FragmentExchange.Cost - 1;
 			Assert.True(FragmentExchange.Exchange(player, database, choice.Id) == null, "sem Fragmentos, não troca");
 			player.Fragments = FragmentExchange.Cost;
 			Assert.True(FragmentExchange.Exchange(player, database, "crow_light") == null, "Luz e Trevas não se trocam");
-			Assert.True(FragmentExchange.Exchange(player, database, "dragon_fire") == null, "nem 5★");
+			Assert.True(FragmentExchange.Exchange(player, database, "druid_fire") == null, "nem 5★");
 			var result = FragmentExchange.Exchange(player, database, choice.Id);
 			Assert.Equal(choice.Id, result!.Summon.Id, "a escolhida");
 			Assert.Equal(0, player.Fragments, "paga os Fragmentos");

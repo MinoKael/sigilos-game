@@ -4,6 +4,7 @@
   "name": "Múmias",
   "star_grade": 4,
   "image": "mummy",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "mummy_fire",

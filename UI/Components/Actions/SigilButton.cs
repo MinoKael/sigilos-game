@@ -53,7 +53,6 @@ namespace Sigilos.UI.Components
 		/// <summary>A plaquinha escura com borda de ouro onde o número fica: destaca do fundo e do sigilo.</summary>
 		private readonly PanelContainer _plaque = new() { Name = "Plaque", MouseFilter = MouseFilterEnum.Ignore, Visible = false };
 
-		private Glyph? _rune;
 		private Color _ink = Palette.Gold;
 		private Color? _accent;
 		private Vector2[]? _ticks;
@@ -161,39 +160,11 @@ namespace Sigilos.UI.Components
 		/// <summary>Tamanho das letras, quando o padrão (um terço do sigilo) fica pequeno.</summary>
 		public void SetLetterSize(int pixels) => _letters.AddThemeFontSizeOverride("font_size", pixels);
 
-		/// <summary>Um Glifo no lugar do símbolo, escrito na fonte das runas.</summary>
-		public Glyph? Rune
-		{
-			get => _rune;
-			set
-			{
-				_rune = value;
-				if (value is not { } glyph)
-				{
-					Letters = "";
-					return;
-				}
-
-				_letters.AddThemeFontOverride("font", GameTheme.Runes);
-				_letters.AddThemeFontSizeOverride("font_size", (int)(CustomMinimumSize.Y * 0.46f));
-				_letters.Text = Texts.Rune(glyph);
-				_letters.Visible = true;
-				_icon.Visible = false;
-			}
-		}
-
-		/// <summary>O símbolo de uma coisa do jogo: um desenho ou um Glifo.</summary>
+		/// <summary>O símbolo de uma coisa do jogo: um desenho (ícone, efeito) ou um planeta.</summary>
 		public void SetSymbol(Symbol symbol)
 		{
-			if (symbol.Rune is { } glyph)
-			{
-				Rune = glyph;
-				return;
-			}
-
-			_rune = null;
 			Letters = "";
-			SetIcon(symbol.Icon);
+			SetIcon(symbol.Planet is { } planet ? Art.PlanetImage(planet) : symbol.Icon);
 		}
 
 		public void SetIcon(Texture2D? icon) => _icon.SetArt(icon);

@@ -13,7 +13,7 @@ namespace Sigilos.Core.Content
 		/// <summary>Perde o próximo turno.</summary>
 		Stun,
 
-		/// <summary>Só pode mirar em quem provocou.</summary>
+		/// <summary>Provocar (efeito positivo): os inimigos só podem escolher o dono como alvo único.</summary>
 		Taunt,
 
 		/// <summary>Não pode ser alvo de ataques únicos.</summary>

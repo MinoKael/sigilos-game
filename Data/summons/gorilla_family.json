@@ -4,6 +4,7 @@
   "name": "Gorilas",
   "star_grade": 4,
   "image": "gorilla",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "gorilla_fire",
@@ -87,7 +88,7 @@
           "name": "Peito de Ferro",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.6, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
             {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2}
           ],
@@ -97,7 +98,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.8, "turns": 1},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
             {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2},
             {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}

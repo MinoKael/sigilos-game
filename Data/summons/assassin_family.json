@@ -4,6 +4,7 @@
   "name": "Assassinos",
   "star_grade": 3,
   "image": "assassin",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "assassin_fire",

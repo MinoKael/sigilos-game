@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sigilos.Core.Battle.Statuses;
 using Sigilos.Core.Content;
 
@@ -44,13 +45,50 @@ namespace Sigilos.Core.Battle
 		public const int MaxStatuses = 10;
         public const double CurseBonus = 0.25;
 		public const double BlindMissChance = 0.5;
+
+		/// <summary>
+		/// Ataque e Defesa: o buff vale menos que o debuff equivalente (+50% contra −70%), para o melhor
+		/// efeito do jogador nunca compensar por inteiro o do inimigo.
+		/// </summary>
 		public const double AttackUpBonus = 0.5;
-		public const double AttackDownPenalty = 0.5;
-		public const double DefenseUpBonus = 0.7;
+		public const double AttackDownPenalty = 0.7;
+		public const double DefenseUpBonus = 0.5;
 		public const double DefenseDownPenalty = 0.7;
 		public const double IgnoreDefense = 1.0;
         public const double SpeedUpBonus = 0.3;
 		public const double BombDamageMultiplier = 2.5;
+
+		/// <summary>
+		/// Os efeitos a que todo chefe (<see cref="BattleUnit.IsBoss"/>) é imune. A lista é checada num ponto só,
+		/// quando o efeito vai pegar (<see cref="EffectResolver"/>), então vale para toda fonte: habilidade,
+		/// Passiva, conjunto de runas, Influência ou roubo. A Aflição não está aqui: continua pegando em chefe.
+		/// </summary>
+		public static readonly IReadOnlySet<StatusKind> BossImmunities = new HashSet<StatusKind>
+		{
+			StatusKind.Stun,
+			StatusKind.Sleep,
+			StatusKind.Oblivion,
+			StatusKind.Silence,
+			StatusKind.Bomb,
+		};
+
+		/// <summary>
+		/// Afogamento (Santuário): fração da Vida máxima que cada unidade afetada perde a cada rodada.
+		/// 10% é o valor da versão 0.1; fica aqui para o ajuste de balanço.
+		/// </summary>
+		public const double DrowningFraction = 0.10;
+
+		/// <summary>Núcleo Rúnico (Golem Rúnico): bônus de Defesa que ele ganha a cada rodada nova (0,15 = +15% da base).</summary>
+		public const double RunicCoreStep = 0.15;
+
+		/// <summary>Núcleo Rúnico: o bônus nunca passa de tantos passos, para a luta não virar eterna.</summary>
+		public const int RunicCoreMaxSteps = 8;
+
+		/// <summary>Tesouro da Serpe: dano a mais que ela causa num alvo, por buff que ele tenha.</summary>
+		public const double SerpentTreasureBonus = 0.15;
+
+		/// <summary>Tesouro da Serpe: quantos buffs do alvo contam para o dano a mais.</summary>
+		public const int SerpentTreasureMaxBuffs = 5;
 
 		/// <summary>A Bomba que explode atordoa o alvo por estes turnos.</summary>
 		public const int BombStunTurns = 1;

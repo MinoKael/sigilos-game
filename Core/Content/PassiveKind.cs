@@ -67,6 +67,20 @@ namespace Sigilos.Core.Content
 		/// <summary>Os efeitos no alvo da habilidade, depois de cada turno do dono.</summary>
 		StatusOrEffectOnTargetEachTurn,
 
+		/// <summary>
+		/// Mais dano (o número) para cada efeito que conta no alvo. Com um <see cref="PassiveDefinition.Partner"/>
+		/// vivo no time, os efeitos negativos que o dono põe duram <see cref="PassiveDefinition.PartnerTurns"/> a mais.
+		/// </summary>
+		BonusPerStatusOrEffect,
+
+		// Masmorras ---------------------------------------------------------------------------------
+
+		/// <summary>Golem Rúnico: a Defesa do dono sobe um passo (o número, em fração da base) a cada rodada.</summary>
+		RunicCore,
+
+		/// <summary>Santuário: o dono perde o número (0,1 = 10%) da Vida máxima a cada rodada e fica lento.</summary>
+		Drowning,
+
 		// Chefes ------------------------------------------------------------------------------------
 
 		/// <summary>

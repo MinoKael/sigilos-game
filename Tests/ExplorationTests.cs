@@ -58,7 +58,7 @@ namespace Sigilos.Tests
 		private static void TheJourneyOpensAfterItsStageAndGoesInOrder()
 		{
 			var exploration = TestData.Database.Exploration;
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			Assert.False(Exploration.IsOpen(player, exploration), "fechada antes da fase");
 			Assert.Equal(EntryProblem.Locked, Exploration.Check(player, exploration, 1, October), "nem a primeira");
 
@@ -77,7 +77,7 @@ namespace Sigilos.Tests
 		private static void TheFirstVictoryOfTheMonthPaysTheFixedReward()
 		{
 			var exploration = TestData.Database.Exploration;
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			player.HighestStage = exploration.UnlockStage;
 			player.AccountLevel = Account.MaxLevel;
 			var reward = exploration.Constellation(1).Reward;
@@ -109,7 +109,7 @@ namespace Sigilos.Tests
 		private static void AVictoryThatEndsInANewMonthDoesNotPayAClosedConstellation()
 		{
 			var exploration = TestData.Database.Exploration;
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			player.HighestStage = exploration.UnlockStage;
 			for (var number = 1; number <= 4; number++)
 				Exploration.ApplyVictory(player, exploration, number, October);

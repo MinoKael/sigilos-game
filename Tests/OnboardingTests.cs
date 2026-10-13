@@ -17,7 +17,7 @@ namespace Sigilos.Tests
 			Assert.False(Features.IsOpen(player, database, Feature.Monsters), "sem invocar, Monstros não aparece");
 			Assert.False(Features.IsOpen(player, database, Feature.Runes), "nem Runas");
 
-			Roster.Add(player, database.Summon("imp_fire"));
+			Roster.Add(player, database.Summon("wolf_fire"));
 			player.TotalPulls = 1;
 			Assert.True(Features.IsOpen(player, database, Feature.Monsters), "a primeira invocação abre Monstros");
 
@@ -38,9 +38,9 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = TestData.PlayerWith(TestData.TypicalTeam);
-			var crypt = database.Dungeons.Single(d => d.Id == "crypt");
+			var crypt = database.Dungeons.Single(d => d.Id == "sanctum");
 			player.HighestStage = 20;
-			Assert.False(Dungeons.IsUnlocked(player, crypt), "a Cripta abre depois da fase dela");
+			Assert.False(Dungeons.IsUnlocked(player, crypt), "o Santuário abre depois da fase dele");
 			player.DungeonFloors[crypt.Id] = 2;
 			Assert.True(Dungeons.IsUnlocked(player, crypt), "mas quem já venceu um andar (de antes da mudança) segue com ela");
 			Assert.True(Dungeons.IsFloorUnlocked(player, crypt, 3), "e com o andar seguinte");

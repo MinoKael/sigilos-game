@@ -13,7 +13,7 @@ namespace Sigilos.UI.Screens
 	/// O Santuário: a tela de abertura de toda sessão (GDD, seção 11), pensada para o celular.
 	///
 	/// - No alto, a conta (retrato, o nome dela e o nível, a barra de experiência; tocar abre o Grimório do
-	///   Invocador, <see cref="SummonerGrimoireDialog"/>, e dali se troca o retrato, <see cref="AvatarPicker"/>), o
+	///   Alquimista, <see cref="SummonerGrimoireDialog"/>, e dali se troca o retrato, <see cref="AvatarPicker"/>), o
 	///   Correio (uma cápsula como as das moedas, só com a carta, e quantas faltam coletar num selo
 	///   vermelho) e os recursos. Sem conta (ou numa conta sem nome), no lugar do nome vai "Conta".
 	/// - No meio, à esquerda, a Canalização: a constelação ocupa o painel (o sigilo do centro com o anel
@@ -42,7 +42,8 @@ namespace Sigilos.UI.Screens
 		private readonly CurrencyBar _currencies = new();
 		private readonly SurfaceButton _account = new SurfaceButton { Name = "Account", Hug = true }.Boxes(null);
 		private readonly Constellation _constellation = ChatBubble.Dock(new Constellation { Name = "Constellation" });
-		private readonly SigilButton _core = new(Art.Icon("collect"), 128) { Name = "Core" };
+		// O centro da Canalização é o planeta Terra, com os doze signos do zodíaco em volta (Constellation).
+		private readonly SigilButton _core = new(Art.PlanetImage(Sigilos.Core.Content.Planet.Earth) ?? Art.Icon("collect"), 128) { Name = "Core" };
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
 		private readonly HBoxContainer _pending = Layout.Row(Space.Medium, true).Named("Pending");
 		private readonly GameButton _collect;
@@ -195,7 +196,7 @@ namespace Sigilos.UI.Screens
 			_account.Body.AddChild(row);
 		}
 
-		/// <summary>O retrato abre o Grimório do Invocador; trocar o retrato de lá abre a escolha.</summary>
+		/// <summary>O retrato abre o Grimório do Alquimista; trocar o retrato de lá abre a escolha.</summary>
 		private void OpenBook()
 		{
 			var book = SummonerGrimoireDialog.Open(this, _database, _player, _accountName, DateTime.Now);

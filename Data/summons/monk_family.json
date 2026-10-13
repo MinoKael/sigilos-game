@@ -4,6 +4,7 @@
   "name": "Monges",
   "star_grade": 5,
   "image": "monk",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "monk_fire",
@@ -77,7 +78,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.6, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
           ],
           "levels": [

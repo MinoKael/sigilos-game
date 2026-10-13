@@ -212,7 +212,7 @@ chegar.
 | Runas | Equipar e Desequipar, Melhorar (a runa), Afiar, Encantar e Reavaliar (tinta mágica), Vender (Ouro), Bloquear (ligar e desligar) |
 | Preparação da luta, Loja | pôr, tirar e trocar na equipe (equipar e desequipar; cheia, a ação indisponível), escolher um da equipe (ligar e desligar), comprar (Ouro) |
 | Santuário e correio | coletar a Canalização (Essência), coletar cartas |
-| Grimório e livro do Invocador | abrir, virar página, escolher a família, fechar |
+| Grimório e livro do Alquimista | abrir, virar página, escolher a família, fechar |
 | Exploração | a estrela ao escolher a constelação |
 | Batalha automática | começar (e retomar) e parar; as lutas não soam |
 

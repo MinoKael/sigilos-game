@@ -12,7 +12,7 @@ namespace Sigilos.Tests
 		private static void DungeonOpensAfterItsStageAndFloorsInOrder()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			var golem = database.Dungeon("golem");
 
 			Assert.Equal(EntryProblem.Locked, Dungeons.Check(player, golem, 1), "fechada antes da fase");
@@ -84,7 +84,7 @@ namespace Sigilos.Tests
 			{
 				foreach (var floor in new[] { 1, 5 })
 				{
-					var player = TestData.PlayerWith("phoenix_fire");
+					var player = TestData.PlayerWith("wizard_fire");
 					player.DungeonFloors[dungeon.Id] = dungeon.Floors.Count;
 					var before = player.Scrolls;
 					var scrolls = 0;
@@ -107,7 +107,7 @@ namespace Sigilos.Tests
 		private static void ForgeDropsTools()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			var forge = database.Dungeons.First(d => d.Kind == DungeonKind.Tools);
 			var last = forge.Floors.Count;
 
@@ -122,8 +122,8 @@ namespace Sigilos.Tests
 		private static void DungeonExperienceGoesToItsOwnTeam()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("phoenix_fire");
-			var golemMonster = Roster.Add(player, TestData.Summon("imp_fire"));
+			var player = TestData.PlayerWith("wizard_fire");
+			var golemMonster = Roster.Add(player, TestData.Summon("wolf_fire"));
 			Teams.Toggle(player, "golem", golemMonster.Id);
 
 			Dungeons.ApplyVictory(new Random(1), player, database.Dungeon("golem"), 1);

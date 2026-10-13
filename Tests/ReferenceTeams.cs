@@ -109,35 +109,35 @@ namespace Sigilos.Tests
 		{
 			["golem"] = new Member[]
 			{
-				new("paladin_fire", Sets(RuneSet.Vigor, RuneSet.Haste, RuneSet.Ward)),
+				new("druid_fire", Sets(RuneSet.Vigor, RuneSet.Haste, RuneSet.Sustain)),
 				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("crow_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("dwarf_miner_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("imp_fire", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
+				new("wolf_fire", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
 			},
 			["wyvern"] = new Member[]
 			{
-				new("phoenix_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
-				new("wolf_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
-				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Tenacity), RuneStat.Resistance),
-				new("imp_water", Sets(RuneSet.Lethal, RuneSet.Sustain)),
-				new("vampire_fire", Sets(RuneSet.Lethal, RuneSet.Sustain)),
+				new("wizard_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Finesse), RuneStat.Resistance),
+				new("wolf_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Finesse), RuneStat.Resistance),
+				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Finesse), RuneStat.Resistance),
+				new("wolf_water", Sets(RuneSet.Lethal, RuneSet.Sustain)),
+				new("lich_fire", Sets(RuneSet.Lethal, RuneSet.Sustain)),
 			},
 			["crypt"] = new Member[]
 			{
-				new("paladin_fire", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Bulwark)),
-				new("crow_water", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Ward), RuneStat.Accuracy),
-				new("bird_dark", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Ward), RuneStat.Accuracy),
+				new("druid_fire", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Vigor)),
+				new("crow_water", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Sustain), RuneStat.Accuracy),
+				new("pixie_dark", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Sustain), RuneStat.Accuracy),
 				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("vampire_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("lich_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 			},
 			["sanctum"] = new Member[]
 			{
-				new("dragon_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("vampire_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("gargoyle_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("knight_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
-				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
+				new("druid_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("lich_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("pirate_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("knight_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
+				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
 			},
 		};
 
@@ -157,11 +157,11 @@ namespace Sigilos.Tests
 			// contra o Terremoto e dano em quem já está ferido.
 			["golem"] = new Member[]
 			{
+				new("dwarf_miner_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("crow_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("goblin_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy),
-				new("imp_fire", Sets(RuneSet.Vigor, RuneSet.Ward, RuneSet.Sustain)),
-				new("slime_fire", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Ward), RuneStat.Accuracy),
-				new("wolf_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("crow_water", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy),
+				new("wolf_fire", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
+				new("wolf_water", Sets(RuneSet.Lethal, RuneSet.Strike)),
 			},
 		};
 
@@ -172,10 +172,10 @@ namespace Sigilos.Tests
 			// o Cavaleiro de Fogo limpa as ondas ignorando Defesa e o Paladino lidera com Ataque.
 			["golem"] = new Member[]
 			{
-				new("paladin_fire", Sets(RuneSet.Lethal, RuneSet.Strike), Speed: 1),
+				new("druid_fire", Sets(RuneSet.Lethal, RuneSet.Strike), Speed: 1),
 				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike), Speed: 1),
 				new("crow_fire", Sets(RuneSet.Haste, RuneSet.Strike), Speed: 2),
-				new("imp_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy, 3),
+				new("wolf_fire", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy, 3),
 				new("knight_wind", Sets(RuneSet.Haste, RuneSet.Vigor), Speed: 4),
 			},
 		};
@@ -249,13 +249,24 @@ namespace Sigilos.Tests
 		private static List<Rune> Build(Random random, SummonDefinition summon, Member member, int grade, int level, int evenLevel, int picks, ref int id)
 		{
 			var attack = summon.Role == Role.Attack;
-			var percent = attack ? RuneStat.AttackPercent : RuneStat.HealthPercent;
 			var sets = member.Sets.Length == RuneRules.Slots
 				? member.Sets
 				: attack
 					? new[] { RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Strike, RuneSet.Strike }
-					: new[] { RuneSet.Vigor, RuneSet.Vigor, RuneSet.Ward, RuneSet.Ward, RuneSet.Bulwark, RuneSet.Bulwark };
-			var mains = new[] { RuneStat.AttackFlat, attack && member.Speed == 0 ? RuneStat.AttackPercent : RuneStat.Speed, RuneStat.DefenseFlat, percent, RuneStat.HealthFlat, member.Six ?? percent };
+					: new[] { RuneSet.Vigor, RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain, RuneSet.Vigor, RuneSet.Vigor };
+			// Os principais que o jogador escolheria, dentro do que cada espaço aceita hoje (RuneRules.MainOptions: o 4 é só
+			// Defesa, o 5 só Vida, o 6 só Ataque; Velocidade mora no 3; Resistência e Precisão, no 2). Um principal que o
+			// espaço não aceita faria o sorteio abaixo girar para sempre, então cai no primeiro que ele aceita.
+			var wanted = new[]
+			{
+				RuneStat.AttackFlat,
+				member.Six ?? (attack ? RuneStat.AttackPercent : RuneStat.HealthPercent),
+				attack && member.Speed == 0 ? RuneStat.DefenseFlat : RuneStat.Speed,
+				RuneStat.DefenseFlat,
+				RuneStat.HealthFlat,
+				RuneStat.AttackFlat,
+			};
+			var mains = wanted.Select((stat, i) => RuneRules.MainOptions(i + 1).Contains(stat) ? stat : RuneRules.MainOptions(i + 1)[0]).ToArray();
 			var runes = new List<Rune>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{

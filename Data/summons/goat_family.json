@@ -1,0 +1,124 @@
+{
+  "family_id": "goat",
+  "base_name": "Bode",
+  "name": "Bodes",
+  "star_grade": 3,
+  "image": "goat",
+  "variations": {
+    "fire": {
+      "variation_id": "goat_fire",
+      "name": "Bode de Fogo",
+      "element": "Fire",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Bode de Fogo Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "goat_water",
+      "name": "Bode de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Bode de Água Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "goat_wind",
+      "name": "Bode de Vento",
+      "element": "Wind",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Bode de Vento Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "goat_light",
+      "name": "Bode de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Bode de Luz Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "goat_dark",
+      "name": "Bode de Trevas",
+      "element": "Dark",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Bode de Trevas Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    }
+  }
+}

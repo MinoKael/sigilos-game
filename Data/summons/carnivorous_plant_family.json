@@ -85,7 +85,7 @@
           "name": "Armadilha de Néctar",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.4, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.4, "turns": 1},
             {"kind": "Heal", "target": "Self", "power": 0.1}
           ],
           "levels": [

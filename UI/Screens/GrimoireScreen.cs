@@ -29,6 +29,10 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _sheet = new() { Name = "Content" };
 		private readonly GridContainer _gallery = new() { Name = "Families", Columns = 4 };
 
+		/// <summary>A temática escolhida (nulo: todas). Funciona junto com a ordem por raridade da galeria.</summary>
+		private FamilyTheme? _theme;
+		private readonly GridContainer _themes = new() { Name = "Themes", Columns = 3 };
+
 		public GrimoireScreen(GameDatabase database, PlayerState player)
 		{
 			_database = database;
@@ -78,10 +82,15 @@ namespace Sigilos.UI.Screens
 
 			_gallery.AddThemeConstantOverride("h_separation", Space.Regular);
 			_gallery.AddThemeConstantOverride("v_separation", Space.Regular);
+			_themes.AddThemeConstantOverride("h_separation", Space.Small);
+			_themes.AddThemeConstantOverride("v_separation", Space.Small);
 			var gallery = Layout.Scroll(_gallery).Named("Gallery");
-			gallery.CustomMinimumSize = new Vector2(540, 0);
-			gallery.SizeFlagsHorizontal = SizeFlags.Fill;
-			body.AddChild(gallery);
+			gallery.SizeFlagsVertical = SizeFlags.ExpandFill;
+			var left = new VBoxContainer { Name = "Browse", CustomMinimumSize = new Vector2(540, 0), SizeFlagsHorizontal = SizeFlags.Fill };
+			left.AddThemeConstantOverride("separation", Space.Regular);
+			left.AddChild(_themes);
+			left.AddChild(gallery);
+			body.AddChild(left);
 
 			_sheet.AddThemeConstantOverride("separation", Space.Regular);
 			body.AddChild(Layout.Scroll(_sheet).Named("Sheet"));
@@ -91,11 +100,37 @@ namespace Sigilos.UI.Screens
 
 		private void RefreshSummons()
 		{
+			if (!Awakening.CanBeAwakened(_selected))
+				_awakened = false;
 			Layout.Clear(_gallery);
-			foreach (var family in _database.Families.OrderByDescending(f => f.Rarity).ThenBy(f => f.BaseName))
+			RefreshThemes();
+			foreach (var family in _database.Families.Where(f => _theme == null || f.Theme == _theme).OrderByDescending(f => f.Rarity).ThenBy(f => f.BaseName))
 				_gallery.AddChild(FamilyCard(family));
 
 			RefreshSheet();
+		}
+
+		/// <summary>
+		/// Os botões de temática: "Todas" e uma por temática que tem família (os nomes são texto, então o
+		/// provisório dos Adversários muda em Data/texts sem tocar aqui). A classificação vem dos dados.
+		/// </summary>
+		private void RefreshThemes()
+		{
+			Layout.Clear(_themes);
+			Add(null, T("theme.all"));
+			foreach (var theme in Enum.GetValues<FamilyTheme>().Where(t => _database.Families.Any(f => f.Theme == t)))
+				Add(theme, T($"theme.{theme}"));
+
+			void Add(FamilyTheme? theme, string text)
+			{
+				var button = GameButton.Of(text, () =>
+				{
+					_theme = theme;
+					Callable.From(RefreshSummons).CallDeferred();
+				}, _theme == theme ? ButtonKind.Primary : ButtonKind.Secondary);
+				button.Name = theme?.ToString() ?? "All";
+				_themes.AddChild(button);
+			}
 		}
 
 		/// <summary>Uma família: estrelas naturais, desenho e, na plaquinha, quantas cópias o jogador tem somando os elementos.</summary>
@@ -122,7 +157,7 @@ namespace Sigilos.UI.Screens
 
 			var column = new VBoxContainer { Name = "Column", MouseFilter = MouseFilterEnum.Ignore };
 			var stars = new Label { Name = "Stars", Text = Texts.Stars(family.Rarity), HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
-			stars.AddThemeColorOverride("font_color", Palette.Stars(_awakened));
+			stars.AddThemeColorOverride("font_color", Palette.Stars(family.Rarity, _awakened));
 			column.AddChild(stars);
 			var art = new Control { Name = "Art", CustomMinimumSize = new Vector2(0, 80), SizeFlagsVertical = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
 			art.AddChild(Doodle.Masked(Art.Creature(family.Image), Palette.Grey, MaskShape.Rounded, 6, aura: _awakened ? Element.Light : null));
@@ -178,7 +213,9 @@ namespace Sigilos.UI.Screens
 				_awakened = !_awakened;
 				Callable.From(RefreshSummons).CallDeferred();
 			}, _awakened ? ButtonKind.Primary : ButtonKind.Secondary, "awaken", 48).Named("Awakened");
-			row.AddChild(awaken);
+			// 2★ não desperta: a visão desperta nem é oferecida.
+			if (Awakening.CanBeAwakened(current))
+				row.AddChild(awaken);
 			return row;
 		}
 
@@ -203,7 +240,7 @@ namespace Sigilos.UI.Screens
 			info.AddChild(name);
 			var line = Layout.Row(Space.Medium).Named("Line");
 			var stars = new Label { Name = "Stars", Text = Texts.Stars(summon.Rarity) };
-			stars.AddThemeColorOverride("font_color", Palette.Stars(_awakened));
+			stars.AddThemeColorOverride("font_color", Palette.Stars(summon.Rarity, _awakened));
 			line.AddChild(stars);
 			line.AddChild(Doodle.Icon(Art.Element(summon.Element), 22, Palette.Of(summon.Element)).Named("Element"));
 			line.AddChild(new Label { Name = "ElementName", Text = Texts.Name(summon.Element) });
@@ -223,7 +260,7 @@ namespace Sigilos.UI.Screens
 			var high = SummonStats.For(summon, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars), _awakened, Array.Empty<Rune>()).Base;
 			foreach (var stat in Enum.GetValues<Stat>())
 			{
-				table.AddChild(new RuneGlyph(Texts.GlyphOf(stat), 18, Palette.Gold) { Name = Layout.NextCell(table) });
+				table.AddChild(new PlanetSymbol(Texts.PlanetOf(stat), 18, Palette.Gold) { Name = Layout.NextCell(table) });
 				Cell(table, Texts.Name(stat));
 				Cell(table, Texts.Value(stat, low.Get(stat)));
 				Cell(table, Texts.Value(stat, high.Get(stat)));
@@ -244,11 +281,14 @@ namespace Sigilos.UI.Screens
 				_sheet.AddChild(row);
 			}
 
+			if (!Awakening.CanBeAwakened(summon))
+				return;
+
 			_sheet.AddChild(new HSeparator { Name = "AwakeningLine" });
 			_sheet.AddChild(new Label { Name = "AwakeningTitle", Text = T("grimoire.awakening_title", summon.Awakening.Name), ThemeTypeVariation = GameTheme.Heading });
 			var awaken = Layout.Flow(Space.Medium).Named("Awakening");
 			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
-				awaken.AddChild(Layout.Labeled(Texts.GlyphOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
+				awaken.AddChild(Layout.Labeled(Texts.PlanetOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
 			awaken.AddChild(Layout.Labeled("essence", Texts.Number(Awakening.Cost(summon.Rarity)), T("grimoire.awaken_cost")).Named("Cost"));
 			_sheet.AddChild(awaken);
 		}
@@ -257,11 +297,11 @@ namespace Sigilos.UI.Screens
 
 		private void Sets(VBoxContainer column)
 		{
-			foreach (var set in RuneSets.All)
+			foreach (var set in RuneSets.Active)
 			{
 				var panel = new PanelContainer { Name = set.Set.ToString(), ThemeTypeVariation = GameTheme.InsetPanel };
 				var row = Layout.Row(Space.Large).Named("Row");
-				row.AddChild(new RuneGlyph(set.Glyph, 44, Palette.Gold) { Name = "Glyph" });
+				row.AddChild(new PlanetSymbol(set.Planet, 44, Palette.Gold) { Name = "Planet" });
 				var text = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 				text.AddChild(RichText.Label(Texts.Term(set.Set)).Named("Title"));
 				text.AddChild(RichText.Label(Texts.Describe(set), 0, GameTheme.Faded).Named("Effect"));

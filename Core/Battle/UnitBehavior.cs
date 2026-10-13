@@ -33,8 +33,8 @@ namespace Sigilos.Core.Battle
 		/// <summary>Nenhum efeito negativo pega no dono (Imunidade).</summary>
 		public virtual bool BlocksHarmful => false;
 
-		/// <summary>O dono só pode mirar nesta unidade enquanto ela estiver viva (Provocação).</summary>
-		public virtual BattleUnit? ForcedTarget(UnitRule rule) => null;
+		/// <summary>Os inimigos do dono só podem escolhê-lo como alvo único enquanto ele estiver de pé (Provocar).</summary>
+		public virtual bool DrawsAttacks => false;
 
 		/// <summary>Nenhum efeito positivo pega no dono (Karma).</summary>
 		public virtual bool BlocksBeneficial => false;
@@ -58,6 +58,12 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>Começou uma onda e o dono está vivo.</summary>
 		public virtual void OnWaveStart(UnitRule rule, EffectResolver resolver) { }
+
+		/// <summary>
+		/// Começou uma rodada nova (da 2ª em diante), uma vez para cada unidade viva, aliados primeiro. Não
+		/// depende de a unidade agir: é o momento das regras "a cada rodada" (Núcleo Rúnico, Afogamento).
+		/// </summary>
+		public virtual void OnRoundStart(UnitRule rule, EffectResolver resolver, int round) { }
 
 		/// <summary>Começou o turno do dono, antes de ele decidir (e mesmo que vá perder o turno).</summary>
 		public virtual void OnTurnStart(UnitRule rule, EffectResolver resolver) { }

@@ -13,7 +13,7 @@ namespace Sigilos.UI.Components
 	/// Batalha automática e o toque longo em toda runa em miniatura).
 	///
 	/// No alto, o título (conjunto e espaço) na cor da raridade e a plaquinha da raridade; ao lado da runa,
-	/// o atributo principal grande e o inato em ouro; embaixo, os subatributos com o Glifo; por fim, o
+	/// o atributo principal grande e o inato em ouro; embaixo, os subatributos com o planeta; por fim, o
 	/// bônus do conjunto em verde.
 	///
 	/// Com <c>opened</c> (o nível da runa quando a tela abriu), o que ela ganhou desde então fica em verde
@@ -120,7 +120,7 @@ namespace Sigilos.UI.Components
 			var row = Layout.Row(Space.Small);
 			var isNew = opened is { } level && substat.Rolls.Count > 0 && substat.Rolls[0].Level > level;
 			var gained = opened is { } since ? substat.Rolls.Where(r => r.Level > since).Sum(r => r.Amount) : 0;
-			row.AddChild(new RuneGlyph(Texts.GlyphOf(substat.Stat), 18, isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Glyph" });
+			row.AddChild(new PlanetSymbol(Texts.PlanetOf(substat.Stat), 18, isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Planet" });
 			row.AddChild(Part("Name", Texts.Name(substat.Stat), isNew ? Palette.Positive : Palette.Gold));
 			row.AddChild(Part("Value", Texts.Amount(substat.Stat, substat.Total), isNew ? Palette.Positive : Palette.Text));
 			if (substat.Upgraded > 0)

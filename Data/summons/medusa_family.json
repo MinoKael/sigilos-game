@@ -4,6 +4,7 @@
   "name": "Medusas",
   "star_grade": 3,
   "image": "medusa",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "medusa_fire",

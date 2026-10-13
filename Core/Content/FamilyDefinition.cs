@@ -36,6 +36,16 @@ namespace Sigilos.Core.Content
 		[JsonPropertyName("family_bias")]
 		public StatWeights? Bias { get; init; }
 
+		/// <summary>
+		/// Em jogo na versão atual. Uma família com <c>"active": false</c> fica no arquivo e continua
+		/// resolvendo ids de saves e de inimigos de fases, mas sai do elenco: não é invocada, não cai, não
+		/// aparece no Grimório nem nas listas do jogador (<see cref="GameDatabase.Summons"/> só traz as ativas).
+		/// </summary>
+		public bool Active { get; init; } = true;
+
+		/// <summary>A temática do Grimório (<see cref="FamilyTheme"/>); sem o campo, <see cref="FamilyTheme.None"/>.</summary>
+		public FamilyTheme Theme { get; init; }
+
 		/// <summary>As variantes, pela chave do elemento em minúsculas ("fire", "water"...).</summary>
 		public IReadOnlyDictionary<string, SummonDefinition> Variations { get; init; } = new Dictionary<string, SummonDefinition>();
 	}

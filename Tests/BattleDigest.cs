@@ -35,11 +35,11 @@ namespace Sigilos.Tests
 		/// <summary>Os conjuntos de cada monstro dos times com runas: todo efeito de conjunto aparece em algum.</summary>
 		private static readonly RuneSet[][] Loadouts =
 		{
-			new[] { RuneSet.Frenzy, RuneSet.Frenzy, RuneSet.Frenzy, RuneSet.Frenzy, RuneSet.Counter, RuneSet.Counter },
-			new[] { RuneSet.Siphon, RuneSet.Siphon, RuneSet.Siphon, RuneSet.Siphon, RuneSet.Bane, RuneSet.Bane },
-			new[] { RuneSet.Torment, RuneSet.Torment, RuneSet.Torment, RuneSet.Torment, RuneSet.Oblivion, RuneSet.Oblivion },
-			new[] { RuneSet.Bulwark, RuneSet.Bulwark, RuneSet.Tenacity, RuneSet.Tenacity, RuneSet.Counter, RuneSet.Counter },
-			new[] { RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Bulwark, RuneSet.Bulwark },
+			new[] { RuneSet.Wrath, RuneSet.Wrath, RuneSet.Wrath, RuneSet.Wrath, RuneSet.Counter, RuneSet.Counter },
+			new[] { RuneSet.Haste, RuneSet.Haste, RuneSet.Haste, RuneSet.Haste, RuneSet.Strike, RuneSet.Strike },
+			new[] { RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Finesse, RuneSet.Finesse },
+			new[] { RuneSet.Vigor, RuneSet.Vigor, RuneSet.Finesse, RuneSet.Finesse, RuneSet.Counter, RuneSet.Counter },
+			new[] { RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Lethal, RuneSet.Vigor, RuneSet.Vigor },
 		};
 
 		/// <param name="only">Com um rótulo de luta ("stage3 typical #1"), mostra os eventos dela em vez do resumo de todas.</param>
@@ -70,7 +70,7 @@ namespace Sigilos.Tests
 				Console.WriteLine($"total {fights} fights {total:x16}");
 		}
 
-		private static BattleTeam Team(GameDatabase database, IReadOnlyList<string> ids, int stars, int level, bool awakened, bool runed)
+		internal static BattleTeam Team(GameDatabase database, IReadOnlyList<string> ids, int stars, int level, bool awakened, bool runed)
 		{
 			var random = new Random(11);
 			return new BattleTeam(ids.Select((id, index) =>

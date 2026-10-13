@@ -13,11 +13,11 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O Grimório do Invocador: o livro pessoal da conta, aberto ao tocar no retrato do Santuário. A capa de
+	/// O Grimório do Alquimista: o livro pessoal da conta, aberto ao tocar no retrato do Santuário. A capa de
 	/// couro com duas páginas de pergaminho abertas, os marcadores dos capítulos no alto e o número de cada
 	/// página embaixo:
 	///
-	/// - I · Invocador: o retrato num anel de sigilo, o nome na fita, o nível com a experiência (e o que
+	/// - I · Alquimista: o retrato num anel de sigilo, o nome na fita, o nível com a experiência (e o que
 	///   ela dá) e desde quando a conta existe; na página da frente, os registros da conta;
 	/// - II · Masmorras: até que andar cada uma foi, com a equipe do melhor tempo do andar mais fundo
 	///   vencido (<see cref="Records.Team"/>), e, na frente, o melhor tempo de cada andar;
@@ -110,7 +110,7 @@ namespace Sigilos.UI.Screens
 			return (content, folio);
 		}
 
-		// I · Invocador -------------------------------------------------------------------------------
+		// I · Alquimista -------------------------------------------------------------------------------
 
 		private void Summoner()
 		{
@@ -356,7 +356,7 @@ namespace Sigilos.UI.Screens
 		/// </summary>
 		private Control? Team(string key)
 		{
-			var members = Records.Team(_player, key).Where(m => _database.HasSummon(m.Summon)).ToList();
+			var members = Records.Team(_player, key).Where(m => _database.Knows(m.Summon)).ToList();
 			if (members.Count == 0)
 				return null;
 

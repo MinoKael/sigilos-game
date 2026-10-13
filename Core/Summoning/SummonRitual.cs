@@ -79,6 +79,17 @@ namespace Sigilos.Core.Summoning
 			{
 				var rarity = RollRarity(random, player, database, kind);
 				var pool = database.Summons.Where(s => s.Rarity == rarity && SummonRates.Allows(kind, s.Element)).ToList();
+
+				// Transmutação Alquímica: uma fatia de 0,1% do total vira LD (SummonRates.MysticLightDark),
+				// repartida por igual entre os LD elegíveis. Garantia e primeira invocação não passam por aqui.
+				if (kind == ScrollKind.Mystic)
+				{
+					var ld = database.Summons.Where(SummonRates.MysticLightDarkEligible).ToList();
+					var share = SummonRates.MysticLightDark / SummonRates.ThreeStar(kind);
+					if (ld.Count > 0 && random.NextDouble() < share)
+						pool = ld;
+				}
+
 				summon = pool[random.Next(pool.Count)];
 			}
 

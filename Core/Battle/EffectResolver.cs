@@ -31,6 +31,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>O sorteio da luta: a mesma semente dá a mesma luta.</summary>
 		public Random Random => _session.Random;
 
+		/// <summary>A rodada de agora (a partir de 1).</summary>
+		public int Round => _session.Round;
+
 		/// <summary>O turno de agora é um turno extra.</summary>
 		public bool IsExtraTurn => _session.IsExtraTurn;
 
@@ -57,7 +60,7 @@ namespace Sigilos.Core.Battle
 				if (!caster.IsAlive)
 					break;
 
-				if (effect.OnKill && !cast.Killed)
+				if ((effect.OnKill && !cast.Killed) || !cast.Allows(effect))
 					continue;
 
 				SkillEffects.Of(effect.Kind).Apply(cast, effect);
@@ -100,10 +103,10 @@ namespace Sigilos.Core.Battle
 			{
 				var allies = _session.SideOf(owner.Side);
 				var opponents = _session.SideOf(owner.Side == Side.Allies ? Side.Enemies : Side.Allies);
-				var cast = new Cast(this, owner, main, allies, opponents, counter: false);
+				var cast = new Cast(this, owner, main, allies, opponents, counter: false, trigger: true);
 				foreach (var effect in effects)
 				{
-					if (effect.OnKill && !cast.Killed)
+					if ((effect.OnKill && !cast.Killed) || !cast.Allows(effect))
 						continue;
 
 					SkillEffects.Of(effect.Kind).Apply(cast, effect);
@@ -388,6 +391,13 @@ namespace Sigilos.Core.Battle
 		/// </summary>
 		private void Attach(BattleUnit? source, BattleUnit target, StatusKind status, int turns, double value)
 		{
+			// Imunidade de chefe (BattleRules.BossImmunities): vale para toda fonte do efeito, porque todas passam por aqui.
+			if (target.IsBoss && BattleRules.BossImmunities.Contains(status))
+			{
+				Emit(new Immune(target));
+				return;
+			}
+
 			if (!StatusBehaviors.Of(status).Harmful && target.Any(behavior => behavior.BlocksBeneficial))
 			{
 				Emit(new StatusBlocked(target, status));

@@ -15,8 +15,8 @@ namespace Sigilos.UI.Style
 	/// (tooltip); o que precisa de explicação abre um <see cref="Components.Dialog"/>.
 	///
 	/// A fonte do jogo inteiro vem de Assets/Fonts, com uma fonte do sistema de reserva para o que ela
-	/// não desenha (★, ×, ⟳...). As runas usam a Kehdrai (<see cref="Runes"/>), que troca letra por runa:
-	/// os Glifos são texto, nítidos em qualquer tamanho. As telas pedem os papéis pelo nome de variação
+	/// não desenha (★, ×, ⟳...).
+	/// os planetas são texto, nítidos em qualquer tamanho. As telas pedem os papéis pelo nome de variação
 	/// (<see cref="Title"/>, <see cref="Heading"/>...), nunca por cor solta. Os botões de texto são os
 	/// <see cref="Components.GameButton"/>; os de ícone (<see cref="Components.SigilButton"/>) ficam para o
 	/// que todo mundo reconhece (fechar, voltar, pausa).
@@ -47,7 +47,7 @@ namespace Sigilos.UI.Style
 		/// <summary>Tinta de noite rebaixada dentro de um painel (listas, barras, cápsulas).</summary>
 		public const string InsetPanel = "InsetPanel";
 
-		/// <summary>Uma página do Grimório do Invocador.</summary>
+		/// <summary>Uma página do Grimório do Alquimista.</summary>
 		public const string PagePanel = "PagePanel";
 
 		/// <summary>Título de capítulo numa página do Grimório.</summary>
@@ -76,9 +76,6 @@ namespace Sigilos.UI.Style
 		/// <see cref="PageHeading"/>); o texto e os números ficam na fonte do jogo.
 		/// </summary>
 		public static readonly Font Display = DisplayFont();
-
-		/// <summary>A fonte das runas: cada Glifo é uma letra (<see cref="Texts.Rune"/>).</summary>
-		public static readonly Font Runes = GD.Load<Font>("res://Assets/Fonts/Kehdrai.ttf");
 
 		/// <summary>A Wezards com a reserva do sistema para os símbolos que ela não tem.</summary>
 		private static Font Game()

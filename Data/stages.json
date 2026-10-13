@@ -145,7 +145,7 @@
     "essence": 287,
     "experience": 520,
     "runeGrade": 2,
-    "lines": ["A Menhir split in half. The Glyph carved on it is gone."],
+    "lines": ["A Menhir split in half. The Sigil carved on it is gone."],
     "waves": [
       [{"summon": "slime_light"}, {"summon": "goblin_dark"}, {"summon": "slime_water"}],
       [{"summon": "wolf_light"}, {"summon": "wolf_dark"}]
@@ -708,7 +708,7 @@
     "name": "A Serpe-Mãe",
     "stars": 6,
     "level": 50,
-    "scale": 0.75,
+    "scale": 0.68,
     "mana": 6,
     "firstClearScrolls": 3,
     "firstClearEssence": 2400,
@@ -736,7 +736,7 @@
     "essence": 1079,
     "experience": 2150,
     "runeGrade": 4,
-    "lines": ["The Citadel sealed the first Glyphs. The seal is broken now.", "Light beats Dark, and Dark beats Light. Bring both."],
+    "lines": ["The Citadel sealed the first Sigils. The seal is broken now.", "Light beats Dark, and Dark beats Light. Bring both."],
     "waves": [
       [{"summon": "knight_light"}, {"summon": "bandit_dark"}, {"summon": "goblin_light"}],
       [{"summon": "gargoyle_dark"}, {"summon": "wolf_light"}, {"summon": "crow_dark"}]
@@ -888,7 +888,7 @@
     "name": "O Arauto do Silêncio",
     "stars": 6,
     "level": 60,
-    "scale": 0.49,
+    "scale": 0.53,
     "mana": 6,
     "firstClearScrolls": 3,
     "firstClearEssence": 3000,

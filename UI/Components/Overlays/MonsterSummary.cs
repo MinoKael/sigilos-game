@@ -49,7 +49,7 @@ namespace Sigilos.UI.Components
 				for (var i = 0; i < sheet.Runes.ActiveSets.Count; i++)
 				{
 					var set = sheet.Runes.ActiveSets[i];
-					sets.AddChild(Layout.Labeled(RuneSets.For(set.Set).Glyph, "", Texts.Name(set.Set)).Named($"{set.Set}{i + 1}"));
+					sets.AddChild(Layout.Labeled(RuneSets.PlanetOf(set.Set), "", Texts.Name(set.Set)).Named($"{set.Set}{i + 1}"));
 				}
 
 				body.AddChild(Section(T("summary.sets"), sets));
@@ -71,7 +71,8 @@ namespace Sigilos.UI.Components
 		public static Dialog Open(Control from, BattleUnit unit)
 		{
 			var database = UiSession.Database;
-			var summon = database != null && database.HasSummon(unit.DefinitionId) ? database.Summon(unit.DefinitionId) : null;
+			// Inimigos podem ser de famílias fora do elenco (Knows: o id existe), então não é HasSummon (em jogo).
+			var summon = database != null && database.Knows(unit.DefinitionId) ? database.Summon(unit.DefinitionId) : null;
 			var enemy = summon == null && database != null ? database.Enemies.FirstOrDefault(e => e.Id == unit.DefinitionId) : null;
 			var rarity = summon?.Rarity ?? enemy?.Rarity ?? 0;
 			var role = summon?.Role ?? enemy?.Role;
@@ -159,7 +160,7 @@ namespace Sigilos.UI.Components
 			if (stars > 0)
 			{
 				var starLabel = new Label { Name = "Stars", Text = Texts.Stars(stars) };
-				starLabel.AddThemeColorOverride("font_color", Palette.Stars(awakened));
+				starLabel.AddThemeColorOverride("font_color", Palette.Stars(rarity, awakened));
 				starLabel.AddThemeFontSizeOverride("font_size", FontSize.Large);
 				info.AddChild(starLabel);
 			}
@@ -178,7 +179,7 @@ namespace Sigilos.UI.Components
 			return row;
 		}
 
-		/// <summary>Os oito atributos em duas colunas: Glifo, nome e valor (com o que as runas somam em verde).</summary>
+		/// <summary>Os oito atributos em duas colunas: planeta, nome e valor (com o que as runas somam em verde).</summary>
 		private static Control Stats(Func<Stat, double> value, Func<Stat, double> bonus)
 		{
 			var grid = new GridContainer { Name = "Stats", Columns = 2 };
@@ -202,7 +203,7 @@ namespace Sigilos.UI.Components
                 var row = Layout.Row(Space.Medium).Named(stat.ToString());
                 row.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 
-                row.AddChild(new RuneGlyph(Texts.GlyphOf(stat), 20, Palette.Gold) { Name = "Glyph" });
+                row.AddChild(new PlanetSymbol(Texts.PlanetOf(stat), 20, Palette.Gold) { Name = "Planet" });
 
                 row.AddChild(new Label { Name = "Name", Text = Texts.Name(stat), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
 

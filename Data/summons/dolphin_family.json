@@ -1,0 +1,124 @@
+{
+  "family_id": "dolphin",
+  "base_name": "Golfinho",
+  "name": "Golfinhos",
+  "star_grade": 3,
+  "image": "dolphin",
+  "variations": {
+    "fire": {
+      "variation_id": "dolphin_fire",
+      "name": "Golfinho de Fogo",
+      "element": "Fire",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Golfinho de Fogo Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "water": {
+      "variation_id": "dolphin_water",
+      "name": "Golfinho de Água",
+      "element": "Water",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Golfinho de Água Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "wind": {
+      "variation_id": "dolphin_wind",
+      "name": "Golfinho de Vento",
+      "element": "Wind",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Golfinho de Vento Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "light": {
+      "variation_id": "dolphin_light",
+      "name": "Golfinho de Luz",
+      "element": "Light",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Golfinho de Luz Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    },
+    "dark": {
+      "variation_id": "dolphin_dark",
+      "name": "Golfinho de Trevas",
+      "element": "Dark",
+      "role": "Support",
+      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
+      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
+      "awakening": {"name": "Golfinho de Trevas Desperto", "stat": "Speed"},
+      "skills": [
+        {
+          "name": "Golpe",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        }
+      ]
+    }
+  }
+}

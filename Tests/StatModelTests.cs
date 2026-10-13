@@ -105,11 +105,11 @@ namespace Sigilos.Tests
 			var data = Path.Combine(Program.ProjectRoot, "Data");
 			string Read(string file) => File.ReadAllText(Path.Combine(data, file));
 
-			var dragon = TestData.Summon("dragon_fire");
-			var tampered = Read("summons/dragon_family.json").Replace($"\"atk\": {dragon.Stats.Attack:0},", $"\"atk\": {dragon.Stats.Attack + 100:0},");
+			var druid = TestData.Summon("druid_fire");
+			var tampered = Read("summons/druid_family.json").Replace($"\"atk\": {druid.Stats.Attack:0},", $"\"atk\": {druid.Stats.Attack + 100:0},");
 			var database = GameDatabase.FromJson(Read("stat_model.json"), new[] { tampered }, Read("enemies.json"), "[]", "[]", "[]");
 
-			var problems = database.Validate().Where(p => p.Contains("dragon_")).ToList();
+			var problems = database.Validate().Where(p => p.Contains("druid_")).ToList();
 			Assert.True(problems.Any(p => p.Contains("o modelo dá")), "o atributo fora do modelo é apontado");
 			Assert.True(problems.Any(p => p.Contains("fora do orçamento")), "e o BVP fora do orçamento também");
 		}

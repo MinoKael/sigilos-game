@@ -209,7 +209,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void EquipSwapsTheSlotAndStoredMonstersKeepTheirRunes()
 		{
-			var player = TestData.PlayerWith("imp_fire", "imp_water");
+			var player = TestData.PlayerWith("wolf_fire", "wolf_water");
 			var (a, b) = (player.Monsters[0].Id, player.Monsters[1].Id);
 			var small = Rune(RuneSet.Vigor, 2, RuneStat.Speed, grade: 3);
 			var big = Rune(RuneSet.Haste, 2, RuneStat.Speed, grade: 5);

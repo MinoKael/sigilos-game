@@ -4,6 +4,7 @@
   "name": "Diabretes",
   "star_grade": 3,
   "image": "imp",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "imp_fire",

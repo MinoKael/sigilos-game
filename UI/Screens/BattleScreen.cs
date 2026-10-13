@@ -896,6 +896,12 @@ namespace Sigilos.UI.Screens
 					_views[immune.Target].Float(T("battle.immune"), Palette.Positive);
 					return;
 
+				case PassiveStacked stacked:
+					// Núcleo Rúnico: o aumento de Defesa a cada rodada fica à vista ("Defesa ×3").
+					_views[stacked.Unit].Float(T("battle.passive_stacked", Texts.Name(stacked.Stat), stacked.Stacks), Palette.Positive);
+					_views[stacked.Unit].Refresh();
+					return;
+
 				case StatusRemoved removed:
 					_views[removed.Target].Refresh();
 					return;

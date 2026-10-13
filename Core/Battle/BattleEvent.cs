@@ -64,6 +64,9 @@ namespace Sigilos.Core.Battle
 	/// <summary>O conjunto tirou Vida máxima do alvo.</summary>
 	public sealed record MaxHealthReduced(BattleUnit Target, int Amount) : BattleEvent;
 
+	/// <summary>Uma Passiva subiu mais um passo (o Núcleo Rúnico ganhou Defesa): <paramref name="Stacks"/> é o total.</summary>
+	public sealed record PassiveStacked(BattleUnit Unit, Stat Stat, int Stacks) : BattleEvent;
+
 	public sealed record Died(BattleUnit Unit) : BattleEvent;
 
 	public sealed record Revived(BattleUnit Unit) : BattleEvent;

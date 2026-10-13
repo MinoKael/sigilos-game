@@ -122,7 +122,7 @@ namespace Sigilos.UI.Screens
 			if (gift.Kind == MailGiftKind.Avatar && SpecialAvatars.Has(gift.Id))
 				return Layout.Labeled(Art.SpecialAvatar(gift.Id), "", T("mail.gift.avatar", T($"avatar.special.{gift.Id}")), Palette.Gold);
 
-			var summon = _database is { } database && database.HasSummon(gift.Id) ? database.Summon(gift.Id) : null;
+			var summon = _database is { } database && database.Knows(gift.Id) ? database.Summon(gift.Id) : null;
 			if (summon == null)
 				return Layout.Labeled("monster", gift.Kind == MailGiftKind.Avatar ? "" : $"×{gift.Count}", T("mail.gift.unknown"));
 			return gift.Kind == MailGiftKind.Avatar

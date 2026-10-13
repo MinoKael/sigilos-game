@@ -91,6 +91,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>O turno atual é um turno extra: ele não dá outro.</summary>
 		internal bool IsExtraTurn { get; private set; }
 
+		/// <summary>A última rodada cujo começo as regras já viram.</summary>
+		private int _roundStarted = 1;
+
 		public IReadOnlyList<BattleEvent> Start()
 		{
 			StartWave();
@@ -111,6 +114,11 @@ namespace Sigilos.Core.Battle
 				End(false);
 				return new TurnStart(unit, false, Flush());
 			}
+
+			// Rodada nova: as regras "a cada rodada" agem uma vez, antes do turno, mesmo que a unidade que vai
+			// agir não seja a afetada. Pode derrubar alguém (Afogamento), inclusive quem ia agir.
+			if (StartRounds())
+				return new TurnStart(unit, false, Flush());
 
 			Emit(new TurnStarted(unit, Round));
 
@@ -237,6 +245,37 @@ namespace Sigilos.Core.Battle
 				foreach (var rule in unit.Rules())
 					rule.Behavior.OnWaveStart(rule, _effects);
 			}
+		}
+
+		/// <summary>
+		/// Avisa o começo de cada rodada que passou desde a última (da 2ª em diante) a quem está vivo, aliados
+		/// primeiro. Devolve verdadeiro se a luta acabou ou se a unidade que ia agir caiu: o turno dela não existe.
+		/// </summary>
+		private bool StartRounds()
+		{
+			var round = Round;
+			while (_roundStarted < round)
+			{
+				_roundStarted++;
+				if (_roundStarted < 2)
+					continue;
+
+				foreach (var unit in _allies.Concat(Enemies).Where(u => u.IsAlive).ToList())
+				{
+					foreach (var rule in unit.Rules())
+					{
+						rule.Behavior.OnRoundStart(rule, _effects, _roundStarted);
+						if (!unit.IsAlive)
+							break;
+					}
+				}
+
+				CheckOutcome();
+				if (IsOver)
+					return true;
+			}
+
+			return Current is { } current && !current.CanTakeTurn;
 		}
 
 		private void FinishTurn(BattleUnit unit)

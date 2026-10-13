@@ -28,11 +28,14 @@ namespace Sigilos.Core.Battle.Passives
 			[PassiveKind.Lifesteal] = new LifestealPassive(),
 			[PassiveKind.Dodge] = new DodgePassive(),
 			[PassiveKind.CleanseAllyEachTurn] = new CleanseAllyEachTurnPassive(),
+			[PassiveKind.RunicCore] = new RunicCorePassive(),
+			[PassiveKind.Drowning] = new DrowningPassive(),
 		};
 
 		private static readonly Dictionary<PassiveKind, Func<PassiveDefinition, UnitBehavior>> Generic = new()
 		{
 			[PassiveKind.BonusVsStatusOrEffect] = p => new BonusVsStatusOrEffectPassive(p),
+			[PassiveKind.BonusPerStatusOrEffect] = p => new BonusPerStatusOrEffectPassive(p),
 			[PassiveKind.StatusOrEffectOnHit] = p => new StatusOrEffectOnHitPassive(p),
 			[PassiveKind.StatusOrEffectOnAttacker] = p => new StatusOrEffectOnAttackerPassive(p),
 			[PassiveKind.StatusOrEffectEachTurn] = p => new StatusOrEffectEachTurnPassive(p),

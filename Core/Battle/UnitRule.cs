@@ -23,7 +23,10 @@ namespace Sigilos.Core.Battle
 		/// <summary>O número da regra: o dano que o escudo ainda absorve, a fração da Passiva, a chance do conjunto.</summary>
 		public double Value { get; set; }
 
-		/// <summary>Quem pôs o efeito: em quem o provocado tem que mirar, de quem é o Ataque da Bomba.</summary>
+		/// <summary>Quem pôs o efeito: de quem é o Ataque da Bomba, quem roubou o efeito.</summary>
 		public BattleUnit? Source { get; set; }
+
+		/// <summary>Quantos passos a regra já acumulou na luta (o Núcleo Rúnico). Zera a cada luta.</summary>
+		public int Stacks { get; internal set; }
 	}
 }

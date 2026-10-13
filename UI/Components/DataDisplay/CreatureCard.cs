@@ -78,7 +78,7 @@ namespace Sigilos.UI.Components
 			frame.AddChild(art);
 
 			var stars = new Label { Name = "Stars", Text = Texts.Stars(monster?.Stars ?? summon.Rarity), MouseFilter = MouseFilterEnum.Ignore };
-			stars.AddThemeColorOverride("font_color", Palette.Stars(awakened));
+			stars.AddThemeColorOverride("font_color", Palette.Stars(summon.Rarity, awakened));
 			stars.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.12f), 10, 16));
 			stars.AddThemeColorOverride("font_outline_color", Palette.Background);
 			stars.AddThemeConstantOverride("outline_size", 3);

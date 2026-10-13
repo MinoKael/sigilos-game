@@ -528,7 +528,7 @@ namespace Sigilos.UI.Screens
 			info.AddChild(title);
 
 			var stars = new Label { Name = "Stars", Text = Texts.Stars(monster.Stars) };
-			stars.AddThemeColorOverride("font_color", Palette.Stars(monster.Awakened));
+			stars.AddThemeColorOverride("font_color", Palette.Stars(summon.Rarity, monster.Awakened));
 			stars.AddThemeFontSizeOverride("font_size", FontSize.Strong);
 			info.AddChild(stars);
 
@@ -654,7 +654,7 @@ namespace Sigilos.UI.Screens
 			{
 				var set = sheet.Runes.ActiveSets[i];
 				var row = Layout.Row(Space.Medium).Named($"{set.Set}{i + 1}");
-				row.AddChild(new RuneGlyph(RuneSets.For(set.Set).Glyph, 26, Palette.Gold) { Name = "Glyph" });
+				row.AddChild(new PlanetSymbol(RuneSets.PlanetOf(set.Set), 26, Palette.Gold) { Name = "Planet" });
 				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", TextWidth + 30).Named("Effect"));
 				_detail.AddChild(row);
 			}
@@ -706,7 +706,7 @@ namespace Sigilos.UI.Screens
 
 			var gains = Layout.Flow(Space.Medium).Named("Gains");
 			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
-				gains.AddChild(Layout.Labeled(Texts.GlyphOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
+				gains.AddChild(Layout.Labeled(Texts.PlanetOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
 			_detail.AddChild(gains);
 
 			if (summon.Awakening.Skill is { } skill)
@@ -717,7 +717,8 @@ namespace Sigilos.UI.Screens
 				_detail.AddChild(SkillRow.Build(improved, monster.SkillLevel(index), true, false, TextWidth).Named($"Improved{index + 1}"));
 			}
 
-			if (monster.Awakened)
+			// Homúnculo de 2★ não desperta (versão 0.1): nem a opção aparece.
+			if (monster.Awakened || !Awakening.CanBeAwakened(summon))
 				return;
 
 			var row = Layout.Row(Space.None, true).Named("Actions");

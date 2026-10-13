@@ -156,6 +156,22 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Icons/hemisphere_equatorial.svg` | [Star-formation - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Star-formation_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/hemisphere_austral.svg` | [Galaxy - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Galaxy_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Avatars/astronaut-helmet.svg` (retrato especial) | [astronaut-helmet, em game-icons.net](https://game-icons.net/1x1/delapouite/astronaut-helmet.html) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/fox.svg` | [Fox - Caro Asercion - game-icons.svg](https://commons.wikimedia.org/wiki/File:Fox_-_Caro_Asercion_-_game-icons.svg) | Caro Asercion | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/goat.svg` | [Ram - Darkzaitzev - game-icons.svg](https://commons.wikimedia.org/wiki/File:Ram_-_Darkzaitzev_-_game-icons.svg) | Darkzaitzev | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/dolphin.svg` | [Dolphin - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Dolphin_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/aries.svg` | [Aries - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Aries_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/taurus.svg` | [Taurus - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Taurus_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/gemini.svg` | [Gemini - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Gemini_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/cancer.svg` | [Cancer - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Cancer_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/leo.svg` | [Leo - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Leo_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/virgo.svg` | [Virgo - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Virgo_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/libra.svg` | [Libra - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Libra_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/scorpio.svg` | [Scorpio - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Scorpio_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/sagittarius.svg` | [Sagittarius - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Sagittarius_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/capricorn.svg` | [Capricorn - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Capricorn_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/aquarius.svg` | [Aquarius - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Aquarius_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Zodiac/pisces.svg` | [Pisces - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Pisces_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Planets/*.svg`, `Elements/moon.svg` (símbolos planetários e a Lua) | desenhos do projeto (formas geométricas simples) | Sigilos | Domínio público (CC0) |
 
 ## Fontes
 

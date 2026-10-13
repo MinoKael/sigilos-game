@@ -89,6 +89,15 @@ namespace Sigilos.Core.Content
 		/// <summary>Damage: dano fixo, sem Defesa, elemento nem crítico; o que mexe no dano recebido pelo alvo ainda conta.</summary>
 		public bool Fixed { get; init; }
 
+		/// <summary>
+		/// Condição: o efeito só acontece se um aliado desta variante (o id, ex.: "wolf_light") estiver vivo no
+		/// time de quem lança. Vazio: sem condição.
+		/// </summary>
+		public string IfAlly { get; init; } = "";
+
+		/// <summary>Condição: o efeito só acontece se a Defesa de agora de quem lança passa a do alvo principal.</summary>
+		public bool IfDefenseAbove { get; init; }
+
 		private static readonly IReadOnlyList<ScaleTerm> NoTerms = Array.Empty<ScaleTerm>();
 	}
 }

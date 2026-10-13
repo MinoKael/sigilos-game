@@ -1,7 +1,7 @@
 namespace Sigilos.Core.Content
 {
 	/// <summary>
-	/// Os 16 conjuntos de runas, cada um com o seu Glifo (Core/Runes/RuneSets.cs).
+	/// Os 16 conjuntos de runas, cada um com o seu planeta (Core/Runes/RuneSets.cs).
 	/// </summary>
 	public enum RuneSet
 	{

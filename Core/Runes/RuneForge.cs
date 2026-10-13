@@ -13,7 +13,7 @@ namespace Sigilos.Core.Runes
 	public static class RuneForge
 	{
 		private static readonly RuneStat[] AllStats = Enum.GetValues<RuneStat>();
-		private static readonly IReadOnlyList<RuneSet> AllSets = Enum.GetValues<RuneSet>();
+		private static readonly IReadOnlyList<RuneSet> AllSets = RuneSets.ActiveSets;
 
 		/// <summary>Nível mínimo para usar Gema Encantada.</summary>
 		public const int EnchantLevel = 12;

@@ -234,7 +234,7 @@ namespace Sigilos.Tests
 				new EffectDefinition { Kind = EffectKind.Damage, Power = 1, Speed = new SpeedFactor { Add = 80, OverTarget = true }, Fixed = true },
 				new EffectDefinition { Kind = EffectKind.Revive, Target = TargetKind.AllAllies, Power = 0.3 },
 			};
-			var summon = TestData.Summon("phoenix_fire") with { Skills = new[] { Skill(effects) } };
+			var summon = TestData.Summon("wizard_fire") with { Skills = new[] { Skill(effects) } };
 
 			var scalings = SkillTraits.ScalingsOf(summon, false).ToList();
 			foreach (var expected in new[] { SkillScaling.Attack, SkillScaling.Defense, SkillScaling.HealthFraction, SkillScaling.Speed, SkillScaling.TargetSpeed, SkillScaling.TargetMaxHealth })

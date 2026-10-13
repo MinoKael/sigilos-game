@@ -103,6 +103,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>O que os conjuntos de runas completos fazem em combate, já somado.</summary>
 		public RuneSetEffects RuneEffects { get; }
 
+		/// <summary>Os efeitos que um parceiro já alongou, por esta unidade (cada um uma vez; BonusPerStatusOrEffect).</summary>
+		internal HashSet<StatusEffect> Extended { get; } = new();
+
 		public double Health { get; set; }
 
 		/// <summary>Vida máxima que o conjunto Oblívio de um inimigo já tirou.</summary>

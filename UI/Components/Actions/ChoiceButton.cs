@@ -7,8 +7,8 @@ using Sigilos.UI.Style;
 
 namespace Sigilos.UI.Components
 {
-	/// <summary>Uma opção de escolha: o texto, e um símbolo ou um Glifo na frente, na cor dada.</summary>
-	public sealed record Choice(string Text, Texture2D? Icon = null, Color? Ink = null, Glyph? Rune = null);
+	/// <summary>Uma opção de escolha: o texto, e um símbolo ou um planeta na frente, na cor dada.</summary>
+	public sealed record Choice(string Text, Texture2D? Icon = null, Color? Ink = null, Planet? Symbol = null);
 
 	/// <summary>
 	/// O campo de escolha, no lugar da lista suspensa: um botão que diz o campo e o valor atual
@@ -89,8 +89,8 @@ namespace Sigilos.UI.Components
 			var row = new HBoxContainer { Name = "Row", MouseFilter = Control.MouseFilterEnum.Ignore };
 			row.AddThemeConstantOverride("separation", Space.Regular);
 			var ink = choice.Ink ?? Palette.Gold;
-			if (choice.Rune is { } glyph)
-				row.AddChild(new RuneGlyph(glyph, 26, ink) { Name = "Glyph", SizeFlagsVertical = Control.SizeFlags.ShrinkCenter });
+			if (choice.Symbol is { } planet)
+				row.AddChild(new PlanetSymbol(planet, 26, ink) { Name = "Planet", SizeFlagsVertical = Control.SizeFlags.ShrinkCenter });
 			else if (choice.Icon != null)
 				row.AddChild(Doodle.Icon(choice.Icon, 28, ink).Named("Icon"));
 			var label = new Label { Name = "Text", Text = choice.Text, VerticalAlignment = VerticalAlignment.Center, SizeFlagsVertical = Control.SizeFlags.ExpandFill, MouseFilter = Control.MouseFilterEnum.Ignore };

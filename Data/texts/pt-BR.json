@@ -3,7 +3,7 @@
 // português. Para traduzir, copie este arquivo com outro nome (en.json, es.json...), troque só os
 // textos, ponha os nomes dos dados no grupo "names" (pelo nome em português) e rode o jogo com
 // -- --language=<nome>. {0}, {1}... recebem os valores na ordem em que o código passa. Colchetes como
-// [color=...] e [glyph=...] são termos dourados e Glifos: não se traduzem.
+// [color=...] e [planet=...] são termos dourados e planetas: não se traduzem.
 // Confira com: py Tools/texts/check_texts.py
 {
   "common": {
@@ -33,19 +33,19 @@
     "mana_needed": "{0} de Mana por vitória · até {1} de Mana nas lutas que faltam",
     "setup_title": "Começar Batalha automática",
     "setup_cost": "Cada vitória custa {0} de Mana (até {1} no total). Você tem {2}.",
-    "setup_note": "Ela segue sozinha: dá para sair desta tela, cuidar das runas e voltar. Um aviso no alto mostra o andamento; toque nele para ver as recompensas ou parar.",
+    "setup_note": "Ela segue sozinha: dá para sair desta tela, cuidar dos sigilos e voltar. Um aviso no alto mostra o andamento; toque nele para ver as recompensas ou parar.",
     "stop_title": "Parar a Batalha automática?",
     "stop_confirm": "A luta em andamento não dá nada nem custa nada. Dá para retomar as lutas que faltam depois.",
     "resume": "Retomar",
     "dismiss": "Encerrar",
-    "manage_runes": "Gerenciar runas",
+    "manage_runes": "Gerenciar sigilos",
     "state_running": "Na luta {0}…",
     "time_left_value": "Esta luta: {0} · Falta: {1}",
     "rewards": "Recompensas até agora",
-    "monsters": "Monstros ({0})",
-    "runes_title": "Runas: {0} guardadas, {1} vendidas",
-    "runes_hint": "Toque numa runa para vender, evoluir ou bloquear sem parar nada.",
-    "no_runes": "Nenhuma runa ainda.",
+    "monsters": "Homúnculos ({0})",
+    "runes_title": "Sigilos: {0} guardados, {1} vendidos",
+    "runes_hint": "Toque num sigilo para vender, evoluir ou bloquear sem parar nada.",
+    "no_runes": "Nenhum sigilo ainda.",
     "watch_full": "Tocar para ver em tela cheia",
     "busy_title": "Batalha automática em andamento",
     "busy_text": "A equipe está numa Batalha automática. Encerrar para lutar agora?",
@@ -53,15 +53,15 @@
     "replace_title": "Trocar a Batalha automática?",
     "replace_text": "Há uma Batalha automática rodando ({0}). Encerrar e começar esta?",
     "replace_confirm": "Encerrar e começar",
-    "sold": "Vendida",
-    "monsters_hint": "Toque num monstro para bloquear; segure para ver o resumo.",
+    "sold": "Vendido",
+    "monsters_hint": "Toque num homúnculo para bloquear; segure para ver o resumo.",
     "monster_lock_text": "Bloqueado, ele não pode ser solto nem fundido em outro."
   },
 
   "entry": {
     "Locked": "Ainda fechado.",
-    "NoMana": "Falta Mana: a vitória custa {0} (a derrota não custa nada). Colete a canalização no Santuário ou compre na Loja.",
-    "RunesFull": "Inventário de runas cheio ({1}): desfaça runas ou guarde-as num monstro do Baú antes de lutar."
+    "NoMana": "Falta Mana: a vitória custa {0} (a derrota não custa nada). Colete a canalização no Observatório ou compre na Loja.",
+    "RunesFull": "Inventário de sigilos cheio ({1}): desfaça sigilos ou guarde-os num homúnculo do Baú antes de lutar."
   },
 
   "term": {
@@ -74,13 +74,13 @@
   },
 
   "currency": {
-    "scroll": "1 Pergaminho",
-    "scrolls": "{0} Pergaminhos",
+    "scroll": "1 Transmutação",
+    "scrolls": "{0} Transmutações",
     "mana_of": "{0}/{1}",
     "mana": "Mana",
     "essence": "Essência",
     "gold": "Ouro",
-    "scrolls_name": "Pergaminhos Místicos",
+    "scrolls_name": "Transmutações Alquímicas",
     "fragments": "Fragmentos"
   },
 
@@ -93,10 +93,10 @@
   },
 
   "role": {
-    "HP": "HP",
-    "Attack": "Ataque",
+    "HP": "Defensivo",
+    "Attack": "Ofensivo",
     "Support": "Suporte",
-    "Defense": "Defesa"
+    "Defense": "Defensivo"
   },
 
   "stat": {
@@ -116,7 +116,7 @@
     "Defense": "Reduz o dano recebido: Defesa {0} corta o dano pela metade, e cada ponto a mais rende um pouco menos.",
     "Speed": "Quão rápido a barra de Ímpeto enche. Decide quem age primeiro e quantas vezes.",
     "Crit": "Chance de o golpe ser crítico. O crítico multiplica o dano por 1 + Dano crítico.",
-    "CritDamage": "Quanto o crítico soma ao dano. Todo monstro começa com 50%.",
+    "CritDamage": "Quanto o crítico soma ao dano. Todo homúnculo começa com 50%.",
     "Resistance": "Chance de barrar efeitos negativos, menos a Precisão de quem lança. Nunca fica abaixo de {1}.",
     "Accuracy": "Desconta da Resistência do alvo aos seus efeitos negativos."
   },
@@ -150,19 +150,19 @@
   },
 
   "set": {
-    "Vigor": "Vigor",
-    "Haste": "Pressa",
+    "Vigor": "Vida",
+    "Haste": "Velocidade",
     "Ward": "Vigia",
     "Bulwark": "Baluarte",
-    "Finesse": "Sutileza",
-    "Strike": "Agredir",
+    "Finesse": "Precisão",
+    "Strike": "Crítico",
     "Frenzy": "Frenesi",
     "Counter": "Contragolpe",
     "Torment": "Tormento",
     "Tenacity": "Tenacidade",
-    "Wrath": "Fúria",
-    "Lethal": "Letal",
-    "Sustain": "Amparo",
+    "Wrath": "Dano Crítico",
+    "Lethal": "Ataque",
+    "Sustain": "Resistência",
     "Bane": "Perdição",
     "Siphon": "Sifão",
     "Oblivion": "Oblívio"
@@ -181,71 +181,16 @@
     "Oblivion": "{0} do dano causado tira Vida máxima do alvo, limitado a {2}"
   },
 
-  "glyph": {
-    "Uruz": {
-      "name": "Uruz",
-      "meaning": "Vida"
-    },
-    "Raido": {
-      "name": "Raido",
-      "meaning": "Dano crítico"
-    },
-    "Algiz": {
-      "name": "Algiz",
-      "meaning": "Defesa"
-    },
-    "Othalan": {
-      "name": "Othalan",
-      "meaning": "Escudo"
-    },
-    "Kauna": {
-      "name": "Kauna",
-      "meaning": "Precisão"
-    },
-    "Pertho": {
-      "name": "Pertho",
-      "meaning": "Crítico"
-    },
-    "Jeran": {
-      "name": "Jeran",
-      "meaning": "Turno extra"
-    },
-    "Thurisaz": {
-      "name": "Thurisaz",
-      "meaning": "Contra-ataque"
-    },
-    "Gebo": {
-      "name": "Gebo",
-      "meaning": "Atordoar"
-    },
-    "Dagaz": {
-      "name": "Dagaz",
-      "meaning": "Imunidade"
-    },
-    "Sowilo": {
-      "name": "Sowilo",
-      "meaning": "Velocidade"
-    },
-    "Tiwaz": {
-      "name": "Tiwaz",
-      "meaning": "Ataque"
-    },
-    "Iwaz": {
-      "name": "Iwaz",
-      "meaning": "Resistência"
-    },
-    "Naudiz": {
-      "name": "Naudiz",
-      "meaning": "Ímpeto"
-    },
-    "Laukaz": {
-      "name": "Laukaz",
-      "meaning": "Dreno"
-    },
-    "Haglaz": {
-      "name": "Haglaz",
-      "meaning": "Destruição"
-    }
+  "planet": {
+    "Earth": "Terra",
+    "Mercury": "Mercúrio",
+    "Saturn": "Saturno",
+    "Neptune": "Netuno",
+    "Venus": "Vênus",
+    "Jupiter": "Júpiter",
+    "Mars": "Marte",
+    "Uranus": "Urano",
+    "Sun": "Sol"
   },
 
   "rarity": {
@@ -263,7 +208,7 @@
     },
     "Affliction": {
       "name": "Aflição",
-      "info": "Perde {0} da Vida máxima no começo de cada turno, por cópia. Acumula até {1} (um monstro tem no máximo {1} efeitos)."
+      "info": "Perde {0} da Vida máxima no começo de cada turno, por cópia. Acumula até {1} (um homúnculo tem no máximo {1} efeitos)."
     },
     "Stun": {
       "name": "Atordoamento",
@@ -482,8 +427,21 @@
     "ForEachStatusOrEffectAppliedDo": "para cada {1} que põe: {0}",
     "ForEachStatusOrEffectReceivedDo": "para cada {1} que recebe: {0}",
     "StatusOrEffectOnTargetEachTurn": "depois de agir, no alvo da habilidade: {0}",
+    "BonusPerStatusOrEffect": "+{0} de dano para cada {1} no alvo.",
+    "partner": "Com {0} vivo no time, os efeitos negativos que ele põe duram {1} turno a mais.",
+    "RunicCore": "No começo de cada rodada, ganha {0} de Defesa (até {1} vezes).",
+    "Drowning": "No começo de cada rodada, perde {0} da Vida máxima e fica com Velocidade−.",
     "Undying": "Enquanto ele está em campo, ninguém ganha nem perde {2}. Depois de cada ação: {0}. Ao cair, volta no turno seguinte com {1} da Vida, a não ser que esteja com {3} (que também cala o resto desta Passiva).",
     "chance": "{0} ({1} de chance)"
+  },
+
+  "theme": {
+    "None": "Sem temática",
+    "Constellations": "Constelações",
+    "Adversaries": "Adversários das Constelações",
+    "Mystics": "Místicos",
+    "all": "Todas as temáticas",
+    "filter": "Temática"
   },
 
   "awaken": {
@@ -511,11 +469,11 @@
     "account_progress": "{0}/{1} de experiência",
     "account_max_short": "Nível máximo",
     "channel": "Canalização",
-    "channel_text": "Enquanto você está fora, o Santuário junta Essência, Ouro e Mana, até {0} horas. Colete aqui.",
+    "channel_text": "Enquanto você está fora, o Observatório junta Essência, Ouro e Mana, até {0} horas. Colete aqui.",
     "collect": "Coletar",
     "battle": "Batalha",
     "battle_detail": "Campanha (fase {0} de {1}) e Masmorras",
-    "summon_detail": "Monstros novos · você tem {0} Pergaminhos",
+    "summon_detail": "Homúnculos novos · você tem {0} Transmutações",
     "version": "v{0}",
     "version_debug": "v{0} · depuração",
     "account_named": "{0} · Nível {1}",
@@ -532,9 +490,9 @@
     "enemies_hint": "Toque num inimigo para ver os atributos e as habilidades dele.",
     "rewards": "Recompensas por vitória",
     "rewards_first": "Recompensas da primeira vitória",
-    "rune_always": "Runa (sempre)",
-    "rune_chance_short": "Runa ({0} de chance)",
-    "monster_chance": "de chance de um monstro {0}",
+    "rune_always": "Sigilo (sempre)",
+    "rune_chance_short": "Sigilo ({0} de chance)",
+    "monster_chance": "de chance de um homúnculo {0}",
     "auto_locked": "A Batalha automática abre depois da primeira vitória nesta fase.",
     "region_tab": "Região {0}",
     "region_stages": "Fases {0}–{1}",
@@ -548,7 +506,7 @@
 
   "dungeons": {
     "kind": {
-      "Runes": "Runas",
+      "Runes": "Sigilos",
       "Tools": "Pedras"
     },
     "locked": "{0} abre depois da fase {1} da Campanha.",
@@ -558,10 +516,10 @@
     "gems": "Gemas Encantadas",
     "progress": "{0} de {1} andares vencidos",
     "opens_at": "Abre depois da fase {0}",
-    "drops_sets": "Solta runas de:",
+    "drops_sets": "Solta sigilos de:",
     "drops_tools": "Solta:",
     "sets_hint": "Toque num conjunto para ver o bônus dele.",
-    "scroll_chance": "de chance de um Pergaminho Místico",
+    "scroll_chance": "de chance de uma Transmutação Alquímica",
     "core_chance": "de chance de um Núcleo de Infusão"
   },
 
@@ -573,7 +531,7 @@
     "hours": "{0} h",
     "rotation_title": "O rodízio",
     "rotation_info": "A cada mês, uma das três Explorações traz os desafios das 88 constelações: {0}, {1} e {2}, nesta ordem. No dia 1, o percurso recomeça do zero com a Exploração seguinte. A recompensa de cada constelação é sempre a mesma e volta todo mês, na primeira vitória dela.\n\nO percurso inteiro paga por mês: {3}.",
-    "rotation_total": "{0} de Essência, {1} de Ouro, {2} Pergaminhos Místicos, {3} Pergaminhos Lendários, {4} de Luz e Trevas e {5} Núcleos de Infusão",
+    "rotation_total": "{0} de Essência, {1} de Ouro, {2} Transmutações Alquímicas, {3} Transmutações Lendárias, {4} de Luz e Trevas e {5} Núcleos de Infusão",
     "progress": "{0} de {1} constelações vencidas neste mês",
     "best": "Mais longe que já chegou: constelação {0}",
     "hemisphere": {
@@ -648,7 +606,7 @@
       "scorpius": "O Escorpião crava o ferrão: depois de agir, o guardião pode deixar uma Bomba no alvo. Purificação desarma a Bomba antes de explodir.",
       "sagittarius": "O arqueiro sempre tem outra flecha: depois de agir, o guardião atira de novo no mesmo alvo, ignorando parte da Defesa. Vida, Escudo e Égide aguentam mais que a Defesa.",
       "scutum": "O Escudo anula o primeiro golpe: todo inimigo começa a onda com Égide, e pode erguer outra no turno dele. Golpes múltiplos e dano em área tiram a Égide antes do golpe forte.",
-      "aquila": "A Águia carrega os raios de Zeus: no começo de cada turno do guardião, um raio cai num monstro seu e pode atordoar. Cura e Resistência espalhada pelo time.",
+      "aquila": "A Águia carrega os raios de Zeus: no começo de cada turno do guardião, um raio cai num homúnculo seu e pode atordoar. Cura e Resistência espalhada pelo time.",
       "sagitta": "A Flecha voa reto e primeiro: os inimigos começam cada onda adiantados e com Presságio. Defesa e Vida aguentam a primeira saraivada.",
       "delphinus": "O Delfim brinca com as ondas: todo inimigo atingido ganha Ímpeto. Poucos golpes fortes valem mais que muitos fracos.",
       "equuleus": "O Cavalo Menor dá coice: os golpes inimigos podem empurrar o alvo para trás na barra de Ímpeto. Velocidade e quem empurra o Ímpeto do time devolvem o ritmo.",
@@ -660,7 +618,7 @@
       "fornax": "A Fornalha tempera o aço: cada efeito negativo que um inimigo recebe o deixa com Defesa+. Dano bruto, ou roube a Defesa+ depois.",
       "eridanus": "O rio Erídano leva o que você acumulou: cada onda começa tirando Ímpeto do seu time, e os inimigos começam adiantados. Velocidade alta vence a correnteza.",
       "caelum": "O Buril entalha as defesas: os golpes inimigos podem pôr Quebra de Defesa. Purificação, Imunidade e Vida alta aguentam.",
-      "columba": "A Pomba pede paz: no começo de cada onda, os dois lados ficam com Silêncio e só usam a básica. Monstros de básica forte e Purificação abrem a trégua.",
+      "columba": "A Pomba pede paz: no começo de cada onda, os dois lados ficam com Silêncio e só usam a básica. Homúnculos de básica forte e Purificação abrem a trégua.",
       "puppis": "A Popa de Argo leva uma tripulação unida: cada inimigo que cai empurra os outros na barra. Dano em área derruba a tripulação junta.",
       "pyxis": "A Bússola gira sem norte: os golpes inimigos podem pôr Cegueira. Purificação e Imunidade devolvem o rumo.",
       "antlia": "A Máquina Pneumática tira o ar: os golpes inimigos encurtam os efeitos positivos do alvo. Renove os efeitos positivos sempre, ou vença sem eles.",
@@ -682,7 +640,7 @@
       "volans": "O Peixe Voador salta da água: todo inimigo pode esquivar, e quem é atingido ganha Ímpeto. Dano em área e golpes fortes pegam o cardume.",
       "mensa": "A Mesa é rocha firme: os inimigos recebem menos dano, e quem os atinge pode ficar com Velocidade−. Poucos golpes fortes e Purificação.",
       "hydrus": "A Hidra Macho dá o bote antes: os inimigos começam adiantados e os golpes podem pôr Aflição. Aguente a abertura com Vida e limpe o veneno.",
-      "tucana": "O Tucano não se cala: no turno de cada inimigo, um monstro seu pode ficar atordoado com o barulho. Imunidade, Resistência e Purificação tapam os ouvidos.",
+      "tucana": "O Tucano não se cala: no turno de cada inimigo, um homúnculo seu pode ficar atordoado com o barulho. Imunidade, Resistência e Purificação tapam os ouvidos.",
       "indus": "O caçador do sul espera na mata: os inimigos começam cada onda quase prontos para agir, e com Presságio. Defesa, Vida e Escudo aguentam a emboscada.",
       "pavo": "O Pavão abre a cauda e todos olham: o guardião começa a onda provocando o seu time e devolve parte do dano que recebe. Cura e Purificação aguentam o espetáculo.",
       "octans": "No polo sul do céu nada se move: todo inimigo tira um efeito negativo para cada um que recebe. Aqui só o dano vence.",
@@ -696,20 +654,21 @@
   },
 
   "summon": {
-    "pity": "Uma 5★ garantida em até {0} invocações.",
-    "shop": "Comprar Pergaminhos",
+    "pity": "Uma 5★ garantida em até {0} transmutações.",
+    "shop": "Comprar Transmutações",
     "new": "Novo!",
     "copy": "Cópia",
     "sent_to_vault": "Foi ao Baú",
-    "pull_one": "Invocar ×1",
-    "pull_ten": "Invocar ×10",
+    "pull_one": "Transmutar ×1",
+    "pull_ten": "Transmutar ×10",
     "pity_title": "Garantia de 5★",
-    "rates": "Chances de cada invocação:",
-    "note": "Cada invocação é uma cópia nova, no nível 1. Cópias da mesma família e Núcleos de Infusão sobem as habilidades dele.",
+    "rates": "Chances de cada transmutação:",
+    "light_dark_rate": "Luz e Trevas {0} ({1} cada)",
+    "note": "Cada transmutação é uma cópia nova, no nível 1. Cópias da mesma família e Núcleos de Infusão sobem as habilidades dele.",
     "scroll": {
-      "Mystic": "Místico",
+      "Mystic": "Alquímica",
       "LightDark": "Luz e Trevas",
-      "Legendary": "Lendário"
+      "Legendary": "Lendária"
     },
     "elements": {
       "Mystic": "· Fogo, Água e Vento",
@@ -721,7 +680,7 @@
     "exchange_hint": "Escolha uma 4★ de Fogo, Água ou Vento: ela vem por {0} Fragmentos, sem sorte. Você tem {1}.",
     "exchange_confirm": "Trocar {1} Fragmentos por {0}?",
     "exchange_button": "Trocar",
-    "view_monsters": "Ver meus monstros",
+    "view_monsters": "Ver meus homúnculos",
     "rare": "{0}★!",
     "special": "{0} · {1}★!"
   },
@@ -729,7 +688,7 @@
   "shop": {
     "item": {
       "Mana": "{0} Mana",
-      "Scrolls": "{0} Pergaminhos",
+      "Scrolls": "{0} Transmutações",
       "ReappraisalGems": "{0} Gema de Reavaliação",
       "RenameAccount": "Nome novo",
       "CollectionExpander": "{0} espaços na coleção"
@@ -737,16 +696,16 @@
     "no_gold": "Faltam {0} de Ouro.",
     "confirm": "Comprar {0} ({1}) por {2} Ouro?",
     "bought": "Comprado: +{0}.",
-    "intro": "Troque o Ouro que você ganha jogando por Mana ou Pergaminhos.",
+    "intro": "Troque o Ouro que você ganha jogando por Mana ou Transmutações.",
     "buy_button": "Comprar",
     "confirm_title": "Confirmar compra",
     "info_hint": "Toque no símbolo de uma oferta para ver para que ela serve.",
     "info": {
       "Mana": "Paga as vitórias: cada luta vencida, na Campanha ou numa Masmorra, custa Mana (a derrota não custa nada). A Canalização recarrega com o tempo; a Mana comprada aqui pode passar do máximo.",
-      "Scrolls": "Invocam monstros: cada Pergaminho é uma invocação, e toda invocação conta para a garantia de 5★.",
-      "ReappraisalGems": "Devolve a runa ao estado original.",
-      "RenameAccount": "Troca o nome da conta, mostrado no Santuário. O nome segue as regras de sempre e precisa estar livre; o Ouro só sai se o servidor aceitar.",
-      "CollectionExpander": "Mais vagas na coleção: os monstros fora do Baú, os que lutam. Agora são {1}, e a coleção cresce até {2}."
+      "Scrolls": "Cada Transmutação Alquímica faz uma transmutação de homúnculo, e toda transmutação conta para a garantia de 5★.",
+      "ReappraisalGems": "Devolve o sigilo ao estado original.",
+      "RenameAccount": "Troca o nome da conta, mostrado no Observatório. O nome segue as regras de sempre e precisa estar livre; o Ouro só sai se o servidor aceitar.",
+      "CollectionExpander": "Mais vagas na coleção: os homúnculos fora do Baú, os que lutam. Agora são {1}, e a coleção cresce até {2}."
     },
     "sold_out": "A coleção já está no máximo ({0} vagas).",
     "rename_no_account": "Precisa de uma conta com nome.",
@@ -757,7 +716,7 @@
     "collection": "Coleção",
     "vault": "Baú",
     "vault_empty": "O Baú está vazio.",
-    "collection_empty": "Nenhum monstro ainda.",
+    "collection_empty": "Nenhum homúnculo ainda.",
     "in_vault": "No Baú",
     "teams": "Em equipe: {0}",
     "skill_locked": "Liberada no Despertar",
@@ -771,37 +730,37 @@
     "max_level_button": "Até o nível {0}",
     "evolve": "Evoluir para {0}",
     "awaken_button": "Despertar",
-    "runes_button": "Gerenciar runas",
-    "collection_full": "A coleção está cheia: guarde monstros no Baú ou solte alguns antes.",
+    "runes_button": "Gerenciar sigilos",
+    "collection_full": "A coleção está cheia: guarde homúnculos no Baú ou solte alguns antes.",
     "fuse_full": "Todas as habilidades no nível máximo.",
     "release": "Soltar",
     "release_confirm": "Soltar {0} (Nv {1}) por {2} Fragmentos? Não dá para desfazer.",
     "select": "Selecionar vários",
     "unmark": "Desmarcar",
     "release_marked": "Soltar {0}",
-    "release_many_confirm": "Soltar {0} monstros por {1} Fragmentos? Eles somem para sempre; as runas voltam ao inventário.",
-    "valuable_warning": "Atenção: a seleção tem monstro desperto, evoluído, com nível, com habilidade subida, em equipe ou com runas.",
+    "release_many_confirm": "Soltar {0} homúnculos por {1} Fragmentos? Eles somem para sempre; os sigilos voltam ao inventário.",
+    "valuable_warning": "Atenção: a seleção tem homúnculo desperto, evoluído, com nível, com habilidade subida, em equipe ou com sigilos.",
     "page": {
       "stats": "Atributos",
-      "runes": "Runas",
+      "runes": "Sigilos",
       "skills": "Habilidades",
       "awaken": "Despertar"
     },
     "select_done": "Terminar seleção",
-    "select_hint": "Toque nos monstros para marcar; os bloqueados também mudam de lugar, mas não são soltos ({0} marcados):",
-    "release_title": "Soltar monstros?",
+    "select_hint": "Toque nos homúnculos para marcar; os bloqueados também mudam de lugar, mas não são soltos ({0} marcados):",
+    "release_title": "Soltar homúnculos?",
     "release_button": "Soltar",
     "fuse_title": "Fundir cópias?",
     "fuse_button": "Fundir",
     "fuse_hint": "Fundir uma cópia da mesma família (de qualquer elemento) ou um Núcleo de Infusão sobe uma habilidade sorteada em um nível. Faltam {0} níveis de habilidade; você tem {1} cópias e Núcleos livres.",
-    "core_info": "O Núcleo de Infusão sobe uma habilidade de qualquer monstro, de qualquer família: abra o monstro, Habilidades, Fundir, e escolha o Núcleo. Ele ocupa uma vaga na coleção ou no Baú, mas não luta, não entra em equipe, não usa runas e não se solta. Vem dos marcos: o fim de cada região, os andares de Masmorra e os níveis da conta.",
+    "core_info": "O Núcleo de Infusão sobe uma habilidade de qualquer homúnculo, de qualquer família: abra o homúnculo, Habilidades, Fundir, e escolha o Núcleo. Ele ocupa uma vaga na coleção ou no Baú, mas não luta, não entra em equipe, não usa sigilos e não se solta. Vem dos marcos: o fim de cada região, os andares de Masmorra e os níveis da conta.",
     "core_count": "{0} na conta",
-    "none_selected": "Escolha um monstro à esquerda.",
+    "none_selected": "Escolha um homúnculo à esquerda.",
     "level_hint": "Sobe de nível infundindo Essência: {0} de experiência por Essência. Vitórias também dão experiência a quem lutou.",
     "fully_grown": "No máximo: 6★ e nível máximo.",
-    "stats_hint": "O número é o total, com runas e conjuntos; em verde, quanto disso as runas somaram.",
-    "no_runes": "Nenhuma runa equipada ainda.",
-    "no_sets": "Nenhum conjunto completo: 2 ou 4 runas do mesmo conjunto dão o bônus dele.",
+    "stats_hint": "O número é o total, com sigilos e conjuntos; em verde, quanto disso os sigilos somaram.",
+    "no_runes": "Nenhum sigilo equipado ainda.",
+    "no_sets": "Nenhum conjunto completo: 2 ou 4 sigilos do mesmo conjunto dão o bônus dele.",
     "awaken_title": "Despertar?",
     "awaken_confirm": "Despertar {0} em {1} por {2} de Essência? É para sempre.",
     "awaken_gains": "Desperto, ganha nome próprio, a aura com o anel do elemento e:",
@@ -817,7 +776,7 @@
     "retrieve_short": "Retirar",
     "fuse_open": "Fundir cópias",
     "fusion_title": "Fundir em {0}",
-    "fusion_text": "Cada cópia fundida sobe uma habilidade sorteada de {0} em um nível, e ainda cabem {1}. Vale qualquer cópia da mesma família, de qualquer elemento: ela some, e as runas dela voltam ao inventário.",
+    "fusion_text": "Cada cópia fundida sobe uma habilidade sorteada de {0} em um nível, e ainda cabem {1}. Vale qualquer cópia da mesma família, de qualquer elemento: ela some, e os sigilos dela voltam ao inventário.",
     "fusion_same_element": "Marcar cópias de {0}",
     "fusion_room": "{0} de {1}",
     "fusion_pick": "Toque nas cópias para escolher.",
@@ -826,26 +785,26 @@
     "fusion_button": "Fundir {0}",
     "fusion_full": "Só cabem {0}: desmarque uma para escolher outra.",
     "fusion_locked": "Bloqueado: não vira material de fusão. Libere na ficha dele antes.",
-    "fusion_confirm": "Fundir {0} em {1}? Estes somem para sempre: {2}. As runas deles voltam ao inventário.",
+    "fusion_confirm": "Fundir {0} em {1}? Estes somem para sempre: {2}. Os sigilos deles voltam ao inventário.",
     "fusion_level": "Nv {0}",
     "store_marked": "Guardar {0} no Baú",
     "retrieve_marked": "Tirar {0} do Baú",
     "store_many_title": "Guardar no Baú",
-    "store_many_confirm": "Guardar {0} monstros no Baú? Os que estão em equipe ({1}) saem dela. No Baú eles guardam as runas, mas não lutam.",
+    "store_many_confirm": "Guardar {0} homúnculos no Baú? Os que estão em equipe ({1}) saem dela. No Baú eles guardam os sigilos, mas não lutam.",
     "store_many_button": "Guardar",
     "release_many_locked": "Os bloqueados ({0}) ficam.",
-    "filter_empty": "Nenhum monstro daqui passa nestes filtros.",
+    "filter_empty": "Nenhum homúnculo daqui passa nestes filtros.",
     "new": "Novo!",
     "with_new": "{0} · Novos: {1}",
     "copies_title": "Cópias de {0}",
-    "copies_hint": "Iguais em estrelas, nível, Despertar, habilidades, bloqueio, favorito e runas. Marque as cópias e escolha o que fazer só com elas.",
+    "copies_hint": "Iguais em estrelas, nível, Despertar, habilidades, bloqueio, favorito e sigilos. Marque as cópias e escolha o que fazer só com elas.",
     "copies_marked": "{0} de {1} marcadas",
     "copies_room": "A coleção tem {0} vagas: saem do Baú só as primeiras.",
     "copies_fuse": "Fundir {0} em…",
     "mark_all": "Marcar todas",
-    "fuse_target_title": "Fundir em qual monstro?",
-    "fuse_target_hint": "Os monstros que aceitam estas cópias e ainda têm habilidade para subir. As marcadas já vêm escolhidas na fusão.",
-    "fuse_target_none": "Nenhum monstro que aceita estas cópias tem habilidade para subir."
+    "fuse_target_title": "Fundir em qual homúnculo?",
+    "fuse_target_hint": "Os homúnculos que aceitam estas cópias e ainda têm habilidade para subir. As marcadas já vêm escolhidas na fusão.",
+    "fuse_target_none": "Nenhum homúnculo que aceita estas cópias tem habilidade para subir."
   },
 
   "teams": {
@@ -862,74 +821,74 @@
   "prep": {
     "collection": "Coleção",
     "team": "Equipe · {0}",
-    "chosen": "{0} escolhido: toque num monstro da coleção para pôr no lugar dele.",
-    "hint": "Toque num monstro da coleção para pôr ou tirar da equipe. Toque num da equipe para trocar ou tornar Líder. Segure qualquer monstro para ver o resumo.",
+    "chosen": "{0} escolhido: toque num homúnculo da coleção para pôr no lugar dele.",
+    "hint": "Toque num homúnculo da coleção para pôr ou tirar da equipe. Toque num da equipe para trocar ou tornar Líder. Segure qualquer homúnculo para ver o resumo.",
     "saved": "A última equipe usada aqui fica guardada.",
     "boss_room": "Sala do chefe",
     "last_wave": "Última onda",
     "wave": "Onda {0} (a última) · {1}",
-    "none": "Nenhum monstro nesta busca.",
-    "full": "Equipe cheia: toque num monstro da equipe e depois no que entra no lugar dele."
+    "none": "Nenhum homúnculo nesta busca.",
+    "full": "Equipe cheia: toque num homúnculo da equipe e depois no que entra no lugar dele."
   },
 
   "runes": {
-    "tab_runes": "Runas",
+    "tab_runes": "Sigilos",
     "tab_grindstones": "Pedras de Afiar",
     "tab_gems": "Gemas Encantadas",
-    "found": "{0} runas",
+    "found": "{0} sigilos",
     "select": "Vender várias",
     "mark_all": "Marcar todas",
     "unmark": "Desmarcar",
     "sell_marked": "Vender {0}",
     "no_tools": "Nenhuma ainda",
     "new": "novo",
-    "inventory_full": "Inventário de runas cheio ({0}): desfaça runas antes de tirar esta.",
+    "inventory_full": "Inventário de sigilos cheio ({0}): desfaça sigilos antes de tirar esta.",
     "remove": "Remover",
     "equip_on": "Equipar",
     "try": "Provar",
     "untry": "Tirar da prova",
-    "trial": "Runas em prova",
+    "trial": "Sigilos em prova",
     "trial_equip": "Equipar {0}",
     "trial_clear": "Limpar",
     "stats_total": "Total",
-    "stats_runes": "Runas",
+    "stats_runes": "Sigilos",
     "stats_now": "Agora",
     "stats_next": "Depois",
     "grind": "Afiar",
     "enchant": "Encantar",
     "forge": "Afiar e Encantar",
     "forge_hint": "Toque em Afiar ou Encantar na linha do subatributo e escolha a pedra.",
-    "dialog_title": "Runa",
-    "no_monster_text": "Nenhum monstro escolhido: escolha um para equipar runas nele.",
-    "choose_monster": "Escolher monstro",
+    "dialog_title": "Sigilo",
+    "no_monster_text": "Nenhum homúnculo escolhido: escolha um para equipar sigilos nele.",
+    "choose_monster": "Escolher homúnculo",
     "change_monster": "Trocar",
-    "none_found": "Nenhuma runa com esses filtros.",
+    "none_found": "Nenhum sigilo com esses filtros.",
     "select_done": "Terminar seleção",
-    "select_hint": "Toque nas runas soltas para marcar; as bloqueadas ficam de fora ({0} marcadas):",
-    "sell_title": "Vender runas?",
-    "sell_confirm": "Vender esta runa por {0} de Essência? Ela some de vez.",
-    "sell_many_confirm": "Vender {0} runas por {1} de Essência? Elas somem de vez.",
+    "select_hint": "Toque nos sigilos soltos para marcar; os bloqueados ficam de fora ({0} marcados):",
+    "sell_title": "Vender sigilos?",
+    "sell_confirm": "Vender este sigilo por {0} de Essência? Ele some de vez.",
+    "sell_many_confirm": "Vender {0} sigilos por {1} de Essência? Eles somem de vez.",
     "sell_button": "Vender (+{0})",
     "sell_button_short": "Vender",
     "upgrade_one": "Evoluir +{0}",
     "upgrade_button": "Até +{0}",
-    "pick_one": "Toque numa runa para vê-la aqui.",
+    "pick_one": "Toque num sigilo para vê-lo aqui.",
     "enchanted_line": "(encantado)",
-    "grind_hint": "Pedras de Afiar somam um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade. Use em Afiar e Encantar, na ficha da runa.",
-    "enchant_hint": "Gemas Encantadas trocam um subatributo de uma runa +{0}. Use em Afiar e Encantar, na ficha da runa.",
+    "grind_hint": "Pedras de Afiar somam um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade. Use em Afiar e Encantar, na ficha do sigilo.",
+    "enchant_hint": "Gemas Encantadas trocam um subatributo de um sigilo +{0}. Use em Afiar e Encantar, na ficha do sigilo.",
     "upgrade_confirm_title": "Evoluir até +{0}?",
     "upgrade_confirm": "Gastar {0} de Essência para evoluir {1} de +{2} até +{3}? Você tem {4}.",
     "locked_note": "Bloqueada: não pode ser vendida. Libere antes.",
     "reappraise": "Reavaliar ({0})",
-    "reappraise_title": "Reavaliar a runa?",
+    "reappraise_title": "Reavaliar o sigilo?",
     "reappraise_button": "Reavaliar",
-    "reappraise_none": "A Gema de Reavaliação, vendida na Loja, devolve esta runa ao estado em que caiu.",
+    "reappraise_none": "A Gema de Reavaliação, vendida na Loja, devolve este sigilo ao estado em que caiu.",
     "reappraise_level": "Volta para +0 (está em +{0}).",
     "reappraise_removed": "Saem os subatributos que vieram nas melhoras: {0}.",
     "reappraise_rolls": "Os subatributos com que ela nasceu perdem {0} sorteios das melhoras.",
     "reappraise_grinds": "Somem {0} bônus de Pedra de Afiar.",
     "reappraise_enchant": "O encantamento é desfeito: {0} volta no lugar de {1}.",
-    "reappraise_enchant_kept": "O encantamento fica: esta runa foi encantada antes de o jogo guardar o subatributo trocado.",
+    "reappraise_enchant_kept": "O encantamento fica: este sigilo foi encantado antes de o jogo guardar o subatributo trocado.",
     "reappraise_cost": "Gasta 1 Gema de Reavaliação (você tem {0}). A Essência gasta nas melhoras não volta."
   },
 
@@ -946,7 +905,7 @@
     "where": "Onde",
     "place": {
       "Inventory": "Soltas",
-      "Collection": "Em monstros",
+      "Collection": "Em homúnculos",
       "Storage": "No Baú",
       "All": "Todas"
     },
@@ -965,9 +924,9 @@
     "sort": "Ordem",
     "button": "Filtros",
     "button_active": "Filtros ({0})",
-    "title": "Filtrar runas",
+    "title": "Filtrar sigilos",
     "done": "Pronto",
-    "title_monsters": "Filtrar monstros",
+    "title_monsters": "Filtrar homúnculos",
     "element": "Elemento",
     "role": "Papel",
     "natural": "Estrelas naturais",
@@ -981,8 +940,8 @@
       "Unlocked": "Desbloqueados",
       "InTeam": "Em equipe",
       "MaxLevel": "Nível máximo",
-      "Runed": "Com runas",
-      "Unruned": "Sem runas"
+      "Runed": "Com sigilos",
+      "Unruned": "Sem sigilos"
     },
     "rune_condition_kind": {
       "Locked": "Bloqueadas",
@@ -1039,42 +998,42 @@
       "basic": "Como jogar",
       "combat": "Combate",
       "stats": "Atributos",
-      "glyphs": "Glifos",
+      "planets": "Sigilos",
       "effects": "Efeitos",
-      "runes": "Runas"
+      "runes": "Sigilos"
     },
     "basic": {
-      "campaign": { "title": "Campanha", "text": "50 fases em três regiões, com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Pergaminhos e sempre uma runa; as seguintes dão Essência e chance de runa. A Campanha apresenta o jogo aos poucos: cada parte do Santuário abre numa fase. Ela solta runas de até {0} estrelas; vencer a fase 50 pede cerca de nível 20 com runas, ou 6★ nível 40 sem." },
-      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: runas Raras ou melhores de quatro conjuntos certos, ou Pedras de Afiar e Gemas (a Forja). Cada andar mostra a chance de cada estrela e raridade, e quanto mais fundo, maior a runa: 2 e 3 estrelas no andar 1, só 6 estrelas no andar 5. O andar 1 é igual de difícil em todas, e assim por diante, tão difícil quanto o que paga. Elas abrem durante a Campanha: Golem (Vento), Serpe (Fogo), Cripta (Trevas), Afogado (Água) e Forja (Luz); leve o elemento com vantagem. Cada vitória custa Mana e pode soltar também um Pergaminho Místico; a primeira vitória em cada andar dá Ouro." },
-      "exploration": { "title": "Exploração Estelar", "text": "Um percurso pelas 88 constelações do céu: as Boreais, as Equatoriais (com as 12 do zodíaco) e as Austrais, uma depois da outra. Cada constelação tem a sua Influência, uma mecânica que vale a luta inteira (leia antes e monte a equipe para ela), e muitas vezes o desafio são as habilidades do guardião, uma invocação desperta com as habilidades no máximo. A cada mês, uma de {0} Explorações traz os desafios, em rodízio, e no dia 1 o percurso recomeça do zero. A recompensa de cada constelação é sempre a mesma e volta todo mês, na primeira vitória dela: Essência, Ouro, Pergaminhos e, nos marcos, Núcleos de Infusão e Pergaminhos especiais. A luta não custa Mana, tem uma equipe própria e é feita para o manual." },
+      "campaign": { "title": "Campanha", "text": "50 fases em três regiões, com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Transmutações Alquímicas e sempre um sigilo; as seguintes dão Essência e chance de sigilo. A Campanha apresenta o jogo aos poucos: cada parte do Observatório abre numa fase. Ela solta sigilos de até {0} estrelas; vencer a fase 50 pede cerca de nível 20 com sigilos, ou 6★ nível 40 sem." },
+      "dungeons": { "title": "Masmorras", "text": "Cada Masmorra tem 5 andares, um elemento na maior parte dos inimigos, e solta o que a Campanha não solta: sigilos Raros ou melhores de quatro conjuntos certos, ou Pedras de Afiar e Gemas (o Santuário). Cada andar mostra a chance de cada estrela e raridade, e quanto mais fundo, maior o sigilo: 2 e 3 estrelas no andar 1, só 6 estrelas no andar 5. O andar 1 é igual de difícil em todas, e assim por diante, tão difícil quanto o que paga. Elas abrem durante a Campanha: Golem (Vento), Serpe (Fogo) e Santuário (Água); leve o elemento com vantagem. Cada vitória custa Mana e pode soltar também uma Transmutação Alquímica; a primeira vitória em cada andar dá Ouro." },
+      "exploration": { "title": "Exploração Estelar", "text": "Um percurso pelas 88 constelações do céu: as Boreais, as Equatoriais (com as 12 do zodíaco) e as Austrais, uma depois da outra. Cada constelação tem a sua Influência, uma mecânica que vale a luta inteira (leia antes e monte a equipe para ela), e muitas vezes o desafio são as habilidades do guardião, uma transmutação desperta com as habilidades no máximo. A cada mês, uma de {0} Explorações traz os desafios, em rodízio, e no dia 1 o percurso recomeça do zero. A recompensa de cada constelação é sempre a mesma e volta todo mês, na primeira vitória dela: Essência, Ouro, Transmutações e, nos marcos, Núcleos de Infusão e Transmutações especiais. A luta não custa Mana, tem uma equipe própria e é feita para o manual." },
       "mana": { "title": "Mana e nível da conta", "text": "Toda vitória custa Mana; a derrota não custa nada, mas para lutar é preciso ter a Mana da vitória. A canalização recarrega {2} por hora até o dobro da Mana máxima, que é {0} no nível 1 da conta e {1} no nível {3}, o último. Toda vitória dá experiência também à conta, e cada nível enche a Mana. No nível {3}, um terço da experiência vira Essência." },
-      "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Pergaminhos." },
-      "summon": { "title": "Invocação", "text": "Pergaminhos invocam monstros. Cada invocação é uma cópia nova, nas estrelas naturais e no nível 1. O Místico tira Fogo, Água e Vento, com a garantia de 5★ sempre à vista; o de Luz e Trevas, só Luz e Trevas; o Lendário, só 4★ e 5★. Os dois especiais vêm dos marcos do jogo. A primeira 5★ da conta é garantida, e Fragmentos trocam por uma 4★ escolhida." },
-      "monsters": { "title": "Monstros e Baú", "text": "A coleção começa com {0} vagas e cresce na Loja, com a Expansão de Coleção, até {2}; o Baú guarda o que passar disso, sem limite. Monstro no Baú não luta, mas guarda as runas dele: elas não ocupam as {1} vagas do inventário de runas. Bloqueie um monstro ou uma runa (o cadeado) para nunca soltar, fundir ou vender por engano; desbloqueie para fazer isso." },
-      "teams": { "title": "Equipes", "text": "A equipe, de até {0} monstros, se monta na preparação de cada luta (o Lutar). A Campanha, cada Masmorra e a Exploração Estelar guardam a última usada nelas. A primeira é a Líder." },
-      "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Monstros, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de runas." },
-      "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo monstro chega a {0}★. No nível máximo, pague Fragmentos para ganhar uma estrela: o monstro mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} Fragmentos; de 4★ para 5★: {2}; de 5★ para 6★: {3}." },
-      "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser soltas em troca de Fragmentos, que pagam a evolução. Alguns monstros têm uma Passiva, que age sozinha." },
-      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o monstro ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada monstro tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
-      "sanctuary": { "title": "Santuário e controles", "text": "O Santuário é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Monstros, Runas, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um monstro para ver o resumo dele." }
+      "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Transmutações." },
+      "summon": { "title": "Transmutação", "text": "A Transmutação Alquímica cria homúnculos. Cada transmutação é uma cópia nova, nas estrelas naturais e no nível 1. A Alquímica tira Fogo, Água e Vento, com a garantia de 5★ sempre à vista e {0} de chance de um homúnculo de Luz ou Trevas (repartida por igual entre os de 3★ que podem sair); a de Luz e Trevas, só Luz e Trevas; a Lendária, só 4★ e 5★. As duas especiais vêm dos marcos do jogo. A primeira 5★ da conta é garantida, e Fragmentos trocam por uma 4★ escolhida." },
+      "monsters": { "title": "Homúnculos e Baú", "text": "A coleção começa com {0} vagas e cresce na Loja, com a Expansão de Coleção, até {2}; o Baú guarda o que passar disso, sem limite. Homúnculo no Baú não luta, mas guarda os sigilos dele: eles não ocupam as {1} vagas do inventário de sigilos. Bloqueie um homúnculo ou um sigilo (o cadeado) para nunca soltar, fundir ou vender por engano; desbloqueie para fazer isso." },
+      "teams": { "title": "Equipes", "text": "A equipe, de até {0} homúnculos, se monta na preparação de cada luta (o Lutar). A Campanha, cada Masmorra e a Exploração Estelar guardam a última usada nelas. A primeira é a Líder." },
+      "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Homúnculos, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de sigilos." },
+      "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo homúnculo chega a {0}★. No nível máximo, pague Fragmentos para ganhar uma estrela: o homúnculo mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} Fragmentos; de 4★ para 5★: {2}; de 5★ para 6★: {3}." },
+      "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser soltas em troca de Fragmentos, que pagam a evolução. Alguns homúnculos têm uma Passiva, que age sozinha." },
+      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o homúnculo ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada homúnculo tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
+      "sanctuary": { "title": "Observatório e controles", "text": "O Observatório é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Homúnculos, Sigilos, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um homúnculo para ver o resumo dele." }
     },
     "combat": {
       "impetus": { "title": "Ímpeto", "text": "Cada unidade tem uma barra de {0} que enche em proporção à Velocidade; quem chega a 100% age. Empurrar ou atrasar a barra muda a ordem — a faixa \"Próximos\" mostra quem vem." },
-      "fight": { "title": "A luta", "text": "Até {0} monstros contra até {2} inimigos por onda, em até {1} ondas. Passar de {3} rodadas é derrota." },
+      "fight": { "title": "A luta", "text": "Até {0} homúnculos contra até {2} inimigos por onda, em até {1} ondas. Passar de {3} rodadas é derrota." },
       "damage": { "title": "Dano", "text": "Ataque × multiplicador da habilidade × {0} / ({0} + Defesa do alvo). Defesa {0} corta o dano pela metade." },
-      "crit": { "title": "Crítico", "text": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo monstro começa com 15% de Crítico e 50% de Dano crítico." },
+      "crit": { "title": "Crítico", "text": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo homúnculo começa com 15% de Crítico e 50% de Dano crítico." },
       "resistance": { "title": "Resistência e Precisão", "text": "Todo efeito negativo pode ser barrado: a chance é a Resistência do alvo menos a Precisão de quem lança, nunca abaixo de {0}." },
-      "leader": { "title": "Líder", "text": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio das runas." },
-      "auto": { "title": "Automático e Batalha automática", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 2×. Ela segue enquanto você faz outras coisas (cuidar das runas, subir monstros); o aviso no alto da tela mostra o andamento e abre a janela dela. Para quando você aperta Parar, quando a Mana acaba ou quando o inventário de runas enche. Toque num inimigo durante a luta para marcá-lo: o automático ataca ele enquanto puder (segure o inimigo para ver o resumo). Numa luta com chefe, a pausa tem \"Focar o chefe no automático\": ligado, a equipe inteira ataca o chefe sempre que pode." },
+      "leader": { "title": "Líder", "text": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio dos sigilos." },
+      "auto": { "title": "Automático e Batalha automática", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 2×. Ela segue enquanto você faz outras coisas (cuidar dos sigilos, subir homúnculos); o aviso no alto da tela mostra o andamento e abre a janela dela. Para quando você aperta Parar, quando a Mana acaba ou quando o inventário de sigilos enche. Toque num inimigo durante a luta para marcá-lo: o automático ataca ele enquanto puder (segure o inimigo para ver o resumo). Numa luta com chefe, a pausa tem \"Focar o chefe no automático\": ligado, a equipe inteira ataca o chefe sempre que pode." },
       "elements": "Elementos",
       "elements_text": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence.",
       "wins": "{0} vence {1}"
     },
     "stats": {
-      "intro": "Os oito atributos de todo monstro. Cada um tem o seu Glifo: o do conjunto de runas que o aumenta."
+      "intro": "Os oito atributos de todo homúnculo. Cada um tem o seu Sigilo: o do conjunto de sigilos que o aumenta."
     },
-    "glyphs": {
-      "intro": "Glifos são símbolos de runa: cada conjunto tem o seu, e o atributo que ele aumenta usa o mesmo (Tiwaz é Ataque, na runa e na ficha). Os efeitos de batalha têm símbolos próprios, na aba Efeitos.",
+    "planets": {
+      "intro": "Os Sigilos são símbolos planetários: cada conjunto leva o nome do efeito que dá e o símbolo de um planeta (Marte é Ataque, no sigilo e na ficha). Os efeitos de batalha têm símbolos próprios, na aba Efeitos.",
       "set": "Conjunto: {0}"
     },
     "effects": {
@@ -1084,22 +1043,22 @@
     },
     "runes": {
       "slots": { "title": "Espaços", "text": "Seis espaços em círculo. 1, 3 e 5 dão sempre Ataque, Defesa e Vida fixos; o 2 pode ter Velocidade, o 4 Crítico ou Dano crítico, o 6 Resistência ou Precisão, e os três podem ter Vida, Ataque ou Defesa, fixos ou em porcentagem sobre a base." },
-      "stars": { "title": "Estrelas e raridade", "text": "De 1 a {0} estrelas: decidem o tamanho de todos os números. A cor é a raridade, quantos subatributos a runa tem: Normal 0, Mágica 1, Rara 2, Heroica 3, Lendária 4. Às vezes vem um atributo nativo, que nunca cresce." },
-      "upgrade": { "title": "Melhora", "text": "Essência melhora de +0 a +{0} (a mesma do nível e do Despertar), e a melhora nunca falha. Em +3, +6, +9 e +12 a runa precisa ter 1, 2, 3 e {1} subatributos: se ainda não tem, entra um novo (e ela muda de raridade); se já tem, um deles cresce; em +15 o principal dá o salto final." },
-      "sets": { "title": "Conjuntos", "text": "Duas ou quatro runas do mesmo conjunto dão o bônus dele. Com 6 espaços cabem um de 4 e um de 2, ou três de 2 (três iguais valem três vezes). Cada conjunto tem o seu Glifo." },
+      "stars": { "title": "Estrelas e raridade", "text": "De 1 a {0} estrelas: decidem o tamanho de todos os números. A cor é a raridade, quantos subatributos o sigilo tem: Normal 0, Mágico 1, Raro 2, Heroico 3, Lendário 4. Às vezes vem um atributo nativo, que nunca cresce." },
+      "upgrade": { "title": "Melhora", "text": "Essência melhora de +0 a +{0} (a mesma do nível e do Despertar), e a melhora nunca falha. Em +3, +6, +9 e +12 o sigilo precisa ter 1, 2, 3 e {1} subatributos: se ainda não tem, entra um novo (e ele muda de raridade); se já tem, um deles cresce; em +15 o principal dá o salto final." },
+      "sets": { "title": "Conjuntos", "text": "Dois ou quatro sigilos do mesmo conjunto dão o bônus dele. Com 6 espaços cabem um de 4 e um de 2, ou três de 2 (três iguais valem três vezes). Cada conjunto tem o seu Sigilo." },
       "grind": { "title": "Pedra de Afiar", "text": "Soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo." },
-      "gem": { "title": "Gema Encantada", "text": "Troca um subatributo de uma runa +{0} pelo da gema. Só um subatributo por runa pode ser encantado." },
-      "where": { "title": "Onde conseguir", "text": "A Campanha solta runas de até {0} estrelas (sempre na primeira vitória, {1} de chance depois). As Masmorras soltam runas Raras ou melhores de 2 a 6 estrelas, maiores a cada andar, e as pedras." },
+      "gem": { "title": "Gema Encantada", "text": "Troca um subatributo de um sigilo +{0} pelo da gema. Só um subatributo por sigilo pode ser encantado." },
+      "where": { "title": "Onde conseguir", "text": "A Campanha solta sigilos de até {0} estrelas (sempre na primeira vitória, {1} de chance depois). As Masmorras soltam sigilos Raros ou melhores de 2 a 6 estrelas, maiores a cada andar, e as pedras." },
       "grimoire": { "title": "Tabelas", "text": "Os números de cada estrela, os custos de melhora e as faixas das pedras estão no Grimório." },
       "rarity": {
-        "title": "Raridade das runas",
-        "text": "A cor da runa mostra a raridade dela: com quantos subatributos ela nasce. As melhoras em +3, +6, +9 e +12 dão os que faltam até chegar a quatro; a Lendária já nasce com os quatro, então cada uma dessas melhoras sobe um deles.",
+        "title": "Raridade dos sigilos",
+        "text": "A cor do sigilo mostra a raridade dele: com quantos subatributos ele nasce. As melhoras em +3, +6, +9 e +12 dão os que faltam até chegar a quatro; o Lendário já nasce com os quatro, então cada uma dessas melhoras sobe um deles.",
         "subs": "Nasce com {0} subatributos"
       }
     },
     "rarity": {
-      "title": "Raridade dos monstros",
-      "text": "A moldura do cartão mostra a raridade: as estrelas naturais com que o monstro nasce. Mais estrelas naturais querem dizer mais atributos e uma invocação mais rara. As estrelas no alto do cartão são as de agora (sobem evoluindo); a moldura não muda.",
+      "title": "Raridade dos homúnculos",
+      "text": "A moldura do cartão mostra a raridade: as estrelas naturais com que o homúnculo nasce. Mais estrelas naturais querem dizer mais atributos e uma transmutação mais rara. As estrelas no alto do cartão são as de agora (sobem evoluindo); a moldura não muda.",
       "frame2": "Moldura apagada",
       "frame3": "Moldura de bronze",
       "frame4": "Moldura de prata",
@@ -1110,9 +1069,9 @@
 
   "grimoire": {
     "tab": {
-      "summons": "Invocações",
+      "summons": "Homúnculos",
       "sets": "Conjuntos",
-      "runes": "Tabelas de runa",
+      "runes": "Tabelas de sigilo",
       "grindstones": "Pedras de Afiar",
       "gems": "Gemas Encantadas"
     },
@@ -1130,7 +1089,7 @@
     "sell": "Desfazer",
     "sell_value": "{0}–{1}",
     "grindstones_intro": "Bônus da Pedra de Afiar por grau. Só Vida, Ataque, Defesa e Velocidade.",
-    "gems_intro": "Valor que a Gema Encantada põe no lugar do subatributo, por grau. A runa precisa estar em +{0}.",
+    "gems_intro": "Valor que a Gema Encantada põe no lugar do subatributo, por grau. O sigilo precisa estar em +{0}.",
     "view_normal": "Ver normal",
     "awakening_title": "Despertar: {0}"
   },
@@ -1143,8 +1102,8 @@
     "defeat": "Derrota",
     "account": "Nível da conta! +{0} de Ouro, Mana cheia",
     "timeout": "O tempo acabou: {0} rodadas.",
-    "all_fell": "Todos os monstros caíram.",
-    "defeat_tip": "Suba o nível, evolua, equipe runas ou desperte monstros.",
+    "all_fell": "Todos os homúnculos caíram.",
+    "defeat_tip": "Suba o nível, evolua, equipe sigilos ou desperte homúnculos.",
     "effects": "Efeitos",
     "auto_on": "Auto",
     "auto_off": "Manual",
@@ -1161,6 +1120,7 @@
     "missed": "Errou",
     "aegis": "Égide!",
     "resisted": "Resistiu",
+    "passive_stacked": "Passiva: {0} ×{1}",
     "immune": "Imune",
     "stunned": "Atordoado",
     "loses_turn": "{0}\nperde o turno",
@@ -1180,21 +1140,21 @@
     "pick_target": "Toque num inimigo aceso para atacar",
     "cooldown_badge": "⟳{0}",
     "again": "Lutar de novo",
-    "monster_drop": "Monstro novo",
-    "monster_copy": "Cópia de monstro",
+    "monster_drop": "Homúnculo novo",
+    "monster_copy": "Cópia de homúnculo",
     "advice_title": "Para ficar mais forte:",
     "advice": {
-      "EquipRunes": "Equipe runas: {0} vagas de runa da equipe estão vazias (Monstros → Runas).",
-      "UpgradeRunes": "Evolua as runas: {0} runas da equipe estão abaixo de +{1} (Runas → Melhorar).",
-      "LevelUp": "Suba o nível: {0} monstros da equipe não estão no nível máximo (Monstros → Subir nível).",
-      "Element": "Leve monstros de {0}: os inimigos aqui são mais de {1}, que tem vantagem sobre {2} da sua equipe.",
-      "Evolve": "Evolua: {0} monstros estão no nível máximo e já podem ganhar uma estrela (Monstros → Evoluir).",
-      "Awaken": "Desperte: {0} monstros da equipe ainda não despertaram (Monstros → Despertar)."
+      "EquipRunes": "Equipe sigilos: {0} vagas de sigilo da equipe estão vazias (Homúnculos → Sigilos).",
+      "UpgradeRunes": "Evolua os sigilos: {0} sigilos da equipe estão abaixo de +{1} (Sigilos → Melhorar).",
+      "LevelUp": "Suba o nível: {0} homúnculos da equipe não estão no nível máximo (Homúnculos → Subir nível).",
+      "Element": "Leve homúnculos de {0}: os inimigos aqui são mais de {1}, que tem vantagem sobre {2} da sua equipe.",
+      "Evolve": "Evolua: {0} homúnculos estão no nível máximo e já podem ganhar uma estrela (Homúnculos → Evoluir).",
+      "Awaken": "Desperte: {0} homúnculos da equipe ainda não despertaram (Homúnculos → Despertar)."
     },
     "effects_help": "O que os efeitos fazem",
     "effects_help_active": "Os efeitos em jogo agora:",
     "effects_help_all": "Nenhum efeito em jogo agora; estes são todos:",
-    "opened": "Abriu no Santuário:",
+    "opened": "Abriu no Observatório:",
     "opened_new": "novo",
     "boss": "Chefe",
     "boss_level": "Nv {0}",
@@ -1214,9 +1174,9 @@
   "destination": {
     "Campaign": "Campanha",
     "Dungeons": "Masmorras",
-    "Summon": "Invocação",
-    "Monsters": "Monstros",
-    "Runes": "Runas",
+    "Summon": "Transmutação",
+    "Monsters": "Homúnculos",
+    "Runes": "Sigilos",
     "Shop": "Loja",
     "Compendium": "Compêndio",
     "Grimoire": "Grimório",
@@ -1242,25 +1202,25 @@
   },
 
   "currency_info": {
-    "mana": "Toda vitória custa Mana; a derrota não custa nada. A Canalização do Santuário recarrega {0} por hora até o dobro do seu máximo ({1}), e a Loja vende mais (pode passar disso).",
-    "essence": "A Essência sobe o nível dos monstros ({0} de experiência por Essência) e paga o Despertar, a evolução e a melhora de runas. Vem das vitórias, da Canalização e de runas vendidas.",
-    "gold": "O Ouro é a moeda rara: vem da Canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. A Loja troca Ouro por Mana ou Pergaminhos.",
-    "scrolls": "Os Pergaminhos Místicos invocam monstros: 1 por invocação, 10 por dez. Vêm da primeira vitória em cada fase da Campanha e da Loja.",
-    "fragments": "Os Fragmentos pagam a evolução (o monstro no nível máximo ganha uma estrela). Vêm de soltar monstros que você não quer."
+    "mana": "Toda vitória custa Mana; a derrota não custa nada. A Canalização do Observatório recarrega {0} por hora até o dobro do seu máximo ({1}), e a Loja vende mais (pode passar disso).",
+    "essence": "A Essência sobe o nível dos homúnculos ({0} de experiência por Essência) e paga o Despertar, a evolução e a melhora de sigilos. Vem das vitórias, da Canalização e de sigilos vendidos.",
+    "gold": "O Ouro é a moeda rara: vem da Canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. A Loja troca Ouro por Mana ou Transmutações.",
+    "scrolls": "Cada Transmutação Alquímica faz uma transmutação: 1 por vez, 10 por dez. Vêm da primeira vitória em cada fase da Campanha e da Loja.",
+    "fragments": "Os Fragmentos pagam a evolução (o homúnculo no nível máximo ganha uma estrela). Vêm de soltar homúnculos que você não quer."
   },
 
   "picker": {
-    "title": "Escolha um monstro",
+    "title": "Escolha um homúnculo",
     "hint": "Toque para escolher; segure para ver o resumo.",
-    "none": "Nenhum monstro"
+    "none": "Nenhum homúnculo"
   },
 
   "summary": {
     "influence": "Influência estelar",
     "level": "Nível {0} de {1}",
     "level_only": "Nível {0}",
-    "catalog": "Ficha do catálogo: estrelas naturais ({0}), nível 1, sem runas.",
-    "sets": "Conjuntos de runas",
+    "catalog": "Ficha do catálogo: estrelas naturais ({0}), nível 1, sem sigilos.",
+    "sets": "Conjuntos de sigilos",
     "skills": "Habilidades",
     "effects": "Efeitos sobre ele",
     "ally": "Aliado",
@@ -1347,7 +1307,7 @@
     "conflict_offline": "Jogo sem conta",
     "conflict_cloud": "Nuvem",
     "conflict_level": "Nível da conta {0}",
-    "conflict_monsters": "{0} monstros",
+    "conflict_monsters": "{0} homúnculos",
     "conflict_stage": "Fase {0} vencida",
     "conflict_no_stage": "Nenhuma fase vencida",
     "conflict_floors": "{0} andares de Masmorra",
@@ -1359,8 +1319,8 @@
     "conflict_wealth": "{0} de Essência · {1} de Ouro",
     "name": "Nome da conta",
     "name_hint": "{0} a {1} letras ou números, sem espaço",
-    "name_text": "É o nome que aparece no Santuário. Ele é único: nenhuma outra conta pode ter o mesmo, nem com outras maiúsculas ou acentos.",
-    "name_prompt": "Sua conta ainda não tem nome. Escolha um: ele aparece no Santuário, e nenhuma outra conta pode ter o mesmo.",
+    "name_text": "É o nome que aparece no Observatório. Ele é único: nenhuma outra conta pode ter o mesmo, nem com outras maiúsculas ou acentos.",
+    "name_prompt": "Sua conta ainda não tem nome. Escolha um: ele aparece no Observatório, e nenhuma outra conta pode ter o mesmo.",
     "name_save": "Salvar",
     "name_later": "Depois",
     "saving": "Salvando…",
@@ -1411,22 +1371,22 @@
     "title": "Treino",
     "battle_title": "Luta de treino",
     "continue": "Continuar",
-    "end_button": "Ao Santuário",
-    "intro": "Esta é uma luta de treino, Conjurador: aqui nada se perde. Seus monstros estão embaixo, à esquerda; os inimigos, em cima, à direita.",
-    "order": "A coluna da esquerda é a ordem de turno: quem tem mais Velocidade age antes. Segure qualquer monstro, em qualquer lugar do jogo, para ver o resumo dele.",
+    "end_button": "Ao Observatório",
+    "intro": "Esta é uma luta de treino, Conjurador: aqui nada se perde. Seus homúnculos estão embaixo, à esquerda; os inimigos, em cima, à direita.",
+    "order": "A coluna da esquerda é a ordem de turno: quem tem mais Velocidade age antes. Segure qualquer homúnculo, em qualquer lugar do jogo, para ver o resumo dele.",
     "basic": "Vez de {0}: as habilidades aparecem embaixo, à direita. Toque na primeira, o básico (sempre pronto), e depois no inimigo aceso.",
     "cooldown": "As outras habilidades são mais fortes, mas depois de usadas esperam alguns turnos: o número no botão diz quantos faltam. Segure uma habilidade para ler o que ela faz e quando ela ajuda.",
     "elements": "Elementos: Água vence Fogo, Fogo vence Vento e Vento vence Água; Luz e Trevas vencem uma à outra. Com vantagem, o golpe tira 25% a mais; contra ela, 25% a menos. Monte a equipe pelos inimigos de cada luta.",
-    "element_pick": "Seus monstros são de Água: ataque o inimigo de Fogo, não o de Vento.",
+    "element_pick": "Seus homúnculos são de Água: ataque o inimigo de Fogo, não o de Vento.",
     "stun": "Efeitos mudam a luta. {0}, de {1}, atordoa: o alvo perde a próxima vez. Use agora e toque no inimigo.",
     "status_seen": "O símbolo junto do inimigo é o efeito, com os turnos que faltam. O botão Efeitos, embaixo à esquerda, lista todos os efeitos da luta, e o ? dele explica cada um.",
     "support": "{0} é de suporte: o básico já cura o aliado mais ferido, e {1} cura todos. Cura e escudo seguram a equipe enquanto os outros batem.",
-    "combo": "Combine os efeitos: com o inimigo atordoado, os outros batem nele sem resposta. Um monstro abre caminho para o outro; é assim que se monta uma equipe.",
+    "combo": "Combine os efeitos: com o inimigo atordoado, os outros batem nele sem resposta. Um homúnculo abre caminho para o outro; é assim que se monta uma equipe.",
     "auto": "Por fim, o Automático, embaixo à esquerda: a equipe luta sozinha, usando a habilidade pronta mais forte. Termine a luta como quiser.",
-    "end": "Muito bem, Conjurador! Agora invoque os seus próprios monstros. Depois, a Campanha espera.",
-    "to_summon": "Invocar",
-    "summon": "Agora, os seus próprios monstros. Toque em Invocar ×10: são dez invocações por {0} Pergaminhos, e a primeira invocação da conta traz o {1} e uma 5★.",
-    "summon_done": "Os seus primeiros monstros! Os mais fortes, o {0} e a 5★ entre eles, já entraram na equipe da Campanha. Toque em {1} para conhecê-los, ou volte ao Santuário: a Campanha espera."
+    "end": "Muito bem, Conjurador! Agora invoque os seus próprios homúnculos. Depois, a Campanha espera.",
+    "to_summon": "Transmutar",
+    "summon": "Agora, os seus próprios homúnculos. Toque em Transmutar ×10: são dez transmutações, por {0} Transmutações Alquímicas, e a primeira da conta traz o {1} e uma 5★.",
+    "summon_done": "Os seus primeiros homúnculos! Os mais fortes, o {0} e a 5★ entre eles, já entraram na equipe da Campanha. Toque em {1} para conhecê-los, ou volte ao Observatório: a Campanha espera."
   },
 
   "mail": {
@@ -1442,16 +1402,16 @@
     "item": {
       "Gold": "Ouro",
       "Mana": "Mana",
-      "Scrolls": "Pergaminhos",
+      "Scrolls": "Transmutações",
       "Essence": "Essência",
       "Fragments": "Fragmentos",
       "ReappraisalGems": "Gemas de Reavaliação",
-      "LightDarkScrolls": "Pergaminhos de Luz e Trevas",
-      "LegendaryScrolls": "Pergaminhos Lendários",
+      "LightDarkScrolls": "Transmutações de Luz e Trevas",
+      "LegendaryScrolls": "Transmutações Lendárias",
       "InfusionCores": "Núcleos de Infusão"
     },
     "gift": {
-      "rune": "Runa {0}",
+      "rune": "Sigilo {0}",
       "any_rarity": "de qualquer raridade",
       "avatar": "Retrato: {0}",
       "unknown": "Um presente que esta versão não conhece"
@@ -1462,34 +1422,34 @@
     "title": "Retrato da conta",
     "change": "Trocar retrato",
     "kind": {
-      "Summon": "Monstros",
+      "Summon": "Homúnculos",
       "Special": "Especiais"
     },
     "hint": {
-      "Summon": "Os seus monstros e os retratos de monstro que chegaram de recompensa. A forma desperta aparece quando você tem uma cópia desperta.",
-      "Special": "Retratos que não são monstros: o padrão do jogo e os que chegam de recompensa."
+      "Summon": "Os seus homúnculos e os retratos de homúnculo que chegaram de recompensa. A forma desperta aparece quando você tem uma cópia desperta.",
+      "Special": "Retratos que não são homúnculos: o padrão do jogo e os que chegam de recompensa."
     },
     "special": {
       "default": "Padrão",
       "astronaut_helmet": "Capacete de Astronauta",
-      "rune": "Runa",
+      "classic": "Clássico",
       "natural_1": "1 Natural",
       "natural_20": "20 Natural",
       "plague_doctor": "Doutor Peste"
     },
-    "empty": "Invoque monstros para escolher entre eles o retrato da conta."
+    "empty": "Transmute homúnculos para escolher entre eles o retrato da conta."
   },
 
   "book": {
-    "title": "Grimório do Invocador",
+    "title": "Grimório do Alquimista",
     "chapter": {
-      "Summoner": "Invocador",
+      "Summoner": "Alquimista",
       "Dungeons": "Masmorras",
       "Sky": "Céu",
       "Seals": "Selos"
     },
-    "unnamed": "Invocador sem nome",
-    "since": "Invocador desde {0}",
+    "unnamed": "Alquimista sem nome",
+    "since": "Alquimista desde {0}",
     "day": "1 dia de estudo",
     "days": "{0} dias de estudo",
     "level": "Nível {0}",
@@ -1498,13 +1458,13 @@
     "max_level": "A conta chegou ao nível {0}, o máximo: um terço da experiência das vitórias vira Essência.",
     "of": "{0} de {1}",
     "records": "Registros",
-    "records_hint": "O que este invocador já fez.",
+    "records_hint": "O que este transmutador já fez.",
     "campaign": "Campanha",
-    "pulls": "Invocações feitas",
-    "monsters": "Monstros",
+    "pulls": "Transmutações feitas",
+    "monsters": "Homúnculos",
     "families": "Famílias conhecidas",
     "awakened": "Despertos",
-    "runes": "Runas",
+    "runes": "Sigilos",
     "furthest": "Mais longe no céu",
     "seals": "Selos",
     "dungeons_hint": "Até que andar cada uma já foi vencida, e a equipe do melhor tempo do andar mais fundo.",
@@ -1526,7 +1486,7 @@
       "all_dungeons": "Todas as Masmorras",
       "northern_sky": "O céu do norte",
       "whole_sky": "O céu inteiro",
-      "pulls": "Cem invocações",
+      "pulls": "Cem transmutações",
       "families": "Meio bestiário",
       "awakened": "O primeiro Despertar",
       "six_stars": "Seis estrelas",
@@ -1540,11 +1500,11 @@
       "all_dungeons": "Vença o último andar das {0} Masmorras",
       "northern_sky": "Alcance a constelação {0}, a última das Boreais",
       "whole_sky": "Alcance a última das {0} constelações",
-      "pulls": "Faça {0} invocações",
-      "families": "Tenha monstros de {0} famílias",
-      "awakened": "Desperte um monstro",
-      "six_stars": "Evolua um monstro até {0}★",
-      "legend": "Tenha um monstro de 5★ natural",
+      "pulls": "Faça {0} transmutações",
+      "families": "Tenha homúnculos de {0} famílias",
+      "awakened": "Desperte um homúnculo",
+      "six_stars": "Evolua um homúnculo até {0}★",
+      "legend": "Tenha um homúnculo de 5★ natural",
       "account": "Leve a conta ao nível {0}"
     }
   },
@@ -1592,8 +1552,8 @@
     "empty": "O chat é ao vivo: aqui aparece o que se diz enquanto você está conectado. Nada fica guardado, nem no servidor.",
     "placeholder": "Escreva uma mensagem",
     "send": "Enviar",
-    "feat_summon": "{0} conseguiu um novo monstro 5★!",
-    "feat_rune": "{0} alcançou +15 em uma runa!",
+    "feat_summon": "{0} conseguiu um novo homúnculo 5★!",
+    "feat_rune": "{0} alcançou +15 em um sigilo!",
     "rune_by": "Levada a +15 por {0}.",
     "error_rate_limited": "Muitas mensagens seguidas. Espere alguns segundos.",
     "error_name_required": "Sua conta ainda não tem nome: escolha um para falar no chat.",

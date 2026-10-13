@@ -205,7 +205,7 @@ namespace Sigilos.Tests
 		/// </summary>
 		private static PlayerState Player(DungeonDefinition dungeon, int cleared)
 		{
-			var player = TestData.PlayerWith("phoenix_fire");
+			var player = TestData.PlayerWith("wizard_fire");
 			player.AccountLevel = Account.MaxLevel;
 			player.DungeonFloors[dungeon.Id] = cleared;
 			return player;

@@ -8,7 +8,7 @@ namespace Sigilos.Core.Battle
 	/// <summary>
 	/// Quem pode ser escolhido e quem cada <see cref="TargetKind"/> atinge.
 	///
-	/// - Quem tem uma regra que obriga o alvo (Provocação) só mira nessa unidade, enquanto ela estiver viva.
+	/// - Quem tem Provocar (um efeito positivo) puxa os ataques únicos do outro lado, enquanto estiver vivo.
 	/// - Quem está oculto não pode ser alvo único, a não ser que todos os candidatos estejam ocultos.
 	/// - Os ao acaso (RandomAlly, RandomEnemy) sorteiam entre os de pé, oculto ou não.
 	/// </summary>
@@ -19,11 +19,10 @@ namespace Sigilos.Core.Battle
 		{
 			var alive = opponents.Where(u => u.IsAlive).ToList();
 
-			foreach (var rule in caster.Rules())
-			{
-				if (rule.Behavior.ForcedTarget(rule) is { } forced && alive.Contains(forced))
-					return new[] { forced };
-			}
+			// Provocar: com mais de um provocador, vale o primeiro da fila do time (regra fixa, sem sorteio).
+			var taunter = alive.FirstOrDefault(u => u.Any(behavior => behavior.DrawsAttacks));
+			if (taunter != null)
+				return new[] { taunter };
 
 			var visible = alive.Where(u => !u.Any(behavior => behavior.HidesOwner)).ToList();
 			return visible.Count > 0 ? visible : alive;

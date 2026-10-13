@@ -35,8 +35,8 @@
       {
         "name": "Corrente",
         "effects": [
-          {"kind": "Damage", "power": 3.5},
-          {"kind": "Status", "status": "Taunt", "chance": 0.8}
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+          {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.8}
         ]
       },
       {
@@ -55,7 +55,7 @@
     "role": "Defense",
     "rarity": 3,
     "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-    "healthScale": 9,
+    "healthScale": 6,
     "attackScale": 1.5,
     "defenseScale": 3.5,
     "image": "rock_golem",
@@ -63,7 +63,7 @@
       {
         "name": "Punho de Pedra",
         "effects": [
-          {"kind": "Damage", "power": 3.5},
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
           {"kind": "Status", "target": "Self", "status": "DefenseUp", "chance": 1, "turns": 2}
         ]
       },
@@ -77,10 +77,7 @@
       },
       {
         "name": "Núcleo Rúnico",
-        "passive": {"kind": "StatusOrEffectEachTurn"},
-        "effects": [
-          {"kind": "Heal", "target": "Self", "power": 0.06}
-        ]
+        "passive": {"kind": "RunicCore", "value": 0.15}
       }
     ]
   },
@@ -111,7 +108,7 @@
         ]
       },
       {
-        "name": "Runa Partida",
+        "name": "Sigilo Partido",
         "passive": {"kind": "StatusOrEffectOnDeath"},
         "effects": [
           {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 4},
@@ -164,8 +161,8 @@
         "name": "Mordida Ardente",
         "effects": [
           {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "scope": "Debuffs", "bonus": "Damage", "power": 0.5},
-          {"kind": "Damage", "power": 3.4},
-          {"kind": "Status", "status": "Affliction", "chance": 0.6, "turns": 2}
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.4},
+          {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2}
         ]
       },
       {
@@ -199,7 +196,7 @@
       {
         "name": "Toque do Túmulo",
         "effects": [
-          {"kind": "Damage", "power": 3.5, "drain": 0.4}
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.5, "drain": 0.4}
         ]
       },
       {
@@ -232,8 +229,8 @@
       {
         "name": "Tentáculo",
         "effects": [
-          {"kind": "Damage", "power": 3.5},
-          {"kind": "Impeto", "power": -20, "chance": 0.5},
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+          {"kind": "Impeto", "target": "AllEnemies", "power": -20, "chance": 0.5},
           {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
         ]
       },
@@ -268,7 +265,7 @@
       {
         "name": "Martelada",
         "effects": [
-          {"kind": "Damage", "power": 3.6}
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.6}
         ]
       },
       {
@@ -295,8 +292,8 @@
       {
         "name": "Mordida das Profundezas",
         "effects": [
-          {"kind": "Damage", "power": 3.6},
-          {"kind": "Impeto", "power": -25, "chance": 0.5}
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.6},
+          {"kind": "Impeto", "target": "AllEnemies", "power": -25, "chance": 0.5}
         ]
       },
       {
@@ -322,8 +319,8 @@
       {
         "name": "Sussurro do Fim",
         "effects": [
-          {"kind": "Damage", "power": 3.6},
-          {"kind": "Status", "status": "Curse", "chance": 0.4, "turns": 2}
+          {"kind": "Damage", "target": "AllEnemies", "power": 3.6},
+          {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.4, "turns": 2}
         ]
       },
       {
@@ -347,12 +344,12 @@
     "image": "bear",
     "skills": [
       { "name": "Patada", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.5},
-        {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.2}
       ] },
       { "name": "Abraço de Urso", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "Target", "power": 4.2},
-        {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.6, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 4.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.6, "turns": 2}
       ] },
       { "name": "Hibernar", "cooldown": 5, "effects": [
         {"kind": "Heal", "target": "Self", "power": 0.2},
@@ -370,8 +367,8 @@
     "image": "ram",
     "skills": [
       { "name": "Cabeçada", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.5},
-        {"kind": "Impeto", "target": "Target", "power": -20}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.5},
+        {"kind": "Impeto", "target": "AllEnemies", "power": -20}
       ] },
       { "name": "Investida", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
@@ -392,7 +389,7 @@
     "image": "bull",
     "skills": [
       { "name": "Chifrada", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.6}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.6}
       ] },
       { "name": "Estouro", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.4},
@@ -413,8 +410,8 @@
     "image": "hunter",
     "skills": [
       { "name": "Flecha Estelar", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.4},
-        {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.4},
+        {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Chuva de Flechas", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 1.1, "hits": 2}
@@ -435,7 +432,7 @@
     "image": "unicorn",
     "skills": [
       { "name": "Chifre de Luz", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.2},
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.2},
         {"kind": "Heal", "target": "LowestAlly", "power": 0.1}
       ] },
       { "name": "Galope Puro", "cooldown": 4, "effects": [
@@ -457,12 +454,12 @@
     "image": "crab",
     "skills": [
       { "name": "Pinça", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.4},
-        {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.4},
+        {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Esmagar Casco", "cooldown": 4, "effects": [
-        {"kind": "Damage", "target": "Target", "power": 4.2},
-        {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.4}
+        {"kind": "Damage", "target": "AllEnemies", "power": 4.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
       ] },
       { "name": "Casco Duro", "passive": {"kind": "DamageReduction", "value": 0.15} }
     ]
@@ -477,8 +474,8 @@
     "image": "lion",
     "skills": [
       { "name": "Garra de Nemeia", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.6},
-        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.6},
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Rugido", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 1.6},
@@ -497,8 +494,8 @@
     "image": "hydra",
     "skills": [
       { "name": "Mordidas", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
-        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 1.3, "hits": 3},
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Veneno das Cabeças", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 1.6},
@@ -519,8 +516,8 @@
     "image": "scales",
     "skills": [
       { "name": "Peso", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.2},
-        {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.2},
+        {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Juízo", "cooldown": 4, "effects": [
         {"kind": "EqualizeHealth", "target": "AllAllies"},
@@ -541,13 +538,13 @@
     "image": "scorpion",
     "skills": [
       { "name": "Pinça Venenosa", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.4},
-        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.4},
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Ferroada", "cooldown": 3, "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.8},
-        {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.8, "turns": 3},
-        {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.5}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.8},
+        {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 3},
+        {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.5}
       ] },
       { "name": "Carapaça Venenosa", "passive": {"kind": "StatusOrEffectOnAttacker"}, "effects": [
         {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
@@ -564,8 +561,8 @@
     "image": "sea_goat",
     "skills": [
       { "name": "Chifres", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.4},
-        {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.4},
+        {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Maré Montanhosa", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 2.0},
@@ -583,7 +580,7 @@
     "image": "centaur",
     "skills": [
       { "name": "Flecha de Quíron", "effects": [
-        {"kind": "Damage", "target": "Target", "power": 3.4},
+        {"kind": "Damage", "target": "AllEnemies", "power": 3.4},
         {"kind": "Heal", "target": "LowestAlly", "power": 0.08}
       ] },
       { "name": "Saraivada", "cooldown": 4, "effects": [

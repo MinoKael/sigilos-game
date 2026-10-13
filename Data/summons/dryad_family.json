@@ -4,6 +4,7 @@
   "name": "Dríades",
   "star_grade": 4,
   "image": "dryad",
+  "active": false,
   "variations": {
     "fire": {
       "variation_id": "dryad_fire",
@@ -185,7 +186,7 @@
           "name": "Abraço da Floresta",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.6, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1},
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
           ],
           "levels": [
@@ -194,7 +195,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Taunt", "chance": 0.8, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.8, "turns": 1},
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
             {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
           ]

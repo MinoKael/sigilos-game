@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Summoning;
 
@@ -68,7 +70,8 @@ namespace Sigilos.Tests
 				{
 					player.PullsSinceFiveStar = 0;
 					var summon = SummonRitual.Roll(random, database, player, kind);
-					Assert.True(SummonRates.Allows(kind, summon.Element), $"{kind}: {summon.Id} é de um elemento que o pergaminho não tira");
+					var mysticLightDark = kind == ScrollKind.Mystic && SummonRates.MysticLightDarkEligible(summon);
+					Assert.True(SummonRates.Allows(kind, summon.Element) || mysticLightDark, $"{kind}: {summon.Id} é de um elemento que o pergaminho não tira");
 					counts[summon.Rarity]++;
 				}
 
@@ -80,12 +83,47 @@ namespace Sigilos.Tests
 			}
 		}
 
+		/// <summary>
+		/// Transmutação Alquímica: 0,1% de LD no total, tirado da fatia das 3★ e repartido por igual entre os
+		/// LD elegíveis (0,1% / N); as outras taxas não mudam.
+		/// </summary>
+		[Test]
+		private static void MysticLightDarkIsATenthOfAPercentSharedEvenly()
+		{
+			var database = TestData.LoadReal();
+			var player = Player();
+			var eligible = database.Summons.Where(SummonRates.MysticLightDarkEligible).ToList();
+			Assert.True(eligible.Count > 0, "há LD de 3★ elegível");
+			Assert.True(eligible.All(s => s.Element is Element.Light or Element.Dark && s.Rarity == 3), "só LD de 3★");
+			Assert.Near(0.001, SummonRates.MysticLightDark, "a taxa base é 0,1%", 1e-12);
+
+			const int pulls = 400_000;
+			var random = new Random(7);
+			var hits = new Dictionary<string, int>();
+			var five = 0;
+			for (var i = 0; i < pulls; i++)
+			{
+				player.PullsSinceFiveStar = 0;
+				player.TotalPulls = 5;
+				var summon = SummonRitual.Roll(random, database, player, ScrollKind.Mystic);
+				if (summon.Rarity == 5)
+					five++;
+				if (summon.Element is Element.Light or Element.Dark)
+					hits[summon.Id] = hits.GetValueOrDefault(summon.Id) + 1;
+			}
+
+			var total = hits.Values.Sum() / (double)pulls;
+			Assert.Near(SummonRates.MysticLightDark, total, "LD no total", 0.0005);
+			Assert.True(hits.Keys.All(id => eligible.Any(s => s.Id == id)), "só os elegíveis saem");
+			Assert.Near(SummonRates.Of(ScrollKind.Mystic).FiveStar, five / (double)pulls, "a 5★ não mudou", 0.002);
+		}
+
 		[Test]
 		private static void RepeatedSummonIsANewUnawakenedCopy()
 		{
 			var database = TestData.LoadReal();
 			var player = Player();
-			var summon = database.Summon("phoenix_fire");
+			var summon = database.Summon("wizard_fire");
 
 			var first = SummonRitual.Receive(player, summon);
 			first.Monster.Awakened = true;
@@ -104,7 +142,7 @@ namespace Sigilos.Tests
 		{
 			var database = TestData.LoadReal();
 			var player = Player();
-			var summon = database.Summon("imp_fire");
+			var summon = database.Summon("wolf_fire");
 			for (var i = 0; i < player.CollectionCapacity; i++)
 				SummonRitual.Receive(player, summon);
 

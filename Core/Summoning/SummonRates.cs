@@ -16,6 +16,25 @@ namespace Sigilos.Core.Summoning
 			_ => (0.01, 0.09),
 		};
 
+		/// <summary>
+		/// Transmutação Alquímica (Pergaminho Místico): a chance, no total, de sair um homúnculo de Luz ou Trevas
+		/// (0,001 = 0,1%). Sai da fatia das 3★: com 90% de 3★, 89,9% ficam comuns e 0,1% viram LD. Ela se reparte
+		/// por igual entre os LD elegíveis (<see cref="MysticLightDarkEligible"/>): com N elegíveis, cada um tem
+		/// 0,1% / N. É o único lugar com esse número; a tela de Transmutação lê daqui.
+		/// </summary>
+		public const double MysticLightDark = 0.001;
+
+		/// <summary>Os LD que o Místico pode dar.</summary>
+		public static bool MysticLightDarkEligible(SummonDefinition summon) =>
+			summon.Element is Element.Light or Element.Dark;
+
+		/// <summary>A chance de 3★ do pergaminho (o que sobra de 5★ e 4★), antes do LD do Místico.</summary>
+		public static double ThreeStar(ScrollKind kind)
+		{
+			var (five, four) = Of(kind);
+			return 1 - five - four;
+		}
+
 		/// <summary>O pergaminho tira esta variante: o de Luz e Trevas, só Luz e Trevas; os outros, só Fogo, Água e Vento.</summary>
 		public static bool Allows(ScrollKind kind, Element element) =>
 			kind == ScrollKind.LightDark ? element is Element.Light or Element.Dark : element is not (Element.Light or Element.Dark);
@@ -34,7 +53,7 @@ namespace Sigilos.Core.Summoning
 		/// A primeira invocação da conta traz sempre esta variante; a segunda, uma 5★. As duas cabem na
 		/// primeira ×10 de Pergaminhos Místicos, a que o tutorial ensina.
 		/// </summary>
-		public const string FirstSummon = "knight_fire";
+		public const string FirstSummon = "miner_fire";
 
 		public const int SingleCost = 1;
 		public const int TenCost = 10;

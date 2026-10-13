@@ -36,7 +36,7 @@ namespace Sigilos.Core.Content
 		/// </summary>
 		public IReadOnlyDictionary<RuneRarity, double> Rarities { get; init; } = new Dictionary<RuneRarity, double>();
 
-		/// <summary>A chance, em %, de a vitória soltar também um Pergaminho Místico.</summary>
+		/// <summary>A chance, em %, de a vitória soltar um Pergaminho Místico (Transmutação Alquímica). Exclusivo com os outros dois drops especiais.</summary>
 		public double ScrollChance { get; init; }
 
 		/// <summary>Marco: Pergaminhos Lendários da primeira vitória do andar.</summary>
@@ -48,8 +48,14 @@ namespace Sigilos.Core.Content
 		/// <summary>Marco: Núcleos de Infusão da primeira vitória do andar.</summary>
 		public int FirstClearCores { get; init; }
 
-		/// <summary>A chance, em %, de qualquer vitória soltar também um Núcleo de Infusão.</summary>
+		/// <summary>A chance, em %, de qualquer vitória soltar um Núcleo de Infusão.</summary>
 		public double CoreChance { get; init; }
+
+		/// <summary>
+		/// A chance, em %, de qualquer vitória soltar um Núcleo de Fragmento (<see cref="Progression.RewardDrops.FragmentCoreValue"/>
+		/// Fragmentos). Núcleo de Infusão, Pergaminho e Núcleo de Fragmento são exclusivos numa mesma vitória.
+		/// </summary>
+		public double FragmentChance { get; init; }
 
 		/// <summary>Masmorra de pedras: quantas saem.</summary>
 		public int ToolCount { get; init; } = 1;
@@ -60,6 +66,9 @@ namespace Sigilos.Core.Content
 		/// <summary>O que vence o andar: nas Masmorras, derrubar o chefe vence na hora, mesmo com lacaios em pé.</summary>
 		public VictoryCondition Victory { get; init; } = VictoryCondition.Boss;
 
-		public Encounter Encounter => new(Stars, Level, Waves, Scale, Victory);
+		/// <summary>As regras da Masmorra (<see cref="DungeonDefinition.Rules"/>), postas aqui quando o banco monta.</summary>
+		public IReadOnlyList<InfluenceRule> Rules { get; init; } = new List<InfluenceRule>();
+
+		public Encounter Encounter => new(Stars, Level, Waves, Scale, Victory, Rules.Count > 0 ? Rules : null);
 	}
 }
