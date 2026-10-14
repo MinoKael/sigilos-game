@@ -25,20 +25,63 @@ namespace Sigilos.UI.Screens
 
 			body.AddChild(Facts(skill, level, awakened, locked));
 
-			if (skill.Flavor.Length > 0)
-			{
-				var flavor = new Label { Name = "Flavor", Text = skill.Flavor, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(TextWidth, 0) };
-				flavor.AddThemeFontOverride("font", GameTheme.Serif);
-				flavor.AddThemeFontSizeOverride("font_size", FontSize.Note);
-				flavor.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.45f));
-				body.AddChild(flavor);
-			}
-
+			AddFlavor(body, skill);
 			body.AddChild(RichText.Label(Texts.Describe(skill, awakened), TextWidth).Named("Description"));
 
 			if (skill.Levels.Count > 0)
 				body.AddChild(Upgrades(skill, level));
 			return dialog;
+		}
+
+		/// <summary>
+		/// A janela de uma habilidade que o Despertar melhora: o antes e o depois, um sobre o outro, com a
+		/// recarga e o nível de agora e os aprimoramentos como em <see cref="Open"/>.
+		/// </summary>
+		public static Dialog OpenAwakening(Control anchor, SkillDefinition skill, int level)
+		{
+			var dialog = Dialog.Open(anchor, skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name, Width, anchor, "SkillDialog");
+			var body = dialog.Body;
+			body.AddChild(Facts(skill, level, true, false));
+			AddFlavor(body, skill);
+
+			body.AddChild(Stage(T("skill.before_awakening"), Palette.TextFaded, Texts.DescribeBeforeAwakening(skill), "Before"));
+			body.AddChild(Stage(T("skill.after_awakening"), Palette.Awakened, Texts.Describe(skill, true), "After"));
+
+			if (skill.Levels.Count > 0)
+				body.AddChild(Upgrades(skill, level));
+			return dialog;
+		}
+
+		/// <summary>A janela da Liderança, colada no pentágono: o que ela dá à equipe quando o monstro é o Líder.</summary>
+		public static Dialog OpenLeader(Control anchor, LeaderDefinition leader)
+		{
+			var dialog = Dialog.Open(anchor, T("monsters.leader_title"), 420, anchor, "LeaderDialog");
+			dialog.Body.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 380).Named("Text"));
+			return dialog;
+		}
+
+		private static Control Stage(string title, Color color, string description, string name)
+		{
+			var box = new VBoxContainer { Name = name };
+			box.AddThemeConstantOverride("separation", Space.Hair);
+			var heading = new Label { Name = "Title", Text = title };
+			heading.AddThemeFontSizeOverride("font_size", FontSize.Detail);
+			heading.AddThemeColorOverride("font_color", color);
+			box.AddChild(heading);
+			box.AddChild(RichText.Label(description, TextWidth).Named("Description"));
+			return box;
+		}
+
+		private static void AddFlavor(VBoxContainer body, SkillDefinition skill)
+		{
+			if (skill.Flavor.Length == 0)
+				return;
+
+			var flavor = new Label { Name = "Flavor", Text = skill.Flavor, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(TextWidth, 0) };
+			flavor.AddThemeFontOverride("font", GameTheme.Serif);
+			flavor.AddThemeFontSizeOverride("font_size", FontSize.Note);
+			flavor.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.45f));
+			body.AddChild(flavor);
 		}
 
 		/// <summary>A linha do que a habilidade é: recarga ou passiva, o nível e o aviso de travada.</summary>

@@ -13,8 +13,16 @@ namespace Sigilos.UI.Components
 	/// </summary>
 	public static class SkillTile
 	{
+		/// <summary>Quantos ícones cabem numa fileira (até quatro habilidades e a Liderança) e o lado de cada um.</summary>
+		public const int PerRow = 5;
+
+		public const float DefaultSize = 72;
+
 		private const float BadgeSize = 24;
 		private const float CrownSize = 26;
+
+		/// <summary>A grade onde os ícones ficam, numa fileira só.</summary>
+		public static GridContainer Grid() => Layout.Grid(PerRow, Space.Wide);
 
 		/// <summary>O que a pastilha escreve: os aprimoramentos já recebidos, que são o nível menos o primeiro.</summary>
 		public static string Upgrades(int level) => $"+{Math.Max(0, level - 1)}";

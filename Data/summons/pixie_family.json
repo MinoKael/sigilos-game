@@ -11,18 +11,8 @@
       "name": "Fada de Fogo",
       "element": "Fire",
       "role": "Support",
-      "stats": {
-        "hp": 7275,
-        "atk": 463,
-        "def": 543,
-        "spd": 98
-      },
-      "awakened_stats": {
-        "hp": 8085,
-        "atk": 514,
-        "def": 603,
-        "spd": 99
-      },
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
         "name": "Dalha",
         "skill": {
@@ -30,30 +20,12 @@
           "image": "fogo_fatuo",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "AttackUp",
-              "chance": 1,
-              "turns": 2
-            },
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "DefenseUp",
-              "chance": 1,
-              "turns": 2
-            }
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "chance": 1, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "chance": 1, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       },
@@ -62,37 +34,14 @@
           "name": "Pó de Faísca",
           "image": "po_de_faisca",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 0.77,
-              "hits": 3
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Blind",
-              "chance": 0.3,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 0.77, "hits": 3},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -100,27 +49,12 @@
           "image": "cura_cura_cura",
           "cooldown": 3,
           "effects": [
-            {
-              "kind": "Heal",
-              "target": "Target",
-              "power": 0.15
-            },
-            {
-              "kind": "ChangeDuration",
-              "target": "Target",
-              "scope": "Buffs",
-              "turns": 1
-            }
+            {"kind": "Heal", "target": "Target", "power": 0.15},
+            {"kind": "ChangeDuration", "target": "Target", "scope": "Buffs", "turns": 1}
           ],
           "levels": [
-            {
-              "kind": "Recovery",
-              "value": 0.15
-            },
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            }
+            {"kind": "Recovery", "value": 0.15},
+            {"kind": "Recovery", "value": 0.1}
           ]
         }
       ]
@@ -130,27 +64,14 @@
       "name": "Fada de Água",
       "element": "Water",
       "role": "Support",
-      "stats": {
-        "hp": 7275,
-        "atk": 463,
-        "def": 543,
-        "spd": 98
-      },
-      "awakened_stats": {
-        "hp": 8085,
-        "atk": 514,
-        "def": 603,
-        "spd": 99
-      },
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
         "name": "Valho",
         "skill": {
           "name": "Pó de Pixie",
           "image": "po_de_pixie",
-          "passive": {
-            "kind": "CleanseAllyEachTurn",
-            "value": 0.5
-          }
+          "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
         }
       },
       "skills": [
@@ -158,34 +79,14 @@
           "name": "Gotinha",
           "image": "gotinha",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.2
-            },
-            {
-              "kind": "Heal",
-              "target": "LowestAlly",
-              "power": 0.03
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.03}
           ],
           "levels": [
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -193,25 +94,12 @@
           "image": "orvalho_da_manha",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Heal",
-              "target": "AllAllies",
-              "power": 0.08
-            }
+            {"kind": "Heal", "target": "AllAllies", "power": 0.08}
           ],
           "levels": [
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -221,27 +109,14 @@
       "name": "Fada de Vento",
       "element": "Wind",
       "role": "Support",
-      "stats": {
-        "hp": 7275,
-        "atk": 463,
-        "def": 543,
-        "spd": 98
-      },
-      "awakened_stats": {
-        "hp": 8085,
-        "atk": 514,
-        "def": 603,
-        "spd": 99
-      },
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
         "name": "Cardo",
         "skill": {
           "name": "Pó de Pixie",
           "image": "po_de_pixie",
-          "passive": {
-            "kind": "CleanseAllyEachTurn",
-            "value": 0.5
-          }
+          "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
         }
       },
       "skills": [
@@ -249,34 +124,14 @@
           "name": "Cócegas",
           "image": "cocegas",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.2
-            },
-            {
-              "kind": "Impeto",
-              "target": "Target",
-              "power": -10
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Impeto", "target": "Target", "power": -10}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.15
-            }
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
           ]
         },
         {
@@ -284,23 +139,11 @@
           "image": "circulo_de_fadas",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "SpeedUp",
-              "turns": 2
-            },
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 10
-            }
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 10}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -310,27 +153,14 @@
       "name": "Fada de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {
-        "hp": 7275,
-        "atk": 463,
-        "def": 543,
-        "spd": 98
-      },
-      "awakened_stats": {
-        "hp": 8085,
-        "atk": 514,
-        "def": 603,
-        "spd": 99
-      },
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
       "awakening": {
         "name": "Cintil",
         "skill": {
           "name": "Pó de Pixie",
           "image": "po_de_pixie",
-          "passive": {
-            "kind": "CleanseAllyEachTurn",
-            "value": 0.5
-          }
+          "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
         }
       },
       "skills": [
@@ -338,35 +168,14 @@
           "name": "Brilhinho",
           "image": "brilhinho",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.2
-            },
-            {
-              "kind": "Shield",
-              "target": "LowestAlly",
-              "power": 0.03,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Shield", "target": "LowestAlly", "power": 0.03, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -374,26 +183,12 @@
           "image": "encanto",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.08,
-              "turns": 2
-            }
+            {"kind": "Shield", "target": "AllAllies", "power": 0.08, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -403,18 +198,8 @@
       "name": "Fada de Trevas",
       "element": "Dark",
       "role": "Attack",
-      "stats": {
-        "hp": 6420,
-        "atk": 600,
-        "def": 427,
-        "spd": 110
-      },
-      "awakened_stats": {
-        "hp": 7140,
-        "atk": 668,
-        "def": 476,
-        "spd": 111
-      },
+      "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
+      "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
       "awakening": {
         "name": "Urtia",
         "skill": {
@@ -422,30 +207,12 @@
           "image": "ma_sorte",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "Curse",
-              "chance": 0.6,
-              "turns": 2
-            },
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "AttackDown",
-              "chance": 0.4,
-              "turns": 2
-            }
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       },
@@ -454,36 +221,14 @@
           "name": "Pó de Feitiço",
           "image": "po_de_feitico",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.2
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Curse",
-              "chance": 0.2,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -491,31 +236,13 @@
           "image": "pesadelo",
           "cooldown": 3,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 3.43
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Stun",
-              "chance": 0.3
-            }
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.3}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]

@@ -325,6 +325,10 @@ namespace Sigilos.UI
 			return skill.AwakenedEffects.Count > 0 ? $"{basic}\n{T("skill.awakened", Describe(skill.AwakenedEffects))}" : basic;
 		}
 
+		/// <summary>O que a habilidade faz antes do Despertar, sem a linha do que ele muda (o "antes" do antes e depois).</summary>
+		public static string DescribeBeforeAwakening(SkillDefinition skill) =>
+			skill.Passive is { } passive ? Describe(passive, false, skill.Effects) : Describe(skill.Effects);
+
 		/// <summary>"Habilidade 2 · Selo Rompido (recarga 3) · Nv 1/4", "Passiva · Das Cinzas".</summary>
 		public static string SkillHeader(SkillDefinition skill, int index, int level, bool awakened)
 		{

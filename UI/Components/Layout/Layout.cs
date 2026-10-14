@@ -126,25 +126,28 @@ namespace Sigilos.UI.Components
             Capsule(NodeName(icon), Medal(Art.Icon(icon), ink ?? Palette.Gold, 24).Named("Icon"), value, caption, labelMinimumSize);
 
         /// <summary>A cápsula labeled com um planeta no lugar do símbolo.</summary>
-        public static PanelContainer Labeled(Core.Content.Planet? planet, string value, string caption, Color? ink = null) =>
-			Capsule(planet?.ToString() ?? "Symbol", new PlanetSymbol(planet, 22, ink ?? Palette.Gold) { Name = "Planet" }, value, caption, default);
+        public static PanelContainer Labeled(Core.Content.Planet? planet, string value, string caption, Color? ink = null, bool compact = false) =>
+			Capsule(planet?.ToString() ?? "Symbol", new PlanetSymbol(planet, compact ? 16 : 22, ink ?? Palette.Gold) { Name = "Planet" }, value, caption, default, compact);
 
 		/// <summary>A cápsula labeled com qualquer desenho (efeito, criatura).</summary>
 		public static PanelContainer Labeled(Texture2D? icon, string value, string caption, Color? ink = null) =>
 			Capsule(Art.NameOf(icon) is { } name ? NodeName(name) : "Chip", Medal(icon, ink ?? Palette.Gold, 24).Named("Icon"), value, caption, default);
 
 		/// <summary>A cápsula: o símbolo, o número (<c>Value</c>) e, se houver, o que ele é (<c>Caption</c>), numa fileira (<c>Row</c>).</summary>
-		private static PanelContainer Capsule(string name, Control icon, string value, string caption, Vector2 labelMinimumSize)
+		private static PanelContainer Capsule(string name, Control icon, string value, string caption, Vector2 labelMinimumSize, bool compact = false)
 		{
 			var capsule = new PanelContainer { Name = name, MouseFilter = Control.MouseFilterEnum.Ignore };
-			capsule.AddThemeStyleboxOverride("panel", Pills.Carved(16, 5, 12));
+			var box = Pills.Carved(compact ? 12 : 16, compact ? 4 : 5, compact ? 8 : 12);
+			if (compact)
+				box.ContentMarginTop = box.ContentMarginBottom = 1;
+			capsule.AddThemeStyleboxOverride("panel", box);
 			var row = new HBoxContainer { Name = "Row", MouseFilter = Control.MouseFilterEnum.Ignore };
 			row.AddThemeConstantOverride("separation", Space.Small);
 			row.AddChild(icon);
 			if (value.Length > 0)
 			{
 				var label = new Label { Name = "Value", Text = value, ThemeTypeVariation = GameTheme.Number, MouseFilter = Control.MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
-				label.AddThemeFontSizeOverride("font_size", FontSize.Compact);
+				label.AddThemeFontSizeOverride("font_size", compact ? FontSize.Small : FontSize.Compact);
 				label.CustomMinimumSize = labelMinimumSize;
 				label.HorizontalAlignment = HorizontalAlignment.Right;
 				row.AddChild(label);
@@ -153,6 +156,8 @@ namespace Sigilos.UI.Components
 			if (caption.Length > 0)
 			{
 				var text = new Label { Name = "Caption", Text = caption, ThemeTypeVariation = GameTheme.Faded, MouseFilter = Control.MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
+				if (compact)
+					text.AddThemeFontSizeOverride("font_size", FontSize.Small);
 				row.AddChild(text);
 			}
 

@@ -12,58 +12,23 @@
       "name": "Cavaleiro de Fogo",
       "element": "Fire",
       "role": "Attack",
-      "stats": {
-        "hp": 8820,
-        "atk": 687,
-        "def": 534,
-        "spd": 102
-      },
-      "awakened_stats": {
-        "hp": 9645,
-        "atk": 751,
-        "def": 583,
-        "spd": 103
-      },
-      "leader": {
-        "stat": "Attack",
-        "value": 0.15
-      },
-      "awakening": { "name": "Sir Lance" },
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
+      "leader": {"stat": "Attack", "value": 0.15},
+      "awakening": {"name": "Sir Lance"},
       "skills": [
         {
           "name": "Lâmina Ardente",
           "image": "lamina_ardente",
           "effects": [
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "DefenseBreak",
-              "chance": 0.4,
-              "turns": 1
-            },
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.69
-            }
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.4, "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 2.69}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            }
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1}
           ]
         },
         {
@@ -71,37 +36,16 @@
           "image": "carga_flamejante",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 1.96
-            }
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 2.94,
-              "ignoreDefense": 0.3
-            }
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.94, "ignoreDefense": 0.3}
           ]
         },
         {
@@ -109,36 +53,14 @@
           "image": "juramento_em_chamas",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 2.45
-            },
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "Affliction",
-              "chance": 0.5,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.15
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -148,58 +70,23 @@
       "name": "Cavaleiro de Água",
       "element": "Water",
       "role": "HP",
-      "stats": {
-        "hp": 10230,
-        "atk": 587,
-        "def": 549,
-        "spd": 99
-      },
-      "awakened_stats": {
-        "hp": 11175,
-        "atk": 642,
-        "def": 599,
-        "spd": 100
-      },
-      "leader": {
-        "stat": "Health",
-        "value": 0.15
-      },
-      "awakening": { "name": "Lady Beatrix" },
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.15},
+      "awakening": {"name": "Lady Beatrix"},
       "skills": [
         {
           "name": "Golpe de Escudo",
           "image": "golpe_de_escudo",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.2
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "AttackDown",
-              "chance": 0.4,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.4, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.15
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -207,68 +94,29 @@
           "image": "muralha_de_mare",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.14,
-              "turns": 2
-            }
+            {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.21,
-              "turns": 2
-            },
-            {
-              "kind": "Cleanse",
-              "target": "AllAllies"
-            },
-            {
-              "kind": "Status",
-              "target": "LowestAlly",
-              "status": "Aegis"
-            }
+            {"kind": "Shield", "target": "AllAllies", "power": 0.21, "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Status", "target": "LowestAlly", "status": "Aegis"}
           ]
         },
         {
           "name": "Último Voto",
           "image": "ultimo_voto",
-          "passive": { "kind": "StatusOrEffectOnDeath" },
+          "passive": {"kind": "StatusOrEffectOnDeath"},
           "effects": [
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.15,
-              "turns": 2
-            }
+            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.25,
-              "turns": 2
-            },
-            {
-              "kind": "Cleanse",
-              "target": "AllAllies"
-            }
+            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies"}
           ]
         }
       ]
@@ -278,56 +126,23 @@
       "name": "Cavaleiro de Vento",
       "element": "Wind",
       "role": "Support",
-      "stats": {
-        "hp": 9615,
-        "atk": 573,
-        "def": 595,
-        "spd": 102
-      },
-      "awakened_stats": {
-        "hp": 10500,
-        "atk": 627,
-        "def": 650,
-        "spd": 103
-      },
-      "leader": {
-        "stat": "Speed",
-        "value": 0.1
-      },
-      "awakening": { "name": "Sir Gawa" },
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
+      "leader": {"stat": "Speed", "value": 0.1},
+      "awakening": {"name": "Sir Gawa"},
       "skills": [
         {
           "name": "Estocada Veloz",
           "image": "estocada_veloz",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.45
-            },
-            {
-              "kind": "Impeto",
-              "target": "Target",
-              "power": -10
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Impeto", "target": "Target", "power": -10}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.15
-            }
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
           ]
         },
         {
@@ -335,30 +150,14 @@
           "image": "clarim_de_guerra",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 25
-            }
+            {"kind": "Impeto", "target": "AllAllies", "power": 25}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 40
-            },
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "SpeedUp",
-              "turns": 2
-            }
+            {"kind": "Impeto", "target": "AllAllies", "power": 40},
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
           ]
         },
         {
@@ -366,30 +165,12 @@
           "image": "estandarte_do_vendaval",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "SpeedUp",
-              "turns": 2
-            },
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 20
-            },
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "CritUp",
-              "chance": 1,
-              "turns": 2
-            }
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 20},
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "chance": 1, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -399,58 +180,23 @@
       "name": "Cavaleiro de Luz",
       "element": "Light",
       "role": "HP",
-      "stats": {
-        "hp": 10230,
-        "atk": 587,
-        "def": 549,
-        "spd": 99
-      },
-      "awakened_stats": {
-        "hp": 11175,
-        "atk": 642,
-        "def": 599,
-        "spd": 100
-      },
-      "leader": {
-        "stat": "Defense",
-        "value": 0.2
-      },
-      "awakening": { "name": "Sir Galah" },
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Defense", "value": 0.2},
+      "awakening": {"name": "Sir Galah"},
       "skills": [
         {
           "name": "Juramento",
           "image": "juramento",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.45
-            },
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "Taunt",
-              "chance": 0.35,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.35, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.2
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.2
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.2},
+            {"kind": "EffectRate", "value": 0.2},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -458,63 +204,27 @@
           "image": "voto_de_escudo",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "CritResist"
-            },
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "DefenseUp",
-              "turns": 2
-            }
+            {"kind": "Status", "target": "Self", "status": "CritResist"},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "AttackDown",
-              "turns": 2
-            },
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "DefenseUp",
-              "turns": 3
-            },
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "Aegis"
-            }
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3},
+            {"kind": "Status", "target": "Self", "status": "Aegis"}
           ]
         },
         {
           "name": "Último Voto",
           "image": "ultimo_voto",
-          "passive": { "kind": "StatusOrEffectOnDeath" },
+          "passive": {"kind": "StatusOrEffectOnDeath"},
           "effects": [
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.2,
-              "turns": 2
-            }
+            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.35,
-              "turns": 2
-            }
+            {"kind": "Shield", "target": "AllAllies", "power": 0.35, "turns": 2}
           ]
         }
       ]
@@ -524,52 +234,22 @@
       "name": "Cavaleiro de Trevas",
       "element": "Dark",
       "role": "HP",
-      "stats": {
-        "hp": 10230,
-        "atk": 587,
-        "def": 549,
-        "spd": 99
-      },
-      "awakened_stats": {
-        "hp": 11175,
-        "atk": 642,
-        "def": 599,
-        "spd": 100
-      },
-      "leader": {
-        "stat": "Resistance",
-        "value": 0.2
-      },
-      "awakening": { "name": "Sir Arto" },
+      "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
+      "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
+      "leader": {"stat": "Resistance", "value": 0.2},
+      "awakening": {"name": "Sir Arto"},
       "skills": [
         {
           "name": "Lâmina Faminta",
           "image": "lamina_faminta",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.45,
-              "drain": 0.3
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.45, "drain": 0.3}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.15
-            }
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
           ]
         },
         {
@@ -577,68 +257,28 @@
           "image": "juramento_sombrio",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 2.71,
-              "drain": 0.3
-            }
+            {"kind": "Damage", "target": "AllEnemies", "power": 2.71, "drain": 0.3}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "Curse",
-              "chance": 0.7,
-              "turns": 2
-            },
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 3.45,
-              "drain": 0.15,
-              "ignoreDefense": 0.35
-            }
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2},
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.45, "drain": 0.15, "ignoreDefense": 0.35}
           ]
         },
         {
           "name": "Último Voto",
           "image": "ultimo_voto",
-          "passive": { "kind": "StatusOrEffectOnDeath" },
+          "passive": {"kind": "StatusOrEffectOnDeath"},
           "effects": [
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 30
-            }
+            {"kind": "Impeto", "target": "AllAllies", "power": 30}
           ],
           "awakenedEffects": [
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 50
-            },
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "Foresight",
-              "chance": 1,
-              "turns": 1
-            }
+            {"kind": "Impeto", "target": "AllAllies", "power": 50},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "chance": 1, "turns": 1}
           ]
         }
       ]

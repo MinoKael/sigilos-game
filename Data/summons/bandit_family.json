@@ -12,18 +12,8 @@
       "name": "Bandido de Fogo",
       "element": "Fire",
       "role": "Attack",
-      "stats": {
-        "hp": 8820,
-        "atk": 687,
-        "def": 534,
-        "spd": 102
-      },
-      "awakened_stats": {
-        "hp": 9645,
-        "atk": 751,
-        "def": 583,
-        "spd": 103
-      },
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "awakening": {
         "name": "James",
         "skill": {
@@ -31,30 +21,12 @@
           "image": "cade_meu_cavalo",
           "cooldown": 6,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "Foresight",
-              "chance": 1,
-              "turns": 1
-            },
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "Hidden",
-              "chance": 1,
-              "turns": 1
-            }
+            {"kind": "Status", "target": "Self", "status": "Foresight", "chance": 1, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Hidden", "chance": 1, "turns": 1}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       },
@@ -63,37 +35,14 @@
           "name": "Tiro de Aviso",
           "image": "tiro_de_aviso",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 1.33,
-              "hits": 2
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "DefenseBreak",
-              "chance": 0.25,
-              "turns": 1
-            }
+            {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.25, "turns": 1}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.15
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -101,36 +50,14 @@
           "image": "o_que_e_seu_e_meu",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "StealBuff",
-              "target": "Target",
-              "chance": 1,
-              "fallback": true,
-              "power": 15
-            },
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 3.67
-            }
+            {"kind": "StealBuff", "target": "Target", "chance": 1, "fallback": true, "power": 15},
+            {"kind": "Damage", "target": "Target", "power": 3.67}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.15
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.15
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Damage", "value": 0.15},
+            {"kind": "Damage", "value": 0.1}
           ]
         }
       ]
@@ -140,18 +67,8 @@
       "name": "Bandido de Água",
       "element": "Water",
       "role": "Defense",
-      "stats": {
-        "hp": 9030,
-        "atk": 569,
-        "def": 659,
-        "spd": 95
-      },
-      "awakened_stats": {
-        "hp": 9855,
-        "atk": 621,
-        "def": 720,
-        "spd": 96
-      },
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "awakening": {
         "name": "Cassidy",
         "skill": {
@@ -159,28 +76,12 @@
           "image": "cortina_de_fumaca",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 1.3
-            },
-            {
-              "kind": "Status",
-              "target": "LowestAlly",
-              "status": "Hidden",
-              "chance": 1,
-              "turns": 1
-            }
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.3},
+            {"kind": "Status", "target": "LowestAlly", "status": "Hidden", "chance": 1, "turns": 1}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       },
@@ -189,36 +90,14 @@
           "name": "Golpe Sujo",
           "image": "golpe_sujo",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.45
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Blind",
-              "chance": 0.25,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -226,27 +105,12 @@
           "image": "bomba_de_fumaca",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "Blind",
-              "chance": 0.4,
-              "turns": 2
-            }
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -256,27 +120,14 @@
       "name": "Bandido de Vento",
       "element": "Wind",
       "role": "Attack",
-      "stats": {
-        "hp": 8820,
-        "atk": 687,
-        "def": 534,
-        "spd": 102
-      },
-      "awakened_stats": {
-        "hp": 9645,
-        "atk": 751,
-        "def": 583,
-        "spd": 103
-      },
+      "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
+      "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
       "awakening": {
         "name": "Morgan",
         "skill": {
           "name": "Emboscada",
           "image": "emboscada",
-          "passive": {
-            "kind": "ImpetoAtWaveStart",
-            "value": 0.5
-          }
+          "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}
         }
       },
       "skills": [
@@ -284,38 +135,14 @@
           "name": "Corte Rápido",
           "image": "corte_rapido",
           "effects": [
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Curse",
-              "chance": 0.8,
-              "turns": 1
-            },
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 1.22,
-              "hits": 2,
-              "ignoreDefense": 0.1
-            }
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.8, "turns": 1},
+            {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2, "ignoreDefense": 0.1}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.15
-            }
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
           ]
         },
         {
@@ -323,30 +150,13 @@
           "image": "saque",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 3.43
-            },
-            {
-              "kind": "Impeto",
-              "target": "Target",
-              "power": -30
-            }
+            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "Impeto", "target": "Target", "power": -30}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -356,18 +166,8 @@
       "name": "Bandido de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {
-        "hp": 9615,
-        "atk": 573,
-        "def": 595,
-        "spd": 102
-      },
-      "awakened_stats": {
-        "hp": 10500,
-        "atk": 627,
-        "def": 650,
-        "spd": 103
-      },
+      "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
+      "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
       "awakening": {
         "name": "Robin",
         "skill": {
@@ -375,29 +175,12 @@
           "image": "grande_golpe",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "AttackUp",
-              "turns": 2
-            },
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "SpeedUp",
-              "turns": 2
-            },
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 25
-            }
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 25}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       },
@@ -406,36 +189,14 @@
           "name": "Moeda Ofuscante",
           "image": "moeda_ofuscante",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.2
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Blind",
-              "chance": 0.2,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.2, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -443,23 +204,11 @@
           "image": "dividir_o_butim",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "AttackUp",
-              "turns": 2
-            },
-            {
-              "kind": "Impeto",
-              "target": "AllAllies",
-              "power": 15
-            }
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 15}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -469,27 +218,14 @@
       "name": "Bandido de Trevas",
       "element": "Dark",
       "role": "Defense",
-      "stats": {
-        "hp": 9030,
-        "atk": 569,
-        "def": 659,
-        "spd": 95
-      },
-      "awakened_stats": {
-        "hp": 9855,
-        "atk": 621,
-        "def": 720,
-        "spd": 96
-      },
+      "stats": {"hp": 9030, "atk": 569, "def": 659, "spd": 95},
+      "awakened_stats": {"hp": 9855, "atk": 621, "def": 720, "spd": 96},
       "awakening": {
         "name": "Billy",
         "skill": {
           "name": "Emboscada",
           "image": "emboscada",
-          "passive": {
-            "kind": "ImpetoAtWaveStart",
-            "value": 0.5
-          }
+          "passive": {"kind": "ImpetoAtWaveStart", "value": 0.5}
         }
       },
       "skills": [
@@ -497,35 +233,14 @@
           "name": "Truque Sujo",
           "image": "truque_sujo",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.45
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Stun",
-              "chance": 0.15
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.15}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
@@ -533,22 +248,11 @@
           "image": "sumico",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "Self",
-              "status": "Hidden"
-            },
-            {
-              "kind": "Impeto",
-              "target": "Self",
-              "power": 30
-            }
+            {"kind": "Status", "target": "Self", "status": "Hidden"},
+            {"kind": "Impeto", "target": "Self", "power": 30}
           ],
           "levels": [
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]

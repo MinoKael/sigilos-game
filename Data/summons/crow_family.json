@@ -191,9 +191,15 @@
         "skill": {
           "name": "Olhos de Odin",
           "image": "olhos_de_odin",
-          "passive": {"kind": "StatusOrEffectOnHit"},
+          "passive": {
+            "kind": "StatusOrEffectOnHit",
+            "partner": "crow_dark",
+            "partnerEffects": [
+              {"kind": "Status", "target": "Target", "status": "Karma", "turns": 1, "chance": 1}
+            ]
+          },
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Oblivion", "turns": 1, "chance": 0}
+            {"kind": "Status", "target": "Target", "status": "Oblivion", "turns": 1, "chance": 1}
           ]
         }
       },
@@ -241,7 +247,7 @@
         "skill": {
           "name": "Olhos de Odin",
           "image": "olhos_de_odin",
-          "passive": {"kind": "BonusPerStatusOrEffect", "value": 0.3}
+          "passive": {"kind": "BonusPerStatusOrEffect", "value": 0.3, "scope": "Debuffs", "partner": "crow_light", "partnerTurns": 1}
         }
       },
       "skills": [

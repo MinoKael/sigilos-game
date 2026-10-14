@@ -17,7 +17,7 @@ namespace Sigilos.UI.Components
 		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400, bool levels = false)
 		{
 			var row = Layout.Row(Space.Regular).Named("Skill");
-			var icon = new SigilButton(null, 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Circle)
+			var icon = new SigilButton(null, 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Square)
 			{
 				Name = "Symbol",
 				MouseFilter = Control.MouseFilterEnum.Ignore,

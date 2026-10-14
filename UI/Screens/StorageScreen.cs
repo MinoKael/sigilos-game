@@ -60,10 +60,6 @@ namespace Sigilos.UI.Screens
 		/// <summary>A largura do texto das habilidades na coluna larga da ficha.</summary>
 		private const float TextWidth = 300;
 
-		/// <summary>Ícones por fileira na aba Habilidades (até 4 habilidades e a Liderança), e o lado de cada um.</summary>
-		private const int SkillsPerRow = 5;
-
-		private const float SkillSize = 72;
 
 		private enum Page
 		{
@@ -176,7 +172,7 @@ namespace Sigilos.UI.Screens
 			_sideActions.AddThemeConstantOverride("separation", Space.Regular);
 			side.AddChild(_sideActions);
 
-			_detail.AddThemeConstantOverride("separation", Space.Large);
+			_detail.AddThemeConstantOverride("separation", Space.Medium);
 			detailRow.AddChild(Layout.Scroll(_detail));
 			detailRow.AddChild(side);
 			detailPanel.AddChild(detailRow);
@@ -610,7 +606,8 @@ namespace Sigilos.UI.Screens
 		private void StatsPage(SummonDefinition summon, OwnedSummon monster)
 		{
 			var id = monster.Id;
-			var actions = Layout.Row(Space.Regular).Named("Actions");
+			// Em grade: os dois botões ficam do mesmo tamanho e o texto quebra igual nos dois ("Até o nível 30" e "35").
+			var actions = Layout.Grid(Leveling.IsMaxLevel(monster) ? 1 : 2, Space.Regular).Named("Actions");
 
 			if (!Leveling.IsMaxLevel(monster))
 			{
@@ -694,7 +691,7 @@ namespace Sigilos.UI.Screens
 			// Até quatro habilidades e a Liderança numa fileira só: ativas em pedra quadrada, passivas em losango,
 			// a Liderança em pentágono com a coroa; o toque abre a janela, colada no ícone.
 			var skills = summon.AllSkills;
-			var tiles = Layout.Grid(SkillsPerRow, Space.Wide).Named("SkillTiles");
+			var tiles = SkillTile.Grid().Named("SkillTiles");
 			for (var i = 0; i < skills.Count; i++)
 			{
 				var index = i;
@@ -702,14 +699,14 @@ namespace Sigilos.UI.Screens
 				var level = monster.SkillLevel(i);
 				var locked = !monster.Awakened && i >= summon.Skills.Count;
 				Control? tile = null;
-				tile = SkillTile.Build(skill, level, locked, SkillSize, onPressed: () => SkillDialog.Open(tile!, skill, monster.SkillLevel(index), monster.Awakened, locked)).Named($"Skill{i + 1}");
+				tile = SkillTile.Build(skill, level, locked, SkillTile.DefaultSize, onPressed: () => SkillDialog.Open(tile!, skill, monster.SkillLevel(index), monster.Awakened, locked)).Named($"Skill{i + 1}");
 				tiles.AddChild(tile);
 			}
 
 			if (summon.Leader is { } leader)
 			{
 				Control? tile = null;
-				tile = SkillTile.Leader(leader.Stat, SkillSize, () => LeaderDialog(tile!, leader)).Named("Leader");
+				tile = SkillTile.Leader(leader.Stat, SkillTile.DefaultSize, () => SkillDialog.OpenLeader(tile!, leader)).Named("Leader");
 				tiles.AddChild(tile);
 			}
 
@@ -727,50 +724,69 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(actions);
 		}
 
-		/// <summary>A janela da Liderança, colada no pentágono: o que ela dá à equipe quando o monstro é o Líder.</summary>
-		private void LeaderDialog(Control anchor, LeaderDefinition leader)
-		{
-			var dialog = Dialog.Open(this, T("monsters.leader_title"), 420, anchor, "LeaderDialog");
-			dialog.Body.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 380).Named("Text"));
-		}
-
 		private void AwakenPage(SummonDefinition summon, OwnedSummon monster)
 		{
 			var forms = Layout.Row(Space.Wide, true).Named("Forms");
 			forms.AddChild(Form(summon, false, !monster.Awakened).Named("Normal"));
-			forms.AddChild(Doodle.Icon(Art.Icon("awaken"), 40, monster.Awakened ? Palette.Awakened : Palette.GoldDark).Named("Arrow"));
+			forms.AddChild(Doodle.Icon(Art.Icon("awaken"), 32, monster.Awakened ? Palette.Awakened : Palette.GoldDark).Named("Arrow"));
 			forms.AddChild(Form(summon, true, monster.Awakened).Named("Awakened"));
 			_detail.AddChild(forms);
 
 			var name = new Label { Name = "AwakenedName", Text = summon.Awakening.Name, ThemeTypeVariation = GameTheme.Heading, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 			name.AddThemeColorOverride("font_color", Palette.Awakened);
 			_detail.AddChild(name);
+
+			// O botão vem antes do que se ganha: é a decisão da página. Homúnculo de 2★ não desperta (versão 0.1):
+			// nem a opção aparece.
+			if (!monster.Awakened && Awakening.CanBeAwakened(summon))
+				AwakenAction(summon, monster);
+
 			_detail.AddChild(Layout.Text(monster.Awakened ? T("monsters.awakened_already") : T("monsters.awaken_gains"), GameTheme.Faded).Named("Explain"));
 
-			var gains = Layout.Flow(Space.Medium).Named("Gains");
+			var gains = Layout.Flow(Space.Small).Named("Gains");
 			foreach (var (stat, gain) in Texts.AwakeningStats(summon))
-				gains.AddChild(Layout.Labeled(Texts.PlanetOf(stat), gain, Texts.Name(stat)).Named(stat.ToString()));
+				gains.AddChild(Layout.Labeled(Texts.PlanetOf(stat), gain, Texts.Name(stat), compact: true).Named(stat.ToString()));
 			_detail.AddChild(gains);
 
+			// A habilidade nova e as melhoradas, nos mesmos ícones da aba Habilidades; nas melhoradas a janela
+			// mostra o antes e o depois.
+			var tiles = SkillTile.Grid().Named("SkillTiles");
 			if (summon.Awakening.Skill is { } skill)
-				_detail.AddChild(SkillRow.Build(skill, monster.SkillLevel(summon.Skills.Count), true, !monster.Awakened, TextWidth).Named("NewSkill"));
-			foreach (var improved in summon.Skills.Where(s => s.ChangesOnAwakening))
 			{
-				var index = summon.Skills.ToList().IndexOf(improved);
-				_detail.AddChild(SkillRow.Build(improved, monster.SkillLevel(index), true, false, TextWidth).Named($"Improved{index + 1}"));
+				var index = summon.Skills.Count;
+				var level = monster.SkillLevel(index);
+				var locked = !monster.Awakened;
+				Control? tile = null;
+				tile = SkillTile.Build(skill, level, locked, SkillTile.DefaultSize, onPressed: () => SkillDialog.Open(tile!, skill, monster.SkillLevel(index), true, locked)).Named("NewSkill");
+				tiles.AddChild(tile);
 			}
 
-			// Homúnculo de 2★ não desperta (versão 0.1): nem a opção aparece.
-			if (monster.Awakened || !Awakening.CanBeAwakened(summon))
-				return;
+			var skills = summon.Skills.ToList();
+			foreach (var improved in skills.Where(s => s.ChangesOnAwakening))
+			{
+				var index = skills.IndexOf(improved);
+				var level = monster.SkillLevel(index);
+				Control? tile = null;
+				tile = SkillTile.Build(improved, level, false, SkillTile.DefaultSize, onPressed: () => SkillDialog.OpenAwakening(tile!, improved, monster.SkillLevel(index))).Named($"Improved{index + 1}");
+				tiles.AddChild(tile);
+			}
 
+			if (tiles.GetChildCount() > 0)
+			{
+				_detail.AddChild(tiles);
+				_detail.AddChild(Layout.Text(T("monsters.awaken_skills_hint"), GameTheme.Faded).Named("SkillsHint"));
+			}
+		}
+
+		private void AwakenAction(SummonDefinition summon, OwnedSummon monster)
+		{
 			var row = Layout.Row(Space.None, true).Named("Actions");
 			var cost = Awakening.Cost(summon.Rarity);
 			var awaken = GameButton.Of(T("monsters.awaken_button"), () => Dialog.Confirm(this,
 				T("monsters.awaken_title"),
 				T("monsters.awaken_confirm", summon.Name, summon.Awakening.Name, cost),
 				T("monsters.awaken_button"),
-				() => AwakenRequested?.Invoke(monster.Id)), ButtonKind.Primary, "awaken", 64).WithCost("essence", Texts.Number(cost)).Named("Awaken");
+				() => AwakenRequested?.Invoke(monster.Id)), ButtonKind.Primary, "awaken").WithCost("essence", Texts.Number(cost)).Named("Awaken");
 			awaken.Disabled = !Awakening.CanAwaken(_player, monster, summon);
 			row.AddChild(awaken.Wide(260));
 			_detail.AddChild(row);
@@ -781,7 +797,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>O monstro normal ou desperto (o mesmo desenho, com a aura e o anel do elemento), aceso se for a forma de agora.</summary>
 		private static Control Form(SummonDefinition summon, bool awakened, bool current)
 		{
-			var frame = new PanelContainer { CustomMinimumSize = new Vector2(140, 140) };
+			var frame = new PanelContainer { CustomMinimumSize = new Vector2(124, 124) };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, current ? Palette.Arcane : Palette.GoldDark, current ? 3 : 1, 12, 10));
 			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), current ? Palette.Of(summon.Element) : Palette.Of(summon.Element).Darkened(0.45f), MaskShape.Rounded, 8, aura: awakened ? summon.Element : null));
 			return frame;

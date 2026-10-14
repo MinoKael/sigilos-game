@@ -147,5 +147,48 @@ namespace Sigilos.Tests
 			var events = session.Act(new UnitAction(0, null));
 			Assert.Equal(2, events.OfType<Counterattack>().Count(), "o guarda e o irmão revidam, uma vez cada");
 		}
+
+		[Test]
+		private static void WolvesAndCrowsOfLightAndDarkarePairedPassives()
+		{
+			PassiveDefinition Of(string id) => TestData.Summon(id).Awakening.Skill!.Passive!;
+
+			var guard = Of("wolf_light");
+			Assert.Equal(PassiveKind.DefenseGuard, guard.Kind, "Lobo de Luz: guarda");
+			Assert.Equal("wolf_dark", guard.Partner, "e o irmão é o Lobo de Trevas");
+
+			var sleep = Of("wolf_dark");
+			Assert.Equal(PassiveKind.BonusPerStatusOrEffect, sleep.Kind, "Lobo de Trevas: mais dano");
+			Assert.True(sleep.Statuses.SequenceEqual(new[] { StatusKind.Sleep }), "em quem dorme");
+			Assert.True(sleep.PartnerKeepsAsleep, "com o irmão, não acorda");
+			Assert.Equal("wolf_light", sleep.Partner, "irmão: Lobo de Luz");
+
+			var forget = TestData.Summon("crow_light").Awakening.Skill!;
+			Assert.Equal(PassiveKind.StatusOrEffectOnHit, forget.Passive!.Kind, "Corvo de Luz: ao atingir");
+			Assert.True(forget.Effects.Any(e => e.Status == StatusKind.Oblivion && e.Chance >= 1), "põe Esquecimento sempre");
+			Assert.Equal("crow_dark", forget.Passive.Partner, "parceiro: Corvo de Trevas");
+			Assert.True(forget.Passive.PartnerEffects.Any(e => e.Status == StatusKind.Karma), "com ele, põe Karma também");
+
+			var debuffs = Of("crow_dark");
+			Assert.Equal(StatusScope.Debuffs, debuffs.Scope, "Corvo de Trevas: conta só os negativos");
+			Assert.Equal("crow_light", debuffs.Partner, "parceiro: Corvo de Luz");
+			Assert.True(debuffs.PartnerTurns > 0, "com ele, os negativos duram mais");
+		}
+
+		[Test]
+		private static void TheRealPairsFightWithTheirPassives()
+		{
+			var database = TestData.Database;
+			var encounter = database.Stages.First().Encounter;
+
+			var events = new System.Collections.Generic.List<BattleEvent>();
+			AutoBattle.Run(BattleFactory.Create(database, BattleDigest.Team(database, new[] { "crow_light", "crow_dark" }, 6, 40, true, false), encounter, 7), events);
+			Assert.True(events.OfType<StatusApplied>().Any(e => e.Status == StatusKind.Oblivion), "o Corvo de Luz põe Esquecimento nos que atinge");
+			Assert.True(events.OfType<StatusApplied>().Any(e => e.Status == StatusKind.Karma), "e, com o irmão, Karma");
+
+			events.Clear();
+			AutoBattle.Run(BattleFactory.Create(database, BattleDigest.Team(database, new[] { "wolf_light", "wolf_dark" }, 6, 40, true, false), encounter, 7), events);
+			Assert.True(events.OfType<Counterattack>().Any(), "os lobos revidam juntos quando o de Luz é atacado");
+		}
 	}
 }

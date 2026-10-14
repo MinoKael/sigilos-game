@@ -277,17 +277,27 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(table);
 			_sheet.AddChild(new HSeparator { Name = "SkillsLine" });
 
+			// Os mesmos ícones da aba Habilidades: ativa quadrada, passiva em losango, Liderança em pentágono.
 			var skills = summon.SkillsFor(_awakened);
+			var tiles = SkillTile.Grid().Named("SkillTiles");
 			for (var i = 0; i < summon.AllSkills.Count; i++)
-				_sheet.AddChild(SkillRow.Build(summon.AllSkills[i], 1, _awakened, i >= skills.Count, 520, levels: true).Named($"Skill{i + 1}"));
+			{
+				var skill = summon.AllSkills[i];
+				var locked = i >= skills.Count;
+				Control? tile = null;
+				tile = SkillTile.Build(skill, 0, locked, SkillTile.DefaultSize, onPressed: () => SkillDialog.Open(tile!, skill, 1, _awakened, locked)).Named($"Skill{i + 1}");
+				tiles.AddChild(tile);
+			}
 
 			if (summon.Leader is { } leader)
 			{
-				var row = Layout.Row(Space.Regular).Named("Leader");
-				row.AddChild(Doodle.Icon(Art.Icon("leader"), 32, Palette.Gold).Named("Icon"));
-				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 480).Named("Text"));
-				_sheet.AddChild(row);
+				Control? tile = null;
+				tile = SkillTile.Leader(leader.Stat, SkillTile.DefaultSize, () => SkillDialog.OpenLeader(tile!, leader)).Named("Leader");
+				tiles.AddChild(tile);
 			}
+
+			_sheet.AddChild(tiles);
+			_sheet.AddChild(Layout.Text(T("monsters.skills_hint"), GameTheme.Faded).Named("SkillsHint"));
 
 			if (!Awakening.CanBeAwakened(summon))
 				return;

@@ -1,12 +1,16 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
- "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="600.000000pt" height="600.000000pt" viewBox="0 0 600.000000 600.000000"
- preserveAspectRatio="xMidYMid meet">
-<g transform="translate(0.000000,600.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-<path d="M2790 5529 c-475 -41 -940 -219 -1325 -508 -55 -42 -158 -132 -229
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="600pt"
+     height="600pt"
+     viewBox="0 0 600 600"
+     preserveAspectRatio="xMidYMid meet">
+  <g transform="translate(0 600) scale(0.1 -0.1)"
+     fill="#000000"
+     stroke="#000000"
+     stroke-width="32"
+     stroke-linejoin="round"
+     stroke-linecap="round">
+    <path d="M2790 5529 c-475 -41 -940 -219 -1325 -508 -55 -42 -158 -132 -229
 -201 -222 -216 -368 -415 -505 -691 -126 -253 -207 -511 -247 -789 -23 -163
 -24 -507 -1 -665 63 -447 232 -858 496 -1210 93 -122 294 -331 416 -430 209
 -170 504 -337 748 -423 813 -288 1701 -152 2392 367 122 93 331 294 430 416
@@ -35,5 +39,5 @@ fill="#000000" stroke="none">
 m2919 -426 c0 -5 -24 -43 -52 -84 -248 -360 -576 -644 -953 -828 -267 -129
 -551 -211 -844 -241 -162 -17 -484 -7 -634 20 -689 122 -1252 480 -1641 1044
 l-68 97 2096 0 c1153 0 2096 -4 2096 -8z"/>
-</g>
+  </g>
 </svg>

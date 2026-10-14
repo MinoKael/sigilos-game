@@ -375,6 +375,8 @@
     "level_line": "Lv.{0} {1}",
     "upgrade_line": "{0}  {1}",
     "upgrades": "Upgrades",
+    "before_awakening": "Before Awakening",
+    "after_awakening": "After Awakening",
     "level_up": {
       "Damage": "Damage +{0}",
       "Recovery": "Recovery +{0}",
@@ -729,7 +731,8 @@
     "skill_locked": "Unlocked by Awakening",
     "skills_hint": "Tap a skill or the Leadership to see its details.",
     "leader_title": "Leadership",
-    "leadership": "Leadership · +{0} {1} for the team, only as Leader",
+    "awaken_skills_hint": "Tap an icon to see the skill; on improved ones, the before and after.",
+    "leadership": "Leadership · +{0} {1} for the team.",
     "level": "Lv {0}/{1}",
     "natural_stars": "Natural stars: {0}",
     "level_max": "Max level",
