@@ -99,8 +99,8 @@ namespace Sigilos.UI.Components
 			_element.SetInk(Palette.Of(unit.Element));
 			_name.Text = unit.Name;
 			_level.Text = T("battle.boss_level", unit.Level);
-			_trail.MaxValue = _health.MaxValue = _shield.MaxValue = unit.MaxHealth;
-			_trail.Value = unit.Health;
+			_trail.MaxValue = _health.MaxValue = _shield.MaxValue = view.ShownMaxHealth;
+			_trail.Value = view.ShownHealth;
 			Follow(view);
 			Visible = true;
 		}
@@ -125,19 +125,20 @@ namespace Sigilos.UI.Components
 
 		private void Follow(UnitView view)
 		{
-			var unit = view.Unit;
-			_health.MaxValue = _trail.MaxValue = _shield.MaxValue = unit.MaxHealth;
-			_health.Value = unit.Health;
-			var shield = unit.Find(StatusKind.Shield)?.Value ?? 0;
+			var health = view.ShownHealth;
+			var maxHealth = view.ShownMaxHealth;
+			_health.MaxValue = _trail.MaxValue = _shield.MaxValue = maxHealth;
+			_health.Value = health;
+			var shield = view.ShownShield;
 			_shield.Value = shield;
 			_shield.Visible = shield > 0;
-			_healthText.Text = unit.IsAlive
-				? T("battle.boss_health", Texts.Number((int)Math.Ceiling(unit.Health)), Texts.Number((int)Math.Ceiling(unit.MaxHealth)))
+			_healthText.Text = health > 0
+				? T("battle.boss_health", Texts.Number((int)Math.Ceiling(health)), Texts.Number((int)Math.Ceiling(maxHealth)))
 				: T("battle.fallen");
 
 			Layout.Clear(_statuses);
-			foreach (var group in unit.Statuses.Where(s => s.Kind != StatusKind.Shield).GroupBy(s => s.Kind))
-				_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns), 28, group.Any(s => s.Unremovable)));
+			foreach (var mark in view.ShownStatuses)
+				_statuses.AddChild(new StatusChip(mark.Kind, mark.Turns, 28, mark.Unremovable));
 		}
 
 		private void Release()

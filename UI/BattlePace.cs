@@ -132,7 +132,7 @@ namespace Sigilos.UI
 
 		/// <summary>O que o golpe dispara e fica no mesmo momento que ele.</summary>
 		private static bool FollowsHit(BattleEvent battleEvent) =>
-			battleEvent is StatusApplied or Resisted or Immune or StatusRemoved or ImpetoChanged or Healed or MaxHealthReduced or Died;
+			battleEvent is StatusApplied or Resisted or Immune or StatusRemoved or StatusesChanged or ImpetoChanged or Healed or MaxHealthReduced or Died;
 
 		/// <summary>Um golpe: os acertos seguidos em alvos diferentes e o que eles disparam.</summary>
 		private static IReadOnlyList<BattleEvent> Volley(IReadOnlyList<BattleEvent> events, ref int i)

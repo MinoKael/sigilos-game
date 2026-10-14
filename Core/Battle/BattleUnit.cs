@@ -279,6 +279,16 @@ namespace Sigilos.Core.Battle
 			return factor;
 		}
 
+		/// <summary>Os efeitos que o cartão mostra: um por espécie (o prazo mais longo), sem o escudo, que tem barra própria.</summary>
+		public IReadOnlyList<StatusMark> StatusMarks() => _statuses
+			.Where(s => s.Kind != StatusKind.Shield)
+			.GroupBy(s => s.Kind)
+			.Select(group => new StatusMark(group.Key, group.Max(s => s.Turns), group.Any(s => s.Unremovable)))
+			.ToList();
+
+		/// <summary>O que resta do escudo; 0 sem ele.</summary>
+		public double ShieldValue => Find(StatusKind.Shield)?.Value ?? 0;
+
 		internal void AddStatus(StatusEffect status)
 		{
 			status.Owner = this;

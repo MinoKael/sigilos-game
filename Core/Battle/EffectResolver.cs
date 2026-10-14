@@ -163,7 +163,9 @@ namespace Sigilos.Core.Battle
 			target.Health = Math.Max(0, target.Health - dealt);
 			strike.Cast.Dealt[target] = strike.Cast.Dealt.GetValueOrDefault(target) + dealt;
 			var element = strike.Fixed ? 1 : ElementChart.Multiplier(attacker.Element, target.Element);
-			Emit(new Damaged(target, (int)dealt, (int)strike.Absorbed, crit, element));
+			Emit(new Damaged(target, (int)dealt, (int)strike.Absorbed, crit, element, target.Health));
+			if (strike.Absorbed > 0)
+				Emit(StatusesChanged.Of(target));
 
 			if (strike.Drain > 0)
 				Heal(attacker, strike.Drain * strike.Amount);
@@ -222,7 +224,9 @@ namespace Sigilos.Core.Battle
 			var absorbed = shielded ? Absorb(target, amount) : 0;
 			var dealt = amount - absorbed;
 			target.Health = Math.Max(0, target.Health - dealt);
-			Emit(new Damaged(target, (int)dealt, (int)absorbed, false, 1));
+			Emit(new Damaged(target, (int)dealt, (int)absorbed, false, 1, target.Health));
+			if (absorbed > 0)
+				Emit(StatusesChanged.Of(target));
 
 			if (!target.IsAlive)
 				KnockOut(target);
@@ -239,7 +243,7 @@ namespace Sigilos.Core.Battle
 				return;
 
 			target.Health += healed;
-			Emit(new Healed(target, (int)healed));
+			Emit(new Healed(target, (int)healed, target.Health));
 		}
 
 		/// <summary>Uma unidade caiu: perde o Ímpeto e os efeitos, e as regras dela são avisadas.</summary>
@@ -250,6 +254,7 @@ namespace Sigilos.Core.Battle
 			unit.Health = 0;
 			unit.Impeto = 0;
 			unit.ClearStatuses();
+			Emit(StatusesChanged.Of(unit));
 			Emit(new Died(unit));
 
 			foreach (var rule in rules)
@@ -281,7 +286,7 @@ namespace Sigilos.Core.Battle
 			if (lost <= 0)
 				return;
 			target.Health = health;
-			Emit(new HealthLeveled(target, (int)lost));
+			Emit(new HealthLeveled(target, (int)lost, target.Health));
 		}
 
 		/// <summary>A unidade caída que estava para voltar (<see cref="BattleUnit.RevivalHealth"/>) volta agora.</summary>
@@ -289,7 +294,7 @@ namespace Sigilos.Core.Battle
 		{
 			unit.Health = Math.Round(unit.MaxHealth * unit.RevivalHealth);
 			unit.RevivalHealth = 0;
-			Emit(new Revived(unit));
+			Emit(new Revived(unit, unit.Health));
 		}
 
 		/// <summary>A unidade caída volta agora, com <paramref name="health"/> de Vida (pelo menos 1, até a Vida máxima).</summary>
@@ -297,7 +302,7 @@ namespace Sigilos.Core.Battle
 		{
 			unit.Health = Math.Clamp(Math.Round(health), 1, Math.Max(1, unit.MaxHealth));
 			unit.RevivalHealth = 0;
-			Emit(new Revived(unit));
+			Emit(new Revived(unit, unit.Health));
 		}
 
 		// Efeitos de status ---------------------------------------------------------------------------
@@ -353,7 +358,10 @@ namespace Sigilos.Core.Battle
 			var owner = rule.Owner;
 			owner.Remove(rule);
 			if (rule is StatusEffect status)
+			{
 				Emit(new StatusRemoved(owner, status.Kind));
+				Emit(StatusesChanged.Of(owner));
+			}
 		}
 
 		/// <summary>
@@ -373,7 +381,10 @@ namespace Sigilos.Core.Battle
 			if (status.Turns <= 0)
 				Remove(status);
 			else
+			{
 				Emit(new DurationChanged(status.Owner, status.Kind, turns));
+				Emit(StatusesChanged.Of(status.Owner));
+			}
 		}
 
 		/// <summary>
@@ -439,6 +450,7 @@ namespace Sigilos.Core.Battle
 			}
 
 			Emit(new StatusApplied(target, status, turns));
+			Emit(StatusesChanged.Of(target));
 
 			// "Para cada efeito posto / recebido": as Passivas de quem pôs e de quem recebeu.
 			if (source != null)
@@ -472,7 +484,7 @@ namespace Sigilos.Core.Battle
 			var before = target.Impeto;
 			target.Impeto = Math.Clamp(target.Impeto + amount, 0, BattleRules.FullImpeto);
 			if (target.Impeto != before)
-				Emit(new ImpetoChanged(target, target.Impeto - before));
+				Emit(new ImpetoChanged(target, target.Impeto - before, target.Impeto));
 		}
 
 		/// <summary>A unidade age de novo em seguida.</summary>

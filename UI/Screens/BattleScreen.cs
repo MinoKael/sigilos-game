@@ -710,7 +710,21 @@ namespace Sigilos.UI.Screens
 					await ToSignal(GetTree().CreateTimer(seconds, processAlways: false), SceneTreeTimer.SignalName.Timeout);
 			}
 
+			// Tudo o que a ação trouxe já passou: os cartões voltam a seguir a Vida das unidades.
+			foreach (var view in _views.Values)
+				view.Sync();
 			RefreshEffects();
+		}
+
+		/// <summary>
+		/// Atualiza o cartão com a Vida que o evento traz (a do momento); sem ela, com a da unidade.
+		/// </summary>
+		private static void Refresh(UnitView view, double? health, double? maxHealth = null)
+		{
+			if (health is { } shown)
+				view.ShowHealth(shown, maxHealth);
+			else
+				view.Refresh();
 		}
 
 		/// <summary>Um momento na tela: a corrida, o tranco ou a volta de quem ataca, e os eventos dele.</summary>
@@ -748,7 +762,11 @@ namespace Sigilos.UI.Screens
 			if (_joined > 0)
 				ShowWave(_session.Wave, _session.WaveCount, _session.Enemies);
 			foreach (var view in _views.Values)
+			{
+				view.Sync();
 				view.Refresh();
+			}
+
 			if (_hud)
 				_order.Show(_session.PredictOrder(TurnsShown));
 			if (_session.IsOver)
@@ -851,12 +869,12 @@ namespace Sigilos.UI.Screens
 
 				case HealthLeveled leveled:
 					_views[leveled.Target].Float($"-{leveled.Amount}", Palette.TextFaded, 14);
-					_views[leveled.Target].Refresh();
+					Refresh(_views[leveled.Target], leveled.Health);
 					return;
 
 				case MaxHealthReduced reduced:
 					_views[reduced.Target].Float(T("battle.max_hp", reduced.Amount), Palette.Negative);
-					_views[reduced.Target].Refresh();
+					Refresh(_views[reduced.Target], reduced.Health, reduced.MaxHealth);
 					return;
 
 				case Damaged damaged:
@@ -864,7 +882,7 @@ namespace Sigilos.UI.Screens
 					hit.Shake(Speed);
 					_arena.Splash(hit, damaged.Crit ? Palette.Gold : Palette.Damage, BattlePace.Hit / Speed, damaged.Crit);
 					hit.Float(damaged.Crit ? $"-{damaged.Amount}!" : $"-{damaged.Amount}", damaged.Crit ? Palette.Gold : Palette.Damage, damaged.Crit ? 18 : 16);
-					hit.Refresh();
+					Refresh(hit, damaged.Health);
 					return;
 
 				case Missed missed:
@@ -880,7 +898,7 @@ namespace Sigilos.UI.Screens
 
 				case Healed healed:
 					_views[healed.Target].Float($"+{healed.Amount}", Palette.Heal, 14);
-					_views[healed.Target].Refresh();
+					Refresh(_views[healed.Target], healed.Health);
 					return;
 
 				case StatusApplied applied:
@@ -907,7 +925,14 @@ namespace Sigilos.UI.Screens
 					return;
 
 				case ImpetoChanged changed:
-					_views[changed.Target].Refresh();
+					if (changed.Impeto is { } impeto)
+						_views[changed.Target].ShowImpeto(impeto);
+					else
+						_views[changed.Target].Refresh();
+					return;
+
+				case StatusesChanged statuses:
+					_views[statuses.Unit].ShowStatuses(statuses.Marks, statuses.Shield);
 					return;
 
 				case TurnSkipped skipped:
@@ -916,14 +941,15 @@ namespace Sigilos.UI.Screens
 					return;
 
 				case Died died:
-					_views[died.Unit].Refresh();
+					_views[died.Unit].ShowHealth(0);
+					_views[died.Unit].ShowImpeto(0);
 					if (died.Unit == _focus)
 						SetFocus(null);
 					return;
 
 				case Revived revived:
 					_views[revived.Unit].Float(T("battle.revives"), Palette.Gold, 14);
-					_views[revived.Unit].Refresh();
+					Refresh(_views[revived.Unit], revived.Health);
 					return;
 
 				case BattleEnded ended:

@@ -18,15 +18,19 @@ namespace Sigilos.Core.Battle
 
 	public sealed record SkillUsed(BattleUnit Actor, SkillDefinition Skill) : BattleEvent;
 
-	/// <summary><paramref name="Absorbed"/> é a parte que o escudo segurou.</summary>
-	public sealed record Damaged(BattleUnit Target, int Amount, int Absorbed, bool Crit, double ElementMultiplier) : BattleEvent;
+	/// <summary>
+	/// <paramref name="Absorbed"/> é a parte que o escudo segurou. <paramref name="Health"/> é a Vida do alvo
+	/// logo depois do dano: a tela mostra a Vida do momento, não a do fim da ação (o simulador anda na frente).
+	/// </summary>
+	public sealed record Damaged(BattleUnit Target, int Amount, int Absorbed, bool Crit, double ElementMultiplier, double? Health = null) : BattleEvent;
 
 	public sealed record Missed(BattleUnit Target) : BattleEvent;
 
 	/// <summary>A Égide anulou o golpe.</summary>
 	public sealed record Protected(BattleUnit Target) : BattleEvent;
 
-	public sealed record Healed(BattleUnit Target, int Amount) : BattleEvent;
+	/// <summary><paramref name="Health"/> é a Vida do alvo logo depois da cura.</summary>
+	public sealed record Healed(BattleUnit Target, int Amount, double? Health = null) : BattleEvent;
 
 	public sealed record StatusApplied(BattleUnit Target, StatusKind Status, int Turns) : BattleEvent;
 
@@ -38,7 +42,20 @@ namespace Sigilos.Core.Battle
 
 	public sealed record StatusRemoved(BattleUnit Target, StatusKind Status) : BattleEvent;
 
-	public sealed record ImpetoChanged(BattleUnit Target, double Amount) : BattleEvent;
+	/// <summary><paramref name="Impeto"/> é o Ímpeto do alvo logo depois da mudança.</summary>
+	public sealed record ImpetoChanged(BattleUnit Target, double Amount, double? Impeto = null) : BattleEvent;
+
+	/// <summary>Um efeito em campo, como o cartão o mostra: os da mesma espécie contam como um, com o prazo mais longo.</summary>
+	public sealed record StatusMark(StatusKind Kind, int Turns, bool Unremovable);
+
+	/// <summary>
+	/// Os efeitos do alvo logo depois de uma mudança neles (entrou, saiu, o prazo andou, o escudo gastou):
+	/// a tela mostra os efeitos do momento, não os do fim da ação. <paramref name="Shield"/> é o que resta do escudo.
+	/// </summary>
+	public sealed record StatusesChanged(BattleUnit Unit, IReadOnlyList<StatusMark> Marks, double Shield) : BattleEvent
+	{
+		public static StatusesChanged Of(BattleUnit unit) => new(unit, unit.StatusMarks(), unit.ShieldValue);
+	}
 
 	/// <summary>A unidade perdeu o turno: <paramref name="Cause"/> é o efeito que tirou (Atordoamento, Sono).</summary>
 	public sealed record TurnSkipped(BattleUnit Unit, StatusKind? Cause = null) : BattleEvent;
@@ -58,18 +75,19 @@ namespace Sigilos.Core.Battle
 	/// <summary>A duração de um efeito mudou em <paramref name="Turns"/> turnos (negativo encurtou).</summary>
 	public sealed record DurationChanged(BattleUnit Target, StatusKind Status, int Turns) : BattleEvent;
 
-	/// <summary>A Vida do alvo desceu ao nivelar a Vida da equipe (o que sobe é cura).</summary>
-	public sealed record HealthLeveled(BattleUnit Target, int Amount) : BattleEvent;
+	/// <summary>A Vida do alvo desceu ao nivelar a Vida da equipe (o que sobe é cura); <paramref name="Health"/> é a de depois.</summary>
+	public sealed record HealthLeveled(BattleUnit Target, int Amount, double? Health = null) : BattleEvent;
 
-	/// <summary>O conjunto tirou Vida máxima do alvo.</summary>
-	public sealed record MaxHealthReduced(BattleUnit Target, int Amount) : BattleEvent;
+	/// <summary>O conjunto tirou Vida máxima do alvo; <paramref name="Health"/> e <paramref name="MaxHealth"/> são as de depois.</summary>
+	public sealed record MaxHealthReduced(BattleUnit Target, int Amount, double? Health = null, double? MaxHealth = null) : BattleEvent;
 
 	/// <summary>Uma Passiva subiu mais um passo (o Núcleo Rúnico ganhou Defesa): <paramref name="Stacks"/> é o total.</summary>
 	public sealed record PassiveStacked(BattleUnit Unit, Stat Stat, int Stacks) : BattleEvent;
 
 	public sealed record Died(BattleUnit Unit) : BattleEvent;
 
-	public sealed record Revived(BattleUnit Unit) : BattleEvent;
+	/// <summary><paramref name="Health"/> é a Vida com que a unidade voltou.</summary>
+	public sealed record Revived(BattleUnit Unit, double? Health = null) : BattleEvent;
 
 	public sealed record BattleEnded(bool Victory) : BattleEvent;
 }

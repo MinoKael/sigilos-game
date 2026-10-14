@@ -282,8 +282,12 @@ namespace Sigilos.Core.Battle
 		{
 			if (unit.IsAlive)
 			{
+				var hadStatuses = unit.Statuses.Count > 0;
 				foreach (var expired in unit.TickStatuses())
 					Emit(new StatusRemoved(unit, expired.Kind));
+				// Os prazos de quem fica andaram um turno.
+				if (hadStatuses)
+					Emit(StatusesChanged.Of(unit));
 				unit.TickCooldowns();
 			}
 

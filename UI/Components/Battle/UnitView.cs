@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Sigilos.Core.Battle;
@@ -124,32 +125,92 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		public float Headroom => Unit.IsBoss ? 0 : StatusChip.Side + 14;
 
+		// A Vida que a tela mostra agora. O simulador anda na frente da animação (a ação inteira já foi
+		// calculada quando o primeiro golpe aparece): quem tem a Vida do momento é o evento (ShowHealth).
+		private double? _shownHealth;
+		private double? _shownMaxHealth;
+		private double? _shownImpeto;
+		private double? _shownShield;
+		private IReadOnlyList<StatusMark>? _shownMarks;
+
+		/// <summary>A Vida que o cartão mostra: a do último evento, ou a da unidade se nenhum a trouxe.</summary>
+		public double ShownHealth => _shownHealth ?? Unit.Health;
+
+		/// <summary>A Vida máxima que o cartão mostra.</summary>
+		public double ShownMaxHealth => _shownMaxHealth ?? Unit.MaxHealth;
+
+		/// <summary>O Ímpeto que o cartão mostra.</summary>
+		public double ShownImpeto => _shownImpeto ?? Unit.Impeto;
+
+		/// <summary>O que resta do escudo que o cartão mostra.</summary>
+		public double ShownShield => _shownShield ?? Unit.ShieldValue;
+
+		/// <summary>Os efeitos que o cartão mostra: os do último evento deles, ou os da unidade.</summary>
+		public IReadOnlyList<StatusMark> ShownStatuses => _shownMarks ?? Unit.StatusMarks();
+
+		/// <summary>Mostra os efeitos (e o escudo) de um evento.</summary>
+		public void ShowStatuses(IReadOnlyList<StatusMark> marks, double shield)
+		{
+			_shownMarks = marks;
+			_shownShield = shield;
+			Refresh();
+		}
+
+		/// <summary>Mostra o Ímpeto de um evento.</summary>
+		public void ShowImpeto(double impeto)
+		{
+			_shownImpeto = impeto;
+			Refresh();
+		}
+
+		/// <summary>Mostra a Vida (e a máxima, se mudou) de um evento, sem pular para o fim da ação.</summary>
+		public void ShowHealth(double health, double? maxHealth = null)
+		{
+			_shownHealth = health;
+			if (maxHealth != null)
+				_shownMaxHealth = maxHealth;
+			Refresh();
+		}
+
+		/// <summary>Volta a seguir a unidade: o que faltava mostrar já foi mostrado.</summary>
+		public void Sync()
+		{
+			if (_shownHealth == null && _shownMaxHealth == null && _shownImpeto == null && _shownShield == null && _shownMarks == null)
+				return;
+			_shownHealth = _shownMaxHealth = _shownImpeto = _shownShield = null;
+			_shownMarks = null;
+			Refresh();
+		}
+
 		public void Refresh()
 		{
-			_health.MaxValue = Unit.MaxHealth;
-			_health.Value = Unit.Health;
-			_health.AddThemeStyleboxOverride("fill", GameTheme.Energy(Unit.HealthFraction < 0.3 ? Palette.HealthLow : Palette.Health));
+			var health = ShownHealth;
+			var maxHealth = ShownMaxHealth;
+			var alive = health > 0;
+			_health.MaxValue = maxHealth;
+			_health.Value = health;
+			_health.AddThemeStyleboxOverride("fill", GameTheme.Energy(maxHealth > 0 && health / maxHealth < 0.3 ? Palette.HealthLow : Palette.Health));
 
-			var shield = Unit.Find(StatusKind.Shield)?.Value ?? 0;
-			_shield.MaxValue = Unit.MaxHealth;
+			var shield = ShownShield;
+			_shield.MaxValue = maxHealth;
 			_shield.Value = shield;
 			_shield.Visible = shield > 0;
 
-			_healthText.Text = Unit.IsAlive ? $"{Unit.Health:0}" : Unit.Reviving ? T("battle.reviving") : T("battle.fallen");
-			_impeto.Value = Unit.Impeto;
+			_healthText.Text = alive ? $"{health:0}" : Unit.Reviving ? T("battle.reviving") : T("battle.fallen");
+			_impeto.Value = ShownImpeto;
 
 			// Um quadradinho por efeito; vários do mesmo (o Veneno acumula) mostram o prazo mais longo.
 			Layout.Clear(_statuses);
 			if (!Unit.IsBoss)
 			{
-				foreach (var group in Unit.Statuses.Where(s => s.Kind != StatusKind.Shield).GroupBy(s => s.Kind))
-					_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns), unremovable: group.Any(s => s.Unremovable)));
+				foreach (var mark in ShownStatuses)
+					_statuses.AddChild(new StatusChip(mark.Kind, mark.Turns, unremovable: mark.Unremovable));
 			}
 
 			_cooldown.Text = string.Join(" ", Enumerable.Range(1, Math.Max(0, Unit.Skills.Count - 1))
 				.Where(i => Unit.Cooldown(i) > 0)
 				.Select(i => $"⟳{Unit.Cooldown(i)}"));
-			Modulate = Unit.IsAlive ? Colors.White : new Color(1, 1, 1, 0.35f);
+			Modulate = alive ? Colors.White : new Color(1, 1, 1, 0.35f);
 			Refreshed?.Invoke(this);
 		}
 

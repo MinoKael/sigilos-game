@@ -102,6 +102,8 @@ namespace Sigilos.Tests
 					var session = BattleFactory.Create(database, team, encounter, seed);
 					var log = new List<BattleEvent>();
 					AutoBattle.Run(session, log);
+					// Os efeitos do momento são só para a tela: a ordem da luta não depende deles.
+					log.RemoveAll(e => e is StatusesChanged);
 
 					ulong sequence = Offset, set = 0;
 					foreach (var text in log.Select(Text))

@@ -23,7 +23,7 @@ namespace Sigilos.Core.Battle.Sets
 
 				target.HealthDestroyed += amount;
 				target.Health = Math.Min(target.Health, target.MaxHealth);
-				cast.Resolver.Emit(new MaxHealthReduced(target, (int)amount));
+				cast.Resolver.Emit(new MaxHealthReduced(target, (int)amount, target.Health, target.MaxHealth));
 			}
 		}
 	}
