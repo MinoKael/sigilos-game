@@ -32,6 +32,7 @@
       "skills": [
         {
           "name": "Tiro de Pistola",
+          "image": "tiro_de_pistola",
           "effects": [
             {
               "kind": "Damage",
@@ -68,6 +69,7 @@
         },
         {
           "name": "Barril de Pólvora",
+          "image": "barril_de_polvora",
           "cooldown": 4,
           "effects": [
             {
@@ -114,6 +116,7 @@
         },
         {
           "name": "Abordagem",
+          "image": "abordagem",
           "cooldown": 5,
           "effects": [
             {
@@ -166,6 +169,7 @@
       "skills": [
         {
           "name": "Gancho",
+          "image": "gancho",
           "effects": [
             {
               "kind": "Damage",
@@ -201,6 +205,7 @@
         },
         {
           "name": "Rum da Tripulação",
+          "image": "rum_da_tripulacao",
           "cooldown": 4,
           "effects": [
             {
@@ -249,6 +254,7 @@
         },
         {
           "name": "Âncora",
+          "image": "ancora",
           "passive": { "kind": "StatusOrEffectOnHit" },
           "effects": [
             {
@@ -296,6 +302,7 @@
       "skills": [
         {
           "name": "Sabre Ágil",
+          "image": "sabre_agil",
           "effects": [
             {
               "kind": "Damage",
@@ -329,6 +336,7 @@
         },
         {
           "name": "Vento de Popa",
+          "image": "vento_de_popa",
           "cooldown": 4,
           "effects": [
             {
@@ -359,6 +367,7 @@
         },
         {
           "name": "Canhonada",
+          "image": "canhonada",
           "cooldown": 5,
           "effects": [
             {
@@ -410,6 +419,7 @@
       "skills": [
         {
           "name": "Moeda de Ouro",
+          "image": "moeda_de_ouro",
           "effects": [
             {
               "kind": "Damage",
@@ -446,6 +456,7 @@
         },
         {
           "name": "Mapa do Tesouro",
+          "image": "mapa_do_tesouro",
           "cooldown": 4,
           "effects": [
             {
@@ -488,6 +499,7 @@
         },
         {
           "name": "Dobrão da Sorte",
+          "image": "dobrao_da_sorte",
           "passive": { "kind": "StatusOrEffectOnWaveStart" },
           "effects": [
             {
@@ -538,6 +550,7 @@
       "skills": [
         {
           "name": "Tiro Traiçoeiro",
+          "image": "tiro_traicoeiro",
           "effects": [
             {
               "kind": "Damage",
@@ -573,6 +586,7 @@
         },
         {
           "name": "Andar na Prancha",
+          "image": "andar_na_prancha",
           "cooldown": 4,
           "effects": [
             {
@@ -615,6 +629,7 @@
         },
         {
           "name": "Maldição do Tesouro",
+          "image": "maldicao_do_tesouro",
           "passive": {
             "kind": "BonusVsStatusOrEffect",
             "value": 0.25,

@@ -27,6 +27,7 @@
         "name": "Bocras",
         "skill": {
           "name": "Seiva Ácida",
+          "image": "seiva_acida",
           "passive": { "kind": "StatusOrEffectOnAttacker" },
           "effects": [
             {
@@ -42,6 +43,7 @@
       "skills": [
         {
           "name": "Bocada",
+          "image": "bocada",
           "effects": [
             {
               "kind": "Damage",
@@ -77,6 +79,7 @@
         },
         {
           "name": "Devorar",
+          "image": "devorar",
           "cooldown": 3,
           "effects": [
             {
@@ -124,6 +127,7 @@
         "name": "Moscapa",
         "skill": {
           "name": "Raízes Sedentas",
+          "image": "raizes_sedentas",
           "passive": { "kind": "StatusOrEffectEachTurn" },
           "effects": [
             {
@@ -137,6 +141,7 @@
       "skills": [
         {
           "name": "Cipó",
+          "image": "cipo",
           "effects": [
             {
               "kind": "Damage",
@@ -172,6 +177,7 @@
         },
         {
           "name": "Armadilha de Néctar",
+          "image": "armadilha_de_nectar",
           "cooldown": 4,
           "effects": [
             {
@@ -225,6 +231,7 @@
         "name": "Chiver",
         "skill": {
           "name": "Bote da Planta",
+          "image": "bote_da_planta",
           "cooldown": 5,
           "effects": [
             {
@@ -255,6 +262,7 @@
       "skills": [
         {
           "name": "Chicote de Cipó",
+          "image": "chicote_de_cipo",
           "effects": [
             {
               "kind": "Damage",
@@ -289,6 +297,7 @@
         },
         {
           "name": "Pólen ao Vento",
+          "image": "polen_ao_vento",
           "cooldown": 4,
           "effects": [
             {
@@ -342,6 +351,7 @@
         "name": "Florol",
         "skill": {
           "name": "Fotossíntese",
+          "image": "fotossintese",
           "passive": { "kind": "StatusOrEffectOnWaveStart" },
           "effects": [
             {
@@ -356,6 +366,7 @@
       "skills": [
         {
           "name": "Pétala",
+          "image": "petala",
           "effects": [
             {
               "kind": "Damage",
@@ -388,6 +399,7 @@
         },
         {
           "name": "Néctar Doce",
+          "image": "nectar_doce",
           "cooldown": 4,
           "effects": [
             {
@@ -440,6 +452,7 @@
         "name": "Denero",
         "skill": {
           "name": "Digestão",
+          "image": "digestao",
           "cooldown": 5,
           "effects": [
             {
@@ -464,6 +477,7 @@
       "skills": [
         {
           "name": "Presas Sombrias",
+          "image": "presas_sombrias",
           "effects": [
             {
               "kind": "Damage",
@@ -493,6 +507,7 @@
         },
         {
           "name": "Engolir",
+          "image": "engolir",
           "cooldown": 4,
           "effects": [
             {

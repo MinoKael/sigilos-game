@@ -84,7 +84,7 @@ namespace Sigilos.GameEntry
 		}
 
 		/// <summary>
-		/// Troca todo "name" e "base_name" de um arquivo de dados pelo nome no idioma de agora
+		/// Troca todo "name", "base_name" e "flavor" de um arquivo de dados pelo texto no idioma de agora
 		/// (<see cref="Locale.Name"/>). Na base não há o que trocar, e o texto passa como veio.
 		/// </summary>
 		private static string Localize(string json)
@@ -104,7 +104,7 @@ namespace Sigilos.GameEntry
 				case JsonObject item:
 					foreach (var (key, value) in item.ToList())
 					{
-						if (key is "name" or "base_name" && value is JsonValue text && text.TryGetValue<string>(out var name))
+						if (key is "name" or "base_name" or "flavor" && value is JsonValue text && text.TryGetValue<string>(out var name))
 							item[key] = Locale.Name(name);
 						else
 							Rename(value);

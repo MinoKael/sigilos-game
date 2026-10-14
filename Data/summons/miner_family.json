@@ -31,6 +31,7 @@
       "skills": [
         {
           "name": "Picareta Rúnica",
+          "image": "picareta_runica",
           "effects": [
             {
               "kind": "BonusPerStatus",
@@ -68,6 +69,7 @@
         },
         {
           "name": "Detonar o Veio",
+          "image": "detonar_o_veio",
           "cooldown": 4,
           "effects": [
             {
@@ -132,6 +134,7 @@
         },
         {
           "name": "Veio Profundo",
+          "image": "veio_profundo",
           "passive": { "kind": "StatusOrEffectOnHit" },
           "effects": [
             {
@@ -179,6 +182,7 @@
       "skills": [
         {
           "name": "Pá Encharcada",
+          "image": "pa_encharcada",
           "effects": [
             {
               "kind": "Damage",
@@ -214,6 +218,7 @@
         },
         {
           "name": "Escorar a Galeria",
+          "image": "escorar_a_galeria",
           "cooldown": 4,
           "effects": [
             {
@@ -266,6 +271,7 @@
         },
         {
           "name": "Faro de Minério",
+          "image": "faro_de_minerio",
           "passive": {
             "kind": "BonusVsStatusOrEffect",
             "value": 0.25,
@@ -300,6 +306,7 @@
       "skills": [
         {
           "name": "Picada Dupla",
+          "image": "picada_dupla",
           "effects": [
             {
               "kind": "Damage",
@@ -336,6 +343,7 @@
         },
         {
           "name": "Dinamite",
+          "image": "dinamite",
           "cooldown": 4,
           "effects": [
             {
@@ -378,6 +386,7 @@
         },
         {
           "name": "Faro de Minério",
+          "image": "faro_de_minerio",
           "passive": {
             "kind": "BonusVsStatusOrEffect",
             "value": 0.25,
@@ -412,6 +421,7 @@
       "skills": [
         {
           "name": "Lampião",
+          "image": "lampiao",
           "effects": [
             {
               "kind": "Damage",
@@ -447,6 +457,7 @@
         },
         {
           "name": "Luz na Galeria",
+          "image": "luz_na_galeria",
           "cooldown": 4,
           "effects": [
             {
@@ -486,6 +497,7 @@
         },
         {
           "name": "Cristal Curativo",
+          "image": "cristal_curativo",
           "cooldown": 5,
           "effects": [
             {
@@ -538,6 +550,7 @@
       "skills": [
         {
           "name": "Picareta Sombria",
+          "image": "picareta_sombria",
           "effects": [
             {
               "kind": "Damage",
@@ -573,6 +586,7 @@
         },
         {
           "name": "Desabamento",
+          "image": "desabamento",
           "cooldown": 4,
           "effects": [
             {
@@ -626,6 +640,7 @@
         },
         {
           "name": "Faro de Minério",
+          "image": "faro_de_minerio",
           "passive": {
             "kind": "BonusVsStatusOrEffect",
             "value": 0.25,

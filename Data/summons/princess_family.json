@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Leque de Brasas",
+          "image": "leque_de_brasas",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.47, "hits": 2},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Decreto Real",
+          "image": "decreto_real",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
@@ -44,6 +46,7 @@
         },
         {
           "name": "Tirania Ardente",
+          "image": "tirania_ardente",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 2},
@@ -69,6 +72,7 @@
       "skills": [
         {
           "name": "Cetro da Maré",
+          "image": "cetro_da_mare",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Shield", "target": "LowestAlly", "power": 0.05, "turns": 2}
@@ -82,6 +86,7 @@
         },
         {
           "name": "Baile das Ondas",
+          "image": "baile_das_ondas",
           "cooldown": 4,
           "effects": [
             {"kind": "Cleanse", "target": "AllAllies"},
@@ -96,6 +101,7 @@
         },
         {
           "name": "Graça Real",
+          "image": "graca_real",
           "passive": {"kind": "StatusOrEffectOnWaveStart"},
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2}
@@ -115,6 +121,7 @@
       "skills": [
         {
           "name": "Leque de Vento",
+          "image": "leque_de_vento",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "HighestAlly", "power": 15, "by": "Attack"}
@@ -128,6 +135,7 @@
         },
         {
           "name": "Valsa Celeste",
+          "image": "valsa_celeste",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 30},
@@ -139,6 +147,7 @@
         },
         {
           "name": "Ordem Real",
+          "image": "ordem_real",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
@@ -163,6 +172,7 @@
       "skills": [
         {
           "name": "Toque Real",
+          "image": "toque_real",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
@@ -176,6 +186,7 @@
         },
         {
           "name": "Proteção Real",
+          "image": "protecao_real",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
@@ -190,6 +201,7 @@
         },
         {
           "name": "Coroa Radiante",
+          "image": "coroa_radiante",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
@@ -213,6 +225,7 @@
       "skills": [
         {
           "name": "Beijo Venenoso",
+          "image": "beijo_venenoso",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.3, "turns": 1}
@@ -226,6 +239,7 @@
         },
         {
           "name": "Canção de Ninar",
+          "image": "cancao_de_ninar",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.5, "turns": 2},
@@ -239,6 +253,7 @@
         },
         {
           "name": "Maldição Real",
+          "image": "maldicao_real",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.41},

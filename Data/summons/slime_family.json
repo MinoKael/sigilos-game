@@ -27,6 +27,7 @@
         "name": "Magdo",
         "skill": {
           "name": "Corpo Escaldante",
+          "image": "corpo_escaldante",
           "passive": {
             "kind": "Thorns",
             "value": 0.5
@@ -36,6 +37,7 @@
       "skills": [
         {
           "name": "Gosma Escaldante",
+          "image": "gosma_escaldante",
           "effects": [
             {
               "kind": "Damage",
@@ -67,6 +69,7 @@
         },
         {
           "name": "Disparo de Magma",
+          "image": "disparo_de_magma",
           "cooldown": 4,
           "effects": [
             {
@@ -120,6 +123,7 @@
         "name": "Blob",
         "skill": {
           "name": "Fortaleza de Gosma",
+          "image": "fortaleza_de_gosma",
           "cooldown": 5,
           "effects": [
             {
@@ -148,6 +152,7 @@
       "skills": [
         {
           "name": "Gosma Gelada",
+          "image": "gosma_gelada",
           "effects": [
             {
               "kind": "Damage",
@@ -179,6 +184,7 @@
         },
         {
           "name": "Maré Purificadora",
+          "image": "mare_purificadora",
           "cooldown": 5,
           "effects": [
             {
@@ -225,6 +231,7 @@
         "name": "Jelly",
         "skill": {
           "name": "Vendaval de Meleca",
+          "image": "vendaval_de_meleca",
           "cooldown": 5,
           "effects": [
             {
@@ -254,6 +261,7 @@
       "skills": [
         {
           "name": "Gosma Arenosa",
+          "image": "gosma_arenosa",
           "effects": [
             {
               "kind": "Damage",
@@ -285,6 +293,7 @@
         },
         {
           "name": "Estouro de Cola",
+          "image": "estouro_de_cola",
           "cooldown": 4,
           "effects": [
             {
@@ -336,6 +345,7 @@
         "name": "Limuz",
         "skill": {
           "name": "Gel Radiante",
+          "image": "gel_radiante",
           "cooldown": 5,
           "effects": [
             {
@@ -364,6 +374,7 @@
       "skills": [
         {
           "name": "Gosma Brilhante",
+          "image": "gosma_brilhante",
           "effects": [
             {
               "kind": "Damage",
@@ -394,6 +405,7 @@
         },
         {
           "name": "Gel Curativo",
+          "image": "gel_curativo",
           "cooldown": 4,
           "effects": [
             {
@@ -440,6 +452,7 @@
         "name": "Piche",
         "skill": {
           "name": "Toque Amaldiçoado",
+          "image": "toque_amaldicoado",
           "cooldown": 5,
           "effects": [
             {
@@ -488,6 +501,7 @@
       "skills": [
         {
           "name": "Gosma Pétrea",
+          "image": "gosma_petrea",
           "effects": [
             {
               "kind": "Damage",
@@ -519,6 +533,7 @@
         },
         {
           "name": "Lodo Negro",
+          "image": "lodo_negro",
           "cooldown": 4,
           "effects": [
             {

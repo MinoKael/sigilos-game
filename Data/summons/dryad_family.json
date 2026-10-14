@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Espinho Ardente",
+          "image": "espinho_ardente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Pólen Incandescente",
+          "image": "polen_incandescente",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
@@ -48,6 +50,7 @@
         },
         {
           "name": "Seiva Fervente",
+          "image": "seiva_fervente",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.2, "turns": 2}
@@ -70,6 +73,7 @@
       "skills": [
         {
           "name": "Gota de Seiva",
+          "image": "gota_de_seiva",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
@@ -83,6 +87,7 @@
         },
         {
           "name": "Orvalho Vivo",
+          "image": "orvalho_vivo",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2}
@@ -97,6 +102,7 @@
         },
         {
           "name": "Raízes Profundas",
+          "image": "raizes_profundas",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
@@ -119,6 +125,7 @@
       "skills": [
         {
           "name": "Folha Cortante",
+          "image": "folha_cortante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 2},
             {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.2, "turns": 2}
@@ -132,6 +139,7 @@
         },
         {
           "name": "Pólen Sonífero",
+          "image": "polen_sonifero",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.4, "turns": 2}
@@ -148,6 +156,7 @@
         },
         {
           "name": "Brisa da Floresta",
+          "image": "brisa_da_floresta",
           "cooldown": 5,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 25},
@@ -171,6 +180,7 @@
       "skills": [
         {
           "name": "Galho Abençoado",
+          "image": "galho_abencoado",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Shield", "target": "Self", "power": 0.04, "turns": 2}
@@ -184,6 +194,7 @@
         },
         {
           "name": "Abraço da Floresta",
+          "image": "abraco_da_floresta",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1},
@@ -202,6 +213,7 @@
         },
         {
           "name": "Casca Viva",
+          "image": "casca_viva",
           "passive": {"kind": "Thorns", "value": 0.2, "awakenedValue": 0.3}
         }
       ]
@@ -218,6 +230,7 @@
       "skills": [
         {
           "name": "Espinho Venenoso",
+          "image": "espinho_venenoso",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.4, "turns": 2}
@@ -231,6 +244,7 @@
         },
         {
           "name": "Jardim Murcho",
+          "image": "jardim_murcho",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
@@ -248,6 +262,7 @@
         },
         {
           "name": "Colheita",
+          "image": "colheita",
           "cooldown": 5,
           "effects": [
             {"kind": "BonusPerStatus", "target": "Self", "power": 0.3, "scope": "Debuffs", "onlyStatus": "Affliction", "from": "Target", "bonus": "Damage"},

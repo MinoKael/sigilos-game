@@ -17,6 +17,7 @@
         "name": "Viborar",
         "skill": {
           "name": "Veneno de Serpente",
+          "image": "veneno_de_serpente",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
@@ -26,6 +27,7 @@
       "skills": [
         {
           "name": "Flecha de Serpente",
+          "image": "flecha_de_serpente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
@@ -39,6 +41,7 @@
         },
         {
           "name": "Cabelo de Serpentes",
+          "image": "cabelo_de_serpentes",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 0.98, "hits": 3},
@@ -63,6 +66,7 @@
         "name": "Nereida",
         "skill": {
           "name": "Petrificar",
+          "image": "petrificar",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.35, "turns": 1},
@@ -77,6 +81,7 @@
       "skills": [
         {
           "name": "Olhar Gelado",
+          "image": "olhar_gelado",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
@@ -90,6 +95,7 @@
         },
         {
           "name": "Olhar Petrificante",
+          "image": "olhar_petrificante",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
@@ -114,12 +120,14 @@
         "name": "Sibila",
         "skill": {
           "name": "Escamas Lisas",
+          "image": "escamas_lisas",
           "passive": {"kind": "Dodge", "value": 0.2}
         }
       },
       "skills": [
         {
           "name": "Bote",
+          "image": "bote",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2},
             {"kind": "Impeto", "target": "Target", "power": -10}
@@ -133,6 +141,7 @@
         },
         {
           "name": "Dança das Serpentes",
+          "image": "danca_das_serpentes",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
@@ -157,6 +166,7 @@
         "name": "Eselar",
         "skill": {
           "name": "Olhar Sereno",
+          "image": "olhar_sereno",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.4, "turns": 2},
@@ -171,6 +181,7 @@
       "skills": [
         {
           "name": "Reflexo",
+          "image": "reflexo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.25, "turns": 2}
@@ -184,6 +195,7 @@
         },
         {
           "name": "Escudo Espelhado",
+          "image": "escudo_espelhado",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2},
@@ -208,6 +220,7 @@
         "name": "Girnan",
         "skill": {
           "name": "Olhar Fatal",
+          "image": "olhar_fatal",
           "passive": {
             "kind": "BonusVsStatusOrEffect",
             "value": 0.5,
@@ -221,6 +234,7 @@
       "skills": [
         {
           "name": "Olhar Maldito",
+          "image": "olhar_maldito",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.55, "turns": 2}
@@ -234,6 +248,7 @@
         },
         {
           "name": "Petrificação",
+          "image": "petrificacao",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},

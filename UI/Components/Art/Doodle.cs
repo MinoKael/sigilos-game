@@ -34,6 +34,11 @@ namespace Sigilos.UI.Components
 		private static Shader? _shader;
 		private static Shader? _awakenedShader;
 
+		/// <summary>O grupo de todos os desenhos na árvore, para refazer a resolução quando a janela muda de escala.</summary>
+		private const string Group = "doodles";
+
+		private static bool _refineQueued;
+
 		/// <summary>O material é deste desenho (já trocou de tinta): pode mudar sem mexer nos outros.</summary>
 		private bool _ownMaterial;
 
@@ -113,7 +118,31 @@ namespace Sigilos.UI.Components
 			_ => Palette.Of(element).Lightened(0.3f),
 		};
 
+		public override void _EnterTree() => AddToGroup(Group);
+
 		public override void _Ready() => Refine();
+
+		/// <summary>
+		/// Refaz a resolução de todos os desenhos na tela: a janela mudou de tamanho ou de escala, e o PNG
+		/// escolhido para a escala antiga ficaria ampliado. Junta várias mudanças seguidas (arrastar a borda
+		/// da janela) numa só passada, no fim do quadro.
+		/// </summary>
+		public static void RefineAll(SceneTree tree)
+		{
+			if (_refineQueued)
+				return;
+
+			_refineQueued = true;
+			Callable.From(() =>
+			{
+				_refineQueued = false;
+				foreach (var node in tree.GetNodesInGroup(Group))
+				{
+					if (node is Doodle doodle)
+						doodle.Refine();
+				}
+			}).CallDeferred();
+		}
 
 		/// <summary>Escolhe o PNG que cobre o tamanho na tela (com a escala da janela) sem ampliar.</summary>
 		private void Refine()
@@ -121,7 +150,12 @@ namespace Sigilos.UI.Components
 			if (Texture == null || !IsInsideTree())
 				return;
 
-			var scale = GetScreenTransform().Scale.Abs();
+			// A escala da janela, ou a do desenho se ela for maior: quem encolhe de propósito (o sigilo do ritual
+			// nasce em 30% e cresce; os cartões, em 45%) não baixa a resolução, senão o PNG pequeno
+			// escolhido no começo seria ampliado quando o desenho chega ao tamanho cheio.
+			var window = GetViewport().GetFinalTransform().Scale.Abs();
+			var own = GetScreenTransform().Scale.Abs();
+			var scale = new Vector2(Mathf.Max(own.X, window.X), Mathf.Max(own.Y, window.Y));
 			var pixels = Mathf.Max(Size.X * scale.X, Size.Y * scale.Y) * 1.1f;
 			if (pixels < 1)
 				return;

@@ -17,6 +17,7 @@
         "name": "Fenrir",
         "skill": {
           "name": "Garras Cauterizantes",
+          "image": "garras_cauterizantes",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5},
@@ -33,6 +34,7 @@
       "skills": [
         {
           "name": "Devorar",
+          "image": "devorar",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.7},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.5, "turns": 2}
@@ -46,6 +48,7 @@
         },
         {
           "name": "Calor do Cão",
+          "image": "calor_do_cao",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.6},
@@ -70,6 +73,7 @@
         "name": "Amarok",
         "skill": {
           "name": "Liberar Amarras",
+          "image": "liberar_amarras",
           "cooldown": 5,
           "effects": [
             {"kind": "Cleanse", "target": "AllAllies"},
@@ -84,6 +88,7 @@
       "skills": [
         {
           "name": "Devorar",
+          "image": "devorar",
           "effects": [
             {
               "kind": "Damage",
@@ -103,6 +108,7 @@
         },
         {
           "name": "Brotar Esperança",
+          "image": "brotar_esperanca",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.11, "stat": "MaxHealth"}
@@ -125,6 +131,7 @@
         "name": "Garmr",
         "skill": {
           "name": "Chamada Lupina",
+          "image": "chamada_lupina",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "chance": 1, "turns": 2},
@@ -139,6 +146,7 @@
       "skills": [
         {
           "name": "Devorar",
+          "image": "devorar",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.5},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.6, "turns": 2}
@@ -152,6 +160,7 @@
         },
         {
           "name": "Algoz de Odin",
+          "image": "algoz_de_odin",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.5, "turns": 2},
@@ -180,6 +189,7 @@
         "name": "Skoll",
         "skill": {
           "name": "Filhos de Fenrir",
+          "image": "filhos_de_fenrir",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 1, "turns": 1}
@@ -189,6 +199,7 @@
       "skills": [
         {
           "name": "Devorar",
+          "image": "devorar",
           "effects": [
             {
               "kind": "Damage",
@@ -209,6 +220,7 @@
         },
         {
           "name": "Algoz de Mani",
+          "image": "algoz_de_mani",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Unrecoverable", "turns": 2, "chance": 0.9},
@@ -240,6 +252,7 @@
         "name": "Hati",
         "skill": {
           "name": "Filhos de Fenrir",
+          "image": "filhos_de_fenrir",
           "passive": {
             "kind": "BonusPerStatusOrEffect",
             "value": 0.3,
@@ -252,6 +265,7 @@
       "skills": [
         {
           "name": "Devorar",
+          "image": "devorar",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.35},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.7, "turns": 2}
@@ -265,6 +279,7 @@
         },
         {
           "name": "Algoz de Sol",
+          "image": "algoz_de_sol",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3},

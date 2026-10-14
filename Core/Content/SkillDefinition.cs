@@ -16,6 +16,19 @@ namespace Sigilos.Core.Content
 	{
 		public string Name { get; init; } = "";
 
+		/// <summary>
+		/// A frase de ambientação da habilidade, mostrada antes da descrição técnica. Só texto: não entra em
+		/// efeito, cálculo nem nível. Vazio, a tela não reserva espaço para ela.
+		/// </summary>
+		public string Flavor { get; init; } = "";
+
+		/// <summary>
+		/// O nome do desenho próprio da habilidade, em Assets/Skills (<c>flecha_explosiva</c> é
+		/// <c>Assets/Skills/flecha_explosiva.png</c>). Sem o arquivo, ou vazio, a tela mostra o símbolo de
+		/// <c>Art.Skill</c>.
+		/// </summary>
+		public string Image { get; init; } = "";
+
 		/// <summary>Turnos de recarga. A primeira habilidade tem 0.</summary>
 		public int Cooldown { get; init; }
 

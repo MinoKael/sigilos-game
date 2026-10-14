@@ -21,8 +21,8 @@ namespace Sigilos.UI.Components
 				return;
 
 			if (outline)
-				AddChild(Image(texture, size, new Color(0, 0, 0, 0.8f), 1.3f).Named("Outline"));
-			AddChild(Image(texture, size, color, 1.2f).Named("Planet"));
+				AddChild(Image(texture, size, new Color(0, 0, 0, 0.8f), 1.2f).Named("Outline"));
+			AddChild(Image(texture, size, color, 1.1f).Named("Planet"));
 		}
 
 		public Planet? Planet { get; }

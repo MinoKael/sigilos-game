@@ -32,6 +32,7 @@
       "skills": [
         {
           "name": "Lâmina Ardente",
+          "image": "lamina_ardente",
           "effects": [
             {
               "kind": "Status",
@@ -67,6 +68,7 @@
         },
         {
           "name": "Carga Flamejante",
+          "image": "carga_flamejante",
           "cooldown": 4,
           "effects": [
             {
@@ -104,6 +106,7 @@
         },
         {
           "name": "Juramento em Chamas",
+          "image": "juramento_em_chamas",
           "cooldown": 5,
           "effects": [
             {
@@ -165,6 +168,7 @@
       "skills": [
         {
           "name": "Golpe de Escudo",
+          "image": "golpe_de_escudo",
           "effects": [
             {
               "kind": "Damage",
@@ -200,6 +204,7 @@
         },
         {
           "name": "Muralha de Maré",
+          "image": "muralha_de_mare",
           "cooldown": 4,
           "effects": [
             {
@@ -243,6 +248,7 @@
         },
         {
           "name": "Último Voto",
+          "image": "ultimo_voto",
           "passive": { "kind": "StatusOrEffectOnDeath" },
           "effects": [
             {
@@ -292,6 +298,7 @@
       "skills": [
         {
           "name": "Estocada Veloz",
+          "image": "estocada_veloz",
           "effects": [
             {
               "kind": "Damage",
@@ -325,6 +332,7 @@
         },
         {
           "name": "Clarim de Guerra",
+          "image": "clarim_de_guerra",
           "cooldown": 4,
           "effects": [
             {
@@ -355,6 +363,7 @@
         },
         {
           "name": "Estandarte do Vendaval",
+          "image": "estandarte_do_vendaval",
           "cooldown": 5,
           "effects": [
             {
@@ -410,6 +419,7 @@
       "skills": [
         {
           "name": "Juramento",
+          "image": "juramento",
           "effects": [
             {
               "kind": "Damage",
@@ -445,6 +455,7 @@
         },
         {
           "name": "Voto de Escudo",
+          "image": "voto_de_escudo",
           "cooldown": 4,
           "effects": [
             {
@@ -487,6 +498,7 @@
         },
         {
           "name": "Último Voto",
+          "image": "ultimo_voto",
           "passive": { "kind": "StatusOrEffectOnDeath" },
           "effects": [
             {
@@ -532,6 +544,7 @@
       "skills": [
         {
           "name": "Lâmina Faminta",
+          "image": "lamina_faminta",
           "effects": [
             {
               "kind": "Damage",
@@ -561,6 +574,7 @@
         },
         {
           "name": "Juramento Sombrio",
+          "image": "juramento_sombrio",
           "cooldown": 4,
           "effects": [
             {
@@ -603,6 +617,7 @@
         },
         {
           "name": "Último Voto",
+          "image": "ultimo_voto",
           "passive": { "kind": "StatusOrEffectOnDeath" },
           "effects": [
             {

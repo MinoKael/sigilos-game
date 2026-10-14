@@ -618,7 +618,7 @@ namespace Sigilos.UI.Screens
 					Disabled = !ready || _coach?.CanUse(index) == false,
 					Badge = ready ? "" : T("battle.cooldown_badge", ally.Cooldown(index)),
 				};
-				button.SetSymbol(Art.Skill(skill));
+				button.SetSkill(skill);
 				Press.OnButton(button, () =>
 				{
 					if (skill.NeedsTarget)

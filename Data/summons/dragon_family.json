@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Garra",
+          "image": "garra",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Sopro",
+          "image": "sopro",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
@@ -44,6 +46,7 @@
         },
         {
           "name": "Fogo de Dragão",
+          "image": "fogo_de_dragao",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
@@ -63,6 +66,7 @@
       "skills": [
         {
           "name": "Garra da Maré",
+          "image": "garra_da_mare",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Impeto", "target": "Target", "power": -20}
@@ -76,6 +80,7 @@
         },
         {
           "name": "Dilúvio",
+          "image": "diluvio",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
@@ -89,6 +94,7 @@
         },
         {
           "name": "Sorvedouro",
+          "image": "sorvedouro",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.18},
@@ -114,6 +120,7 @@
       "skills": [
         {
           "name": "Garra de Rajada",
+          "image": "garra_de_rajada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.54, "hits": 2}
           ],
@@ -126,6 +133,7 @@
         },
         {
           "name": "Ciclone",
+          "image": "ciclone",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
@@ -139,6 +147,7 @@
         },
         {
           "name": "Tempestade",
+          "image": "tempestade",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 3.43},
@@ -164,6 +173,7 @@
       "skills": [
         {
           "name": "Garra Radiante",
+          "image": "garra_radiante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
@@ -177,6 +187,7 @@
         },
         {
           "name": "Sopro Sagrado",
+          "image": "sopro_sagrado",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.14},
@@ -190,6 +201,7 @@
         },
         {
           "name": "Fogo de Dragão",
+          "image": "fogo_de_dragao",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
@@ -209,6 +221,7 @@
       "skills": [
         {
           "name": "Garra Sombria",
+          "image": "garra_sombria",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94, "drain": 0.25}
           ],
@@ -221,6 +234,7 @@
         },
         {
           "name": "Sopro do Vazio",
+          "image": "sopro_do_vazio",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
@@ -234,6 +248,7 @@
         },
         {
           "name": "Fogo de Dragão",
+          "image": "fogo_de_dragao",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}

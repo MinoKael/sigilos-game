@@ -17,12 +17,14 @@
         "name": "Osbas",
         "skill": {
           "name": "Ossos Teimosos",
+          "image": "ossos_teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
         }
       },
       "skills": [
         {
           "name": "Espada Enferrujada",
+          "image": "espada_enferrujada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 1, "turns": 2}
@@ -36,6 +38,7 @@
         },
         {
           "name": "Explosão de Ossos",
+          "image": "explosao_de_ossos",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
@@ -60,12 +63,14 @@
         "name": "Maross",
         "skill": {
           "name": "Ossos Teimosos",
+          "image": "ossos_teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
         }
       },
       "skills": [
         {
           "name": "Escudo de Ossos",
+          "image": "escudo_de_ossos",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Shield", "target": "Self", "power": 0.03, "turns": 2}
@@ -79,6 +84,7 @@
         },
         {
           "name": "Muralha de Ossos",
+          "image": "muralha_de_ossos",
           "cooldown": 4,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.1, "turns": 2},
@@ -103,12 +109,14 @@
         "name": "Soven",
         "skill": {
           "name": "Ossos Teimosos",
+          "image": "ossos_teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
         }
       },
       "skills": [
         {
           "name": "Lança Óssea",
+          "image": "lanca_ossea",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Impeto", "target": "Target", "power": -15}
@@ -122,6 +130,7 @@
         },
         {
           "name": "Arremesso de Crânio",
+          "image": "arremesso_de_cranio",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.43},
@@ -146,6 +155,7 @@
         "name": "Luzo",
         "skill": {
           "name": "Reerguer",
+          "image": "reerguer",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 2}
@@ -158,6 +168,7 @@
       "skills": [
         {
           "name": "Toque Ósseo",
+          "image": "toque_osseo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.2}
@@ -171,6 +182,7 @@
         },
         {
           "name": "Dança Macabra",
+          "image": "danca_macabra",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 20},
@@ -193,12 +205,14 @@
         "name": "Nossor",
         "skill": {
           "name": "Ossos Teimosos",
+          "image": "ossos_teimosos",
           "passive": {"kind": "RebirthOnce", "value": 0.3}
         }
       },
       "skills": [
         {
           "name": "Garra Óssea",
+          "image": "garra_ossea",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 1, "turns": 2}
@@ -210,6 +224,7 @@
         },
         {
           "name": "Maldição do Túmulo",
+          "image": "maldicao_do_tumulo",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},

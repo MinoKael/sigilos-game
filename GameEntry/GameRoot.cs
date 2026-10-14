@@ -187,6 +187,7 @@ namespace Sigilos.GameEntry
 			ApplyVolume(Sfx.Bus, _account.EffectsVolume);
 			// No PC, a janela fica sempre em 16:9; no celular, a interface ocupa a tela toda.
 			AddChild(new WindowAspect(OS.HasFeature("mobile") || Argument("--mobile") != null));
+			GetWindow().SizeChanged += () => Doodle.RefineAll(GetTree());
 			AddChild(new MinimizeGuard(_ui));
 
 			// Com --screen (desenvolvimento), ou depois de escolher jogar sem conta, abre direto o save local.

@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Punho Flamejante",
+          "image": "punho_flamejante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.01, "hits": 3},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.15, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Cem Golpes",
+          "image": "cem_golpes",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 0.75, "hits": 5}
@@ -43,6 +45,7 @@
         },
         {
           "name": "Chi Ardente",
+          "image": "chi_ardente",
           "passive": {"kind": "StatusOrEffectEachTurn", "value": 0.5},
           "effects": [
             {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 1}
@@ -62,6 +65,7 @@
       "skills": [
         {
           "name": "Palma Fluida",
+          "image": "palma_fluida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
@@ -75,6 +79,7 @@
         },
         {
           "name": "Postura da Maré",
+          "image": "postura_da_mare",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
@@ -89,6 +94,7 @@
         },
         {
           "name": "Contrafluxo",
+          "image": "contrafluxo",
           "passive": {"kind": "StatusOrEffectOnAttacker"},
           "effects": [
             {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
@@ -108,6 +114,7 @@
       "skills": [
         {
           "name": "Chute Giratório",
+          "image": "chute_giratorio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.54, "hits": 2},
             {"kind": "Impeto", "target": "Self", "power": 10}
@@ -121,6 +128,7 @@
         },
         {
           "name": "Passo do Vento",
+          "image": "passo_do_vento",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.43},
@@ -135,6 +143,7 @@
         },
         {
           "name": "Mil Punhos",
+          "image": "mil_punhos",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 3}
@@ -158,6 +167,7 @@
       "skills": [
         {
           "name": "Palma Iluminada",
+          "image": "palma_iluminada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Cleanse", "target": "LowestAlly"}
@@ -171,6 +181,7 @@
         },
         {
           "name": "Meditação",
+          "image": "meditacao",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2},
@@ -182,6 +193,7 @@
         },
         {
           "name": "Equilíbrio",
+          "image": "equilibrio",
           "cooldown": 5,
           "effects": [
             {"kind": "EqualizeHealth", "target": "AllAllies"},
@@ -207,6 +219,7 @@
       "skills": [
         {
           "name": "Golpe de Pressão",
+          "image": "golpe_de_pressao",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.25, "turns": 1}
@@ -220,6 +233,7 @@
         },
         {
           "name": "Toque da Morte",
+          "image": "toque_da_morte",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.92, "ignoreDefense": 0.4},
@@ -233,6 +247,7 @@
         },
         {
           "name": "Pontos Vitais",
+          "image": "pontos_vitais",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},

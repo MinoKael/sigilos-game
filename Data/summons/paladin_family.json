@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Castigo",
+          "image": "castigo",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Cruzada",
+          "image": "cruzada",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
@@ -44,6 +46,7 @@
         },
         {
           "name": "Devoção",
+          "image": "devocao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
@@ -63,6 +66,7 @@
       "skills": [
         {
           "name": "Martelo da Maré",
+          "image": "martelo_da_mare",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Shield", "target": "LowestAlly", "power": 0.05, "turns": 2}
@@ -76,6 +80,7 @@
         },
         {
           "name": "Bastião",
+          "image": "bastiao",
           "cooldown": 4,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2},
@@ -89,6 +94,7 @@
         },
         {
           "name": "Égide da Maré",
+          "image": "egide_da_mare",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 2},
@@ -112,6 +118,7 @@
       "skills": [
         {
           "name": "Golpe de Vendaval",
+          "image": "golpe_de_vendaval",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Self", "power": 15}
@@ -125,6 +132,7 @@
         },
         {
           "name": "Vento Inspirador",
+          "image": "vento_inspirador",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 25},
@@ -136,6 +144,7 @@
         },
         {
           "name": "Devoção",
+          "image": "devocao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
@@ -155,6 +164,7 @@
       "skills": [
         {
           "name": "Golpe Sagrado",
+          "image": "golpe_sagrado",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.07}
@@ -168,6 +178,7 @@
         },
         {
           "name": "Imposição de Mãos",
+          "image": "imposicao_de_maos",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "LowestAlly", "power": 0.35},
@@ -182,6 +193,7 @@
         },
         {
           "name": "Devoção",
+          "image": "devocao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
@@ -201,6 +213,7 @@
       "skills": [
         {
           "name": "Lâmina Temível",
+          "image": "lamina_temivel",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69, "drain": 0.2},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
@@ -214,6 +227,7 @@
         },
         {
           "name": "Desafio Sinistro",
+          "image": "desafio_sinistro",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
@@ -228,6 +242,7 @@
         },
         {
           "name": "Juramento de Sangue",
+          "image": "juramento_de_sangue",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.92, "drain": 0.5},

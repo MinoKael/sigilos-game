@@ -17,6 +17,7 @@
         "name": "Salam",
         "skill": {
           "name": "Cauda Nova",
+          "image": "cauda_nova",
           "passive": {"kind": "StatusOrEffectWhenLowest"},
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.1}
@@ -26,6 +27,7 @@
       "skills": [
         {
           "name": "Mordida Quente",
+          "image": "mordida_quente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.2, "turns": 2}
@@ -39,6 +41,7 @@
         },
         {
           "name": "Cuspe de Fogo",
+          "image": "cuspe_de_fogo",
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.43},
@@ -63,6 +66,7 @@
         "name": "Iguan",
         "skill": {
           "name": "Cauda Nova",
+          "image": "cauda_nova",
           "passive": {"kind": "StatusOrEffectWhenLowest"},
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.1}
@@ -72,6 +76,7 @@
       "skills": [
         {
           "name": "Lambida",
+          "image": "lambida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Impeto", "target": "Target", "power": -10}
@@ -85,6 +90,7 @@
         },
         {
           "name": "Mergulho Frio",
+          "image": "mergulho_frio",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.15},
@@ -109,6 +115,7 @@
         "name": "Corr",
         "skill": {
           "name": "Chicote de Cauda",
+          "image": "chicote_de_cauda",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
@@ -123,6 +130,7 @@
       "skills": [
         {
           "name": "Arranhão Rápido",
+          "image": "arranhao_rapido",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.12, "hits": 2}
           ],
@@ -135,6 +143,7 @@
         },
         {
           "name": "Disparada",
+          "image": "disparada",
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "Self", "power": 40},
@@ -157,6 +166,7 @@
         "name": "Lumn",
         "skill": {
           "name": "Troca de Pele",
+          "image": "troca_de_pele",
           "cooldown": 5,
           "effects": [
             {"kind": "Cleanse", "target": "AllAllies"},
@@ -170,6 +180,7 @@
       "skills": [
         {
           "name": "Escama Brilhante",
+          "image": "escama_brilhante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.2, "turns": 2}
@@ -183,6 +194,7 @@
         },
         {
           "name": "Banho de Sol",
+          "image": "banho_de_sol",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
@@ -207,6 +219,7 @@
         "name": "Camal",
         "skill": {
           "name": "Bote Camuflado",
+          "image": "bote_camuflado",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.43},
@@ -221,6 +234,7 @@
       "skills": [
         {
           "name": "Língua Ácida",
+          "image": "lingua_acida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.15, "turns": 1}
@@ -234,6 +248,7 @@
         },
         {
           "name": "Camuflagem",
+          "image": "camuflagem",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Hidden", "turns": 2},

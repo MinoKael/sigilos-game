@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Battle.Effects;
 using Sigilos.Core.Battle.Passives;
@@ -153,6 +154,48 @@ namespace Sigilos.Tests
 			Assert.True(cut > 0, "a especial tem nível de recarga");
 			Assert.Equal(knight.Skills[1].Cooldown - cut, actives[1].Cooldown, "no máximo, a especial perde os turnos de recarga dos níveis");
 			Assert.True(actives[1].Effects.Any(e => e.IgnoreDefense > 0), "desperto, a especial usa a versão do Despertar");
+		}
+
+		[Test]
+		private static void FlavorAndImageAreOptionalInTheData()
+		{
+			var old = JsonSerializer.Deserialize<SkillDefinition>("{\"name\":\"Golpe\",\"cooldown\":3,\"effects\":[{\"kind\":\"Damage\",\"target\":\"Target\",\"power\":2}]}", GameDatabase.JsonOptions)!;
+			Assert.Equal("", old.Flavor, "dado antigo: sem flavor");
+			Assert.Equal("", old.Image, "dado antigo: sem imagem");
+			Assert.Equal(3, old.Cooldown, "o resto do dado antigo segue igual");
+
+			var current = JsonSerializer.Deserialize<SkillDefinition>("{\"name\":\"Golpe\",\"image\":\"golpe\",\"flavor\":\"Um eco.\",\"cooldown\":3,\"effects\":[]}", GameDatabase.JsonOptions)!;
+			Assert.Equal("Um eco.", current.Flavor, "flavor lido");
+			Assert.Equal("golpe", current.Image, "imagem lida");
+		}
+
+		[Test]
+		private static void FlavorAndImageNeverChangeHowASkillFights()
+		{
+			var plain = Special with { Levels = new[] { new SkillLevelUp { Kind = SkillLevelKind.Damage, Value = 0.1 }, new SkillLevelUp { Kind = SkillLevelKind.Cooldown, Value = 1 } } };
+			var told = plain with { Flavor = "Uma frase.", Image = "especial" };
+			for (var level = 1; level <= plain.MaxLevel; level++)
+			{
+				var a = plain.At(level, false);
+				var b = told.At(level, false);
+				Assert.Equal(a.Cooldown, b.Cooldown, $"nível {level}: recarga");
+				Assert.Equal(a.Effects.Count, b.Effects.Count, $"nível {level}: efeitos");
+				Assert.Near(a.Effects[0].Power, b.Effects[0].Power, $"nível {level}: dano");
+			}
+
+			Assert.Equal("Uma frase.", told.At(1, false).Flavor, "a frase atravessa o nível");
+		}
+
+		[Test]
+		private static void EveryRealSkillNamesItsImage()
+		{
+			var missing = TestData.Database.Summons
+				.SelectMany(s => s.AllSkills)
+				.Where(skill => skill.Image.Length == 0 || skill.Image.Any(c => !(char.IsAsciiLetterLower(c) || char.IsAsciiDigit(c) || c == '_')))
+				.Select(skill => skill.Name)
+				.Distinct()
+				.ToList();
+			Assert.True(missing.Count == 0, $"habilidade sem nome de imagem válido: {string.Join(", ", missing.Take(5))}");
 		}
 	}
 }

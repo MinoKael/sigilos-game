@@ -27,6 +27,7 @@
         "name": "Fungi",
         "skill": {
           "name": "Esporos",
+          "image": "esporos",
           "passive": { "kind": "StatusOrEffectOnAttacker" },
           "effects": [
             {
@@ -42,6 +43,7 @@
       "skills": [
         {
           "name": "Esporo Ardente",
+          "image": "esporo_ardente",
           "effects": [
             {
               "kind": "Damage",
@@ -77,6 +79,7 @@
         },
         {
           "name": "Nuvem de Esporos",
+          "image": "nuvem_de_esporos",
           "cooldown": 4,
           "effects": [
             {
@@ -130,6 +133,7 @@
         "name": "Musgi",
         "skill": {
           "name": "Anel de Cogumelos",
+          "image": "anel_de_cogumelos",
           "cooldown": 5,
           "effects": [
             {
@@ -150,6 +154,7 @@
       "skills": [
         {
           "name": "Esporo Úmido",
+          "image": "esporo_umido",
           "effects": [
             {
               "kind": "Damage",
@@ -183,6 +188,7 @@
         },
         {
           "name": "Chá de Cogumelo",
+          "image": "cha_de_cogumelo",
           "cooldown": 4,
           "effects": [
             {
@@ -233,6 +239,7 @@
         "name": "Espori",
         "skill": {
           "name": "Nuvem Tóxica",
+          "image": "nuvem_toxica",
           "cooldown": 5,
           "effects": [
             {
@@ -263,6 +270,7 @@
       "skills": [
         {
           "name": "Sopro de Esporos",
+          "image": "sopro_de_esporos",
           "effects": [
             {
               "kind": "Damage",
@@ -298,6 +306,7 @@
         },
         {
           "name": "Pó Sonífero",
+          "image": "po_sonifero",
           "cooldown": 4,
           "effects": [
             {
@@ -346,6 +355,7 @@
         "name": "Luzi",
         "skill": {
           "name": "Micélio",
+          "image": "micelio",
           "passive": { "kind": "StatusOrEffectEachTurn" },
           "effects": [
             {
@@ -359,6 +369,7 @@
       "skills": [
         {
           "name": "Brilho Fúngico",
+          "image": "brilho_fungico",
           "effects": [
             {
               "kind": "Damage",
@@ -393,6 +404,7 @@
         },
         {
           "name": "Esporos Curativos",
+          "image": "esporos_curativos",
           "cooldown": 4,
           "effects": [
             {
@@ -445,6 +457,7 @@
         "name": "Borli",
         "skill": {
           "name": "Mofo",
+          "image": "mofo",
           "cooldown": 5,
           "effects": [
             {
@@ -477,6 +490,7 @@
       "skills": [
         {
           "name": "Esporo Podre",
+          "image": "esporo_podre",
           "effects": [
             {
               "kind": "Damage",
@@ -512,6 +526,7 @@
         },
         {
           "name": "Fungo Parasita",
+          "image": "fungo_parasita",
           "cooldown": 3,
           "effects": [
             {

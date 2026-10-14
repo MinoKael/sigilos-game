@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Mordida Escaldante",
+          "image": "mordida_escaldante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Sangue Fervente",
+          "image": "sangue_fervente",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.41}
@@ -47,6 +49,7 @@
         },
         {
           "name": "Sede de Sangue",
+          "image": "sede_de_sangue",
           "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
         }
       ]
@@ -63,6 +66,7 @@
       "skills": [
         {
           "name": "Abraço Frio",
+          "image": "abraco_frio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Impeto", "target": "Target", "power": -15}
@@ -76,6 +80,7 @@
         },
         {
           "name": "Forma de Névoa",
+          "image": "forma_de_nevoa",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Hidden"},
@@ -94,6 +99,7 @@
         },
         {
           "name": "Sede de Sangue",
+          "image": "sede_de_sangue",
           "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
         }
       ]
@@ -110,6 +116,7 @@
       "skills": [
         {
           "name": "Presas Velozes",
+          "image": "presas_velozes",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Self", "power": 10}
@@ -123,6 +130,7 @@
         },
         {
           "name": "Enxame de Morcegos",
+          "image": "enxame_de_morcegos",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2}
@@ -139,6 +147,7 @@
         },
         {
           "name": "Voo Noturno",
+          "image": "voo_noturno",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.92},
@@ -163,6 +172,7 @@
       "skills": [
         {
           "name": "Toque Pálido",
+          "image": "toque_palido",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
@@ -176,6 +186,7 @@
         },
         {
           "name": "Transfusão",
+          "image": "transfusao",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.14}
@@ -192,6 +203,7 @@
         },
         {
           "name": "Pacto de Sangue",
+          "image": "pacto_de_sangue",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
@@ -215,6 +227,7 @@
       "skills": [
         {
           "name": "Drenar Vida",
+          "image": "drenar_vida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
@@ -228,6 +241,7 @@
         },
         {
           "name": "Banquete",
+          "image": "banquete",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.92, "drain": 0.5}
@@ -244,6 +258,7 @@
         },
         {
           "name": "Sede de Sangue",
+          "image": "sede_de_sangue",
           "passive": {"kind": "Lifesteal", "value": 0.2, "awakenedValue": 0.3}
         }
       ]

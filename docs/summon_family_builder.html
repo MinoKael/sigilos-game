@@ -752,7 +752,7 @@ const Core = (() => {
 
   const FAMILY_KEYS = ["family_id", "base_name", "name", "star_grade", "image", "family_bias", "variations"];
   const VARIATION_KEYS = ["variation_id", "name", "element", "role", "star_grade", "stats", "awakened_stats", "bias", "awakening_spd", "leader", "awakening", "skills"];
-  const SKILL_KEYS = ["name", "cooldown", "effects", "levels", "awakenedEffects", "passive"];
+  const SKILL_KEYS = ["name", "image", "flavor", "cooldown", "effects", "levels", "awakenedEffects", "passive"];
   const NEUTRAL = Object.freeze({hp: 1, atk: 1, def: 1, spd: 0});
 
   /** Meio para cima. Igual ao Round de StatModel.cs. */
@@ -973,11 +973,16 @@ const Core = (() => {
     }
   }
 
-  const blankSkill = (name = "") => ({name, cooldown: "", passive: null, effects: "[]", awakenedEffects: "", levels: "[]", extra: {}});
+  /** O nome de arquivo que o jogo espera para a imagem de uma habilidade (Assets/Skills/<nome>.png): minúsculas, números e _. */
+  const imageSlug = name => String(name || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+
+  const blankSkill = (name = "") => ({name, image: "", flavor: "", cooldown: "", passive: null, effects: "[]", awakenedEffects: "", levels: "[]", extra: {}});
 
   function importSkill(source) {
     return {
       name: source?.name || "",
+      image: source?.image || "",
+      flavor: source?.flavor || "",
       cooldown: source?.cooldown ?? "",
       passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", scope: source.passive.scope ?? "", statuses: (source.passive.statuses || []).join(", "), partner: source.passive.partner ?? "", partnerTurns: source.passive.partnerTurns ?? "", partnerKeepsAsleep: source.passive.partnerKeepsAsleep === true, partnerEffects: source.passive.partnerEffects?.length ? format(source.passive.partnerEffects) : "", extra: rest(source.passive, ["kind", "value", "awakenedValue", "scope", "statuses", "partner", "partnerTurns", "partnerKeepsAsleep", "partnerEffects"])} : null,
       effects: listText(source?.effects),
@@ -989,6 +994,10 @@ const Core = (() => {
 
   function exportSkill(skill) {
     const out = {name: skill.name};
+    const image = String(skill.image || "").trim();
+    if (image) out.image = image;
+    const flavor = String(skill.flavor || "").trim();
+    if (flavor) out.flavor = flavor;
     if (skill.passive) {
       const passive = {kind: skill.passive.kind};
       if (num(skill.passive.value) > 0 || !PASSIVE_EFFECTS.includes(skill.passive.kind)) passive.value = num(skill.passive.value);
@@ -1219,6 +1228,7 @@ const Core = (() => {
 
   function validateSkill(skill, editor, where, enums, add) {
     if (isBlank(skill.name)) add("error", where, "Habilidade sem nome.");
+    if (skill.image !== undefined && !/^[a-z0-9_]*$/.test(skill.image)) add("warn", where, `Imagem "${skill.image}": use minúsculas, números e _ (é o nome do arquivo em Assets/Skills, sem .png).`);
     if (skill.passive) {
       if (!enums.passives.includes(skill.passive.kind)) add("error", where, `Passiva desconhecida: "${skill.passive.kind}".`);
       const generic = PASSIVE_EFFECTS.includes(skill.passive.kind);
@@ -1427,7 +1437,7 @@ const Core = (() => {
     USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,
     stripJsonc, parseJsonc, leadingComments, format,
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
-    parseList, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
+    parseList, imageSlug, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
     validateFamily, rewriteEnemies, parseEnum, variationStar, ownStars,
     FOE_BOOST, foeFraction, foeStats, importEnemy, exportEnemy, formatEnemies, validateEnemies, setFloorScale,
   };
@@ -2015,6 +2025,8 @@ if (typeof module !== "undefined") module.exports = Core;
           ${field("Nome", text(`${path}.name`, skill.name))}
           ${field("Tipo", `<select data-action="skill-type" data-skill="${path}"><option ${isPassive ? "" : "selected"}>Ativa</option><option ${isPassive ? "selected" : ""}>Passiva</option></select>`)}
           ${isPassive ? "<div></div>" : field("Recarga", `<input data-path="${path}.cooldown" data-type="optional" type="number" step="1" min="0" value="${esc(skill.cooldown)}" placeholder="0">`)}
+          ${field("Imagem (Assets/Skills, sem .png; vazio = símbolo padrão)", text(`${path}.image`, skill.image, `placeholder="${esc(C.imageSlug(skill.name) || "nome_da_habilidade")}" spellcheck="false"`))}
+          ${field("Flavor text (frase de ambientação, opcional; não muda a habilidade)", `<textarea data-path="${path}.flavor" rows="2" placeholder="Aparece antes da descrição técnica." style="white-space:pre-wrap;font-family:inherit;font-size:13px">${esc(skill.flavor)}</textarea>`, "full")}
           ${isPassive ? `
             ${field("Passiva", select(`${path}.passive.kind`, skill.passive.kind, ui.enums.passives))}
             ${field(skill.passive.kind === "Undying" ? "Vida com que volta" : generic ? "Chance de disparar (0 = sempre)" : "Valor", number(`${path}.passive.value`, skill.passive.value, "0.01", `placeholder="0.2 = 20%"`))}

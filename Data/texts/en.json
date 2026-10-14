@@ -373,6 +373,8 @@
     "cooldown": "(cooldown {0})",
     "level": "Lv {0}/{1}",
     "level_line": "Lv.{0} {1}",
+    "upgrade_line": "{0}  {1}",
+    "upgrades": "Upgrades",
     "level_up": {
       "Damage": "Damage +{0}",
       "Recovery": "Recovery +{0}",
@@ -725,6 +727,8 @@
     "in_vault": "In the Vault",
     "teams": "In team: {0}",
     "skill_locked": "Unlocked by Awakening",
+    "skills_hint": "Tap a skill or the Leadership to see its details.",
+    "leader_title": "Leadership",
     "leadership": "Leadership · +{0} {1} for the team, only as Leader",
     "level": "Lv {0}/{1}",
     "natural_stars": "Natural stars: {0}",

@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Porrete Ardente",
+          "image": "porrete_ardente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Esmagar",
+          "image": "esmagar",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
@@ -48,6 +50,7 @@
         },
         {
           "name": "Pancada de Magma",
+          "image": "pancada_de_magma",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.41},
@@ -72,6 +75,7 @@
       "skills": [
         {
           "name": "Porrete",
+          "image": "porrete",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.3, "turns": 2}
@@ -85,6 +89,7 @@
         },
         {
           "name": "Pele de Pedra",
+          "image": "pele_de_pedra",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
@@ -103,6 +108,7 @@
         },
         {
           "name": "Regeneração",
+          "image": "regeneracao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.05}
@@ -125,6 +131,7 @@
       "skills": [
         {
           "name": "Arremesso de Pedra",
+          "image": "arremesso_de_pedra",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Target", "power": -20}
@@ -138,6 +145,7 @@
         },
         {
           "name": "Tremor",
+          "image": "tremor",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
@@ -155,6 +163,7 @@
         },
         {
           "name": "Pedregulho Rolante",
+          "image": "pedregulho_rolante",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
@@ -179,6 +188,7 @@
       "skills": [
         {
           "name": "Porrete Abençoado",
+          "image": "porrete_abencoado",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
@@ -192,6 +202,7 @@
         },
         {
           "name": "Rebrotar",
+          "image": "rebrotar",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.14}
@@ -208,6 +219,7 @@
         },
         {
           "name": "Regeneração",
+          "image": "regeneracao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.05}
@@ -230,6 +242,7 @@
       "skills": [
         {
           "name": "Aperto Esmagador",
+          "image": "aperto_esmagador",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
@@ -243,6 +256,7 @@
         },
         {
           "name": "Ameaça",
+          "image": "ameaca",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5},
@@ -261,6 +275,7 @@
         },
         {
           "name": "Regeneração",
+          "image": "regeneracao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.05}

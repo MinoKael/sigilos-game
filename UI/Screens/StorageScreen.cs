@@ -60,6 +60,11 @@ namespace Sigilos.UI.Screens
 		/// <summary>A largura do texto das habilidades na coluna larga da ficha.</summary>
 		private const float TextWidth = 300;
 
+		/// <summary>Ícones por fileira na aba Habilidades (até 4 habilidades e a Liderança), e o lado de cada um.</summary>
+		private const int SkillsPerRow = 5;
+
+		private const float SkillSize = 72;
+
 		private enum Page
 		{
 			Stats,
@@ -686,20 +691,30 @@ namespace Sigilos.UI.Screens
 
 		private void SkillsPage(SummonDefinition summon, OwnedSummon monster)
 		{
+			// Até quatro habilidades e a Liderança numa fileira só: ativas em pedra quadrada, passivas em losango,
+			// a Liderança em pentágono com a coroa; o toque abre a janela, colada no ícone.
 			var skills = summon.AllSkills;
+			var tiles = Layout.Grid(SkillsPerRow, Space.Wide).Named("SkillTiles");
 			for (var i = 0; i < skills.Count; i++)
 			{
+				var index = i;
+				var skill = skills[i];
+				var level = monster.SkillLevel(i);
 				var locked = !monster.Awakened && i >= summon.Skills.Count;
-				_detail.AddChild(SkillRow.Build(skills[i], monster.SkillLevel(i), monster.Awakened, locked, TextWidth, levels: true).Named($"Skill{i + 1}"));
+				Control? tile = null;
+				tile = SkillTile.Build(skill, level, locked, SkillSize, onPressed: () => SkillDialog.Open(tile!, skill, monster.SkillLevel(index), monster.Awakened, locked)).Named($"Skill{i + 1}");
+				tiles.AddChild(tile);
 			}
 
 			if (summon.Leader is { } leader)
 			{
-				var row = Layout.Row(Space.Regular).Named("Leader");
-				row.AddChild(Doodle.Icon(Art.Icon("leader"), 34, Palette.Gold).Named("Icon"));
-				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), TextWidth + 10).Named("Text"));
-				_detail.AddChild(row);
+				Control? tile = null;
+				tile = SkillTile.Leader(leader.Stat, SkillSize, () => LeaderDialog(tile!, leader)).Named("Leader");
+				tiles.AddChild(tile);
 			}
+
+			_detail.AddChild(tiles);
+			_detail.AddChild(Layout.Text(T("monsters.skills_hint"), GameTheme.Faded).Named("SkillsHint"));
 
 			_detail.AddChild(new HSeparator { Name = "ActionsLine" });
 			var copies = FusionDialog.Candidates(_database, _player, monster).Count(c => !c.Locked);
@@ -710,6 +725,13 @@ namespace Sigilos.UI.Screens
 			fuse.Disabled = copies == 0 || left == 0;
 			actions.AddChild(fuse);
 			_detail.AddChild(actions);
+		}
+
+		/// <summary>A janela da Liderança, colada no pentágono: o que ela dá à equipe quando o monstro é o Líder.</summary>
+		private void LeaderDialog(Control anchor, LeaderDefinition leader)
+		{
+			var dialog = Dialog.Open(this, T("monsters.leader_title"), 420, anchor, "LeaderDialog");
+			dialog.Body.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 380).Named("Text"));
 		}
 
 		private void AwakenPage(SummonDefinition summon, OwnedSummon monster)

@@ -5,12 +5,13 @@ using Sigilos.UI.Style;
 
 namespace Sigilos.UI.Components
 {
-	/// <summary>O contorno do sigilo: círculo (navegação), losango (ação) ou pedra quadrada (aba, atalho).</summary>
+	/// <summary>O contorno do sigilo: círculo (navegação), losango (ação), pedra quadrada (aba, atalho) ou pentágono (a Liderança).</summary>
 	public enum SigilShape
 	{
 		Circle,
 		Diamond,
 		Square,
+		Pentagon,
 	}
 
 	/// <summary>
@@ -53,6 +54,8 @@ namespace Sigilos.UI.Components
 		/// <summary>A plaquinha escura com borda de ouro onde o número fica: destaca do fundo e do sigilo.</summary>
 		private readonly PanelContainer _plaque = new() { Name = "Plaque", MouseFilter = MouseFilterEnum.Ignore, Visible = false };
 
+		private readonly ArtMask _mask;
+		private TextureRect? _image;
 		private Color _ink = Palette.Gold;
 		private Color? _accent;
 		private Vector2[]? _ticks;
@@ -64,10 +67,11 @@ namespace Sigilos.UI.Components
 			CustomMinimumSize = new Vector2(size, size);
 
 			// Símbolo e letras ficam dentro da máscara da forma: recortados no contorno interno do sigilo.
-			var mask = new ArtMask(shape switch
+			var mask = _mask = new ArtMask(shape switch
 			{
 				SigilShape.Circle => MaskShape.Circle,
 				SigilShape.Diamond => MaskShape.Diamond,
+				SigilShape.Pentagon => MaskShape.Pentagon,
 				_ => MaskShape.Rounded,
 			}, Mathf.Max(6, size * 0.18f)) { Name = "Mask" };
 			mask.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
@@ -77,7 +81,7 @@ namespace Sigilos.UI.Components
 
 			_icon = new Doodle(icon, _ink, boil: false) { Name = "Icon" };
 			_icon.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			var inset = size * (shape == SigilShape.Diamond ? 0.26f : 0.2f) - 6;
+			var inset = size * (shape == SigilShape.Diamond ? 0.26f : shape == SigilShape.Pentagon ? 0.24f : 0.2f) - 6;
 			_icon.OffsetLeft = _icon.OffsetTop = inset;
 			_icon.OffsetRight = _icon.OffsetBottom = -inset;
 			mask.AddChild(_icon);
@@ -168,6 +172,54 @@ namespace Sigilos.UI.Components
 		}
 
 		public void SetIcon(Texture2D? icon) => _icon.SetArt(icon);
+
+		/// <summary>
+		/// Um desenho colorido (a arte própria de uma habilidade) cobrindo o sigilo por dentro da máscara, no
+		/// lugar do símbolo de uma tinta só; nulo volta ao símbolo.
+		/// </summary>
+		public void SetImage(Texture2D? image)
+		{
+			if (image == null)
+			{
+				if (_image != null)
+					_image.Visible = false;
+				_icon.Visible = _letters.Text.Length == 0;
+				return;
+			}
+
+			if (_image == null)
+			{
+				_image = new TextureRect
+				{
+					Name = "Image",
+					ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+					StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered,
+					TextureFilter = TextureFilterEnum.LinearWithMipmaps,
+					MouseFilter = MouseFilterEnum.Ignore,
+				};
+				_image.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+				_mask.AddChild(_image);
+			}
+
+			_image.Texture = image;
+			_image.Visible = true;
+			_icon.Visible = false;
+			_letters.Visible = false;
+			RefreshInk();
+		}
+
+		/// <summary>O símbolo de uma habilidade: o desenho próprio, quando tem, senão o de <see cref="Art.Skill"/>.</summary>
+		public void SetSkill(SkillDefinition skill)
+		{
+			if (Art.SkillImage(skill) is { } image)
+			{
+				SetImage(image);
+				return;
+			}
+
+			SetImage(null);
+			SetSymbol(Art.Skill(skill));
+		}
 
 		/// <summary>Botão pronto: símbolo de Assets/Icons e ação. O nó leva o nome do símbolo (<c>level_max</c> → <c>LevelMax</c>).</summary>
 		public static SigilButton Of(string icon, Action onPressed, float size = 56, SigilShape shape = SigilShape.Circle)
@@ -264,6 +316,9 @@ namespace Sigilos.UI.Components
 				case SigilShape.Diamond:
 					DrawColoredPolygon(Diamond(center, radius), fill);
 					break;
+				case SigilShape.Pentagon:
+					DrawColoredPolygon(ArtMask.Pentagon(center, radius), fill);
+					break;
 				default:
 					DrawStyleBox(Rounded(fill, new Color(0, 0, 0, 0), 0), Square(center, radius));
 					break;
@@ -280,6 +335,10 @@ namespace Sigilos.UI.Components
 				case SigilShape.Diamond:
 					var points = Diamond(center, radius);
 					DrawPolyline(new[] { points[0], points[1], points[2], points[3], points[0] }, color, width, true);
+					break;
+				case SigilShape.Pentagon:
+					var corners = ArtMask.Pentagon(center, radius);
+					DrawPolyline(new[] { corners[0], corners[1], corners[2], corners[3], corners[4], corners[0] }, color, width, true);
 					break;
 				default:
 					DrawStyleBox(Rounded(new Color(0, 0, 0, 0), color, width), Square(center, radius));
@@ -318,6 +377,8 @@ namespace Sigilos.UI.Components
 				: IsHovered() ? _ink.Lightened(0.25f)
 				: _ink;
 			_icon.SetInk(ink);
+			if (_image != null)
+				_image.Modulate = Disabled ? new Color(1, 1, 1, 0.45f) : Colors.White;
 			_letters.AddThemeColorOverride("font_color", ink);
 			QueueRedraw();
 		}

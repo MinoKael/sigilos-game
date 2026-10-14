@@ -34,6 +34,7 @@
       "skills": [
         {
           "name": "Sigilo de Brasa",
+          "image": "sigilo_de_brasa",
           "effects": [
             {
               "kind": "Damage",
@@ -69,6 +70,7 @@
         },
         {
           "name": "Salva de Chamas",
+          "image": "salva_de_chamas",
           "cooldown": 4,
           "effects": [
             {
@@ -101,6 +103,7 @@
         },
         {
           "name": "Fluxo Arcano",
+          "image": "fluxo_arcano",
           "passive": {
             "kind": "CooldownEachTurn",
             "value": 0.3
@@ -136,6 +139,7 @@
       "skills": [
         {
           "name": "Estilhaço de Gelo",
+          "image": "estilhaco_de_gelo",
           "effects": [
             {
               "kind": "Damage",
@@ -171,6 +175,7 @@
         },
         {
           "name": "Geada Quebradiça",
+          "image": "geada_quebradica",
           "cooldown": 4,
           "effects": [
             {
@@ -203,6 +208,7 @@
         },
         {
           "name": "Tumba Glacial",
+          "image": "tumba_glacial",
           "cooldown": 5,
           "effects": [
             {
@@ -264,6 +270,7 @@
       "skills": [
         {
           "name": "Faísca Voltaica",
+          "image": "faisca_voltaica",
           "effects": [
             {
               "kind": "Damage",
@@ -294,6 +301,7 @@
         },
         {
           "name": "Relâmpago em Cadeia",
+          "image": "relampago_em_cadeia",
           "cooldown": 4,
           "effects": [
             {
@@ -325,6 +333,7 @@
         },
         {
           "name": "Fluxo Arcano",
+          "image": "fluxo_arcano",
           "passive": {
             "kind": "CooldownEachTurn",
             "value": 0.3
@@ -360,6 +369,7 @@
       "skills": [
         {
           "name": "Faísca da Aurora",
+          "image": "faisca_da_aurora",
           "effects": [
             {
               "kind": "Damage",
@@ -392,6 +402,7 @@
         },
         {
           "name": "Sigilo de Proteção",
+          "image": "sigilo_de_protecao",
           "cooldown": 5,
           "effects": [
             {
@@ -420,6 +431,7 @@
         },
         {
           "name": "Fluxo Arcano",
+          "image": "fluxo_arcano",
           "passive": {
             "kind": "CooldownEachTurn",
             "value": 0.3
@@ -455,6 +467,7 @@
       "skills": [
         {
           "name": "Raio Maldito",
+          "image": "raio_maldito",
           "effects": [
             {
               "kind": "Damage",
@@ -490,6 +503,7 @@
         },
         {
           "name": "Sigilo da Ruína",
+          "image": "sigilo_da_ruina",
           "cooldown": 4,
           "effects": [
             {
@@ -522,6 +536,7 @@
         },
         {
           "name": "Aniquilar",
+          "image": "aniquilar",
           "cooldown": 5,
           "effects": [
             {

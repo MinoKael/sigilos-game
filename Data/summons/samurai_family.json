@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Corte Flamejante",
+          "image": "corte_flamejante",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.2, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Iaijutsu",
+          "image": "iaijutsu",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1},
@@ -48,6 +50,7 @@
         },
         {
           "name": "Bushido",
+          "image": "bushido",
           "passive": {"kind": "BonusVsWounded", "value": 0.3, "awakenedValue": 0.4}
         }
       ]
@@ -64,6 +67,7 @@
       "skills": [
         {
           "name": "Corte da Correnteza",
+          "image": "corte_da_correnteza",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.25, "turns": 2}
@@ -77,6 +81,7 @@
         },
         {
           "name": "Postura do Rio",
+          "image": "postura_do_rio",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
@@ -96,6 +101,7 @@
         },
         {
           "name": "Mente Calma",
+          "image": "mente_calma",
           "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"},
           "effects": [
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 1}
@@ -115,6 +121,7 @@
       "skills": [
         {
           "name": "Corte Veloz",
+          "image": "corte_veloz",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.36, "hits": 3},
             {"kind": "Impeto", "target": "Self", "power": 10}
@@ -128,6 +135,7 @@
         },
         {
           "name": "Mil Cortes",
+          "image": "mil_cortes",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2},
@@ -145,6 +153,7 @@
         },
         {
           "name": "Bushido",
+          "image": "bushido",
           "passive": {"kind": "BonusVsWounded", "value": 0.3, "awakenedValue": 0.4}
         }
       ]
@@ -161,6 +170,7 @@
       "skills": [
         {
           "name": "Corte Honrado",
+          "image": "corte_honrado",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Impeto", "target": "LowestAlly", "power": 10}
@@ -174,6 +184,7 @@
         },
         {
           "name": "Código de Honra",
+          "image": "codigo_de_honra",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
@@ -190,6 +201,7 @@
         },
         {
           "name": "Duelo",
+          "image": "duelo",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.43},
@@ -215,6 +227,7 @@
       "skills": [
         {
           "name": "Corte Sombrio",
+          "image": "corte_sombrio",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
@@ -228,6 +241,7 @@
         },
         {
           "name": "Corte Final",
+          "image": "corte_final",
           "cooldown": 4,
           "effects": [
             {"kind": "BonusPerStatus", "target": "Self", "power": 0.2, "scope": "Debuffs", "from": "Target", "bonus": "Damage"},
@@ -245,6 +259,7 @@
         },
         {
           "name": "Bushido",
+          "image": "bushido",
           "passive": {"kind": "BonusVsWounded", "value": 0.3, "awakenedValue": 0.4}
         }
       ]

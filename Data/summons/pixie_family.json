@@ -27,6 +27,7 @@
         "name": "Dalha",
         "skill": {
           "name": "Fogo-fátuo",
+          "image": "fogo_fatuo",
           "cooldown": 5,
           "effects": [
             {
@@ -59,6 +60,7 @@
       "skills": [
         {
           "name": "Pó de Faísca",
+          "image": "po_de_faisca",
           "effects": [
             {
               "kind": "Damage",
@@ -95,6 +97,7 @@
         },
         {
           "name": "Cura, cura, cura!",
+          "image": "cura_cura_cura",
           "cooldown": 3,
           "effects": [
             {
@@ -143,6 +146,7 @@
         "name": "Valho",
         "skill": {
           "name": "Pó de Pixie",
+          "image": "po_de_pixie",
           "passive": {
             "kind": "CleanseAllyEachTurn",
             "value": 0.5
@@ -152,6 +156,7 @@
       "skills": [
         {
           "name": "Gotinha",
+          "image": "gotinha",
           "effects": [
             {
               "kind": "Damage",
@@ -185,6 +190,7 @@
         },
         {
           "name": "Orvalho da Manhã",
+          "image": "orvalho_da_manha",
           "cooldown": 4,
           "effects": [
             {
@@ -231,6 +237,7 @@
         "name": "Cardo",
         "skill": {
           "name": "Pó de Pixie",
+          "image": "po_de_pixie",
           "passive": {
             "kind": "CleanseAllyEachTurn",
             "value": 0.5
@@ -240,6 +247,7 @@
       "skills": [
         {
           "name": "Cócegas",
+          "image": "cocegas",
           "effects": [
             {
               "kind": "Damage",
@@ -273,6 +281,7 @@
         },
         {
           "name": "Círculo de Fadas",
+          "image": "circulo_de_fadas",
           "cooldown": 4,
           "effects": [
             {
@@ -317,6 +326,7 @@
         "name": "Cintil",
         "skill": {
           "name": "Pó de Pixie",
+          "image": "po_de_pixie",
           "passive": {
             "kind": "CleanseAllyEachTurn",
             "value": 0.5
@@ -326,6 +336,7 @@
       "skills": [
         {
           "name": "Brilhinho",
+          "image": "brilhinho",
           "effects": [
             {
               "kind": "Damage",
@@ -360,6 +371,7 @@
         },
         {
           "name": "Encanto",
+          "image": "encanto",
           "cooldown": 4,
           "effects": [
             {
@@ -407,6 +419,7 @@
         "name": "Urtia",
         "skill": {
           "name": "Má Sorte",
+          "image": "ma_sorte",
           "cooldown": 5,
           "effects": [
             {
@@ -439,6 +452,7 @@
       "skills": [
         {
           "name": "Pó de Feitiço",
+          "image": "po_de_feitico",
           "effects": [
             {
               "kind": "Damage",
@@ -474,6 +488,7 @@
         },
         {
           "name": "Pesadelo",
+          "image": "pesadelo",
           "cooldown": 3,
           "effects": [
             {

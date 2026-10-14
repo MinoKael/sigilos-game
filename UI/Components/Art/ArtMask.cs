@@ -2,12 +2,13 @@ using Godot;
 
 namespace Sigilos.UI.Components
 {
-	/// <summary>O contorno da máscara: círculo, losango ou retângulo de cantos redondos.</summary>
+	/// <summary>O contorno da máscara: círculo, losango, retângulo de cantos redondos ou pentágono regular.</summary>
 	public enum MaskShape
 	{
 		Circle,
 		Diamond,
 		Rounded,
+		Pentagon,
 	}
 
 	/// <summary>
@@ -42,6 +43,24 @@ namespace Sigilos.UI.Components
 			return mask;
 		}
 
+		/// <summary>
+		/// Os cinco vértices de um pentágono regular de ponta para cima, dentro do quadrado de lado
+		/// 2×<paramref name="radius"/> centrado em <paramref name="center"/>: o miolo do polígono desce um pouco
+		/// (a ponta de cima vai ao topo do quadrado, e a base fica acima do fundo).
+		/// </summary>
+		public static Vector2[] Pentagon(Vector2 center, float radius)
+		{
+			var points = new Vector2[5];
+			var lift = radius * (1 - Mathf.Cos(Mathf.Pi / 5)) / 2;
+			for (var k = 0; k < 5; k++)
+			{
+				var angle = -Mathf.Pi / 2 + k * Mathf.Tau / 5;
+				points[k] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius + new Vector2(0, lift);
+			}
+
+			return points;
+		}
+
 		public override void _Draw()
 		{
 			var white = Colors.White;
@@ -54,6 +73,9 @@ namespace Sigilos.UI.Components
 					var c = Size / 2;
 					var r = Mathf.Min(Size.X, Size.Y) / 2;
 					DrawColoredPolygon(new[] { c + new Vector2(0, -r), c + new Vector2(r, 0), c + new Vector2(0, r), c + new Vector2(-r, 0) }, white);
+					break;
+				case MaskShape.Pentagon:
+					DrawColoredPolygon(Pentagon(Size / 2, Mathf.Min(Size.X, Size.Y) / 2), white);
 					break;
 				default:
 					var box = new StyleBoxFlat { BgColor = white, AntiAliasing = true };

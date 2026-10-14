@@ -48,7 +48,14 @@ namespace Sigilos.UI.Screens
 		private readonly ProgressBar _pityBar = Layout.Energy(Palette.Awakened, 10).Named("PityBar");
 		private readonly Control _stage = new() { Name = "Stage", SizeFlagsVertical = SizeFlags.ExpandFill, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 		private readonly HBoxContainer _kindRow = Layout.Row(Space.None).Named("Scrolls");
+		/// <summary>A largura do painel das invocações: igual em toda aba, e nunca mais que isso.</summary>
+		private const float PullsWidth = 440;
+
+		/// <summary>O CustomMaximumSize com 0 num eixo trava esse eixo em 0: o que não tem teto leva um número enorme.</summary>
+		private const float Unbounded = 100000;
+
 		private readonly HBoxContainer _rates = Layout.Row(Space.Wide).Named("Rates");
+		private readonly VBoxContainer _rateNotes = new() { Name = "RateNotes" };
 		private readonly VBoxContainer _pityBox = new() { Name = "Pity" };
 		private readonly GameButton _exchange;
 
@@ -103,10 +110,11 @@ namespace Sigilos.UI.Screens
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
 			page.AddChild(body);
 
-			var panel = new PanelContainer { Name = "Pulls", CustomMinimumSize = new Vector2(440, 0) };
+			var panel = new PanelContainer { Name = "Pulls", CustomMinimumSize = new Vector2(PullsWidth, 0), CustomMaximumSize = new Vector2(PullsWidth, Unbounded) };
 			var column = new VBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Begin };
 			column.AddThemeConstantOverride("separation", Space.Wide);
-			panel.AddChild(column);
+			// Rola dentro do painel: com a garantia e as notas, a coluna passa da altura em telas baixas.
+			panel.AddChild(Layout.Scroll(column));
 			column.AddChild(_kindRow);
 			column.AddChild(_single);
 			column.AddChild(_ten);
@@ -127,6 +135,7 @@ namespace Sigilos.UI.Screens
 
 			column.AddChild(new Label { Name = "RatesTitle", Text = T("summon.rates") });
 			column.AddChild(_rates);
+			column.AddChild(_rateNotes);
 			column.AddChild(Layout.Text(T("summon.note"), GameTheme.Faded).Named("Note"));
 			body.AddChild(panel);
 
@@ -209,7 +218,10 @@ namespace Sigilos.UI.Screens
 		private void Rates()
 		{
 			Layout.Clear(_rates);
+			Layout.Clear(_rateNotes);
 			var (five, four) = SummonRates.Of(_kind);
+			// As estrelas de Luz e Trevas são roxas; as das outras abas seguem a moldura da raridade.
+			Color Ink(int stars) => _kind == ScrollKind.LightDark ? Palette.Awakened : Palette.Frame(stars);
 			// Alquímica: o 0,1% de Luz e Trevas sai da fatia das 3★, e aparece à parte, com a regra de repartição.
 			var lightDark = _kind == ScrollKind.Mystic ? SummonRates.MysticLightDark : 0;
 			foreach (var (stars, chance) in new[] { (3, 1 - five - four - lightDark), (4, four), (5, five) })
@@ -217,20 +229,19 @@ namespace Sigilos.UI.Screens
 				if (chance <= 1e-9)
 					continue;
 				var rate = new Label { Name = $"Rate{stars}", Text = $"{Texts.Stars(stars)} {Texts.Percent(chance)}" };
-				rate.AddThemeColorOverride("font_color", Palette.Frame(stars));
+				rate.AddThemeColorOverride("font_color", Ink(stars));
 				_rates.AddChild(rate);
 			}
 
 
-			_rates.AddChild(new Label { Name = "Elements", Text = T($"summon.elements.{_kind}") });
+			_rateNotes.AddChild(new Label { Name = "Elements", Text = T($"summon.elements.{_kind}"), AutowrapMode = TextServer.AutowrapMode.WordSmart });
 
 			if (lightDark > 0)
 			{
 				var eligible = _database.Summons.Count(SummonRates.MysticLightDarkEligible);
 				var ld = new Label { Name = "RateLightDark", Text = T("summon.light_dark_rate", Texts.Percent(lightDark), Texts.PercentFine(lightDark / eligible)), AutowrapMode = TextServer.AutowrapMode.WordSmart };
-				ld.CustomMaximumSize = new Vector2(500, 200);
 				ld.AddThemeColorOverride("font_color", Palette.Arcane);
-				_rates.AddChild(ld);
+				_rateNotes.AddChild(ld);
 			}
 		}
 

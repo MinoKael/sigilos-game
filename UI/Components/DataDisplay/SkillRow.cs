@@ -24,7 +24,7 @@ namespace Sigilos.UI.Components
 				Disabled = locked,
 				SizeFlagsVertical = Control.SizeFlags.ShrinkBegin,
 			};
-			icon.SetSymbol(Art.Skill(skill));
+			icon.SetSkill(skill);
 			row.AddChild(icon);
 
 			var column = new VBoxContainer { Name = "Text", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };

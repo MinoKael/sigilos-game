@@ -28,6 +28,7 @@
         "name": "James",
         "skill": {
           "name": "Cadê meu Cavalo?",
+          "image": "cade_meu_cavalo",
           "cooldown": 6,
           "effects": [
             {
@@ -60,6 +61,7 @@
       "skills": [
         {
           "name": "Tiro de Aviso",
+          "image": "tiro_de_aviso",
           "effects": [
             {
               "kind": "Damage",
@@ -96,6 +98,7 @@
         },
         {
           "name": "O que é seu é meu!",
+          "image": "o_que_e_seu_e_meu",
           "cooldown": 5,
           "effects": [
             {
@@ -153,6 +156,7 @@
         "name": "Cassidy",
         "skill": {
           "name": "Cortina de Fumaça",
+          "image": "cortina_de_fumaca",
           "cooldown": 5,
           "effects": [
             {
@@ -183,6 +187,7 @@
       "skills": [
         {
           "name": "Golpe Sujo",
+          "image": "golpe_sujo",
           "effects": [
             {
               "kind": "Damage",
@@ -218,6 +223,7 @@
         },
         {
           "name": "Bomba de Fumaça",
+          "image": "bomba_de_fumaca",
           "cooldown": 4,
           "effects": [
             {
@@ -266,6 +272,7 @@
         "name": "Morgan",
         "skill": {
           "name": "Emboscada",
+          "image": "emboscada",
           "passive": {
             "kind": "ImpetoAtWaveStart",
             "value": 0.5
@@ -275,6 +282,7 @@
       "skills": [
         {
           "name": "Corte Rápido",
+          "image": "corte_rapido",
           "effects": [
             {
               "kind": "Status",
@@ -312,6 +320,7 @@
         },
         {
           "name": "Saque",
+          "image": "saque",
           "cooldown": 4,
           "effects": [
             {
@@ -363,6 +372,7 @@
         "name": "Robin",
         "skill": {
           "name": "Grande Golpe",
+          "image": "grande_golpe",
           "cooldown": 5,
           "effects": [
             {
@@ -394,6 +404,7 @@
       "skills": [
         {
           "name": "Moeda Ofuscante",
+          "image": "moeda_ofuscante",
           "effects": [
             {
               "kind": "Damage",
@@ -429,6 +440,7 @@
         },
         {
           "name": "Dividir o Butim",
+          "image": "dividir_o_butim",
           "cooldown": 4,
           "effects": [
             {
@@ -473,6 +485,7 @@
         "name": "Billy",
         "skill": {
           "name": "Emboscada",
+          "image": "emboscada",
           "passive": {
             "kind": "ImpetoAtWaveStart",
             "value": 0.5
@@ -482,6 +495,7 @@
       "skills": [
         {
           "name": "Truque Sujo",
+          "image": "truque_sujo",
           "effects": [
             {
               "kind": "Damage",
@@ -516,6 +530,7 @@
         },
         {
           "name": "Sumiço",
+          "image": "sumico",
           "cooldown": 4,
           "effects": [
             {

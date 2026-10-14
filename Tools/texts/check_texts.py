@@ -73,13 +73,13 @@ def load(language):
 
 
 def data_names():
-    """Todo "name" e "base_name" dos arquivos de Data/ (fora os textos): o que o grupo "names" traduz."""
+    """Todo "name", "base_name" e "flavor" dos arquivos de Data/ (fora os textos): o que o grupo "names" traduz."""
     found = set()
 
     def walk(node):
         if isinstance(node, dict):
             for key, value in node.items():
-                if key in ("name", "base_name") and isinstance(value, str):
+                if key in ("name", "base_name", "flavor") and isinstance(value, str):
                     found.add(value)
                 else:
                     walk(value)

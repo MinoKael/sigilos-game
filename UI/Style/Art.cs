@@ -123,6 +123,26 @@ namespace Sigilos.UI.Style
 			return Symbol.Of(Planet.Mars);
 		}
 
+		/// <summary>
+		/// O desenho próprio de uma habilidade: Assets/Skills/{<see cref="SkillDefinition.Image"/>}.png. Nulo
+		/// sem nome ou sem o arquivo; a tela então usa o símbolo de <see cref="Skill"/>. É arte colorida, não
+		/// silhueta: vai numa textura comum, nunca no <see cref="Components.Doodle"/> (que pinta de uma tinta só).
+		/// </summary>
+		public static Texture2D? SkillImage(SkillDefinition skill)
+		{
+			if (skill.Image.Length == 0 || skill.Image.Contains(".."))
+				return null;
+
+			var path = $"res://Assets/Skills/{skill.Image}.png";
+			if (!Cache.TryGetValue(path, out var texture))
+			{
+				texture = ResourceLoader.Exists(path) ? GD.Load<Texture2D>(path) : null;
+				Cache[path] = texture;
+			}
+
+			return texture;
+		}
+
 		/// <summary>Ícones de Assets/Icons: scroll, essence, gold, summon, config, map, bag, fight...</summary>
 		public static Texture2D? Icon(string name) =>
 			// O ícone de invocação virou o de Transmutação (Assets/Icons/transmutation.svg), quando o arquivo existe:

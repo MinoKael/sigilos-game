@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Chama Espiral",
+          "image": "chama_espiral",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.5, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Voo Rubro",
+          "image": "voo_rubro",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
@@ -44,6 +46,7 @@
         },
         {
           "name": "Das Cinzas",
+          "image": "das_cinzas",
           "passive": {"kind": "RebirthOnce", "value": 0.4}
         }
       ]
@@ -60,6 +63,7 @@
       "skills": [
         {
           "name": "Orvalho",
+          "image": "orvalho",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.05}
@@ -73,6 +77,7 @@
         },
         {
           "name": "Chuva Renovadora",
+          "image": "chuva_renovadora",
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.14},
@@ -86,6 +91,7 @@
         },
         {
           "name": "Maré da Renovação",
+          "image": "mare_da_renovacao",
           "cooldown": 5,
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.21},
@@ -111,6 +117,7 @@
       "skills": [
         {
           "name": "Rasante de Brasa",
+          "image": "rasante_de_brasa",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Impeto", "target": "Target", "power": -20}
@@ -124,6 +131,7 @@
         },
         {
           "name": "Tempestade de Penas",
+          "image": "tempestade_de_penas",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
@@ -137,6 +145,7 @@
         },
         {
           "name": "Furacão de Penas",
+          "image": "furacao_de_penas",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.69},
@@ -162,6 +171,7 @@
       "skills": [
         {
           "name": "Aurora",
+          "image": "aurora",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.2},
@@ -176,6 +186,7 @@
         },
         {
           "name": "Coroa Solar",
+          "image": "coroa_solar",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
@@ -189,6 +200,7 @@
         },
         {
           "name": "Das Cinzas",
+          "image": "das_cinzas",
           "passive": {"kind": "RebirthOnce", "value": 0.4}
         }
       ]
@@ -205,6 +217,7 @@
       "skills": [
         {
           "name": "Garra Velada",
+          "image": "garra_velada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
@@ -218,6 +231,7 @@
         },
         {
           "name": "Eclipse",
+          "image": "eclipse",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 5.39},
@@ -231,6 +245,7 @@
         },
         {
           "name": "Das Cinzas",
+          "image": "das_cinzas",
           "passive": {"kind": "RebirthOnce", "value": 0.4}
         }
       ]

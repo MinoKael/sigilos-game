@@ -18,6 +18,7 @@
       "skills": [
         {
           "name": "Faixa Ardente",
+          "image": "faixa_ardente",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
@@ -31,6 +32,7 @@
         },
         {
           "name": "Maldição do Sarcófago",
+          "image": "maldicao_do_sarcofago",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.92},
@@ -50,6 +52,7 @@
         },
         {
           "name": "Imortal",
+          "image": "imortal",
           "passive": {"kind": "StatusOrEffectOnWaveStart"},
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Revive", "turns": 3}
@@ -73,6 +76,7 @@
       "skills": [
         {
           "name": "Bandagem",
+          "image": "bandagem",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Heal", "target": "Self", "power": 0.03}
@@ -86,6 +90,7 @@
         },
         {
           "name": "Faixas Aprisionantes",
+          "image": "faixas_aprisionantes",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.5, "turns": 2},
@@ -103,6 +108,7 @@
         },
         {
           "name": "Embalsamar",
+          "image": "embalsamar",
           "passive": {"kind": "StatusOrEffectWhenLowest"},
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.12},
@@ -127,6 +133,7 @@
       "skills": [
         {
           "name": "Areia nos Olhos",
+          "image": "areia_nos_olhos",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
@@ -140,6 +147,7 @@
         },
         {
           "name": "Tempestade do Deserto",
+          "image": "tempestade_do_deserto",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
@@ -158,6 +166,7 @@
         },
         {
           "name": "Maldição Antiga",
+          "image": "maldicao_antiga",
           "passive": {"kind": "StatusOrEffectOnAttacker"},
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
@@ -180,6 +189,7 @@
       "skills": [
         {
           "name": "Selo Solar",
+          "image": "selo_solar",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
             {"kind": "Cleanse", "target": "LowestAlly"}
@@ -193,6 +203,7 @@
         },
         {
           "name": "Rito de Passagem",
+          "image": "rito_de_passagem",
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 2},
@@ -210,6 +221,7 @@
         },
         {
           "name": "Bênção do Sol",
+          "image": "bencao_do_sol",
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2},
@@ -233,6 +245,7 @@
       "skills": [
         {
           "name": "Toque da Praga",
+          "image": "toque_da_praga",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
             {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.3, "turns": 2}
@@ -246,6 +259,7 @@
         },
         {
           "name": "Dez Pragas",
+          "image": "dez_pragas",
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
@@ -265,6 +279,7 @@
         },
         {
           "name": "Imortal",
+          "image": "imortal",
           "passive": {"kind": "StatusOrEffectOnWaveStart"},
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Revive", "turns": 3}
