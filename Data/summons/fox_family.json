@@ -4,26 +4,56 @@
   "name": "Raposas",
   "star_grade": 3,
   "image": "fox",
+  "active": true,
   "variations": {
     "fire": {
       "variation_id": "fox_fire",
       "name": "Raposa de Fogo",
       "element": "Fire",
       "role": "Support",
-      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
-      "awakening": {"name": "Raposa de Fogo Desperta", "stat": "Speed"},
+      "stats": {
+        "hp": 8655,
+        "atk": 523,
+        "def": 535,
+        "spd": 103
+      },
+      "awakened_stats": {
+        "hp": 9570,
+        "atk": 578,
+        "def": 590,
+        "spd": 104
+      },
+      "awakening": {
+        "name": "Raposa de Fogo Desperta",
+        "stat": "Speed"
+      },
       "skills": [
         {
           "name": "Golpe",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.15
+            }
           ]
         }
       ]
@@ -33,20 +63,49 @@
       "name": "Raposa de Água",
       "element": "Water",
       "role": "Support",
-      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
-      "awakening": {"name": "Raposa de Água Desperta", "stat": "Speed"},
+      "stats": {
+        "hp": 8655,
+        "atk": 523,
+        "def": 535,
+        "spd": 103
+      },
+      "awakened_stats": {
+        "hp": 9570,
+        "atk": 578,
+        "def": 590,
+        "spd": 104
+      },
+      "awakening": {
+        "name": "Raposa de Água Desperta",
+        "stat": "Speed"
+      },
       "skills": [
         {
           "name": "Golpe",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.15
+            }
           ]
         }
       ]
@@ -56,20 +115,49 @@
       "name": "Raposa de Vento",
       "element": "Wind",
       "role": "Support",
-      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
-      "awakening": {"name": "Raposa de Vento Desperta", "stat": "Speed"},
+      "stats": {
+        "hp": 8655,
+        "atk": 523,
+        "def": 535,
+        "spd": 103
+      },
+      "awakened_stats": {
+        "hp": 9570,
+        "atk": 578,
+        "def": 590,
+        "spd": 104
+      },
+      "awakening": {
+        "name": "Raposa de Vento Desperta",
+        "stat": "Speed"
+      },
       "skills": [
         {
           "name": "Golpe",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.15
+            }
           ]
         }
       ]
@@ -79,20 +167,49 @@
       "name": "Raposa de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
-      "awakening": {"name": "Raposa de Luz Desperta", "stat": "Speed"},
+      "stats": {
+        "hp": 8655,
+        "atk": 523,
+        "def": 535,
+        "spd": 103
+      },
+      "awakened_stats": {
+        "hp": 9570,
+        "atk": 578,
+        "def": 590,
+        "spd": 104
+      },
+      "awakening": {
+        "name": "Raposa de Luz Desperta",
+        "stat": "Speed"
+      },
       "skills": [
         {
           "name": "Golpe",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.15
+            }
           ]
         }
       ]
@@ -102,20 +219,49 @@
       "name": "Raposa de Trevas",
       "element": "Dark",
       "role": "Support",
-      "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
-      "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
-      "awakening": {"name": "Raposa de Trevas Desperta", "stat": "Speed"},
+      "stats": {
+        "hp": 8655,
+        "atk": 523,
+        "def": 535,
+        "spd": 103
+      },
+      "awakened_stats": {
+        "hp": 9570,
+        "atk": 578,
+        "def": 590,
+        "spd": 104
+      },
+      "awakening": {
+        "name": "Raposa de Trevas Desperta",
+        "stat": "Speed"
+      },
       "skills": [
         {
           "name": "Golpe",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.05
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.15
+            }
           ]
         }
       ]

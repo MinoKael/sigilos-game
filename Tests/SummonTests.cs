@@ -93,8 +93,8 @@ namespace Sigilos.Tests
 			var database = TestData.LoadReal();
 			var player = Player();
 			var eligible = database.Summons.Where(SummonRates.MysticLightDarkEligible).ToList();
-			Assert.True(eligible.Count > 0, "há LD de 3★ elegível");
-			Assert.True(eligible.All(s => s.Element is Element.Light or Element.Dark && s.Rarity == 3), "só LD de 3★");
+			Assert.True(eligible.Count > 0, "há LD elegível");
+			Assert.True(eligible.All(s => s.Element is Element.Light or Element.Dark), "só Luz e Trevas");
 			Assert.Near(0.001, SummonRates.MysticLightDark, "a taxa base é 0,1%", 1e-12);
 
 			const int pulls = 400_000;

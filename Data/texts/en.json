@@ -401,6 +401,7 @@
     "revive_health": "{0} HP",
     "joint": "{0} allies attack along with their basic skill",
     "joint_all": "all allies attack along with their basic skill",
+    "cooldown_up": "{0}raises skill cooldowns by {1} {2} (ready ones too)",
     "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}",
     "joint_one": "{0} attacks along with their basic skill"
   },
@@ -428,6 +429,10 @@
     "StatusOrEffectOnTargetEachTurn": "after acting, on the skill target: {0}",
     "BonusPerStatusOrEffect": "+{0} damage for each {1} on the target.",
     "partner": "With {0} alive on the team, the negative effects it applies last {1} more turn.",
+    "DefenseGuard": "Enemies with lower {0} than it can only target it.",
+    "partner_effects": "With {0} alive on the team, also: {1}.",
+    "partner_sleep": "With {0} alive on the team, its hits do not wake targets under {1}.",
+    "partner_counter": "With {0} alive on the team, when hit by an enemy skill, both counterattack together.",
     "RunicCore": "At the start of every round, gains {0} Defense (up to {1} times).",
     "Drowning": "At the start of every round, loses {0} of max HP and gets Speed−.",
     "Undying": "While it is on the field, nobody gains or loses {2}. After each action: {0}. When it falls, it comes back on its next turn with {1} HP, unless it has {3} (which also silences the rest of this Passive).",
@@ -485,6 +490,7 @@
   "campaign": {
     "wave": "Wave {0}",
     "cleared": "Cleared",
+    "best_time": "Best time {0}",
     "enemies": "Enemies · Lv {0} {1}",
     "enemies_hint": "Touch an enemy to see its stats and skills.",
     "rewards": "Rewards per victory",
@@ -670,9 +676,9 @@
       "Legendary": "Legendary"
     },
     "elements": {
-      "Mystic": "· Fire, Water and Wind",
-      "LightDark": "· Light and Dark only",
-      "Legendary": "· Fire, Water and Wind"
+      "Mystic": "Fire, Water and Wind",
+      "LightDark": "Light and Dark only",
+      "Legendary": "Fire, Water and Wind"
     },
     "exchange": "Trade Fragments",
     "exchange_title": "Fragment Trade",
@@ -926,6 +932,7 @@
     "title": "Filter sigils",
     "done": "Done",
     "title_monsters": "Filter homunculi",
+    "title_grimoire": "Filter families",
     "element": "Element",
     "role": "Role",
     "natural": "Natural stars",
@@ -966,6 +973,7 @@
       "EqualizeHealth": "Equalizes HP",
       "JointAttack": "Joint attack",
       "ExtraTurn": "Extra turn",
+      "CooldownUp": "Raises cooldowns",
       "Passive": "Passive"
     },
     "scaling": "Scales with",

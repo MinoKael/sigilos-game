@@ -162,6 +162,12 @@ namespace Sigilos.GameEntry
 			_badge.Pressed += OpenAutoBattle;
 			AddChild(_runner);
 			_runner.RunChanged += run => _badge.Show(run);
+			// O nível e as moedas da conta sobem com cada vitória do automático: o Hub, se está aberto, acompanha.
+			_runner.Rewarded += () =>
+			{
+				if (_screen is HubScreen hub)
+					hub.Refresh(DateTime.Now);
+			};
 			// O Chat global: o balão por cima das telas; a conexão da conta traz as linhas.
 			_bubble = new ChatBubble(_chat);
 			_ui.AddChild(_bubble);
@@ -289,10 +295,15 @@ namespace Sigilos.GameEntry
 		private void PlayOffline(string? screen = null)
 		{
 			var store = _account.OfflineStore;
-			Play(store, store.Load() ?? NewPlayer(), screen);
+			Play(store, store.Load() ?? NewPlayer(store.InheritedStarted), screen);
 		}
 
-		private PlayerState NewPlayer() => NewGame.Create(DateTime.Now, _random, _database);
+		private PlayerState NewPlayer(DateTime? inheritedStarted = null)
+		{
+			var player = NewGame.Create(DateTime.Now, _random, _database);
+			PlayerSave.InheritStarted(player, inheritedStarted);
+			return player;
+		}
 
 		/// <summary>
 		/// A tela de login. <paramref name="message"/> diz por que o jogo voltou para ela (outro aparelho
@@ -392,7 +403,7 @@ namespace Sigilos.GameEntry
 			}
 
 			login.SetBusy(T("account.syncing"));
-			var sync = await _account.Sync(NewPlayer, AskConflict);
+			var sync = await _account.Sync(() => NewPlayer(), AskConflict);
 			if (_screen != login)
 				return;
 
@@ -433,7 +444,7 @@ namespace Sigilos.GameEntry
 
 			_resyncing = true;
 			Save();
-			var sync = await _account.Sync(NewPlayer, AskConflict);
+			var sync = await _account.Sync(() => NewPlayer(), AskConflict);
 			_resyncing = false;
 			if (!_playing || !sync.Downloaded)
 				return;

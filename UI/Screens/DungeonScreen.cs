@@ -183,6 +183,8 @@ namespace Sigilos.UI.Screens
 			head.AddChild(new Label { Name = "Foes", Text = T("common.stars_level", Texts.Stars(floor.Stars), floor.Level), VerticalAlignment = VerticalAlignment.Center });
 			if (cleared)
 				head.AddChild(new Label { Name = "Cleared", Text = T("campaign.cleared"), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+			if (cleared && Records.Best(_player, Records.FloorKey(dungeon.Id, number)) is { } best)
+				head.AddChild(new Label { Name = "BestTime", Text = T("campaign.best_time", Texts.Clock(best)), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
 			info.AddChild(head);
 
 			// O drop do andar com as chances, uma linha para as estrelas da runa (ou quantas pedras) e outra

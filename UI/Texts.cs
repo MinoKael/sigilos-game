@@ -175,6 +175,9 @@ namespace Sigilos.UI
 		/// <summary>Uma porcentagem pequena, com até três casas (0,01%): para chances individuais muito baixas.</summary>
 		public static string PercentFine(double fraction) => string.Format(Culture, "{0:0.###}%", fraction * 100);
 
+		/// <summary>Um tempo de luta em segundos como mm:ss: o formato dos recordes em todo o jogo.</summary>
+		public static string Clock(double seconds) => TimeSpan.FromSeconds(seconds).ToString(@"mm\:ss");
+
 		/// <summary>
 		/// O número com o separador de milhar do idioma: 12345 → 12.345 (12,345 em inglês). Só de um milhão para
 		/// cima abrevia, em milhões com três casas, cortando o resto (nunca mostra mais do que o jogador tem):
@@ -241,7 +244,10 @@ namespace Sigilos.UI
 		}
 
 		/// <param name="effects">Os efeitos da genérica (nulo: os da definição, já prontos na luta).</param>
-		public static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects = null)
+		public static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects = null) =>
+			Describe(passive, awakened, effects, 0) + PartnerPerks(passive);
+
+		private static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects, int _)
 		{
 			var value = Percent(passive.ValueFor(awakened));
 			// O número do Rei Ossudo é a Vida com que ele volta, não a chance de disparar.
@@ -262,8 +268,26 @@ namespace Sigilos.UI
 				PassiveKind.BonusVsStatusOrEffect => T("passive.BonusVsStatusOrEffect", value, Counted(passive)),
 				PassiveKind.BonusPerStatusOrEffect => T("passive.BonusPerStatusOrEffect", value, Counted(passive)) + Partner(passive),
 				PassiveKind.RunicCore => T("passive.RunicCore", value, BattleRules.RunicCoreMaxSteps),
+				PassiveKind.DefenseGuard => T("passive.DefenseGuard", Name(Stat.Defense).ToLower(Culture)),
 				_ => T($"passive.{passive.Kind}", value),
 			};
+		}
+
+		/// <summary>As melhorias do parceiro além do tempo dos efeitos: os efeitos a mais, o sono que não acorda e o revide conjunto.</summary>
+		private static string PartnerPerks(PassiveDefinition passive)
+		{
+			if (passive.Partner.Length == 0)
+				return "";
+
+			var name = UiSession.Database is { } database && database.Knows(passive.Partner) ? database.Summon(passive.Partner).Name : passive.Partner;
+			var text = "";
+			if (passive.PartnerEffects.Count > 0)
+				text += " " + T("passive.partner_effects", name, Clause(passive.PartnerEffects));
+			if (passive.PartnerKeepsAsleep)
+				text += " " + T("passive.partner_sleep", name, Term(StatusKind.Sleep));
+			if (passive.Kind == PassiveKind.DefenseGuard)
+				text += " " + T("passive.partner_counter", name);
+			return text;
 		}
 
 		/// <summary>"Com Corvo de Luz vivo no time, os efeitos negativos duram 1 turno a mais."</summary>
@@ -366,6 +390,7 @@ namespace Sigilos.UI
 				EffectKind.HealTeam => HealText(effect, where),
 				EffectKind.JointAttack => effect.Target != TargetKind.AllAllies ? T("skill.joint_one", Ally(effect.Target, effect.By))
 					: effect.Count > 0 ? T("skill.joint", effect.Count) : T("skill.joint_all"),
+				EffectKind.IncreaseCooldown => T("skill.cooldown_up", chance, Turns(effect.Turns > 0 ? effect.Turns : 1), where),
 				EffectKind.ExtraTurnOnKill => T("skill.extra_turn_on_kill", Turns(effect.Turns)),
 				EffectKind.Revive => ReviveText(effect),
 				_ => effect.Kind.ToString(),

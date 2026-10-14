@@ -32,6 +32,15 @@ namespace Sigilos.Core.Content
 		/// <summary>Com o <see cref="Partner"/> vivo: turnos a mais nos efeitos negativos que o dono põe.</summary>
 		public int PartnerTurns { get; init; }
 
+		/// <summary>
+		/// Com o <see cref="Partner"/> vivo: efeitos a mais que disparam junto com os da Passiva, no mesmo momento e
+		/// com o mesmo sorteio (as genéricas que disparam efeitos). Não ganham os bônus de nível da habilidade.
+		/// </summary>
+		public IReadOnlyList<EffectDefinition> PartnerEffects { get; init; } = new List<EffectDefinition>();
+
+		/// <summary>Com o <see cref="Partner"/> vivo, os golpes do dono não acordam quem dorme (Sono).</summary>
+		public bool PartnerKeepsAsleep { get; init; }
+
 		/// <summary>A Passiva dispara os efeitos da habilidade (as genéricas, menos o bônus de dano).</summary>
 		public bool UsesEffects => Kind is PassiveKind.StatusOrEffectOnHit or PassiveKind.StatusOrEffectOnAttacker
 			or PassiveKind.StatusOrEffectEachTurn or PassiveKind.StatusOrEffectOnWaveStart or PassiveKind.StatusOrEffectOnDeath

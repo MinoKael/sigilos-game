@@ -36,6 +36,18 @@ namespace Sigilos.Core.Battle
 		/// <summary>Os inimigos do dono só podem escolhê-lo como alvo único enquanto ele estiver de pé (Provocar).</summary>
 		public virtual bool DrawsAttacks => false;
 
+		/// <summary>
+		/// Os golpes do dono não acordam quem dorme: o Sono não sai ao levar o golpe. Pergunta-se ao atacante
+		/// (a Passiva com o parceiro vivo).
+		/// </summary>
+		public virtual bool KeepsSleepers(UnitRule rule) => false;
+
+		/// <summary>
+		/// O dono obriga <paramref name="attacker"/> (um inimigo) a escolhê-lo como alvo único, enquanto estiver de
+		/// pé (a Passiva Guarda). Provocar vale para todos; esta, só para quem a regra manda.
+		/// </summary>
+		public virtual bool Forces(UnitRule rule, BattleUnit attacker) => false;
+
 		/// <summary>Nenhum efeito positivo pega no dono (Karma).</summary>
 		public virtual bool BlocksBeneficial => false;
 

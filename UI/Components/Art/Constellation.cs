@@ -7,12 +7,12 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// A constelação da Canalização, ocupando o painel inteiro: um sigilo grande no centro e sete orbes em
-	/// volta, ligados a ele por fios de luz por onde corre uma faísca. Os orbes ficam em vagas fixas, de
+	/// volta, ligados a ele por fios de luz por onde corre uma faísca, dos orbes para o centro. Os orbes ficam em vagas fixas, de
 	/// ângulos e distâncias desiguais, para parecer uma constelação e não uma roda; são só desenho (cada
 	/// um com uma estrela que pisca), e quem se toca é o centro. Por baixo, a carta do céu a tinta de índigo
-	/// (duas órbitas, as doze casas e as marcas do grau, como num astrolábio), presa ao tamanho do painel e
+	/// (duas órbitas e as marcas do grau, como num astrolábio), presa ao tamanho do painel e
 	/// não ao tempo. Em volta do centro, um anel mostra o
-	/// quanto a canalização já encheu (<see cref="Progress"/>). Embaixo do centro vai o que a tela prender
+	/// quanto a canalização já encheu (<see cref="Progress"/>). Na base vai o que a tela prender
 	/// com <see cref="Attach"/> (o tempo, o que juntou e o Coletar).
 	///
 	/// Só arruma e desenha: o sigilo do centro e o que ele faz são da tela. Os fios e as estrelas são os de
@@ -52,13 +52,11 @@ namespace Sigilos.UI.Components
 		/// <summary>As órbitas da carta, em fração da elipse dos orbes.</summary>
 		private static readonly float[] Orbits = { 0.62f, 1.0f };
 
-		private const int Houses = 12;
 		private const int Degrees = 72;
 		private const int Segments = 96;
 
 		/// <summary>A carta do céu, refeita só quando o painel muda de tamanho.</summary>
 		private readonly Vector2[][] _orbits = { new Vector2[Segments + 1], new Vector2[Segments + 1] };
-		private readonly Vector2[] _houses = new Vector2[Houses * 2];
 		private readonly Vector2[] _degrees = new Vector2[Degrees * 2];
 
 		private Control? _center;
@@ -95,7 +93,7 @@ namespace Sigilos.UI.Components
 			Arrange();
 		}
 
-		/// <summary>Prende um controle logo embaixo do anel do centro, centrado (fica por cima dos fios).</summary>
+		/// <summary>Prende um controle na base do painel, centrado (fica por cima dos fios).</summary>
 		public void Attach(Control control)
 		{
 			_attached = control;
@@ -123,7 +121,6 @@ namespace Sigilos.UI.Components
 
 			foreach (var orbit in _orbits)
 				DrawPolyline(orbit, ChartInk, 1, true);
-			DrawMultiline(_houses, ChartInk, 1);
 			DrawMultiline(_degrees, ChartInk, 1);
 
 			for (var i = 0; i < Places.Length; i++)
@@ -131,8 +128,8 @@ namespace Sigilos.UI.Components
 				var target = OrbAt(i, center, radii);
 				var direction = (target - center).Normalized();
 
-				// O fio de luz, com a faísca que corre do centro para o orbe.
-				Starlight.Thread(this, center + direction * (core + 12), target - direction * (Orb + 4), _time, i * 0.37f, Palette.Gold, Palette.Spirit);
+				// O fio de luz, com a faísca que corre do orbe para o centro (Thread corre do primeiro ponto ao segundo).
+				Starlight.Thread(this, target - direction * (Orb + 4), center + direction * (core + 12), _time, i * 0.37f, Palette.Gold, Palette.Spirit);
 
 				// O orbe: o mesmo sigilo de pedra dos botões redondos, com uma estrela que pisca no seu tempo.
 				DrawCircle(target, Orb, Palette.Panel);
@@ -154,7 +151,10 @@ namespace Sigilos.UI.Components
 			}
 		}
 
-		private Vector2 Middle => new(Size.X / 2, Size.Y * CenterHeight);
+		/// <summary>A faixa de baixo que a plaquinha ocupa, numa linha só; a carta e os orbes ficam acima dela.</summary>
+		private float Base => _attached == null ? 0 : _attached.GetCombinedMinimumSize().Y + 8;
+
+		private Vector2 Middle => new(Size.X / 2, (Size.Y - Base) * CenterHeight);
 
 		/// <summary>
 		/// A elipse dos orbes: larga, como o painel, sem deixar orbe nenhum sair dele (o de cima é o que
@@ -162,7 +162,7 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		private Vector2 Radii => new(
 			Mathf.Max(0, Mathf.Min(Size.X * 0.46f, Size.X / 2 - Orb - 10)),
-			Mathf.Max(0, Mathf.Min(Size.Y * 0.41f, (Size.Y * CenterHeight - Orb - 8) / 0.81f)));
+			Mathf.Max(0, Mathf.Min((Size.Y - Base) * 0.41f, ((Size.Y - Base) * CenterHeight - Orb - 8) / 0.81f)));
 
 		private static Vector2 OrbAt(int index, Vector2 center, Vector2 radii)
 		{
@@ -177,14 +177,13 @@ namespace Sigilos.UI.Components
 				return;
 
 			var middle = Middle;
-			Plot(middle, _center.CustomMinimumSize.X / 2 + 30, Radii);
+			Plot(middle, Radii);
 			_center.Size = _center.CustomMinimumSize;
 			_center.Position = middle - _center.Size / 2;
 			if (_attached != null)
 			{
 				_attached.Size = _attached.GetCombinedMinimumSize();
-				var top = middle.Y + _center.Size.Y / 2 + 36;
-				_attached.Position = new Vector2(middle.X - _attached.Size.X / 2, Mathf.Min(top, Size.Y - _attached.Size.Y));
+				_attached.Position = new Vector2((Size.X - _attached.Size.X) / 2, Size.Y - _attached.Size.Y - 4);
 			}
 
 			for (var i = 0; i < _signs.Count; i++)
@@ -193,19 +192,12 @@ namespace Sigilos.UI.Components
 			QueueRedraw();
 		}
 
-		/// <summary>Põe a carta do céu no tamanho do painel: as órbitas na elipse dos orbes, as casas do anel do centro até a órbita de fora e as marcas do grau por fora dela.</summary>
-		private void Plot(Vector2 center, float inner, Vector2 radii)
+		/// <summary>Põe a carta do céu no tamanho do painel: as órbitas na elipse dos orbes, as marcas do grau por fora dela.</summary>
+		private void Plot(Vector2 center, Vector2 radii)
 		{
 			for (var o = 0; o < Orbits.Length; o++)
 				for (var k = 0; k <= Segments; k++)
 					_orbits[o][k] = center + Direction(k * Mathf.Tau / Segments) * radii * Orbits[o];
-
-			for (var h = 0; h < Houses; h++)
-			{
-				var dir = Direction(h * Mathf.Tau / Houses);
-				_houses[h * 2] = center + dir * inner;
-				_houses[h * 2 + 1] = center + dir * radii;
-			}
 
 			for (var d = 0; d < Degrees; d++)
 			{

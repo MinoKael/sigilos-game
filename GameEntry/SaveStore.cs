@@ -27,24 +27,35 @@ namespace Sigilos.GameEntry
 		/// <summary>Quando o arquivo foi gravado pela última vez; nulo se não existe.</summary>
 		public DateTimeOffset? SavedAt => FileAccess.FileExists(_path) ? DateTimeOffset.FromUnixTimeSeconds((long)FileAccess.GetModifiedTime(_path)) : null;
 
+		/// <summary>A data de começo do último save ilegível ou de formato antigo que <see cref="Load"/> pôs de lado; nulo se não houve.</summary>
+		public DateTime? InheritedStarted { get; private set; }
+
 		/// <summary>Nulo quando não há save (primeira vez) ou ele não pôde ser lido.</summary>
 		public PlayerState? Load()
 		{
 			if (!FileAccess.FileExists(_path))
 				return null;
 
+			InheritedStarted = null;
 			PlayerState? player = null;
+			string? text = null;
 			try
 			{
-				player = PlayerSave.FromJson(FileAccess.GetFileAsString(_path));
+				text = FileAccess.GetFileAsString(_path);
+				player = PlayerSave.FromJson(text);
 			}
 			catch (Exception exception)
 			{
 				GD.PushError($"Save ilegível em {_path}: {exception.Message}");
 			}
 
-			if (player == null && Backup() is { } backup)
-				GD.PushWarning($"Save de formato antigo guardado em {backup}; começando uma conta nova.");
+			if (player == null)
+			{
+				// A conta nova que vem no lugar leva a data de começo do save que saiu.
+				InheritedStarted = PlayerSave.StartedOf(text);
+				if (Backup() is { } backup)
+					GD.PushWarning($"Save de formato antigo guardado em {backup}; começando uma conta nova.");
+			}
 
 			return player;
 		}

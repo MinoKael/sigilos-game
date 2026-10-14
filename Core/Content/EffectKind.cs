@@ -33,5 +33,8 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Traz de volta, na hora, aliados caídos, com uma fração da Vida máxima de cada um.</summary>
 		Revive,
+
+		/// <summary>Os alvos inimigos ganham <see cref="EffectDefinition.Turns"/> turnos a mais de recarga em cada habilidade (as prontas passam de 0 para 1).</summary>
+		IncreaseCooldown,
 	}
 }

@@ -402,6 +402,7 @@
     "revive_health": "{0} da Vida",
     "joint": "{0} aliados atacam junto, com a básica",
     "joint_all": "todos os aliados atacam junto, com a básica",
+    "cooldown_up": "{0}aumenta em {1} a recarga das habilidades {2} (as prontas também)",
     "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}",
     "joint_one": "{0} ataca junto, com a básica"
   },
@@ -429,6 +430,10 @@
     "StatusOrEffectOnTargetEachTurn": "depois de agir, no alvo da habilidade: {0}",
     "BonusPerStatusOrEffect": "+{0} de dano para cada {1} no alvo.",
     "partner": "Com {0} vivo no time, os efeitos negativos que ele põe duram {1} turno a mais.",
+    "DefenseGuard": "Inimigos com {0} menor que a dele só podem escolhê-lo como alvo.",
+    "partner_effects": "Com {0} vivo no time, também: {1}.",
+    "partner_sleep": "Com {0} vivo no time, os golpes dele não acordam quem está com {1}.",
+    "partner_counter": "Com {0} vivo no time, quando é atingido por uma habilidade inimiga, os dois revidam juntos.",
     "RunicCore": "No começo de cada rodada, ganha {0} de Defesa (até {1} vezes).",
     "Drowning": "No começo de cada rodada, perde {0} da Vida máxima e fica com Velocidade−.",
     "Undying": "Enquanto ele está em campo, ninguém ganha nem perde {2}. Depois de cada ação: {0}. Ao cair, volta no turno seguinte com {1} da Vida, a não ser que esteja com {3} (que também cala o resto desta Passiva).",
@@ -486,6 +491,7 @@
   "campaign": {
     "wave": "Onda {0}",
     "cleared": "Vencida",
+    "best_time": "Melhor tempo {0}",
     "enemies": "Inimigos · Nv {0} {1}",
     "enemies_hint": "Toque num inimigo para ver os atributos e as habilidades dele.",
     "rewards": "Recompensas por vitória",
@@ -671,9 +677,9 @@
       "Legendary": "Lendária"
     },
     "elements": {
-      "Mystic": "· Fogo, Água e Vento",
-      "LightDark": "· só Luz e Trevas",
-      "Legendary": "· Fogo, Água e Vento"
+      "Mystic": "Fogo, Água e Vento",
+      "LightDark": "Só Luz e Trevas",
+      "Legendary": "Fogo, Água e Vento"
     },
     "exchange": "Trocar Fragmentos",
     "exchange_title": "Troca de Fragmentos",
@@ -927,6 +933,7 @@
     "title": "Filtrar sigilos",
     "done": "Pronto",
     "title_monsters": "Filtrar homúnculos",
+    "title_grimoire": "Filtrar famílias",
     "element": "Elemento",
     "role": "Papel",
     "natural": "Estrelas naturais",
@@ -967,6 +974,7 @@
       "EqualizeHealth": "Nivela a Vida",
       "JointAttack": "Ataque em grupo",
       "ExtraTurn": "Turno extra",
+      "CooldownUp": "Aumenta a recarga",
       "Passive": "Passiva"
     },
     "scaling": "Escala em",

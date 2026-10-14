@@ -42,7 +42,7 @@ namespace Sigilos.Tests
 		public static SummonDefinition Summon(string id) => Database.Summon(id);
 
 		/// <summary>O time de quem joga sem sorte: a 5★ garantida e quatro 3★.</summary>
-		public static readonly string[] TypicalTeam = { "lich_fire", "knight_fire", "pirate_water", "dwarf_miner_light", "bandit_wind" };
+		public static readonly string[] TypicalTeam = { "lich_fire", "knight_fire", "pirate_water", "miner_light", "bandit_wind" };
 
 		/// <summary>Uma conta nova com estes monstros na equipe da Campanha.</summary>
 		public static PlayerState PlayerWith(params string[] summonIds)

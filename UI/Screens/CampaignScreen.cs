@@ -157,7 +157,12 @@ namespace Sigilos.UI.Screens
 			var title = Layout.Row(Space.Large).Named("Header");
 			title.AddChild(new Label { Name = "Title", Text = T("battle.title_stage", stage.Number, stage.Name), ThemeTypeVariation = GameTheme.Heading, SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			if (cleared)
+			{
 				title.AddChild(Layout.Labeled("confirm", "", T("campaign.cleared"), Palette.Spirit).Named("Cleared"));
+				// O recorde vem do save: sem tempo gravado (vitória de antes do campo existir), nada aparece.
+				if (Records.Best(_player, Records.StageKey(stage.Number)) is { } best)
+					title.AddChild(new Label { Name = "BestTime", Text = T("campaign.best_time", Texts.Clock(best)), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+			}
 			_detail.AddChild(title);
 
 			_detail.AddChild(Heading("EnemiesTitle", T("campaign.enemies", stage.Level, Texts.Stars(stage.Stars))));

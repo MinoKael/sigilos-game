@@ -31,7 +31,7 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>A temática escolhida (nulo: todas). Funciona junto com a ordem por raridade da galeria.</summary>
 		private FamilyTheme? _theme;
-		private readonly GridContainer _themes = new() { Name = "Themes", Columns = 3 };
+		private readonly HBoxContainer _themes = new() { Name = "Themes" };
 
 		public GrimoireScreen(GameDatabase database, PlayerState player)
 		{
@@ -82,8 +82,7 @@ namespace Sigilos.UI.Screens
 
 			_gallery.AddThemeConstantOverride("h_separation", Space.Regular);
 			_gallery.AddThemeConstantOverride("v_separation", Space.Regular);
-			_themes.AddThemeConstantOverride("h_separation", Space.Small);
-			_themes.AddThemeConstantOverride("v_separation", Space.Small);
+			_themes.AddThemeConstantOverride("separation", Space.Small);
 			var gallery = Layout.Scroll(_gallery).Named("Gallery");
 			gallery.SizeFlagsVertical = SizeFlags.ExpandFill;
 			var left = new VBoxContainer { Name = "Browse", CustomMinimumSize = new Vector2(540, 0), SizeFlagsHorizontal = SizeFlags.Fill };
@@ -111,26 +110,35 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>
-		/// Os botões de temática: "Todas" e uma por temática que tem família (os nomes são texto, então o
-		/// provisório dos Adversários muda em Data/texts sem tocar aqui). A classificação vem dos dados.
+		/// O filtro de temática, no padrão dos homúnculos: o botão Filtros (com quantos campos filtram) abre a
+		/// janela de filtros (<see cref="FilterDialog"/>) com o campo Temática. As temáticas que existem vêm
+		/// dos dados; os nomes são texto, então o provisório dos Adversários muda em Data/texts.
 		/// </summary>
 		private void RefreshThemes()
 		{
 			Layout.Clear(_themes);
-			Add(null, T("theme.all"));
-			foreach (var theme in Enum.GetValues<FamilyTheme>().Where(t => _database.Families.Any(f => f.Theme == t)))
-				Add(theme, T($"theme.{theme}"));
+			var active = _theme == null ? 0 : 1;
+			var button = GameButton.Of(active == 0 ? T("filter.button") : T("filter.button_active", active), OpenThemes,
+				active == 0 ? ButtonKind.Secondary : ButtonKind.Primary, "search", 44).Named("Filters");
+			_themes.AddChild(button);
+			if (_theme is { } theme)
+				_themes.AddChild(new Label { Name = "Theme", Text = T($"theme.{theme}"), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+		}
 
-			void Add(FamilyTheme? theme, string text)
+		private void OpenThemes()
+		{
+			var current = _theme;
+			FilterDialog.Open(this, T("filter.title_grimoire"), dialog =>
 			{
-				var button = GameButton.Of(text, () =>
-				{
-					_theme = theme;
-					Callable.From(RefreshSummons).CallDeferred();
-				}, _theme == theme ? ButtonKind.Primary : ButtonKind.Secondary);
-				button.Name = theme?.ToString() ?? "All";
-				_themes.AddChild(button);
-			}
+				var options = Enum.GetValues<FamilyTheme>().Where(t => _database.Families.Any(f => f.Theme == t))
+					.Select(t => (new Choice(T($"theme.{t}")), (int)t));
+				dialog.Field("Theme", T("theme.filter"), options, current is { } theme ? (int)theme : FilterDialog.All,
+					value => current = value < 0 ? null : (FamilyTheme)value);
+			}, () =>
+			{
+				_theme = current;
+				Callable.From(RefreshSummons).CallDeferred();
+			}, () => current = null);
 		}
 
 		/// <summary>Uma família: estrelas naturais, desenho e, na plaquinha, quantas cópias o jogador tem somando os elementos.</summary>

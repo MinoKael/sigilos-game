@@ -97,7 +97,7 @@ namespace Sigilos.Core.Progression
 			level = Math.Clamp(level, 1, MaxLevel - 1);
 
 			// Progressão suave no início e significativamente maior nos níveis altos.
-			const double baseExperience = 500;
+			const double baseExperience = 1500;
 			const double growth = 1.075;
 
 			return (int)Math.Round(baseExperience * Math.Pow(growth, level - 1));

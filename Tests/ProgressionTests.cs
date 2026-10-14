@@ -37,13 +37,13 @@ namespace Sigilos.Tests
 		[Test]
 		private static void ExperienceFollowsTheStarTable()
 		{
-			Assert.Equal(662, Leveling.ExperienceToNext(3, 1), "3★ nível 1 da tabela");
-			Assert.Equal(112046, Leveling.ExperienceToNext(6, 39), "6★ nível 39 da tabela");
-			Assert.Equal(82182, Leveling.TotalFor(3), "3★ do 1 ao 25");
-			Assert.Equal(1005420, Leveling.TotalFor(6), "6★ do 1 ao 40");
+			Assert.Equal(1986, Leveling.ExperienceToNext(3, 1), "3★ nível 1 da tabela");
+			Assert.Equal(336138, Leveling.ExperienceToNext(6, 39), "6★ nível 39 da tabela");
+			Assert.Equal(246546, Leveling.TotalFor(3), "3★ do 1 ao 25");
+			Assert.Equal(3016260, Leveling.TotalFor(6), "6★ do 1 ao 40");
 
 			var monster = new OwnedSummon { Stars = 3 };
-			Assert.Equal(1, Leveling.AddExperience(monster, 662), "um nível exato");
+			Assert.Equal(1, Leveling.AddExperience(monster, 1986), "um nível exato");
 			Assert.Equal(2, monster.Level, "nível 2");
 
 			Leveling.AddExperience(monster, 10_000_000);
@@ -63,7 +63,7 @@ namespace Sigilos.Tests
 			Assert.Equal(needed, Leveling.Infuse(player, monster, int.MaxValue), "gasta só o que falta até o máximo");
 			Assert.Equal(25, monster.Level, "3★ no nível 25");
 			Assert.Equal(1_000_000 - needed, player.Essence, "o resto da Essência fica");
-			Assert.Equal((82182 + Leveling.ExperiencePerEssence - 1) / Leveling.ExperiencePerEssence, needed, "cada Essência vale 10 de experiência");
+			Assert.Equal((246546 + Leveling.ExperiencePerEssence - 1) / Leveling.ExperiencePerEssence, needed, "cada Essência vale 10 de experiência");
 		}
 
 		[Test]
@@ -115,7 +115,7 @@ namespace Sigilos.Tests
 
 			Assert.Equal(6, monster.Stars, "evolui até 6★");
 			Assert.Equal(40, monster.Level, "e chega ao nível 40");
-			Assert.Equal(858_795, experience, "a experiência de um 3★ natural até o 6★ nível 40");
+			Assert.Equal(2_576_385, experience, "a experiência de um 3★ natural até o 6★ nível 40");
 			Assert.True(experience < Leveling.TotalFor(6), "menos do que um 6★ levaria do nível 1 ao 40");
 		}
 
@@ -235,6 +235,32 @@ namespace Sigilos.Tests
 			Assert.False(PlayerSave.IsObsolete(PlayerSave.ToJson(NewPlayer())), "a versão atual fica");
 			Assert.False(PlayerSave.IsObsolete($"{{ \"Version\": {current + 1} }}"), "versão mais nova: o jogo é que está velho, nada se apaga");
 			Assert.False(PlayerSave.IsObsolete("não é json"), "texto quebrado não conta");
+		}
+
+		/// <summary>Trocar a versão do save zera a conta, mas a data de começo dela é do jogador: passa para a conta nova.</summary>
+		[Test]
+		private static void ASaveVersionResetKeepsTheStartDate()
+		{
+			var database = TestData.LoadReal();
+			var original = new DateTime(2026, 3, 4, 10, 30, 0);
+			var oldJson = $"{{ \"version\": {PlayerState.CurrentVersion - 1}, \"started\": \"{original:yyyy-MM-ddTHH:mm:ss}\", \"Scrolls\": 3 }}";
+			Assert.True(PlayerSave.FromJson(oldJson) == null, "o save antigo não é lido inteiro");
+			Assert.Equal<DateTime?>(original, PlayerSave.StartedOf(oldJson), "mas a data de começo sai dele (qualquer caixa)");
+			Assert.True(PlayerSave.StartedOf("{ \"Scrolls\": 3 }") == null, "sem a data: nulo, não a de agora");
+			Assert.True(PlayerSave.StartedOf("não é json") == null, "texto quebrado: nulo");
+
+			var fresh = NewGame.Create(Start, new Random(1), database);
+			PlayerSave.InheritStarted(fresh, PlayerSave.StartedOf(oldJson));
+			Assert.Equal<DateTime?>(original, fresh.Started, "a conta nova leva a data do save antigo");
+
+			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(fresh))!;
+			Assert.Equal<DateTime?>(original, loaded.Started, "e ela sobrevive a gravar e ler");
+			Account.Open(loaded, database, Start.AddDays(9));
+			Assert.Equal<DateTime?>(original, loaded.Started, "abrir a conta não a troca pela de agora");
+
+			var noDate = NewGame.Create(Start, new Random(1), database);
+			PlayerSave.InheritStarted(noDate, null);
+			Assert.Equal<DateTime?>(Start, noDate.Started, "sem data herdada, vale a da conta nova");
 		}
 
 		[Test]

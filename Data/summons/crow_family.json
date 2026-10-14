@@ -4,22 +4,36 @@
   "name": "Corvos",
   "star_grade": 3,
   "image": "crow",
+  "active": true,
   "variations": {
     "fire": {
       "variation_id": "crow_fire",
       "name": "Corvo de Fogo",
       "element": "Fire",
-      "role": "Attack",
-      "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
-      "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
-      "leader": {"stat": "Crit", "value": 0.1},
-      "awakening": {"name": "Hugi"},
+      "role": "HP",
+      "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+      "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
+      "leader": {"stat": "Health", "value": 0.1},
+      "awakening": {
+        "name": "Guhni",
+        "skill": {
+          "name": "Revirar Sucatas",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Shield", "target": "Self", "power": 0.13, "turns": 3}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1}
+          ]
+        }
+      },
       "skills": [
         {
-          "name": "Bicada de Brasa",
+          "name": "Roubo",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 0.91, "hits": 3},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 0.19, "hits": 2, "stat": "MaxHealth"},
+            {"kind": "StealBuff", "target": "Target", "chance": 0.6, "power": 0}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.15},
@@ -29,30 +43,17 @@
           ]
         },
         {
-          "name": "Bando Chamuscado",
+          "name": "Gralhar Perturbador",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5, "turns": 2}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.2},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "EffectRate", "value": 0.1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2}
-          ]
-        },
-        {
-          "name": "Mau Agouro",
-          "passive": {"kind": "StatusOrEffectOnHit"},
-          "effects": [
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.2, "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 2}
           ]
         }
       ]
@@ -61,53 +62,48 @@
       "variation_id": "crow_water",
       "name": "Corvo de Água",
       "element": "Water",
-      "role": "Defense",
-      "stats": {"hp": 8595, "atk": 483, "def": 594, "spd": 98},
-      "awakened_stats": {"hp": 9480, "atk": 534, "def": 655, "spd": 99},
+      "role": "HP",
+      "stats": {"hp": 9210, "atk": 506, "def": 527, "spd": 99},
+      "awakened_stats": {"hp": 10170, "atk": 558, "def": 582, "spd": 100},
       "leader": {"stat": "Accuracy", "value": 0.2},
-      "awakening": {"name": "Muni"},
-      "skills": [
-        {
-          "name": "Bicada do Brejo",
+      "awakening": {
+        "name": "Nimu",
+        "skill": {
+          "name": "Socorro Aéreo",
+          "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+            {"kind": "Heal", "target": "Target", "power": 0.15, "stat": "MaxHealth"},
+            {"kind": "Impeto", "target": "Target", "power": 50}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Roubo",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.01, "hits": 2},
+            {"kind": "StealBuff", "target": "Target", "chance": 0.6, "power": 0}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Presságio Afogado",
+          "name": "Compartilhar Riquezas",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.6, "turns": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "chance": 1, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "chance": 1, "turns": 2}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.8, "turns": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.6, "turns": 2},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
-          ]
-        },
-        {
-          "name": "Mau Agouro",
-          "passive": {"kind": "StatusOrEffectOnHit"},
-          "effects": [
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.2, "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.25, "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "Oblivion", "chance": 0.35, "turns": 2}
           ]
         }
       ]
@@ -120,45 +116,55 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Ninn"},
-      "skills": [
-        {
-          "name": "Rasgo de Garras",
-          "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.33, "hits": 2, "ignoreDefense": 0.4}
-          ],
-          "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
-          ]
-        },
-        {
-          "name": "Mergulho Carniceiro",
+      "awakening": {
+        "name": "Mugin",
+        "skill": {
+          "name": "Como o Vento",
           "cooldown": 3,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.67}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 0.85,
+              "speed": {"add": 100, "over": 30}
+            }
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Roubo",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 3.01, "hits": 2},
+            {"kind": "StealBuff", "target": "Target", "chance": 0.6, "power": 0}
           ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 4.41, "ignoreDefense": 0.3},
-            {"kind": "StealBuff", "target": "Target", "chance": 1, "fallback": true, "power": 0.2}
+          "levels": [
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Revoada de Corvos",
-          "cooldown": 5,
+          "name": "Mergulho Voraz",
+          "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 0.84, "hits": 3, "ignoreDefense": 0.7}
+            {"kind": "Damage", "target": "Target", "power": 3.67},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "EffectRate", "value": 0.1}
+          ],
+          "awakenedEffects": [
+            {"kind": "Damage", "target": "Target", "power": 4.41},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.65, "turns": 2}
           ]
         }
       ]
@@ -171,47 +177,41 @@
       "stats": {"hp": 8655, "atk": 523, "def": 535, "spd": 103},
       "awakened_stats": {"hp": 9570, "atk": 578, "def": 590, "spd": 104},
       "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Neva"},
+      "awakening": {
+        "name": "Muninn",
+        "skill": {
+          "name": "Olhos de Odin",
+          "passive": {"kind": "StatusOrEffectOnHit"},
+          "effects": [
+            {"kind": "Status", "target": "Target", "status": "Oblivion", "turns": 1, "chance": 0}
+          ]
+        }
+      },
       "skills": [
         {
-          "name": "Bugiganga Brilhante",
+          "name": "Roubo",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Impeto", "target": "LowestAlly", "power": 10}
+            {"kind": "Damage", "target": "Target", "power": 2.97, "hits": 2},
+            {"kind": "StealBuff", "target": "Target", "chance": 0.7, "power": 0}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.05},
-            {"kind": "Damage", "value": 0.05},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.15}
+            {"kind": "EffectRate", "value": 0.15},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Coro da Alvorada",
+          "name": "Sondando o Inimigo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 20},
-            {"kind": "Status", "target": "AllAllies", "status": "Foresight"}
+            {"kind": "Damage", "target": "RandomEnemy", "power": 3.61, "hits": 4},
+            {"kind": "Impeto", "target": "RandomEnemy", "power": -15}
           ],
           "levels": [
-            {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 30},
-            {"kind": "Status", "target": "AllAllies", "status": "Foresight"},
-            {"kind": "Cleanse", "target": "AllAllies"}
-          ]
-        },
-        {
-          "name": "Augúrio",
-          "cooldown": 5,
-          "effects": [
-            {"kind": "Status", "target": "AllAllies", "status": "Immunity"},
-            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
-          ],
-          "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         }
       ]
@@ -224,27 +224,33 @@
       "stats": {"hp": 7905, "atk": 631, "def": 483, "spd": 101},
       "awakened_stats": {"hp": 8730, "atk": 697, "def": 533, "spd": 102},
       "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Evermor"},
+      "awakening": {
+        "name": "Huginn",
+        "skill": {
+          "name": "Olhos de Odin",
+          "passive": {"kind": "BonusPerStatusOrEffect", "value": 0.3}
+        }
+      },
       "skills": [
         {
-          "name": "Bicada no Olho",
+          "name": "Roubo",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Blind", "chance": 0.3, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 3.17, "hits": 2},
+            {"kind": "StealBuff", "target": "Target", "chance": 0.7, "power": 0}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Presságio de Morte",
+          "name": "Sabotador de Planos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.43},
-            {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 0.8, "turns": 2}
+            {"kind": "Damage", "target": "AllAllies", "power": 3.43},
+            {"kind": "ChangeDuration", "target": "AllEnemies", "scope": "Debuffs", "turns": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -252,20 +258,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 3.92},
-            {"kind": "Status", "target": "Target", "status": "Bomb", "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2}
-          ]
-        },
-        {
-          "name": "Mau Agouro",
-          "passive": {"kind": "StatusOrEffectOnHit"},
-          "effects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2},
-            {"kind": "ChangeDuration", "target": "AllEnemies", "scope": "Buffs", "turns": -1}
+            {"kind": "Damage", "target": "Target", "power": 3.92}
           ]
         }
       ]

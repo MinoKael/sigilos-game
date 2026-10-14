@@ -233,8 +233,9 @@ namespace Sigilos.UI.Screens
 			box.ContentMarginLeft = box.ContentMarginRight = 16;
 			box.ContentMarginTop = box.ContentMarginBottom = 8;
 			plate.AddThemeStyleboxOverride("panel", box);
-			var column = new VBoxContainer { Name = "Column" };
-			column.AddThemeConstantOverride("separation", Space.Small);
+			// Uma linha só, na base da constelação: o tempo, o que juntou e a ação lado a lado.
+			var column = new HBoxContainer { Name = "Column", Alignment = BoxContainer.AlignmentMode.Center };
+			column.AddThemeConstantOverride("separation", Space.Wide);
 			plate.AddChild(column);
 
 			// O tempo é um botão sem moldura: parece texto, e o toque abre a explicação colada nele.

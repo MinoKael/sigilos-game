@@ -101,7 +101,7 @@ namespace Sigilos.UI.Components
             {
                 DrawLine(points[From], points[To], new Color(Palette.Gold, 0.6f), antialiased: true);
             }
-            
+
             // Circulo do centro
             DrawCircle(center, 10f, new Color(Palette.Gold, 0.45f), antialiased: true);
 

@@ -111,7 +111,7 @@ namespace Sigilos.UI.Style
 						return Symbol.Of(Planet.Earth);
 					case EffectKind.Revive:
 						return new Symbol(Effect(StatusKind.Revive));
-					case EffectKind.StealBuff:
+					case EffectKind.StealBuff or EffectKind.IncreaseCooldown:
 						return Symbol.Of(Planet.Saturn);
 					case EffectKind.ExtraTurnOnKill:
 						return Symbol.Of(Planet.Mercury);

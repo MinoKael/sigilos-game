@@ -210,7 +210,7 @@ namespace Sigilos.UI.Screens
 				for (var floor = 1; floor <= floors; floor++)
 				{
 					var best = floor <= dungeon.Floors.Count ? Records.Best(_player, Records.FloorKey(dungeon.Id, floor)) : null;
-					var cell = best is { } seconds ? Cell(TimeSpan.FromSeconds(seconds).ToString(@"mm\:ss"), GameTheme.PageText) : Cell("·", GameTheme.PageFaded);
+					var cell = best is { } seconds ? Cell(Texts.Clock(seconds), GameTheme.PageText) : Cell("·", GameTheme.PageFaded);
 					table.AddChild(cell.Named($"{Layout.NodeName(dungeon.Id)}{floor}"));
 				}
 			}

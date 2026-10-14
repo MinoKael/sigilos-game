@@ -24,6 +24,11 @@ namespace Sigilos.Core.Battle
 			if (taunter != null)
 				return new[] { taunter };
 
+			// Guarda: quem tem Defesa menor que a do guardião só pode escolhê-lo (o primeiro da fila do time).
+			var guard = alive.FirstOrDefault(u => u.Rules().Any(rule => rule.Behavior.Forces(rule, caster)));
+			if (guard != null)
+				return new[] { guard };
+
 			var visible = alive.Where(u => !u.Any(behavior => behavior.HidesOwner)).ToList();
 			return visible.Count > 0 ? visible : alive;
 		}

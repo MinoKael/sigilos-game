@@ -149,7 +149,7 @@ namespace Sigilos.UI.Screens
 			_pity.Size = new Vector2(PortalSize, PortalSize);
 			idle.AddChild(_pity);
 			var portal = new Control { Name = "Portal", Position = new Vector2(PortalSize * 0.16f, PortalSize * 0.16f), Size = new Vector2(PortalSize * 0.68f, PortalSize * 0.68f), MouseFilter = MouseFilterEnum.Ignore };
-			portal.AddChild(Doodle.Masked(Art.Transmutation(), Palette.GoldDark, MaskShape.Circle, inset: 12));
+			portal.AddChild(Doodle.Masked(Art.Transmutation(), Palette.GoldDark, MaskShape.Circle, inset: 12, boil: false));
 			idle.AddChild(portal);
 			// O texto decorativo em volta do símbolo de Transmutação.
 			idle.AddChild(new RingText(MottoText, PortalSize * 0.43f, 17, Palette.Gold) { Name = "Motto", Size = new Vector2(PortalSize, PortalSize) });

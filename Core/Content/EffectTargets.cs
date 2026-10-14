@@ -30,6 +30,7 @@ namespace Sigilos.Core.Content
 			[EffectKind.JointAttack] = new[] { TargetKind.AllAllies, TargetKind.LowestAlly, TargetKind.HighestAlly, TargetKind.RandomAlly },
 			[EffectKind.ExtraTurnOnKill] = new[] { TargetKind.Self },
 			[EffectKind.Revive] = new[] { TargetKind.AllAllies },
+			[EffectKind.IncreaseCooldown] = new[] { TargetKind.Target, TargetKind.AllEnemies, TargetKind.RandomEnemy },
 		};
 
 		public static bool Allows(EffectKind kind, TargetKind target) =>

@@ -58,6 +58,13 @@ namespace Sigilos.UI.Components
 			return tab;
 		}
 
+		/// <summary>Mostra ou esconde uma aba (a que some não pode estar aberta: quem esconde abre outra antes).</summary>
+		public void SetTabVisible(int index, bool visible)
+		{
+			if (index >= 0 && index < _tabs.Count)
+				_tabs[index].Visible = visible;
+		}
+
 		/// <summary>Abre a aba sem avisar (quando a tela já sabe).</summary>
 		public void Select(int index)
 		{

@@ -127,8 +127,8 @@ namespace Sigilos.Tests
 			Teams.Toggle(player, "golem", golemMonster.Id);
 
 			Dungeons.ApplyVictory(new Random(1), player, database.Dungeon("golem"), 1);
-			Assert.True(golemMonster.Level > 1, "a equipe do Golem ganha experiência");
-			Assert.Equal(1, player.Monsters[0].Level, "a da Campanha não");
+			Assert.True(golemMonster.Level > 1 || golemMonster.Experience > 0, "a equipe do Golem ganha experiência");
+			Assert.Equal(0, player.Monsters[0].Experience, "a da Campanha não");
 		}
 	}
 }

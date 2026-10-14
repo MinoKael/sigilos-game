@@ -6,7 +6,7 @@ namespace Sigilos.UI.Animations
 	/// <summary>
 	/// O "peso" de um botão: afunda ao apertar e volta com um repique (<see cref="Motion.SpringTo"/>). Sob o
 	/// mouse não cresce: quem mostra o foco é a luz (a aura do sigilo, a moldura acesa). Ligado uma vez por
-	/// botão (<see cref="Components.TouchButton"/> já liga); o centro da escala acompanha o tamanho. O clique
+	/// botão (<see cref="Components.TouchButton"/> já liga); o centro da escala é o meio do botão, por razão. O clique
 	/// soa como reserva (<see cref="Sfx.Fallback"/>): calado quando a ação tem som próprio; o botão de ligar e
 	/// desligar soa o lado para onde foi.
 	/// </summary>
@@ -17,7 +17,9 @@ namespace Sigilos.UI.Animations
 			Tween? tween = null;
 			void Bounce(float scale) => tween = Motion.SpringTo(button, tween, "scale", Vector2.One * (button.Disabled ? 1 : scale));
 
-			button.Resized += () => button.PivotOffset = button.Size / 2;
+			// O centro por razão, não por pixel: o botão posto à mão (a constelação do Hub) muda de tamanho antes
+			// de entrar na árvore e nenhum Resized chegava; o pivô ficava no canto e ele encolhia para o lado.
+			button.PivotOffsetRatio = Vector2.One * 0.5f;
 			button.ButtonDown += () => Bounce(press);
 			button.ButtonUp += () => Bounce(1f);
 			button.Pressed += () => Sfx.Fallback(!button.ToggleMode ? "ui.button_click" : button.ButtonPressed ? "ui.toggle_on" : "ui.toggle_off");

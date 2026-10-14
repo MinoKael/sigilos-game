@@ -4,45 +4,97 @@
   "name": "Gosmas",
   "star_grade": 2,
   "image": "slime",
+  "active": true,
   "variations": {
     "fire": {
       "variation_id": "slime_fire",
       "name": "Gosma de Fogo",
       "element": "Fire",
       "role": "Support",
-      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
-      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "stats": {
+        "hp": 7275,
+        "atk": 463,
+        "def": 543,
+        "spd": 98
+      },
+      "awakened_stats": {
+        "hp": 8085,
+        "atk": 514,
+        "def": 603,
+        "spd": 99
+      },
       "awakening": {
         "name": "Magdo",
         "skill": {
           "name": "Corpo Escaldante",
-          "passive": {"kind": "Thorns", "value": 0.5}
+          "passive": {
+            "kind": "Thorns",
+            "value": 0.5
+          }
         }
       },
       "skills": [
         {
           "name": "Gosma Escaldante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "SpeedDown",
+              "chance": 0.4,
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            }
           ]
         },
         {
           "name": "Disparo de Magma",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.77},
-            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.4, "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "AllEnemies",
+              "power": 1.77
+            },
+            {
+              "kind": "Status",
+              "target": "AllEnemies",
+              "status": "AttackDown",
+              "chance": 0.4,
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       ]
@@ -52,20 +104,44 @@
       "name": "Gosma de Água",
       "element": "Water",
       "role": "HP",
-      "stats": {"hp": 8010, "atk": 456, "def": 495, "spd": 100},
-      "awakened_stats": {"hp": 8895, "atk": 507, "def": 550, "spd": 101},
+      "stats": {
+        "hp": 8010,
+        "atk": 456,
+        "def": 495,
+        "spd": 100
+      },
+      "awakened_stats": {
+        "hp": 8895,
+        "atk": 507,
+        "def": 550,
+        "spd": 101
+      },
       "awakening": {
         "name": "Blob",
         "skill": {
           "name": "Fortaleza de Gosma",
           "cooldown": 5,
           "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.17, "turns": 2},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {
+              "kind": "Shield",
+              "target": "AllAllies",
+              "power": 0.17,
+              "turns": 2
+            },
+            {
+              "kind": "Cleanse",
+              "target": "LowestAlly"
+            }
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "Recovery",
+              "value": 0.1
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       },
@@ -73,25 +149,57 @@
         {
           "name": "Gosma Gelada",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "SpeedDown",
+              "chance": 0.4,
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            }
           ]
         },
         {
           "name": "Maré Purificadora",
           "cooldown": 5,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
-            {"kind": "Heal", "target": "AllAllies", "power": 0.06}
+            {
+              "kind": "Cleanse",
+              "target": "AllAllies"
+            },
+            {
+              "kind": "Heal",
+              "target": "AllAllies",
+              "power": 0.06
+            }
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.15},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "Recovery",
+              "value": 0.15
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       ]
@@ -101,20 +209,45 @@
       "name": "Gosma de Vento",
       "element": "Wind",
       "role": "Support",
-      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
-      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "stats": {
+        "hp": 7275,
+        "atk": 463,
+        "def": 543,
+        "spd": 98
+      },
+      "awakened_stats": {
+        "hp": 8085,
+        "atk": 514,
+        "def": 603,
+        "spd": 99
+      },
       "awakening": {
         "name": "Jelly",
         "skill": {
           "name": "Vendaval de Meleca",
           "cooldown": 5,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.6, "turns": 2}
+            {
+              "kind": "Status",
+              "target": "AllEnemies",
+              "status": "SpeedDown",
+              "chance": 0.6,
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       },
@@ -122,26 +255,62 @@
         {
           "name": "Gosma Arenosa",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "SpeedDown",
+              "chance": 0.4,
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            }
           ]
         },
         {
           "name": "Estouro de Cola",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+            {
+              "kind": "Damage",
+              "target": "AllEnemies",
+              "power": 1.22
+            },
+            {
+              "kind": "Impeto",
+              "target": "AllEnemies",
+              "power": -20
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       ]
@@ -151,20 +320,44 @@
       "name": "Gosma de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
-      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "stats": {
+        "hp": 7275,
+        "atk": 463,
+        "def": 543,
+        "spd": 98
+      },
+      "awakened_stats": {
+        "hp": 8085,
+        "atk": 514,
+        "def": 603,
+        "spd": 99
+      },
       "awakening": {
         "name": "Limuz",
         "skill": {
           "name": "Gel Radiante",
           "cooldown": 5,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
-            {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 2}
+            {
+              "kind": "Cleanse",
+              "target": "AllAllies"
+            },
+            {
+              "kind": "Status",
+              "target": "AllAllies",
+              "status": "Aegis",
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "Recovery",
+              "value": 0.1
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       },
@@ -172,25 +365,56 @@
         {
           "name": "Gosma Brilhante",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "SpeedDown",
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            }
           ]
         },
         {
           "name": "Gel Curativo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.4}
+            {
+              "kind": "Heal",
+              "target": "AllAllies",
+              "power": 0.4
+            }
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "Recovery",
+              "value": 0.1
+            },
+            {
+              "kind": "Recovery",
+              "value": 0.1
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       ]
@@ -200,23 +424,64 @@
       "name": "Gosma de Trevas",
       "element": "Dark",
       "role": "Support",
-      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
-      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "stats": {
+        "hp": 7275,
+        "atk": 463,
+        "def": 543,
+        "spd": 98
+      },
+      "awakened_stats": {
+        "hp": 8085,
+        "atk": 514,
+        "def": 603,
+        "spd": 99
+      },
       "awakening": {
         "name": "Piche",
         "skill": {
           "name": "Toque Amaldiçoado",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.45},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.3, "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.3, "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 1.45
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "Affliction",
+              "chance": 0.3,
+              "turns": 2
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "DefenseBreak",
+              "chance": 0.3,
+              "turns": 2
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "SpeedDown",
+              "chance": 0.3,
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1}
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            }
           ]
         }
       },
@@ -224,26 +489,64 @@
         {
           "name": "Gosma Pétrea",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 1, "turns": 3}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.45
+            },
+            {
+              "kind": "Status",
+              "target": "Target",
+              "status": "SpeedDown",
+              "chance": 1,
+              "turns": 3
+            }
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "EffectRate",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            }
           ]
         },
         {
           "name": "Lodo Negro",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.22},
-            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.35, "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "AllEnemies",
+              "power": 1.22
+            },
+            {
+              "kind": "Status",
+              "target": "AllEnemies",
+              "status": "Blind",
+              "chance": 0.35,
+              "turns": 2
+            }
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Damage",
+              "value": 0.1
+            },
+            {
+              "kind": "Cooldown",
+              "value": 1
+            }
           ]
         }
       ]

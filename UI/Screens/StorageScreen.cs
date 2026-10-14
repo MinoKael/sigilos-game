@@ -279,7 +279,11 @@ namespace Sigilos.UI.Screens
 				T("monsters.release_title"),
 				text + MonsterNotes.Warning(_database, _player, released),
 				T("monsters.release_button"),
-				() => ReleaseRequested?.Invoke(released.Select(m => m.Id).ToList()), ButtonKind.Danger), ButtonKind.Danger, "release", 48).Named("ReleaseMarked");
+				() =>
+				{
+					EndSelection();
+					ReleaseRequested?.Invoke(released.Select(m => m.Id).ToList());
+				}, ButtonKind.Danger), ButtonKind.Danger, "release", 48).Named("ReleaseMarked");
 			if (released.Count > 0)
 				button.WithCost("fragments", $"+{fragments}");
 			button.Disabled = released.Count == 0;
@@ -292,7 +296,7 @@ namespace Sigilos.UI.Screens
 			var ids = marked.Where(m => !m.Stored).Select(m => m.Id).ToList();
 			void Store()
 			{
-				_marked.ExceptWith(ids);
+				EndSelection();
 				StoreManyRequested?.Invoke(ids);
 			}
 
@@ -314,11 +318,18 @@ namespace Sigilos.UI.Screens
 			var ids = marked.Where(m => m.Stored).Select(m => m.Id).Take(Roster.FreeSlots(_player)).ToList();
 			var button = GameButton.Of(T("monsters.retrieve_marked", ids.Count), () =>
 			{
-				_marked.ExceptWith(ids);
+				EndSelection();
 				RetrieveManyRequested?.Invoke(ids);
 			}, ButtonKind.Secondary, "storage", 48).Named("RetrieveMarked");
 			button.Disabled = ids.Count == 0;
 			return button;
+		}
+
+		/// <summary>Acabou a ação em lote: sai do modo de seleção e nada fica marcado.</summary>
+		private void EndSelection()
+		{
+			_selecting = false;
+			_marked.Clear();
 		}
 
 		private void RefreshRoster()
@@ -416,6 +427,16 @@ namespace Sigilos.UI.Screens
 			var monster = _player.Monster(_selected!.Value)!;
 			var summon = _database.Summon(monster.SummonId);
 			SideActions(summon, monster);
+
+			// Homúnculo de 2★ não desperta (versão 0.1): a aba do Despertar nem aparece, e a aberta passa para Atributos.
+			var canAwaken = !monster.IsInfusionCore && Awakening.CanBeAwakened(summon);
+			_pages.SetTabVisible((int)Page.Awaken, canAwaken);
+			if (!canAwaken && _page == Page.Awaken)
+			{
+				_page = Page.Stats;
+				_pages.Select((int)Page.Stats);
+			}
+
 			if (monster.IsInfusionCore)
 			{
 				// O Núcleo não tem atributos, runas, habilidades nem Despertar: só o que ele é e como usar.

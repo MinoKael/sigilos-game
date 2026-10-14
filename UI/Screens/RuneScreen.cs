@@ -583,6 +583,7 @@ namespace Sigilos.UI.Screens
 				{
 					var ids = marked.Select(r => r.Id).ToList();
 					_marked.Clear();
+					_selecting = false;
 					SellManyRequested?.Invoke(ids);
 				}, ButtonKind.Danger), ButtonKind.Danger, "dismantle", 40).Named("SellMarked");
 			if (marked.Count > 0)

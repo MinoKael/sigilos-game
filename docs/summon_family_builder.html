@@ -264,13 +264,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 {
   "roles": ["HP", "Attack", "Defense", "Support"],
   "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
-  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive"],
+  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive", "IncreaseCooldown"],
   "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy"],
   "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "bonuses": ["Damage", "Heal", "Impeto"],
-  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying"],
+  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "DefenseGuard"],
   "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"],
   "scaleStats": ["Attack", "Defense", "MaxHealth", "Speed", "TargetMaxHealth", "Level"],
   "scaleMeasures": ["HealthFraction", "TargetHealthFraction", "LivingAllies"]
@@ -573,7 +573,15 @@ const Core = (() => {
     ForEachStatusOrEffectAppliedDo: "effects para cada efeito que conta que o dono põe, novo ou renovado (Target = quem recebeu)",
     ForEachStatusOrEffectReceivedDo: "effects para cada efeito que conta que o dono recebe (Target = quem pôs)",
     StatusOrEffectOnTargetEachTurn: "effects no alvo da habilidade, depois de cada turno do dono (Target = o alvo)",
+    DefenseGuard: "Guarda: inimigos com Defesa de agora menor que a do dono só podem escolhê-lo como alvo único (sem value). Com partner vivo no time, quando uma habilidade inimiga o atinge, ele e o parceiro revidam juntos com a básica, sempre",
     Undying: "Chefe (Rei Ossudo): enquanto ele está em campo, ninguém ganha nem perde Ímpeto; effects depois de cada ação dele (o escudo); value: Vida com que volta, toda vez que cai. O Esquecimento cala tudo e quem cai esquecido não volta",
+  };
+  // Em toda Passiva genérica que dispara efeitos (e em BonusVsStatusOrEffect e DefenseGuard), o parceiro melhora a Passiva.
+  const PARTNER_DOCS = {
+    partner: "o id de uma variante (ex.: crow_light) que precisa estar viva no time; vazio: sem melhoria de parceiro",
+    partnerTurns: "BonusPerStatusOrEffect: turnos a mais nos efeitos negativos que o dono põe",
+    partnerEffects: "efeitos a mais que disparam junto com os da Passiva, no mesmo momento e sorteio, só com o parceiro vivo (sem os bônus de nível)",
+    partnerKeepsAsleep: "os golpes do dono não acordam quem está com Sono, só com o parceiro vivo",
   };
   const RANK_DOCS = {
     Health: "a fração de Vida (o padrão)", Attack: "o Ataque de agora", Defense: "a Defesa de agora", Speed: "a Velocidade de agora",
@@ -702,6 +710,10 @@ const Core = (() => {
       text: "Se a habilidade derrubou alguém até aqui (ponha depois do dano), quem lança ganha um turno extra na hora e esta recarga cai turns. Uma vez por habilidade.",
       fields: {turns: "turnos a menos na recarga (1 por padrão)"},
       template: {kind: "ExtraTurnOnKill", target: "Self", turns: 1}},
+    IncreaseCooldown: {label: "Aumentar recarga", targets: ["Target", "AllEnemies", "RandomEnemy"],
+      text: "Com chance, cada habilidade (a básica não) de cada inimigo atingido ganha turns turnos a mais de recarga, também as que estavam prontas. Imunidade barra, a Resistência pode resistir, o chefe é imune.",
+      fields: {turns: "turnos a mais (1 por padrão)", chance: "0 a 1"},
+      template: {kind: "IncreaseCooldown", target: "AllEnemies", turns: 1, chance: 1}},
     Revive: {label: "Reviver aliados", targets: ["AllAllies"],
       text: "Os aliados caídos voltam na hora com power da Vida máxima de cada um (ou a conta), mais o bônus de cura da habilidade. Com count, só os N sorteados. Quem já ia voltar sozinho no turno dele (uma Passiva) fica de fora.",
       fields: {power: "fração da Vida máxima de quem volta (0.3 = 30%)", count: "quantos, sorteados (0 = todos)", ...SCALE_FIELDS},
@@ -967,7 +979,7 @@ const Core = (() => {
     return {
       name: source?.name || "",
       cooldown: source?.cooldown ?? "",
-      passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", scope: source.passive.scope ?? "", statuses: (source.passive.statuses || []).join(", "), extra: rest(source.passive, ["kind", "value", "awakenedValue", "scope", "statuses"])} : null,
+      passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", scope: source.passive.scope ?? "", statuses: (source.passive.statuses || []).join(", "), partner: source.passive.partner ?? "", partnerTurns: source.passive.partnerTurns ?? "", partnerKeepsAsleep: source.passive.partnerKeepsAsleep === true, partnerEffects: source.passive.partnerEffects?.length ? format(source.passive.partnerEffects) : "", extra: rest(source.passive, ["kind", "value", "awakenedValue", "scope", "statuses", "partner", "partnerTurns", "partnerKeepsAsleep", "partnerEffects"])} : null,
       effects: listText(source?.effects),
       awakenedEffects: source?.awakenedEffects?.length ? format(source.awakenedEffects) : "",
       levels: listText(source?.levels),
@@ -984,6 +996,14 @@ const Core = (() => {
       if (skill.passive.scope) passive.scope = skill.passive.scope;
       const statuses = String(skill.passive.statuses || "").split(",").map(s => s.trim()).filter(Boolean);
       if (statuses.length) passive.statuses = statuses;
+      const partner = String(skill.passive.partner || "").trim();
+      if (partner) {
+        passive.partner = partner;
+        if (num(skill.passive.partnerTurns) > 0) passive.partnerTurns = num(skill.passive.partnerTurns);
+        if (skill.passive.partnerKeepsAsleep === true) passive.partnerKeepsAsleep = true;
+        const partnerEffects = parseList(skill.passive.partnerEffects).list;
+        if (partnerEffects.length) passive.partnerEffects = partnerEffects;
+      }
       out.passive = Object.assign(passive, skill.passive.extra);
       if (PASSIVE_EFFECTS.includes(skill.passive.kind)) {
         out.effects = parseList(skill.effects).list;
@@ -1202,8 +1222,12 @@ const Core = (() => {
     if (skill.passive) {
       if (!enums.passives.includes(skill.passive.kind)) add("error", where, `Passiva desconhecida: "${skill.passive.kind}".`);
       const generic = PASSIVE_EFFECTS.includes(skill.passive.kind);
-      if (!generic && !(num(skill.passive.value) > 0)) add("warn", where, "Passiva com valor zero.");
-      if (generic && num(skill.passive.value) > 1) add("error", where, "Nas Passivas genéricas o value é a chance de disparar (0 a 1; 0 = sempre).");
+      if (!generic && skill.passive.kind !== "DefenseGuard" && !(num(skill.passive.value) > 0)) add("warn", where, "Passiva com valor zero.");
+      const perks = editor?.passive || skill.passive;
+      const perkList = Array.isArray(perks.partnerEffects) ? {list: perks.partnerEffects, error: null} : parseList(perks.partnerEffects);
+      const hasPerks = num(perks.partnerTurns) > 0 || perks.partnerKeepsAsleep === true || perkList.list.length > 0;
+      if (!String(perks.partner || "").trim() && hasPerks) add("error", where, "partnerTurns, partnerKeepsAsleep e partnerEffects precisam de partner (o id da variante).");
+      if (perkList.error) add("error", where, `partnerEffects: JSON inválido (${perkList.error}).`);
       for (const status of skill.passive.statuses || []) if (!enums.statuses.includes(status)) add("error", where, `Status desconhecido em statuses: "${status}".`);
       if (skill.passive.scope !== undefined && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(skill.passive.scope)) add("error", where, `scope desconhecido: "${skill.passive.scope}".`);
       if (!generic) return;
@@ -1224,7 +1248,7 @@ const Core = (() => {
       }
     }
 
-    for (const effect of [...(skill.effects || []), ...(skill.awakenedEffects || [])]) {
+    for (const effect of [...(skill.effects || []), ...(skill.awakenedEffects || []), ...(skill.passive?.partnerEffects || [])]) {
       if (!isPlain(effect)) { add("error", where, "Cada efeito é um objeto { ... }."); continue; }
       if (!enums.effectKinds.includes(effect.kind)) add("error", where, `Efeito desconhecido: "${effect.kind}".`);
       if (effect.target !== undefined && !enums.targets.includes(effect.target)) add("error", where, `Alvo desconhecido: "${effect.target}".`);
@@ -1399,7 +1423,7 @@ const Core = (() => {
 
   return {
     ELEMENTS, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
-    EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
+    EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PARTNER_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
     USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,
     stripJsonc, parseJsonc, leadingComments, format,
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
@@ -1445,6 +1469,13 @@ if (typeof module !== "undefined") module.exports = Core;
     openJson: new Set(),
     project: null,
     remembered: null,
+    familyFilters: {
+      search: "",
+      sortBy: "name",
+      sortDirection: "asc",
+      starGrade: "all",
+      activeOnly: true,
+    },
     // Aba Chefes: os inimigos únicos de Data/enemies.json, com os andares e fases em que lutam.
     bosses: null,
   };
@@ -1513,6 +1544,7 @@ if (typeof module !== "undefined") module.exports = Core;
 
   function renderProject() {
     const p = ui.project;
+    const filters = ui.familyFilters;
     let html = `<div class="spread"><h2 style="margin:0">Projeto</h2>${p ? `<span class="badge ok">${esc(p.name)}</span>` : `<span class="badge">sem pasta</span>`}</div>`;
     if (!p) {
       html += `<p class="note" style="margin-top:8px">Sem a pasta do projeto, o construtor usa o modelo de fábrica: importe e baixe os arquivos à mão. Com a pasta aberta ele lê <code>Data/stat_model.json</code>, as famílias de <code>Data/summons</code> e os nomes de efeito do código, e salva no lugar.</p>`;
@@ -1520,31 +1552,87 @@ if (typeof module !== "undefined") module.exports = Core;
       if (ui.remembered) html += `<div class="row" style="margin-top:8px"><button class="btn small primary" data-action="reopen-project">Reabrir ${esc(ui.remembered.name)}</button></div>`;
       html += `<div class="row" style="margin-top:8px"><button class="btn small" data-action="new-family">Nova família</button></div>`;
     } else {
-      html += `<div class="list">${[...p.families.entries()]
-  .sort(([, a], [, b]) => {
-    const gradeA = Number(a.data.star_grade) || 0;
-    const gradeB = Number(b.data.star_grade) || 0;
+      const families = [...p.families.entries()];
+      const starGrades = [...new Set(families.map(([, entry]) => Number(entry.data.star_grade) || 0))].sort((a, b) => a - b);
+      const query = filters.search.trim().toLocaleLowerCase("pt-BR");
+      const filteredFamilies = families.filter(([file, entry]) => {
+        const data = entry.data;
+        if (filters.activeOnly && data.active !== true) return false;
+        if (filters.starGrade !== "all" && Number(data.star_grade) !== Number(filters.starGrade)) return false;
+        if (query) {
+          const searchable = [file, data.name, data.base_name, data.family_id, data.star_grade,
+            ...Object.values(data.variations || {}).map(v => v?.name || "")]
+            .filter(value => value !== null && value !== undefined)
+            .join(" ").toLocaleLowerCase("pt-BR");
+          if (!searchable.includes(query)) return false;
+        }
+        return true;
+      });
 
-    return gradeA - gradeB ||
-      String(a.data.name || a.data.family_id)
-        .localeCompare(String(b.data.name || b.data.family_id), "pt-BR");
-  })
-  .map(([file, entry]) => {
-    const stale = entry.stale
-      ? `<span class="badge warn" title="Os atributos guardados não são os do modelo de agora">recalcular</span>`
-      : "";
+      filteredFamilies.sort(([, a], [, b]) => {
+        const nameA = String(a.data.name || a.data.family_id || "");
+        const nameB = String(b.data.name || b.data.family_id || "");
+        const gradeA = Number(a.data.star_grade) || 0;
+        const gradeB = Number(b.data.star_grade) || 0;
+        let comparison = filters.sortBy === "stars"
+          ? gradeA - gradeB
+          : nameA.localeCompare(nameB, "pt-BR", {sensitivity: "base"});
+        if (comparison === 0) {
+          comparison = filters.sortBy === "stars"
+            ? nameA.localeCompare(nameB, "pt-BR", {sensitivity: "base"})
+            : gradeA - gradeB;
+        }
+        return filters.sortDirection === "desc" ? -comparison : comparison;
+      });
 
-    return `<button data-action="load-family" data-file="${esc(file)}" class="${file === ui.familyFile ? "active" : ""}">
-      <span>${esc(entry.data.name || entry.data.family_id)} <span class="note">${esc(entry.data.star_grade)}★ · ${Object.keys(entry.data.variations || {}).length} var.</span></span>${stale}
-    </button>`;
-  })
-  .join("")}</div>
-      <div class="row">
-        <button class="btn small" data-action="new-family">Nova família</button>
-        <button class="btn small good" data-action="save-family">Salvar família${ui.dirty ? " •" : ""}</button>
-        <button class="btn small warn" data-action="recalc-all" title="Refaz os atributos de todas as famílias e dos chefes com o modelo de agora e grava os arquivos">Recalcular todas</button>
-      </div>
-      <p class="note" style="margin-top:8px">${p.families.size} famílias · ${p.enemies ? "chefes em Data/enemies.json" : "sem Data/enemies.json"} · nomes ${esc(ui.enumsSource)}</p>`;
+      html += `
+        <div class="section" style="margin-top:12px">
+          <div class="field">
+            <label for="familyFilterSearch">Buscar família</label>
+            <input id="familyFilterSearch" type="text" data-action="family-filter-search"
+              placeholder="Nome, ID, arquivo ou variante..." value="${esc(filters.search)}"
+              autocomplete="off" spellcheck="false">
+          </div>
+          <div class="form-grid" style="margin-top:8px">
+            <div class="field"><label for="familyFilterSort">Ordenar por</label>
+              <select id="familyFilterSort" data-action="family-filter-sort">
+                <option value="name" ${filters.sortBy === "name" ? "selected" : ""}>Nome</option>
+                <option value="stars" ${filters.sortBy === "stars" ? "selected" : ""}>Estrelas</option>
+              </select>
+            </div>
+            <div class="field"><label for="familyFilterDirection">Direção</label>
+              <select id="familyFilterDirection" data-action="family-filter-direction">
+                <option value="asc" ${filters.sortDirection === "asc" ? "selected" : ""}>Crescente (A–Z / menor–maior)</option>
+                <option value="desc" ${filters.sortDirection === "desc" ? "selected" : ""}>Decrescente (Z–A / maior–menor)</option>
+              </select>
+            </div>
+            <div class="field"><label for="familyFilterStars">Estrelas</label>
+              <select id="familyFilterStars" data-action="family-filter-stars">
+                <option value="all" ${filters.starGrade === "all" ? "selected" : ""}>Todas</option>
+                ${starGrades.map(grade => `<option value="${grade}" ${String(filters.starGrade) === String(grade) ? "selected" : ""}>${grade}★</option>`).join("")}
+              </select>
+            </div>
+            <label class="note" style="display:flex;align-items:center;gap:7px;align-self:center">
+              <input type="checkbox" data-action="family-filter-active" ${filters.activeOnly ? "checked" : ""}>
+              Apenas <code>active: true</code>
+            </label>
+          </div>
+        </div>
+        <div class="list" id="projectFamilyList">${filteredFamilies.map(([file, entry]) => {
+          const stale = entry.stale ? `<span class="badge warn" title="Os atributos guardados não são os do modelo de agora">recalcular</span>` : "";
+          const name = entry.data.name || entry.data.family_id;
+          const grade = Number(entry.data.star_grade) || 0;
+          const variations = Object.keys(entry.data.variations || {}).length;
+          return `<button data-action="load-family" data-file="${esc(file)}" class="${file === ui.familyFile ? "active" : ""}">
+            <span>${esc(name)} <span class="note">${grade}★ · ${variations} var.</span></span>${stale}
+          </button>`;
+        }).join("") || `<p class="note" style="padding:12px">Nenhuma família corresponde aos filtros selecionados.</p>`}</div>
+        <div class="row">
+          <button class="btn small" data-action="new-family">Nova família</button>
+          <button class="btn small good" data-action="save-family">Salvar família${ui.dirty ? " •" : ""}</button>
+          <button class="btn small warn" data-action="recalc-all" title="Refaz os atributos de todas as famílias e dos chefes com o modelo de agora e grava os arquivos">Recalcular todas</button>
+        </div>
+        <p class="note" style="margin-top:8px">${filteredFamilies.length} de ${p.families.size} famílias · ${p.enemies ? "chefes em Data/enemies.json" : "sem Data/enemies.json"} · nomes ${esc(ui.enumsSource)}</p>`;
     }
     $("projectPanel").innerHTML = html;
   }
@@ -1934,6 +2022,11 @@ if (typeof module !== "undefined") module.exports = Core;
             <p class="note wide">${esc(C.PASSIVE_DOCS[skill.passive.kind] || "")}</p>
             ${field("Efeitos de status que contam (BonusVs, ForEach)", select(`${path}.passive.scope`, skill.passive.scope, ui.enums.scopes || ["All", "Buffs", "Debuffs"], "All (padrão)"))}
             ${field("Só estes status (nenhum marcado = todos do escopo)", statusToggles(skill, path), "full")}
+            ${field("Parceiro (id da variante viva no time)", text(`${path}.passive.partner`, skill.passive.partner, `placeholder="crow_light"`))}
+            ${field("Turnos a mais nos negativos (parceiro)", `<input data-path="${path}.passive.partnerTurns" data-type="optional" type="number" step="1" min="0" value="${esc(skill.passive.partnerTurns)}" placeholder="0">`)}
+            ${field("Golpes não acordam o Sono (parceiro)", `<select data-path="${path}.passive.partnerKeepsAsleep" data-type="bool"><option value="false" ${skill.passive.partnerKeepsAsleep ? "" : "selected"}>Não</option><option value="true" ${skill.passive.partnerKeepsAsleep ? "selected" : ""}>Sim</option></select>`)}
+            <p class="note wide">${esc(C.PARTNER_DOCS.partnerEffects)}</p>
+            ${field("Efeitos a mais com o parceiro vivo", fxEditor(skill.passive, `${path}.passive`, "partnerEffects", "effects"), "full")}
             ${generic ? `
             ${field("Efeitos da Passiva: o que ela faz ao disparar, na ordem", fxEditor(skill, path, "effects", "effects"), `full ${bad("effects")}`)}
             ${awakening || foe ? "" : field("Efeitos depois do Despertar: trocam a lista inteira (vazio = não muda)", fxEditor(skill, path, "awakenedEffects", "effects"), `full ${bad("awakenedEffects")}`)}` : ""}
@@ -2362,6 +2455,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
   // Entrada --------------------------------------------------------------------------------------------
 
   function readInput(node) {
+    if (node.dataset.type === "bool") return node.value === "true";
     if (node.dataset.type === "number") return C.num(node.value, 0);
     if (node.dataset.type === "optional") return node.value.trim() === "" ? "" : C.num(node.value, 0);
     return node.value;
@@ -2369,7 +2463,15 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
 
   document.addEventListener("input", event => {
     const node = event.target;
-    if (node.dataset.fx && node.type === "number") {
+    if (node.dataset.action === "family-filter-search") {
+      const start = node.selectionStart;
+      const end = node.selectionEnd;
+      ui.familyFilters.search = node.value;
+      renderProject();
+      const replacement = $("familyFilterSearch");
+      replacement?.focus();
+      if (replacement && start !== null && end !== null) replacement.setSelectionRange(start, end);
+    } else if (node.dataset.fx && node.type === "number") {
       editFx(node);
     } else if (node.dataset.path) {
       setAt(node.dataset.path, readInput(node));
@@ -2397,11 +2499,23 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
 
   document.addEventListener("change", event => {
     const node = event.target;
-    if (node.dataset.fx) {
+    if (node.dataset.action === "family-filter-sort") {
+      ui.familyFilters.sortBy = node.value;
+      renderProject();
+    } else if (node.dataset.action === "family-filter-direction") {
+      ui.familyFilters.sortDirection = node.value;
+      renderProject();
+    } else if (node.dataset.action === "family-filter-stars") {
+      ui.familyFilters.starGrade = node.value;
+      renderProject();
+    } else if (node.dataset.action === "family-filter-active") {
+      ui.familyFilters.activeOnly = node.checked;
+      renderProject();
+    } else if (node.dataset.fx) {
       if (node.type !== "number") editFx(node);
     } else if (node.dataset.action === "skill-type") {
       const skill = getAt(node.dataset.skill);
-      skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", extra: {}} : null;
+      skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", partner: "", partnerTurns: "", partnerKeepsAsleep: false, partnerEffects: "", extra: {}} : null;
       if (isBossPath(node.dataset.skill)) renderBosses(); else renderSkills();
       touchAt(node.dataset.skill);
     } else if (node.hasAttribute?.("data-json")) {
@@ -2414,7 +2528,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         touchAt(node.dataset.path);
       }
       // As listas de cima refletem o JSON novo (ou o erro dele).
-      const skillPath = node.dataset.path.replace(/\.(effects|awakenedEffects|levels)$/, "");
+      const skillPath = node.dataset.path.replace(/\.passive\.partnerEffects$|\.(effects|awakenedEffects|levels)$/, "");
       if (skillPath !== node.dataset.path) rerenderSkill(skillPath);
     } else if (node.dataset.model) {
       renderModelTab();

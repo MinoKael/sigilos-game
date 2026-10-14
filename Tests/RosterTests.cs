@@ -77,18 +77,29 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void AwakeningSkillLevelsOnlyAfterAwakening()
+		private static void TheAwakeningSkillFusesBeforeAwakening()
 		{
 			var database = TestData.Database;
 			var imp = database.Summon("wolf_fire");
-			var player = TestData.PlayerWith("wolf_fire");
-			var monster = player.Monsters[0];
+			Assert.True(Awakening.CanBeAwakened(imp), "o monstro do teste desperta");
+			var player = TestData.PlayerWith("wolf_fire", "wolf_fire");
+			var (monster, copy) = (player.Monsters[0], player.Monsters[1]);
+			var extra = imp.Awakening.Skill!;
 			monster.SkillLevels = imp.Skills.Select(s => s.MaxLevel).ToList();
-			Assert.Equal(0, Fusion.SkillUpsLeft(database, monster), "sem despertar, a do Despertar não conta");
+			Assert.Equal(extra.MaxLevel - 1, Fusion.SkillUpsLeft(database, monster), "sem despertar, a habilidade do Despertar já conta");
+			Assert.True(Fusion.CanFuse(player, database, monster.Id, copy.Id), "e a fusão é permitida");
+
+			var index = Fusion.Fuse(new Random(1), player, database, monster.Id, copy.Id);
+			Assert.Equal(imp.Skills.Count, index, "a única que sobe é a do Despertar");
+			Assert.Equal(2, monster.SkillLevel(index), "o nível fica guardado");
+			Assert.Equal(null, player.Monster(copy.Id), "a cópia é consumida uma vez");
+
+			var (actives, _) = Sigilos.Core.Battle.BattleFactory.Prepare(imp.SkillsFor(false), monster.SkillLevels, false);
+			Assert.True(actives.Count > 0, "o monstro não desperto, com o nível da habilidade nova guardado, entra na luta sem erro");
 
 			monster.Awakened = true;
-			var extra = imp.Awakening.Skill!;
-			Assert.Equal(extra.MaxLevel - 1, Fusion.SkillUpsLeft(database, monster), "desperto, a habilidade nova também sobe");
+			Assert.Equal(2, monster.SkillLevel(index), "ao despertar, o nível já está lá");
+			Assert.Equal(extra.MaxLevel - 2, Fusion.SkillUpsLeft(database, monster), "desperto, a conta segue igual");
 		}
 
 		[Test]

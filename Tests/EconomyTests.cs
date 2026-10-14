@@ -30,10 +30,10 @@ namespace Sigilos.Tests
 		[Test]
 		private static void AccountExperienceCurveKeepsTheOldPaceUpTo60()
 		{
-			Assert.Equal(500, Account.ExperienceToNext(1), "500 para sair do 1");
+			Assert.Equal(1500, Account.ExperienceToNext(1), "1500 para sair do 1");
 			Assert.True(Account.ExperienceToNext(99) > Account.ExperienceToNext(60) * 10, "os níveis altos pedem muito mais");
 			var to60 = Enumerable.Range(1, 59).Sum(Account.ExperienceToNext);
-			Assert.True(to60 > 400_000 && to60 < 600_000, $"chegar ao 60 pede perto do que pedia antes (531 mil): {to60}");
+			Assert.True(to60 > 1_200_000 && to60 < 1_800_000, $"chegar ao 60 pede o triplo do que pedia antes (531 mil): {to60}");
 			Assert.Equal(Account.ExperienceToNext(Account.MaxLevel - 1), Account.ExperienceToNext(Account.MaxLevel), "no máximo, a conta do último nível");
 		}
 
@@ -146,7 +146,7 @@ namespace Sigilos.Tests
 			Assert.Equal(gold + Account.LevelUpGold, player.Gold, "Ouro do nível");
 			Assert.Equal(Mana.Max(player), player.Mana, "a Mana enche");
 
-			Account.GiveExperience(player, 10_000_000);
+			Account.GiveExperience(player, Enumerable.Range(1, Account.MaxLevel - 1).Sum(Account.ExperienceToNext) + 10_000);
 			Assert.Equal(Account.MaxLevel, player.AccountLevel, "para no nível 100");
 			Assert.Equal(0, player.AccountExperience, "sem experiência sobrando no máximo");
 			Assert.Equal(0, Account.GiveExperience(player, 1000).Levels, "no máximo não sobe mais");

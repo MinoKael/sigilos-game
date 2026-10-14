@@ -8,17 +8,23 @@ namespace Sigilos.Core.Progression
 {
 	/// <summary>
 	/// O destino das cópias repetidas. Fundir uma cópia em outra da mesma família (de qualquer elemento),
-	/// ou um Núcleo de Infusão em qualquer monstro, sobe uma habilidade sorteada em um nível, entre as que ainda não estão no máximo (a do Despertar
-	/// só entra depois de despertar); soltar devolve Fragmentos, que pagam a evolução. Nos dois casos o monstro some e as
+	/// ou um Núcleo de Infusão em qualquer monstro, sobe uma habilidade sorteada em um nível, entre as que ainda não estão no máximo (a do Despertar também, mesmo antes de despertar); soltar devolve Fragmentos, que pagam a evolução. Nos dois casos o monstro some e as
 	/// runas dele voltam ao inventário. Monstro bloqueado (<see cref="OwnedSummon.Locked"/>) não some:
 	/// não se solta nem vira material (pode receber a fusão).
 	/// </summary>
 	public static class Fusion
 	{
+		/// <summary>
+		/// As habilidades que a fusão alcança: a do Despertar já conta antes de despertar (o nível fica guardado
+		/// até ela abrir), menos num homúnculo que nunca desperta, para o qual ela não existe.
+		/// </summary>
+		public static IReadOnlyList<SkillDefinition> FusableSkills(SummonDefinition summon) =>
+			Awakening.CanBeAwakened(summon) ? summon.AllSkills : summon.SkillsFor(false);
+
 		/// <summary>Índices das habilidades que ainda sobem, na ordem de <see cref="SummonDefinition.AllSkills"/>.</summary>
 		public static IReadOnlyList<int> Upgradable(GameDatabase database, OwnedSummon monster)
 		{
-			var skills = database.Summon(monster.SummonId).SkillsFor(monster.Awakened);
+			var skills = FusableSkills(database.Summon(monster.SummonId));
 			return Enumerable.Range(0, skills.Count).Where(i => monster.SkillLevel(i) < skills[i].MaxLevel).ToList();
 		}
 
@@ -32,7 +38,7 @@ namespace Sigilos.Core.Progression
 		/// <summary>Os níveis de habilidade que o monstro já subiu e quantos dá para subir ao todo.</summary>
 		public static (int Done, int Total) SkillUps(GameDatabase database, OwnedSummon monster)
 		{
-			var skills = database.Summon(monster.SummonId).SkillsFor(monster.Awakened);
+			var skills = FusableSkills(database.Summon(monster.SummonId));
 			var done = Enumerable.Range(0, skills.Count).Sum(i => Math.Min(monster.SkillLevel(i), skills[i].MaxLevel) - 1);
 			return (done, skills.Sum(s => s.MaxLevel - 1));
 		}

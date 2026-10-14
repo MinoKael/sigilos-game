@@ -56,6 +56,9 @@ namespace Sigilos.Core.Player
 		JointAttack,
 		ExtraTurn,
 
+		/// <summary>Aumenta a recarga das habilidades dos inimigos.</summary>
+		CooldownUp,
+
 		/// <summary>A habilidade age sozinha (o "(Passive)" da planilha).</summary>
 		Passive,
 	}
@@ -124,6 +127,7 @@ namespace Sigilos.Core.Player
 			(SkillBehavior.EqualizeHealth, e => e.Kind == EffectKind.EqualizeHealth),
 			(SkillBehavior.JointAttack, e => e.Kind == EffectKind.JointAttack),
 			(SkillBehavior.ExtraTurn, e => e.Kind == EffectKind.ExtraTurnOnKill),
+			(SkillBehavior.CooldownUp, e => e.Kind == EffectKind.IncreaseCooldown),
 		};
 
 		/// <summary>A tabela de docs/COMBATE.md: que efeito escala em quê.</summary>

@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Sigilos.Core.Battle.Statuses
 {
 	/// <summary>Sono: o dono perde os turnos até a duração acabar ou até levar um golpe, que o acorda.</summary>
@@ -7,6 +9,13 @@ namespace Sigilos.Core.Battle.Statuses
 
 		public override bool SkipsTurn => true;
 
-		public override void AfterHurt(UnitRule rule, Strike strike) => strike.Resolver.Remove(rule);
+		public override void AfterHurt(UnitRule rule, Strike strike)
+		{
+			// Passiva com o parceiro vivo: o golpe de quem a tem não acorda.
+			if (strike.Attacker.Rules().Any(other => other.Behavior.KeepsSleepers(other)))
+				return;
+
+			strike.Resolver.Remove(rule);
+		}
 	}
 }

@@ -36,6 +36,9 @@ namespace Sigilos.UI.Components
 		private const float SlotWidth = 18;
 
 		/// <summary>O raio do selo do espaço (até o vértice), na escala 1: atrás do planeta, e maior sem runa.</summary>
+		/// <summary>O lado do quadro do planeta, na escala 1: com o contorno (×1,18) o desenho cabe dentro do octógono.</summary>
+		private const float PlanetBox = 30;
+
 		private const float SealRadius = 20;
 
 		private const float EmptySealRadius = 22;
@@ -76,16 +79,6 @@ namespace Sigilos.UI.Components
 
 			if (rune == null)
 			{
-				// O encaixe vazio leva o símbolo alquímico de Criação, quando ele existe (Art.SigilSlotMark).
-				if (Art.SigilSlotMark() is { } mark)
-				{
-					var seal = (Control)Doodle.Icon(mark, (int)(36 * scale), new Color(Palette.GoldDark, 0.55f));
-					seal.Name = "SlotSeal";
-					seal.MouseFilter = MouseFilterEnum.Ignore;
-					seal.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-					_layer.AddChild(seal);
-				}
-
 				var number = Small(slot.ToString(), new Color(Palette.Gold, 0.85f), 18).Named("Slot");
 				number.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 				_layer.AddChild(number);
@@ -93,11 +86,15 @@ namespace Sigilos.UI.Components
 			else
 			{
 				// O planeta ocupa o miolo, um pouco abaixo do centro para deixar a fileira de cima livre.
-				var symbol = new PlanetSymbol(RuneSets.PlanetOf(rune.Set), (int)(33 * scale), _color, outline: true) { Name = "Planet" };
-				symbol.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-				symbol.OffsetTop = 6 * scale;
-				symbol.OffsetLeft = 2.5f;
-				_layer.AddChild(symbol);
+				var symbol = new PlanetSymbol(RuneSets.PlanetOf(rune.Set), (int)(PlanetBox * scale), _color, outline: true) { Name = "Planet" };
+				// Centrado no selo (que desce 2 px): o símbolo tem tamanho fixo (máximo) e não se estica, então a
+				// caixa de centro o põe no meio em vez de no canto de cima.
+				var center = new CenterContainer { Name = "PlanetBox", MouseFilter = MouseFilterEnum.Ignore };
+				center.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+				center.OffsetRight = 0.5f * scale;
+				center.OffsetTop = 4.5f * scale;
+                center.AddChild(symbol);
+				_layer.AddChild(center);
 
 				// A linha de baixo: cada peça é centrada num ponto fixo dela, então o espaço, o cadeado e a
 				// melhora ficam no mesmo lugar em qualquer escala e com qualquer texto.

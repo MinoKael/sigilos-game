@@ -15,13 +15,14 @@ namespace Sigilos.UI.Components
 			Planet = planet;
 			MouseFilter = MouseFilterEnum.Ignore;
 			CustomMinimumSize = new Vector2(size, size);
+			CustomMaximumSize = new Vector2(size, size);
 
-			if (planet is not { } value || Art.PlanetImage(value) is not { } texture)
+            if (planet is not { } value || Art.PlanetImage(value) is not { } texture)
 				return;
 
 			if (outline)
-				AddChild(Image(texture, size, new Color(0, 0, 0, 0.8f), 1.18f).Named("Outline"));
-			AddChild(Image(texture, size, color, 1f).Named("Planet"));
+				AddChild(Image(texture, size, new Color(0, 0, 0, 0.8f), 1.3f).Named("Outline"));
+			AddChild(Image(texture, size, color, 1.2f).Named("Planet"));
 		}
 
 		public Planet? Planet { get; }

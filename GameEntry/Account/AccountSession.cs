@@ -378,11 +378,13 @@ namespace Sigilos.GameEntry.Account
 
 			var cloud = download.Copy;
 			var cloudRevision = cloud?.Revision ?? 0;
+			DateTime? inheritedStarted = null;
 
 			// O save da nuvem é de antes de a versão nova zerar as contas (PlayerSave.IsObsolete): vira backup no
 			// aparelho e conta como nuvem vazia; o jogo novo sobe por cima dele.
 			if (cloud != null && PlayerSave.IsObsolete(cloud.Json))
 			{
+				inheritedStarted = PlayerSave.StartedOf(cloud.Json);
 				store.Backup(cloud.Json, "cloud");
 				cloud = null;
 			}
@@ -394,6 +396,8 @@ namespace Sigilos.GameEntry.Account
 			// O save desta conta neste aparelho. Sem ele, o save sem conta é candidato a subir para ela.
 			var synced = _data.CurrentSync;
 			var localPlayer = store.Load();
+			if (store.InheritedStarted is { } localStarted && (inheritedStarted == null || localStarted < inheritedStarted))
+				inheritedStarted = localStarted;
 			var local = localPlayer != null ? store.Read() : null;
 			var adopting = false;
 			if (local == null && OfflineStore.Load() is { } offline)
@@ -403,6 +407,9 @@ namespace Sigilos.GameEntry.Account
 				synced = null;
 				adopting = true;
 			}
+
+			if (OfflineStore.InheritedStarted is { } offlineStarted && (inheritedStarted == null || offlineStarted < inheritedStarted))
+				inheritedStarted = offlineStarted;
 
 			var action = CloudSync.Decide(local, synced, cloud);
 			var chose = action == SyncAction.Ask;
@@ -430,6 +437,8 @@ namespace Sigilos.GameEntry.Account
 
 				default:
 					var player = localPlayer ?? newGame();
+					if (localPlayer == null)
+						PlayerSave.InheritStarted(player, inheritedStarted);
 					var json = local ?? store.Save(player);
 					if (adopting)
 						OfflineStore.MoveTo(store);
@@ -549,6 +558,8 @@ namespace Sigilos.GameEntry.Account
 				return true;
 			if (response.Unreached)
 				Handle(BeatOutcome.Unknown);
+			else if (response.Error == "invalid_save_content")
+				Godot.GD.PushWarning("O servidor recusou o save na nuvem (conteúdo fora das regras do jogo); o do aparelho segue valendo.");
 			else if (Playing && (response.Conflict("save_conflict") || response.Conflict("revision_not_newer")))
 				SyncNeeded?.Invoke();
 			return false;

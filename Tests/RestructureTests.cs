@@ -366,7 +366,7 @@ namespace Sigilos.Tests
 			{
 				["pixie"] = 2, ["mushroom"] = 2, ["carnivorous_plant"] = 2, ["slime"] = 2,
 				["fox"] = 3, ["goat"] = 3, ["dolphin"] = 3, ["wolf"] = 3, ["crow"] = 3,
-				["bandit"] = 4, ["pirate"] = 4, ["dwarf_miner"] = 4, ["knight"] = 4,
+				["bandit"] = 4, ["pirate"] = 4, ["miner"] = 4, ["knight"] = 4,
 				["lich"] = 5, ["wizard"] = 5, ["druid"] = 5,
 			};
 			Assert.Equal(string.Join(",", expected.OrderBy(p => p.Key).Select(p => $"{p.Key}:{p.Value}")), string.Join(",", active.OrderBy(p => p.Key).Select(p => $"{p.Key}:{p.Value}")), "o elenco da 0.1");
@@ -378,7 +378,7 @@ namespace Sigilos.Tests
 			Assert.Equal("Golfinho de Fogo", database.Summon("dolphin_fire").Name, "e o Golfinho");
 			Assert.Equal("Gosma de Fogo", database.Summon("slime_fire").Name, "o Limo é a Gosma");
 			Assert.Equal("Fada de Fogo", database.Summon("pixie_fire").Name, "o Pixie é a Fada");
-			Assert.Equal("Minerador de Fogo", database.Summon("dwarf_miner_fire").Name, "e o Anão sai do nome do Minerador");
+			Assert.Equal("Minerador de Fogo", database.Summon("miner_fire").Name, "e o Anão sai do nome do Minerador");
 			foreach (var id in new[] { "fox", "goat", "dolphin" })
 				Assert.Equal(1, database.Families.Single(f => f.Id == id).Variations.Values.First().Skills.Count, $"{id}: só a básica, sem habilidades novas");
 		}

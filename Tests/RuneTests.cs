@@ -26,12 +26,26 @@ namespace Sigilos.Tests
 		[Test]
 		private static void DropsFollowTheSlotRules()
 		{
-			Assert.Equal(RuneStat.AttackFlat, RuneRules.MainOptions(1).Single(), "espaço 1");
-			Assert.Equal(RuneStat.DefenseFlat, RuneRules.MainOptions(3).Single(), "espaço 3");
+			// 0.1: os espaços 1, 2 e 3 variam (inclusive Defesa%, em qualquer estrela); 4, 5 e 6 são fixos.
+			Assert.Equal(RuneStat.DefenseFlat, RuneRules.MainOptions(4).Single(), "espaço 4");
 			Assert.Equal(RuneStat.HealthFlat, RuneRules.MainOptions(5).Single(), "espaço 5");
-			Assert.True(RuneRules.MainOptions(2).Contains(RuneStat.Speed), "Velocidade só no 2");
-			Assert.True(RuneRules.MainOptions(4).Contains(RuneStat.CritDamage), "Dano crítico só no 4");
-			Assert.True(RuneRules.MainOptions(6).Contains(RuneStat.Accuracy), "Precisão só no 6");
+			Assert.Equal(RuneStat.AttackFlat, RuneRules.MainOptions(6).Single(), "espaço 6");
+			Assert.True(RuneRules.MainOptions(1).Contains(RuneStat.CritDamage), "Dano crítico no 1");
+			Assert.True(RuneRules.MainOptions(2).Contains(RuneStat.Accuracy), "Precisão no 2");
+			Assert.True(RuneRules.MainOptions(3).Contains(RuneStat.Speed), "Velocidade no 3");
+			foreach (var slot in new[] { 1, 2, 3 })
+				Assert.True(RuneRules.MainOptions(slot).Contains(RuneStat.DefensePercent), $"Defesa% pode ser o principal do espaço {slot}, de qualquer estrela");
+
+			// Qualquer estrela: o principal sai sempre da lista do espaço (não há restrição por estrela).
+			var grades = new Random(7);
+			for (var grade = 1; grade <= 6; grade++)
+			{
+				for (var i = 0; i < 120; i++)
+				{
+					var rune = RuneForge.Generate(grades, i, grade);
+					Assert.True(RuneRules.MainOptions(rune.Slot).Contains(rune.Main), $"{grade}★: principal {rune.Main} no espaço {rune.Slot}");
+				}
+			}
 
 			var random = new Random(5);
 			for (var i = 0; i < 500; i++)

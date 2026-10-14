@@ -46,6 +46,9 @@ namespace Sigilos.GameEntry
 		/// <summary>Começou uma nova, ou a de agora foi dispensada (nula).</summary>
 		public event Action<AutoBattleRun?>? RunChanged;
 
+		/// <summary>Uma vitória foi aplicada: o nível, a experiência e as moedas da conta mudaram.</summary>
+		public event Action? Rewarded;
+
 		/// <param name="check">Se a próxima luta pode começar (sem cobrar nada).</param>
 		/// <param name="fight">Resolve uma luta inteira no automático: se venceu, quantos segundos ela levaria na tela e a mesma luta para ver.</param>
 		/// <param name="victory">Aplica a vitória (cobra a Mana, entrega a recompensa).</param>
@@ -115,6 +118,7 @@ namespace Sigilos.GameEntry
 			{
 				run.Add(_victory());
 				_save();
+				Rewarded?.Invoke();
 			}
 			else
 			{

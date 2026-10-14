@@ -17,7 +17,7 @@ namespace Sigilos.Core.Battle.Passives
 
 		public override void OnStatusGiven(UnitRule rule, EffectResolver resolver, BattleUnit target, StatusKind status)
 		{
-			if (Passive.PartnerTurns == 0 || !PartnerAlive(rule.Owner) || !BattleRules.IsNegative(status) || target.Side == rule.Owner.Side)
+			if (Passive.PartnerTurns == 0 || Partner(rule.Owner) == null || !BattleRules.IsNegative(status) || target.Side == rule.Owner.Side)
 				return;
 
 			// Reaplicar renova até o maior valor (Attach): o turno do parceiro entra uma vez, e a duração nunca passa do
@@ -28,8 +28,5 @@ namespace Sigilos.Core.Battle.Passives
 				resolver.ChangeDuration(applied, Passive.PartnerTurns);
 			}
 		}
-
-		private bool PartnerAlive(BattleUnit owner) =>
-			Passive.Partner.Length > 0 && owner.Team.Any(unit => unit != owner && unit.IsAlive && unit.DefinitionId == Passive.Partner);
 	}
 }

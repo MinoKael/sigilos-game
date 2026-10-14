@@ -89,5 +89,12 @@ namespace Sigilos.Core.Content
 		/// Passiva em Vida, toda vez. O Esquecimento cala tudo: quem cai esquecido não volta.
 		/// </summary>
 		Undying,
+
+		/// <summary>
+		/// Guarda: os inimigos de Defesa menor que a do dono só podem escolhê-lo como alvo único (como Provocar, mas
+		/// só para quem ele supera em Defesa). Com o Partner vivo, quando o dono é atingido por uma habilidade inimiga
+		/// ele e o parceiro revidam juntos, sempre.
+		/// </summary>
+		DefenseGuard,
 	}
 }

@@ -25,7 +25,18 @@ namespace Sigilos.Core.Battle.Passives
 				return;
 
 			resolver.Trigger(rule.Owner, Passive.Effects, main, force);
+
+			// Com o parceiro vivo na hora do disparo, os efeitos dele vêm junto.
+			if (Passive.PartnerEffects.Count > 0 && Partner(rule.Owner) != null)
+				resolver.Trigger(rule.Owner, Passive.PartnerEffects, main, force);
 		}
+
+		/// <summary>O parceiro da Passiva (<see cref="PassiveDefinition.Partner"/>) vivo no time do dono; nulo se não tem ou caiu.</summary>
+		protected BattleUnit? Partner(BattleUnit owner) => Passive.Partner.Length == 0
+			? null
+			: owner.Team.FirstOrDefault(unit => unit != owner && unit.IsAlive && unit.DefinitionId == Passive.Partner);
+
+		public override bool KeepsSleepers(UnitRule rule) => Passive.PartnerKeepsAsleep && Partner(rule.Owner) != null;
 
 		/// <summary>O efeito de status conta para esta Passiva.</summary>
 		protected bool Counts(StatusKind status) => Passive.Statuses.Count > 0

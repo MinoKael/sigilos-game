@@ -46,6 +46,7 @@ namespace Sigilos.Core.Battle.Passives
 			[PassiveKind.ForEachStatusOrEffectReceivedDo] = p => new ForEachStatusOrEffectReceivedDoPassive(p),
 			[PassiveKind.StatusOrEffectOnTargetEachTurn] = p => new StatusOrEffectOnTargetEachTurnPassive(p),
 			[PassiveKind.Undying] = p => new UndyingPassive(p),
+			[PassiveKind.DefenseGuard] = p => new DefenseGuardPassive(p),
 		};
 
 		public static UnitBehavior Of(PassiveDefinition passive) =>

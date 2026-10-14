@@ -112,7 +112,7 @@ namespace Sigilos.Tests
 				new("druid_fire", Sets(RuneSet.Vigor, RuneSet.Haste, RuneSet.Sustain)),
 				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("crow_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
-				new("dwarf_miner_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("miner_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("wolf_fire", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
 			},
 			["wyvern"] = new Member[]
@@ -157,7 +157,7 @@ namespace Sigilos.Tests
 			// contra o Terremoto e dano em quem já está ferido.
 			["golem"] = new Member[]
 			{
-				new("dwarf_miner_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
+				new("miner_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("crow_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("crow_water", Sets(RuneSet.Haste, RuneSet.Finesse), RuneStat.Accuracy),
 				new("wolf_fire", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
