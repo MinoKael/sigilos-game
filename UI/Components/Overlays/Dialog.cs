@@ -359,7 +359,7 @@ namespace Sigilos.UI.Components
 
 			var target = _anchor.GetGlobalRect();
 			target.Position -= GetGlobalRect().Position;
-			var x = Mathf.Clamp(target.GetCenter().X - size.X / 2, Edge, screen.X - size.X - Edge);
+			var x = Mathf.Clamp(target.GetCenter().X - size.X / 2, Edge, Mathf.Max(Edge, screen.X - size.X - Edge));
 			var below = target.End.Y + Arrow + 4;
 			var above = target.Position.Y - Arrow - 4 - size.Y;
 			float y;
@@ -381,7 +381,7 @@ namespace Sigilos.UI.Components
 			else
 			{
 				// Não cabe em cima nem embaixo: fica ao lado, na altura que der.
-				y = Mathf.Clamp(target.GetCenter().Y - size.Y / 2, Edge, screen.Y - size.Y - Edge);
+				y = Mathf.Clamp(target.GetCenter().Y - size.Y / 2, Edge, Mathf.Max(Edge, screen.Y - size.Y - Edge));
 				var right = target.End.X + Arrow + 4 + size.X <= screen.X - Edge;
 				x = right ? target.End.X + Arrow + 4 : Mathf.Max(Edge, target.Position.X - Arrow - 4 - size.X);
 				var pointY = Mathf.Clamp(target.GetCenter().Y, y + 28, y + size.Y - 28);

@@ -83,6 +83,13 @@ namespace Sigilos.UI.Style
 					PassiveKind.CooldownEachTurn => Symbol.Of(Planet.Mercury),
 					PassiveKind.RunicCore => Symbol.Of(Planet.Sun),
 					PassiveKind.Dodge => Symbol.Of(Planet.Mercury),
+					// A de condição usa o símbolo do efeito da primeira ação (obrigar a mirar = Provocação).
+					PassiveKind.Conditional when passive.Actions.Count > 0 => new Symbol(Effect(passive.Actions[0] switch
+					{
+						PassiveAction.Force => StatusKind.Taunt,
+						PassiveAction.Counter => StatusKind.Counter,
+						_ => StatusKind.Sleep,
+					})),
 					_ => Symbol.Of(Planet.Venus),
 				};
 			}

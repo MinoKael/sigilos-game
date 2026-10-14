@@ -12,6 +12,7 @@ namespace Sigilos.Core.Battle.Passives
 
 		public override void OnStatusGiven(UnitRule rule, EffectResolver resolver, BattleUnit target, StatusKind status)
 		{
+			base.OnStatusGiven(rule, resolver, target, status);
 			if (Counts(status))
 				Fire(rule, resolver, target);
 		}

@@ -91,10 +91,10 @@ namespace Sigilos.Core.Content
 		Undying,
 
 		/// <summary>
-		/// Guarda: os inimigos de Defesa menor que a do dono só podem escolhê-lo como alvo único (como Provocar, mas
-		/// só para quem ele supera em Defesa). Com o Partner vivo, quando o dono é atingido por uma habilidade inimiga
-		/// ele e o parceiro revidam juntos, sempre.
+		/// Condicional: não dispara efeitos; só faz o que <see cref="PassiveDefinition.Actions"/> diz (obrigar a mirar,
+		/// revidar, não acordar quem dorme) quando a <see cref="PassiveDefinition.Condition"/> vale, e o que
+		/// <see cref="PassiveDefinition.PartnerActions"/> diz com o parceiro vivo.
 		/// </summary>
-		DefenseGuard,
+		Conditional,
 	}
 }

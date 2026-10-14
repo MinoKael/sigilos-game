@@ -40,7 +40,7 @@ namespace Sigilos.Core.Battle
 		/// Os golpes do dono não acordam quem dorme: o Sono não sai ao levar o golpe. Pergunta-se ao atacante
 		/// (a Passiva com o parceiro vivo).
 		/// </summary>
-		public virtual bool KeepsSleepers(UnitRule rule) => false;
+		public virtual bool KeepsSleepers(UnitRule rule, BattleUnit sleeper) => false;
 
 		/// <summary>
 		/// O dono obriga <paramref name="attacker"/> (um inimigo) a escolhê-lo como alvo único, enquanto estiver de

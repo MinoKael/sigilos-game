@@ -433,11 +433,35 @@
     "ForEachStatusOrEffectReceivedDo": "para cada {1} que recebe: {0}",
     "StatusOrEffectOnTargetEachTurn": "depois de agir, no alvo da habilidade: {0}",
     "BonusPerStatusOrEffect": "+{0} de dano para cada {1} no alvo.",
-    "partner": "Com {0} vivo no time, os efeitos negativos que ele põe duram {1} turno a mais.",
-    "DefenseGuard": "Inimigos com {0} menor que a dele só podem escolhê-lo como alvo.",
-    "partner_effects": "Com {0} vivo no time, também: {1}.",
-    "partner_sleep": "Com {0} vivo no time, os golpes dele não acordam quem está com {1}.",
-    "partner_counter": "Com {0} vivo no time, quando é atingido por uma habilidade inimiga, os dois revidam juntos.",
+    "if": "Se {0}: {1}",
+    "condition_note": "Só quando {0}.",
+    "with_partner": "Com {0} vivo no time: {1}",
+    "partner_effects": "também {0}",
+    "cond": {
+      "Greater": "maior que",
+      "Less": "menor que",
+      "Equal": "igual a",
+      "stat_self": "{0} dele",
+      "stat_opponent": "{0} do inimigo",
+      "status_self": "{0} nele",
+      "status_opponent": "{0} no inimigo",
+      "line": "{0} for {1} {2}"
+    },
+    "action": {
+      "Force": "o inimigo só pode escolhê-lo como alvo único",
+      "Counter": "revida com o ataque básico quando uma habilidade inimiga o atinge",
+      "KeepAsleep": "os golpes dele não acordam quem está com Sono"
+    },
+    "partner_action": {
+      "Force": "os inimigos só podem escolhê-lo como alvo único",
+      "Counter": "ele e {0} revidam juntos quando uma habilidade inimiga o atinge",
+      "KeepAsleep": "os golpes dele não acordam quem está com {1}"
+    },
+    "partner_turns": {
+      "Debuffs": "os efeitos negativos que ele põe duram {0} turno a mais",
+      "Buffs": "os efeitos positivos que ele põe duram {0} turno a mais",
+      "All": "os efeitos que ele põe duram {0} turno a mais"
+    },
     "RunicCore": "No começo de cada rodada, ganha {0} de Defesa (até {1} vezes).",
     "Drowning": "No começo de cada rodada, perde {0} da Vida máxima e fica com Velocidade−.",
     "Undying": "Enquanto ele está em campo, ninguém ganha nem perde {2}. Depois de cada ação: {0}. Ao cair, volta no turno seguinte com {1} da Vida, a não ser que esteja com {3} (que também cala o resto desta Passiva).",

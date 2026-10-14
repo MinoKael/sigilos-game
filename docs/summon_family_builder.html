@@ -78,10 +78,13 @@ td{font-variant-numeric:tabular-nums}
 table.edit td{padding:4px 6px}
 table.edit input{width:86px;background:var(--input);border:1px solid var(--line);border-radius:6px;color:var(--text);padding:5px 7px;text-align:right}
 .note{font-size:12px;color:var(--muted)}
-.skills{display:grid;gap:10px;margin-top:12px}
-.skill-card{background:#0e1629;border:1px solid var(--line);border-radius:10px;padding:12px}
-.skill-card.awakening{border-color:#6d4fb3}
-.skill-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.skills{display:grid;gap:22px;margin-top:14px}
+.skill-card{--tone:#6f8fe8;background:#0c1426;border:2px solid var(--tone);border-radius:12px;padding:0 14px 14px;overflow:hidden;box-shadow:0 0 0 1px #05080f,0 8px 22px rgba(0,0,0,.5)}
+.skill-card.passive{--tone:#3fb58c}
+.skill-card.awakening{--tone:#a77df5}
+.skill-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 -14px 12px;padding:9px 14px;background:color-mix(in srgb,var(--tone) 30%,#0b1020);border-bottom:2px solid var(--tone)}
+.skill-head .badge{border-color:var(--tone)}
+pre.skill-json,.skill-json pre{margin:6px 0 0;padding:8px 10px;background:#070c18;border:1px solid var(--line);border-radius:8px;color:#cdd7ef;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-x:auto}
 .skill-head h3{margin:0}
 .skill-grid{display:grid;grid-template-columns:1.3fr .7fr 1fr;gap:8px 10px}
 .skill-grid .wide{grid-column:span 2}
@@ -270,7 +273,11 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "bonuses": ["Damage", "Heal", "Impeto"],
-  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "DefenseGuard"],
+  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "Conditional"],
+  "comparisons": ["Greater", "Less", "Equal"],
+  "conditionSides": ["Self", "Opponent"],
+  "conditionAgainst": ["Opponent", "Value"],
+  "passiveActions": ["Force", "Counter", "KeepAsleep"],
   "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"],
   "scaleStats": ["Attack", "Defense", "MaxHealth", "Speed", "TargetMaxHealth", "Level"],
   "scaleMeasures": ["HealthFraction", "TargetHealthFraction", "LivingAllies"]
@@ -573,16 +580,21 @@ const Core = (() => {
     ForEachStatusOrEffectAppliedDo: "effects para cada efeito que conta que o dono põe, novo ou renovado (Target = quem recebeu)",
     ForEachStatusOrEffectReceivedDo: "effects para cada efeito que conta que o dono recebe (Target = quem pôs)",
     StatusOrEffectOnTargetEachTurn: "effects no alvo da habilidade, depois de cada turno do dono (Target = o alvo)",
-    DefenseGuard: "Guarda: inimigos com Defesa de agora menor que a do dono só podem escolhê-lo como alvo único (sem value). Com partner vivo no time, quando uma habilidade inimiga o atinge, ele e o parceiro revidam juntos com a básica, sempre",
+    Conditional: "Genérica, sem efeitos e sem value: se a condição (atributo ou efeito, maior/menor/igual, contra o outro lado ou um número) vale, faz as ações (Force: obriga os inimigos a mirar o dono; Counter: revida; KeepAsleep: os golpes não acordam o Sono). Sem condição, as ações valem sempre. Com partner vivo, partnerActions, partnerTurns e partnerEffects entram a mais",
     Undying: "Chefe (Rei Ossudo): enquanto ele está em campo, ninguém ganha nem perde Ímpeto; effects depois de cada ação dele (o escudo); value: Vida com que volta, toda vez que cai. O Esquecimento cala tudo e quem cai esquecido não volta",
   };
-  // Em toda Passiva genérica que dispara efeitos (e em BonusVsStatusOrEffect e DefenseGuard), o parceiro melhora a Passiva.
+  // Toda Passiva aceita a condição, as ações e a camada do parceiro: o que cada tipo faz de seu vem somado a isso.
   const PARTNER_DOCS = {
     partner: "o id de uma variante (ex.: crow_light) que precisa estar viva no time; vazio: sem melhoria de parceiro",
-    partnerTurns: "BonusPerStatusOrEffect: turnos a mais nos efeitos negativos que o dono põe",
+    partnerTurns: "turnos a mais em cada efeito que o dono põe, uma vez por efeito (quais: partnerScope)",
+    partnerScope: "quais efeitos ganham os turnos do parceiro: Debuffs (padrão: os negativos postos em inimigos), Buffs (os positivos postos nele e nos aliados) ou All",
     partnerEffects: "efeitos a mais que disparam junto com os da Passiva, no mesmo momento e sorteio, só com o parceiro vivo (sem os bônus de nível)",
-    partnerKeepsAsleep: "os golpes do dono não acordam quem está com Sono, só com o parceiro vivo",
+    partnerActions: "ações a mais só com o parceiro vivo, sem condição: Force, Counter (o dono e o parceiro revidam juntos, sempre), KeepAsleep",
+    condition: "a condição que libera a Passiva: o atributo ou a quantidade de efeitos de um lado, maior/menor/igual ao do outro lado (o alvo, o atacante, quem escolhe o alvo) ou a um número",
+    actions: "o que a Passiva faz sozinha quando a condição vale: Force (os inimigos para quem a condição vale só podem mirar o dono), Counter (revida a quem o atingiu), KeepAsleep (os golpes do dono não acordam o Sono)",
   };
+  const ACTION_LABELS = {Force: "Obrigar a mirar o dono", Counter: "Revidar", KeepAsleep: "Não acordar o Sono"};
+  const COMPARE_LABELS = {Greater: "Maior que", Less: "Menor que", Equal: "Igual a"};
   const RANK_DOCS = {
     Health: "a fração de Vida (o padrão)", Attack: "o Ataque de agora", Defense: "a Defesa de agora", Speed: "a Velocidade de agora",
     Crit: "a Chance Crítico", CritDamage: "o Dano Crítico", Resistance: "a Resistência", Accuracy: "a Precisão", Impeto: "o Ímpeto acumulado",
@@ -724,7 +736,7 @@ const Core = (() => {
     Shield: ["Escudo", false, "Absorve dano até o valor (posto pelo efeito Shield)."],
     Affliction: ["Aflição", true, "Perde 5% da Vida máxima no começo de cada turno, por cópia; acumula até 10 (o limite de efeitos de um monstro)."],
     Stun: ["Atordoamento", true, "Perde o turno."],
-    Taunt: ["Provocação", true, "Só pode mirar em quem provocou."],
+    Taunt: ["Provocação", false, "Efeito positivo: os inimigos só podem escolher o dono como alvo único."],
     Hidden: ["Oculto", false, "Não pode ser alvo de ataques únicos."],
     Curse: ["Maldição", true, "Recebe 25% a mais de dano."],
     Blind: ["Cegueira", true, "Cada golpe tem 50% de chance de errar."],
@@ -976,6 +988,36 @@ const Core = (() => {
   /** O nome de arquivo que o jogo espera para a imagem de uma habilidade (Assets/Skills/<nome>.png): minúsculas, números e _. */
   const imageSlug = name => String(name || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 
+  /** A condição no formato do editor: o assunto (stat, status ou scope) vira "subject", o resto fica em texto. */
+  function importCondition(source) {
+    if (!source || typeof source !== "object") return null;
+    const subject = source.status !== undefined ? "status" : source.scope !== undefined ? "scope" : "stat";
+    return {
+      subject, stat: source.stat ?? "", status: source.status ?? "", scope: source.scope ?? "",
+      compare: source.compare ?? "Greater", of: source.of ?? "Self", against: source.against ?? "Opponent", value: source.value ?? "",
+      extra: rest(source, ["stat", "status", "scope", "compare", "of", "against", "value"]),
+    };
+  }
+
+  function exportCondition(condition) {
+    const out = {};
+    if (condition.subject === "status") out.status = condition.status;
+    else if (condition.subject === "scope") out.scope = condition.scope;
+    else out.stat = condition.stat;
+    out.compare = condition.compare || "Greater";
+    if (condition.of === "Opponent") out.of = "Opponent";
+    if (condition.subject === "stat") {
+      out.against = condition.against === "Value" ? "Value" : "Opponent";
+      if (out.against === "Value") out.value = num(condition.value);
+    } else if (num(condition.value) !== 0) {
+      out.value = num(condition.value);
+    }
+    return Object.assign(out, condition.extra);
+  }
+
+  const listOf = value => Array.isArray(value) ? value : String(value || "").split(",").map(x => x.trim()).filter(Boolean);
+  const PASSIVE_KEYS = ["kind", "value", "awakenedValue", "scope", "statuses", "condition", "actions", "partner", "partnerTurns", "partnerScope", "partnerActions", "partnerEffects"];
+
   const blankSkill = (name = "") => ({name, image: "", flavor: "", cooldown: "", passive: null, effects: "[]", awakenedEffects: "", levels: "[]", extra: {}});
 
   function importSkill(source) {
@@ -984,7 +1026,7 @@ const Core = (() => {
       image: source?.image || "",
       flavor: source?.flavor || "",
       cooldown: source?.cooldown ?? "",
-      passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", scope: source.passive.scope ?? "", statuses: (source.passive.statuses || []).join(", "), partner: source.passive.partner ?? "", partnerTurns: source.passive.partnerTurns ?? "", partnerKeepsAsleep: source.passive.partnerKeepsAsleep === true, partnerEffects: source.passive.partnerEffects?.length ? format(source.passive.partnerEffects) : "", extra: rest(source.passive, ["kind", "value", "awakenedValue", "scope", "statuses", "partner", "partnerTurns", "partnerKeepsAsleep", "partnerEffects"])} : null,
+      passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", scope: source.passive.scope ?? "", statuses: (source.passive.statuses || []).join(", "), condition: importCondition(source.passive.condition), actions: listOf(source.passive.actions).join(", "), partner: source.passive.partner ?? "", partnerTurns: source.passive.partnerTurns ?? "", partnerScope: source.passive.partnerScope ?? "", partnerActions: listOf(source.passive.partnerActions).join(", "), partnerEffects: source.passive.partnerEffects?.length ? format(source.passive.partnerEffects) : "", extra: rest(source.passive, PASSIVE_KEYS)} : null,
       effects: listText(source?.effects),
       awakenedEffects: source?.awakenedEffects?.length ? format(source.awakenedEffects) : "",
       levels: listText(source?.levels),
@@ -1000,16 +1042,23 @@ const Core = (() => {
     if (flavor) out.flavor = flavor;
     if (skill.passive) {
       const passive = {kind: skill.passive.kind};
-      if (num(skill.passive.value) > 0 || !PASSIVE_EFFECTS.includes(skill.passive.kind)) passive.value = num(skill.passive.value);
+      if (num(skill.passive.value) > 0 || (!PASSIVE_EFFECTS.includes(skill.passive.kind) && skill.passive.kind !== "Conditional")) passive.value = num(skill.passive.value);
       if (num(skill.passive.awakenedValue) > 0) passive.awakenedValue = num(skill.passive.awakenedValue);
       if (skill.passive.scope) passive.scope = skill.passive.scope;
       const statuses = String(skill.passive.statuses || "").split(",").map(s => s.trim()).filter(Boolean);
       if (statuses.length) passive.statuses = statuses;
+      if (skill.passive.condition) passive.condition = exportCondition(skill.passive.condition);
+      const actions = listOf(skill.passive.actions);
+      if (actions.length) passive.actions = actions;
       const partner = String(skill.passive.partner || "").trim();
       if (partner) {
         passive.partner = partner;
-        if (num(skill.passive.partnerTurns) > 0) passive.partnerTurns = num(skill.passive.partnerTurns);
-        if (skill.passive.partnerKeepsAsleep === true) passive.partnerKeepsAsleep = true;
+        if (num(skill.passive.partnerTurns) > 0) {
+          passive.partnerTurns = num(skill.passive.partnerTurns);
+          if (skill.passive.partnerScope) passive.partnerScope = skill.passive.partnerScope;
+        }
+        const partnerActions = listOf(skill.passive.partnerActions);
+        if (partnerActions.length) passive.partnerActions = partnerActions;
         const partnerEffects = parseList(skill.passive.partnerEffects).list;
         if (partnerEffects.length) passive.partnerEffects = partnerEffects;
       }
@@ -1232,12 +1281,27 @@ const Core = (() => {
     if (skill.passive) {
       if (!enums.passives.includes(skill.passive.kind)) add("error", where, `Passiva desconhecida: "${skill.passive.kind}".`);
       const generic = PASSIVE_EFFECTS.includes(skill.passive.kind);
-      if (!generic && skill.passive.kind !== "DefenseGuard" && !(num(skill.passive.value) > 0)) add("warn", where, "Passiva com valor zero.");
+      if (!generic && skill.passive.kind !== "Conditional" && !(num(skill.passive.value) > 0)) add("warn", where, "Passiva com valor zero.");
       const perks = editor?.passive || skill.passive;
       const perkList = Array.isArray(perks.partnerEffects) ? {list: perks.partnerEffects, error: null} : parseList(perks.partnerEffects);
-      const hasPerks = num(perks.partnerTurns) > 0 || perks.partnerKeepsAsleep === true || perkList.list.length > 0;
-      if (!String(perks.partner || "").trim() && hasPerks) add("error", where, "partnerTurns, partnerKeepsAsleep e partnerEffects precisam de partner (o id da variante).");
+      const perkActions = listOf(perks.partnerActions);
+      const hasPerks = num(perks.partnerTurns) > 0 || perkActions.length > 0 || perkList.list.length > 0;
+      if (!String(perks.partner || "").trim() && hasPerks) add("error", where, "partnerTurns, partnerActions e partnerEffects precisam de partner (o id da variante).");
       if (perkList.error) add("error", where, `partnerEffects: JSON inválido (${perkList.error}).`);
+      const actionNames = enums.passiveActions || ["Force", "Counter", "KeepAsleep"];
+      for (const action of [...listOf(perks.actions), ...perkActions]) if (!actionNames.includes(action)) add("error", where, `Ação desconhecida: "${action}" (vale: ${actionNames.join(", ")}).`);
+      if (perks.partnerScope && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(perks.partnerScope)) add("error", where, `partnerScope desconhecido: "${perks.partnerScope}".`);
+      if (perks.partnerScope && !(num(perks.partnerTurns) > 0)) add("warn", where, "partnerScope sem partnerTurns não faz nada.");
+      const condition = editor?.passive ? editor.passive.condition : null;
+      if (condition) {
+        if (condition.subject === "stat" && !enums.stats.includes(condition.stat)) add("error", where, `Condição: atributo desconhecido "${condition.stat}".`);
+        if (condition.subject === "status" && !enums.statuses.includes(condition.status)) add("error", where, `Condição: status desconhecido "${condition.status}".`);
+        if (condition.subject === "scope" && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(condition.scope)) add("error", where, `Condição: scope desconhecido "${condition.scope}".`);
+        if (!(enums.comparisons || Object.keys(COMPARE_LABELS)).includes(condition.compare)) add("error", where, `Condição: comparação desconhecida "${condition.compare}".`);
+        if (condition.subject === "stat" && condition.against === "Value" && String(condition.value).trim() === "") add("warn", where, "Condição contra um número sem o número: vale 0.");
+      }
+      if (skill.passive.kind === "Conditional" && listOf(perks.actions).length === 0 && perkActions.length === 0 && !(num(perks.partnerTurns) > 0) && perkList.list.length === 0)
+        add("warn", where, "Passiva Conditional sem ações nem melhorias do parceiro não faz nada.");
       for (const status of skill.passive.statuses || []) if (!enums.statuses.includes(status)) add("error", where, `Status desconhecido em statuses: "${status}".`);
       if (skill.passive.scope !== undefined && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(skill.passive.scope)) add("error", where, `scope desconhecido: "${skill.passive.scope}".`);
       if (!generic) return;
@@ -1437,7 +1501,7 @@ const Core = (() => {
     USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,
     stripJsonc, parseJsonc, leadingComments, format,
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
-    parseList, imageSlug, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
+    parseList, imageSlug, importCondition, exportCondition, listOf, ACTION_LABELS, COMPARE_LABELS, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
     validateFamily, rewriteEnemies, parseEnum, variationStar, ownStars,
     FOE_BOOST, foeFraction, foeStats, importEnemy, exportEnemy, formatEnemies, validateEnemies, setFloorScale,
   };
@@ -1457,7 +1521,8 @@ if (typeof module !== "undefined") module.exports = Core;
   const fmt = (n, d = 0) => Number(n).toLocaleString("pt-BR", {maximumFractionDigits: d});
   const readJson = id => JSON.parse($(id).textContent);
   const DRAFT_KEY = "sigilos.family_builder.draft";
-  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind", scopes: "StatusScope", bonuses: "BonusKind", ranks: "TargetRank", scaleStats: "ScaleStat", scaleMeasures: "ScaleMeasure"};
+  const ENUM_FILES = {roles: "Role", stats: "Stat", effectKinds: "EffectKind", targets: "TargetKind", statuses: "StatusKind", passives: "PassiveKind", levelKinds: "SkillLevelKind", scopes: "StatusScope", bonuses: "BonusKind", ranks: "TargetRank", scaleStats: "ScaleStat", scaleMeasures: "ScaleMeasure",
+    comparisons: "Comparison@PassiveCondition", conditionSides: "ConditionSide@PassiveCondition", conditionAgainst: "ConditionAgainst@PassiveCondition", passiveActions: "PassiveAction@PassiveCondition"};
   // O botão de cada tipo de efeito insere o modelo da documentação (Core.EFFECT_DOCS).
   const EFFECT_TEMPLATES = Object.fromEntries(Object.entries(C.EFFECT_DOCS).map(([kind, doc]) => [kind, doc.template]));
   const LEVEL_TEMPLATES = {Damage: 0.1, Recovery: 0.1, EffectRate: 0.1, Cooldown: 1};
@@ -1508,7 +1573,20 @@ if (typeof module !== "undefined") module.exports = Core;
   const boss = () => ui.bosses.list[ui.bosses.active];
   const setAt = (path, value) => isBossPath(path) ? setPath(boss(), path.slice(3), value) : setPath(ui.family, path, value);
   const getAt = path => isBossPath(path) ? getPath(boss(), path.slice(3)) : getPath(ui.family, path);
-  const touchAt = path => isBossPath(path) ? touchBosses() : touch();
+  const touchAt = path => {
+    refreshSkillJson(path);
+    return isBossPath(path) ? touchBosses() : touch();
+  };
+
+  /** O JSON de uma habilidade (passiva ou não) como vai para o arquivo; atualizado a cada mudança. */
+  const skillPathOf = path => /^(.+?(?:skills\.\d+|awakening\.skill))(?:\.|$)/.exec(path)?.[1] ?? null;
+  function refreshSkillJson(path) {
+    const skillPath = skillPathOf(path);
+    if (!skillPath) return;
+    const node = document.querySelector(`[data-skill-json="${CSS.escape(skillPath)}"]`);
+    const skill = getAt(skillPath);
+    if (node && skill) node.textContent = C.format(C.exportSkill(skill));
+  }
 
   const variation = () => ui.family.variations[ui.active];
   const elementOf = key => C.ELEMENTS.find(e => C.keyOf(e) === key);
@@ -1952,6 +2030,36 @@ if (typeof module !== "undefined") module.exports = Core;
 
   const isPlainItem = item => item !== null && typeof item === "object" && !Array.isArray(item);
 
+  /** Uma lista de nomes da Passiva (ações, ações do parceiro) como botões de marcar. */
+  function listToggles(skill, path, field, names, labels, docs) {
+    const chosen = C.listOf(skill.passive[field]);
+    return `<div class="chips">${names.map(name => `<button class="chip ${chosen.includes(name) ? "on" : ""}" data-action="toggle-passive-list" data-skill="${esc(path)}" data-field="${esc(field)}" data-value="${esc(name)}" title="${esc(docs || "")}">${esc(labels[name] || name)}</button>`).join("")}</div>`;
+  }
+
+  const labeled = (attrs, value, entries) =>
+    `<select ${attrs}>${entries.map(([key, label]) => `<option value="${esc(key)}" ${key === value ? "selected" : ""}>${esc(label)}</option>`).join("")}</select>`;
+
+  /** A condição da Passiva: sem condição, ou o assunto (atributo, efeito, grupo de efeitos), a comparação e o contra quem. */
+  function conditionFields(skill, path) {
+    const c = skill.passive.condition, base = `${path}.passive.condition`;
+    const picker = field("Condição (vazio: as ações valem sempre)", labeled(`data-action="condition-subject" data-skill="${esc(path)}"`, c ? c.subject : "", [["", "Sem condição"], ["stat", "Um atributo"], ["status", "Quantidade de um efeito"], ["scope", "Quantidade de efeitos (positivos/negativos)"]]));
+    if (!c) return `${picker}<p class="note wide">${esc(C.PARTNER_DOCS.condition)}</p>`;
+    const subject = c.subject === "status"
+      ? field("Efeito", select(`${base}.status`, c.status, ui.enums.statuses))
+      : c.subject === "scope"
+        ? field("Grupo", select(`${base}.scope`, c.scope, ui.enums.scopes || ["All", "Buffs", "Debuffs"]))
+        : field("Atributo", select(`${base}.stat`, c.stat, ui.enums.stats));
+    const compare = field("É", labeled(`data-path="${base}.compare"`, c.compare, (ui.enums.comparisons || Object.keys(C.COMPARE_LABELS)).map(k => [k, C.COMPARE_LABELS[k] || k])));
+    const of = field("De quem", labeled(`data-path="${base}.of"`, c.of, [["Self", "Do dono da Passiva"], ["Opponent", "Do outro lado (quem escolhe o alvo, quem atacou, o alvo do golpe)"]]));
+    const against = c.subject === "stat"
+      ? field("Contra", labeled(`data-action="condition-field" data-skill="${esc(path)}" data-key="against"`, c.against, [["Opponent", "O mesmo atributo do outro lado"], ["Value", "Um número (Vida: fração da máxima, 0.5 = metade)"]]))
+      : "";
+    const value = c.subject === "stat" && c.against !== "Value"
+      ? ""
+      : field(c.subject === "stat" ? "Número" : "Quantidade", number(`${base}.value`, c.value, "0.01", `placeholder="0"`));
+    return `${picker}${subject}${compare}${of}${against}${value}`;
+  }
+
   /** Os status que a Passiva olha, como botões de marcar (vazio = todos do escopo). */
   function statusToggles(skill, path) {
     const chosen = String(skill.passive.statuses || "").split(",").map(x => x.trim()).filter(Boolean);
@@ -2019,7 +2127,7 @@ if (typeof module !== "undefined") module.exports = Core;
     const bad = f => C.parseList(skill[f]).error ? "bad" : "";
     const generic = isPassive && C.PASSIVE_EFFECTS.includes(skill.passive.kind);
     return `
-      <div class="skill-card ${awakening ? "awakening" : ""}">
+      <div class="skill-card ${awakening ? "awakening" : isPassive ? "passive" : "active"}">
         <div class="skill-head"><h3>${title} <span class="badge">${badge}</span></h3><div class="row">${controls}</div></div>
         <div class="skill-grid">
           ${field("Nome", text(`${path}.name`, skill.name))}
@@ -2032,11 +2140,14 @@ if (typeof module !== "undefined") module.exports = Core;
             ${field(skill.passive.kind === "Undying" ? "Vida com que volta" : generic ? "Chance de disparar (0 = sempre)" : "Valor", number(`${path}.passive.value`, skill.passive.value, "0.01", `placeholder="0.2 = 20%"`))}
             ${foe ? "<div></div>" : field("Valor desperto", `<input data-path="${path}.passive.awakenedValue" data-type="optional" type="number" step="0.01" value="${esc(skill.passive.awakenedValue)}" placeholder="não muda">`)}
             <p class="note wide">${esc(C.PASSIVE_DOCS[skill.passive.kind] || "")}</p>
+            ${conditionFields(skill, path)}
+            ${field("Ações quando a condição vale", listToggles(skill, path, "actions", ui.enums.passiveActions || Object.keys(C.ACTION_LABELS), C.ACTION_LABELS, C.PARTNER_DOCS.actions), "full")}
             ${field("Efeitos de status que contam (BonusVs, ForEach)", select(`${path}.passive.scope`, skill.passive.scope, ui.enums.scopes || ["All", "Buffs", "Debuffs"], "All (padrão)"))}
             ${field("Só estes status (nenhum marcado = todos do escopo)", statusToggles(skill, path), "full")}
             ${field("Parceiro (id da variante viva no time)", text(`${path}.passive.partner`, skill.passive.partner, `placeholder="crow_light"`))}
-            ${field("Turnos a mais nos negativos (parceiro)", `<input data-path="${path}.passive.partnerTurns" data-type="optional" type="number" step="1" min="0" value="${esc(skill.passive.partnerTurns)}" placeholder="0">`)}
-            ${field("Golpes não acordam o Sono (parceiro)", `<select data-path="${path}.passive.partnerKeepsAsleep" data-type="bool"><option value="false" ${skill.passive.partnerKeepsAsleep ? "" : "selected"}>Não</option><option value="true" ${skill.passive.partnerKeepsAsleep ? "selected" : ""}>Sim</option></select>`)}
+            ${field("Turnos a mais nos efeitos postos (parceiro)", `<input data-path="${path}.passive.partnerTurns" data-type="optional" type="number" step="1" min="0" value="${esc(skill.passive.partnerTurns)}" placeholder="0">`)}
+            ${field("Quais efeitos ganham os turnos", labeled(`data-path="${path}.passive.partnerScope"`, skill.passive.partnerScope || "", [["", "Padrão (negativos nos inimigos)"], ["Debuffs", "Negativos nos inimigos"], ["Buffs", "Positivos nele e nos aliados"], ["All", "Todos"]]))}
+            ${field("Ações a mais com o parceiro vivo", listToggles(skill, path, "partnerActions", ui.enums.passiveActions || Object.keys(C.ACTION_LABELS), C.ACTION_LABELS, C.PARTNER_DOCS.partnerActions), "full")}
             <p class="note wide">${esc(C.PARTNER_DOCS.partnerEffects)}</p>
             ${field("Efeitos a mais com o parceiro vivo", fxEditor(skill.passive, `${path}.passive`, "partnerEffects", "effects"), "full")}
             ${generic ? `
@@ -2047,6 +2158,7 @@ if (typeof module !== "undefined") module.exports = Core;
             ${foe ? "" : field("Níveis: o primeiro é o nível 2", fxEditor(skill, path, "levels", "levels"), `full ${bad("levels")}`)}
             ${awakening || foe ? "" : field("Efeitos depois do Despertar: trocam a lista inteira (vazio = o Despertar não muda a habilidade)", fxEditor(skill, path, "awakenedEffects", "effects"), `full ${bad("awakenedEffects")}`)}
           `}
+          <details class="fx-json skill-json full" data-json-key="${esc(path)}.__json" ${ui.openJson.has(`${path}.__json`) ? "open" : ""}><summary>JSON desta habilidade (como vai para o arquivo)</summary><pre data-skill-json="${esc(path)}">${esc(C.format(C.exportSkill(skill)))}</pre></details>
         </div>
       </div>`;
   }
@@ -2527,9 +2639,24 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
       if (node.type !== "number") editFx(node);
     } else if (node.dataset.action === "skill-type") {
       const skill = getAt(node.dataset.skill);
-      skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", partner: "", partnerTurns: "", partnerKeepsAsleep: false, partnerEffects: "", extra: {}} : null;
+      skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", condition: null, actions: "", partner: "", partnerTurns: "", partnerScope: "", partnerActions: "", partnerEffects: "", extra: {}} : null;
       if (isBossPath(node.dataset.skill)) renderBosses(); else renderSkills();
       touchAt(node.dataset.skill);
+    } else if (node.dataset.action === "condition-subject" || node.dataset.action === "condition-field") {
+      const skill = getAt(node.dataset.skill);
+      if (node.dataset.action === "condition-field") {
+        skill.passive.condition[node.dataset.key] = node.value;
+      } else if (!node.value) {
+        skill.passive.condition = null;
+      } else {
+        const c = skill.passive.condition || {compare: "Greater", of: "Self", against: "Opponent", value: "", stat: "", status: "", scope: "", extra: {}};
+        c.subject = node.value;
+        if (node.value === "stat" && !c.stat) c.stat = ui.enums.stats.includes("Defense") ? "Defense" : ui.enums.stats[0];
+        if (node.value === "status" && !c.status) c.status = ui.enums.statuses.includes("Sleep") ? "Sleep" : ui.enums.statuses[0];
+        if (node.value === "scope" && !c.scope) c.scope = "Debuffs";
+        skill.passive.condition = c;
+      }
+      rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill);
     } else if (node.hasAttribute?.("data-json")) {
       // Ao sair do campo, o JSON válido é arrumado: um efeito por linha.
       const {list, error} = C.parseList(node.value);
@@ -2626,6 +2753,12 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     "fx-copy-base": node => {
       const skill = getAt(node.dataset.skill);
       skill.awakenedEffects = skill.effects;
+      rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill);
+    },
+    "toggle-passive-list": node => {
+      const skill = getAt(node.dataset.skill), field = node.dataset.field, value = node.dataset.value;
+      const chosen = C.listOf(skill.passive[field]);
+      skill.passive[field] = (chosen.includes(value) ? chosen.filter(x => x !== value) : [...chosen, value]).join(", ");
       rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill);
     },
     "toggle-passive-status": node => {
@@ -2846,7 +2979,8 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
       let read = 0;
       for (const [key, name] of Object.entries(ENUM_FILES)) {
         try {
-          const parsed = C.parseEnum(await readText(content, name + ".cs"), name);
+          const [enumName, file = enumName] = name.split("@");
+          const parsed = C.parseEnum(await readText(content, file + ".cs"), enumName);
           if (parsed) { ui.enums[key] = parsed; read++; }
         } catch { /* fica com a lista de fábrica */ }
       }

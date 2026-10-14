@@ -15,6 +15,13 @@ namespace Sigilos.Tests
 		private static EffectDefinition Status(StatusKind status, int turns = 2) =>
 			new() { Kind = EffectKind.Status, Status = status, Target = TargetKind.Target, Chance = 1, Turns = turns };
 
+		private static PassiveDefinition GuardPassive(Comparison compare = Comparison.Greater) => new()
+		{
+			Kind = PassiveKind.Conditional,
+			Condition = new PassiveCondition { Stat = Stat.Defense, Compare = compare, Against = ConditionAgainst.Opponent },
+			Actions = new[] { PassiveAction.Force },
+		};
+
 		private static BattleSession Fight(BattleUnit[] allies, BattleUnit[] foes)
 		{
 			var session = TestData.Session(allies, foes);
@@ -51,7 +58,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void GuardForcesOnlyEnemiesWithLowerDefenseWhileItStands()
 		{
-			var guard = new PassiveDefinition { Kind = PassiveKind.DefenseGuard };
+			var guard = GuardPassive();
 			var weak = TestData.Unit("fraco", Side.Allies, defense: 10);
 			var strong = TestData.Unit("forte", Side.Allies, defense: 500);
 			var tank = TestData.Unit("guarda", Side.Enemies, defense: 100, passive: guard);
@@ -68,9 +75,110 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void LessAndEqualConditionsCompareTheStatAgainstTheOpponent()
+		{
+			var less = GuardPassive(Comparison.Less);
+			var tank = TestData.Unit("guarda", Side.Enemies, defense: 100, passive: less);
+			var high = TestData.Unit("alto", Side.Allies, defense: 500);
+			var low = TestData.Unit("baixo", Side.Allies, defense: 10);
+			var other = TestData.Unit("outro", Side.Enemies, defense: 0);
+			Fight(new[] { high, low }, new[] { tank, other });
+			var foes = new[] { tank, other };
+
+			Assert.Equal("guarda", string.Join(",", Targeting.Choosable(high, foes).Select(u => u.Name)), "Menor: obriga quem tem Defesa maior");
+			Assert.Equal(2, Targeting.Choosable(low, foes).Count, "Menor: quem tem Defesa menor escolhe livre");
+
+			var equal = TestData.Unit("igual", Side.Enemies, defense: 100, passive: GuardPassive(Comparison.Equal));
+			var same = TestData.Unit("mesmo", Side.Allies, defense: 100);
+			Fight(new[] { same, low }, new[] { equal, other });
+			var pair = new[] { equal, other };
+			Assert.Equal("igual", string.Join(",", Targeting.Choosable(same, pair).Select(u => u.Name)), "Igual: só a Defesa idêntica obriga");
+			Assert.Equal(2, Targeting.Choosable(low, pair).Count, "Igual: Defesa diferente escolhe livre");
+		}
+
+		[Test]
+		private static void StatusCountAndHealthFractionConditionsGateTheAction()
+		{
+			var marked = new PassiveDefinition
+			{
+				Kind = PassiveKind.Conditional,
+				Condition = new PassiveCondition { Status = StatusKind.Oblivion, Of = ConditionSide.Opponent, Compare = Comparison.Greater, Value = 0 },
+				Actions = new[] { PassiveAction.Force },
+			};
+			var tank = TestData.Unit("guarda", Side.Enemies, passive: marked);
+			var other = TestData.Unit("outro", Side.Enemies);
+			var forgetful = TestData.Unit("esquecido", Side.Allies);
+			var clear = TestData.Unit("limpo", Side.Allies);
+			Fight(new[] { forgetful, clear }, new[] { tank, other });
+			forgetful.AddStatus(new StatusEffect(StatusKind.Oblivion, 3));
+			var foes = new[] { tank, other };
+
+			Assert.Equal("guarda", string.Join(",", Targeting.Choosable(forgetful, foes).Select(u => u.Name)), "com o efeito, obriga");
+			Assert.Equal(2, Targeting.Choosable(clear, foes).Count, "sem o efeito, não obriga");
+
+			var wounded = new PassiveDefinition
+			{
+				Kind = PassiveKind.Conditional,
+				Condition = new PassiveCondition { Stat = Stat.Health, Compare = Comparison.Less, Against = ConditionAgainst.Value, Value = 0.5 },
+				Actions = new[] { PassiveAction.Force },
+			};
+			var brave = TestData.Unit("bravo", Side.Enemies, health: 1000, passive: wounded);
+			Fight(new[] { clear }, new[] { brave, other });
+			Assert.Equal(2, Targeting.Choosable(clear, new[] { brave, other }).Count, "Vida cheia: não obriga");
+			brave.Health = 400;
+			Assert.Equal("bravo", string.Join(",", Targeting.Choosable(clear, new[] { brave, other }).Select(u => u.Name)), "abaixo da metade: obriga");
+		}
+
+		[Test]
+		private static void OpponentConditionIsFalseWhenThereIsNoOtherSide()
+		{
+			var owner = TestData.Unit("dono", Side.Allies, defense: 100);
+			var against = new PassiveCondition { Stat = Stat.Defense, Compare = Comparison.Greater };
+			Assert.False(ConditionRules.Holds(against, owner, null), "sem o outro lado, a comparação não vale");
+			Assert.True(ConditionRules.Holds(null, owner, null), "sem condição, vale sempre");
+
+			var own = new PassiveCondition { Stat = Stat.Defense, Compare = Comparison.Greater, Against = ConditionAgainst.Value, Value = 50 };
+			Assert.True(ConditionRules.Holds(own, owner, null), "o atributo do próprio dono contra um número vale sem outro lado");
+		}
+
+		[Test]
+		private static void ForceStillYieldsToTaunt()
+		{
+			var tank = TestData.Unit("guarda", Side.Enemies, defense: 100, passive: GuardPassive());
+			var taunter = TestData.Unit("provocador", Side.Enemies);
+			var weak = TestData.Unit("fraco", Side.Allies, defense: 10);
+			Fight(new[] { weak }, new[] { tank, taunter });
+			taunter.AddStatus(new StatusEffect(StatusKind.Taunt, 3));
+
+			Assert.Equal("provocador", string.Join(",", Targeting.Choosable(weak, new[] { tank, taunter }).Select(u => u.Name)), "a Provocação vem antes da guarda");
+		}
+
+		[Test]
+		private static void PartnerTurnsExtendBuffsOnlyWhenTheScopeSaysSo()
+		{
+			int Duration(StatusScope? scope, bool partnerPresent)
+			{
+				var passive = new PassiveDefinition { Kind = PassiveKind.Conditional, Partner = "irmao", PartnerTurns = 2, PartnerScope = scope };
+				var buff = Skill(new EffectDefinition { Kind = EffectKind.Status, Status = StatusKind.AttackUp, Target = TargetKind.Self, Chance = 1, Turns = 2 });
+				var hero = TestData.Unit("herói", Side.Allies, speed: 200, passive: passive, basic: buff);
+				var team = partnerPresent ? new[] { hero, TestData.Unit("irmao", Side.Allies, speed: 1) } : new[] { hero };
+				var foe = TestData.Unit("alvo", Side.Enemies, health: 1e9, attack: 1, speed: 1);
+				var session = Fight(team, new[] { foe });
+				TestData.RunUntilTurnOf(session, hero);
+				session.Act(new UnitAction(0, foe));
+				return hero.Find(StatusKind.AttackUp)!.Turns;
+			}
+
+			var baseline = Duration(StatusScope.Buffs, partnerPresent: false);
+			Assert.Equal(baseline + 2, Duration(StatusScope.Buffs, partnerPresent: true), "com o parceiro, o positivo dura mais");
+			Assert.Equal(baseline, Duration(null, partnerPresent: true), "o padrão são os negativos: o positivo fica igual");
+			Assert.Equal(baseline + 2, Duration(StatusScope.All, partnerPresent: true), "Todos inclui os positivos");
+		}
+
+		[Test]
 		private static void PartnerKeepsTargetsAsleepOnlyWhileItStands()
 		{
-			var passive = new PassiveDefinition { Kind = PassiveKind.BonusVsStatusOrEffect, Value = 0.5, Statuses = new[] { StatusKind.Sleep }, Partner = "irmao", PartnerKeepsAsleep = true };
+			var passive = new PassiveDefinition { Kind = PassiveKind.BonusVsStatusOrEffect, Value = 0.5, Statuses = new[] { StatusKind.Sleep }, Partner = "irmao", PartnerActions = new[] { PassiveAction.KeepAsleep } };
 			var hero = TestData.Unit("herói", Side.Allies, speed: 200, passive: passive);
 			var brother = TestData.Unit("irmao", Side.Allies, speed: 1);
 			var foe = TestData.Unit("alvo", Side.Enemies, health: 1e9, attack: 1, speed: 1);
@@ -90,7 +198,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void ForgettingTheOwnerSilencesThePartnerPerks()
 		{
-			var passive = new PassiveDefinition { Kind = PassiveKind.BonusVsStatusOrEffect, Value = 0.5, Statuses = new[] { StatusKind.Sleep }, Partner = "irmao", PartnerKeepsAsleep = true };
+			var passive = new PassiveDefinition { Kind = PassiveKind.BonusVsStatusOrEffect, Value = 0.5, Statuses = new[] { StatusKind.Sleep }, Partner = "irmao", PartnerActions = new[] { PassiveAction.KeepAsleep } };
 			var hero = TestData.Unit("herói", Side.Allies, speed: 200, passive: passive);
 			var brother = TestData.Unit("irmao", Side.Allies, speed: 1);
 			var foe = TestData.Unit("alvo", Side.Enemies, health: 1e9, attack: 1, speed: 1);
@@ -136,7 +244,7 @@ namespace Sigilos.Tests
 		[Test]
 		private static void GuardAndPartnerCounterTogetherOnceWithoutALoop()
 		{
-			var guard = new PassiveDefinition { Kind = PassiveKind.DefenseGuard, Partner = "irmao" };
+			var guard = GuardPassive() with { Partner = "irmao", PartnerActions = new[] { PassiveAction.Counter } };
 			var tank = TestData.Unit("guarda", Side.Allies, speed: 1, health: 1e9, defense: 100, passive: guard);
 			var brother = TestData.Unit("irmao", Side.Allies, speed: 1, health: 1e9);
 			var foe = TestData.Unit("agressor", Side.Enemies, speed: 200, health: 1e9, attack: 10, defense: 0);
@@ -154,13 +262,17 @@ namespace Sigilos.Tests
 			PassiveDefinition Of(string id) => TestData.Summon(id).Awakening.Skill!.Passive!;
 
 			var guard = Of("wolf_light");
-			Assert.Equal(PassiveKind.DefenseGuard, guard.Kind, "Lobo de Luz: guarda");
+			Assert.Equal(PassiveKind.Conditional, guard.Kind, "Lobo de Luz: condicional");
+			Assert.Equal(Stat.Defense, guard.Condition!.Stat, "a condição olha a Defesa");
+			Assert.Equal(Comparison.Greater, guard.Condition.Compare, "maior que a do alvo");
+			Assert.True(guard.Actions.Contains(PassiveAction.Force), "e obriga o alvo a mirar nele");
+			Assert.True(guard.PartnerActions.Contains(PassiveAction.Counter), "com o irmão, revide conjunto");
 			Assert.Equal("wolf_dark", guard.Partner, "e o irmão é o Lobo de Trevas");
 
 			var sleep = Of("wolf_dark");
 			Assert.Equal(PassiveKind.BonusPerStatusOrEffect, sleep.Kind, "Lobo de Trevas: mais dano");
 			Assert.True(sleep.Statuses.SequenceEqual(new[] { StatusKind.Sleep }), "em quem dorme");
-			Assert.True(sleep.PartnerKeepsAsleep, "com o irmão, não acorda");
+			Assert.True(sleep.PartnerActions.Contains(PassiveAction.KeepAsleep), "com o irmão, não acorda");
 			Assert.Equal("wolf_light", sleep.Partner, "irmão: Lobo de Luz");
 
 			var forget = TestData.Summon("crow_light").Awakening.Skill!;

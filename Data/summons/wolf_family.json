@@ -190,7 +190,13 @@
         "skill": {
           "name": "Filhos de Fenrir",
           "image": "filhos_de_fenrir",
-          "passive": {"kind": "DefenseGuard", "value": 0, "partner": "wolf_dark"}
+          "passive": {
+            "kind": "Conditional",
+            "condition": {"stat": "Defense", "compare": "Greater", "against": "Opponent"},
+            "actions": ["Force"],
+            "partner": "wolf_dark",
+            "partnerActions": ["Counter"]
+          }
         }
       },
       "skills": [
@@ -257,7 +263,7 @@
               "Sleep"
             ],
             "partner": "wolf_light",
-            "partnerKeepsAsleep": true
+            "partnerActions": ["KeepAsleep"]
           }
         }
       },

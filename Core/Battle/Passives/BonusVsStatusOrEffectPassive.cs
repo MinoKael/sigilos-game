@@ -7,6 +7,6 @@ namespace Sigilos.Core.Battle.Passives
 	{
 		public BonusVsStatusOrEffectPassive(PassiveDefinition passive) : base(passive) { }
 
-		public override double DamageDealt(UnitRule rule, BattleUnit target) => HasAny(target) ? 1 + rule.Value : 1;
+		public override double DamageDealt(UnitRule rule, BattleUnit target) => Holds(rule, target) && HasAny(target) ? 1 + rule.Value : 1;
 	}
 }

@@ -11,8 +11,8 @@ namespace Sigilos.Core.Battle.Statuses
 
 		public override void AfterHurt(UnitRule rule, Strike strike)
 		{
-			// Passiva com o parceiro vivo: o golpe de quem a tem não acorda.
-			if (strike.Attacker.Rules().Any(other => other.Behavior.KeepsSleepers(other)))
+			// Passiva que mantém o sono (com a condição valendo, ou com o parceiro vivo): o golpe de quem a tem não acorda.
+			if (strike.Attacker.Rules().Any(other => other.Behavior.KeepsSleepers(other, rule.Owner)))
 				return;
 
 			strike.Resolver.Remove(rule);

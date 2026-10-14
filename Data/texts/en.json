@@ -432,11 +432,35 @@
     "ForEachStatusOrEffectReceivedDo": "for each {1} it receives: {0}",
     "StatusOrEffectOnTargetEachTurn": "after acting, on the skill target: {0}",
     "BonusPerStatusOrEffect": "+{0} damage for each {1} on the target.",
-    "partner": "With {0} alive on the team, the negative effects it applies last {1} more turn.",
-    "DefenseGuard": "Enemies with lower {0} than it can only target it.",
-    "partner_effects": "With {0} alive on the team, also: {1}.",
-    "partner_sleep": "With {0} alive on the team, its hits do not wake targets under {1}.",
-    "partner_counter": "With {0} alive on the team, when hit by an enemy skill, both counterattack together.",
+    "if": "If {0}: {1}",
+    "condition_note": "Only when {0}.",
+    "with_partner": "With {0} alive on the team: {1}",
+    "partner_effects": "also {0}",
+    "cond": {
+      "Greater": "greater than",
+      "Less": "less than",
+      "Equal": "equal to",
+      "stat_self": "its {0}",
+      "stat_opponent": "the enemy's {0}",
+      "status_self": "{0} on it",
+      "status_opponent": "{0} on the enemy",
+      "line": "{0} is {1} {2}"
+    },
+    "action": {
+      "Force": "the enemy can only target it with single-target skills",
+      "Counter": "counterattacks with the basic attack when an enemy skill hits it",
+      "KeepAsleep": "its hits do not wake targets under Sleep"
+    },
+    "partner_action": {
+      "Force": "enemies can only target it with single-target skills",
+      "Counter": "it and {0} counterattack together when an enemy skill hits it",
+      "KeepAsleep": "its hits do not wake targets under {1}"
+    },
+    "partner_turns": {
+      "Debuffs": "the negative effects it applies last {0} more turn",
+      "Buffs": "the positive effects it applies last {0} more turn",
+      "All": "the effects it applies last {0} more turn"
+    },
     "RunicCore": "At the start of every round, gains {0} Defense (up to {1} times).",
     "Drowning": "At the start of every round, loses {0} of max HP and gets Speed−.",
     "Undying": "While it is on the field, nobody gains or loses {2}. After each action: {0}. When it falls, it comes back on its next turn with {1} HP, unless it has {3} (which also silences the rest of this Passive).",

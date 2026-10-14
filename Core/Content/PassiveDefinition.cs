@@ -26,20 +26,36 @@ namespace Sigilos.Core.Content
 		/// <summary>Genéricas que olham efeitos de status: os positivos, os negativos ou todos.</summary>
 		public StatusScope Scope { get; init; }
 
+		/// <summary>
+		/// A condição: quando ela não vale, a Passiva não age (nos momentos que olham o outro lado: golpe, alvo,
+		/// quem ataca). Nulo: vale sempre. Vale para <see cref="Actions"/> e para os bônus e efeitos da Passiva;
+		/// a camada do parceiro vale sempre que ele está vivo.
+		/// </summary>
+		public PassiveCondition? Condition { get; init; }
+
+		/// <summary>O que a Passiva faz sozinha, quando a condição vale (obrigar a mirar, revidar, não acordar).</summary>
+		public IReadOnlyList<PassiveAction> Actions { get; init; } = new List<PassiveAction>();
+
 		/// <summary>Passivas que dependem de um parceiro: o id da variante (ex.: "crow_light") que precisa estar viva no time.</summary>
 		public string Partner { get; init; } = "";
 
-		/// <summary>Com o <see cref="Partner"/> vivo: turnos a mais nos efeitos negativos que o dono põe.</summary>
+		/// <summary>Com o <see cref="Partner"/> vivo: turnos a mais nos efeitos que o dono põe (<see cref="PartnerScope"/>).</summary>
 		public int PartnerTurns { get; init; }
+
+		/// <summary>
+		/// Quais efeitos ganham os <see cref="PartnerTurns"/>: os negativos postos em inimigos (padrão), os positivos
+		/// postos no dono ou nos aliados, ou os dois.
+		/// </summary>
+		public StatusScope? PartnerScope { get; init; }
+
+		/// <summary>Com o <see cref="Partner"/> vivo, o que a Passiva faz a mais (revidar junto, não acordar quem dorme).</summary>
+		public IReadOnlyList<PassiveAction> PartnerActions { get; init; } = new List<PassiveAction>();
 
 		/// <summary>
 		/// Com o <see cref="Partner"/> vivo: efeitos a mais que disparam junto com os da Passiva, no mesmo momento e
 		/// com o mesmo sorteio (as genéricas que disparam efeitos). Não ganham os bônus de nível da habilidade.
 		/// </summary>
 		public IReadOnlyList<EffectDefinition> PartnerEffects { get; init; } = new List<EffectDefinition>();
-
-		/// <summary>Com o <see cref="Partner"/> vivo, os golpes do dono não acordam quem dorme (Sono).</summary>
-		public bool PartnerKeepsAsleep { get; init; }
 
 		/// <summary>A Passiva dispara os efeitos da habilidade (as genéricas, menos o bônus de dano).</summary>
 		public bool UsesEffects => Kind is PassiveKind.StatusOrEffectOnHit or PassiveKind.StatusOrEffectOnAttacker

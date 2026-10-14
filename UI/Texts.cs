@@ -244,8 +244,29 @@ namespace Sigilos.UI
 		}
 
 		/// <param name="effects">Os efeitos da genérica (nulo: os da definição, já prontos na luta).</param>
-		public static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects = null) =>
-			Describe(passive, awakened, effects, 0) + PartnerPerks(passive);
+		public static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects = null)
+		{
+			// A de condição e ações é só a frase "Se ...: ...". As outras: o que a Passiva faz, a condição (se tiver) e as ações.
+			var conditional = passive.Kind == PassiveKind.Conditional;
+			var text = conditional ? "" : Describe(passive, awakened, effects, 0);
+			var actions = passive.Actions.Count == 0 ? ""
+				: string.Join("; ", passive.Actions.Select(a => T($"passive.action.{a}")));
+
+			if (conditional)
+			{
+				var sentence = passive.Condition is { } condition && actions.Length > 0 ? T("passive.if", ConditionText(condition), actions) : actions;
+				text = sentence.Length > 0 ? Sentence(sentence) + "." : "";
+			}
+			else
+			{
+				if (passive.Condition is { } condition)
+					text += " " + T("passive.condition_note", ConditionText(condition));
+				if (actions.Length > 0)
+					text += " " + Sentence(actions) + ".";
+			}
+
+			return text + PartnerPerks(passive);
+		}
 
 		private static string Describe(PassiveDefinition passive, bool awakened, IReadOnlyList<EffectDefinition>? effects, int _)
 		{
@@ -266,38 +287,47 @@ namespace Sigilos.UI
 				PassiveKind.ImpetoAtWaveStart => T("passive.ImpetoAtWaveStart", value, Impeto),
 				PassiveKind.BonusVsWounded => T("passive.BonusVsWounded", value, Percent(BattleRules.WoundedFraction)),
 				PassiveKind.BonusVsStatusOrEffect => T("passive.BonusVsStatusOrEffect", value, Counted(passive)),
-				PassiveKind.BonusPerStatusOrEffect => T("passive.BonusPerStatusOrEffect", value, Counted(passive)) + Partner(passive),
+				PassiveKind.BonusPerStatusOrEffect => T("passive.BonusPerStatusOrEffect", value, Counted(passive)),
 				PassiveKind.RunicCore => T("passive.RunicCore", value, BattleRules.RunicCoreMaxSteps),
-				PassiveKind.DefenseGuard => T("passive.DefenseGuard", Name(Stat.Defense).ToLower(Culture)),
 				_ => T($"passive.{passive.Kind}", value),
 			};
 		}
 
-		/// <summary>As melhorias do parceiro além do tempo dos efeitos: os efeitos a mais, o sono que não acorda e o revide conjunto.</summary>
+		/// <summary>"Defesa dele maior que Defesa do inimigo", "Vida dele menor que 50%", "Sono no inimigo maior que 0".</summary>
+		private static string ConditionText(PassiveCondition condition)
+		{
+			var mine = condition.Of == ConditionSide.Self;
+			var compare = T($"passive.cond.{condition.Compare}");
+			if (condition.Stat is { } stat)
+			{
+				var left = T(mine ? "passive.cond.stat_self" : "passive.cond.stat_opponent", Name(stat));
+				if (condition.Against == ConditionAgainst.Opponent)
+					return T("passive.cond.line", left, compare, T(mine ? "passive.cond.stat_opponent" : "passive.cond.stat_self", Name(stat)));
+
+				var number = stat == Stat.Health ? Percent(condition.Value) : string.Format(Culture, "{0:0.##}", condition.Value);
+				return T("passive.cond.line", left, compare, number);
+			}
+
+			var subject = condition.Status is { } status ? Term(status) : T($"scope.{condition.Scope ?? StatusScope.All}.many");
+			var where = T(mine ? "passive.cond.status_self" : "passive.cond.status_opponent", subject);
+			return T("passive.cond.line", where, compare, string.Format(Culture, "{0:0.##}", condition.Value));
+		}
+
+		/// <summary>"Com Corvo de Luz vivo no time, ...": as ações, os turnos e os efeitos a mais da camada do parceiro.</summary>
 		private static string PartnerPerks(PassiveDefinition passive)
 		{
 			if (passive.Partner.Length == 0)
 				return "";
 
 			var name = UiSession.Database is { } database && database.Knows(passive.Partner) ? database.Summon(passive.Partner).Name : passive.Partner;
-			var text = "";
+			var parts = new List<string>();
+			foreach (var action in passive.PartnerActions)
+				parts.Add(T($"passive.partner_action.{action}", name, Term(StatusKind.Sleep)));
+			if (passive.PartnerTurns > 0)
+				parts.Add(T($"passive.partner_turns.{passive.PartnerScope ?? StatusScope.Debuffs}", passive.PartnerTurns));
 			if (passive.PartnerEffects.Count > 0)
-				text += " " + T("passive.partner_effects", name, Clause(passive.PartnerEffects));
-			if (passive.PartnerKeepsAsleep)
-				text += " " + T("passive.partner_sleep", name, Term(StatusKind.Sleep));
-			if (passive.Kind == PassiveKind.DefenseGuard)
-				text += " " + T("passive.partner_counter", name);
-			return text;
-		}
-
-		/// <summary>"Com Corvo de Luz vivo no time, os efeitos negativos duram 1 turno a mais."</summary>
-		private static string Partner(PassiveDefinition passive)
-		{
-			if (passive.Partner.Length == 0 || passive.PartnerTurns == 0)
-				return "";
-
-			var name = UiSession.Database is { } database && database.Knows(passive.Partner) ? database.Summon(passive.Partner).Name : passive.Partner;
-			return " " + T("passive.partner", name, passive.PartnerTurns);
+				parts.Add(T("passive.partner_effects", Clause(passive.PartnerEffects)));
+			return parts.Count == 0 ? "" : " " + T("passive.with_partner", name, string.Join("; ", parts)) + ".";
 		}
 
 		/// <summary>Os efeitos que a Passiva olha: os escolhidos ("Aflição ou Maldição") ou os do escopo ("efeito negativo").</summary>
@@ -523,7 +553,8 @@ namespace Sigilos.UI
 				.Concat(Keys<StatusKind>("effect.{0}.name"))
 				.Concat(Keys<StatusKind>("effect.{0}.info"))
 				.Concat(Keys<TargetKind>("target.{0}"))
-				.Concat(Keys<PassiveKind>("passive.{0}"))
+				// A Passiva de condição não tem texto próprio: a descrição é a frase da condição e das ações.
+				.Concat(Keys<PassiveKind>("passive.{0}").Where(key => key != $"passive.{PassiveKind.Conditional}"))
 				.Concat(Keys<SkillLevelKind>("skill.level_up.{0}"))
 				.Concat(SpecialAvatars.All.Select(id => $"avatar.special.{id}"))
 				.Concat(Keys<ScaleStat>("skill.term.{0}"))
