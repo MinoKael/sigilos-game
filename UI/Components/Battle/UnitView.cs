@@ -143,7 +143,7 @@ namespace Sigilos.UI.Components
 			if (!Unit.IsBoss)
 			{
 				foreach (var group in Unit.Statuses.Where(s => s.Kind != StatusKind.Shield).GroupBy(s => s.Kind))
-					_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns)));
+					_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns), unremovable: group.Any(s => s.Unremovable)));
 			}
 
 			_cooldown.Text = string.Join(" ", Enumerable.Range(1, Math.Max(0, Unit.Skills.Count - 1))

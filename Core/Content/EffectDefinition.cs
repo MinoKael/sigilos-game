@@ -53,6 +53,9 @@ namespace Sigilos.Core.Content
 		public int Turns { get; init; } = 1;
 		public bool OnKill { get; init; }
 
+		/// <summary>Status e Shield: o efeito posto é irremovível; só os turnos dele o acabam (<see cref="Battle.StatusEffect.Unremovable"/>).</summary>
+		public bool Unremovable { get; init; }
+
 		/// <summary>StealBuff: sem efeito positivo para roubar, rouba Ímpeto.</summary>
 		public bool Fallback { get; init; }
 

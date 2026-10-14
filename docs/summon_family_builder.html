@@ -543,7 +543,7 @@ const Core = (() => {
   const VARIANT_ELEMENTS = [NEUTRAL_ELEMENT, ...ELEMENTS];
   const TWO_STAR = 2;
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove", "unremovable"];
   // Efeitos e status ---------------------------------------------------------------------------------
   // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
   // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
@@ -745,7 +745,7 @@ const Core = (() => {
     Hidden: ["Oculto", false, "Não pode ser alvo de ataques únicos."],
     Curse: ["Maldição", true, "Recebe 25% a mais de dano."],
     Blind: ["Cegueira", true, "Cada golpe tem 50% de chance de errar."],
-    Aegis: ["Égide", false, "Anula o próximo golpe recebido."],
+    Aegis: ["Égide", false, "Inatingível: não recebe dano nenhum enquanto durar (golpes, Aflição, Bomba). Ainda recebe efeitos negativos e pode perder a Égide."],
     Foresight: ["Presságio", false, "O próximo golpe causado é crítico."],
     Immunity: ["Imunidade", false, "Nenhum efeito negativo pega."],
     AttackUp: ["Ataque+", false, "+50% de Ataque."],
@@ -1398,6 +1398,7 @@ const Core = (() => {
         const target = effect.target ?? "Target";
         if (doc.targets && !doc.targets.includes(target)) add("error", where, `${effect.kind} não vale com o alvo ${target} (vale: ${doc.targets.join(", ")}).`);
         for (const key of Object.keys(effect)) {
+          if (key === "unremovable" && ["Status", "Shield"].includes(effect.kind)) continue;
           if (EFFECT_FIELDS.includes(key) && !COMMON_FIELDS.includes(key) && !SCALE_KEYS.includes(key) && !(key in doc.fields)) add("warn", where, `${effect.kind} não lê o campo "${key}".`);
         }
       }
@@ -1977,8 +1978,10 @@ if (typeof module !== "undefined") module.exports = Core;
     if (PICKS.includes(effect.target) || PICKS.includes(effect.from) || "by" in effect)
       cells.push(fxSelect(a("by"), "Comparar por", ui.enums.ranks || Object.keys(RANK_LABELS), effect.by, r => `${RANK_LABELS[r] || r} (${r})`, "Vida (padrão)", C.RANK_DOCS[effect.by] || "o que LowestAlly e HighestAlly comparam"));
     cells.push(`<label class="fx-cell check" title="O efeito só acontece se o dano anterior desta habilidade derrubou o alvo"><input type="checkbox" ${effect.onKill ? "checked" : ""} ${a("onKill")}>só se derrubou</label>`);
+    if (["Status", "Shield"].includes(effect.kind) || effect.unremovable)
+      cells.push(`<label class="fx-cell check" title="Irremovível: nada tira o efeito (Purificação, roubo, encurtar, o golpe que acorda o Sono); só os turnos dele o acabam. No combate o ícone fica branco, com borda branca grossa."><input type="checkbox" ${effect.unremovable ? "checked" : ""} ${a("unremovable")}>irremovível</label>`);
     const scales = !!C.USUAL_STAT[effect.kind];
-    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
+    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", "unremovable", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
     return `<div class="fx-row"><span class="fx-n">${index + 1}</span>${cells.join("")}
       <span class="fx-tools">
         <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="-1" ${index === 0 ? "disabled" : ""} title="Subir">↑</button>
@@ -2273,7 +2276,7 @@ if (typeof module !== "undefined") module.exports = Core;
       <code>target</code>: ${e.targets.join(", ")}<br>
       <code>status</code>: ${e.statuses.join(", ")}<br>
       Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
-      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém), <code>ifAlly</code> (o id de uma variante que precisa estar viva no time, ex.: <code>wolf_light</code>) e <code>ifDefenseAbove</code> (só se a Defesa de quem lança passa a do alvo).<br>
+      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém), <code>ifAlly</code> (o id de uma variante que precisa estar viva no time, ex.: <code>wolf_light</code>) e <code>ifDefenseAbove</code> (só se a Defesa de quem lança passa a do alvo). Em Status e Shield, <code>unremovable</code> (true): o efeito é irremovível, só os turnos dele o acabam.<br>
       A conta de Damage, Heal, HealTeam, Shield e Revive: <code>stat</code> (${(e.scaleStats || []).join(", ")}), <code>plus</code> [{stat, power}],
       <code>factor</code> {by: ${(e.scaleMeasures || []).join(" | ")}, base, slope}, <code>speed</code> {add, over} ou {add, overTarget: true}; o dano também <code>fixed</code>.
       Ex.: <code>{"kind": "Damage", "power": 0.5, "plus": [{"stat": "MaxHealth", "power": 0.08}], "hits": 2}</code>.<br>

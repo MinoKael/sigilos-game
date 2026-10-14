@@ -90,9 +90,11 @@ namespace Sigilos.UI.Components
 			element.OffsetLeft = -width * 0.17f;
 			layer.AddChild(element);
 
-			var level = new Label { Name = "Level", Text = (monster?.Level ?? 1).ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore, HorizontalAlignment = HorizontalAlignment.Right };
-			level.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.16f), 12, 22));
-			level.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomRight);
+			var level = new Label { Name = "Level", Text = (monster?.Level ?? 1).ToString(), ThemeTypeVariation = GameTheme.Number, MouseFilter = MouseFilterEnum.Ignore, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom };
+            if (monster?.Level >= 40) level.AddThemeColorOverride("font_color", Palette.Gold);
+            level.AddThemeFontSizeOverride("font_size", Math.Clamp((int)(width * 0.16f), 12, 22));
+            level.OffsetLeft = -width * 0.17f;
+            level.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomRight);
 			level.GrowHorizontal = GrowDirection.Begin;
 			level.GrowVertical = GrowDirection.Begin;
 			layer.AddChild(level);

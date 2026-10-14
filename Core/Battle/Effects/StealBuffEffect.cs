@@ -21,7 +21,7 @@ namespace Sigilos.Core.Battle.Effects
 				if (!target.IsAlive || target == thief || resolver.Random.NextDouble() >= effect.Chance)
 					continue;
 
-				var buff = StatusFilter.Of(target, effect, StatusScope.Buffs).LastOrDefault();
+				var buff = StatusFilter.Of(target, effect, StatusScope.Buffs).LastOrDefault(status => !status.Unremovable);
 				if (buff != null)
 				{
 					resolver.Steal(buff, thief);

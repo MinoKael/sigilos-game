@@ -233,7 +233,7 @@
     },
     "Aegis": {
       "name": "Égide",
-      "info": "Anula o próximo golpe recebido."
+      "info": "Inatingível: não recebe nenhum dano enquanto durar. Ainda recebe efeitos negativos e pode perder a Égide."
     },
     "Foresight": {
       "name": "Presságio",
@@ -366,6 +366,7 @@
     "shield": "{0} de {1} da Vida {2} por {3}",
     "shield_formula": "{0} de {1} {2} por {3}",
     "effect": "{0}{1} {2} por {3}",
+    "unremovable": "(irremovível)",
     "impetus": "{0}{1}% de {2} {3}",
     "cleanse": "remove um efeito negativo {0}",
     "on_kill": "se derrubar o alvo, {0}",
@@ -640,7 +641,7 @@
       "ophiuchus": "O Serpentário traz os mortos de volta: na onda dele, todo inimigo começa com Reviver. Roube o efeito, espere ele passar ou derrube duas vezes.",
       "scorpius": "O Escorpião crava o ferrão: depois de agir, o guardião pode deixar uma Bomba no alvo. Purificação desarma a Bomba antes de explodir.",
       "sagittarius": "O arqueiro sempre tem outra flecha: depois de agir, o guardião atira de novo no mesmo alvo, ignorando parte da Defesa. Vida, Escudo e Égide aguentam mais que a Defesa.",
-      "scutum": "O Escudo anula o primeiro golpe: todo inimigo começa a onda com Égide, e pode erguer outra no turno dele. Golpes múltiplos e dano em área tiram a Égide antes do golpe forte.",
+      "scutum": "O Escudo torna o inimigo inatingível: todo inimigo começa a onda com Égide, sem receber dano nenhum enquanto ela durar, e pode erguer outra no turno dele. Efeitos negativos e Purificação ainda passam; espere a Égide cair.",
       "aquila": "A Águia carrega os raios de Zeus: no começo de cada turno do guardião, um raio cai num homúnculo seu e pode atordoar. Cura e Resistência espalhada pelo time.",
       "sagitta": "A Flecha voa reto e primeiro: os inimigos começam cada onda adiantados e com Presságio. Defesa e Vida aguentam a primeira saraivada.",
       "delphinus": "O Delfim brinca com as ondas: todo inimigo atingido ganha Ímpeto. Poucos golpes fortes valem mais que muitos fracos.",

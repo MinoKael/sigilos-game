@@ -51,6 +51,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>Nenhum efeito positivo pega no dono (Karma).</summary>
 		public virtual bool BlocksBeneficial => false;
 
+		/// <summary>O dono não recebe dano de nenhuma fonte (Égide).</summary>
+		public virtual bool BlocksDamage => false;
+
 		/// <summary>O dono não recebe cura (Ferida).</summary>
 		public virtual bool BlocksHealing => false;
 

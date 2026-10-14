@@ -111,7 +111,7 @@ namespace Sigilos.UI.Screens
 			var swatch = new VBoxContainer { Name = name, Alignment = BoxContainer.AlignmentMode.Center };
 			swatch.AddThemeConstantOverride("separation", Space.Tight);
 			sample.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
-			swatch.AddChild(sample.Named("Sample"));
+            swatch.AddChild(sample.Named("Sample"));
 			var top = new Label { Name = "Stars", Text = stars, HorizontalAlignment = HorizontalAlignment.Center };
 			top.AddThemeColorOverride("font_color", color);
 			swatch.AddChild(top);
@@ -240,11 +240,13 @@ namespace Sigilos.UI.Screens
 			var row = Layout.Flow(Space.Spacious).Named("Rarities");
 			foreach (var rarity in Enum.GetValues<RuneRarity>())
 			{
-				var stone = new PanelContainer { Name = "Stone", CustomMinimumSize = RuneTile.TileSize };
-				stone.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Of(rarity), 2, 9, 0));
-				var symbol = new PlanetSymbol(RuneSets.PlanetOf(RuneSet.Vigor), 40, Palette.Of(rarity), outline: true) { Name = "Planet" };
-				stone.AddChild(symbol);
-				row.AddChild(Swatch(rarity.ToString(), stone, Texts.Name(rarity), T("compendium.runes.rarity.subs", (int)rarity), Palette.Of(rarity)));
+                var stone = new PanelContainer { Name = "Stone", CustomMinimumSize = RuneTile.TileSize, SizeFlagsHorizontal = SizeFlags.ShrinkCenter};
+                stone.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Of(rarity), 2, 9, 0));
+                var center = new CenterContainer { Name = "SymbolCenter", SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsVertical = SizeFlags.ExpandFill };
+                var symbol = new PlanetSymbol(RuneSets.PlanetOf(RuneSet.Vigor), 40, Palette.Of(rarity), outline: true) { Name = "Planet" };
+                stone.AddChild(center);
+                center.AddChild(symbol);
+                row.AddChild(Swatch(rarity.ToString(), stone, Texts.Name(rarity), T("compendium.runes.rarity.subs", (int)rarity), Palette.Of(rarity)));
 			}
 
 			column.AddChild(row);

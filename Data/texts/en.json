@@ -232,7 +232,7 @@
     },
     "Aegis": {
       "name": "Aegis",
-      "info": "Cancels the next hit taken."
+      "info": "Untouchable: takes no damage at all while it lasts. Can still receive negative effects and lose the Aegis."
     },
     "Foresight": {
       "name": "Foresight",
@@ -365,6 +365,7 @@
     "shield": "{0} of {1} HP {2} for {3}",
     "shield_formula": "{0} of {1} {2} for {3}",
     "effect": "{0}{1} {2} for {3}",
+    "unremovable": "(unremovable)",
     "impetus": "{0}{1}% {2} {3}",
     "cleanse": "removes one harmful effect {0}",
     "on_kill": "on a knockout, {0}",
@@ -639,7 +640,7 @@
       "ophiuchus": "The Serpent Bearer brings back the dead: on its wave, every foe starts with Revive. Steal the effect, wait it out or bring them down twice.",
       "scorpius": "The Scorpion drives its sting: after acting, the guardian may plant a Bomb on its target. Cleanse defuses the Bomb before it explodes.",
       "sagittarius": "The archer always has another arrow: after acting, the guardian shoots the same target again, ignoring part of its Defense. HP, Shields and Aegis hold better than Defense.",
-      "scutum": "The Shield nullifies the first blow: every foe starts its wave with Aegis and may raise another on its turn. Multi-hits and area damage strip the Aegis before the big hit.",
+      "scutum": "The Shield makes the foe untouchable: every foe starts its wave with Aegis, taking no damage at all while it lasts, and may raise another on its turn. Negative effects and Cleanse still get through; wait for the Aegis to fall.",
       "aquila": "The Eagle carries Zeus's thunderbolts: at the start of each of the guardian's turns, a bolt strikes one of your homunculi and may stun it. Spread healing and Resistance across the team.",
       "sagitta": "The Arrow flies straight and first: foes start each wave ahead, with Foresight. Defense and HP endure the first volley.",
       "delphinus": "The Dolphin plays in the waves: every foe that is hit gains Impetus. A few strong blows beat many weak ones.",

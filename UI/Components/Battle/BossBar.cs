@@ -137,7 +137,7 @@ namespace Sigilos.UI.Components
 
 			Layout.Clear(_statuses);
 			foreach (var group in unit.Statuses.Where(s => s.Kind != StatusKind.Shield).GroupBy(s => s.Kind))
-				_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns), 28));
+				_statuses.AddChild(new StatusChip(group.Key, group.Max(s => s.Turns), 28, group.Any(s => s.Unremovable)));
 		}
 
 		private void Release()

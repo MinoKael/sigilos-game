@@ -23,6 +23,10 @@ Skip it when the task is trivial (one obvious edit, a read, a question answered 
 - Never retry a step the user denied; change approach or ask.
 - Grep with a narrow `path`, never the repo root: `.godot/` and `Assets/` make it time out.
 
+## Debugger account
+
+Use the `Debugger` account whenever validating by running the game (captures, manual checks): launch with `-- --debugger`. It is rebuilt from scratch on every launch by `Core/Player/DebugAccount.cs` (all homunculi 6★ max level, everything cleared, 700 perfect Legendary 6★ runes), saved to `user://debugger.json`, and never touches the real save or the server.
+
 ## Commits
 
 Never commit. The user commits manually.

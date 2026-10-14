@@ -576,19 +576,23 @@ namespace Sigilos.UI.Screens
 
 			var max = Leveling.MaxLevel(monster);
 			var level = Layout.Row(Space.Regular).Named("Level");
-			level.AddChild(new Label { Name = "Text", Text = T("monsters.level", monster.Level, max), ThemeTypeVariation = GameTheme.Number });
-			var bar = Layout.Energy(Palette.Gold, 12).Named("Experience");
+			var label = new Label { Name = "Text", Text = T("monsters.level", monster.Level, max), ThemeTypeVariation = GameTheme.Number };
+            if (max == 40) label.AddThemeColorOverride("font_color", Palette.Gold);
+			level.AddChild(label);
+            var bar = Layout.Energy(Palette.Gold, 12).Named("Experience");
 			bar.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			bar.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			bar.MaxValue = Math.Max(1, Leveling.ExperienceToNext(monster));
 			bar.Value = Leveling.IsMaxLevel(monster) ? bar.MaxValue : monster.Experience;
 			level.AddChild(bar);
-			level.AddChild(new Label
+			var textLabel = new Label
 			{
 				Name = "ExperienceText",
 				Text = Leveling.IsMaxLevel(monster) ? T("monsters.level_max") : T("monsters.experience", monster.Experience, Leveling.ExperienceToNext(monster)),
 				ThemeTypeVariation = GameTheme.Faded,
-			});
+			};
+            if (max == 40) textLabel.AddThemeColorOverride("font_color", Palette.Gold);
+            level.AddChild(textLabel);
 			column.AddChild(level);
 			return column;
 		}

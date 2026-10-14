@@ -211,6 +211,13 @@ namespace Sigilos.Core.Battle
 			if (!target.IsAlive)
 				return;
 
+			// Inatingível (Égide): nem o dano que não é golpe passa.
+			if (target.Any(behavior => behavior.BlocksDamage))
+			{
+				Emit(new Protected(target));
+				return;
+			}
+
 			amount = Math.Max(1, Math.Round(amount));
 			var absorbed = shielded ? Absorb(target, amount) : 0;
 			var dealt = amount - absorbed;
@@ -299,7 +306,7 @@ namespace Sigilos.Core.Battle
 		/// Tenta pôr um efeito: sorteia a chance e, se o efeito é negativo e vem do outro lado, passa pela
 		/// Imunidade e pela Resistência do alvo (<paramref name="resistible"/> falso pula a Resistência).
 		/// </summary>
-		public void ApplyStatus(BattleUnit caster, BattleUnit target, StatusKind status, double chance, int turns, bool resistible = true)
+		public void ApplyStatus(BattleUnit caster, BattleUnit target, StatusKind status, double chance, int turns, bool resistible = true, bool unremovable = false)
 		{
 			if (!target.IsAlive)
 				return;
@@ -322,24 +329,27 @@ namespace Sigilos.Core.Battle
 				}
 			}
 
-			Attach(caster, target, status, turns, 0);
+			Attach(caster, target, status, turns, 0, unremovable);
 		}
 
 		/// <summary>Um efeito positivo que a unidade recebe de si mesma (a Imunidade do conjunto Tenacidade).</summary>
 		public void GiveStatus(BattleUnit target, StatusKind status, int turns) => ApplyStatus(target, target, status, 1, turns);
 
 		/// <summary>Escudos não somam: fica o maior valor e a maior duração.</summary>
-		public void GiveShield(BattleUnit target, double value, int turns)
+		public void GiveShield(BattleUnit target, double value, int turns, bool unremovable = false)
 		{
 			if (!target.IsAlive || value <= 0)
 				return;
 
-			Attach(null, target, StatusKind.Shield, turns, value);
+			Attach(null, target, StatusKind.Shield, turns, value, unremovable);
 		}
 
 		/// <summary>Tira uma regra do dono; se é efeito de status, a tela é avisada.</summary>
 		public void Remove(UnitRule rule)
 		{
+			if (rule is StatusEffect { Unremovable: true })
+				return;
+
 			var owner = rule.Owner;
 			owner.Remove(rule);
 			if (rule is StatusEffect status)
@@ -355,6 +365,10 @@ namespace Sigilos.Core.Battle
 			if (turns == 0 || !status.Owner.Holds(status))
 				return;
 
+			// Irremovível: só os turnos dele o acabam; encurtar, não. Prolongar, sim.
+			if (turns < 0 && status.Unremovable)
+				return;
+
 			status.Turns += turns;
 			if (status.Turns <= 0)
 				Remove(status);
@@ -368,7 +382,7 @@ namespace Sigilos.Core.Battle
 		/// </summary>
 		public void Steal(StatusEffect status, BattleUnit thief)
 		{
-			if (!thief.IsAlive || !status.Owner.Holds(status))
+			if (!thief.IsAlive || status.Unremovable || !status.Owner.Holds(status))
 				return;
 
 			Remove(status);
@@ -378,7 +392,7 @@ namespace Sigilos.Core.Battle
 		/// <summary>Remove um efeito negativo do alvo: o mais antigo.</summary>
 		public void Cleanse(BattleUnit target)
 		{
-			var harmful = target.Statuses.FirstOrDefault(s => StatusBehaviors.Of(s.Kind).Harmful);
+			var harmful = target.Statuses.FirstOrDefault(s => StatusBehaviors.Of(s.Kind).Harmful && !s.Unremovable);
 			if (harmful != null)
 				Remove(harmful);
 		}
@@ -389,7 +403,7 @@ namespace Sigilos.Core.Battle
 		/// (<see cref="BattleRules.MaxStatuses"/>) e tem este, renova a primeira: fica a maior duração e o maior
 		/// valor. Cheio e sem este efeito, o efeito novo não pega.
 		/// </summary>
-		private void Attach(BattleUnit? source, BattleUnit target, StatusKind status, int turns, double value)
+		private void Attach(BattleUnit? source, BattleUnit target, StatusKind status, int turns, double value, bool unremovable = false)
 		{
 			// Imunidade de chefe (BattleRules.BossImmunities): vale para toda fonte do efeito, porque todas passam por aqui.
 			if (target.IsBoss && BattleRules.BossImmunities.Contains(status))
@@ -414,13 +428,14 @@ namespace Sigilos.Core.Battle
 
 			if (existing == null)
 			{
-				target.AddStatus(new StatusEffect(status, turns, value, source) { Fresh = IsActing(target) });
+				target.AddStatus(new StatusEffect(status, turns, value, source) { Fresh = IsActing(target), Unremovable = unremovable });
 			}
 			else
 			{
 				existing.Turns = Math.Max(existing.Turns, turns);
 				existing.Value = Math.Max(existing.Value, value);
 				existing.Source = source ?? existing.Source;
+				existing.Unremovable |= unremovable;
 			}
 
 			Emit(new StatusApplied(target, status, turns));

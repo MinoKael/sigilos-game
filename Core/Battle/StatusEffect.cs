@@ -24,5 +24,11 @@ namespace Sigilos.Core.Battle
 		public int Turns { get; set; }
 
 		public bool Fresh { get; set; }
+
+		/// <summary>
+		/// Irremovível: nada tira o efeito do dono (Purificação, roubo, encurtar, o golpe que acorda o Sono, o fim
+		/// do próprio efeito: escudo gasto, Presságio usado); só os turnos dele o acabam, ou a queda do dono.
+		/// </summary>
+		public bool Unremovable { get; set; }
 	}
 }

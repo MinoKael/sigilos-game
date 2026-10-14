@@ -37,6 +37,10 @@ namespace Sigilos.Core.Battle
 		private static BattleUnit? BestTarget(BattleSession session, BattleUnit actor, bool focusBoss, BattleUnit? focus)
 		{
 			var choosable = session.ChoosableTargets(actor);
+			// Quem está inatingível (Égide) não leva o golpe: só é alvo se não sobrou mais ninguém.
+			var open = choosable.Where(u => !u.Any(behavior => behavior.BlocksDamage)).ToList();
+			if (open.Count > 0)
+				choosable = open;
 			if (focus != null && choosable.Contains(focus))
 				return focus;
 			if (focusBoss && choosable.FirstOrDefault(u => u.IsBoss) is { } boss)

@@ -398,7 +398,7 @@ Os status negativos podem ser barrados por **Resistência** e **Imunidade**, e r
 | `Hidden` | Oculto | Positivo | Não pode ser escolhido como alvo de ataques únicos. |
 | `Curse` | Maldição | Negativo | Faz receber 25% a mais de dano. |
 | `Blind` | Cegueira | Negativo | Cada golpe tem 50% de chance de errar. |
-| `Aegis` | Égide | Positivo | Anula o próximo golpe recebido. |
+| `Aegis` | Égide | Positivo | Inatingível: não recebe dano nenhum (golpes, Aflição, Bomba) enquanto durar. Ainda recebe efeitos negativos e pode ser removida. |
 | `Foresight` | Presságio | Positivo | O próximo golpe causado é crítico. |
 | `Immunity` | Imunidade | Positivo | Impede que efeitos negativos sejam aplicados. |
 | `AttackUp` | Ataque+ | Positivo | Aumenta o Ataque em 50%. |

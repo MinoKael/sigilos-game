@@ -287,6 +287,9 @@ namespace Sigilos.Core.Battle
 
 		internal void Remove(UnitRule rule)
 		{
+			if (rule is StatusEffect { Unremovable: true })
+				return;
+
 			if (rule is StatusEffect status)
 				_statuses.Remove(status);
 			else

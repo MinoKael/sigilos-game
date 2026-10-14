@@ -81,24 +81,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void WardCancelsOneHit()
-		{
-			var hero = TestData.Unit("herói", Side.Allies, speed: 300);
-			var foe = TestData.Unit("inimigo", Side.Enemies);
-			var session = TestData.Session(new[] { hero }, new[] { foe });
-			session.Start();
-			Give(foe, foe, StatusKind.Aegis);
-
-			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(0, foe));
-			Assert.Near(1000, foe.Health, "primeiro golpe anulado");
-
-			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(0, foe));
-			Assert.Near(900, foe.Health, "segundo golpe passa");
-		}
-
-		[Test]
 		private static void DefenseBreakCutsDefense()
 		{
 			var hero = TestData.Unit("herói", Side.Allies, element: Element.Light);

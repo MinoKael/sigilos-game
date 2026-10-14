@@ -10,6 +10,9 @@ namespace Sigilos.UI.Components
 	/// símbolo preto quando é positivo, e os turnos que faltam num selo escuro no canto de cima à direita,
 	/// meio para fora (sem selo, o efeito não tem prazo). Fica em cima do cartão da unidade e na barra do
 	/// chefe.
+	///
+	/// O efeito irremovível (<see cref="StatusEffect.Unremovable"/>) inverte o preenchimento: o símbolo fica
+	/// branco sobre a cor cheia (verde no positivo) e a borda é branca e grossa.
 	/// </summary>
 	public partial class StatusChip : Control
 	{
@@ -18,7 +21,7 @@ namespace Sigilos.UI.Components
 
 		private static readonly Color Dark = new(0.07f, 0.06f, 0.05f);
 
-		public StatusChip(StatusKind kind, int turns, int side = Side)
+		public StatusChip(StatusKind kind, int turns, int side = Side, bool unremovable = false)
 		{
 			Name = kind.ToString();
 			MouseFilter = MouseFilterEnum.Ignore;
@@ -26,15 +29,15 @@ namespace Sigilos.UI.Components
 
 			var negative = BattleRules.IsNegative(kind);
 			var fill = negative ? Palette.Negative : Palette.Positive;
-			var box = new StyleBoxFlat { BgColor = fill, BorderColor = fill.Darkened(0.5f), AntiAliasing = true };
-			box.SetBorderWidthAll(1);
+			var box = new StyleBoxFlat { BgColor = fill, BorderColor = unremovable ? Colors.White : fill.Darkened(0.5f), AntiAliasing = true };
+			box.SetBorderWidthAll(unremovable ? 2 : 1);
 			box.SetCornerRadiusAll(4);
 			var plate = new Panel { Name = "Plate", MouseFilter = MouseFilterEnum.Ignore };
 			plate.AddThemeStyleboxOverride("panel", box);
 			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(plate);
 
-			var icon = Doodle.Icon(Art.Effect(kind), side - 4, negative ? Colors.White : Dark).Named("Icon");
+			var icon = Doodle.Icon(Art.Effect(kind), side - 4, negative || unremovable ? Colors.White : Dark).Named("Icon");
 			icon.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			icon.OffsetLeft = icon.OffsetTop = 2;
 			icon.OffsetRight = icon.OffsetBottom = -2;

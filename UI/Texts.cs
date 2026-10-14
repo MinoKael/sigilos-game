@@ -429,6 +429,8 @@ namespace Sigilos.UI
 				EffectKind.Revive => ReviveText(effect),
 				_ => effect.Kind.ToString(),
 			};
+			if (effect.Unremovable && effect.Kind is EffectKind.Status or EffectKind.Shield)
+				text += " " + T("skill.unremovable");
 			return effect.OnKill ? T("skill.on_kill", text) : text;
 		}
 
