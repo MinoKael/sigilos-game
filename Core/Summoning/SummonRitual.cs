@@ -128,7 +128,7 @@ namespace Sigilos.Core.Summoning
 			return available.Contains(rarity) ? rarity : available.OrderBy(r => Math.Abs(r - rarity)).First();
 		}
 
-		/// <summary>O sorteio de variante com Luz e Trevas mais raras (<see cref="SummonRates.LightDarkWeight"/>): o drop de 2★ da Campanha.</summary>
+		/// <summary>O sorteio de variante com Luz e Trevas mais raras (<see cref="SummonRates.LightDarkWeight"/>); o drop de 2★ da Campanha o usa, e hoje todos os 2★ são Neutros.</summary>
 		public static SummonDefinition WeightedPick(Random random, IReadOnlyList<SummonDefinition> pool)
 		{
 			static double Weight(SummonDefinition s) => s.Element is Element.Light or Element.Dark ? SummonRates.LightDarkWeight : 1;

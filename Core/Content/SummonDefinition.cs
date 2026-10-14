@@ -26,6 +26,13 @@ namespace Sigilos.Core.Content
 
 		public Element Element { get; init; }
 
+		/// <summary>
+		/// Em jogo na versão atual. Uma variante com <c>"active": false</c> fica no arquivo e continua resolvendo
+		/// ids de saves e de inimigos de fases, mas sai do elenco, como uma família inativa
+		/// (<see cref="FamilyDefinition.Active"/>): não é invocada, não cai e não aparece nas listas do jogador.
+		/// </summary>
+		public bool Active { get; init; } = true;
+
 		/// <summary>O papel: como o orçamento de atributos da variante é repartido.</summary>
 		public Role Role { get; init; }
 

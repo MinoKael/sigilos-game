@@ -142,6 +142,7 @@ namespace Sigilos.UI.Style
 			Element.Wind => Color.Color8(104, 200, 110),
 			Element.Light => Color.Color8(244, 210, 100),
 			Element.Dark => Color.Color8(176, 110, 226),
+			Element.Neutral => Silver,
 			_ => Text,
 		};
 	}

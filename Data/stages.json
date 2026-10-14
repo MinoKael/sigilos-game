@@ -26,7 +26,7 @@
     "runeGrade": 1,
     "lines": ["The Menhirs still guard the road. The Silence got past them anyway.", "Carve your first sigil, Conjurer. They won't wait."],
     "waves": [
-      [{"summon": "slime_water"}, {"summon": "slime_fire"}]
+      [{"summon": "slime_neutral"}, {"summon": "slime_neutral"}]
     ]
   },
   {
@@ -42,7 +42,7 @@
     "experience": 1350,
     "runeGrade": 1,
     "waves": [
-      [{"summon": "goblin_wind"}, {"summon": "slime_water"}],
+      [{"summon": "goblin_wind"}, {"summon": "slime_neutral"}],
       [{"summon": "goblin_fire"}]
     ]
   },
@@ -60,7 +60,7 @@
     "runeGrade": 1,
     "waves": [
       [{"summon": "goblin_fire"}, {"summon": "goblin_water"}],
-      [{"summon": "slime_wind"}, {"summon": "slime_water"}]
+      [{"summon": "slime_neutral"}, {"summon": "slime_neutral"}]
     ]
   },
   {
@@ -111,7 +111,7 @@
     "experience": 1900,
     "runeGrade": 2,
     "waves": [
-      [{"summon": "slime_fire"}, {"summon": "slime_water"}, {"summon": "slime_wind"}],
+      [{"summon": "slime_neutral"}, {"summon": "slime_neutral"}, {"summon": "slime_neutral"}],
       [{"summon": "wolf_wind"}, {"summon": "wolf_water"}],
       [{"summon": "bandit_water"}, {"summon": "goblin_fire"}]
     ]
@@ -147,7 +147,7 @@
     "runeGrade": 2,
     "lines": ["A Menhir split in half. The Sigil carved on it is gone."],
     "waves": [
-      [{"summon": "slime_light"}, {"summon": "goblin_dark"}, {"summon": "slime_water"}],
+      [{"summon": "slime_neutral"}, {"summon": "goblin_dark"}, {"summon": "slime_neutral"}],
       [{"summon": "wolf_light"}, {"summon": "wolf_dark"}]
     ]
   },
@@ -201,7 +201,7 @@
     "runeGrade": 3,
     "waves": [
       [{"summon": "bandit_water"}, {"summon": "bandit_fire"}, {"summon": "goblin_wind"}],
-      [{"summon": "wolf_water"}, {"summon": "wolf_wind"}, {"summon": "slime_fire"}]
+      [{"summon": "wolf_water"}, {"summon": "wolf_wind"}, {"summon": "slime_neutral"}]
     ]
   },
   {
@@ -217,7 +217,7 @@
     "experience": 4300,
     "runeGrade": 3,
     "waves": [
-      [{"summon": "slime_dark"}, {"summon": "slime_light"}, {"summon": "goblin_wind"}],
+      [{"summon": "slime_neutral"}, {"summon": "slime_neutral"}, {"summon": "goblin_wind"}],
       [{"summon": "bandit_dark"}, {"summon": "bandit_light"}],
       [{"summon": "wolf_fire"}, {"summon": "wolf_water"}, {"summon": "wolf_wind"}]
     ]
@@ -235,7 +235,7 @@
     "experience": 4700,
     "runeGrade": 3,
     "waves": [
-      [{"summon": "wolf_water"}, {"summon": "wolf_water"}, {"summon": "slime_water"}],
+      [{"summon": "wolf_water"}, {"summon": "wolf_water"}, {"summon": "slime_neutral"}],
       [{"summon": "bandit_water"}, {"summon": "goblin_water"}, {"summon": "goblin_fire"}]
     ]
   },
@@ -253,7 +253,7 @@
     "runeGrade": 3,
     "lines": ["Here the Menhirs were toppled on purpose."],
     "waves": [
-      [{"summon": "goblin_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_dark"}],
+      [{"summon": "goblin_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_neutral"}],
       [{"summon": "wolf_dark"}, {"summon": "bandit_dark"}],
       [{"summon": "troll_water"}, {"summon": "bandit_light"}]
     ]
@@ -273,7 +273,7 @@
     "lines": ["The smell of sulfur. Something big sleeps on burned bones."],
     "waves": [
       [{"summon": "goblin_fire"}, {"summon": "wolf_fire"}, {"summon": "bandit_fire"}],
-      [{"summon": "slime_fire"}, {"summon": "slime_fire"}, {"summon": "wolf_wind"}],
+      [{"summon": "slime_neutral"}, {"summon": "slime_neutral"}, {"summon": "wolf_wind"}],
       [{"summon": "dragon_fire"}, {"summon": "goblin_wind"}]
     ]
   },
@@ -309,7 +309,7 @@
     "lines": ["Chains hang from the trees. Some are still swinging."],
     "waves": [
       [{"summon": "wolf_dark"}, {"summon": "wolf_light"}, {"summon": "goblin_water"}, {"summon": "goblin_wind"}],
-      [{"summon": "bandit_fire"}, {"summon": "bandit_water"}, {"summon": "slime_wind"}]
+      [{"summon": "bandit_fire"}, {"summon": "bandit_water"}, {"summon": "slime_neutral"}]
     ]
   },
   {
@@ -382,8 +382,8 @@
     "runeGrade": 4,
     "lines": ["The sea took the islands one by one. The Silence came with the tide.", "Water beats Fire, Conjurer. Wind beats Water."],
     "waves": [
-      [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "bandit_water"}],
-      [{"summon": "goblin_water"}, {"summon": "wolf_water"}, {"summon": "slime_fire"}]
+      [{"summon": "slime_neutral"}, {"summon": "wolf_water"}, {"summon": "bandit_water"}],
+      [{"summon": "goblin_water"}, {"summon": "wolf_water"}, {"summon": "slime_neutral"}]
     ]
   },
   {
@@ -400,7 +400,7 @@
     "runeGrade": 4,
     "waves": [
       [{"summon": "bandit_water"}, {"summon": "goblin_water"}, {"summon": "wolf_wind"}],
-      [{"summon": "slime_water"}, {"summon": "bandit_fire"}, {"summon": "goblin_water"}]
+      [{"summon": "slime_neutral"}, {"summon": "bandit_fire"}, {"summon": "goblin_water"}]
     ]
   },
   {
@@ -417,7 +417,7 @@
     "runeGrade": 4,
     "lines": ["The crows here curse whatever they touch."],
     "waves": [
-      [{"summon": "crow_water"}, {"summon": "slime_water"}, {"summon": "wolf_water"}],
+      [{"summon": "crow_water"}, {"summon": "slime_neutral"}, {"summon": "wolf_water"}],
       [{"summon": "crow_fire"}, {"summon": "crow_water"}, {"summon": "goblin_water"}]
     ]
   },
@@ -435,7 +435,7 @@
     "runeGrade": 4,
     "waves": [
       [{"summon": "bandit_dark"}, {"summon": "wolf_water"}, {"summon": "goblin_water"}],
-      [{"summon": "crow_water"}, {"summon": "bandit_water"}, {"summon": "slime_light"}]
+      [{"summon": "crow_water"}, {"summon": "bandit_water"}, {"summon": "slime_neutral"}]
     ]
   },
   {
@@ -452,7 +452,7 @@
     "runeGrade": 4,
     "lines": ["Stone wings. Hitting them hurts the hand that strikes."],
     "waves": [
-      [{"summon": "gargoyle_water"}, {"summon": "slime_water"}, {"summon": "goblin_wind"}],
+      [{"summon": "gargoyle_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_wind"}],
       [{"summon": "gargoyle_water"}, {"summon": "gargoyle_fire"}, {"summon": "wolf_water"}],
       [{"summon": "troll_water"}, {"summon": "crow_water"}]
     ]
@@ -470,8 +470,8 @@
     "experience": 8500,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "bird_water"}, {"summon": "bird_wind"}, {"summon": "slime_water"}],
-      [{"summon": "wolf_water"}, {"summon": "bird_water"}, {"summon": "goblin_water"}]
+      [{"summon": "bird_neutral"}, {"summon": "bird_neutral"}, {"summon": "slime_neutral"}],
+      [{"summon": "wolf_water"}, {"summon": "bird_neutral"}, {"summon": "goblin_water"}]
     ]
   },
   {
@@ -487,7 +487,7 @@
     "experience": 8650,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "slime_water"}, {"summon": "slime_water"}, {"summon": "gargoyle_water"}],
+      [{"summon": "slime_neutral"}, {"summon": "slime_neutral"}, {"summon": "gargoyle_water"}],
       [{"summon": "crow_water"}, {"summon": "wolf_water"}, {"summon": "bandit_wind"}]
     ]
   },
@@ -523,7 +523,7 @@
     "runeGrade": 4,
     "waves": [
       [{"summon": "bandit_water"}, {"summon": "bandit_wind"}, {"summon": "goblin_water"}],
-      [{"summon": "troll_water"}, {"summon": "wolf_water"}, {"summon": "bird_water"}]
+      [{"summon": "troll_water"}, {"summon": "wolf_water"}, {"summon": "bird_neutral"}]
     ]
   },
   {
@@ -540,7 +540,7 @@
     "runeGrade": 4,
     "lines": ["The temple bell rings underwater.", "The dragon guarding it never learned to stop."],
     "waves": [
-      [{"summon": "gargoyle_water"}, {"summon": "crow_water"}, {"summon": "slime_water"}],
+      [{"summon": "gargoyle_water"}, {"summon": "crow_water"}, {"summon": "slime_neutral"}],
       [{"summon": "vampire_water"}, {"summon": "troll_water"}],
       [{"summon": "dragon_water"}, {"summon": "wolf_water"}, {"summon": "goblin_water"}]
     ]
@@ -558,7 +558,7 @@
     "experience": 9250,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "wolf_dark"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+      [{"summon": "wolf_dark"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
       [{"summon": "crow_dark"}, {"summon": "bandit_water"}, {"summon": "wolf_water"}]
     ]
   },
@@ -576,8 +576,8 @@
     "runeGrade": 4,
     "lines": ["The pixies wash away every curse you cast on their friends."],
     "waves": [
-      [{"summon": "pixie_water"}, {"summon": "pixie_wind"}, {"summon": "wolf_water"}],
-      [{"summon": "gargoyle_water"}, {"summon": "pixie_water"}, {"summon": "bandit_water"}]
+      [{"summon": "pixie_neutral"}, {"summon": "pixie_neutral"}, {"summon": "wolf_water"}],
+      [{"summon": "gargoyle_water"}, {"summon": "pixie_neutral"}, {"summon": "bandit_water"}]
     ]
   },
   {
@@ -593,7 +593,7 @@
     "experience": 9550,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "knight_water"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
+      [{"summon": "knight_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
       [{"summon": "knight_fire"}, {"summon": "crow_water"}, {"summon": "wolf_water"}]
     ]
   },
@@ -610,8 +610,8 @@
     "experience": 9700,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "vampire_water"}, {"summon": "pixie_water"}, {"summon": "crow_water"}],
-      [{"summon": "bird_water"}, {"summon": "gargoyle_wind"}, {"summon": "wolf_water"}]
+      [{"summon": "vampire_water"}, {"summon": "pixie_neutral"}, {"summon": "crow_water"}],
+      [{"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}, {"summon": "wolf_water"}]
     ]
   },
   {
@@ -628,8 +628,8 @@
     "runeGrade": 4,
     "lines": ["Every three steps, the stairs fill with water."],
     "waves": [
-      [{"summon": "knight_water"}, {"summon": "gargoyle_water"}, {"summon": "slime_water"}],
-      [{"summon": "troll_water"}, {"summon": "vampire_water"}, {"summon": "pixie_water"}],
+      [{"summon": "knight_water"}, {"summon": "gargoyle_water"}, {"summon": "slime_neutral"}],
+      [{"summon": "troll_water"}, {"summon": "vampire_water"}, {"summon": "pixie_neutral"}],
       [{"summon": "dragon_wind"}, {"summon": "crow_water"}, {"summon": "wolf_water"}]
     ]
   },
@@ -647,7 +647,7 @@
     "runeGrade": 4,
     "lines": ["The druids wear thorns. Strike them and bleed."],
     "waves": [
-      [{"summon": "druid_water"}, {"summon": "slime_water"}, {"summon": "bandit_water"}],
+      [{"summon": "druid_water"}, {"summon": "slime_neutral"}, {"summon": "bandit_water"}],
       [{"summon": "druid_fire"}, {"summon": "wolf_water"}, {"summon": "goblin_water"}]
     ]
   },
@@ -665,7 +665,7 @@
     "runeGrade": 4,
     "waves": [
       [{"summon": "crow_water"}, {"summon": "vampire_water"}, {"summon": "knight_water"}],
-      [{"summon": "gargoyle_dark"}, {"summon": "pixie_water"}, {"summon": "wolf_water"}]
+      [{"summon": "gargoyle_dark"}, {"summon": "pixie_neutral"}, {"summon": "wolf_water"}]
     ]
   },
   {
@@ -681,7 +681,7 @@
     "experience": 10300,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "druid_water"}, {"summon": "bird_water"}, {"summon": "crow_water"}],
+      [{"summon": "druid_water"}, {"summon": "bird_neutral"}, {"summon": "crow_water"}],
       [{"summon": "troll_water"}, {"summon": "knight_water"}, {"summon": "vampire_water"}]
     ]
   },
@@ -698,7 +698,7 @@
     "experience": 10450,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "vampire_water"}, {"summon": "gargoyle_water"}, {"summon": "pixie_water"}],
+      [{"summon": "vampire_water"}, {"summon": "gargoyle_water"}, {"summon": "pixie_neutral"}],
       [{"summon": "druid_water"}, {"summon": "knight_water"}, {"summon": "crow_water"}],
       [{"summon": "dragon_water"}, {"summon": "troll_water"}]
     ]
@@ -721,7 +721,7 @@
     "waves": [
       [{"summon": "crow_water"}, {"summon": "gargoyle_water"}, {"summon": "wolf_water"}],
       [{"summon": "vampire_water"}, {"summon": "druid_water"}],
-      [{"enemy": "mother_serpent", "element": "Water"}, {"summon": "pixie_water"}]
+      [{"enemy": "mother_serpent", "element": "Water"}, {"summon": "pixie_neutral"}]
     ]
   },
   {
@@ -755,7 +755,7 @@
     "experience": 10900,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "vampire_dark"}, {"summon": "pixie_light"}, {"summon": "bandit_light"}],
+      [{"summon": "vampire_dark"}, {"summon": "pixie_neutral"}, {"summon": "bandit_light"}],
       [{"summon": "knight_dark"}, {"summon": "crow_light"}, {"summon": "wolf_dark"}]
     ]
   },
@@ -774,7 +774,7 @@
     "lines": ["The wizards here shorten their own spells. Strike them first."],
     "waves": [
       [{"summon": "wizard_dark"}, {"summon": "goblin_dark"}, {"summon": "gargoyle_light"}],
-      [{"summon": "wizard_light"}, {"summon": "troll_dark"}, {"summon": "bird_light"}]
+      [{"summon": "wizard_light"}, {"summon": "troll_dark"}, {"summon": "bird_neutral"}]
     ]
   },
   {
@@ -790,7 +790,7 @@
     "experience": 11200,
     "runeGrade": 4,
     "waves": [
-      [{"summon": "wizard_dark"}, {"summon": "crow_dark"}, {"summon": "pixie_light"}],
+      [{"summon": "wizard_dark"}, {"summon": "crow_dark"}, {"summon": "pixie_neutral"}],
       [{"summon": "vampire_light"}, {"summon": "knight_light"}, {"summon": "druid_dark"}]
     ]
   },
@@ -810,7 +810,7 @@
     "waves": [
       [{"summon": "paladin_light"}, {"summon": "knight_light"}, {"summon": "bandit_dark"}],
       [{"summon": "paladin_dark"}, {"summon": "gargoyle_light"}, {"summon": "crow_dark"}],
-      [{"summon": "dragon_light"}, {"summon": "pixie_dark"}]
+      [{"summon": "dragon_light"}, {"summon": "pixie_neutral"}]
     ]
   },
   {
@@ -844,7 +844,7 @@
     "runeGrade": 4,
     "waves": [
       [{"summon": "wizard_dark"}, {"summon": "vampire_dark"}, {"summon": "crow_dark"}],
-      [{"summon": "gargoyle_dark"}, {"summon": "knight_dark"}, {"summon": "pixie_dark"}]
+      [{"summon": "gargoyle_dark"}, {"summon": "knight_dark"}, {"summon": "pixie_neutral"}]
     ]
   },
   {
@@ -861,7 +861,7 @@
     "runeGrade": 4,
     "waves": [
       [{"summon": "paladin_light"}, {"summon": "knight_light"}, {"summon": "wizard_light"}],
-      [{"summon": "druid_light"}, {"summon": "troll_light"}, {"summon": "pixie_light"}]
+      [{"summon": "druid_light"}, {"summon": "troll_light"}, {"summon": "pixie_neutral"}]
     ]
   },
   {

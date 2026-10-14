@@ -132,7 +132,9 @@ namespace Sigilos.UI.Audio
 				return actor.IsBoss ? HeavySound : HitSound;
 			if (actor.IsBoss)
 				return "combat.boss.special";
-			return skill.Cooldown >= GrandCooldown ? Grand[actor.Element] : Impacts[actor.Element];
+			// O Neutro não tem som próprio: a habilidade dele soa como um golpe forte comum.
+			var sounds = skill.Cooldown >= GrandCooldown ? Grand : Impacts;
+			return sounds.TryGetValue(actor.Element, out var sound) ? sound : HeavySound;
 		}
 
 		private void Plain(BattleEvent battleEvent, List<Cue> cues)

@@ -6,10 +6,56 @@
   "image": "pixie",
   "active": true,
   "variations": {
+    "neutral": {
+      "variation_id": "pixie_neutral",
+      "name": "Fada",
+      "element": "Neutral",
+      "role": "Support",
+      "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
+      "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
+      "awakening": {
+        "name": "Valho",
+        "skill": {
+          "name": "Pó de Pixie",
+          "image": "po_de_pixie",
+          "passive": {"kind": "CleanseAllyEachTurn", "value": 0.5}
+        }
+      },
+      "skills": [
+        {
+          "name": "Gotinha",
+          "image": "gotinha",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.2},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.03}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Orvalho da Manhã",
+          "image": "orvalho_da_manha",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Heal", "target": "AllAllies", "power": 0.08}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
     "fire": {
       "variation_id": "pixie_fire",
       "name": "Fada de Fogo",
       "element": "Fire",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -63,6 +109,7 @@
       "variation_id": "pixie_water",
       "name": "Fada de Água",
       "element": "Water",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -108,6 +155,7 @@
       "variation_id": "pixie_wind",
       "name": "Fada de Vento",
       "element": "Wind",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -152,6 +200,7 @@
       "variation_id": "pixie_light",
       "name": "Fada de Luz",
       "element": "Light",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -197,6 +246,7 @@
       "variation_id": "pixie_dark",
       "name": "Fada de Trevas",
       "element": "Dark",
+      "active": false,
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},

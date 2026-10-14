@@ -6,10 +6,63 @@
   "image": "slime",
   "active": true,
   "variations": {
+    "neutral": {
+      "variation_id": "slime_neutral",
+      "name": "Gosma",
+      "element": "Neutral",
+      "role": "HP",
+      "stats": {"hp": 8010, "atk": 456, "def": 495, "spd": 100},
+      "awakened_stats": {"hp": 8895, "atk": 507, "def": 550, "spd": 101},
+      "awakening": {
+        "name": "Blob",
+        "skill": {
+          "name": "Fortaleza de Gosma",
+          "image": "fortaleza_de_gosma",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Shield", "target": "AllAllies", "power": 0.17, "turns": 2},
+            {"kind": "Cleanse", "target": "LowestAlly"}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      },
+      "skills": [
+        {
+          "name": "Gosma Gelada",
+          "image": "gosma_gelada",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.4, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
+          ]
+        },
+        {
+          "name": "Maré Purificadora",
+          "image": "mare_purificadora",
+          "cooldown": 5,
+          "effects": [
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.06}
+          ],
+          "levels": [
+            {"kind": "Recovery", "value": 0.15},
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
     "fire": {
       "variation_id": "slime_fire",
       "name": "Gosma de Fogo",
       "element": "Fire",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -55,6 +108,7 @@
       "variation_id": "slime_water",
       "name": "Gosma de Água",
       "element": "Water",
+      "active": false,
       "role": "HP",
       "stats": {"hp": 8010, "atk": 456, "def": 495, "spd": 100},
       "awakened_stats": {"hp": 8895, "atk": 507, "def": 550, "spd": 101},
@@ -107,6 +161,7 @@
       "variation_id": "slime_wind",
       "name": "Gosma de Vento",
       "element": "Wind",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -160,6 +215,7 @@
       "variation_id": "slime_light",
       "name": "Gosma de Luz",
       "element": "Light",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -212,6 +268,7 @@
       "variation_id": "slime_dark",
       "name": "Gosma de Trevas",
       "element": "Dark",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},

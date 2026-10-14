@@ -376,8 +376,8 @@ namespace Sigilos.Tests
 			Assert.Equal("Raposa de Fogo", database.Summon("fox_fire").Name, "a Raposa entra");
 			Assert.Equal("Bode de Fogo", database.Summon("goat_fire").Name, "e o Bode");
 			Assert.Equal("Golfinho de Fogo", database.Summon("dolphin_fire").Name, "e o Golfinho");
-			Assert.Equal("Gosma de Fogo", database.Summon("slime_fire").Name, "o Limo é a Gosma");
-			Assert.Equal("Fada de Fogo", database.Summon("pixie_fire").Name, "o Pixie é a Fada");
+			Assert.Equal("Gosma", database.Summon("slime_neutral").Name, "o Limo é a Gosma");
+			Assert.Equal("Fada", database.Summon("pixie_neutral").Name, "o Pixie é a Fada");
 			Assert.Equal("Minerador de Fogo", database.Summon("miner_fire").Name, "e o Anão sai do nome do Minerador");
 			foreach (var id in new[] { "fox", "goat", "dolphin" })
 				Assert.Equal(1, database.Families.Single(f => f.Id == id).Variations.Values.First().Skills.Count, $"{id}: só a básica, sem habilidades novas");
@@ -424,12 +424,12 @@ namespace Sigilos.Tests
 		private static void TwoStarHomunculiCannotAwaken()
 		{
 			var database = TestData.LoadReal();
-			var player = TestData.PlayerWith("mushroom_fire", "wolf_fire");
+			var player = TestData.PlayerWith("mushroom_neutral", "wolf_fire");
 			player.Essence = 10_000_000;
-			var twoStar = player.Monsters.First(m => m.SummonId == "mushroom_fire");
+			var twoStar = player.Monsters.First(m => m.SummonId == "mushroom_neutral");
 			var threeStar = player.Monsters.First(m => m.SummonId == "wolf_fire");
-			Assert.False(Awakening.CanAwaken(player, twoStar, database.Summon("mushroom_fire")), "2★ não pode despertar");
-			Assert.False(Awakening.Awaken(player, twoStar, database.Summon("mushroom_fire")), "nem por chamada direta");
+			Assert.False(Awakening.CanAwaken(player, twoStar, database.Summon("mushroom_neutral")), "2★ não pode despertar");
+			Assert.False(Awakening.Awaken(player, twoStar, database.Summon("mushroom_neutral")), "nem por chamada direta");
 			Assert.False(twoStar.Awakened, "e nada muda");
 			Assert.True(Awakening.Awaken(player, threeStar, database.Summon("wolf_fire")), "as outras raridades despertam como antes");
 		}

@@ -89,7 +89,8 @@
     "Water": "Água",
     "Wind": "Vento",
     "Light": "Luz",
-    "Dark": "Trevas"
+    "Dark": "Trevas",
+    "Neutral": "Neutro"
   },
 
   "role": {
@@ -1065,7 +1066,7 @@
       "leader": { "title": "Líder", "text": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio dos sigilos." },
       "auto": { "title": "Automático e Batalha automática", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 2×. Ela segue enquanto você faz outras coisas (cuidar dos sigilos, subir homúnculos); o aviso no alto da tela mostra o andamento e abre a janela dela. Para quando você aperta Parar, quando a Mana acaba ou quando o inventário de sigilos enche. Toque num inimigo durante a luta para marcá-lo: o automático ataca ele enquanto puder (segure o inimigo para ver o resumo). Numa luta com chefe, a pausa tem \"Focar o chefe no automático\": ligado, a equipe inteira ataca o chefe sempre que pode." },
       "elements": "Elementos",
-      "elements_text": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence.",
+      "elements_text": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence. O Neutro, dos homúnculos de 2★, não tem vantagem nem desvantagem.",
       "wins": "{0} vence {1}"
     },
     "stats": {

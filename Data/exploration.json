@@ -36,16 +36,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "slime_wind"}],
-          [{"summon": "wolf_water"}, {"summon": "knight_water", "guardian": true}, {"summon": "slime_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "wolf_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "wolf_water"}, {"summon": "knight_water", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_wind"}, {"summon": "wolf_wind"}, {"summon": "slime_light"}],
-          [{"summon": "wolf_wind"}, {"summon": "wolf_wind", "guardian": true}, {"summon": "slime_wind"}]
+          [{"summon": "slime_neutral"}, {"summon": "wolf_wind"}, {"summon": "slime_neutral"}],
+          [{"summon": "wolf_wind"}, {"summon": "wolf_wind", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "slime_dark"}],
-          [{"summon": "wolf_water"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "slime_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "wolf_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "wolf_water"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "slime_neutral"}]
         ]}
       ]
     },
@@ -58,16 +58,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "pixie_light"}, {"summon": "bird_light"}, {"summon": "pixie_wind"}],
-          [{"summon": "bird_light"}, {"summon": "druid_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "druid_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_wind"}, {"summon": "bird_wind"}, {"summon": "pixie_dark"}],
-          [{"summon": "bird_wind"}, {"summon": "druid_wind", "guardian": true}, {"summon": "pixie_wind"}]
+          [{"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "druid_wind", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_water"}, {"summon": "bird_water"}, {"summon": "pixie_fire"}],
-          [{"summon": "bird_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -124,16 +124,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "troll_water"}, {"summon": "slime_water"}, {"summon": "troll_wind"}],
-          [{"summon": "slime_water"}, {"enemy": "celestial_bear", "element": "Water"}, {"summon": "troll_water"}]
+          [{"summon": "troll_water"}, {"summon": "slime_neutral"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_bear", "element": "Water"}, {"summon": "troll_water"}]
         ]},
         {"waves": [
-          [{"summon": "troll_light"}, {"summon": "slime_light"}, {"summon": "troll_wind"}],
-          [{"summon": "slime_light"}, {"enemy": "celestial_bear", "element": "Light"}, {"summon": "troll_light"}]
+          [{"summon": "troll_light"}, {"summon": "slime_neutral"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_bear", "element": "Light"}, {"summon": "troll_light"}]
         ]},
         {"waves": [
-          [{"summon": "troll_fire"}, {"summon": "slime_fire"}, {"summon": "troll_dark"}],
-          [{"summon": "slime_fire"}, {"enemy": "celestial_bear", "element": "Fire"}, {"summon": "troll_fire"}]
+          [{"summon": "troll_fire"}, {"summon": "slime_neutral"}, {"summon": "troll_dark"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_bear", "element": "Fire"}, {"summon": "troll_fire"}]
         ]}
       ]
     },
@@ -190,16 +190,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "pixie_light"}, {"summon": "slime_light"}, {"summon": "pixie_fire"}],
-          [{"summon": "slime_light"}, {"summon": "pixie_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}],
-          [{"summon": "slime_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_light"}, {"summon": "slime_light"}, {"summon": "pixie_wind"}],
-          [{"summon": "slime_light"}, {"summon": "paladin_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "paladin_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -212,16 +212,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_water"}],
-          [{"summon": "bird_wind"}, {"summon": "knight_wind", "guardian": true}, {"summon": "goblin_wind"}]
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "bird_neutral"}, {"summon": "knight_wind", "guardian": true}, {"summon": "goblin_wind"}]
         ]},
         {"waves": [
-          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_light"}],
-          [{"summon": "bird_wind"}, {"summon": "paladin_wind", "guardian": true}, {"summon": "goblin_wind"}]
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_light"}],
+          [{"summon": "bird_neutral"}, {"summon": "paladin_wind", "guardian": true}, {"summon": "goblin_wind"}]
         ]},
         {"waves": [
-          [{"summon": "goblin_light"}, {"summon": "bird_light"}, {"summon": "goblin_dark"}],
-          [{"summon": "bird_light"}, {"summon": "bandit_light", "guardian": true}, {"summon": "goblin_light"}]
+          [{"summon": "goblin_light"}, {"summon": "bird_neutral"}, {"summon": "goblin_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "bandit_light", "guardian": true}, {"summon": "goblin_light"}]
         ]}
       ]
     },
@@ -234,16 +234,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_wind"}],
-          [{"summon": "pixie_light"}, {"summon": "paladin_light", "guardian": true}, {"summon": "knight_light"}]
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_wind"}],
+          [{"summon": "pixie_neutral"}, {"summon": "paladin_light", "guardian": true}, {"summon": "knight_light"}]
         ]},
         {"waves": [
-          [{"summon": "knight_fire"}, {"summon": "pixie_fire"}, {"summon": "knight_dark"}],
-          [{"summon": "pixie_fire"}, {"summon": "paladin_fire", "guardian": true}, {"summon": "knight_fire"}]
+          [{"summon": "knight_fire"}, {"summon": "pixie_neutral"}, {"summon": "knight_dark"}],
+          [{"summon": "pixie_neutral"}, {"summon": "paladin_fire", "guardian": true}, {"summon": "knight_fire"}]
         ]},
         {"waves": [
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_fire"}],
-          [{"summon": "pixie_light"}, {"summon": "wizard_light", "guardian": true}, {"summon": "knight_light"}]
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_fire"}],
+          [{"summon": "pixie_neutral"}, {"summon": "wizard_light", "guardian": true}, {"summon": "knight_light"}]
         ]}
       ]
     },
@@ -278,16 +278,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "pixie_wind"}, {"summon": "bird_fire"}],
-          [{"summon": "pixie_wind"}, {"summon": "pixie_wind", "guardian": true}, {"summon": "bird_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_water"}, {"summon": "pixie_water"}, {"summon": "bird_wind"}],
-          [{"summon": "pixie_water"}, {"summon": "pixie_water", "guardian": true}, {"summon": "bird_water"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_wind"}],
-          [{"summon": "pixie_light"}, {"summon": "bird_light", "guardian": true}, {"summon": "bird_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "bird_neutral"}]
         ]}
       ]
     },
@@ -322,16 +322,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_water"}, {"summon": "slime_water"}, {"summon": "bird_light"}],
-          [{"summon": "slime_water"}, {"summon": "bird_water", "guardian": true}, {"summon": "bird_water"}]
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "slime_light"}, {"summon": "bird_dark"}],
-          [{"summon": "slime_light"}, {"summon": "bird_light", "guardian": true}, {"summon": "bird_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_water"}, {"summon": "slime_water"}, {"summon": "bird_fire"}],
-          [{"summon": "slime_water"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "bird_water"}]
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "bird_neutral"}]
         ]}
       ]
     },
@@ -388,16 +388,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}],
-          [{"summon": "goblin_wind"}, {"summon": "druid_wind", "guardian": true}, {"summon": "slime_wind"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_wind"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_wind"}, {"summon": "druid_wind", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_light"}, {"summon": "goblin_light"}, {"summon": "slime_wind"}],
-          [{"summon": "goblin_light"}, {"summon": "slime_light", "guardian": true}, {"summon": "slime_light"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_light"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_light"}, {"summon": "slime_neutral", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_dark"}],
-          [{"summon": "goblin_water"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "slime_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_water"}, {"summon": "gargoyle_water", "guardian": true}, {"summon": "slime_neutral"}]
         ]}
       ]
     },
@@ -432,16 +432,16 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "imp_wind"}, {"summon": "pixie_wind"}, {"summon": "imp_dark"}],
-          [{"summon": "pixie_wind"}, {"summon": "wizard_wind", "guardian": true}, {"summon": "imp_wind"}]
+          [{"summon": "imp_wind"}, {"summon": "pixie_neutral"}, {"summon": "imp_dark"}],
+          [{"summon": "pixie_neutral"}, {"summon": "wizard_wind", "guardian": true}, {"summon": "imp_wind"}]
         ]},
         {"waves": [
-          [{"summon": "imp_fire"}, {"summon": "pixie_fire"}, {"summon": "imp_water"}],
-          [{"summon": "pixie_fire"}, {"summon": "wizard_fire", "guardian": true}, {"summon": "imp_fire"}]
+          [{"summon": "imp_fire"}, {"summon": "pixie_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "pixie_neutral"}, {"summon": "wizard_fire", "guardian": true}, {"summon": "imp_fire"}]
         ]},
         {"waves": [
-          [{"summon": "imp_dark"}, {"summon": "pixie_dark"}, {"summon": "imp_water"}],
-          [{"summon": "pixie_dark"}, {"summon": "wizard_dark", "guardian": true}, {"summon": "imp_dark"}]
+          [{"summon": "imp_dark"}, {"summon": "pixie_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "pixie_neutral"}, {"summon": "wizard_dark", "guardian": true}, {"summon": "imp_dark"}]
         ]}
       ]
     },
@@ -499,19 +499,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_light"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_light"}],
-          [{"summon": "slime_water"}, {"summon": "slime_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "slime_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_water"}, {"summon": "imp_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "imp_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_fire"}],
-          [{"summon": "slime_water"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -524,19 +524,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "goblin_water"}, {"summon": "slime_water"}, {"summon": "goblin_dark"}],
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_dark"}],
-          [{"summon": "goblin_water"}, {"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_water"}]
+          [{"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_dark"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_water"}, {"enemy": "drowned_guardian", "element": "Water"}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "goblin_water"}, {"summon": "slime_water"}, {"summon": "goblin_fire"}],
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_fire"}],
-          [{"summon": "goblin_water"}, {"enemy": "mother_serpent", "element": "Water"}, {"summon": "slime_water"}]
+          [{"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_fire"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_water"}, {"enemy": "mother_serpent", "element": "Water"}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "goblin_dark"}, {"summon": "slime_dark"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_water"}],
-          [{"summon": "goblin_dark"}, {"enemy": "drowned_guardian", "element": "Dark"}, {"summon": "slime_dark"}]
+          [{"summon": "goblin_dark"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_dark"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_dark"}, {"enemy": "drowned_guardian", "element": "Dark"}, {"summon": "slime_neutral"}]
         ]}
       ]
     },
@@ -627,19 +627,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "imp_wind"}, {"summon": "bird_wind"}, {"summon": "imp_dark"}],
-          [{"summon": "bird_wind"}, {"summon": "imp_wind"}, {"summon": "bird_dark"}],
-          [{"summon": "imp_wind"}, {"summon": "imp_wind", "guardian": true}, {"summon": "bird_wind"}]
+          [{"summon": "imp_wind"}, {"summon": "bird_neutral"}, {"summon": "imp_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "imp_wind"}, {"summon": "bird_neutral"}],
+          [{"summon": "imp_wind"}, {"summon": "imp_wind", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "imp_fire"}, {"summon": "bird_fire"}, {"summon": "imp_water"}],
-          [{"summon": "bird_fire"}, {"summon": "imp_fire"}, {"summon": "bird_water"}],
-          [{"summon": "imp_fire"}, {"summon": "imp_fire", "guardian": true}, {"summon": "bird_fire"}]
+          [{"summon": "imp_fire"}, {"summon": "bird_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "bird_neutral"}, {"summon": "imp_fire"}, {"summon": "bird_neutral"}],
+          [{"summon": "imp_fire"}, {"summon": "imp_fire", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "imp_light"}, {"summon": "bird_light"}, {"summon": "imp_water"}],
-          [{"summon": "bird_light"}, {"summon": "imp_light"}, {"summon": "bird_water"}],
-          [{"summon": "imp_light"}, {"summon": "imp_light", "guardian": true}, {"summon": "bird_light"}]
+          [{"summon": "imp_light"}, {"summon": "bird_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "bird_neutral"}, {"summon": "imp_light"}, {"summon": "bird_neutral"}],
+          [{"summon": "imp_light"}, {"summon": "imp_light", "guardian": true}, {"summon": "bird_neutral"}]
         ]}
       ]
     },
@@ -677,19 +677,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "pixie_light"}, {"summon": "knight_light"}, {"summon": "pixie_water"}],
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_water"}],
-          [{"summon": "pixie_light"}, {"enemy": "celestial_unicorn", "element": "Light"}, {"summon": "knight_light"}]
+          [{"summon": "pixie_neutral"}, {"summon": "knight_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_water"}],
+          [{"summon": "pixie_neutral"}, {"enemy": "celestial_unicorn", "element": "Light"}, {"summon": "knight_light"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_water"}, {"summon": "knight_water"}, {"summon": "pixie_light"}],
-          [{"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "knight_light"}],
-          [{"summon": "pixie_water"}, {"enemy": "celestial_unicorn", "element": "Water"}, {"summon": "knight_water"}]
+          [{"summon": "pixie_neutral"}, {"summon": "knight_water"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_water"}, {"summon": "pixie_neutral"}, {"summon": "knight_light"}],
+          [{"summon": "pixie_neutral"}, {"enemy": "celestial_unicorn", "element": "Water"}, {"summon": "knight_water"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_light"}, {"summon": "knight_light"}, {"summon": "pixie_dark"}],
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_dark"}],
-          [{"summon": "pixie_light"}, {"summon": "knight_light", "guardian": true}, {"summon": "knight_light"}]
+          [{"summon": "pixie_neutral"}, {"summon": "knight_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_dark"}],
+          [{"summon": "pixie_neutral"}, {"summon": "knight_light", "guardian": true}, {"summon": "knight_light"}]
         ]}
       ]
     },
@@ -727,19 +727,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "wolf_water"}, {"summon": "slime_water"}, {"summon": "wolf_dark"}],
-          [{"summon": "slime_water"}, {"summon": "wolf_water"}, {"summon": "slime_dark"}],
-          [{"summon": "wolf_water"}, {"summon": "wolf_water", "guardian": true}, {"summon": "slime_water"}]
+          [{"summon": "wolf_water"}, {"summon": "slime_neutral"}, {"summon": "wolf_dark"}],
+          [{"summon": "slime_neutral"}, {"summon": "wolf_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "wolf_water"}, {"summon": "wolf_water", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "wolf_light"}, {"summon": "slime_light"}, {"summon": "wolf_fire"}],
-          [{"summon": "slime_light"}, {"summon": "wolf_light"}, {"summon": "slime_fire"}],
-          [{"summon": "wolf_light"}, {"summon": "druid_light", "guardian": true}, {"summon": "slime_light"}]
+          [{"summon": "wolf_light"}, {"summon": "slime_neutral"}, {"summon": "wolf_fire"}],
+          [{"summon": "slime_neutral"}, {"summon": "wolf_light"}, {"summon": "slime_neutral"}],
+          [{"summon": "wolf_light"}, {"summon": "druid_light", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "wolf_light"}, {"summon": "slime_light"}, {"summon": "wolf_water"}],
-          [{"summon": "slime_light"}, {"summon": "wolf_light"}, {"summon": "slime_water"}],
-          [{"summon": "wolf_light"}, {"summon": "knight_light", "guardian": true}, {"summon": "slime_light"}]
+          [{"summon": "wolf_light"}, {"summon": "slime_neutral"}, {"summon": "wolf_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "wolf_light"}, {"summon": "slime_neutral"}],
+          [{"summon": "wolf_light"}, {"summon": "knight_light", "guardian": true}, {"summon": "slime_neutral"}]
         ]}
       ]
     },
@@ -752,19 +752,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_fire"}],
-          [{"summon": "goblin_water"}, {"summon": "slime_water"}, {"summon": "goblin_fire"}],
-          [{"summon": "slime_water"}, {"enemy": "celestial_crab", "element": "Water"}, {"summon": "goblin_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_fire"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_crab", "element": "Water"}, {"summon": "goblin_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_fire"}, {"summon": "goblin_fire"}, {"summon": "slime_wind"}],
-          [{"summon": "goblin_fire"}, {"summon": "slime_fire"}, {"summon": "goblin_wind"}],
-          [{"summon": "slime_fire"}, {"enemy": "celestial_crab", "element": "Fire"}, {"summon": "goblin_fire"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_fire"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_fire"}, {"summon": "slime_neutral"}, {"summon": "goblin_wind"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_crab", "element": "Fire"}, {"summon": "goblin_fire"}]
         ]},
         {"waves": [
-          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_wind"}],
-          [{"summon": "goblin_dark"}, {"summon": "slime_dark"}, {"summon": "goblin_wind"}],
-          [{"summon": "slime_dark"}, {"enemy": "celestial_crab", "element": "Dark"}, {"summon": "goblin_dark"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_dark"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_dark"}, {"summon": "slime_neutral"}, {"summon": "goblin_wind"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_crab", "element": "Dark"}, {"summon": "goblin_dark"}]
         ]}
       ]
     },
@@ -828,19 +828,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "crow_water"}, {"summon": "slime_dark"}],
-          [{"summon": "crow_water"}, {"summon": "slime_water"}, {"summon": "crow_dark"}],
-          [{"summon": "slime_water"}, {"enemy": "celestial_hydra", "element": "Water"}, {"summon": "crow_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "crow_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "crow_water"}, {"summon": "slime_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_hydra", "element": "Water"}, {"summon": "crow_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_dark"}, {"summon": "crow_dark"}, {"summon": "slime_fire"}],
-          [{"summon": "crow_dark"}, {"summon": "slime_dark"}, {"summon": "crow_fire"}],
-          [{"summon": "slime_dark"}, {"enemy": "celestial_hydra", "element": "Dark"}, {"summon": "crow_dark"}]
+          [{"summon": "slime_neutral"}, {"summon": "crow_dark"}, {"summon": "slime_neutral"}],
+          [{"summon": "crow_dark"}, {"summon": "slime_neutral"}, {"summon": "crow_fire"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_hydra", "element": "Dark"}, {"summon": "crow_dark"}]
         ]},
         {"waves": [
-          [{"summon": "slime_wind"}, {"summon": "crow_wind"}, {"summon": "slime_water"}],
-          [{"summon": "crow_wind"}, {"summon": "slime_wind"}, {"summon": "crow_water"}],
-          [{"summon": "slime_wind"}, {"enemy": "mother_serpent", "element": "Wind"}, {"summon": "crow_wind"}]
+          [{"summon": "slime_neutral"}, {"summon": "crow_wind"}, {"summon": "slime_neutral"}],
+          [{"summon": "crow_wind"}, {"summon": "slime_neutral"}, {"summon": "crow_water"}],
+          [{"summon": "slime_neutral"}, {"enemy": "mother_serpent", "element": "Wind"}, {"summon": "crow_wind"}]
         ]}
       ]
     },
@@ -879,19 +879,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "crow_water"}, {"summon": "bird_water"}, {"summon": "crow_wind"}],
-          [{"summon": "bird_water"}, {"summon": "crow_water"}, {"summon": "bird_wind"}],
-          [{"summon": "crow_water"}, {"summon": "crow_water", "guardian": true}, {"summon": "bird_water"}]
+          [{"summon": "crow_water"}, {"summon": "bird_neutral"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_water"}, {"summon": "bird_neutral"}],
+          [{"summon": "crow_water"}, {"summon": "crow_water", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "crow_dark"}, {"summon": "bird_dark"}, {"summon": "crow_wind"}],
-          [{"summon": "bird_dark"}, {"summon": "crow_dark"}, {"summon": "bird_wind"}],
-          [{"summon": "crow_dark"}, {"summon": "crow_dark", "guardian": true}, {"summon": "bird_dark"}]
+          [{"summon": "crow_dark"}, {"summon": "bird_neutral"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_dark"}, {"summon": "bird_neutral"}],
+          [{"summon": "crow_dark"}, {"summon": "crow_dark", "guardian": true}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "crow_fire"}, {"summon": "bird_fire"}, {"summon": "crow_dark"}],
-          [{"summon": "bird_fire"}, {"summon": "crow_fire"}, {"summon": "bird_dark"}],
-          [{"summon": "crow_fire"}, {"summon": "crow_fire", "guardian": true}, {"summon": "bird_fire"}]
+          [{"summon": "crow_fire"}, {"summon": "bird_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_fire"}, {"summon": "bird_neutral"}],
+          [{"summon": "crow_fire"}, {"summon": "crow_fire", "guardian": true}, {"summon": "bird_neutral"}]
         ]}
       ]
     },
@@ -904,19 +904,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "pixie_light"}, {"summon": "knight_light"}, {"summon": "pixie_wind"}],
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_wind"}],
-          [{"summon": "pixie_light"}, {"summon": "paladin_light", "guardian": true}, {"summon": "knight_light"}]
+          [{"summon": "pixie_neutral"}, {"summon": "knight_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_wind"}],
+          [{"summon": "pixie_neutral"}, {"summon": "paladin_light", "guardian": true}, {"summon": "knight_light"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_water"}, {"summon": "knight_water"}, {"summon": "pixie_dark"}],
-          [{"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "knight_dark"}],
-          [{"summon": "pixie_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "knight_water"}]
+          [{"summon": "pixie_neutral"}, {"summon": "knight_water"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_water"}, {"summon": "pixie_neutral"}, {"summon": "knight_dark"}],
+          [{"summon": "pixie_neutral"}, {"summon": "druid_water", "guardian": true}, {"summon": "knight_water"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_water"}, {"summon": "knight_water"}, {"summon": "pixie_fire"}],
-          [{"summon": "knight_water"}, {"summon": "pixie_water"}, {"summon": "knight_fire"}],
-          [{"summon": "pixie_water"}, {"summon": "pixie_water", "guardian": true}, {"summon": "knight_water"}]
+          [{"summon": "pixie_neutral"}, {"summon": "knight_water"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_water"}, {"summon": "pixie_neutral"}, {"summon": "knight_fire"}],
+          [{"summon": "pixie_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "knight_water"}]
         ]}
       ]
     },
@@ -954,19 +954,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_fire"}],
-          [{"summon": "goblin_dark"}, {"summon": "slime_dark"}, {"summon": "goblin_fire"}],
-          [{"summon": "slime_dark"}, {"enemy": "mother_serpent", "element": "Dark"}, {"summon": "goblin_dark"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_dark"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_dark"}, {"summon": "slime_neutral"}, {"summon": "goblin_fire"}],
+          [{"summon": "slime_neutral"}, {"enemy": "mother_serpent", "element": "Dark"}, {"summon": "goblin_dark"}]
         ]},
         {"waves": [
-          [{"summon": "slime_fire"}, {"summon": "goblin_fire"}, {"summon": "slime_wind"}],
-          [{"summon": "goblin_fire"}, {"summon": "slime_fire"}, {"summon": "goblin_wind"}],
-          [{"summon": "slime_fire"}, {"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "goblin_fire"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_fire"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_fire"}, {"summon": "slime_neutral"}, {"summon": "goblin_wind"}],
+          [{"summon": "slime_neutral"}, {"enemy": "elder_wyvern", "element": "Fire"}, {"summon": "goblin_fire"}]
         ]},
         {"waves": [
-          [{"summon": "slime_wind"}, {"summon": "goblin_wind"}, {"summon": "slime_light"}],
-          [{"summon": "goblin_wind"}, {"summon": "slime_wind"}, {"summon": "goblin_light"}],
-          [{"summon": "slime_wind"}, {"enemy": "mother_serpent", "element": "Wind"}, {"summon": "goblin_wind"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_wind"}, {"summon": "slime_neutral"}],
+          [{"summon": "goblin_wind"}, {"summon": "slime_neutral"}, {"summon": "goblin_light"}],
+          [{"summon": "slime_neutral"}, {"enemy": "mother_serpent", "element": "Wind"}, {"summon": "goblin_wind"}]
         ]}
       ]
     },
@@ -979,19 +979,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_wind"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}],
-          [{"summon": "slime_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_light"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_light"}],
-          [{"summon": "slime_water"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "phoenix_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_water"}, {"summon": "paladin_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "paladin_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -1080,19 +1080,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_fire"}, {"summon": "crow_fire"}, {"summon": "bird_wind"}],
-          [{"summon": "crow_fire"}, {"summon": "bird_fire"}, {"summon": "crow_wind"}],
-          [{"summon": "bird_fire"}, {"summon": "bird_fire", "guardian": true}, {"summon": "crow_fire"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_fire"}, {"summon": "bird_neutral"}],
+          [{"summon": "crow_fire"}, {"summon": "bird_neutral"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "crow_fire"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "crow_wind"}, {"summon": "bird_light"}],
-          [{"summon": "crow_wind"}, {"summon": "bird_wind"}, {"summon": "crow_light"}],
-          [{"summon": "bird_wind"}, {"summon": "bird_wind", "guardian": true}, {"summon": "crow_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_wind"}, {"summon": "bird_neutral"}],
+          [{"summon": "crow_wind"}, {"summon": "bird_neutral"}, {"summon": "crow_light"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "crow_wind"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "crow_wind"}, {"summon": "bird_dark"}],
-          [{"summon": "crow_wind"}, {"summon": "bird_wind"}, {"summon": "crow_dark"}],
-          [{"summon": "bird_wind"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "crow_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_wind"}, {"summon": "bird_neutral"}],
+          [{"summon": "crow_wind"}, {"summon": "bird_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "crow_wind"}]
         ]}
       ]
     },
@@ -1131,19 +1131,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_water"}, {"summon": "pixie_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_fire"}],
-          [{"summon": "slime_water"}, {"summon": "bird_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_wind"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_wind"}],
-          [{"summon": "slime_water"}, {"summon": "vampire_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "vampire_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -1181,19 +1181,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "troll_water"}, {"summon": "slime_water"}, {"summon": "troll_wind"}],
-          [{"summon": "slime_water"}, {"summon": "troll_water"}, {"summon": "slime_wind"}],
-          [{"summon": "troll_water"}, {"enemy": "celestial_sea_goat", "element": "Water"}, {"summon": "slime_water"}]
+          [{"summon": "troll_water"}, {"summon": "slime_neutral"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_neutral"}, {"summon": "troll_water"}, {"summon": "slime_neutral"}],
+          [{"summon": "troll_water"}, {"enemy": "celestial_sea_goat", "element": "Water"}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "troll_dark"}, {"summon": "slime_dark"}, {"summon": "troll_wind"}],
-          [{"summon": "slime_dark"}, {"summon": "troll_dark"}, {"summon": "slime_wind"}],
-          [{"summon": "troll_dark"}, {"enemy": "celestial_sea_goat", "element": "Dark"}, {"summon": "slime_dark"}]
+          [{"summon": "troll_dark"}, {"summon": "slime_neutral"}, {"summon": "troll_wind"}],
+          [{"summon": "slime_neutral"}, {"summon": "troll_dark"}, {"summon": "slime_neutral"}],
+          [{"summon": "troll_dark"}, {"enemy": "celestial_sea_goat", "element": "Dark"}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "troll_light"}, {"summon": "slime_light"}, {"summon": "troll_dark"}],
-          [{"summon": "slime_light"}, {"summon": "troll_light"}, {"summon": "slime_dark"}],
-          [{"summon": "troll_light"}, {"enemy": "celestial_sea_goat", "element": "Light"}, {"summon": "slime_light"}]
+          [{"summon": "troll_light"}, {"summon": "slime_neutral"}, {"summon": "troll_dark"}],
+          [{"summon": "slime_neutral"}, {"summon": "troll_light"}, {"summon": "slime_neutral"}],
+          [{"summon": "troll_light"}, {"enemy": "celestial_sea_goat", "element": "Light"}, {"summon": "slime_neutral"}]
         ]}
       ]
     },
@@ -1207,19 +1207,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_light"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_light"}],
-          [{"summon": "slime_water"}, {"summon": "dragon_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "dragon_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_dark"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_water"}, {"summon": "wizard_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "wizard_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "pixie_water"}, {"summon": "slime_fire"}],
-          [{"summon": "pixie_water"}, {"summon": "slime_water"}, {"summon": "pixie_fire"}],
-          [{"summon": "slime_water"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "druid_water", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -1234,19 +1234,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_dark"}],
-          [{"summon": "gargoyle_wind"}, {"summon": "bird_wind"}, {"summon": "gargoyle_dark"}],
-          [{"summon": "bird_wind"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}, {"summon": "bird_neutral"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "gargoyle_light"}, {"summon": "bird_fire"}],
-          [{"summon": "gargoyle_light"}, {"summon": "bird_light"}, {"summon": "gargoyle_fire"}],
-          [{"summon": "bird_light"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "gargoyle_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_light"}, {"summon": "bird_neutral"}],
+          [{"summon": "gargoyle_light"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_fire"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "gargoyle_light"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_water"}],
-          [{"summon": "gargoyle_wind"}, {"summon": "bird_wind"}, {"summon": "gargoyle_water"}],
-          [{"summon": "bird_wind"}, {"summon": "dragon_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}, {"summon": "bird_neutral"}],
+          [{"summon": "gargoyle_wind"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_water"}],
+          [{"summon": "bird_neutral"}, {"summon": "dragon_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
         ]}
       ]
     },
@@ -1259,19 +1259,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "imp_water"}, {"summon": "slime_fire"}, {"summon": "imp_water"}],
-          [{"summon": "slime_water"}, {"summon": "imp_fire"}, {"summon": "slime_water"}, {"summon": "imp_water"}],
-          [{"summon": "slime_fire"}, {"summon": "imp_water", "guardian": true}, {"summon": "imp_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "imp_water"}, {"summon": "slime_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "imp_fire"}, {"summon": "slime_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "imp_water", "guardian": true}, {"summon": "imp_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "imp_water"}, {"summon": "slime_wind"}, {"summon": "imp_water"}],
-          [{"summon": "slime_water"}, {"summon": "imp_wind"}, {"summon": "slime_water"}, {"summon": "imp_water"}],
-          [{"summon": "slime_wind"}, {"summon": "wizard_water", "guardian": true}, {"summon": "imp_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "imp_water"}, {"summon": "slime_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "imp_wind"}, {"summon": "slime_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "wizard_water", "guardian": true}, {"summon": "imp_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "imp_water"}, {"summon": "slime_light"}, {"summon": "imp_water"}],
-          [{"summon": "slime_water"}, {"summon": "imp_light"}, {"summon": "slime_water"}, {"summon": "imp_water"}],
-          [{"summon": "slime_light"}, {"summon": "bird_water", "guardian": true}, {"summon": "imp_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "imp_water"}, {"summon": "slime_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "imp_light"}, {"summon": "slime_neutral"}, {"summon": "imp_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "imp_water"}]
         ]}
       ]
     },
@@ -1335,19 +1335,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_dark"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_water"}, {"summon": "goblin_dark"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_dark"}, {"summon": "dragon_water", "guardian": true}, {"summon": "goblin_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_dark"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "dragon_water", "guardian": true}, {"summon": "goblin_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_fire"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_water"}, {"summon": "goblin_fire"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_fire"}, {"summon": "goblin_water", "guardian": true}, {"summon": "goblin_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_fire"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water", "guardian": true}, {"summon": "goblin_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_wind"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_water"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_wind"}, {"summon": "wizard_water", "guardian": true}, {"summon": "goblin_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_wind"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "wizard_water", "guardian": true}, {"summon": "goblin_water"}]
         ]}
       ]
     },
@@ -1385,19 +1385,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_water"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_light"}, {"summon": "pixie_water"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_water"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_water"}, {"summon": "pixie_water"}, {"summon": "bird_light"}, {"summon": "pixie_water"}],
-          [{"summon": "bird_water"}, {"summon": "pixie_light"}, {"summon": "bird_water"}, {"summon": "pixie_water"}],
-          [{"summon": "bird_light"}, {"summon": "bird_water", "guardian": true}, {"summon": "pixie_water"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_dark"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_light"}, {"summon": "pixie_dark"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_dark"}, {"summon": "pixie_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -1460,19 +1460,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "imp_wind"}, {"summon": "pixie_wind"}, {"summon": "imp_fire"}, {"summon": "pixie_wind"}],
-          [{"summon": "imp_wind"}, {"summon": "pixie_fire"}, {"summon": "imp_wind"}, {"summon": "pixie_wind"}],
-          [{"summon": "imp_fire"}, {"summon": "wizard_wind", "guardian": true}, {"summon": "pixie_wind"}]
+          [{"summon": "imp_wind"}, {"summon": "pixie_neutral"}, {"summon": "imp_fire"}, {"summon": "pixie_neutral"}],
+          [{"summon": "imp_wind"}, {"summon": "pixie_neutral"}, {"summon": "imp_wind"}, {"summon": "pixie_neutral"}],
+          [{"summon": "imp_fire"}, {"summon": "wizard_wind", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "imp_light"}, {"summon": "pixie_light"}, {"summon": "imp_water"}, {"summon": "pixie_light"}],
-          [{"summon": "imp_light"}, {"summon": "pixie_water"}, {"summon": "imp_light"}, {"summon": "pixie_light"}],
-          [{"summon": "imp_water"}, {"summon": "wizard_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "imp_light"}, {"summon": "pixie_neutral"}, {"summon": "imp_water"}, {"summon": "pixie_neutral"}],
+          [{"summon": "imp_light"}, {"summon": "pixie_neutral"}, {"summon": "imp_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "imp_water"}, {"summon": "wizard_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "imp_light"}, {"summon": "pixie_light"}, {"summon": "imp_wind"}, {"summon": "pixie_light"}],
-          [{"summon": "imp_light"}, {"summon": "pixie_wind"}, {"summon": "imp_light"}, {"summon": "pixie_light"}],
-          [{"summon": "imp_wind"}, {"summon": "imp_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "imp_light"}, {"summon": "pixie_neutral"}, {"summon": "imp_wind"}, {"summon": "pixie_neutral"}],
+          [{"summon": "imp_light"}, {"summon": "pixie_neutral"}, {"summon": "imp_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "imp_wind"}, {"summon": "imp_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -1636,19 +1636,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_dark"}, {"summon": "pixie_dark"}, {"summon": "slime_light"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_dark"}, {"summon": "pixie_light"}, {"summon": "slime_dark"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_light"}, {"summon": "druid_dark", "guardian": true}, {"summon": "pixie_dark"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "druid_dark", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_dark"}, {"summon": "pixie_dark"}, {"summon": "slime_fire"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_dark"}, {"summon": "pixie_fire"}, {"summon": "slime_dark"}, {"summon": "pixie_dark"}],
-          [{"summon": "slime_fire"}, {"summon": "slime_dark", "guardian": true}, {"summon": "pixie_dark"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "slime_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "slime_fire"}, {"summon": "pixie_fire"}, {"summon": "slime_wind"}, {"summon": "pixie_fire"}],
-          [{"summon": "slime_fire"}, {"summon": "pixie_wind"}, {"summon": "slime_fire"}, {"summon": "pixie_fire"}],
-          [{"summon": "slime_wind"}, {"summon": "druid_fire", "guardian": true}, {"summon": "pixie_fire"}]
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "pixie_neutral"}, {"summon": "slime_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "slime_neutral"}, {"summon": "druid_fire", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -1661,19 +1661,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_dark"}, {"summon": "crow_dark"}, {"summon": "bird_fire"}, {"summon": "crow_dark"}],
-          [{"summon": "bird_dark"}, {"summon": "crow_fire"}, {"summon": "bird_dark"}, {"summon": "crow_dark"}],
-          [{"summon": "bird_fire"}, {"summon": "bird_dark", "guardian": true}, {"summon": "crow_dark"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_dark"}, {"summon": "bird_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_fire"}, {"summon": "bird_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "crow_dark"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "crow_wind"}, {"summon": "bird_water"}, {"summon": "crow_wind"}],
-          [{"summon": "bird_wind"}, {"summon": "crow_water"}, {"summon": "bird_wind"}, {"summon": "crow_wind"}],
-          [{"summon": "bird_water"}, {"summon": "bird_wind", "guardian": true}, {"summon": "crow_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_wind"}, {"summon": "bird_neutral"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_water"}, {"summon": "bird_neutral"}, {"summon": "crow_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "crow_wind"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "crow_light"}, {"summon": "bird_wind"}, {"summon": "crow_light"}],
-          [{"summon": "bird_light"}, {"summon": "crow_wind"}, {"summon": "bird_light"}, {"summon": "crow_light"}],
-          [{"summon": "bird_wind"}, {"summon": "bird_light", "guardian": true}, {"summon": "crow_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_light"}, {"summon": "bird_neutral"}, {"summon": "crow_light"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_wind"}, {"summon": "bird_neutral"}, {"summon": "crow_light"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "crow_light"}]
         ]}
       ]
     },
@@ -1686,19 +1686,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_fire"}, {"summon": "crow_fire"}, {"summon": "bird_wind"}, {"summon": "crow_fire"}],
-          [{"summon": "bird_fire"}, {"summon": "crow_wind"}, {"summon": "bird_fire"}, {"summon": "crow_fire"}],
-          [{"summon": "bird_wind"}, {"summon": "phoenix_fire", "guardian": true}, {"summon": "crow_fire"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_fire"}, {"summon": "bird_neutral"}, {"summon": "crow_fire"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_wind"}, {"summon": "bird_neutral"}, {"summon": "crow_fire"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_fire", "guardian": true}, {"summon": "crow_fire"}]
         ]},
         {"waves": [
-          [{"summon": "bird_dark"}, {"summon": "crow_dark"}, {"summon": "bird_wind"}, {"summon": "crow_dark"}],
-          [{"summon": "bird_dark"}, {"summon": "crow_wind"}, {"summon": "bird_dark"}, {"summon": "crow_dark"}],
-          [{"summon": "bird_wind"}, {"summon": "phoenix_dark", "guardian": true}, {"summon": "crow_dark"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_dark"}, {"summon": "bird_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_wind"}, {"summon": "bird_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_dark", "guardian": true}, {"summon": "crow_dark"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "crow_light"}, {"summon": "bird_dark"}, {"summon": "crow_light"}],
-          [{"summon": "bird_light"}, {"summon": "crow_dark"}, {"summon": "bird_light"}, {"summon": "crow_light"}],
-          [{"summon": "bird_dark"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "crow_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "crow_light"}, {"summon": "bird_neutral"}, {"summon": "crow_light"}],
+          [{"summon": "bird_neutral"}, {"summon": "crow_dark"}, {"summon": "bird_neutral"}, {"summon": "crow_light"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "crow_light"}]
         ]}
       ]
     },
@@ -1762,19 +1762,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_dark"}, {"summon": "goblin_dark"}, {"summon": "slime_fire"}, {"summon": "goblin_dark"}],
-          [{"summon": "slime_dark"}, {"summon": "goblin_fire"}, {"summon": "slime_dark"}, {"summon": "goblin_dark"}],
-          [{"summon": "slime_fire"}, {"summon": "slime_dark", "guardian": true}, {"summon": "goblin_dark"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_dark"}, {"summon": "slime_neutral"}, {"summon": "goblin_dark"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_fire"}, {"summon": "slime_neutral"}, {"summon": "goblin_dark"}],
+          [{"summon": "slime_neutral"}, {"summon": "slime_neutral", "guardian": true}, {"summon": "goblin_dark"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_wind"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_water"}, {"summon": "goblin_wind"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_wind"}, {"summon": "crow_water", "guardian": true}, {"summon": "goblin_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_wind"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "crow_water", "guardian": true}, {"summon": "goblin_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "goblin_water"}, {"summon": "slime_light"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_water"}, {"summon": "goblin_light"}, {"summon": "slime_water"}, {"summon": "goblin_water"}],
-          [{"summon": "slime_light"}, {"summon": "bandit_water", "guardian": true}, {"summon": "goblin_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "goblin_water"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "goblin_light"}, {"summon": "slime_neutral"}, {"summon": "goblin_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "bandit_water", "guardian": true}, {"summon": "goblin_water"}]
         ]}
       ]
     },
@@ -1787,19 +1787,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "pixie_fire"}, {"summon": "imp_fire"}, {"summon": "pixie_wind"}, {"summon": "imp_fire"}],
-          [{"summon": "pixie_fire"}, {"summon": "imp_wind"}, {"summon": "pixie_fire"}, {"summon": "imp_fire"}],
-          [{"summon": "pixie_wind"}, {"summon": "pixie_fire", "guardian": true}, {"summon": "imp_fire"}]
+          [{"summon": "pixie_neutral"}, {"summon": "imp_fire"}, {"summon": "pixie_neutral"}, {"summon": "imp_fire"}],
+          [{"summon": "pixie_neutral"}, {"summon": "imp_wind"}, {"summon": "pixie_neutral"}, {"summon": "imp_fire"}],
+          [{"summon": "pixie_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "imp_fire"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_dark"}, {"summon": "imp_dark"}, {"summon": "pixie_wind"}, {"summon": "imp_dark"}],
-          [{"summon": "pixie_dark"}, {"summon": "imp_wind"}, {"summon": "pixie_dark"}, {"summon": "imp_dark"}],
-          [{"summon": "pixie_wind"}, {"summon": "pixie_dark", "guardian": true}, {"summon": "imp_dark"}]
+          [{"summon": "pixie_neutral"}, {"summon": "imp_dark"}, {"summon": "pixie_neutral"}, {"summon": "imp_dark"}],
+          [{"summon": "pixie_neutral"}, {"summon": "imp_wind"}, {"summon": "pixie_neutral"}, {"summon": "imp_dark"}],
+          [{"summon": "pixie_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "imp_dark"}]
         ]},
         {"waves": [
-          [{"summon": "pixie_light"}, {"summon": "imp_light"}, {"summon": "pixie_dark"}, {"summon": "imp_light"}],
-          [{"summon": "pixie_light"}, {"summon": "imp_dark"}, {"summon": "pixie_light"}, {"summon": "imp_light"}],
-          [{"summon": "pixie_dark"}, {"summon": "goblin_light", "guardian": true}, {"summon": "imp_light"}]
+          [{"summon": "pixie_neutral"}, {"summon": "imp_light"}, {"summon": "pixie_neutral"}, {"summon": "imp_light"}],
+          [{"summon": "pixie_neutral"}, {"summon": "imp_dark"}, {"summon": "pixie_neutral"}, {"summon": "imp_light"}],
+          [{"summon": "pixie_neutral"}, {"summon": "goblin_light", "guardian": true}, {"summon": "imp_light"}]
         ]}
       ]
     },
@@ -1837,19 +1837,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_dark"}, {"summon": "gargoyle_wind"}],
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_dark"}, {"summon": "bird_wind"}, {"summon": "gargoyle_wind"}],
-          [{"summon": "bird_dark"}, {"summon": "dragon_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_dark"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "dragon_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_fire"}, {"summon": "gargoyle_wind"}],
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_fire"}, {"summon": "bird_wind"}, {"summon": "gargoyle_wind"}],
-          [{"summon": "bird_fire"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_fire"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_wind"}, {"summon": "bird_water"}, {"summon": "gargoyle_wind"}],
-          [{"summon": "bird_wind"}, {"summon": "gargoyle_water"}, {"summon": "bird_wind"}, {"summon": "gargoyle_wind"}],
-          [{"summon": "bird_water"}, {"summon": "gargoyle_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_water"}, {"summon": "bird_neutral"}, {"summon": "gargoyle_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "gargoyle_wind", "guardian": true}, {"summon": "gargoyle_wind"}]
         ]}
       ]
     },
@@ -1863,19 +1863,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_water"}, {"summon": "slime_water"}, {"summon": "bird_fire"}, {"summon": "slime_water"}],
-          [{"summon": "bird_water"}, {"summon": "slime_fire"}, {"summon": "bird_water"}, {"summon": "slime_water"}],
-          [{"summon": "bird_fire"}, {"summon": "imp_water", "guardian": true}, {"summon": "slime_water"}]
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "imp_water", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_fire"}, {"summon": "slime_fire"}, {"summon": "bird_wind"}, {"summon": "slime_fire"}],
-          [{"summon": "bird_fire"}, {"summon": "slime_wind"}, {"summon": "bird_fire"}, {"summon": "slime_fire"}],
-          [{"summon": "bird_wind"}, {"summon": "bird_fire", "guardian": true}, {"summon": "slime_fire"}]
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "slime_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "slime_wind"}, {"summon": "bird_light"}, {"summon": "slime_wind"}],
-          [{"summon": "bird_wind"}, {"summon": "slime_light"}, {"summon": "bird_wind"}, {"summon": "slime_wind"}],
-          [{"summon": "bird_light"}, {"summon": "vampire_wind", "guardian": true}, {"summon": "slime_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "slime_neutral"}, {"summon": "bird_neutral"}, {"summon": "slime_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "vampire_wind", "guardian": true}, {"summon": "slime_neutral"}]
         ]}
       ]
     },
@@ -1915,19 +1915,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "slime_wind"}, {"summon": "crow_wind"}, {"summon": "slime_light"}, {"summon": "crow_wind"}],
-          [{"summon": "slime_wind"}, {"summon": "crow_light"}, {"summon": "slime_wind"}, {"summon": "crow_wind"}],
-          [{"summon": "slime_light"}, {"enemy": "celestial_hydra", "element": "Wind"}, {"summon": "crow_wind"}]
+          [{"summon": "slime_neutral"}, {"summon": "crow_wind"}, {"summon": "slime_neutral"}, {"summon": "crow_wind"}],
+          [{"summon": "slime_neutral"}, {"summon": "crow_light"}, {"summon": "slime_neutral"}, {"summon": "crow_wind"}],
+          [{"summon": "slime_neutral"}, {"enemy": "celestial_hydra", "element": "Wind"}, {"summon": "crow_wind"}]
         ]},
         {"waves": [
-          [{"summon": "slime_water"}, {"summon": "crow_water"}, {"summon": "slime_dark"}, {"summon": "crow_water"}],
-          [{"summon": "slime_water"}, {"summon": "crow_dark"}, {"summon": "slime_water"}, {"summon": "crow_water"}],
-          [{"summon": "slime_dark"}, {"enemy": "mother_serpent", "element": "Water"}, {"summon": "crow_water"}]
+          [{"summon": "slime_neutral"}, {"summon": "crow_water"}, {"summon": "slime_neutral"}, {"summon": "crow_water"}],
+          [{"summon": "slime_neutral"}, {"summon": "crow_dark"}, {"summon": "slime_neutral"}, {"summon": "crow_water"}],
+          [{"summon": "slime_neutral"}, {"enemy": "mother_serpent", "element": "Water"}, {"summon": "crow_water"}]
         ]},
         {"waves": [
-          [{"summon": "slime_dark"}, {"summon": "crow_dark"}, {"summon": "slime_fire"}, {"summon": "crow_dark"}],
-          [{"summon": "slime_dark"}, {"summon": "crow_fire"}, {"summon": "slime_dark"}, {"summon": "crow_dark"}],
-          [{"summon": "slime_fire"}, {"enemy": "elder_wyvern", "element": "Dark"}, {"summon": "crow_dark"}]
+          [{"summon": "slime_neutral"}, {"summon": "crow_dark"}, {"summon": "slime_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "slime_neutral"}, {"summon": "crow_fire"}, {"summon": "slime_neutral"}, {"summon": "crow_dark"}],
+          [{"summon": "slime_neutral"}, {"enemy": "elder_wyvern", "element": "Dark"}, {"summon": "crow_dark"}]
         ]}
       ]
     },
@@ -1940,19 +1940,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_fire"}, {"summon": "pixie_fire"}, {"summon": "bird_dark"}, {"summon": "pixie_fire"}],
-          [{"summon": "bird_fire"}, {"summon": "pixie_dark"}, {"summon": "bird_fire"}, {"summon": "pixie_fire"}],
-          [{"summon": "bird_dark"}, {"summon": "bird_fire", "guardian": true}, {"summon": "pixie_fire"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_fire"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_light"}, {"summon": "pixie_fire"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_fire"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_dark"}, {"summon": "pixie_dark"}, {"summon": "bird_water"}, {"summon": "pixie_dark"}],
-          [{"summon": "bird_dark"}, {"summon": "pixie_water"}, {"summon": "bird_dark"}, {"summon": "pixie_dark"}],
-          [{"summon": "bird_water"}, {"summon": "bird_dark", "guardian": true}, {"summon": "pixie_dark"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -1992,19 +1992,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_water"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_light"}, {"summon": "pixie_water"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_water"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_wind"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_light"}, {"summon": "pixie_wind"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_wind"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_dark"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_light"}, {"summon": "pixie_dark"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_dark"}, {"summon": "pixie_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -2043,19 +2043,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "bird_light"}, {"summon": "pixie_light"}, {"summon": "bird_dark"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_light"}, {"summon": "pixie_dark"}, {"summon": "bird_light"}, {"summon": "pixie_light"}],
-          [{"summon": "bird_dark"}, {"summon": "bird_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "bird_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "pixie_wind"}, {"summon": "bird_fire"}, {"summon": "pixie_wind"}],
-          [{"summon": "bird_wind"}, {"summon": "pixie_fire"}, {"summon": "bird_wind"}, {"summon": "pixie_wind"}],
-          [{"summon": "bird_fire"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "pixie_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "phoenix_wind", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "bird_wind"}, {"summon": "pixie_wind"}, {"summon": "bird_water"}, {"summon": "pixie_wind"}],
-          [{"summon": "bird_wind"}, {"summon": "pixie_water"}, {"summon": "bird_wind"}, {"summon": "pixie_wind"}],
-          [{"summon": "bird_water"}, {"summon": "pixie_wind", "guardian": true}, {"summon": "pixie_wind"}]
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral"}, {"summon": "bird_neutral"}, {"summon": "pixie_neutral"}],
+          [{"summon": "bird_neutral"}, {"summon": "pixie_neutral", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     },
@@ -2144,19 +2144,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_dark"}, {"summon": "bird_wind"}, {"summon": "goblin_wind"}],
-          [{"summon": "bird_dark"}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_dark"}, {"summon": "bird_wind"}],
-          [{"summon": "goblin_wind"}, {"summon": "bird_dark"}, {"summon": "vampire_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}]
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_dark"}, {"summon": "bird_neutral"}, {"summon": "goblin_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_dark"}, {"summon": "bird_neutral"}],
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "vampire_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_fire"}, {"summon": "bird_wind"}, {"summon": "goblin_wind"}],
-          [{"summon": "bird_fire"}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_fire"}, {"summon": "bird_wind"}],
-          [{"summon": "goblin_wind"}, {"summon": "bird_fire"}, {"summon": "crow_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}]
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_fire"}, {"summon": "bird_neutral"}, {"summon": "goblin_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_fire"}, {"summon": "bird_neutral"}],
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "crow_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_water"}, {"summon": "bird_wind"}, {"summon": "goblin_wind"}],
-          [{"summon": "bird_water"}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}, {"summon": "goblin_water"}, {"summon": "bird_wind"}],
-          [{"summon": "goblin_wind"}, {"summon": "bird_water"}, {"summon": "goblin_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_wind"}]
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_water"}, {"summon": "bird_neutral"}, {"summon": "goblin_wind"}],
+          [{"summon": "bird_neutral"}, {"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_water"}, {"summon": "bird_neutral"}],
+          [{"summon": "goblin_wind"}, {"summon": "bird_neutral"}, {"summon": "goblin_wind", "guardian": true}, {"summon": "goblin_wind"}, {"summon": "bird_neutral"}]
         ]}
       ]
     },
@@ -2171,19 +2171,19 @@
       ]},
       "challenges": [
         {"waves": [
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_fire"}, {"summon": "pixie_light"}],
-          [{"summon": "knight_light"}, {"summon": "pixie_fire"}, {"summon": "knight_light"}, {"summon": "pixie_light"}],
-          [{"summon": "knight_fire"}, {"summon": "paladin_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_fire"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_fire"}, {"summon": "paladin_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_water"}, {"summon": "pixie_light"}],
-          [{"summon": "knight_light"}, {"summon": "pixie_water"}, {"summon": "knight_light"}, {"summon": "pixie_light"}],
-          [{"summon": "knight_water"}, {"summon": "dragon_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_water"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_water"}, {"summon": "dragon_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]},
         {"waves": [
-          [{"summon": "knight_light"}, {"summon": "pixie_light"}, {"summon": "knight_wind"}, {"summon": "pixie_light"}],
-          [{"summon": "knight_light"}, {"summon": "pixie_wind"}, {"summon": "knight_light"}, {"summon": "pixie_light"}],
-          [{"summon": "knight_wind"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "pixie_light"}]
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_wind"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_light"}, {"summon": "pixie_neutral"}, {"summon": "knight_light"}, {"summon": "pixie_neutral"}],
+          [{"summon": "knight_wind"}, {"summon": "phoenix_light", "guardian": true}, {"summon": "pixie_neutral"}]
         ]}
       ]
     }

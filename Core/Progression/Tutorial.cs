@@ -21,7 +21,7 @@ namespace Sigilos.Core.Progression
 		/// <summary>Quem bate, quem atordoa (a segunda habilidade) e quem cura, nesta ordem.</summary>
 		public const string Striker = "imp_water";
 		public const string Stunner = "goblin_water";
-		public const string Healer = "pixie_water";
+		public const string Healer = "pixie_neutral";
 
 		public const int AllyLevel = 15;
 
@@ -43,10 +43,10 @@ namespace Sigilos.Core.Progression
 			.Select(summon => new TeamMember(summon, summon.Rarity, AllyLevel, false, Array.Empty<int>(), Array.Empty<Runes.Rune>()))
 			.ToList());
 
-		/// <summary>Duas ondas: dois de Fogo; depois um de Vento (a desvantagem da Água) e um de Fogo.</summary>
+		/// <summary>Duas ondas: um Neutro e um de Fogo; depois um de Vento (a desvantagem da Água) e um de Fogo.</summary>
 		public static Encounter Encounter() => new(3, 1, new IReadOnlyList<StageEnemy>[]
 		{
-			new[] { new StageEnemy { Summon = "slime_fire" }, new StageEnemy { Summon = "goblin_fire" } },
+			new[] { new StageEnemy { Summon = "slime_neutral" }, new StageEnemy { Summon = "goblin_fire" } },
 			new[] { new StageEnemy { Summon = "wolf_wind" }, new StageEnemy { Summon = "bandit_fire" } },
 		}, Scale: 0.45);
 	}

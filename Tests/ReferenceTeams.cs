@@ -119,7 +119,7 @@ namespace Sigilos.Tests
 			{
 				new("wizard_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Finesse), RuneStat.Resistance),
 				new("wolf_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Finesse), RuneStat.Resistance),
-				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Finesse), RuneStat.Resistance),
+				new("slime_neutral", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Finesse), RuneStat.Resistance),
 				new("wolf_water", Sets(RuneSet.Lethal, RuneSet.Sustain)),
 				new("lich_fire", Sets(RuneSet.Lethal, RuneSet.Sustain)),
 			},
@@ -127,7 +127,7 @@ namespace Sigilos.Tests
 			{
 				new("druid_fire", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Vigor)),
 				new("crow_water", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Sustain), RuneStat.Accuracy),
-				new("pixie_dark", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Sustain), RuneStat.Accuracy),
+				new("pixie_neutral", Sets(RuneSet.Vigor, RuneSet.Finesse, RuneSet.Sustain), RuneStat.Accuracy),
 				new("knight_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("lich_fire", Sets(RuneSet.Lethal, RuneSet.Strike)),
 			},
@@ -137,7 +137,7 @@ namespace Sigilos.Tests
 				new("lich_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("pirate_wind", Sets(RuneSet.Lethal, RuneSet.Strike)),
 				new("knight_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
-				new("slime_water", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
+				new("slime_neutral", Sets(RuneSet.Vigor, RuneSet.Sustain, RuneSet.Sustain)),
 			},
 		};
 

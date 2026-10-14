@@ -88,7 +88,8 @@
     "Water": "Water",
     "Wind": "Wind",
     "Light": "Light",
-    "Dark": "Dark"
+    "Dark": "Dark",
+    "Neutral": "Neutral"
   },
 
   "role": {
@@ -1064,7 +1065,7 @@
       "leader": { "title": "Leader", "text": "The first one in the team applies its Leadership to everyone. The percentage is on the base stat, never on what came from sigils." },
       "auto": { "title": "Auto and Auto Battle", "text": "Auto uses the strongest ready skill on its own. Stages and floors already beaten get the Auto Battle: you choose how many fights in a row ({0} to start), each taking the time it would on Auto at 2×. It keeps going while you do other things (tending sigils, leveling homunculi); the notice at the top of the screen shows the progress and opens its window. It stops when you press Stop, when Mana runs out or when the sigil inventory fills up. Tap an enemy during a fight to mark it: Auto strikes it while it can (hold the enemy to see its summary). In a fight with a boss, the pause has \"Focus the boss on Auto\": on, the whole team strikes the boss whenever it can." },
       "elements": "Elements",
-      "elements_text": "With advantage, damage goes up {0}; with disadvantage, it goes down {1}. Auto targets whoever it beats first.",
+      "elements_text": "With advantage, damage goes up {0}; with disadvantage, it goes down {1}. Auto targets whoever it beats first. Neutral, the element of 2★ homunculi, has neither advantage nor disadvantage.",
       "wins": "{0} beats {1}"
     },
     "stats": {

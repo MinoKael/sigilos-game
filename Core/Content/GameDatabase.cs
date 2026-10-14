@@ -68,7 +68,7 @@ namespace Sigilos.Core.Content
 				enemy.Stats = statModel.Complete(enemy.Stats);
 
 			AllSummons = summons;
-			Summons = summons.Where(s => s.Family.Active).ToList();
+			Summons = summons.Where(s => s.Family.Active && s.Active).ToList();
 			_summonsById = summons.GroupBy(s => s.Id).ToDictionary(g => g.Key, g => g.First());
 			// O Núcleo de Infusão é guardado como monstro, mas não é invocação: só o id o encontra.
 			_summonsById[InfusionCore.Id] = InfusionCore.Summon;
@@ -115,7 +115,7 @@ namespace Sigilos.Core.Content
 		/// O id é de uma invocação em jogo (ou do Núcleo de Infusão). Variante de família fora do jogo, que um
 		/// save antigo ainda guarda, dá falso: some das listas e das equipes, sem apagar o que o save tem.
 		/// </summary>
-		public bool HasSummon(string id) => _summonsById.TryGetValue(id, out var summon) && (summon.Family == null || summon.Family.Active);
+		public bool HasSummon(string id) => _summonsById.TryGetValue(id, out var summon) && (summon.Family == null || (summon.Family.Active && summon.Active));
 
 		/// <summary>O id existe nos arquivos, esteja a invocação em jogo ou não (inimigos de fases usam).</summary>
 		public bool Knows(string id) => _summonsById.ContainsKey(id);
@@ -181,6 +181,19 @@ namespace Sigilos.Core.Content
 					yield return $"Família {family.Id}: falta a imagem.";
 				if (family.Variations.Count == 0)
 					yield return $"Família {family.Id}: sem variantes.";
+				else if (!family.Variations.Values.Any(s => s.Active))
+					yield return $"Família {family.Id}: sem variantes ativas.";
+
+				// Homúnculo de 2★ não tem variantes: uma só, Neutra; e só o de 2★ é Neutro.
+				var live = family.Variations.Values.Where(s => s.Active).ToList();
+				foreach (var summon in live)
+				{
+					if ((summon.Rarity == 2) != (summon.Element == Element.Neutral))
+						yield return $"Família {family.Id}: a variante \"{summon.Id}\" tem {summon.Rarity}★ e elemento {summon.Element}; só as de 2★ são Neutras, e as de 2★ são sempre Neutras.";
+				}
+
+				if (live.Any(s => s.Rarity == 2) && live.Count > 1)
+					yield return $"Família {family.Id}: homúnculo de 2★ não tem variantes (tem {live.Count} ativas).";
 				foreach (var (key, summon) in family.Variations)
 				{
 					if (!string.Equals(key, summon.Element.ToString(), StringComparison.OrdinalIgnoreCase))

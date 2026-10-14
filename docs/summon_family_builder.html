@@ -536,7 +536,12 @@ const Core = (() => {
 
   const ELEMENTS = ["Fire", "Water", "Wind", "Light", "Dark"];
   // O nome do elemento em português: os nomes dos dados nascem em português ("Dragão de Fogo").
-  const ELEMENT_NAMES = {Fire: "Fogo", Water: "Água", Wind: "Vento", Light: "Luz", Dark: "Trevas"};
+  const ELEMENT_NAMES = {Neutral: "Neutro", Fire: "Fogo", Water: "Água", Wind: "Vento", Light: "Luz", Dark: "Trevas"};
+  // As variantes: o Neutro (a única variante dos homúnculos de 2★) e os cinco elementos. A tabela de viés do
+  // modelo (element_bias) segue só com os cinco: o Neutro não tem viés, usa o neutro.
+  const NEUTRAL_ELEMENT = "Neutral";
+  const VARIANT_ELEMENTS = [NEUTRAL_ELEMENT, ...ELEMENTS];
+  const TWO_STAR = 2;
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
   const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove"];
   // Efeitos e status ---------------------------------------------------------------------------------
@@ -763,7 +768,7 @@ const Core = (() => {
   };
 
   const FAMILY_KEYS = ["family_id", "base_name", "name", "star_grade", "image", "family_bias", "variations"];
-  const VARIATION_KEYS = ["variation_id", "name", "element", "role", "star_grade", "stats", "awakened_stats", "bias", "awakening_spd", "leader", "awakening", "skills"];
+  const VARIATION_KEYS = ["variation_id", "name", "element", "active", "role", "star_grade", "stats", "awakened_stats", "bias", "awakening_spd", "leader", "awakening", "skills"];
   const SKILL_KEYS = ["name", "image", "flavor", "cooldown", "effects", "levels", "awakenedEffects", "passive"];
   const NEUTRAL = Object.freeze({hp: 1, atk: 1, def: 1, spd: 0});
 
@@ -1079,14 +1084,58 @@ const Core = (() => {
     return Object.assign(out, skill.extra);
   }
 
+  /**
+   * Os elementos que a família oferece como abas: de 2★, o Neutro (e as variantes que o arquivo ainda tem,
+   * aposentadas); dos outros, os cinco elementos (e o Neutro só se o arquivo o tem, para aparecer o erro).
+   */
+  function elementsOf(family) {
+    const two = num(family.star_grade) === TWO_STAR;
+    return VARIANT_ELEMENTS.filter(e => {
+      const here = family.variations[keyOf(e)]?.enabled;
+      return e === NEUTRAL_ELEMENT ? two || here : two ? here : true;
+    });
+  }
+
+  /** A variante está em jogo: existe no arquivo e não foi aposentada ("active": false). */
+  const isLive = v => !!v && v.enabled && v.active !== false;
+
+  /**
+   * Ao mudar as estrelas naturais da família: de/para 2★ muda quais variantes valem. Entrando em 2★, liga o
+   * Neutro e aposenta (active: false, sem apagar) as outras; saindo, aposenta o Neutro e põe os cinco em jogo.
+   * Devolve o que mudou, para o aviso na tela.
+   */
+  function adjustVariants(family) {
+    const two = num(family.star_grade) === TWO_STAR;
+    const neutral = family.variations[keyOf(NEUTRAL_ELEMENT)];
+    const changed = [];
+    if (two) {
+      if (!neutral.enabled) { neutral.enabled = true; changed.push("Neutro criado"); }
+      if (neutral.active === false) { neutral.active = true; changed.push("Neutro em jogo"); }
+      for (const e of ELEMENTS) {
+        const v = family.variations[keyOf(e)];
+        if (v?.created) { v.enabled = false; v.created = false; changed.push(`${ELEMENT_NAMES[e]} tirado`); }
+        else if (v?.enabled && v.active !== false) { v.active = false; changed.push(`${ELEMENT_NAMES[e]} aposentado`); }
+      }
+    } else {
+      if (neutral.enabled && neutral.active !== false) { neutral.active = false; changed.push("Neutro aposentado"); }
+      for (const e of ELEMENTS) {
+        const v = family.variations[keyOf(e)];
+        if (v && !v.enabled) { v.enabled = true; v.active = true; v.created = true; changed.push(`${ELEMENT_NAMES[e]} criado`); }
+        else if (v && v.active === false) { v.active = true; changed.push(`${ELEMENT_NAMES[e]} em jogo`); }
+      }
+    }
+    return changed;
+  }
+
   function blankVariation(family, element, enabled = true) {
     const basic = blankSkill("Attack");
     basic.effects = format([{kind: "Damage", target: "Target", power: 2.45}]);
     basic.levels = format([{kind: "Damage", value: 0.05}, {kind: "Damage", value: 0.05}, {kind: "Damage", value: 0.1}, {kind: "Damage", value: 0.15}]);
     return {
       enabled,
+      active: true,
       variation_id: `${family.family_id}_${keyOf(element)}`,
-      name: `${family.base_name} de ${ELEMENT_NAMES[element]}`,
+      name: element === NEUTRAL_ELEMENT ? family.base_name : `${family.base_name} de ${ELEMENT_NAMES[element]}`,
       role: "Attack",
       star_grade: "",
       bias: {...NEUTRAL},
@@ -1106,7 +1155,7 @@ const Core = (() => {
       image: "new_family",
       family_bias: {...NEUTRAL}, variations: {}, extra: {},
     };
-    for (const element of ELEMENTS) family.variations[keyOf(element)] = blankVariation(family, element);
+    for (const element of VARIANT_ELEMENTS) family.variations[keyOf(element)] = blankVariation(family, element, element !== NEUTRAL_ELEMENT);
     return family;
   }
 
@@ -1122,7 +1171,7 @@ const Core = (() => {
       variations: {},
       extra: rest(source, FAMILY_KEYS),
     };
-    for (const element of ELEMENTS) {
+    for (const element of VARIANT_ELEMENTS) {
       const key = keyOf(element);
       const item = source.variations?.[key] ?? source.variations?.[element];
       if (!item) {
@@ -1131,6 +1180,7 @@ const Core = (() => {
       }
       family.variations[key] = {
         enabled: true,
+        active: item.active !== false,
         variation_id: item.variation_id || `${family.family_id}_${key}`,
         name: item.name || "",
         role: item.role || "Attack",
@@ -1160,15 +1210,16 @@ const Core = (() => {
     Object.assign(out, family.extra);
     out.variations = {};
 
-    for (const element of ELEMENTS) {
+    for (const element of VARIANT_ELEMENTS) {
       const v = family.variations[keyOf(element)];
       if (!v || !v.enabled) continue;
       const item = {
         variation_id: v.variation_id,
         name: v.name,
         element,
-        role: v.role,
       };
+      if (v.active === false) item.active = false;
+      item.role = v.role;
       if (ownStars(family, v)) item.star_grade = variationStar(family, v);
       Object.assign(item, {
         stats: variationStats(model, family, v, element, false) || {hp: 0, atk: 0, def: 0, spd: 0},
@@ -1209,8 +1260,19 @@ const Core = (() => {
     if (!/^[a-z0-9_]+$/.test(family.family_id || "")) add("warn", "Família", "Family ID: use minúsculas, números e _ (é o nome do arquivo).");
     if (budgetOf(model, star, false) === undefined) add("error", "Família", `${star}★ não tem orçamento no modelo.`);
 
-    const enabled = ELEMENTS.filter(e => family.variations[keyOf(e)]?.enabled);
+    const enabled = VARIANT_ELEMENTS.filter(e => family.variations[keyOf(e)]?.enabled);
     if (enabled.length === 0) add("error", "Família", "Nenhuma variante.");
+    else if (!enabled.some(e => isLive(family.variations[keyOf(e)]))) add("error", "Família", "Nenhuma variante em jogo (todas aposentadas).");
+
+    // Homúnculo de 2★ não tem variantes: uma só, Neutra; e só o de 2★ é Neutro (GameDatabase.Validate).
+    const live = enabled.filter(e => isLive(family.variations[keyOf(e)]));
+    for (const e of live) {
+      const own = variationStar(family, family.variations[keyOf(e)]);
+      if ((own === TWO_STAR) !== (e === NEUTRAL_ELEMENT))
+        add("error", e, `${own}★ com elemento ${e}: só as de 2★ são Neutras, e as de 2★ são sempre Neutras.`);
+    }
+    if (live.some(e => variationStar(family, family.variations[keyOf(e)]) === TWO_STAR) && live.length > 1)
+      add("error", "Família", `Homúnculo de 2★ não tem variantes: ${live.length} em jogo (aposente as outras com "Em jogo: Não").`);
 
     const otherIds = new Set(), otherNames = new Set();
     for (const other of others) {
@@ -1228,6 +1290,7 @@ const Core = (() => {
       if (isBlank(v.variation_id)) add("error", where, "Falta o Variation ID.");
       else if (ids.has(v.variation_id) || otherIds.has(v.variation_id)) add("error", where, `O id "${v.variation_id}" já existe.`);
       ids.add(v.variation_id);
+      if (v.active === false) continue;
       if (isBlank(v.name)) add("error", where, "Falta o nome.");
       if (!enums.roles.includes(v.role)) add("error", where, `Papel desconhecido: "${v.role}".`);
 
@@ -1496,7 +1559,7 @@ const Core = (() => {
   }
 
   return {
-    ELEMENTS, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
+    ELEMENTS, VARIANT_ELEMENTS, ELEMENT_NAMES, NEUTRAL_ELEMENT, elementsOf, isLive, adjustVariants, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
     EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PARTNER_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
     USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,
     stripJsonc, parseJsonc, leadingComments, format,
@@ -1589,7 +1652,8 @@ if (typeof module !== "undefined") module.exports = Core;
   }
 
   const variation = () => ui.family.variations[ui.active];
-  const elementOf = key => C.ELEMENTS.find(e => C.keyOf(e) === key);
+  const elementOf = key => C.VARIANT_ELEMENTS.find(e => C.keyOf(e) === key);
+  const firstLive = family => C.keyOf(C.VARIANT_ELEMENTS.find(e => C.isLive(family.variations[C.keyOf(e)])) || C.VARIANT_ELEMENTS.find(e => family.variations[C.keyOf(e)]?.enabled) || "Neutral");
   const others = () => ui.project ? [...ui.project.families.values()].map(f => f.data) : [];
   const issues = () => C.validateFamily(ui.model, ui.family, ui.enums, others());
 
@@ -1597,7 +1661,7 @@ if (typeof module !== "undefined") module.exports = Core;
     ui.family = family;
     ui.familyFile = file;
     ui.dirty = false;
-    if (!family.variations[ui.active]?.enabled) ui.active = C.keyOf(C.ELEMENTS.find(e => family.variations[C.keyOf(e)].enabled) || "Fire");
+    if (!C.isLive(family.variations[ui.active])) ui.active = firstLive(family);
     renderAll();
   }
 
@@ -1771,9 +1835,10 @@ if (typeof module !== "undefined") module.exports = Core;
   }
 
   function renderElementTabs() {
-    $("elementTabs").innerHTML = C.ELEMENTS.map(e => {
+    $("elementTabs").innerHTML = C.elementsOf(ui.family).map(e => {
       const key = C.keyOf(e), v = ui.family.variations[key];
-      return `<button class="tab ${key === ui.active ? "active" : ""} ${v.enabled ? "" : "off"}" data-action="element" data-key="${key}">${e}</button>`;
+      const retired = v.enabled && v.active === false;
+      return `<button class="tab ${key === ui.active ? "active" : ""} ${v.enabled && !retired ? "" : "off"}" data-action="element" data-key="${key}" title="${retired ? "Aposentada: fica no arquivo, fora do jogo" : ""}">${e}${retired ? " (aposentada)" : ""}</button>`;
     }).join("");
   }
 
@@ -1789,6 +1854,7 @@ if (typeof module !== "undefined") module.exports = Core;
         ${field("Variation ID", text(`${base}.variation_id`, v.variation_id))}
         ${field("Nome", text(`${base}.name`, v.name))}
         ${field("Elemento", `<input value="${element}" disabled>`)}
+        ${field("Em jogo (Não: aposentada, fica no arquivo e ainda resolve ids de saves e fases)", `<select data-path="${base}.active" data-type="bool"><option value="true" ${v.active === false ? "" : "selected"}>Sim</option><option value="false" ${v.active === false ? "selected" : ""}>Não (aposentada)</option></select>`)}
         ${field("Papel", select(`${base}.role`, v.role, ui.enums.roles))}
         ${field("Estrelas da variante", `<select data-path="${base}.star_grade" data-type="optional"><option value="">da família (${esc(ui.family.star_grade)}★)</option>${C.stars(ui.model).filter(s => s !== Number(ui.family.star_grade)).map(s => `<option value="${s}" ${String(s) === String(v.star_grade) ? "selected" : ""}>${s}★</option>`).join("")}</select>`)}
         ${field("Liderança: atributo", select(`${base}.leader.stat`, v.leader.stat, ui.enums.stats, "sem Liderança"))}
@@ -2184,7 +2250,7 @@ if (typeof module !== "undefined") module.exports = Core;
   }
 
   function renderSummary() {
-    $("familySummary").innerHTML = C.ELEMENTS.map(e => {
+    $("familySummary").innerHTML = C.elementsOf(ui.family).map(e => {
       const v = ui.family.variations[C.keyOf(e)];
       if (!v.enabled) return `<div style="padding:9px 0;border-bottom:1px solid var(--line)" class="note">${e}: sem variante</div>`;
       const star = C.variationStar(ui.family, v);
@@ -2381,7 +2447,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     const list = issues(), errors = list.filter(i => i.level === "error").length;
     $("previewBadges").innerHTML = `
       <span class="badge">${esc(ui.family.family_id)}_family.json</span>
-      <span class="badge">${C.ELEMENTS.filter(e => ui.family.variations[C.keyOf(e)].enabled).length} variantes</span>
+      <span class="badge">${C.VARIANT_ELEMENTS.filter(e => C.isLive(ui.family.variations[C.keyOf(e)])).length} variantes em jogo${C.VARIANT_ELEMENTS.some(e => ui.family.variations[C.keyOf(e)].enabled && ui.family.variations[C.keyOf(e)].active === false) ? " (há aposentadas)" : ""}</span>
       <span class="badge ${errors ? "bad" : "ok"}">${errors ? `${errors} erro(s): veja a aba Validação` : "pronto para Data/summons"}</span>`;
     $("jsonPreview").textContent = C.formatFamily(ui.model, ui.family);
   }
@@ -2637,6 +2703,13 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
       renderProject();
     } else if (node.dataset.fx) {
       if (node.type !== "number") editFx(node);
+    } else if (node.dataset.path === "star_grade") {
+      const changed = C.adjustVariants(ui.family);
+      if (changed.length) {
+        if (!ui.family.variations[ui.active]?.enabled || !C.elementsOf(ui.family).includes(elementOf(ui.active))) ui.active = firstLive(ui.family);
+        toast(`Estrelas naturais mudaram: ${changed.join(", ")}.`, 6);
+      }
+      renderAll();
     } else if (node.dataset.action === "skill-type") {
       const skill = getAt(node.dataset.skill);
       skill.passive = node.value === "Passiva" ? {kind: ui.enums.passives[0] || "", value: 0.2, awakenedValue: "", scope: "", statuses: "", condition: null, actions: "", partner: "", partnerTurns: "", partnerScope: "", partnerActions: "", partnerEffects: "", extra: {}} : null;
@@ -3102,7 +3175,12 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     try {
       const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
       const whole = draft?.family && C.ELEMENTS.every(e => Array.isArray(draft.family.variations?.[C.keyOf(e)]?.skills));
-      if (whole) { family = draft.family; dirty = !!draft.dirty; }
+      if (whole) {
+        family = draft.family;
+        dirty = !!draft.dirty;
+        // Rascunho de antes do Neutro: ganha a variante Neutra, desligada.
+        for (const e of C.VARIANT_ELEMENTS) if (!family.variations[C.keyOf(e)]) family.variations[C.keyOf(e)] = C.blankVariation(family, e, false);
+      }
     } catch { /* rascunho ilegível: começa do exemplo */ }
     if (!family) {
       const sample = readJson("sample-family");
@@ -3114,7 +3192,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
     const hash = new URLSearchParams(location.hash.slice(1));
     if (TABS.some(([id]) => id === hash.get("tab"))) ui.tab = hash.get("tab");
     if (family.variations[hash.get("element")]) ui.active = hash.get("element");
-    if (!family.variations[ui.active]?.enabled) ui.active = C.keyOf(C.ELEMENTS.find(e => family.variations[C.keyOf(e)]?.enabled) || "Fire");
+    if (!C.isLive(family.variations[ui.active])) ui.active = firstLive(family);
     renderAll();
     if (window.showDirectoryPicker) recall();
   }

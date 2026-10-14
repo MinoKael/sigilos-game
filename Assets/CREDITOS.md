@@ -15,22 +15,6 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 
 | Arquivo no projeto | Arquivo no Commons | Autor | Licença |
 | --- | --- | --- | --- |
-| `Glyphs/algiz.svg` | [Runic letter algiz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_algiz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/pertho.svg` | [Runic letter pertho.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_pertho.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/dagaz.svg` | [Runic letter dagaz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_dagaz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/gebo.svg` | [Runic letter gebo.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_gebo.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/sowilo.svg` | [Runic letter sowilo.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_sowilo.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/laukaz.svg` | [Runic letter laukaz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_laukaz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/iwaz.svg` | [Runic letter iwaz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_iwaz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/jeran.svg` | [Runic letter jeran.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_jeran.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/uruz.svg` | [Runic letter uruz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_uruz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/raido.svg` | [Runic letter raido.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_raido.svg) | Alatius | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/othalan.svg` | [Runic letter othalan.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_othalan.svg) | ClaesWallin; Artem Karimov | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/kauna.svg` | [Runic letter kauna.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_kauna.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/thurisaz.svg` | [Runic letter thurisaz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_thurisaz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/tiwaz.svg` | [Runic letter tiwaz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_tiwaz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/naudiz.svg` | [Runic letter naudiz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_naudiz.svg) | ClaesWallin | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
-| `Glyphs/haglaz.svg` | [Runic letter haglaz.svg](https://commons.wikimedia.org/wiki/File:Runic_letter_haglaz.svg) | ClaesWallin; Sarang | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
 | `Elements/fire.svg` | [Alchemical fire symbol.svg](https://commons.wikimedia.org/wiki/File:Alchemical_fire_symbol.svg) | Bryan Derksen | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
 | `Elements/water.svg` | [Alchemical water symbol.svg](https://commons.wikimedia.org/wiki/File:Alchemical_water_symbol.svg) | Bryan Derksen | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
 | `Elements/wind.svg` | [Alchemical air symbol.svg](https://commons.wikimedia.org/wiki/File:Alchemical_air_symbol.svg) | Bryan Derksen | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |

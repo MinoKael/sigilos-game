@@ -35,7 +35,7 @@ namespace Sigilos.Core.Summoning
 			return 1 - five - four;
 		}
 
-		/// <summary>O pergaminho tira esta variante: o de Luz e Trevas, só Luz e Trevas; os outros, só Fogo, Água e Vento.</summary>
+		/// <summary>O pergaminho tira esta variante: o de Luz e Trevas, só Luz e Trevas; os outros, Fogo, Água, Vento e Neutro (os de 2★).</summary>
 		public static bool Allows(ScrollKind kind, Element element) =>
 			kind == ScrollKind.LightDark ? element is Element.Light or Element.Dark : element is not (Element.Light or Element.Dark);
 
@@ -46,7 +46,10 @@ namespace Sigilos.Core.Summoning
 		/// </summary>
 		public const int Pity = 150;
 
-		/// <summary>No drop de 2★ da Campanha, Luz e Trevas têm um terço da chance das outras variantes.</summary>
+		/// <summary>
+		/// Peso de Luz e Trevas num sorteio de variante (<see cref="Summoning.SummonRitual.WeightedPick"/>): um terço do
+		/// das outras. Os 2★ da Campanha, que usam o sorteio, são todos Neutros e pesam igual; vale se um pool misturar.
+		/// </summary>
 		public const double LightDarkWeight = 0.33;
 
 		/// <summary>

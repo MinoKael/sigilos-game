@@ -17,6 +17,12 @@ Cada variação deve ser exportada para um **JSON único por família**, já con
 
 A intenção é que o jogo não precise recalcular os stats em runtime. O cálculo deve acontecer no editor/generator e o resultado final deve ser persistido no JSON.
 
+> **Exceção, 2★ naturais:** homúnculo de 2★ não tem variantes elementares. A família tem uma única variante em jogo,
+> de elemento `Neutral` (id `{family_id}_neutral`, chave `neutral`, nome = `base_name`), prateada e sem vantagem nem
+> desvantagem elemental. As variantes elementares que existiam ficam no arquivo com `"active": false` (aposentadas:
+> resolvem ids, mas saem do elenco). O Neutro não tem viés em `element_bias`. A regra é conferida em
+> `GameDatabase.Validate` e no construtor de famílias.
+
 ---
 
 # 2. Fontes analisadas

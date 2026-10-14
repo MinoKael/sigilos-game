@@ -6,10 +6,53 @@
   "image": "bird",
   "active": false,
   "variations": {
+    "neutral": {
+      "variation_id": "bird_neutral",
+      "name": "Pássaro",
+      "element": "Neutral",
+      "role": "Attack",
+      "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
+      "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
+      "awakening": {
+        "name": "Assobi",
+        "skill": {
+          "name": "Voo Esquivo",
+          "image": "voo_esquivo",
+          "passive": {"kind": "Dodge", "value": 0.2}
+        }
+      },
+      "skills": [
+        {
+          "name": "Bicada Rápida",
+          "image": "bicada_rapida",
+          "effects": [
+            {"kind": "Damage", "target": "Target", "power": 1.12, "hits": 2}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
+          ]
+        },
+        {
+          "name": "Vento a Favor",
+          "image": "vento_a_favor",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1}
+          ]
+        }
+      ]
+    },
     "fire": {
       "variation_id": "bird_fire",
       "name": "Pássaro de Fogo",
       "element": "Fire",
+      "active": false,
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
@@ -55,6 +98,7 @@
       "variation_id": "bird_water",
       "name": "Pássaro de Água",
       "element": "Water",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -109,6 +153,7 @@
       "variation_id": "bird_wind",
       "name": "Pássaro de Vento",
       "element": "Wind",
+      "active": false,
       "role": "Attack",
       "stats": {"hp": 6420, "atk": 600, "def": 427, "spd": 110},
       "awakened_stats": {"hp": 7140, "atk": 668, "def": 476, "spd": 111},
@@ -151,6 +196,7 @@
       "variation_id": "bird_light",
       "name": "Pássaro de Luz",
       "element": "Light",
+      "active": false,
       "role": "Support",
       "stats": {"hp": 7275, "atk": 463, "def": 543, "spd": 98},
       "awakened_stats": {"hp": 8085, "atk": 514, "def": 603, "spd": 99},
@@ -204,6 +250,7 @@
       "variation_id": "bird_dark",
       "name": "Pássaro de Trevas",
       "element": "Dark",
+      "active": false,
       "role": "Defense",
       "stats": {"hp": 7290, "atk": 453, "def": 552, "spd": 98},
       "awakened_stats": {"hp": 8100, "atk": 503, "def": 613, "spd": 99},

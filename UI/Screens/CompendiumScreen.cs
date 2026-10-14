@@ -126,7 +126,7 @@ namespace Sigilos.UI.Screens
 			var grid = Cards(column);
 			Card(grid, "Impetus", Core.Content.Planet.Mercury, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
 			Card(grid, "Fight", "campaign", T("compendium.combat.fight.title"), T("compendium.combat.fight.text", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
-			Card(grid, "Damage", Texts.PlanetOf(Stat.Defense), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
+			Card(grid, "Damage", Texts.PlanetOf(Stat.Attack), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
 			Card(grid, "Crit", Texts.PlanetOf(Stat.Crit), T("compendium.combat.crit.title"), T("compendium.combat.crit.text"));
 			Card(grid, "Resistance", Texts.PlanetOf(Stat.Resistance), T("compendium.combat.resistance.title"), T("compendium.combat.resistance.text", Texts.Percent(BattleRules.MinResistChance)));
 			Card(grid, "Leader", "team", T("compendium.combat.leader.title"), T("compendium.combat.leader.text"));
@@ -136,7 +136,8 @@ namespace Sigilos.UI.Screens
 			column.AddChild(Layout.Text(T("compendium.combat.elements_text", Texts.Percent(BattleRules.AdvantageMultiplier - 1), Texts.Percent(1 - BattleRules.DisadvantageMultiplier)), GameTheme.Faded).Named("ElementsText"));
 			var elements = new HFlowContainer { Name = "Elements" };
 			elements.AddThemeConstantOverride("h_separation", Space.Spacious);
-			foreach (var element in Enum.GetValues<Element>())
+			// O Neutro não vence nem perde para ninguém: fica fora da lista.
+			foreach (var element in Enum.GetValues<Element>().Where(e => e != Element.Neutral))
 			{
 				var beats = Enum.GetValues<Element>().Where(other => ElementChart.HasAdvantage(element, other)).Select(Texts.Name);
 				var row = new HBoxContainer { Name = element.ToString() };

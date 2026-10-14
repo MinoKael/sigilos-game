@@ -197,24 +197,29 @@ namespace Sigilos.UI.Screens
 		private IEnumerable<SummonDefinition> Variants(string familyId) =>
 			_database.Summons.Where(s => s.FamilyId == familyId).OrderBy(s => s.Element);
 
-		/// <summary>Um sigilo por elemento da família (o aceso é o da ficha), e o do Despertar, que troca a ficha para a forma desperta.</summary>
+		/// <summary>Um sigilo por elemento da família (o aceso é o da ficha; nenhum se ela tem uma variante só, a de 2★), e o do Despertar, que troca a ficha para a forma desperta.</summary>
 		private Control ElementPicker(SummonDefinition current)
 		{
 			var row = Layout.Row(Space.Regular).Named("Elements");
 			var variants = Variants(current.FamilyId).ToList();
-			var tabs = new TextTabs(false, 48) { Name = "Tabs" };
-			foreach (var variant in variants)
+			// Homúnculo de 2★ tem uma variante só (o Neutro): não há elemento para escolher.
+			if (variants.Count > 1)
 			{
-				tabs.Add(Texts.Name(variant.Element), _player.Monsters.Count(m => m.SummonId == variant.Id) is var copies and > 0 ? T("grimoire.copies", copies) : "").Name = variant.Element.ToString();
+				var tabs = new TextTabs(false, 48) { Name = "Tabs" };
+				foreach (var variant in variants)
+				{
+					tabs.Add(Texts.Name(variant.Element), _player.Monsters.Count(m => m.SummonId == variant.Id) is var copies and > 0 ? T("grimoire.copies", copies) : "").Name = variant.Element.ToString();
+				}
+
+				tabs.Select(variants.IndexOf(current));
+				tabs.Changed += index =>
+				{
+					_selected = variants[index];
+					Callable.From(RefreshSummons).CallDeferred();
+				};
+				row.AddChild(tabs);
 			}
 
-			tabs.Select(variants.IndexOf(current));
-			tabs.Changed += index =>
-			{
-				_selected = variants[index];
-				Callable.From(RefreshSummons).CallDeferred();
-			};
-			row.AddChild(tabs);
 			row.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
 			var awaken = GameButton.Of(_awakened ? T("grimoire.view_normal") : T("grimoire.view_awakened"), () =>
 			{

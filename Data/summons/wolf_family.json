@@ -193,9 +193,13 @@
           "passive": {
             "kind": "Conditional",
             "condition": {"stat": "Defense", "compare": "Greater", "against": "Opponent"},
-            "actions": ["Force"],
+            "actions": [
+              "Force"
+            ],
             "partner": "wolf_dark",
-            "partnerActions": ["Counter"]
+            "partnerActions": [
+              "Counter"
+            ]
           }
         }
       },
@@ -263,7 +267,9 @@
               "Sleep"
             ],
             "partner": "wolf_light",
-            "partnerActions": ["KeepAsleep"]
+            "partnerActions": [
+              "KeepAsleep"
+            ]
           }
         }
       },
