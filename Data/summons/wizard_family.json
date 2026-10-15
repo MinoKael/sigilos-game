@@ -139,6 +139,8 @@
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
           ]
         },

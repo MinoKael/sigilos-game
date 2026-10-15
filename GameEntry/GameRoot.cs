@@ -48,8 +48,8 @@ namespace Sigilos.GameEntry
 	/// save, ou pt-BR); <c>--server=url</c> usa outro servidor de contas; <c>--updates=url</c> procura
 	/// versões novas em outra pasta (só no executável exportado);
 	/// <c>--screen=map|campaign|dungeons|summon|shop|monsters|prep|runes|compendium|grimoire|battle</c> abre essa tela direto, no save sem conta
-	/// (<c>prep</c>: a preparação da próxima fase da Campanha); <c>--debugger</c> abre a conta "Debugger"
-	/// (<see cref="DebugAccount"/>), refeita do zero a cada abertura, num save próprio e sem servidor.
+	/// (<c>prep</c>: a preparação da próxima fase da Campanha). Se já existe o arquivo <c>user://nome.json</c>
+	/// do <c>--save=nome</c> (um save de teste feito à mão), o jogo abre direto nele, sem login e sem servidor.
 	/// </summary>
 	public partial class GameRoot : Node
 	{
@@ -75,8 +75,10 @@ namespace Sigilos.GameEntry
 		private SaveStore _store = null!;
 		private PlayerState _player = null!;
 
-		/// <summary>Aberto com <c>--debugger</c>: joga a conta de desenvolvimento, sempre sem servidor.</summary>
-		private bool _debugger;
+		/// <summary>Aberto num save de teste (<c>--save=nome</c> com o arquivo já existindo): sempre sem servidor e sem virar conta.</summary>
+		private bool _testSave;
+
+		private string _slot = DefaultSlot;
 		private string _language = ContentLoader.BaseLanguage;
 
 		/// <summary>Há um save aberto (fora da tela de login): só então <see cref="Save"/> grava.</summary>
@@ -121,9 +123,8 @@ namespace Sigilos.GameEntry
 		{
 			_campaignBack = _dungeonsBack = _explorationBack = ShowMap;
 			_storageBack = _summonBack = ShowHub;
-			_debugger = Argument("--debugger") != null;
-			var slot = _debugger ? DebugAccount.Slot : Argument("--save=") ?? DefaultSlot;
-			_account = new AccountSession(slot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
+			_slot = Argument("--save=") ?? DefaultSlot;
+			_account = new AccountSession(_slot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
 			AddChild(_account);
 			_collector = new Timer { Name = "Collector", WaitTime = CollectSeconds, Autostart = true, OneShot = true };
 			_collector.Timeout += Collect;
@@ -218,7 +219,8 @@ namespace Sigilos.GameEntry
 
 			// Com --screen (desenvolvimento), ou depois de escolher jogar sem conta, abre direto o save local.
 			var screen = Argument("--screen=");
-			if (_debugger || screen != null || _account.Offline)
+			_testSave = Argument("--save=") != null && _account.OfflineStore.SavedAt != null;
+			if (_testSave || screen != null || _account.Offline)
 				PlayOffline(screen);
 			else
 				ShowLogin(resume: _account.Remembered);
@@ -322,12 +324,6 @@ namespace Sigilos.GameEntry
 		private void PlayOffline(string? screen = null)
 		{
 			var store = _account.OfflineStore;
-			if (_debugger)
-			{
-				Play(store, DebugAccount.Create(DateTime.Now, _database), screen);
-				return;
-			}
-
 			Play(store, store.Load() ?? NewPlayer(store.InheritedStarted), screen);
 		}
 
@@ -571,8 +567,8 @@ namespace Sigilos.GameEntry
 		/// <summary>Ajustes → Entrar ou criar conta, saindo do jogo sem conta (que sobe para a conta, se ela for nova).</summary>
 		private void LeaveOffline()
 		{
-			// A conta de desenvolvimento nunca vira conta de verdade: sairia do jogo sem conta e subiria para o servidor.
-			if (_debugger)
+			// O save de teste nunca vira conta de verdade: sairia do jogo sem conta e subiria para o servidor.
+			if (_testSave)
 				return;
 
 			Save();
@@ -885,7 +881,7 @@ namespace Sigilos.GameEntry
 
 		private void ShowHub()
 		{
-			var hub = new HubScreen(_database, _player, _debugger ? DebugAccount.Name : _account.Playing ? _account.AccountName : null, _account.Playing && !_account.Connected);
+			var hub = new HubScreen(_database, _player, _testSave ? _slot : _account.Playing ? _account.AccountName : null, _account.Playing && !_account.Connected);
 			hub.Requested += destination => Go(destination, ShowHub);
 			hub.ConfigRequested += () => ConfigPanel.Open(hub, ContentLoader.Languages(), _language, language =>
 			{
@@ -1796,11 +1792,13 @@ namespace Sigilos.GameEntry
 		/// <summary>Grava no aparelho e, jogando na conta, manda para a nuvem logo em seguida (as ações seguidas viram um envio só).</summary>
 		private void Save()
 		{
-			// A conta de desenvolvimento é refeita a cada abertura: não grava nada.
-			if (!_playing || _debugger)
+			if (!_playing)
 				return;
 			_store.Save(_player);
-			_account.SaveSoon();
+
+			// O save de teste fica só no arquivo: nada sobe para a nuvem.
+			if (!_testSave)
+				_account.SaveSoon();
 		}
 
 		/// <summary>

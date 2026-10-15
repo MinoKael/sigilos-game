@@ -1,6 +1,6 @@
 # Medição de desempenho da interface
 
-Dois scripts do Godot (rodam sem editor, com a conta Debugger):
+Dois scripts do Godot (rodam sem editor, com o save de teste `debugger`):
 
 - `perf.gd`: abre uma tela, espera 2 s e mede o tempo de quadro (média, p50, p99, máximo), as chamadas de
   desenho, os nós, os nós com shader e os objetos do Godot.
@@ -9,10 +9,10 @@ Dois scripts do Godot (rodam sem editor, com a conta Debugger):
 
 ```bash
 # quadro sem limite de taxa, para medir a CPU de verdade
-godot --path . --disable-vsync --max-fps 0 --script Tools/perf/perf.gd -- --debugger --screen=runes --label=runes --seconds=3
+godot --path . --disable-vsync --max-fps 0 --script Tools/perf/perf.gd -- --save=debugger --screen=runes --label=runes --seconds=3
 
 # toque: --target=Rune (peças de nome Rune*) ou --target=@button (o primeiro botão da lista)
-godot --path . --script Tools/perf/touch.gd -- --debugger --screen=dungeons --target=@button
+godot --path . --script Tools/perf/touch.gd -- --save=debugger --screen=dungeons --target=@button
 ```
 
 `--tap=Auto` (no `perf.gd`) liga o botão de nome Auto antes de medir (a luta anda sozinha). Para ver o caminho
@@ -26,7 +26,7 @@ Rode cada medida duas vezes e compare médias; o primeiro quadro depois de abrir
 Gestos de toque de verdade sobre a lista (precisa do `override.cfg` acima para a emulação do Android):
 
 ```bash
-godot --path . --disable-vsync --max-fps 0 --script Tools/perf/gesture.gd -- --debugger --screen=runes --mode=fling
+godot --path . --disable-vsync --max-fps 0 --script Tools/perf/gesture.gd -- --save=debugger --screen=runes --mode=fling
 ```
 
 `--mode=tap` (toque sobre um botão: dispara 1 vez), `drag` (arrasto que começa no botão: 0 disparos e a lista rola),

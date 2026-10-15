@@ -6,10 +6,10 @@
     "Debugger": {
       "commandName": "Executable",
       "executablePath": "C:\\Godot_v4.7.1\\Godot_v4.7.1-stable_mono_win64.exe",
-      "commandLineArgs": "--path \"$(ProjectDir).\" -- --debugger",
+      "commandLineArgs": "--path \"$(ProjectDir).\" -- --save=debugger",
       "workingDirectory": "$(ProjectDir)"
     },
-    "Save": {
+    "Nuvem": {
       "commandName": "Executable",
       "executablePath": "C:\\Godot_v4.7.1\\Godot_v4.7.1-stable_mono_win64.exe",
       "commandLineArgs": "--path \"$(ProjectDir).\"",

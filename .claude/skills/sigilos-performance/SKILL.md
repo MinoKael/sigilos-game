@@ -56,7 +56,7 @@ otimizar o que foi medido.
   processo ao longo de muitas lutas/aberturas de tela.
 
 ## Medido em 14/10/2026 (revisão mobile)
-Medições no PC com `Tools/perf` (conta Debugger, `--disable-vsync`): o custo de quadro de uma tela é de CPU,
+Medições no PC com `Tools/perf` (save de teste `-- --save=debugger`, `--disable-vsync`): o custo de quadro de uma tela é de CPU,
 proporcional ao que redesenha por quadro. O que mais custava, e o padrão que o resolveu:
 - **Fundo (`Backdrop`)**: shader de névoa em todo pixel, todo quadro. Agora o shader roda duas vezes
   (`BackdropBake`: céu liso e máscara do astrolábio) e a animação vem por cima, sem pixel shader: o astrolábio é

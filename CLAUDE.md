@@ -31,9 +31,9 @@ When the user's message starts with `bug:`, the advisor owns the fix:
 - Never retry a step the user denied; change approach or ask.
 - Grep with a narrow `path`, never the repo root: `.godot/` and `Assets/` make it time out.
 
-## Debugger account
+## Test save
 
-Use the `Debugger` account whenever validating by running the game (captures, manual checks): launch with `-- --debugger`. It is rebuilt from scratch on every launch by `Core/Player/DebugAccount.cs` (all homunculi 6★ max level, everything cleared, 700 perfect Legendary 6★ runes), saved to `user://debugger.json`, and never touches the real save or the server.
+Use the local `debugger` save whenever validating by running the game (captures, manual checks): launch with `-- --save=debugger`. It is a plain JSON in `user://debugger.json` (all homunculi 6★ max level, everything cleared, 700 unupgraded Legendary 6★ runes, slots 1-3 with percent/Speed mains only, 5+ of each set×slot×main). The game opens it directly, offline, and never uploads it. It keeps progress between launches; `user://debugger.base.json` is the pristine copy (copy it over `debugger.json` to reset). Nothing in the code builds it. Never touch the real save (`sigilos.json`) or register accounts on the server.
 
 ## Commits
 
