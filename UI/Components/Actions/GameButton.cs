@@ -40,6 +40,14 @@ namespace Sigilos.UI.Components
 
 		private readonly Label _label = new() { Name = "Label", MouseFilter = MouseFilterEnum.Ignore, VerticalAlignment = VerticalAlignment.Center };
 		private readonly HBoxContainer _cost = new() { Name = "Cost", MouseFilter = MouseFilterEnum.Ignore, Visible = false, Alignment = BoxContainer.AlignmentMode.Center };
+		private readonly VBoxContainer _lines = new()
+		{
+			Name = "Text",
+			MouseFilter = MouseFilterEnum.Ignore,
+			Alignment = BoxContainer.AlignmentMode.Center,
+			SizeFlagsHorizontal = SizeFlags.ExpandFill
+		};
+
 		private readonly HBoxContainer _row = new() { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center, SizeFlagsHorizontal = SizeFlags.ExpandFill };
 		private readonly float _height;
 		private Doodle? _icon;
@@ -60,15 +68,7 @@ namespace Sigilos.UI.Components
 			_row.AddThemeConstantOverride("separation", Space.Regular);
 			Content.AddChild(_row);
 
-			var lines = new VBoxContainer
-			{
-				Name = "Text",
-				MouseFilter = MouseFilterEnum.Ignore,
-				Alignment = BoxContainer.AlignmentMode.Center,
-				SizeFlagsHorizontal = SizeFlags.ExpandFill
-			};
-
-			lines.AddThemeConstantOverride("separation", -2); // Negativo: o texto e o custo colados, uma peça só.
+			_lines.AddThemeConstantOverride("separation", -2); // Negativo: o texto e o custo colados, uma peça só.
 
 			_label.Text = text;
 			_label.HorizontalAlignment = HorizontalAlignment.Center;
@@ -76,12 +76,13 @@ namespace Sigilos.UI.Components
 			_label.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_label.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			_label.AddThemeFontOverride("font", GameTheme.Serif);
-			lines.AddChild(_label);
+			_lines.AddChild(_label);
 
 			_cost.AddThemeConstantOverride("separation", Space.Tight);
-			lines.AddChild(_cost);
-			_row.AddChild(lines);
+			_lines.AddChild(_cost);
+			_row.AddChild(_lines);
 
+			ShowLines();
 			Kind = kind;
 			IconName = icon;
 		}
@@ -98,6 +99,7 @@ namespace Sigilos.UI.Components
 			set
 			{
 				_label.Text = value;
+				ShowLines();
 				Fit();
 			}
 		}
@@ -161,9 +163,13 @@ namespace Sigilos.UI.Components
 				_cost.AddChild(amount);
 			}
 
+			ShowLines();
 			Fit();
 			return this;
 		}
+
+		/// <summary>Sem texto nem custo (só o símbolo) a coluna de texto some: o símbolo fica no meio do botão, não ao lado de um vão.</summary>
+		private void ShowLines() => _lines.Visible = _label.Text.Length > 0 || _cost.Visible;
 
 		/// <summary>Largura mínima, para botões lado a lado ficarem iguais.</summary>
 		public GameButton Wide(float width)

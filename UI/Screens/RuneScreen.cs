@@ -8,7 +8,7 @@ using Sigilos.UI.Style;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Reflection;
 using static Sigilos.UI.Locale;
 
 namespace Sigilos.UI.Screens
@@ -36,13 +36,27 @@ namespace Sigilos.UI.Screens
 	///
 	/// Tocar numa runa só troca o destaque e refaz a coluna da esquerda e a ficha da runa: a grade, que
 	/// pode ter centenas, fica como está. O que a runa ganhou desde que a tela abriu aparece em verde ao
-	/// lado do valor. A Batalha automática segue rodando enquanto esta tela está aberta; o aviso no alto
-	/// continua contando.
+	/// lado do valor (na ficha ao lado e na do toque longo). A Batalha automática segue rodando enquanto
+	/// esta tela está aberta; o aviso no alto continua contando.
+	///
+	/// Melhorar: "Evoluir +1" e "Até +3/+6/+9/+15" (o próximo marco) valem na hora, sem pergunta. "Até +12"
+	/// pergunta antes (só o gasto: o sorteio acontece depois) e, feita a melhora, abre a runa antes e depois
+	/// (<see cref="RuneDialog.ShowUpgraded"/>). Tocar num espaço livre da tela desfaz o filtro de espaço que o
+	/// toque no círculo pôs.
 	/// </summary>
 	public partial class RuneScreen : Control
 	{
+		private const int DirectLevel = RuneDialog.DirectLevel;
+
+		/// <summary>Quanto o toque pode andar, em px, e ainda ser um toque (e não um arrasto de rolagem).</summary>
+		private const float TapSlop = 12;
+
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
+		private Vector2 _pressedAt;
+
+		/// <summary>A melhora que acabou de ser pedida (runa, nível de antes e o quadro): a ficha dela a refaz na tela.</summary>
+		private (int Rune, int Level, ulong Frame)? _upgrading;
 		private int? _monsterId;
 		private int? _selectedRune;
 		private int _tab;
@@ -178,6 +192,49 @@ namespace Sigilos.UI.Screens
 			Refresh();
 		}
 
+		/// <summary>
+		/// Um toque num espaço livre (fora de botão, runa, janela, campo ou o que tem toque próprio) desfaz o filtro
+		/// de espaço do círculo. Arrastar para rolar não conta.
+		/// </summary>
+		public override void _Input(InputEvent @event)
+		{
+			if (@event is not InputEventMouseButton { ButtonIndex: MouseButton.Left } click)
+				return;
+
+			if (click.Pressed)
+			{
+				_pressedAt = click.Position;
+				return;
+			}
+
+			if (_filter.Slot == null || (click.Position - _pressedAt).Length() > TapSlop || !IsFree(click.Position))
+				return;
+
+			_filter = _filter with { Slot = null };
+			Refresh();
+		}
+
+		/// <summary>O ponto está sobre a tela e sobre nada que reaja ao toque.</summary>
+		private bool IsFree(Vector2 point)
+		{
+			var hit = TouchScroll.TopControlAt(GetTree().Root, point);
+			if (hit == null || !IsAncestorOf(hit))
+				return false;
+
+			for (Node? node = hit; node != null && node != this; node = node.GetParent())
+			{
+				if (node is BaseButton or Godot.Range or LineEdit or TextEdit or RuneTile or Dialog || HandlesInput(node))
+					return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>O nó trata o próprio toque (um cartão ou retrato com toque curto e longo): tem <c>_GuiInput</c> nosso.</summary>
+		private static bool HandlesInput(Node node) =>
+			node.GetType().GetMethod("_GuiInput", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+				?.DeclaringType?.Namespace?.StartsWith("Sigilos", StringComparison.Ordinal) == true;
+
 		public void Refresh()
 		{
 			if (_selectedRune is { } id && _player.Runes.All(r => r.Id != id))
@@ -201,7 +258,7 @@ namespace Sigilos.UI.Screens
 			RefreshHead();
 			var monster = Monster;
 			var equipped = monster != null ? _player.RunesOn(monster.Id) : Array.Empty<Rune>();
-			var incoming = monster != null ? Incoming(monster) : Array.Empty<Rune>();
+			var incoming = monster != null ? Incoming() : Array.Empty<Rune>();
 			RefreshRing(RuneSwap.Apply(equipped, incoming), incoming);
 			RefreshTrialBar();
 
@@ -264,7 +321,7 @@ namespace Sigilos.UI.Screens
 			var tiles = new List<Control>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
-				var tile = new RuneTile(shown.FirstOrDefault(r => r.Slot == slot), slot) { Name = $"Slot{slot}" };
+				var tile = new RuneTile(shown.FirstOrDefault(r => r.Slot == slot), slot) { Name = $"Slot{slot}", OpenedLevel = OpenedLevel };
 				tile.SetSelected(tile.Rune != null ? tile.Rune.Id == _selectedRune || incoming.Contains(tile.Rune) : _filter.Slot == slot);
 				tile.Pressed += t =>
 				{
@@ -340,14 +397,11 @@ namespace Sigilos.UI.Screens
 			_trialBar.AddChild(clear);
 		}
 
-		/// <summary>O que chegaria ao monstro: a prova e, se ainda não está nele nem na prova, a runa escolhida.</summary>
-		private IReadOnlyList<Rune> Incoming(OwnedSummon monster)
-		{
-			var incoming = _trial.Values.Select(id => _player.Runes.First(r => r.Id == id)).ToList();
-			if (Selected is { } rune && rune.EquippedOn != monster.Id && !_trial.ContainsValue(rune.Id))
-				incoming.Add(rune);
-			return incoming;
-		}
+		/// <summary>
+		/// O que chegaria ao monstro: só a prova (Provar). Escolher uma runa na lista só mostra a ficha dela; ela
+		/// só entra no espaço com Equipar ou Provar.
+		/// </summary>
+		private IReadOnlyList<Rune> Incoming() => _trial.Values.Select(id => _player.Runes.First(r => r.Id == id)).ToList();
 
 		private Rune? Selected => _selectedRune is { } id ? _player.Runes.FirstOrDefault(r => r.Id == id) : null;
 
@@ -429,9 +483,12 @@ namespace Sigilos.UI.Screens
 			_middle.AddChild(_listScroll);
 		}
 
+		/// <summary>O nível da runa quando a tela abriu: a ficha do toque longo põe em verde o que ela ganhou desde então.</summary>
+		private int? OpenedLevel(Rune rune) => _levelWhenOpened.GetValueOrDefault(rune.Id, rune.Level);
+
 		private RuneTile NewTile(Rune rune)
 		{
-			var tile = new RuneTile(rune, rune.Slot) { Name = $"Rune{rune.Id}" };
+			var tile = new RuneTile(rune, rune.Slot) { Name = $"Rune{rune.Id}", OpenedLevel = OpenedLevel };
 			tile.SetSelected(rune.Id == _selectedRune);
 			tile.SetMarked(_marked.Contains(rune.Id));
 			// Na ordem por subatributo, o valor dele fica escrito na pedra: a comparação sem abrir uma por uma.
@@ -633,9 +690,25 @@ namespace Sigilos.UI.Screens
 		private void RefreshDetail()
 		{
 			RefreshForge();
-			Layout.Clear(_detail);
-			Layout.Clear(_actions);
 			var rune = _player.Runes.FirstOrDefault(r => r.Id == _selectedRune);
+
+			// A ficha que está refazendo a melhora desta runa termina o que começou: um refresh no meio dela
+			// (qualquer que seja a causa) não a troca por uma nova, que cortaria a animação.
+			var running = rune != null && _detail.GetChildCount() > 0 && _detail.GetChild(0) is RuneCard { Animating: true } card && card.Shows(rune) ? card : null;
+			if (running == null)
+			{
+				Layout.Clear(_detail);
+			}
+			else
+			{
+				foreach (var child in _detail.GetChildren().Where(c => c != running).ToList())
+				{
+					_detail.RemoveChild(child);
+					child.QueueFree();
+				}
+			}
+
+			Layout.Clear(_actions);
 			_actions.Visible = rune != null;
 			if (rune == null)
 			{
@@ -644,10 +717,19 @@ namespace Sigilos.UI.Screens
 			}
 
 			var opened = _levelWhenOpened.GetValueOrDefault(rune.Id, rune.Level);
-			if (!_levelWhenOpened.ContainsKey(rune.Id))
-				_levelWhenOpened[rune.Id] = rune.Level;
 
-			_detail.AddChild(new RuneCard(rune, 300, opened));
+			// A runa voltou atrás (a Gema de Reavaliação a devolve ao estado em que caiu): o que ela era antes
+			// deixa de contar, e as melhoras seguintes partem daqui, com verde e animação.
+			if (!_levelWhenOpened.ContainsKey(rune.Id) || rune.Level < opened)
+			{
+				opened = rune.Level;
+				_levelWhenOpened[rune.Id] = opened;
+			}
+
+			// Refeita no mesmo quadro do pedido de melhora (a tela pode refazer a ficha mais de uma vez nele).
+			int? animateFrom = _upgrading is { } upgrading && upgrading.Rune == rune.Id && Engine.GetProcessFrames() - upgrading.Frame <= 1 ? upgrading.Level : null;
+			if (running == null)
+				_detail.AddChild(new RuneCard(rune, 300, opened, animateFrom: animateFrom));
 			if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
 				_detail.AddChild(OwnerRow(holder));
 
@@ -682,18 +764,31 @@ namespace Sigilos.UI.Screens
 			if (rune.Level < RuneRules.MaxLevel)
 			{
 				var next = RuneRules.UpgradeCost(rune);
-				var up = GameButton.Of(T("runes.upgrade_one", 1), () => UpgradeRequested?.Invoke(rune.Id, rune.Level + 1), ButtonKind.Primary, "level_max", ActionHeight).WithCost("essence", Texts.Number(next)).Named("Upgrade");
+				var up = GameButton.Of(T("runes.upgrade_one", 1), () => Upgrade(rune, rune.Level + 1), ButtonKind.Primary, "level_max", ActionHeight).WithCost("essence", Texts.Number(next)).Named("Upgrade");
 				up.Disabled = _player.Essence < next;
 				_actions.AddChild(up);
 
+				// O próximo marco (+3, +6, +9, +12 ou +15) vale na hora, sem pergunta.
 				var milestone = RuneRules.NextMilestone(rune.Level);
 				if (milestone > rune.Level + 1)
 				{
 					var total = RuneRules.UpgradeCost(rune, milestone);
-					var jump = GameButton.Of(T("runes.upgrade_button", milestone), () => RuneDialog.ConfirmUpgrade(this, rune, milestone, _player.Essence, () => UpgradeRequested?.Invoke(rune.Id, milestone)),
+					var jump = GameButton.Of(T("runes.upgrade_button", milestone), () => Upgrade(rune, milestone),
 						ButtonKind.Secondary, "level_max", ActionHeight).WithCost("essence", Texts.Number(total)).Named("UpgradeToMilestone");
 					jump.Disabled = _player.Essence < total;
 					_actions.AddChild(jump);
+				}
+
+				// O +12 direto, pulando os marcos que faltam (de +8 para baixo): o gasto é grande, então pergunta.
+				// De +9 em diante o próximo marco já é o +12, e o botão de cima vai direto, sem pergunta.
+				if (milestone < DirectLevel)
+				{
+					var total = RuneRules.UpgradeCost(rune, DirectLevel);
+					var direct = GameButton.Of(T("runes.upgrade_button", DirectLevel),
+						() => RuneDialog.ConfirmDirect(this, rune, _player.Essence, () => UpgradeDirect(rune)),
+						ButtonKind.Secondary, "level_max", ActionHeight).WithCost("essence", Texts.Number(total)).Named("UpgradeToTwelve");
+					direct.Disabled = _player.Essence < total;
+					_actions.AddChild(direct);
 				}
 			}
 
@@ -717,6 +812,31 @@ namespace Sigilos.UI.Screens
 			if (Forgeable(rune))
 				_actions.AddChild(GameButton.Of(T("runes.forge"), OpenForge, ButtonKind.Secondary, "grindstone", ActionHeight).Named("Forge"));
         }
+
+		/// <summary>Pede a melhora. A ficha da runa, refeita logo em seguida, mostra os níveis subindo.</summary>
+		private void Upgrade(Rune rune, int target)
+		{
+			Upgraded(rune.Id, rune.Level);
+			UpgradeRequested?.Invoke(rune.Id, target);
+		}
+
+		/// <summary>
+		/// A runa vai ser (ou acabou de ser) melhorada a partir de <paramref name="fromLevel"/>, por aqui ou por uma
+		/// janela por cima (a Batalha automática): a ficha dela, refeita no mesmo quadro, mostra os níveis subindo.
+		/// </summary>
+		public void Upgraded(int runeId, int fromLevel) => _upgrading = (runeId, fromLevel, Engine.GetProcessFrames());
+
+		/// <summary>
+		/// Melhora até o +12 e, se a runa mudou, abre o antes e o depois. O pedido é síncrono: quando ele volta, a
+		/// runa já está no nível novo, e a cópia tirada antes guarda como ela era.
+		/// </summary>
+		private void UpgradeDirect(Rune rune)
+		{
+			var before = rune.Clone();
+			Upgrade(rune, DirectLevel);
+			if (_player.Runes.FirstOrDefault(r => r.Id == rune.Id) is { } after && after.Level > before.Level)
+				RuneDialog.ShowUpgraded(this, before, after);
+		}
 
 		/// <summary>Quem usa a runa escolhida: o rosto dele (toque longo abre o resumo) e "Equipada em ...".</summary>
 		private Control OwnerRow(OwnedSummon holder)

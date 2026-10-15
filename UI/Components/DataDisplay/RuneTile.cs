@@ -50,6 +50,8 @@ namespace Sigilos.UI.Components
 		private readonly Doodle _check = new(Art.Icon("confirm"), Palette.Spirit, boil: false) { Name = "Check", Visible = false };
 		private readonly float _scale;
 		private readonly int _stars;
+		private bool _maxed;
+		private Label? _levelLabel;
 		private readonly Press _press = new();
 		private bool _selected;
 		private bool _marked;
@@ -60,6 +62,7 @@ namespace Sigilos.UI.Components
 			Slot = slot;
 			_scale = scale;
 			_stars = rune?.Grade ?? 0;
+			_maxed = rune?.Level >= RuneRules.MaxLevel;
 			CustomMinimumSize = TileSize * scale;
 			MouseFilter = MouseFilterEnum.Pass;
 			MouseDefaultCursorShape = CursorShape.PointingHand;
@@ -67,7 +70,7 @@ namespace Sigilos.UI.Components
 			_press.Held += () =>
 			{
 				if (Rune != null)
-					RuneDialog.Show(this, Rune);
+					RuneDialog.Show(this, Rune, opened: OpenedLevel?.Invoke(Rune));
 			};
 
 			_color = rune == null ? Palette.GoldDark : Palette.Of(rune.Rarity);
@@ -98,7 +101,9 @@ namespace Sigilos.UI.Components
 
 				// A linha de baixo: cada peça é centrada num ponto fixo dela, então o espaço, o cadeado e a
 				// melhora ficam no mesmo lugar em qualquer escala e com qualquer texto.
-				var level = Small(rune.Level > 0 ? $"+{rune.Level}" : "", Palette.Text, 12).Named("Level");
+				// Em +15 o número fica em ouro (e as estrelas, roxas: ver _Draw).
+				var level = Small(rune.Level > 0 ? $"+{rune.Level}" : "", _maxed ? Palette.Gold : Palette.Text, 12).Named("Level");
+				_levelLabel = level;
 				_layer.AddChild(OnBottomLine(level, 1, -(Inset + SlotWidth / 2) * scale, GrowDirection.Both));
 				if (rune.Locked)
 					LockBadge();
@@ -115,8 +120,32 @@ namespace Sigilos.UI.Components
 
 		public event Action<RuneTile>? Pressed;
 
+		/// <summary>
+		/// O nível que a runa tinha quando a tela abriu, para a ficha do toque longo mostrar em verde o que ela
+		/// ganhou desde então. Sem isso a ficha mostra a runa como está, sem ganhos.
+		/// </summary>
+		public Func<Rune, int?>? OpenedLevel { get; set; }
+
 		public Rune? Rune { get; }
 		public int Slot { get; }
+
+		/// <summary>Mostra outro nível no número da pedra (a melhora refeita na tela, nível por nível).</summary>
+		public void ShowLevel(int level)
+		{
+			if (_levelLabel == null)
+				return;
+
+			_levelLabel.Text = level > 0 ? $"+{level}" : "";
+			_levelLabel.AddThemeColorOverride("font_color", level >= RuneRules.MaxLevel ? Palette.Gold : Palette.Text);
+
+			// As estrelas roxas são de +15: acompanham o número.
+			var maxed = level >= RuneRules.MaxLevel;
+			if (maxed != _maxed)
+			{
+				_maxed = maxed;
+				QueueRedraw();
+			}
+		}
 
 		public void SetSelected(bool selected)
 		{
@@ -257,7 +286,7 @@ namespace Sigilos.UI.Components
 			{
 				var rect = new Rect2(left + i * step, top, size, size);
 				DrawTextureRect(star, rect.Grow(1.2f), false, new Color(0, 0, 0, 0.85f));
-				DrawTextureRect(star, rect, false, Palette.Gold);
+				DrawTextureRect(star, rect, false, Palette.Stars(_maxed));
 			}
 		}
 

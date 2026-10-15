@@ -15,6 +15,14 @@ Use the answer: follow it, or state in the reply why not. Treat its claims as hy
 
 Skip it when the task is trivial (one obvious edit, a read, a question answered from code) or the user says so. If the advisor is unavailable or errors, say "advisor unavailable" in the final report and self-review with the `verify-and-stop` checklist.
 
+### Messages starting with `bug:`
+
+When the user's message starts with `bug:`, the advisor owns the fix:
+1. Investigate first (reproduce, read the code, collect evidence), then consult the advisor **before the first edit**, even if the fix looks small.
+2. Consult it again **after the fix is applied and verified**, before reporting. Do not report a bug as fixed without that review.
+3. If the first fix does not resolve it, consult again before the next attempt. Never try a second fix blind.
+4. Follow the advisor's diagnosis or state in the reply why not. Build/test/in-game verification still comes from the main session.
+
 ## Retries
 
 - Retry an action only with new evidence: changed input, a different error, or a changed file. Same action + same error = stop (advisor checkpoint 2).

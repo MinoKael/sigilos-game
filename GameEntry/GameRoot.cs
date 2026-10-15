@@ -1634,7 +1634,7 @@ namespace Sigilos.GameEntry
 			if (_runner.Run is not { } run)
 				return;
 
-			AutoBattleDialog.Open(_ui, run, _player, new AutoBattleActions
+			var dialog = AutoBattleDialog.Open(_ui, run, _player, new AutoBattleActions
 			{
 				Stop = _runner.Stop,
 				Resume = _runner.Resume,
@@ -1663,9 +1663,14 @@ namespace Sigilos.GameEntry
 				},
 				UpgradeRune = (rune, target) =>
 				{
+					var before = rune.Level;
 					UpgradeRune(rune, target);
+					// Com a tela de Runas por baixo, a ficha dela refaz a melhora (e mantém o verde: ver RefreshCurrent).
+					(_screen as RuneScreen)?.Upgraded(rune.Id, before);
 					Save();
-					run.Notify();
+
+					// Sem run.Notify(): a janela não se refaz. A ficha e a runa da grade atualizam no lugar
+					// (AutoBattleDialog.Sheet), e o que a janela mostra da corrida não muda com a melhora.
 					RefreshCurrent();
 				},
 				ManageRunes = () =>
@@ -1674,13 +1679,47 @@ namespace Sigilos.GameEntry
 						ShowRunes(null, _current);
 				},
 			});
+
+			// A tela de baixo só é refeita quando a janela fecha (ver RefreshCurrent): remontá-la a cada runa
+			// vendida ou melhorada travava a janela no meio da melhora.
+			_autoDialog = dialog;
+			dialog.Closed += () => Callable.From(() =>
+			{
+				_autoDialog = null;
+				if (!_autoStale)
+					return;
+
+				_autoStale = false;
+				if (_screen is RuneScreen runes)
+					runes.Refresh();
+				else if (_screen is not BattleScreen)
+					_current();
+			}).CallDeferred();
 		}
 
-		/// <summary>Remonta a tela de agora quando uma janela por cima mudou algo que ela mostra (moedas, runas).</summary>
+		/// <summary>A janela da Batalha automática, enquanto aberta: a tela de baixo espera por ela para se refazer.</summary>
+		private Dialog? _autoDialog;
+
+		/// <summary>A janela da Batalha automática mudou algo que a tela de baixo mostra, e ela ainda não foi refeita.</summary>
+		private bool _autoStale;
+
+		/// <summary>
+		/// Atualiza a tela de agora quando uma janela por cima mudou algo que ela mostra (moedas, runas). A tela de
+		/// Runas só se atualiza: remontá-la perderia a runa escolhida, o filtro e o nível em que cada runa estava
+		/// quando ela abriu (o verde do que subiu). As outras ficam para quando a janela fechar: refazê-las na
+		/// hora, por baixo de uma janela que também se refaz, é o que dava o solavanco.
+		/// </summary>
 		private void RefreshCurrent()
 		{
-			if (_screen is not BattleScreen)
-				_current();
+			if (_screen is RuneScreen runes)
+				runes.Refresh();
+			else if (_screen is not BattleScreen)
+			{
+				if (_autoDialog != null)
+					_autoStale = true;
+				else
+					_current();
+			}
 		}
 
 		// Infraestrutura ----------------------------------------------------------------------------

@@ -243,7 +243,7 @@ namespace Sigilos.UI.Screens
 				if (AutoBattleRun.IsSold(player, rune))
 					tile.SetStamp(T("auto.sold"));
 				else
-					tile.Pressed += t => RuneActions(dialog, t, player, actions);
+					tile.Pressed += t => RuneActions(dialog, t, run, player, actions);
 				grid.AddChild(tile);
 			}
 
@@ -271,17 +271,35 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>
 		/// A ficha da runa tocada, com Bloquear, Vender e Melhorar (a bloqueada não tem Vender); ela continua
-		/// lá se o jogador só fechar. Depois de Melhorar, a ficha volta sozinha, com o que subiu em verde
-		/// (<paramref name="opened"/> é o nível de antes da melhora).
+		/// lá se o jogador só fechar. Melhorar não fecha nem remonta nada: a ficha da mesma janela refaz a
+		/// melhora no lugar (o número sobe, o que cresceu fica em verde) e os botões se atualizam. A janela de
+		/// baixo (a lista de sigilos) se refaz uma vez, quando a ficha fecha, se houve melhora.
 		/// </summary>
-		private static void RuneActions(Dialog owner, RuneTile tile, PlayerState player, AutoBattleActions actions, int? opened = null)
+		private static void RuneActions(Dialog owner, RuneTile tile, AutoBattleRun run, PlayerState player, AutoBattleActions actions)
 		{
 			var rune = tile.Rune!;
-			var sheet = RuneDialog.Show(tile, rune, opened: opened);
+			var sheet = RuneDialog.Show(tile, rune);
 			if (!player.Runes.Contains(rune))
 				return;
 
-			sheet.AddAction(rune.Locked ? T("lock.unlock") : T("lock.lock"), () => actions.LockRune(rune), ButtonKind.Secondary, true, rune.Locked ? "unlock" : "lock").Named("Lock");
+			var upgraded = false;
+			sheet.Closed += () =>
+			{
+				if (upgraded)
+					Callable.From(run.Notify).CallDeferred();
+			};
+
+			Sheet(sheet, owner, rune, rune.Level, player, actions, () => upgraded = true);
+		}
+
+		/// <summary>Os botões da ficha para a runa como está agora (<paramref name="opened"/> é o nível de quando a ficha abriu).</summary>
+		private static void Sheet(Dialog sheet, Dialog owner, Rune rune, int opened, PlayerState player, AutoBattleActions actions, Action upgraded)
+		{
+			sheet.ClearActions();
+
+			// Só o cadeado, sem texto: sobra largura para Vender e Melhorar não quebrarem em duas linhas.
+			var padlock = sheet.AddAction("", () => actions.LockRune(rune), ButtonKind.Secondary, true, rune.Locked ? "unlock" : "lock").Named("Lock");
+			padlock.SizeFlagsHorizontal = Control.SizeFlags.ShrinkBegin;
 			if (!rune.Locked)
 			{
 				var value = RuneRules.SellValue(rune);
@@ -292,18 +310,22 @@ namespace Sigilos.UI.Screens
 			{
 				var target = RuneRules.NextMilestone(rune.Level);
 				var cost = RuneRules.UpgradeCost(rune, target);
-				var upgrade = sheet.AddAction(T("runes.upgrade_button", target), () => RuneDialog.ConfirmUpgrade(owner, rune, target, player.Essence, () =>
-					{
-						var before = rune.Level;
-						actions.UpgradeRune(rune, target);
-						// A janela foi remontada: a ficha reabre na runa nova, depois que ela ganha lugar na grade.
-						Callable.From(() =>
-						{
-							if (GodotObject.IsInstanceValid(owner) && owner.IsInsideTree() && owner.Body.FindChild($"Rune{rune.Id}", true, false) is RuneTile again)
-								RuneActions(owner, again, player, actions, before);
-						}).CallDeferred();
-					}),
-					ButtonKind.Primary, true, "essence").Named("Upgrade");
+				// Como na tela de Runas: o próximo marco vale na hora, sem pergunta (inclusive o +12).
+				void Upgrade()
+				{
+					var before = rune.Level;
+					actions.UpgradeRune(rune, target);
+					upgraded();
+
+					// A janela pode ter sido refeita com a ficha aberta (uma luta acabou): a runa da grade é a de agora, não a que foi tocada.
+					if (GodotObject.IsInstanceValid(owner) && owner.IsInsideTree() && owner.Body.FindChild($"Rune{rune.Id}", true, false) is RuneTile current)
+						current.ShowLevel(rune.Level);
+
+					RuneDialog.Replay(sheet, rune, opened, before);
+					Sheet(sheet, owner, rune, opened, player, actions, upgraded);
+				}
+
+				var upgrade = sheet.AddAction(T("runes.upgrade_button", target), Upgrade, ButtonKind.Primary, false, "essence").Named("Upgrade");
 				upgrade.WithCost("essence", Texts.Number(cost));
 				upgrade.Disabled = player.Essence < cost;
 			}

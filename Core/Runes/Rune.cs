@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Sigilos.Core.Content;
 
@@ -37,6 +38,12 @@ namespace Sigilos.Core.Runes
 
 		/// <summary>Bloqueada pelo jogador: não se vende, nem sozinha nem em lote (<see cref="Player.RuneInventory.Sell"/>).</summary>
 		public bool Locked { get; set; }
+
+		/// <summary>
+		/// Uma cópia que se pode mexer sem tocar na runa: pela mesma serialização do save, então nenhum campo
+		/// (o nativo, o encantado com o subatributo original, o bloqueio) fica para trás.
+		/// </summary>
+		public Rune Clone() => JsonSerializer.Deserialize<Rune>(JsonSerializer.Serialize(this, GameDatabase.JsonOptions), GameDatabase.JsonOptions)!;
 
 		[JsonIgnore]
 		public double MainValue => RuneRules.MainValue(Main, Grade, Level);

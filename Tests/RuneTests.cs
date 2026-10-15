@@ -140,6 +140,29 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void CloneKeepsTheWholeRuneAndDoesNotFollowIt()
+		{
+			// Com nativo, subatributo encantado (leva o original) e bloqueio: nada pode ficar para trás na cópia.
+			var rune = Rune(RuneSet.Vigor, 1, RuneStat.AttackPercent, 6, 4, Sub(RuneStat.HealthPercent, 5), Sub(RuneStat.Speed, 4));
+			rune.Innate = RuneSubstat.Rolled(RuneStat.Crit, 0, 4);
+			rune.Locked = true;
+			rune.Substats[1].Enchanted = true;
+			rune.Substats[1].Original = RuneSubstat.Rolled(RuneStat.Accuracy, 0, 6);
+
+			var before = rune.Clone();
+			Assert.Equal(RuneStat.Accuracy, before.Substats[1].Original!.Stat, "a cópia leva o subatributo original");
+			Assert.True(before.Locked && before.Innate != null && before.Substats[1].Enchanted, "a cópia leva o bloqueio, o nativo e o encantado");
+
+			// A melhora mexe na runa, não na cópia: é o "antes" que a janela mostra depois.
+			var player = new PlayerState { Essence = int.MaxValue };
+			Assert.True(RuneInventory.Upgrade(new Random(3), player, rune, 12), "melhorou");
+			Assert.Equal(4, before.Level, "a cópia segue no nível de antes");
+			Assert.Equal(2, before.Substats.Count, "a cópia segue com os subatributos de antes");
+			Assert.Equal(12, rune.Level, "a runa subiu");
+			Assert.Equal(4, rune.Substats.Count, "e ganhou subatributos");
+		}
+
+		[Test]
 		private static void UpgradeCostIsTheReferenceAverage()
 		{
 			Assert.Equal(10, RuneRules.UpgradeCost(1, 0), "1★ +0→+1: 100 da tabela, 10 de Essência");
