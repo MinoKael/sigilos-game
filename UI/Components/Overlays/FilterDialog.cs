@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -52,6 +53,22 @@ namespace Sigilos.UI.Components
 			field.Changed += value =>
 			{
 				chosen(value);
+				_changed();
+				Callable.From(Build).CallDeferred();
+			};
+			_fields.AddChild(field);
+		}
+
+		/// <summary>
+		/// Um campo de vários valores (<see cref="MultiChoiceButton"/>): basta um dos ligados valer. Avisa quando a
+		/// lista fecha, com os valores ligados (vazio é "Todos").
+		/// </summary>
+		public void MultiField(string name, string title, IEnumerable<(Choice Choice, int Value)> options, IEnumerable<int> current, Action<IReadOnlyList<int>> chosen)
+		{
+			var field = new MultiChoiceButton(title, options.ToList(), current, 52) { Name = name, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			field.Changed += values =>
+			{
+				chosen(values);
 				_changed();
 				Callable.From(Build).CallDeferred();
 			};

@@ -943,6 +943,7 @@
     "rarity": "Raridade",
     "upgrade": "Melhora",
     "all": "Todos",
+    "selected_n": "{0} escolhidos",
     "at_least": "{0} ou mais",
     "where": "Onde",
     "place": {

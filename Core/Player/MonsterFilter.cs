@@ -7,49 +7,54 @@ using Sigilos.Core.Progression;
 namespace Sigilos.Core.Player
 {
 	/// <summary>
-	/// A busca da grade de Monstros: elemento, papel, estrelas de agora, estrelas naturais, Despertar,
-	/// situação (<see cref="MonsterCondition"/>), o que as habilidades fazem, em que escalam e que efeito põem
-	/// (<see cref="SkillTraits"/>, na forma de agora do monstro), e a ordem. Campo nulo não filtra. Em qualquer ordem os
+	/// A busca da grade de Monstros: elementos, papéis, estrelas de agora, estrelas naturais, Despertar,
+	/// situações (<see cref="MonsterCondition"/>), o que as habilidades fazem, em que escalam e que efeitos põem
+	/// (<see cref="SkillTraits"/>, na forma de agora do monstro), e a ordem. Cada campo aceita vários valores
+	/// (basta o monstro ter um deles) e campos diferentes valem juntos; campo nulo ou vazio não filtra. Em qualquer ordem os
 	/// favoritos vêm antes, e o empate cai nas estrelas, nas estrelas naturais, no nível, no elemento e
 	/// na chegada.
 	/// </summary>
 	public sealed record MonsterFilter
 	{
-		public Element? Element { get; init; }
-		public Role? Role { get; init; }
+		public IReadOnlyList<Element> Elements { get; init; } = Array.Empty<Element>();
+
+		/// <summary>Os papéis; conta o grupo de cada um (<see cref="RoleGroups"/>).</summary>
+		public IReadOnlyList<Role> Roles { get; init; } = Array.Empty<Role>();
 
 		/// <summary>As estrelas de agora, exatas.</summary>
-		public int? Stars { get; init; }
+		public IReadOnlyList<int> Stars { get; init; } = Array.Empty<int>();
 
 		/// <summary>As estrelas naturais da variante, exatas.</summary>
-		public int? Rarity { get; init; }
+		public IReadOnlyList<int> Rarities { get; init; } = Array.Empty<int>();
 
 		public bool? Awakened { get; init; }
-		public MonsterCondition? Condition { get; init; }
-		public SkillBehavior? Behavior { get; init; }
-		public SkillScaling? Scaling { get; init; }
+		public IReadOnlyList<MonsterCondition> Conditions { get; init; } = Array.Empty<MonsterCondition>();
+		public IReadOnlyList<SkillBehavior> Behaviors { get; init; } = Array.Empty<SkillBehavior>();
+		public IReadOnlyList<SkillScaling> Scalings { get; init; } = Array.Empty<SkillScaling>();
 
-		/// <summary>Um efeito de status que alguma habilidade põe.</summary>
-		public StatusKind? Applies { get; init; }
+		/// <summary>Efeitos de status que alguma habilidade põe (basta pôr um deles).</summary>
+		public IReadOnlyList<StatusKind> Applies { get; init; } = Array.Empty<StatusKind>();
 
 		public MonsterSort Sort { get; init; } = MonsterSort.Stars;
 
 		/// <summary>O atributo da ordem <see cref="MonsterSort.Stat"/>.</summary>
 		public Stat SortStat { get; init; } = Stat.Speed;
 
-		/// <summary>Quantos campos estão filtrando (a ordem não conta).</summary>
-		public int Active => new object?[] { Element, Role, Stars, Rarity, Awakened, Condition, Behavior, Scaling, Applies }.Count(field => field != null);
+		/// <summary>Quantos campos estão filtrando (a ordem não conta; vários valores num campo contam um).</summary>
+		public int Active =>
+			new[] { Elements.Count, Roles.Count, Stars.Count, Rarities.Count, Conditions.Count, Behaviors.Count, Scalings.Count, Applies.Count }.Count(n => n > 0)
+			+ (Awakened != null ? 1 : 0);
 
 		public bool Matches(OwnedSummon monster, SummonDefinition summon, PlayerState player) =>
-			(Element == null || summon.Element == Element) &&
-			(Role == null || RoleGroups.Of(summon.Role) == RoleGroups.Of(Role.Value)) &&
-			(Stars == null || monster.Stars == Stars) &&
-			(Rarity == null || summon.Rarity == Rarity) &&
+			(Elements.Count == 0 || Elements.Contains(summon.Element)) &&
+			(Roles.Count == 0 || Roles.Any(role => RoleGroups.Of(role) == RoleGroups.Of(summon.Role))) &&
+			(Stars.Count == 0 || Stars.Contains(monster.Stars)) &&
+			(Rarities.Count == 0 || Rarities.Contains(summon.Rarity)) &&
 			(Awakened == null || monster.Awakened == Awakened) &&
-			(Condition is not { } condition || Has(monster, player, condition)) &&
-			(Behavior is not { } behavior || SkillTraits.BehaviorsOf(summon, monster.Awakened).Contains(behavior)) &&
-			(Scaling is not { } scaling || SkillTraits.ScalingsOf(summon, monster.Awakened).Contains(scaling)) &&
-			(Applies is not { } status || SkillTraits.StatusesOf(summon, monster.Awakened).Contains(status));
+			(Conditions.Count == 0 || Conditions.Any(condition => Has(monster, player, condition))) &&
+			(Behaviors.Count == 0 || SkillTraits.BehaviorsOf(summon, monster.Awakened).Intersect(Behaviors).Any()) &&
+			(Scalings.Count == 0 || SkillTraits.ScalingsOf(summon, monster.Awakened).Intersect(Scalings).Any()) &&
+			(Applies.Count == 0 || SkillTraits.StatusesOf(summon, monster.Awakened).Intersect(Applies).Any());
 
 		/// <summary>Os monstros que passam (e que o jogo conhece), na ordem escolhida.</summary>
 		public IEnumerable<OwnedSummon> Apply(IEnumerable<OwnedSummon> monsters, GameDatabase database, PlayerState player)

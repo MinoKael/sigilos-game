@@ -6,15 +6,16 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Runes
 {
 	/// <summary>
-	/// A busca de runas do inventário: conjunto, espaço, principal, subatributos (a runa precisa ter
-	/// todos; o nativo conta), estrelas, raridade e melhora mínimas, a situação (bloqueada ou não) e a
-	/// ordem. Campo nulo ou vazio não filtra.
+	/// A busca de runas do inventário: conjuntos, espaços, principais (basta a runa ser de um dos escolhidos
+	/// de cada campo), subatributos (a runa precisa ter todos; o nativo conta), estrelas, raridade e melhora
+	/// mínimas, a situação (bloqueada ou não) e a ordem. Campo nulo ou vazio não filtra; campos diferentes
+	/// valem juntos.
 	/// </summary>
 	public sealed record RuneFilter
 	{
-		public RuneSet? Set { get; init; }
-		public int? Slot { get; init; }
-		public RuneStat? Main { get; init; }
+		public IReadOnlyList<RuneSet> Sets { get; init; } = Array.Empty<RuneSet>();
+		public IReadOnlyList<int> Slots { get; init; } = Array.Empty<int>();
+		public IReadOnlyList<RuneStat> Mains { get; init; } = Array.Empty<RuneStat>();
 		public IReadOnlyList<RuneStat> Substats { get; init; } = Array.Empty<RuneStat>();
 		public int MinGrade { get; init; } = 1;
 		public RuneRarity MinRarity { get; init; }
@@ -26,9 +27,9 @@ namespace Sigilos.Core.Runes
 		public RuneStat SortStat { get; init; } = RuneStat.Speed;
 
 		public bool Matches(Rune rune) =>
-			(Set == null || rune.Set == Set) &&
-			(Slot == null || rune.Slot == Slot) &&
-			(Main == null || rune.Main == Main) &&
+			(Sets.Count == 0 || Sets.Contains(rune.Set)) &&
+			(Slots.Count == 0 || Slots.Contains(rune.Slot)) &&
+			(Mains.Count == 0 || Mains.Contains(rune.Main)) &&
 			Substats.All(stat => rune.Innate?.Stat == stat || rune.Substats.Any(s => s.Stat == stat)) &&
 			rune.Grade >= MinGrade &&
 			rune.Rarity >= MinRarity &&

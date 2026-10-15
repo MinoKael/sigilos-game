@@ -220,7 +220,7 @@ namespace Sigilos.Tests
 			string Ids(MonsterFilter filter) => string.Join(",", filter.Apply(all, database, player).Select(m => m.Id));
 
 			Assert.Equal(string.Join(",", new[] { fire, phoenix }.OrderByDescending(m => m.Stars).ThenBy(m => m.Id).Select(m => m.Id)),
-				Ids(new MonsterFilter { Element = Element.Fire }), "elemento, mais estrelas primeiro");
+				Ids(new MonsterFilter { Elements = new[] { Element.Fire } }), "elemento, mais estrelas primeiro");
 
 			fire.Level = 20;
 			light.Favorite = true;
@@ -232,19 +232,26 @@ namespace Sigilos.Tests
 			Assert.Equal(3, new MonsterFilter { Awakened = false }.Apply(all, database, player).Count(), "os não despertos");
 
 			RuneInventory.Equip(player, RuneInventory.Create(new Random(2), player, 6), phoenix.Id);
-			Assert.Equal($"{phoenix.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Runed }), "com runas");
-			Assert.Equal(3, new MonsterFilter { Condition = MonsterCondition.Unruned }.Apply(all, database, player).Count(), "sem runas");
-			Assert.Equal($"{light.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Favorite }), "favoritos");
+			Assert.Equal($"{phoenix.Id}", Ids(new MonsterFilter { Conditions = new[] { MonsterCondition.Runed } }), "com runas");
+			Assert.Equal(3, new MonsterFilter { Conditions = new[] { MonsterCondition.Unruned } }.Apply(all, database, player).Count(), "sem runas");
+			Assert.Equal($"{light.Id}", Ids(new MonsterFilter { Conditions = new[] { MonsterCondition.Favorite } }), "favoritos");
 			water.Locked = true;
-			Assert.Equal($"{water.Id}", Ids(new MonsterFilter { Condition = MonsterCondition.Locked }), "bloqueados");
-			Assert.Equal(3, new MonsterFilter { Condition = MonsterCondition.Unlocked }.Apply(all, database, player).Count(), "desbloqueados");
+			Assert.Equal($"{water.Id}", Ids(new MonsterFilter { Conditions = new[] { MonsterCondition.Locked } }), "bloqueados");
+			Assert.Equal(3, new MonsterFilter { Conditions = new[] { MonsterCondition.Unlocked } }.Apply(all, database, player).Count(), "desbloqueados");
 
 			var speeds = new MonsterFilter { Sort = MonsterSort.Stat, SortStat = Stat.Speed }.Apply(all, database, player)
 				.Where(m => !m.Favorite)
 				.Select(m => MonsterFilter.Value(m, database.Summon(m.SummonId), player, Stat.Speed))
 				.ToList();
 			Assert.True(speeds.Zip(speeds.Skip(1)).All(pair => pair.First >= pair.Second), "por Velocidade, a maior primeiro");
-			Assert.Equal(2, new MonsterFilter { Element = Element.Fire, Awakened = false }.Active, "dois campos filtrando");
+			Assert.Equal(2, new MonsterFilter { Elements = new[] { Element.Fire }, Awakened = false }.Active, "dois campos filtrando");
+
+			// Vários valores num campo (fogo e luz): basta ser de um deles; um campo com vários conta um.
+			var fireAndLight = new MonsterFilter { Elements = new[] { Element.Fire, Element.Light } };
+			Assert.Equal(string.Join(",", new[] { fire.Id, phoenix.Id, light.Id }.OrderBy(i => i)), string.Join(",", fireAndLight.Apply(all, database, player).Select(m => m.Id).OrderBy(i => i)), "fogo e luz");
+			Assert.Equal(1, fireAndLight.Active, "um campo com dois valores");
+			Assert.Equal($"{fire.Id}", string.Join(",", (fireAndLight with { Conditions = new[] { MonsterCondition.Unruned }, Stars = new[] { fire.Stars }, Roles = new[] { database.Summon(fire.SummonId).Role } })
+				.Apply(new[] { fire }, database, player).Select(m => m.Id)), "campos diferentes valem juntos");
 		}
 
 		[Test]
@@ -316,11 +323,11 @@ namespace Sigilos.Tests
 				.Select(s => (Summon: s, Gained: SkillTraits.BehaviorsOf(s, true).Except(SkillTraits.BehaviorsOf(s, false)).ToList()))
 				.First(x => x.Gained.Count > 0);
 			var monster = Roster.Add(player, summon);
-			var filter = new MonsterFilter { Behavior = gained[0] };
+			var filter = new MonsterFilter { Behaviors = new[] { gained[0] } };
 			Assert.False(filter.Matches(monster, summon, player), $"{summon.Id} sem o Despertar não tem {gained[0]}");
 			monster.Awakened = true;
 			Assert.True(filter.Matches(monster, summon, player), $"{summon.Id} desperto tem {gained[0]}");
-			Assert.Equal(3, new MonsterFilter { Behavior = SkillBehavior.Heal, Scaling = SkillScaling.Attack, Applies = StatusKind.Stun }.Active, "três campos de habilidade");
+			Assert.Equal(3, new MonsterFilter { Behaviors = new[] { SkillBehavior.Heal }, Scalings = new[] { SkillScaling.Attack }, Applies = new[] { StatusKind.Stun } }.Active, "três campos de habilidade");
 		}
 	}
 }

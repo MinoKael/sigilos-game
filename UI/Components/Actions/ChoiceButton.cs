@@ -45,6 +45,52 @@ namespace Sigilos.UI.Components
 	}
 
 	/// <summary>
+	/// O campo de vários valores (os filtros: fogo e luz): como o <see cref="ChoiceButton"/>, mas a lista
+	/// (<see cref="Choices.OpenMany"/>) deixa ligar várias opções e só avisa quando fecha. Nenhuma ligada é "Todos".
+	/// </summary>
+	public partial class MultiChoiceButton : GameButton
+	{
+		/// <summary>Até quantos nomes o botão escreve; com mais, só quantos são.</summary>
+		private const int NamesShown = 2;
+
+		private readonly string _field;
+		private readonly IReadOnlyList<(Choice Choice, int Value)> _options;
+		private List<int> _selected;
+
+		/// <param name="field">O nome do campo; o botão mostra "Campo: A, B".</param>
+		/// <param name="current">Os valores ligados agora; os que não estão nas opções ficam de fora.</param>
+		public MultiChoiceButton(string field, IReadOnlyList<(Choice Choice, int Value)> options, IEnumerable<int> current, float height = 48)
+			: base("", ButtonKind.Secondary, null, height)
+		{
+			_field = field;
+			_options = options;
+			_selected = options.Select(o => o.Value).Where(current.ToList().Contains).ToList();
+			Refresh();
+			Pressed += () => Choices.OpenMany(this, field, _options.Select(o => o.Choice).ToList(),
+				_selected.Select(v => _options.ToList().FindIndex(o => o.Value == v)).ToList(), indexes =>
+				{
+					_selected = indexes.Select(i => _options[i].Value).ToList();
+					Refresh();
+					Changed?.Invoke(_selected);
+				});
+		}
+
+		/// <summary>A lista fechou com outra escolha: recebe os valores ligados (vazia é "Todos").</summary>
+		public event Action<IReadOnlyList<int>>? Changed;
+
+		public IReadOnlyList<int> Values => _selected;
+
+		private void Refresh()
+		{
+			var names = _selected.Select(v => _options.First(o => o.Value == v).Choice.Text).ToList();
+			var value = names.Count == 0 ? Locale.T("filter.all")
+				: names.Count <= NamesShown ? string.Join(", ", names)
+				: Locale.T("filter.selected_n", names.Count);
+			Text = $"{_field}: {value}";
+		}
+	}
+
+	/// <summary>
 	/// A lista de opções numa janela contextual colada em quem abriu: um botão por opção (a atual acesa),
 	/// em duas colunas quando são muitas. Tocar escolhe e fecha.
 	/// </summary>
@@ -69,6 +115,52 @@ namespace Sigilos.UI.Components
 			}
 
 			dialog.Body.AddChild(grid);
+			return dialog;
+		}
+
+		/// <summary>
+		/// A lista de várias escolhas: tocar liga ou desliga a opção (acesa em azul) e a janela continua aberta;
+		/// "Todos" desliga tudo. <paramref name="changed"/> recebe os índices ligados uma vez, quando a janela
+		/// fecha (Pronto ou um toque fora) e a escolha não é a do começo: quem abriu não se refaz a cada toque.
+		/// </summary>
+		public static Dialog OpenMany(Control from, string title, IReadOnlyList<Choice> options, IReadOnlyCollection<int> selected, Action<IReadOnlyList<int>> changed, bool anchored = true)
+		{
+			var columns = options.Count > 8 ? 2 : 1;
+			var dialog = Dialog.Open(from, title, columns == 1 ? 420 : 640, anchored ? from : null, "ChoiceDialog");
+			var on = new SortedSet<int>(selected);
+			var start = on.ToList();
+			var grid = new GridContainer { Name = "Options", Columns = columns, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+			grid.AddThemeConstantOverride("h_separation", Space.Medium);
+			grid.AddThemeConstantOverride("v_separation", Space.Medium);
+
+			void Fill()
+			{
+				Layout.Clear(grid);
+				grid.AddChild(Row(new Choice(Locale.T("filter.all")), on.Count == 0, () =>
+				{
+					on.Clear();
+					Fill();
+				}).Named("All"));
+				for (var i = 0; i < options.Count; i++)
+				{
+					var index = i;
+					grid.AddChild(Row(options[i], on.Contains(i), () =>
+					{
+						if (!on.Remove(index))
+							on.Add(index);
+						Fill();
+					}).Named($"Option{i + 1}"));
+				}
+			}
+
+			Fill();
+			dialog.Body.AddChild(grid);
+			dialog.AddAction(Locale.T("filter.done"), null, ButtonKind.Primary).Named("Done");
+			dialog.Closed += () =>
+			{
+				if (!on.SequenceEqual(start))
+					changed(on.ToList());
+			};
 			return dialog;
 		}
 

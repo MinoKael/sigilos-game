@@ -326,7 +326,7 @@ namespace Sigilos.Tests
 			for (var i = 0; i < runes.Count; i++)
 				runes[i].Id = i + 1;
 
-			var violent = new RuneFilter { Set = RuneSet.Frenzy }.Apply(runes).Select(r => r.Id);
+			var violent = new RuneFilter { Sets = new[] { RuneSet.Frenzy } }.Apply(runes).Select(r => r.Id);
 			Assert.Equal("1,2", string.Join(",", violent), "conjunto, mais estrelas primeiro");
 
 			var speedAndCrit = new RuneFilter { Substats = new[] { RuneStat.Speed, RuneStat.Crit } }.Apply(runes).Select(r => r.Id);
@@ -335,7 +335,13 @@ namespace Sigilos.Tests
 			var byLevel = new RuneFilter { Sort = RuneSort.Level, MinGrade = 5 }.Apply(runes).Select(r => r.Id);
 			Assert.Equal("1,2,3", string.Join(",", byLevel), "ordem de melhora");
 
-			Assert.Equal(1, new RuneFilter { Main = RuneStat.CritDamage, Slot = 4 }.Apply(runes).Count(), "principal e espaço");
+			Assert.Equal(1, new RuneFilter { Mains = new[] { RuneStat.CritDamage }, Slots = new[] { 4 } }.Apply(runes).Count(), "principal e espaço");
+
+			// Vários valores num campo: a união (os conjuntos e os espaços); entre campos, a interseção.
+			Assert.Equal("1,2,3", string.Join(",", new RuneFilter { Sets = new[] { RuneSet.Frenzy, RuneSet.Vigor } }.Apply(runes).Select(r => r.Id).OrderBy(i => i)), "dois conjuntos");
+			Assert.Equal("1,2,3", string.Join(",", new RuneFilter { Slots = new[] { 2, 4 } }.Apply(runes).Select(r => r.Id).OrderBy(i => i)), "dois espaços");
+			Assert.Equal("1,3", string.Join(",", new RuneFilter { Sets = new[] { RuneSet.Frenzy, RuneSet.Vigor }, Slots = new[] { 2 } }.Apply(runes).Select(r => r.Id).OrderBy(i => i)), "conjuntos e espaço");
+			Assert.Equal("1,3", string.Join(",", new RuneFilter { Mains = new[] { RuneStat.Speed, RuneStat.HealthPercent } }.Apply(runes).Select(r => r.Id).OrderBy(i => i)), "dois principais");
 
 			// Velocidade só nos subatributos: a principal de Velocidade (a 1) não conta, e quem não tem vem por último.
 			var bySpeed = new RuneFilter { Sort = RuneSort.Substat, SortStat = RuneStat.Speed }.Apply(runes).Select(r => r.Id);

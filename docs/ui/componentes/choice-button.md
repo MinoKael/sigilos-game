@@ -7,6 +7,8 @@ O jogo não usa lista suspensa (`OptionButton`): no celular ela abre longe do de
 - **`ChoiceButton`** (herda de [GameButton](game-button.md)) é o campo. Diz o nome do campo e o valor atual ("Ordem: Nível") e, tocado, abre a lista.
 - **`Choices`** é a lista: uma janela contextual ([Dialog](dialog.md)) colada em quem abriu, com um botão por opção e a atual acesa em azul. Com mais de 8 opções, usa duas colunas. Tocar escolhe e fecha.
 
+- **`MultiChoiceButton`** é o campo de vários valores (os filtros: fogo e luz). Mostra "Campo: A, B" (com três ou mais, "Campo: 3 escolhidos"; nenhum é "Todos") e abre `Choices.OpenMany`: tocar liga ou desliga a opção, "Todos" desliga tudo, e a janela só avisa (`Changed`, com os valores ligados) uma vez, quando fecha com outra escolha.
+
 ## `Choice`
 
 ```
@@ -45,6 +47,7 @@ O peso é sempre `Secondary`. O resto (`Disabled`, `Named`, `Wide`) vem de `Game
 | Método | Descrição |
 |---|---|
 | `static Dialog Open(Control from, string title, IReadOnlyList<Choice> options, int selected, Action<int> chosen, bool anchored = true)` | Abre a lista. `selected` e o valor de `chosen` são **índices** na lista. Com `anchored` falso, abre no centro. |
+| `static Dialog OpenMany(Control from, string title, IReadOnlyList<Choice> options, IReadOnlyCollection<int> selected, Action<IReadOnlyList<int>> changed, bool anchored = true)` | A lista de várias escolhas: `selected` e o valor de `changed` são **índices**; `changed` vem uma vez, ao fechar com outra escolha. |
 | `static SurfaceButton Row(Choice choice, bool current, Action pressed)` | Uma linha da lista, para quem monta uma lista própria. |
 
 ### Estados da linha

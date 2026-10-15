@@ -45,26 +45,28 @@ namespace Sigilos.UI.Components
 			var current = filter;
 			FilterDialog.Open(from, T("filter.title_monsters"), dialog =>
 			{
-				dialog.Field("Element", T("filter.element"), Enum.GetValues<Element>().Select(e => (new Choice(Texts.Name(e), Art.Element(e), Palette.Of(e)), (int)e)), current.Element is { } element ? (int)element : FilterDialog.All,
-					value => current = current with { Element = value < 0 ? null : (Element)value });
-				dialog.Field("Role", T("filter.role"), RoleGroups.Representatives.Select(r => (new Choice(Texts.Name(r)), (int)r)), current.Role is { } role ? (int)RoleGroups.Representatives.First(r => RoleGroups.Of(r) == RoleGroups.Of(role)) : FilterDialog.All,
-					value => current = current with { Role = value < 0 ? null : (Role)value });
-				dialog.Field("Stars", T("filter.stars"), Enumerable.Range(1, Growth.MaxStars).Select(s => (new Choice(Texts.Stars(s)), s)), current.Stars ?? FilterDialog.All,
-					value => current = current with { Stars = value < 0 ? null : value });
-				dialog.Field("Rarity", T("filter.natural"), database.Summons.Select(s => s.Rarity).Distinct().OrderBy(r => r).Select(r => (new Choice(Texts.Stars(r)), r)), current.Rarity ?? FilterDialog.All,
-					value => current = current with { Rarity = value < 0 ? null : value });
+				// Cada campo aceita vários valores (fogo e luz): basta o monstro ser de um deles.
+				dialog.MultiField("Element", T("filter.element"), Enum.GetValues<Element>().Select(e => (new Choice(Texts.Name(e), Art.Element(e), Palette.Of(e)), (int)e)), current.Elements.Select(e => (int)e),
+					values => current = current with { Elements = values.Select(v => (Element)v).ToList() });
+				dialog.MultiField("Role", T("filter.role"), RoleGroups.Representatives.Select(r => (new Choice(Texts.Name(r)), (int)r)),
+					current.Roles.Select(role => (int)RoleGroups.Representatives.First(r => RoleGroups.Of(r) == RoleGroups.Of(role))).Distinct(),
+					values => current = current with { Roles = values.Select(v => (Role)v).ToList() });
+				dialog.MultiField("Stars", T("filter.stars"), Enumerable.Range(1, Growth.MaxStars).Select(s => (new Choice(Texts.Stars(s)), s)), current.Stars,
+					values => current = current with { Stars = values });
+				dialog.MultiField("Rarity", T("filter.natural"), database.Summons.Select(s => s.Rarity).Distinct().OrderBy(r => r).Select(r => (new Choice(Texts.Stars(r)), r)), current.Rarities,
+					values => current = current with { Rarities = values });
 				dialog.Field("Awakening", T("filter.awakening"), new[] { (new Choice(T("filter.awakened")), 1), (new Choice(T("filter.not_awakened")), 0) }, current.Awakened is { } awakened ? (awakened ? 1 : 0) : FilterDialog.All,
 					value => current = current with { Awakened = value < 0 ? null : value == 1 });
-				dialog.Field("Condition", T("filter.condition"), Enum.GetValues<MonsterCondition>().Select(c => (new Choice(T($"filter.condition_kind.{c}")), (int)c)), current.Condition is { } condition ? (int)condition : FilterDialog.All,
-					value => current = current with { Condition = value < 0 ? null : (MonsterCondition)value });
+				dialog.MultiField("Condition", T("filter.condition"), Enum.GetValues<MonsterCondition>().Select(c => (new Choice(T($"filter.condition_kind.{c}")), (int)c)), current.Conditions.Select(c => (int)c),
+					values => current = current with { Conditions = values.Select(v => (MonsterCondition)v).ToList() });
 
 				// O que as habilidades fazem: só as opções que algum monstro do jogo tem.
-				dialog.Field("Behavior", T("filter.behavior"), SkillTraits.BehaviorsIn(database.Summons).Select(b => (new Choice(T($"filter.behavior_kind.{b}")), (int)b)), current.Behavior is { } behavior ? (int)behavior : FilterDialog.All,
-					value => current = current with { Behavior = value < 0 ? null : (SkillBehavior)value });
-				dialog.Field("Scaling", T("filter.scaling"), SkillTraits.ScalingsIn(database.Summons).Select(s => (new Choice(T($"filter.scaling_kind.{s}")), (int)s)), current.Scaling is { } scaling ? (int)scaling : FilterDialog.All,
-					value => current = current with { Scaling = value < 0 ? null : (SkillScaling)value });
-				dialog.Field("Applies", T("filter.applies"), SkillTraits.StatusesIn(database.Summons).Select(s => (new Choice(Texts.Name(s)), (int)s)), current.Applies is { } status ? (int)status : FilterDialog.All,
-					value => current = current with { Applies = value < 0 ? null : (StatusKind)value });
+				dialog.MultiField("Behavior", T("filter.behavior"), SkillTraits.BehaviorsIn(database.Summons).Select(b => (new Choice(T($"filter.behavior_kind.{b}")), (int)b)), current.Behaviors.Select(b => (int)b),
+					values => current = current with { Behaviors = values.Select(v => (SkillBehavior)v).ToList() });
+				dialog.MultiField("Scaling", T("filter.scaling"), SkillTraits.ScalingsIn(database.Summons).Select(s => (new Choice(T($"filter.scaling_kind.{s}")), (int)s)), current.Scalings.Select(s => (int)s),
+					values => current = current with { Scalings = values.Select(v => (SkillScaling)v).ToList() });
+				dialog.MultiField("Applies", T("filter.applies"), SkillTraits.StatusesIn(database.Summons).Select(s => (new Choice(Texts.Name(s)), (int)s)), current.Applies.Select(s => (int)s),
+					values => current = current with { Applies = values.Select(v => (StatusKind)v).ToList() });
 			}, () => changed(current), () => current = new MonsterFilter { Sort = current.Sort, SortStat = current.SortStat });
 		}
 	}

@@ -26,7 +26,8 @@ namespace Sigilos.UI.Screens
 	/// - Runas: as 6 no círculo, os conjuntos ativos e o botão que abre a tela de Runas.
 	///
 	/// Embaixo das abas, Filtros e Ordem (<see cref="MonsterFilter"/>): elemento, papel, estrelas, estrelas
-	/// naturais, Despertar, situação e as habilidades (o que fazem, em que escalam, que efeito põem: só as
+	/// naturais, Despertar, situação e as habilidades (cada campo aceita vários valores: basta um valer; campos
+	/// diferentes valem juntos) (o que fazem, em que escalam, que efeito põem: só as
 	/// opções que algum monstro tem, <see cref="SkillTraits"/>); a ordem por estrelas, nível, elemento, nome, chegada ou por um
 	/// atributo (com as runas), que então aparece escrito em cada cartão. Os favoritos vêm antes em
 	/// qualquer ordem. O GameRoot guarda a busca enquanto o jogo está aberto (<see cref="FilterChanged"/>).
