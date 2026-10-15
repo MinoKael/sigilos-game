@@ -19,9 +19,13 @@ namespace Sigilos.UI.Components
 		{
 			canvas.DrawLine(from, to, new Color(Palette.Arcane, 0.07f * alpha), 7, true);
 			canvas.DrawLine(from, to, new Color(line, 0.4f * alpha), 1.5f, true);
-			if (!sparkle)
-				return;
+			if (sparkle)
+				Spark(canvas, from, to, time, phase, spark, alpha);
+		}
 
+		/// <summary>Só a faísca de um fio: ela corre de <paramref name="from"/> a <paramref name="to"/> e some nas pontas.</summary>
+		public static void Spark(CanvasItem canvas, Vector2 from, Vector2 to, float time, float phase, Color spark, float alpha = 1)
+		{
 			var t = Mathf.PosMod(time * 0.22f + phase, 1f);
 			var at = from.Lerp(to, t);
 			canvas.DrawCircle(at, 5, new Color(spark, 0.12f * alpha));

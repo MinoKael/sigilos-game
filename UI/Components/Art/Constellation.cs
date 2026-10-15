@@ -62,11 +62,23 @@ namespace Sigilos.UI.Components
 		private Control? _center;
 		private Control? _attached;
 		private float _time;
+		private float _progress;
+		private readonly Layer _chart;
+		private readonly Layer _sparks;
+		private readonly Layer _ticks;
 
 		public Constellation()
 		{
 			MouseFilter = MouseFilterEnum.Ignore;
 			Resized += Arrange;
+
+			// Três camadas por baixo dos signos e do centro: a carta (parada), as marcas do anel (só giram) e as faíscas.
+			_chart = new Layer("Chart", PaintChart);
+			_ticks = new Layer("Ticks", PaintTicks);
+			_sparks = new Layer("Sparks", PaintSparks);
+			AddChild(_chart);
+			AddChild(_ticks);
+			AddChild(_sparks);
 
 			// Um signo em cada orbe, tingido pelo shader (os SVG são pretos); só desenho, sem toque.
 			foreach (var sign in Signs)
@@ -81,7 +93,17 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Quanto o anel do centro encheu, de 0 a 1.</summary>
-		public float Progress { get; set; }
+		public float Progress
+		{
+			get => _progress;
+			set
+			{
+				if (Mathf.IsEqualApprox(_progress, value))
+					return;
+				_progress = value;
+				_chart.QueueRedraw();
+			}
+		}
 
 		/// <summary>Põe o sigilo do centro (o tamanho dele é o <see cref="Control.CustomMinimumSize"/>).</summary>
 		public void SetCenter(Control center)
@@ -104,13 +126,33 @@ namespace Sigilos.UI.Components
 
 		public override Vector2 _GetMinimumSize() => _center == null ? Vector2.Zero : _center.CustomMinimumSize + new Vector2(Orb * 6, Orb * 6);
 
+		/// <summary>Quantas vezes por segundo a faísca e o giro do anel andam: o olho não pede mais que isso.</summary>
+		private const float StepsPerSecond = 24;
+
+		private float _accumulated;
+
 		public override void _Process(double delta)
 		{
+			// A carta (órbitas, fios, orbes e anel) é desenhada uma vez, e só muda se o painel muda. O que anda
+			// é pouco: a faísca de cada fio, redesenhada a passos; o giro do anel, só um ângulo.
 			_time += (float)delta;
-			QueueRedraw();
+			_accumulated += (float)delta;
+			if (_accumulated < 1 / StepsPerSecond)
+				return;
+
+			_accumulated = 0;
+			_sparks.QueueRedraw();
+			_ticks.Rotation = _time * 0.05f;
 		}
 
-		public override void _Draw()
+		public override void _Notification(int what)
+		{
+			// Escondida, a constelação não anda.
+			if (what == NotificationVisibilityChanged)
+				SetProcess(IsVisibleInTree());
+		}
+
+		private void PaintChart(CanvasItem canvas)
 		{
 			if (_center == null)
 				return;
@@ -120,35 +162,77 @@ namespace Sigilos.UI.Components
 			var radii = Radii;
 
 			foreach (var orbit in _orbits)
-				DrawPolyline(orbit, ChartInk, 1, true);
-			DrawMultiline(_degrees, ChartInk, 1);
+				canvas.DrawPolyline(orbit, ChartInk, 1, true);
+			canvas.DrawMultiline(_degrees, ChartInk, 1);
 
 			for (var i = 0; i < Places.Length; i++)
 			{
 				var target = OrbAt(i, center, radii);
 				var direction = (target - center).Normalized();
 
-				// O fio de luz, com a faísca que corre do orbe para o centro (Thread corre do primeiro ponto ao segundo).
-				Starlight.Thread(this, target - direction * (Orb + 4), center + direction * (core + 12), _time, i * 0.37f, Palette.Gold, Palette.Spirit);
+				// O fio de luz (a faísca que corre por ele é da outra camada).
+				Starlight.Thread(canvas, target - direction * (Orb + 4), center + direction * (core + 12), 0, 0, Palette.Gold, Palette.Spirit, sparkle: false);
 
-				// O orbe: o mesmo sigilo de pedra dos botões redondos, com uma estrela que pisca no seu tempo.
-				DrawCircle(target, Orb, Palette.Panel);
-				DrawArc(target, Orb, 0, Mathf.Tau, 48, Palette.GoldDark, 2, true);
-				DrawArc(target, Orb - 4, 0, Mathf.Tau, 48, new Color(Palette.GoldDark, 0.35f), 1, true);
-				//Starlight.Twinkle(this, target, Orb, _time, i * 1.3f, Palette.Gold);
+				// O orbe: o mesmo sigilo de pedra dos botões redondos.
+				canvas.DrawCircle(target, Orb, Palette.Panel);
+				canvas.DrawArc(target, Orb, 0, Mathf.Tau, 48, Palette.GoldDark, 2, true);
+				canvas.DrawArc(target, Orb - 4, 0, Mathf.Tau, 48, new Color(Palette.GoldDark, 0.35f), 1, true);
 			}
 
 			// O anel da canalização em volta do centro.
 			var ring = core + 8;
-			DrawArc(center, ring, 0, Mathf.Tau, 72, new Color(0, 0, 0, 0.55f), 7, true);
+			canvas.DrawArc(center, ring, 0, Mathf.Tau, 72, new Color(0, 0, 0, 0.55f), 7, true);
 			if (Progress > 0)
-				DrawArc(center, ring, -Mathf.Pi / 2, -Mathf.Pi / 2 + Mathf.Tau * Mathf.Clamp(Progress, 0, 1), 72, Palette.Spirit, 4, true);
+				canvas.DrawArc(center, ring, -Mathf.Pi / 2, -Mathf.Pi / 2 + Mathf.Tau * Mathf.Clamp(Progress, 0, 1), 72, Palette.Spirit, 4, true);
+		}
+
+		/// <summary>As faíscas: uma por fio, correndo dos orbes para o centro.</summary>
+		private void PaintSparks(CanvasItem canvas)
+		{
+			if (_center == null)
+				return;
+
+			var center = Middle;
+			var core = _center.Size.X / 2;
+			var radii = Radii;
+			for (var i = 0; i < Places.Length; i++)
+			{
+				var target = OrbAt(i, center, radii);
+				var direction = (target - center).Normalized();
+				Starlight.Spark(canvas, target - direction * (Orb + 4), center + direction * (core + 12), _time, i * 0.37f, Palette.Spirit);
+			}
+		}
+
+		/// <summary>As marcas em volta do anel, desenhadas paradas na camada que gira.</summary>
+		private void PaintTicks(CanvasItem canvas)
+		{
+			if (_center == null)
+				return;
+
+			var middle = Middle;
+			var ring = _center.Size.X / 2 + 8;
 			for (var k = 0; k < 24; k++)
 			{
-				var angle = k * Mathf.Tau / 24 + _time * 0.05f;
+				var angle = k * Mathf.Tau / 24;
 				var dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-				DrawLine(center + dir * (ring + 7), center + dir * (ring + (k % 3 == 0 ? 14 : 10)), new Color(Palette.Gold, 0.35f), 1.5f, true);
+				canvas.DrawLine(middle + dir * (ring + 7), middle + dir * (ring + (k % 3 == 0 ? 14 : 10)), new Color(Palette.Gold, 0.35f), 1.5f, true);
 			}
+		}
+
+		/// <summary>Uma camada de desenho: o painel diz o que pintar nela e quando refazer.</summary>
+		private sealed partial class Layer : Control
+		{
+			private readonly System.Action<CanvasItem> _paint;
+
+			public Layer(string name, System.Action<CanvasItem> paint)
+			{
+				Name = name;
+				_paint = paint;
+				MouseFilter = MouseFilterEnum.Ignore;
+				SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			}
+
+			public override void _Draw() => _paint(this);
 		}
 
 		/// <summary>A faixa de baixo que a plaquinha ocupa, numa linha só; a carta e os orbes ficam acima dela.</summary>
@@ -189,7 +273,10 @@ namespace Sigilos.UI.Components
 			for (var i = 0; i < _signs.Count; i++)
 				_signs[i].Position = OrbAt(i, middle, Radii) - _signs[i].Size / 2f;
 
-			QueueRedraw();
+			_ticks.PivotOffset = middle;
+			_chart.QueueRedraw();
+			_ticks.QueueRedraw();
+			_sparks.QueueRedraw();
 		}
 
 		/// <summary>Põe a carta do céu no tamanho do painel: as órbitas na elipse dos orbes, as marcas do grau por fora dela.</summary>

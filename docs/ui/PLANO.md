@@ -123,7 +123,7 @@ UI/
 ├── Components/
 │   ├── Actions/      TouchButton, SurfaceButton, GameButton, SigilButton, BackButton, TileButton, ChoiceButton, TextTabs, Press
 │   ├── Overlays/     Dialog, FilterDialog, RuneDialog, PauseMenu, TutorialCoach, AvatarPicker, MonsterPicker, MonsterSummary, ChatBubble, AutoBattleBadge
-│   ├── Layout/       Layout, DragScroll, TileGrid
+│   ├── Layout/       Layout, TouchScroll, TileGrid
 │   ├── DataDisplay/  CreatureCard, RuneTile, RuneCard, StatTable, StatusChip, SkillRow, CurrencyBar, MonsterSearch, TeamStrip, StagePath, RichText
 │   ├── Battle/       BattleArena, UnitView, BossBar, TurnOrderBar, FloatingText, ImpactLayer, AutoBattleWatch
 │   └── Art/          Doodle, RuneGlyph, Constellation, StarChart, SigilRing, SummonHalo, Starlight, ArtMask, Backdrop, EnergyRing

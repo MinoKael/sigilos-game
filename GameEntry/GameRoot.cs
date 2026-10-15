@@ -125,9 +125,9 @@ namespace Sigilos.GameEntry
 			var slot = _debugger ? DebugAccount.Slot : Argument("--save=") ?? DefaultSlot;
 			_account = new AccountSession(slot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
 			AddChild(_account);
-			var collector = new Timer { Name = "Collector", WaitTime = CollectSeconds, Autostart = true };
-			collector.Timeout += Collect;
-			AddChild(collector);
+			_collector = new Timer { Name = "Collector", WaitTime = CollectSeconds, Autostart = true, OneShot = true };
+			_collector.Timeout += Collect;
+			AddChild(_collector);
 			_account.Lost += (reason, backedUp) => ShowLogin(T(reason switch
 			{
 				LossReason.Expired => "account.error_expired",
@@ -192,7 +192,27 @@ namespace Sigilos.GameEntry
 			ApplyVolume(MusicPlayer.Bus, _account.MusicVolume);
 			ApplyVolume(Sfx.Bus, _account.EffectsVolume);
 			// No PC, a janela fica sempre em 16:9; no celular, a interface ocupa a tela toda.
-			AddChild(new WindowAspect(OS.HasFeature("mobile") || Argument("--mobile") != null));
+			// No celular a interface passa a 60 quadros por segundo no máximo (telas de 120 Hz gastariam o
+			// dobro de bateria sem ganho num jogo de menus e turnos).
+			if (OS.HasFeature("mobile"))
+				Engine.MaxFps = 60;
+			var aspect = new WindowAspect(OS.HasFeature("mobile") || Argument("--mobile") != null);
+			AddChild(aspect);
+			// A área segura da tela (o recorte da câmera, os cantos): a interface fica de fora dela.
+			void Inset(WindowAspect.Insets insets)
+			{
+				_ui.OffsetLeft = insets.Left;
+				_ui.OffsetTop = insets.Top;
+				_ui.OffsetRight = -insets.Right;
+				_ui.OffsetBottom = -insets.Bottom;
+			}
+
+			aspect.InsetsChanged += Inset;
+			Inset(aspect.Current);
+			// A faixa que o recuo deixa de fora das telas é do tom do fundo, não do cinza-marrom padrão.
+			RenderingServer.SetDefaultClearColor(Palette.Background);
+			// A rolagem por arrasto de toda lista (dedo ou mouse, com inércia), vista antes da interface.
+			AddChild(new TouchScroll());
 			GetWindow().SizeChanged += () => Doodle.RefineAll(GetTree());
 			AddChild(new MinimizeGuard(_ui));
 
@@ -1702,7 +1722,37 @@ namespace Sigilos.GameEntry
 		/// completa: a memória do C# é pequena, então ele não vê pressa. Numa luta, que refaz ícones e números a
 		/// cada ação, isso juntava milhares de objetos por minuto e a memória crescia sem parar.
 		/// </summary>
-		private static void Collect() => GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: false);
+		private void Collect()
+		{
+			// A coleta solta de uma vez os objetos do Godot que ela encontra e pode dar um solavanco de alguns
+			// quadros: com o dedo na tela (rolando, tocando) espera um pouco, até <see cref="CollectPatience"/>.
+			if (Time.GetTicksMsec() - _lastTouch < TouchRestMs && _postponed < CollectPatience)
+			{
+				_postponed++;
+				_collector.Start(1);
+				return;
+			}
+
+			_postponed = 0;
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: false);
+			_collector.Start(CollectSeconds);
+		}
+
+		/// <summary>Quantas esperas de 1 s a coleta aguenta, no máximo, antes de passar mesmo com o dedo na tela.</summary>
+		private const int CollectPatience = 8;
+
+		/// <summary>Quanto tempo, em ms, sem toque conta como "o jogador parou".</summary>
+		private const ulong TouchRestMs = 1200;
+
+		private Timer _collector = null!;
+		private int _postponed;
+		private ulong _lastTouch;
+
+		public override void _Input(InputEvent @event)
+		{
+			if (@event is InputEventScreenTouch or InputEventScreenDrag or InputEventMouseButton or InputEventMouseMotion { ButtonMask: not 0 })
+				_lastTouch = Time.GetTicksMsec();
+		}
 
 		/// <summary>Grava no aparelho e, jogando na conta, manda para a nuvem logo em seguida (as ações seguidas viram um envio só).</summary>
 		private void Save()

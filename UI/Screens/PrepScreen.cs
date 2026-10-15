@@ -135,7 +135,6 @@ namespace Sigilos.UI.Screens
 				ScrollHorizontalCustomStep = CardWidth * 2,
 			};
 			_scroll.AddChild(_cards);
-			DragScroll.Enable(_scroll);
 			column.AddChild(_scroll);
 			collection.AddChild(column);
 			page.AddChild(collection);

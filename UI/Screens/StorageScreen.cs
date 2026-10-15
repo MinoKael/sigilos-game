@@ -89,6 +89,7 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>O cartão de cada monstro da grade (as cópias de um grupo dão no mesmo): o toque muda só ele.</summary>
 		private readonly Dictionary<int, CreatureCard> _cards = new();
+		private IReadOnlyList<MonsterStack> _stacks = Array.Empty<MonsterStack>();
 
 		/// <param name="filter">A busca da última vez (nula: sem filtro, por estrelas).</param>
 		public StorageScreen(GameDatabase database, PlayerState player, int? selected, MonsterFilter? filter = null)
@@ -151,6 +152,11 @@ namespace Sigilos.UI.Screens
 			rosterColumn.AddChild(_tools);
 			rosterColumn.AddChild(_search);
 			rosterColumn.AddChild(_selection);
+			_roster.Released += (index, _) =>
+			{
+				foreach (var copy in _stacks[index].Copies)
+					_cards.Remove(copy.Id);
+			};
 			rosterColumn.AddChild(Layout.Scroll(_roster));
 			body.AddChild(rosterPanel);
 
@@ -335,6 +341,7 @@ namespace Sigilos.UI.Screens
 
 		private void RefreshRoster()
 		{
+			_roster.Reset();
 			Layout.Clear(_roster);
 			_cards.Clear();
 			var place = (_showStorage ? _player.Storage : _player.Collection).ToList();
@@ -344,8 +351,10 @@ namespace Sigilos.UI.Screens
 				? MonsterStack.Group(monsters, _player)
 				: monsters.Select(m => new MonsterStack(new[] { m })).ToList();
 
-			foreach (var stack in stacks)
-				_roster.AddChild(Card(stack));
+			// Só os cartões que aparecem na rolagem existem como nós: a coleção e o Baú passam de centenas.
+			_stacks = stacks;
+			if (stacks.Count > 0)
+				_roster.Virtualize(stacks.Count, new Vector2(CardWidth, CardWidth * 1.25f), index => Card(_stacks[index]));
 
 			if (monsters.Count == 0)
 			{

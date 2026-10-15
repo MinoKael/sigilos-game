@@ -211,7 +211,7 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>
-		/// Rolagem vertical: a gema do tema, sem trilho. Arrastar com o mouse também rola (<see cref="DragScroll"/>).
+		/// Rolagem vertical: a gema do tema, sem trilho. Arrastar com o dedo ou com o mouse também rola (<see cref="TouchScroll"/>).
 		/// O lugar da barra fica sempre guardado (<c>Reserve</c>): o conteúdo tem a mesma largura com a barra ou
 		/// sem ela, e um texto no limite não fica quebrando linha ora sim, ora não, sem parar.
 		/// </summary>
@@ -229,7 +229,6 @@ namespace Sigilos.UI.Components
 			};
 			content.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 			scroll.AddChild(content);
-			DragScroll.Enable(scroll);
 			return scroll;
 		}
 

@@ -22,7 +22,13 @@ namespace Sigilos.UI.Animations
 			button.PivotOffsetRatio = Vector2.One * 0.5f;
 			button.ButtonDown += () => Bounce(press);
 			button.ButtonUp += () => Bounce(1f);
-			button.Pressed += () => Sfx.Fallback(!button.ToggleMode ? "ui.button_click" : button.ButtonPressed ? "ui.toggle_on" : "ui.toggle_off");
+			button.Pressed += () =>
+			{
+				Sfx.Fallback(!button.ToggleMode ? "ui.button_click" : button.ButtonPressed ? "ui.toggle_on" : "ui.toggle_off");
+				// Um toque de verdade (não o arrasto que rola a lista) dá o estalo do celular.
+				if (OS.HasFeature("mobile"))
+					Input.VibrateHandheld(10, 0.4f);
+			};
 		}
 	}
 }

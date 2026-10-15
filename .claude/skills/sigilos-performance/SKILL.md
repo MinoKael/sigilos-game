@@ -54,3 +54,27 @@ otimizar o que foi medido.
   memória do processo, tempo de frame). Sem medida, legibilidade vence.
 - Vazamento: comparar `Performance.Monitor.ObjectCount`/`ObjectOrphanNodeCount` e a memória do
   processo ao longo de muitas lutas/aberturas de tela.
+
+## Medido em 14/10/2026 (revisão mobile)
+Medições no PC com `Tools/perf` (conta Debugger, `--disable-vsync`): o custo de quadro de uma tela é de CPU,
+proporcional ao que redesenha por quadro. O que mais custava, e o padrão que o resolveu:
+- **Fundo (`Backdrop`)**: shader de névoa em todo pixel, todo quadro. Agora o shader roda duas vezes
+  (`BackdropBake`: céu liso e máscara do astrolábio) e a animação vem por cima, sem pixel shader: o astrolábio é
+  uma imagem que gira (`Rotation`), as estrelas são pontos em 4 grupos que piscam por `Modulate`, a claridade é
+  uma imagem radial no foco. 20 passos por segundo, só com a tela visível. O fundo gira: nada de voltar a imagem
+  parada. Nada de shader que gira com `TIME` em tela cheia.
+- **Desenho animado (`Constellation`, `StarChart`)**: uma camada parada (desenhada uma vez, refeita só quando
+  o tamanho muda) e camadas pequenas que andam a 6–24 passos por segundo, só com o que está na tela
+  (`GetViewportRect` no espaço do mapa). Nunca `QueueRedraw` por quadro num desenho com dezenas de arcos.
+- **Lista longa**: `TileGrid.Virtualize` (só as fileiras à vista + 2 de folga existem). Runas (800) foram de
+  5.851 para ~700 nós. O estado (escolhida, marcada) fica na tela e entra na peça quando ela é criada.
+- **Rolagem**: `TouchScroll` único no `GameRoot` (toque antes da GUI, inércia, cancela o botão sob o dedo).
+  Não ligar rolagem por lista.
+- **Coleta de lixo**: o `GameRoot` adia a coleta enquanto o dedo está na tela (até 8 s).
+- Celular: `Engine.MaxFps = 60`, a área segura vira recuo da interface (`WindowAspect`).
+- **Criar peça custa**: uma `RuneTile` leva ≈ 0,75 ms (PC) só para construir e entrar na árvore (3 ms para 4 peças),
+  fora o primeiro desenho. No arremesso o p99 das Runas/Monstros (≈ 15–20 ms) vem disso, não da rolagem: com painéis
+  vazios no lugar, o p99 cai para 2,5 ms. Medido sem ganho: criar a folga aos poucos (orçamento por quadro) e soltar
+  as peças uma fileira mais longe. Retirar o `PlanetSymbol` da peça corta o p50 de 4,7 para 3,5 ms (maior pedaço
+  único). Próximos cortes: um ícone só no planeta, ou rebind de `RuneTile`/`CreatureCard` (reaproveitar em vez de
+  `QueueFree`).

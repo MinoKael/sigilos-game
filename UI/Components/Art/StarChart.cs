@@ -34,6 +34,10 @@ namespace Sigilos.UI.Components
 
 		private readonly List<(int Number, SigilButton Node, Vector2 Spot)> _orbs = new();
 		private readonly List<(Vector2 Spot, float Size, float Phase)> _field = new();
+		private readonly List<(SigilButton Node, float Phase)> _twinklers = new();
+		private readonly Layer _chart;
+		private readonly Layer _dust;
+		private readonly Layer _sparks;
 		private readonly float _chartWidth;
 		private readonly float _chartHeight;
 		private readonly int _cleared;
@@ -49,6 +53,13 @@ namespace Sigilos.UI.Components
 			MouseFilter = MouseFilterEnum.Ignore;
 			ClipContents = true;
 
+			// Por baixo dos orbes: a grade e os fios, parados, e o campo de estrelas. Por cima, só as faíscas.
+			_chart = new Layer("Chart", PaintChart);
+			_dust = new Layer("Dust", PaintDust);
+			_sparks = new Layer("Sparks", PaintSparks);
+			AddChild(_chart);
+			AddChild(_dust);
+
 			var constellations = Exploration.Of(exploration, hemisphere).ToList();
 			_chartHeight = constellations.Count == 0 ? 0 : constellations.Max(c => (float)c.Constellation.Chart[1]) + Orb;
 			foreach (var (number, constellation) in constellations)
@@ -62,7 +73,7 @@ namespace Sigilos.UI.Components
 					Badge = number.ToString(),
 				};
 				if (icon == null)
-					node.AddChild(new Twinkler((number % 7) * 0.9f) { Name = "Star" });
+					_twinklers.Add((node, (number % 7) * 0.9f));
 				if (number <= cleared)
 					node.Accent = Palette.Spirit;
 				else if (number > cleared + 1)
@@ -80,6 +91,7 @@ namespace Sigilos.UI.Components
 			for (var i = 0; i < count; i++)
 				_field.Add((new Vector2((float)random.NextDouble(), (float)random.NextDouble()), 0.6f + (float)random.NextDouble() * 1.4f, (float)random.NextDouble() * Mathf.Tau));
 
+			AddChild(_sparks);
 			Resized += Arrange;
 		}
 
@@ -96,41 +108,132 @@ namespace Sigilos.UI.Components
 
 		public override void _Ready() => Arrange();
 
+		/// <summary>Quantas vezes por segundo a faísca e o brilho das estrelas andam; o campo de estrelas, muito mais devagar.</summary>
+		private const float SparkSteps = 20;
+		private const float FieldSteps = 6;
+
+		private float _sparkClock;
+		private float _fieldClock;
+
 		public override void _Process(double delta)
 		{
+			// O mapa parado (grade e fios) é desenhado uma vez; as camadas de cima andam a passos e só
+			// desenham o que está na tela: o mapa é comprido e a maior parte dele fica fora da rolagem.
 			_time += (float)delta;
-			QueueRedraw();
+			_sparkClock += (float)delta;
+			_fieldClock += (float)delta;
+			if (_sparkClock >= 1 / SparkSteps)
+			{
+				_sparkClock = 0;
+				_sparks.QueueRedraw();
+			}
+
+			if (_fieldClock >= 1 / FieldSteps)
+			{
+				_fieldClock = 0;
+				_dust.QueueRedraw();
+			}
 		}
 
-		public override void _Draw()
+		public override void _Notification(int what)
+		{
+			if (what == NotificationVisibilityChanged)
+				SetProcess(IsVisibleInTree());
+		}
+
+		/// <summary>A grade e os fios, sem as faíscas: desenhados uma vez por tamanho do mapa.</summary>
+		private void PaintChart(CanvasItem canvas)
 		{
 			if (_grid.Length > 0)
-				DrawMultiline(_grid, GridInk, 1);
-
-			foreach (var (spot, size, phase) in _field)
-			{
-				var light = 0.25f + 0.2f * Mathf.Sin(_time * 0.8f + phase);
-				DrawCircle(new Vector2(spot.X * Size.X, spot.Y * Size.Y), size, new Color(Palette.Text, light));
-			}
+				canvas.DrawMultiline(_grid, GridInk, 1);
 
 			for (var i = 0; i + 1 < _orbs.Count; i++)
 			{
 				var (number, a, _) = _orbs[i];
-				var b = _orbs[i + 1].Node;
-				var from = Center(a);
-				var to = Center(b);
-				var direction = (to - from).Normalized();
-				from += direction * (a.Size.X / 2 + 4);
-				to -= direction * (b.Size.X / 2 + 4);
-
-				// O trecho vencido no mês é verde e vivo; o que leva à próxima, dourado; o resto, apagado.
+				var (from, to) = Span(i);
 				if (number + 1 <= _cleared)
-					Starlight.Thread(this, from, to, _time, i * 0.37f, Palette.Spirit, Palette.Spirit);
+					Starlight.Thread(canvas, from, to, 0, 0, Palette.Spirit, Palette.Spirit, sparkle: false);
 				else if (number + 1 == _cleared + 1)
-					Starlight.Thread(this, from, to, _time, i * 0.37f, Palette.Gold, Palette.Spirit);
+					Starlight.Thread(canvas, from, to, 0, 0, Palette.Gold, Palette.Spirit, sparkle: false);
 				else
-					Starlight.Thread(this, from, to, _time, 0, Palette.GoldDark, Palette.Spirit, 0.6f, sparkle: false);
+					Starlight.Thread(canvas, from, to, 0, 0, Palette.GoldDark, Palette.Spirit, 0.6f, sparkle: false);
 			}
+		}
+
+		/// <summary>As pontas do fio entre o orbe <paramref name="index"/> e o seguinte, deixando a folga dos orbes.</summary>
+		private (Vector2 From, Vector2 To) Span(int index)
+		{
+			var a = _orbs[index].Node;
+			var b = _orbs[index + 1].Node;
+			var from = Center(a);
+			var to = Center(b);
+			var direction = (to - from).Normalized();
+			return (from + direction * (a.Size.X / 2 + 4), to - direction * (b.Size.X / 2 + 4));
+		}
+
+		/// <summary>O pedaço do mapa que aparece na tela agora (com folga), em coordenadas do mapa.</summary>
+		private Rect2 OnScreen() => (GetGlobalTransformWithCanvas().AffineInverse() * GetViewportRect()).Grow(48);
+
+		/// <summary>As faíscas dos fios vencidos e do que leva à próxima, e a estrela que pisca nos orbes sem ícone.</summary>
+		private void PaintSparks(CanvasItem canvas)
+		{
+			var screen = OnScreen();
+			for (var i = 0; i + 1 < _orbs.Count; i++)
+			{
+				var number = _orbs[i].Number;
+				if (number + 1 > _cleared + 1)
+					continue;
+
+				var (from, to) = Span(i);
+				if (!screen.Intersects(new Rect2(from.Min(to), (to - from).Abs())))
+					continue;
+				Starlight.Spark(canvas, from, to, _time, i * 0.37f, Palette.Spirit);
+			}
+
+			foreach (var (node, phase) in _twinklers)
+			{
+				var at = Center(node);
+				if (!screen.HasPoint(at))
+					continue;
+
+				var radius = Mathf.Min(node.Size.X, node.Size.Y) / 2 - 6;
+				var tint = Palette.Gold with { A = node.Modulate.A };
+				if (Art.IconInk("polar_star") is { } star)
+					Starlight.Twinkle(canvas, star, at, radius, _time, phase, tint);
+				else
+					Starlight.Twinkle(canvas, at, radius, _time, phase, tint);
+			}
+		}
+
+		/// <summary>O campo de estrelas de fundo, que respira devagar: só as que estão na tela.</summary>
+		private void PaintDust(CanvasItem canvas)
+		{
+			var screen = OnScreen();
+			foreach (var (spot, size, phase) in _field)
+			{
+				var at = new Vector2(spot.X * Size.X, spot.Y * Size.Y);
+				if (!screen.HasPoint(at))
+					continue;
+
+				var light = 0.25f + 0.2f * Mathf.Sin(_time * 0.8f + phase);
+				canvas.DrawCircle(at, size, new Color(Palette.Text, light));
+			}
+		}
+
+		/// <summary>Uma camada de desenho do mapa: o mapa diz o que pintar nela e quando refazer.</summary>
+		private sealed partial class Layer : Control
+		{
+			private readonly Action<CanvasItem> _paint;
+
+			public Layer(string name, Action<CanvasItem> paint)
+			{
+				Name = name;
+				_paint = paint;
+				MouseFilter = MouseFilterEnum.Ignore;
+				SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			}
+
+			public override void _Draw() => _paint(this);
 		}
 
 		private static Vector2 Center(Control control) => control.Position + control.Size / 2;
@@ -166,39 +269,9 @@ namespace Sigilos.UI.Components
 			}
 
 			_grid = Grid(Size);
-			QueueRedraw();
-		}
-
-		/// <summary>
-		/// A estrela que pisca no orbe sem ícone, como os orbes da Canalização, desenhada com a estrela polar
-		/// (<c>polar_star</c>) em vez do polígono, que serrilha nesse tamanho.
-		/// </summary>
-		private sealed partial class Twinkler : Control
-		{
-			private readonly float _phase;
-			private float _time;
-
-			public Twinkler(float phase)
-			{
-				_phase = phase;
-				MouseFilter = MouseFilterEnum.Ignore;
-				SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			}
-
-			public override void _Process(double delta)
-			{
-				_time += (float)delta;
-				QueueRedraw();
-			}
-
-			public override void _Draw()
-			{
-				var radius = Mathf.Min(Size.X, Size.Y) / 2 - 6;
-				if (Art.IconInk("polar_star") is { } star)
-					Starlight.Twinkle(this, star, Size / 2, radius, _time, _phase, Palette.Gold);
-				else
-					Starlight.Twinkle(this, Size / 2, radius, _time, _phase, Palette.Gold);
-			}
+			_chart.QueueRedraw();
+			_dust.QueueRedraw();
+			_sparks.QueueRedraw();
 		}
 	}
 }

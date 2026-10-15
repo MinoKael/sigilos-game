@@ -1082,7 +1082,7 @@
       "positive": "beneficial"
     },
     "runes": {
-      "slots": { "title": "Slots", "text": "Six slots in a circle. 1, 3 and 5 always give flat Attack, Defense and HP; 2 can have Speed, 4 Crit Rate or Crit Damage, 6 Resistance or Accuracy, and all three can have HP, Attack or Defense, flat or as a percentage of the base." },
+      "slots": { "title": "Slots", "text": "Six slots in a circle. 4, 5 and 6 always give flat Defense, HP and Attack. Slots 1, 2 and 3 can have HP, Attack or Defense, flat or as a percentage of the base; on top of that, 1 can have Crit Rate or Crit Damage, 2 Resistance or Accuracy and 3 Speed." },
       "stars": { "title": "Stars and rarity", "text": "From 1 to {0} stars: they decide the size of every number. The color is the rarity, how many substats the sigil has: Normal 0, Magic 1, Rare 2, Hero 3, Legendary 4. Sometimes it comes with an innate stat, which never grows." },
       "upgrade": { "title": "Upgrade", "text": "Essence upgrades from +0 to +{0} (the same Essence as levels and Awakening), and upgrades never fail. At +3, +6, +9 and +12 the sigil needs 1, 2, 3 and {1} substats: if it doesn't have them yet, a new one is added (and its rarity goes up); if it does, one of them grows; at +15 the main stat makes its final jump." },
       "sets": { "title": "Sets", "text": "Two or four sigils of the same set give its bonus. With 6 slots you fit one 4-piece and one 2-piece, or three 2-pieces (three of the same count three times). Each set has its Sigil." },

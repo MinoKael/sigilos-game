@@ -131,7 +131,6 @@ namespace Sigilos.UI.Components
 			Body.AddThemeConstantOverride("separation", Space.Large);
 			Body.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_scroll.AddChild(Body);
-			DragScroll.Enable(_scroll);
 			if (full)
 			{
 				var sheet = new PanelContainer { Name = "Sheet", SizeFlagsVertical = SizeFlags.ExpandFill };

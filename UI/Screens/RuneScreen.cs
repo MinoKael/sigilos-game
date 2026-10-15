@@ -417,30 +417,35 @@ namespace Sigilos.UI.Screens
 				RefreshSelection();
 			}
 
+			// Só as pedras que aparecem na rolagem existem como nós (o inventário passa de 800): as outras são
+			// montadas quando chegam e soltas quando saem; o estado (escolhida, marcada) vem do que a tela guarda.
 			var grid = new TileGrid(8) { Name = "Grid" };
-			foreach (var rune in runes)
-			{
-				var tile = new RuneTile(rune, rune.Slot) { Name = $"Rune{rune.Id}" };
-				tile.SetSelected(rune.Id == _selectedRune);
-				tile.SetMarked(_marked.Contains(rune.Id));
-				// Na ordem por subatributo, o valor dele fica escrito na pedra: a comparação sem abrir uma por uma.
-				if (_filter.Sort == RuneSort.Substat && RuneFilter.SubstatValue(rune, _filter.SortStat) is var amount and > 0)
-					tile.SetValue(Texts.Amount(_filter.SortStat, amount));
-				if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
-				{
-					var summon = _database.Summon(holder.SummonId);
-					tile.SetOwner(Art.Creature(summon.Image), Palette.Of(summon.Element), holder.Stored);
-				}
-
-				tile.Pressed += t => Tap(t.Rune!);
-				_tiles[rune.Id] = tile;
-				grid.AddChild(tile);
-			}
+			grid.Released += (index, _) => _tiles.Remove(runes[index].Id);
+			grid.Virtualize(runes.Count, RuneTile.TileSize, index => NewTile(runes[index]));
 
 			if (runes.Count == 0)
 				_middle.AddChild(Layout.Text(T("runes.none_found"), GameTheme.Faded, 400).Named("Empty"));
 			_listScroll = Layout.Scroll(grid);
 			_middle.AddChild(_listScroll);
+		}
+
+		private RuneTile NewTile(Rune rune)
+		{
+			var tile = new RuneTile(rune, rune.Slot) { Name = $"Rune{rune.Id}" };
+			tile.SetSelected(rune.Id == _selectedRune);
+			tile.SetMarked(_marked.Contains(rune.Id));
+			// Na ordem por subatributo, o valor dele fica escrito na pedra: a comparação sem abrir uma por uma.
+			if (_filter.Sort == RuneSort.Substat && RuneFilter.SubstatValue(rune, _filter.SortStat) is var amount and > 0)
+				tile.SetValue(Texts.Amount(_filter.SortStat, amount));
+			if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
+			{
+				var summon = _database.Summon(holder.SummonId);
+				tile.SetOwner(Art.Creature(summon.Image), Palette.Of(summon.Element), holder.Stored);
+			}
+
+			tile.Pressed += t => Tap(t.Rune!);
+			_tiles[rune.Id] = tile;
+			return tile;
 		}
 
 		/// <summary>
@@ -453,7 +458,8 @@ namespace Sigilos.UI.Screens
 			{
 				if (!_marked.Remove(rune.Id))
 					_marked.Add(rune.Id);
-				_tiles[rune.Id].SetMarked(_marked.Contains(rune.Id));
+				if (_tiles.TryGetValue(rune.Id, out var marked))
+					marked.SetMarked(_marked.Contains(rune.Id));
 				RefreshSelection();
 				return;
 			}
@@ -461,7 +467,8 @@ namespace Sigilos.UI.Screens
 			if (_selectedRune is { } previous && _tiles.TryGetValue(previous, out var before))
 				before.SetSelected(false);
 			_selectedRune = rune.Id;
-			_tiles[rune.Id].SetSelected(true);
+			if (_tiles.TryGetValue(rune.Id, out var chosen))
+				chosen.SetSelected(true);
 			RefreshLeft();
 			RefreshDetail();
 		}
