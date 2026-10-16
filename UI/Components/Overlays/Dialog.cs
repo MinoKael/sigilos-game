@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using Sigilos.UI.Animations;
 using Sigilos.UI.Audio;
 using Sigilos.UI.Style;
 using static Sigilos.UI.Locale;
@@ -19,8 +20,11 @@ namespace Sigilos.UI.Components
 	///   dele, o cabeçalho, o conteúdo ocupando o que sobra (num chão escuro, para o jogo atrás não se
 	///   misturar com o texto) e a fileira de baixo.
 	///
-	/// Tocar fora, o ✕, Esc e o botão Voltar do celular fecham (<see cref="Dismissable"/> falso deixa só
-	/// os botões de ação). Fechar não mexe em nada do jogo: quem precisa saber assina <see cref="Closed"/>.
+	/// O ✕ do canto, Esc e o botão Voltar do celular fecham (<see cref="Dismissable"/> falso esconde o ✕ e deixa só
+	/// os botões de ação). Tocar fora NÃO fecha, a não ser que <see cref="OutsideTapCloses"/> peça.
+	/// Abre e fecha com o repique dos botões (<see cref="Motion.SpringTo"/>: escala e brilho; a tela cheia só
+	/// aparece e some). Fechar não mexe em nada do jogo: quem precisa saber assina <see cref="Closed"/>, que
+	/// avisa na hora, antes de a animação de saída acabar.
 	/// Abrir e fechar soam como reserva (<see cref="Sfx.Fallback"/>), acima do clique que abriu.
 	/// </summary>
 	public partial class Dialog : ColorRect
@@ -182,6 +186,9 @@ namespace Sigilos.UI.Components
 			}
 		}
 
+		/// <summary>Tocar no escuro fora da janela também fecha. Desligado por padrão: o ✕ é o caminho de sair.</summary>
+		public bool OutsideTapCloses { get; set; }
+
 		/// <summary>A janela fechou, por qualquer caminho.</summary>
 		public event Action? Closed;
 
@@ -287,15 +294,45 @@ namespace Sigilos.UI.Components
 				return;
 			_closed = true;
 			Sfx.Fallback("ui.dialog_close", 2);
-			QueueFree();
 			Closed?.Invoke();
+			if (!IsInsideTree())
+			{
+				QueueFree();
+				return;
+			}
+
+			// A saída: nada mais recebe toque, a janela encolhe e some, e só então sai da árvore.
+			_panel.ProcessMode = ProcessModeEnum.Disabled;
+			MouseFilter = MouseFilterEnum.Ignore;
+			var tween = CreateTween().SetParallel();
+			if (!_full)
+				tween.TweenProperty(_panel, "scale", Vector2.One * EnterScale, Motion.Quick).SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.In);
+			tween.TweenProperty(this, "modulate:a", 0f, Motion.Quick);
+			tween.Chain().TweenCallback(Callable.From(QueueFree));
 		}
 
-		public override void _Ready() => QueueFit();
+		/// <summary>De onde a janela cresce ao abrir e para onde encolhe ao fechar.</summary>
+		private const float EnterScale = 0.9f;
+
+		public override void _Ready()
+		{
+			QueueFit();
+
+			// A entrada: a janela cresce com o repique e o escuro acende.
+			Modulate = new Color(1, 1, 1, 0);
+			_panel.PivotOffsetRatio = Vector2.One * 0.5f;
+			var tween = CreateTween().SetParallel();
+			tween.TweenProperty(this, "modulate:a", 1f, Motion.Quick);
+			if (!_full)
+			{
+				_panel.Scale = Vector2.One * EnterScale;
+				tween.TweenProperty(_panel, "scale", Vector2.One, Motion.Quick * 1.5).SetTrans(Motion.Spring).SetEase(Motion.Settle);
+			}
+		}
 
 		public override void _GuiInput(InputEvent @event)
 		{
-			if (Dismissable && @event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left or MouseButton.Right })
+			if (Dismissable && OutsideTapCloses && @event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left or MouseButton.Right })
 			{
 				AcceptEvent();
 				Close();

@@ -60,7 +60,7 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Campaign"), _currencies, () => BackRequested?.Invoke()).Header);
+			page.AddChild(Layout.Header(T("destination.Campaign"), _currencies, () => BackRequested?.Invoke(), this, T("campaign.enemies_hint"), T("campaign.auto_locked")).Header);
 
 			var body = Layout.Row(Space.Section).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -184,7 +184,6 @@ namespace Sigilos.UI.Screens
 
 			_detail.AddChild(waves);
 
-			_detail.AddChild(Layout.Text(T("campaign.enemies_hint"), GameTheme.Faded).Named("EnemiesHint"));
 
 			_detail.AddChild(Heading("RewardsTitle", cleared ? T("campaign.rewards") : T("campaign.rewards_first")));
 			var rewards = Layout.Flow(Space.Medium).Named("Rewards");
@@ -211,20 +210,10 @@ namespace Sigilos.UI.Screens
 			_detail.AddChild(new TeamStrip(_database, _player, Teams.Campaign));
 
 			var problem = Campaign.Check(_player, stage);
-			if (problem is EntryProblem.NoMana or EntryProblem.RunesFull)
-			{
-				var refusal = Layout.Text(Texts.Refusal(problem, stage.Mana)).Named("Refusal");
-				refusal.AddThemeColorOverride("font_color", Palette.Negative);
-				_actions.AddChild(refusal);
-			}
-
-			if (problem == EntryProblem.NoMana)
-				_actions.AddChild(GameButton.Of(T("common.buy_mana"), () => ShopRequested?.Invoke(), ButtonKind.Secondary, "shop", 48).Named("Shop"));
-
 			var row2 = Layout.Row(Space.Wide).Named("Buttons");
 			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(stage), ButtonKind.Primary, "fight", 68).Named("Fight");
-			fight.Disabled = problem != EntryProblem.None;
-			row2.AddChild(fight.Wide(220));
+			fight.Block(problem != EntryProblem.None ? Texts.Refusal(problem, stage.Mana) : null, T("common.fight"));
+			row2.AddChild(fight.Wide(200));
 			// A Batalha automática só aparece quando a Campanha a apresenta (Features); depois, em fase já vencida.
 			var autoOpen = Features.IsOpen(_player, _database, Feature.AutoBattle);
 			GameButton? repeat = null;
@@ -242,14 +231,24 @@ namespace Sigilos.UI.Screens
 				68).Named("AutoBattle");
 			// Fechada, a Batalha automática fica apagada e o toque diz quando abre; aberta, só vale em fase já vencida.
 			if (autoOpen)
-				repeat.Disabled = !cleared || problem != EntryProblem.None;
+				repeat.Block(problem != EntryProblem.None ? Texts.Refusal(problem, stage.Mana) : !cleared ? T("common.why_auto_not_cleared") : null, T("common.auto_battle"));
 			else
 				repeat.Modulate = new Color(1, 1, 1, 0.5f);
-			row2.AddChild(repeat.Wide(240));
+			row2.AddChild(repeat.Wide(220));
 
+			// Comprar Mana tem o seu lugar ao lado, sempre; só vale quando falta Mana.
+			var buyMana = GameButton.Of(T("common.buy_mana_short"), () => ShopRequested?.Invoke(), ButtonKind.Secondary, "shop", 68).Named("Shop");
+			buyMana.Block(problem != EntryProblem.NoMana ? T("common.why_has_mana") : null, T("common.buy_mana_short"));
+			row2.AddChild(buyMana.Wide(150));
+
+			// O motivo da recusa fica embaixo dos botões, numa linha só (o resto da regra está no Compêndio).
 			_actions.AddChild(row2);
-			if (autoOpen && !cleared)
-				_actions.AddChild(Layout.Text(T("campaign.auto_locked"), GameTheme.Faded).Named("AutoHint"));
+			if (problem is EntryProblem.NoMana or EntryProblem.RunesFull)
+			{
+				var refusal = Layout.Text(Texts.Refusal(problem, stage.Mana)).Named("Refusal");
+				refusal.AddThemeColorOverride("font_color", Palette.Negative);
+				_actions.AddChild(refusal);
+			}
 		}
 
 		/// <summary>Um inimigo: o retrato na cor do elemento; tocar (ou segurar) abre o resumo dele.</summary>

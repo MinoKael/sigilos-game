@@ -6,7 +6,7 @@ a mesma cara de "grupo.chave" e ficam de fora. Chaves montadas a partir de enum 
 não aparecem aqui: essas o jogo confere ao abrir e avisa no console (Texts.MissingEnumKeys).
 Depois confere cada tradução (en.json...): mesmas chaves e mesmos marcadores {0}, {1}... da base,
 e o grupo "names": a tradução de cada nome dos dados (invocações, habilidades, fases, Masmorras,
-chefes, Loja), pelo nome em português que está em Data/.
+chefes, Loja), pela chave em inglês (arquivo, caminho e id) de Data/.
 
 Uso:
     py Tools/texts/check_texts.py            # pt-BR e todas as traduções
@@ -68,29 +68,40 @@ def parse(path):
 def load(language):
     """Os textos por chave (sem o grupo "names") e os nomes traduzidos, à parte."""
     tree = parse(TEXTS / f"{language}.json")
-    names = tree.pop(NAMES, {})
+    names = dict(flatten(tree.pop(NAMES, {})))
     return dict(flatten(tree)), names
 
 
-def data_names():
-    """Todo "name", "base_name" e "flavor" dos arquivos de Data/ (fora os textos): o que o grupo "names" traduz."""
-    found = set()
+def segment(element, index):
+    """Um item de lista leva o "id" dele na chave (senão, a posição): é o mesmo que ContentLoader faz."""
+    if isinstance(element, dict) and isinstance(element.get("id"), str):
+        return element["id"].replace(".", "_")
+    return str(index)
 
-    def walk(node):
+
+def data_names():
+    """
+    Todo "name", "base_name" e "flavor" dos arquivos de Data/ (fora os textos), pela chave em inglês do grupo "names":
+    arquivo (summons.fox_family), o caminho até o campo (variations.fire.awakening.name) e o campo. Um item de lista
+    entra pelo "id"; o valor é o texto em português, que o grupo traduz.
+    """
+    found = {}
+
+    def walk(node, path):
         if isinstance(node, dict):
             for key, value in node.items():
                 if key in ("name", "base_name", "flavor") and isinstance(value, str):
-                    found.add(value)
+                    found[f"{path}.{key}"] = value
                 else:
-                    walk(value)
+                    walk(value, f"{path}.{key}")
         elif isinstance(node, list):
-            for value in node:
-                walk(value)
+            for index, value in enumerate(node):
+                walk(value, f"{path}.{segment(value, index)}")
 
     for path in sorted(DATA.rglob("*.json")):
         if TEXTS in path.parents or path.name == "stat_model.json":
             continue
-        walk(parse(path))
+        walk(parse(path), path.relative_to(DATA).with_suffix("").as_posix().replace("/", "."))
     return found
 
 
@@ -107,10 +118,10 @@ def check_translation(language, base, names):
         if set(HOLE.findall(base[key])) != set(HOLE.findall(other[key])):
             print(f"{language}: MARCADORES  {key}")
             problems += 1
-    for name in sorted(names - translated.keys()):
+    for name in sorted(names.keys() - translated.keys()):
         print(f"{language}: FALTA NOME   {name}")
         problems += 1
-    for name in sorted(translated.keys() - names):
+    for name in sorted(translated.keys() - names.keys()):
         print(f"{language}: SOBRA NOME   {name}")
         problems += 1
     print(f"{language}: {len(other)} chaves e {len(translated)} nomes, {problems} problemas.")

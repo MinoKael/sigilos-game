@@ -23,6 +23,10 @@ namespace Sigilos.UI.Components
 		private Vector2 _start;
 		private bool _down;
 		private int _token;
+		private Tween? _bounce;
+
+		/// <summary>Falso numa peça que anima a própria escala (a unidade na luta): ela não leva o repique do toque.</summary>
+		public bool Bounce { get; init; } = true;
 
 		public event Action? Tapped;
 		public event Action? Held;
@@ -96,8 +100,19 @@ namespace Sigilos.UI.Components
 			};
 		}
 
+		/// <summary>O repique do toque: a peça afunda ao apertar e volta ao soltar (o mesmo dos botões, <see cref="Juice"/>).</summary>
+		private void Spring(Control owner, float scale)
+		{
+			if (!Bounce || !owner.IsInsideTree())
+				return;
+			owner.PivotOffsetRatio = Vector2.One * 0.5f;
+			_bounce = Animations.Motion.SpringTo(owner, _bounce, "scale", Vector2.One * scale);
+		}
+
 		public void Feed(Control owner, InputEvent @event)
 		{
+			if (@event is InputEventMouseButton { ButtonIndex: MouseButton.Left } edge)
+				Spring(owner, edge.Pressed ? 0.95f : 1f);
 			switch (@event)
 			{
 				case InputEventMouseButton { ButtonIndex: MouseButton.Right, Pressed: true }:

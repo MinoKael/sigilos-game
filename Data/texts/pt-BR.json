@@ -7,6 +7,8 @@
 // Confira com: py Tools/texts/check_texts.py
 {
   "common": {
+    "why_essence": "Falta Essência para isto.",
+    "why_no_auto": "Este combate é sempre manual: não tem Batalha automática.",
     "team": "Equipe",
     "continue": "Continuar",
     "and": " e ",
@@ -15,7 +17,9 @@
     "fight": "Lutar",
     "auto_short": "Automática",
     "cancel": "Cancelar",
-    "buy_mana": "Comprar Mana na Loja",
+    "buy_mana_short": "Comprar Mana",
+    "why_auto_not_cleared": "A Batalha automática só vale em fase já vencida.",
+    "why_has_mana": "Você ainda tem Mana para entrar: a compra só abre quando falta.",
     "or": " ou "
   },
 
@@ -499,6 +503,8 @@
   },
 
   "hub": {
+    "soon_text": "Mais lugares chegam em versões futuras do jogo.",
+    "why_collect": "Ainda não há nada para coletar: o Canal enche com o tempo.",
     "channeling": "{0}:{1}/{2}:00",
     "account_level": "Conta · Nível {0}",
     "account_progress": "{0}/{1} de experiência",
@@ -693,6 +699,10 @@
   },
 
   "summon": {
+    "why_ritual": "A invocação está em andamento: espere terminar.",
+    "why_lesson": "Neste passo do tutorial, só a invocação indicada vale.",
+    "why_scrolls": "Faltam pergaminhos deste tipo.",
+    "why_fragments": "Faltam Fragmentos para a troca.",
     "shop": "Comprar Transmutações",
     "new": "Novo!",
     "copy": "Cópia",
@@ -700,11 +710,11 @@
     "scrolls_title": "Pergaminhos",
     "times_one": "×1",
     "times_ten": "×10",
+    "note": "Cada transmutação é uma cópia nova, no nível 1. Cópias da mesma família e Núcleos de Infusão sobem as habilidades dele.",
     "pity_progress": "{0}/{1} · uma 5★ garantida ao completar.",
     "pity_title": "Garantia de 5★",
     "rates": "Chances de cada transmutação:",
     "light_dark_rate": "Luz e Trevas {0} ({1} cada)",
-    "note": "Cada transmutação é uma cópia nova, no nível 1. Cópias da mesma família e Núcleos de Infusão sobem as habilidades dele.",
     "scroll": {
       "Mystic": "Alquímica",
       "LightDark": "Luz e Trevas",
@@ -738,6 +748,7 @@
     "bought": "Comprado: +{0}.",
     "intro": "Troque o Ouro que você ganha jogando por Mana ou Transmutações.",
     "buy_button": "Comprar",
+    "category": { "scrolls": "Transmutação", "mana": "Mana", "special": "Especial" },
     "confirm_title": "Confirmar compra",
     "info_hint": "Toque no símbolo de uma oferta para ver para que ela serve.",
     "info": {
@@ -753,6 +764,13 @@
   },
 
   "monsters": {
+    "why_core_release": "O Núcleo de Infusão não é solto: use-o na fusão de habilidades.",
+    "why_max_level": "O homúnculo já está no nível máximo.",
+    "why_evolve_level": "O homúnculo só evolui no nível máximo.",
+    "why_marked": "Marque ao menos um homúnculo na lista primeiro.",
+    "why_evolve": "Faltam Fragmentos para evoluir.",
+    "why_no_copies": "Você não tem cópias nem Núcleos livres para fundir.",
+    "why_awaken": "Este homúnculo não pode ser despertado (já despertou ou não tem despertar).",
     "collection": "Coleção",
     "vault": "Baú",
     "vault_empty": "O Baú está vazio.",
@@ -770,7 +788,6 @@
     "skills_max": "Max",
     "experience": "Experiência: {0}/{1}",
     "level_up": "Subir 1 nível",
-    "max_level_button": "Até nível {0}",
     "evolve": "Evoluir para {0}",
     "awaken_button": "Despertar",
     "runes_button": "Gerenciar sigilos",
@@ -809,8 +826,6 @@
     "awaken_gains": "Desperto, ganha nome próprio, a aura com o anel do elemento e:",
     "awakened_already": "Já desperto. Ganhou:",
     "awaken_short": "Faltam {0} de Essência.",
-    "max_confirm_title": "Subir até o nível {0}?",
-    "max_confirm": "Gastar {0} de Essência para levar {1} ao nível {2}? Você tem {3}.",
     "locked": "Bloqueado",
     "locked_note": "Bloqueado: não pode ser solto nem fundido em outro. Libere antes.",
     "favorite": "Favoritar",
@@ -851,6 +866,9 @@
   },
 
   "teams": {
+    "why_empty": "A equipe está vazia: escolha ao menos um homúnculo.",
+    "why_pick": "Toque num homúnculo da equipe para escolhê-lo.",
+    "why_leader": "Este homúnculo já é o Líder.",
     "campaign": "Campanha",
     "leader": "Líder",
     "make_leader": "Tornar Líder",
@@ -864,7 +882,6 @@
   "prep": {
     "collection": "Coleção",
     "team": "Equipe · {0}",
-    "chosen": "{0} escolhido: toque num homúnculo da coleção para pôr no lugar dele.",
     "hint": "Toque num homúnculo da coleção para pôr ou tirar da equipe. Toque num da equipe para trocar ou tornar Líder. Segure qualquer homúnculo para ver o resumo.",
     "saved": "A última equipe usada aqui fica guardada.",
     "boss_room": "Sala do chefe",
@@ -875,6 +892,7 @@
   },
 
   "runes": {
+    "why_marked": "Marque ao menos um sigilo na lista primeiro.",
     "tab_runes": "Sigilos",
     "tab_grindstones": "Pedras de Afiar",
     "tab_gems": "Gemas Encantadas",
@@ -929,6 +947,15 @@
     "reappraise_title": "Reavaliar o sigilo?",
     "reappraise_button": "Reavaliar",
     "reappraise_none": "A Gema de Reavaliação, vendida na Loja, devolve este sigilo ao estado em que caiu.",
+    "why_no_monster": "Escolha um homúnculo na lista da esquerda para equipar ou testar este sigilo.",
+    "why_try_equipped": "Este sigilo já está equipado neste homúnculo.",
+    "why_max": "O sigilo já está no máximo (+{0}).",
+    "why_essence": "Falta Essência para esta melhora.",
+    "why_same": "O próximo marco é a próxima melhora: use Evoluir +1.",
+    "why_twelve": "O +{0} direto só serve para sigilos abaixo do +9. Daqui, use o botão Até ao lado; ou o sigilo já passou do +{0}.",
+    "why_sell_equipped": "Tire o sigilo do homúnculo antes de vender.",
+    "why_no_forge": "Nenhuma pedra que você tem serve para os subatributos deste sigilo.",
+    "why_no_reappraise": "Só é possível reavaliar sigilos que foram evoluídos.",
     "reappraise_level": "Volta para +0 (está em +{0}).",
     "reappraise_removed": "Saem os subatributos que vieram nas melhoras: {0}.",
     "reappraise_rolls": "Os subatributos com que ela nasceu perdem {0} sorteios das melhoras.",
@@ -1222,8 +1249,10 @@
   },
 
   "arena": {
+    "why_beaten": "Você já venceu este oponente. A lista se renova no ciclo seguinte.",
+    "why_pending": "Há uma luta da Arena em andamento: termine-a antes de começar outra.",
     "defense": "Defesa",
-    "defense_text": "A defesa luta sozinha, pela IA, quando alguém te enfrentar. Por enquanto ela só fica guardada: os outros alquimistas chegam com o servidor.",
+    "defense_text": "Esta é a equipe que defende a sua conta: com uma conta no servidor, outros jogadores lutam contra ela.",
     "duel_against": "Duelo contra {0}",
     "draw": "Empate",
     "draw_text": "O limite de rodadas passou com gente de pé dos dois lados. O Convite foi gasto, mas ninguém perde pontos.",
@@ -1237,9 +1266,9 @@
     "streak_bonus": "+{0}% Vida, +{1}% Ataque · {2}",
     "next_grade": "{0} pontos para {1}",
     "top_grade": "O maior Grau da Arena.",
-    "cycle_ends": "A semana acaba em {0}: o prêmio sai pelo Grau e os pontos voltam a 1000.",
+    "cycle_short": "Semana: {0}",
+    "list_short": "{0}/{1} vencidos",
     "help_title": "Pontuação da Arena",
-    "defense_text": "Esta é a equipe que defende a sua conta: com a conta no servidor, outros jogadores a enfrentam.",
     "defense_edit": "Editar defesa",
     "defense_done": "Pronto",
     "help_points": "Vencer um duelo da lista dá de {0} a {1} pontos, e perder tira de {0} a {1}: contra quem tem mais pontos que você vale mais ganhar e menos perder. Empate e Rivais não mexem nos pontos. Vitórias seguidas dão bônus de Vida e Ataque, e cada vitória paga Astrarium pelo seu Grau.",

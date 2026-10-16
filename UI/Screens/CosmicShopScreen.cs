@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
@@ -21,7 +23,8 @@ namespace Sigilos.UI.Screens
 		private readonly DateTime _now;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HBoxContainer _offers = Layout.Row(Space.Spacious).Named("Offers");
+		private ShopShelf _shelf = null!;
+		private List<int> _categories = new();
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
 		public CosmicShopScreen(GameDatabase database, PlayerState player, DateTime now)
@@ -39,22 +42,16 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("arena.cosmic_shop"), _currencies, () => BackRequested?.Invoke()).Header);
-			page.AddChild(Layout.Text(T("arena.shop_intro"), GameTheme.Faded).Named("Intro"));
+			page.AddChild(Layout.Header(T("arena.cosmic_shop"), _currencies, () => BackRequested?.Invoke(), this, T("arena.shop_intro")).Header);
 
 			var balance = Layout.Labeled("astrarium", Texts.Number(_player.Arena.Astrarium), T("arena.astrarium"), Palette.Spirit).Named("Balance");
 			page.AddChild(balance);
 
-			_offers.Alignment = BoxContainer.AlignmentMode.Center;
-			var shelf = new MarginContainer { Name = "Shelf" };
-			shelf.AddThemeConstantOverride("margin_bottom", 14);
-			shelf.AddChild(_offers);
-			var scroll = Layout.Scroll(shelf);
-			scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.ShowAlways;
-			scroll.VerticalScrollMode = ScrollContainer.ScrollMode.Disabled;
-			scroll.SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter;
-			GameTheme.Grooved(scroll.GetHScrollBar());
-			page.AddChild(scroll);
+			// Só as categorias que têm oferta: cada uma na ordem de sempre (Transmutação, Mana, Especial).
+			var names = new[] { (T("shop.category.scrolls"), "scroll"), (T("shop.category.mana"), "mana"), (T("shop.category.special"), "gem") };
+			_categories = Enumerable.Range(0, names.Length).Where(c => _database.Arena.Shop.Any(o => Category(o) == c)).ToList();
+			_shelf = new ShopShelf(_categories.Select(c => names[c]).ToList(), Cards);
+			page.AddChild(_shelf);
 
 			_message.AddThemeColorOverride("font_color", Palette.Gold);
 			page.AddChild(_message);
@@ -73,10 +70,24 @@ namespace Sigilos.UI.Screens
 					value.Text = Texts.Number(_player.Arena.Astrarium);
 			}
 
-			Layout.Clear(_offers);
+			_shelf.Refresh();
+		}
+
+		private static int Category(ArenaOffer offer) => offer.Item switch
+		{
+			ArenaItem.Scrolls or ArenaItem.LightDarkScrolls => 0,
+			ArenaItem.Mana => 1,
+			_ => 2,
+		};
+
+		private IEnumerable<Control> Cards(int category)
+		{
 			var arena = _database.Arena;
-			for (var i = 0; i < arena.Shop.Count; i++)
-				_offers.AddChild(Card(arena.Shop[i], arena).Named($"Offer{i + 1}"));
+			foreach (var offer in arena.Shop)
+			{
+				if (Category(offer) == _categories[category])
+					yield return Card(offer, arena);
+			}
 		}
 
 		private static string Icon(ArenaItem item) => item switch
@@ -87,27 +98,8 @@ namespace Sigilos.UI.Screens
 			_ => "scroll",
 		};
 
-		private PanelContainer Card(ArenaOffer offer, ArenaDefinition arena)
+		private Control Card(ArenaOffer offer, ArenaDefinition arena)
 		{
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(260, 340) };
-			var content = new VBoxContainer { Name = "Content", Alignment = BoxContainer.AlignmentMode.Center };
-			content.AddThemeConstantOverride("separation", Space.Wide);
-			panel.AddChild(content);
-
-			content.AddChild(new Label { Name = "Name", Text = offer.Amount > 1 ? $"{Texts.Number(offer.Amount)} × {offer.Name}" : offer.Name, HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(220, 0) });
-			var icon = Doodle.Icon(Art.Icon(Icon(offer.Item)), 100, Palette.Gold);
-			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
-			content.AddChild(icon);
-
-			if (offer.Limit > 0)
-			{
-				var left = Math.Max(0, offer.Limit - Arena.BoughtOf(_player, arena, offer, _now));
-				var key = offer.Period == ArenaPeriod.Day ? "arena.limit_day" : "arena.limit_week";
-				var limit = Layout.Text(T(key, left, offer.Limit), GameTheme.Faded, 220).Named("Limit");
-				limit.HorizontalAlignment = HorizontalAlignment.Center;
-				content.AddChild(limit);
-			}
-
 			var canBuy = Arena.CanBuy(_player, arena, offer, _now);
 			var buy = GameButton.Of(T("shop.buy_button"), () =>
 			{
@@ -116,21 +108,22 @@ namespace Sigilos.UI.Screens
 					T("arena.shop_confirm", offer.Name, offer.Amount, offer.Price),
 					T("shop.buy_button"),
 					() => BuyRequested?.Invoke(offer));
-			}, ButtonKind.Primary).WithCost("astrarium", Texts.Number(offer.Price)).Named("Buy");
-			buy.Disabled = !canBuy;
-			content.AddChild(buy);
+			}, ButtonKind.Primary, null, 56).WithCost("astrarium", Texts.Number(offer.Price)).Named("Buy");
 			if (!canBuy)
 			{
-				var message = Arena.IsSoldOut(_player, arena, offer, _now)
+				buy.Block(Arena.IsSoldOut(_player, arena, offer, _now)
 					? T(offer.Period == ArenaPeriod.Day ? "arena.sold_out_day" : "arena.sold_out_week")
-					: T("arena.no_astrarium", Texts.Number(offer.Price - _player.Arena.Astrarium));
-				var missing = new Label { Name = "Short", Text = message, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(220, 0) };
-				missing.AddThemeColorOverride("font_color", Palette.Negative);
-				missing.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
-				content.AddChild(missing);
+					: T("arena.no_astrarium", Texts.Number(offer.Price - _player.Arena.Astrarium)), offer.Name);
 			}
 
-			return panel;
+			var detail = "";
+			if (offer.Limit > 0)
+			{
+				var left = Math.Max(0, offer.Limit - Arena.BoughtOf(_player, arena, offer, _now));
+				detail = T(offer.Period == ArenaPeriod.Day ? "arena.limit_day" : "arena.limit_week", left, offer.Limit);
+			}
+
+			return ShopCard.Of(offer.Amount > 1 ? $"{Texts.Number(offer.Amount)} × {offer.Name}" : offer.Name, detail, Icon(offer.Item), Palette.Gold, buy);
 		}
 	}
 }

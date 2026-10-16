@@ -53,7 +53,7 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Dungeons"), _currencies, () => BackRequested?.Invoke()).Header);
+			page.AddChild(Layout.Header(T("destination.Dungeons"), _currencies, () => BackRequested?.Invoke(), this, T("dungeons.sets_hint")).Header);
 
 			var body = Layout.Row(Space.Loose).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -144,8 +144,6 @@ namespace Sigilos.UI.Screens
 			}
 
 			_detail.AddChild(drops);
-			if (dungeon.Kind == DungeonKind.Runes)
-				_detail.AddChild(Layout.Text(T("dungeons.sets_hint"), GameTheme.Faded).Named("SetsHint"));
 			_detail.AddChild(new TeamStrip(_database, _player, dungeon.Id));
 			_detail.AddChild(new HSeparator { Name = "FloorsLine" });
 
@@ -239,8 +237,6 @@ namespace Sigilos.UI.Screens
 				refusal.AddThemeColorOverride("font_color", Palette.Negative);
 				refusal.AddThemeFontSizeOverride("font_size", FontSize.Note);
 				info.AddChild(refusal);
-				if (problem == EntryProblem.NoMana)
-					info.AddChild(GameButton.Of(T("common.buy_mana"), () => ShopRequested?.Invoke(dungeon), ButtonKind.Secondary, "shop", 44).Named("Shop"));
 			}
 
 			row.AddChild(info);
@@ -249,14 +245,16 @@ namespace Sigilos.UI.Screens
 			buttons.AddThemeConstantOverride("separation", Space.Medium);
 			var disabled = problem != EntryProblem.None;
 			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(dungeon, number), ButtonKind.Primary, "fight").Named("Fight");
-			fight.Disabled = disabled;
+			fight.Block(disabled ? Texts.Refusal(problem, floor.Mana) : null, T("common.fight"));
 			buttons.AddChild(fight.Wide(190));
-			if (cleared)
-			{
-				var repeat = GameButton.Of(T("common.auto_short"), () => RepeatRequested?.Invoke(dungeon, number), ButtonKind.Secondary, "repeat", 48).Named("AutoBattle");
-				repeat.Disabled = disabled;
-				buttons.AddChild(repeat.Wide(190));
-			}
+			// A Automática fica sempre embaixo de Lutar; num andar ainda não vencido, só apagada.
+			var repeat = GameButton.Of(T("common.auto_short"), () => RepeatRequested?.Invoke(dungeon, number), ButtonKind.Secondary, "repeat", 48).Named("AutoBattle");
+			repeat.Block(disabled ? Texts.Refusal(problem, floor.Mana) : !cleared ? T("common.why_auto_not_cleared") : null, T("common.auto_short"));
+			buttons.AddChild(repeat.Wide(190));
+			// Comprar Mana tem o seu lugar sempre; só vale quando falta Mana para o andar.
+			var buyMana = GameButton.Of(T("common.buy_mana_short"), () => ShopRequested?.Invoke(dungeon), ButtonKind.Secondary, "shop", 44).Named("Shop");
+			buyMana.Block(open && problem == EntryProblem.NoMana ? null : T("common.why_has_mana"), T("common.buy_mana_short"));
+			buttons.AddChild(buyMana.Wide(190));
 
 			row.AddChild(buttons);
 			return panel;

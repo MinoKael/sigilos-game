@@ -102,7 +102,7 @@ a batalha calculam atributos pelo mesmo `SummonStats`, então o número que o jo
 | Destinos da barra de baixo e da tela Batalha | `UI/Screens/Destination.cs` (símbolo e nome) e `GameRoot.Go` (qual tela abre e para onde volta) |
 | Voltar (seta, Esc e o Voltar do celular) | `BackButton` e `Layout.Header`; o Voltar do Android vira a ação `ui_cancel` no `GameRoot`. Quem fecha ou volta ouve `ui_cancel` em `_UnhandledInput`, que corre do último nó para o primeiro: a janela de cima fecha antes da tela voltar |
 | Idiomas oferecidos na Configuração | um arquivo por idioma em `Data/texts`; `ContentLoader.Languages()` lista, `PlayerState.Language` guarda a escolha |
-| Traduzir | copie `Data/texts/pt-BR.json` com outro nome, troque os textos, ponha no grupo `names` o nome de cada coisa dos dados (pelo nome em português; o `check_texts.py` diz quais faltam) e rode com `-- --language=nome` |
+| Traduzir | copie `Data/texts/pt-BR.json` com outro nome, troque os textos, ponha no grupo `names` o nome de cada coisa dos dados (pela chave em inglês: arquivo, caminho e id, como `summons.fox_family.base_name`; o `check_texts.py` diz quais faltam) e rode com `-- --language=nome` |
 | Nome de invocação, habilidade, fase, Masmorra, chefe ou oferta da Loja | o `"name"` (ou `"base_name"`) no arquivo de `Data/`, em português, e a tradução no grupo `names` do `en.json` (a chave é o nome em português: renomear pede renomear lá também) |
 | Regras do combate (ordem de turno, Ímpeto, dano, Defesa, dano fixo, escala, ignorar redução) | `docs/COMBATE.md`: o que vale, de onde veio, o que difere da referência de propósito e onde mora cada número. Número novo de combate vai para `BattleRules` (ou `RuneSets`, se é de conjunto), nunca para dentro da estratégia; escala nova só com decisão no GDD |
 | Balancear números do combate | `Core/Battle/BattleRules.cs`, depois `dotnet run --project Tests -- --simulate` (os times de referência em `Tests/ReferenceTeams.cs`; os testes `CampaignTests` conferem a fase 50 e que cada andar de Masmorra pede o time do drop dele, `ReferenceTeams.AtFloor`) |
@@ -310,8 +310,8 @@ O que o contrato do projeto tem de diferente da especificação:
 - **O jogo nasce em português; ids em inglês.** Os textos da interface (`Data/texts/pt-BR.json`, a
   base) e os nomes em `Data/` (invocações, habilidades, fases, Masmorras, chefes, Loja) são em
   português; ids, chaves, enums e argumentos ficam em inglês e nunca mudam (o save guarda ids). O
-  `en.json` é uma tradução: as mesmas chaves, mais o grupo `names` com o nome de cada coisa dos dados
-  pelo nome em português. O `ContentLoader` troca os nomes ao montar o `GameDatabase` (`Locale.Name`),
+  `en.json` é uma tradução: as mesmas chaves, mais o grupo `names` com o nome de cada coisa dos dados, por chave em inglês
+  (arquivo, caminho e id). O `ContentLoader` troca os nomes ao montar o `GameDatabase` (`Locale.Name`),
   então o Core e a batalha já recebem tudo no idioma escolhido; trocar de idioma remonta o banco.
 - **Celular primeiro.** A tela é pensada para o dedo: nada depende do mouse (sem dica; o brilho sob
   o mouse é só enfeite), alvos de toque com 56 px de altura (`GameTheme.Touch`), texto de 18 px, e

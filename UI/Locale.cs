@@ -17,7 +17,7 @@ namespace Sigilos.UI
 	/// </summary>
 	public static class Locale
 	{
-		/// <summary>O grupo das traduções dos nomes dos dados, pelo nome em português.</summary>
+		/// <summary>O grupo das traduções dos nomes dos dados, pela chave em inglês (arquivo, caminho e id).</summary>
 		public const string NamesGroup = "names";
 
 		private static readonly Dictionary<string, string> Texts = new();
@@ -61,10 +61,10 @@ namespace Sigilos.UI
 
 		/// <summary>
 		/// O nome de uma coisa dos dados (invocação, habilidade, fase, Masmorra...) no idioma de agora. Os
-		/// dados nascem em português; os outros idiomas trazem os nomes no grupo "names", pelo nome em
-		/// português. Sem tradução, fica o nome dos dados.
+		/// dados nascem em português; os outros idiomas trazem os nomes no grupo "names", pela
+		/// chave em inglês do campo (<c>summons.fox_family.base_name</c>). Sem tradução, fica o nome dos dados.
 		/// </summary>
-		public static string Name(string name) => Texts.TryGetValue($"{NamesGroup}.{name}", out var text) ? text : name;
+		public static string Name(string key, string name) => Texts.TryGetValue($"{NamesGroup}.{key}", out var text) ? text : name;
 
 		private static void Flatten(JsonElement element, string prefix)
 		{

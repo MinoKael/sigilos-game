@@ -140,7 +140,8 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Monsters"), _currencies, () => BackRequested?.Invoke()).Header);
+			page.AddChild(Layout.Header(T("destination.Monsters"), _currencies, () => BackRequested?.Invoke(), this,
+				T("monsters.level_hint", Leveling.ExperiencePerEssence), T("monsters.stats_hint"), T("monsters.skills_hint"), T("monsters.awaken_skills_hint")).Header);
 
 			var body = Layout.Row(Space.Loose).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -267,7 +268,7 @@ namespace Sigilos.UI.Screens
 				_marked.Clear();
 				Refresh();
 			}, ButtonKind.Secondary, null, 48).Named("Unmark");
-			unmark.Disabled = marked.Count == 0;
+			unmark.Block(marked.Count == 0 ? T("monsters.why_marked") : null, T("monsters.unmark"));
 			buttons.AddChild(unmark);
 			buttons.AddChild(_showStorage ? RetrieveMarked(marked) : StoreMarked(marked));
 
@@ -294,7 +295,7 @@ namespace Sigilos.UI.Screens
 				}, ButtonKind.Danger), ButtonKind.Danger, "release", 48).Named("ReleaseMarked");
 			if (released.Count > 0)
 				button.WithCost("fragments", $"+{fragments}");
-			button.Disabled = released.Count == 0;
+			button.Block(released.Count == 0 ? T("monsters.why_marked") : null, T("monsters.release"));
 			return button;
 		}
 
@@ -316,7 +317,7 @@ namespace Sigilos.UI.Screens
 				else
 					Dialog.Confirm(this, T("monsters.store_many_title"), T("monsters.store_many_confirm", ids.Count, inTeams), T("monsters.store_many_button"), Store);
 			}, ButtonKind.Secondary, "chest", 48).Named("StoreMarked");
-			button.Disabled = ids.Count == 0;
+			button.Block(ids.Count == 0 ? T("monsters.why_marked") : null, T("monsters.store_short"));
 			return button;
 		}
 
@@ -329,7 +330,7 @@ namespace Sigilos.UI.Screens
 				EndSelection();
 				RetrieveManyRequested?.Invoke(ids);
 			}, ButtonKind.Secondary, "storage", 48).Named("RetrieveMarked");
-			button.Disabled = ids.Count == 0;
+			button.Block(ids.Count == 0 ? T("monsters.why_marked") : null, T("monsters.retrieve_short"));
 			return button;
 		}
 
@@ -518,12 +519,9 @@ namespace Sigilos.UI.Screens
 			else
 			{
 				var retrieve = Side(GameButton.Of(T("monsters.retrieve_short"), () => RetrieveRequested?.Invoke(id), ButtonKind.Secondary, "storage")).Named("Retrieve");
-				retrieve.Disabled = Roster.IsFull(_player);
+				retrieve.Block(Roster.IsFull(_player) ? T("monsters.collection_full") : null, T("monsters.retrieve_short"));
 				_sideActions.AddChild(retrieve);
 			}
-
-			if (monster.IsInfusionCore)
-				return;
 
 			var fragments = Fusion.FragmentsFor(summon.Rarity);
 			var release = GameButton.Of(T("monsters.release"), () => Dialog.Confirm(this,
@@ -531,7 +529,7 @@ namespace Sigilos.UI.Screens
 				T("monsters.release_confirm", summon.NameFor(monster.Awakened), monster.Level, fragments) + MonsterNotes.Warning(_database, _player, new[] { monster }),
 				T("monsters.release_button"),
 				() => ReleaseRequested?.Invoke(new[] { id }), ButtonKind.Danger), ButtonKind.Danger, "release").WithCost("fragments", $"+{fragments}");
-			release.Disabled = monster.Locked;
+			release.Block(monster.IsInfusionCore ? T("monsters.why_core_release") : monster.Locked ? T("monsters.locked_note") : null, T("monsters.release"));
 			_sideActions.AddChild(Side(release).Named("Release"));
 		}
 
@@ -555,8 +553,8 @@ namespace Sigilos.UI.Screens
 			where.Add(T("monsters.core_count", _player.Monsters.Count(m => m.IsInfusionCore)));
 			info.AddChild(Layout.Text(string.Join(" · ", where), GameTheme.Faded).Named("Where"));
 			row.AddChild(info);
+			row.AddChild(SigilButton.Of("help", () => Dialog.Info(this, summon.Name, T("monsters.core_info"), 480), 40).Named("CoreHelp"));
 			column.AddChild(row);
-			column.AddChild(Layout.Text(T("monsters.core_info"), null, TextWidth).Named("Info"));
 			return column;
 		}
 
@@ -637,53 +635,30 @@ namespace Sigilos.UI.Screens
 			return column;
 		}
 
-		/// <summary>Subir até o máximo gasta muita Essência de uma vez: pergunta antes, com o gasto e o nível a que chega.</summary>
-		private void ConfirmLevelMax(SummonDefinition summon, OwnedSummon monster, int full)
-		{
-			var spend = Math.Min(full, _player.Essence);
-			var target = Leveling.LevelAfter(monster, spend);
-			Dialog.Confirm(this, T("monsters.max_confirm_title", target),
-				T("monsters.max_confirm", Texts.Number(spend), summon.NameFor(monster.Awakened), target, Texts.Number(_player.Essence)),
-				T("monsters.max_level_button", target), () => InfuseRequested?.Invoke(monster.Id, true));
-		}
-
 		private void StatsPage(SummonDefinition summon, OwnedSummon monster)
 		{
 			var id = monster.Id;
 			// Em grade: os dois botões ficam do mesmo tamanho e o texto quebra igual nos dois ("Até o nível 30" e "35").
-			var actions = Layout.Grid(Leveling.IsMaxLevel(monster) ? 1 : 2, Space.Regular).Named("Actions");
-
-			if (!Leveling.IsMaxLevel(monster))
-			{
-				var (next, full) = Leveling.InfuseCosts(monster);
-				var one = GameButton.Of(T("monsters.level_up"), () => InfuseRequested?.Invoke(id, false), ButtonKind.Primary, "essence").WithCost("essence", Texts.Number(next)).Named("LevelUp");
-				one.Disabled = _player.Essence < next;
-				one.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-				actions.AddChild(one);
-				var all = GameButton.Of(T("monsters.max_level_button", Leveling.MaxLevel(monster)), () => ConfirmLevelMax(summon, monster, full), ButtonKind.Secondary, "level_max").WithCost("essence", Texts.Number(full)).Named("LevelMax");
-				all.Disabled = _player.Essence <= 0;
-				all.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-				actions.AddChild(all);
-			}
-			else if (Evolution.IsReady(monster))
-			{
-				var fragmentCost = Evolution.Cost(monster.Stars);
-				var evolve = GameButton.Of(T("monsters.evolve", Texts.Stars(monster.Stars + 1)), () => EvolveRequested?.Invoke(id), ButtonKind.Primary, "evolve")
-					.WithCost("essence", $"{fragmentCost} {T("currency.fragments")}").Named("Evolve");
-				evolve.Disabled = !Evolution.CanEvolve(_player, monster);
-				evolve.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-				actions.AddChild(evolve);
-			}
-
-			if (actions.GetChildCount() > 0)
-				_detail.AddChild(actions);
+			// Duas células fixas, da mesma altura: subir 1 nível e evoluir. O que não vale agora fica
+			// apagado no lugar e o toque diz o motivo.
+			var actions = Layout.Grid(2, Space.Regular).Named("Actions");
+			var maxed = Leveling.IsMaxLevel(monster);
+			var next = maxed ? 0 : Leveling.InfuseCosts(monster).Item1;
+			var one = GameButton.Of(T("monsters.level_up"), () => InfuseRequested?.Invoke(id, false), ButtonKind.Primary, "essence", 64)
+				.WithCost("essence", maxed ? "" : Texts.Number(next)).Named("LevelUp");
+			one.Block(maxed ? T("monsters.why_max_level") : _player.Essence < next ? T("common.why_essence") : null, T("monsters.level_up"));
+			actions.AddChild(one.FixedHeight());
+			var evolveReady = Evolution.IsReady(monster);
+			var fragmentCost = monster.Stars < Growth.MaxStars ? Evolution.Cost(monster.Stars) : 0;
+			var evolve = GameButton.Of(T("monsters.evolve", Texts.Stars(Math.Min(monster.Stars + 1, Growth.MaxStars))), () => EvolveRequested?.Invoke(id), ButtonKind.Primary, "evolve", 64)
+				.WithCost("fragments", evolveReady ? $"{fragmentCost}" : "").Named("Evolve");
+			evolve.Block(monster.Stars >= Growth.MaxStars ? T("monsters.fully_grown") : !maxed ? T("monsters.why_evolve_level") : !Evolution.CanEvolve(_player, monster) ? T("monsters.why_evolve") : null,
+				T("monsters.evolve", Texts.Stars(Math.Min(monster.Stars + 1, Growth.MaxStars))));
+			actions.AddChild(evolve.FixedHeight());
+			_detail.AddChild(actions);
 			if (monster.Locked)
 				_detail.AddChild(Layout.Text(T("monsters.locked_note"), GameTheme.Faded).Named("Locked"));
 
-			if (!Leveling.IsMaxLevel(monster))
-				_detail.AddChild(Layout.Text(T("monsters.level_hint", Leveling.ExperiencePerEssence), GameTheme.Faded).Named("LevelHint"));
-			else if (monster.Stars >= Growth.MaxStars)
-				_detail.AddChild(Layout.Text(T("monsters.fully_grown"), GameTheme.Faded).Named("Grown"));
 			if (Roster.IsFull(_player) && monster.Stored)
 				_detail.AddChild(Layout.Text(T("monsters.collection_full"), GameTheme.Faded).Named("Full"));
 
@@ -692,7 +667,6 @@ namespace Sigilos.UI.Screens
 			var table = new StatTable { Name = "Stats" };
 			table.Show(sheet);
 			_detail.AddChild(table);
-			_detail.AddChild(Layout.Text(T("monsters.stats_hint"), GameTheme.Faded).Named("StatsHint"));
 		}
 
 		private void RunesPage(SummonDefinition summon, OwnedSummon monster)
@@ -755,7 +729,6 @@ namespace Sigilos.UI.Screens
 			}
 
 			_detail.AddChild(tiles);
-			_detail.AddChild(Layout.Text(T("monsters.skills_hint"), GameTheme.Faded).Named("SkillsHint"));
 
 			_detail.AddChild(new HSeparator { Name = "ActionsLine" });
 			var copies = FusionDialog.Candidates(_database, _player, monster).Count(c => !c.Locked);
@@ -763,7 +736,7 @@ namespace Sigilos.UI.Screens
 			//_detail.AddChild(Layout.Text(left == 0 ? T("monsters.fuse_full") : T("monsters.fuse_hint", left, copies), GameTheme.Faded).Named("FuseHint"));
 			var actions = Layout.Grid(2, 10).Named("Actions");
 			var fuse = GameButton.Of(T("monsters.fuse_open"), () => FusionDialog.Open(this, _database, _player, monster, ids => Fuse(monster.Id, ids)), ButtonKind.Primary, "fuse").Named("Fuse");
-			fuse.Disabled = copies == 0 || left == 0;
+			fuse.Block(left == 0 ? T("monsters.fuse_full") : copies == 0 ? T("monsters.why_no_copies") : null, T("monsters.fuse_open"));
 			actions.AddChild(fuse);
 			_detail.AddChild(actions);
 		}
@@ -818,7 +791,6 @@ namespace Sigilos.UI.Screens
 			if (tiles.GetChildCount() > 0)
 			{
 				_detail.AddChild(tiles);
-				_detail.AddChild(Layout.Text(T("monsters.awaken_skills_hint"), GameTheme.Faded).Named("SkillsHint"));
 			}
 		}
 
@@ -831,7 +803,7 @@ namespace Sigilos.UI.Screens
 				T("monsters.awaken_confirm", summon.Name, summon.Awakening.Name, cost),
 				T("monsters.awaken_button"),
 				() => AwakenRequested?.Invoke(monster.Id)), ButtonKind.Primary, "awaken").WithCost("essence", Texts.Number(cost)).Named("Awaken");
-			awaken.Disabled = !Awakening.CanAwaken(_player, monster, summon);
+			awaken.Block(Awakening.CanAwaken(_player, monster, summon) ? null : _player.Essence < cost ? T("common.why_essence") : T("monsters.why_awaken"), T("monsters.awaken_button"));
 			row.AddChild(awaken.Wide(260));
 			_detail.AddChild(row);
 			if (awaken.Disabled)

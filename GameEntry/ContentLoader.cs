@@ -28,17 +28,17 @@ namespace Sigilos.GameEntry
 			var families = DirAccess.GetFilesAt($"{DataFolder}/summons")
 				.Where(file => file.EndsWith(".json"))
 				.OrderBy(file => file)
-				.Select(file => Localize(Read($"summons/{file}")));
+				.Select(file => Localize(Read($"summons/{file}"), $"summons.{file[..^".json".Length]}"));
 
 			var database = GameDatabase.FromJson(
 				statModel: Read("stat_model.json"),
 				families: families,
-				enemies: Localize(Read("enemies.json")),
-				stages: Localize(Read("stages.json")),
-				dungeons: Localize(Read("dungeons.json")),
-				shop: Localize(Read("shop.json")),
-				exploration: Localize(Read("exploration.json")),
-				arena: Localize(Read("arena.json")));
+				enemies: Localize(Read("enemies.json"), "enemies"),
+				stages: Localize(Read("stages.json"), "stages"),
+				dungeons: Localize(Read("dungeons.json"), "dungeons"),
+				shop: Localize(Read("shop.json"), "shop"),
+				exploration: Localize(Read("exploration.json"), "exploration"),
+				arena: Localize(Read("arena.json"), "arena"));
 
 			foreach (var problem in database.Validate())
 				GD.PushError($"Data/: {problem}");
@@ -86,19 +86,21 @@ namespace Sigilos.GameEntry
 
 		/// <summary>
 		/// Troca todo "name", "base_name" e "flavor" de um arquivo de dados pelo texto no idioma de agora
-		/// (<see cref="Locale.Name"/>). Na base não há o que trocar, e o texto passa como veio.
+		/// (<see cref="Locale.Name"/>). Na base não há o que trocar, e o texto passa como veio. A chave de cada
+		/// texto é em inglês: o arquivo (<paramref name="path"/>), o caminho até o campo (um item de lista entra
+		/// pelo "id", senão pela posição) e o campo, como em <c>summons.fox_family.variations.fire.name</c>.
 		/// </summary>
-		private static string Localize(string json)
+		private static string Localize(string json, string path)
 		{
 			if (!Locale.HasNames)
 				return json;
 
 			var root = JsonNode.Parse(json, documentOptions: new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
-			Rename(root);
+			Rename(root, path);
 			return root?.ToJsonString() ?? json;
 		}
 
-		private static void Rename(JsonNode? node)
+		private static void Rename(JsonNode? node, string path)
 		{
 			switch (node)
 			{
@@ -106,18 +108,22 @@ namespace Sigilos.GameEntry
 					foreach (var (key, value) in item.ToList())
 					{
 						if (key is "name" or "base_name" or "flavor" && value is JsonValue text && text.TryGetValue<string>(out var name))
-							item[key] = Locale.Name(name);
+							item[key] = Locale.Name($"{path}.{key}", name);
 						else
-							Rename(value);
+							Rename(value, $"{path}.{key}");
 					}
 
 					break;
 				case JsonArray list:
-					foreach (var element in list)
-						Rename(element);
+					for (var index = 0; index < list.Count; index++)
+						Rename(list[index], $"{path}.{Segment(list[index], index)}");
 					break;
 			}
 		}
+
+		/// <summary>Um item de lista entra na chave pelo "id" (sem pontos), senão pela posição.</summary>
+		private static string Segment(JsonNode? element, int index) =>
+			element is JsonObject { } item && item["id"] is JsonValue id && id.TryGetValue<string>(out var text) ? text.Replace('.', '_') : index.ToString();
 
 		private static string Read(string file) => FileAccess.GetFileAsString($"{DataFolder}/{file}");
 	}

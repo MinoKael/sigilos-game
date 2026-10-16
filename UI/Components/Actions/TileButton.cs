@@ -15,6 +15,7 @@ namespace Sigilos.UI.Components
 		private readonly Label? _detail;
 		private readonly StyleBoxFlat _normal;
 		private readonly Color _border;
+		private bool _locked;
 
 		/// <param name="texture">O desenho (ícone, criatura).</param>
 		/// <param name="horizontal">Símbolo à esquerda e texto à direita; senão, símbolo em cima.</param>
@@ -87,11 +88,13 @@ namespace Sigilos.UI.Components
 		public TileButton Locked()
 		{
 			Highlight = false;
-			foreach (var child in GetChildren())
-			{
-				if (child is Control control)
-					control.Modulate = new Color(1, 1, 1, 0.5f);
-			}
+			_locked = true;
+
+			// Apagado de verdade: o fundo e a moldura do botão desligado, sem o brilho do mouse; o texto escurece em _Draw.
+			var off = Box(Palette.Inset, Palette.Disabled);
+			foreach (var state in new[] { "normal", "hover", "pressed", "hover_pressed" })
+				AddThemeStyleboxOverride(state, off);
+			Content.Modulate = new Color(1, 1, 1, Fade.Disabled);
 
 			var padlock = Doodle.Icon(Art.Icon("lock"), 22, Palette.TextFaded).Named("Padlock");
 			padlock.MouseFilter = MouseFilterEnum.Ignore;
@@ -102,6 +105,13 @@ namespace Sigilos.UI.Components
 			padlock.OffsetBottom = 34;
 			AddChild(padlock);
 			return this;
+		}
+
+		public override void _Draw()
+		{
+			base._Draw();
+			if (_locked)
+				Content.Modulate = new Color(1, 1, 1, Fade.Disabled);
 		}
 
 		/// <summary>O chamado apagou (ou acendeu): a moldura volta ao repouso, e o pulso a pinta de novo a cada quadro.</summary>

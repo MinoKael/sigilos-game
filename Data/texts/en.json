@@ -2,10 +2,12 @@
 // game with -- --language=en or pick English in Settings. {0}, {1}... receive values in the order the
 // code passes them. Brackets such as [color=...] and [planet=...] are gold terms and planets: no
 // translation needed. The "names" group translates the names in Data/ (summons, skills, stages,
-// Dungeons, bosses, Shop), keyed by their Portuguese name.
+// Dungeons, bosses, Shop), keyed in English by file, path and id (summons.fox_family.variations.fire.name).
 // Check with: py Tools/texts/check_texts.py
 {
   "common": {
+    "why_essence": "Not enough Essence for this.",
+    "why_no_auto": "This fight is always manual: there is no Auto Battle.",
     "team": "Team",
     "continue": "Continue",
     "and": " and ",
@@ -14,7 +16,9 @@
     "fight": "Fight",
     "auto_short": "Auto Battle",
     "cancel": "Cancel",
-    "buy_mana": "Buy Mana at the Shop",
+    "buy_mana_short": "Buy Mana",
+    "why_auto_not_cleared": "Auto Battle only works on a stage you have already cleared.",
+    "why_has_mana": "You still have Mana to enter: buying only opens when it runs out.",
     "or": " or "
   },
 
@@ -498,6 +502,8 @@
   },
 
   "hub": {
+    "soon_text": "More places arrive in future versions of the game.",
+    "why_collect": "Nothing to collect yet: the Channel fills with time.",
     "channeling": "{0}:{1}/{2}:00",
     "account_level": "Account · Level {0}",
     "account_progress": "{0}/{1} experience",
@@ -692,6 +698,10 @@
   },
 
   "summon": {
+    "why_ritual": "The summon is under way: wait for it to end.",
+    "why_lesson": "In this tutorial step, only the indicated summon works.",
+    "why_scrolls": "Not enough scrolls of this kind.",
+    "why_fragments": "Not enough Fragments for the exchange.",
     "shop": "Buy Transmutations",
     "new": "New!",
     "copy": "Copy",
@@ -699,11 +709,11 @@
     "scrolls_title": "Scrolls",
     "times_one": "×1",
     "times_ten": "×10",
+    "note": "Every transmutation is a new copy, at level 1. Copies of the same family and Infusion Cores raise its skills.",
     "pity_progress": "{0}/{1} · a 5★ is guaranteed when it fills.",
     "pity_title": "5★ guarantee",
     "rates": "Chances of each transmutation:",
     "light_dark_rate": "Light and Dark {0} ({1} each)",
-    "note": "Every transmutation is a new copy, at level 1. Copies of the same family and Infusion Cores raise its skills.",
     "scroll": {
       "Mystic": "Alchemical",
       "LightDark": "Light and Dark",
@@ -737,6 +747,7 @@
     "bought": "Bought: +{0}.",
     "intro": "Trade the Gold you earn by playing for Mana or Transmutations.",
     "buy_button": "Buy",
+    "category": { "scrolls": "Transmutation", "mana": "Mana", "special": "Special" },
     "confirm_title": "Confirm purchase",
     "info_hint": "Touch an offer's symbol to see what it is for.",
     "info": {
@@ -752,6 +763,13 @@
   },
 
   "monsters": {
+    "why_core_release": "The Infusion Core cannot be released: use it in skill fusion.",
+    "why_max_level": "The homunculus is already at its maximum level.",
+    "why_evolve_level": "The homunculus only evolves at its maximum level.",
+    "why_marked": "Mark at least one homunculus in the list first.",
+    "why_evolve": "Not enough Fragments to evolve.",
+    "why_no_copies": "You have no copies or free Cores to fuse.",
+    "why_awaken": "This homunculus cannot be awakened (already awakened or has no awakening).",
     "collection": "Collection",
     "vault": "Vault",
     "vault_empty": "The Vault is empty.",
@@ -769,7 +787,6 @@
     "skills_max": "Max",
     "experience": "Experience: {0}/{1}",
     "level_up": "Level up (+1)",
-    "max_level_button": "To level {0}",
     "evolve": "Evolve to {0}",
     "awaken_button": "Awaken",
     "runes_button": "Manage sigils",
@@ -808,8 +825,6 @@
     "awaken_gains": "When awakened, it gets its own name, an aura with the ring of its element and:",
     "awakened_already": "Already awakened. It gained:",
     "awaken_short": "{0} Essence short.",
-    "max_confirm_title": "Level up to {0}?",
-    "max_confirm": "Spend {0} Essence to take {1} to level {2}? You have {3}.",
     "locked": "Locked",
     "locked_note": "Locked: it can't be released nor fused into another homunculus. Unlock it first.",
     "favorite": "Favorite",
@@ -850,6 +865,9 @@
   },
 
   "teams": {
+    "why_empty": "The team is empty: pick at least one homunculus.",
+    "why_pick": "Tap a homunculus on the team to choose it.",
+    "why_leader": "This homunculus is already the Leader.",
     "campaign": "Campaign",
     "leader": "Leader",
     "make_leader": "Make Leader",
@@ -863,7 +881,6 @@
   "prep": {
     "collection": "Collection",
     "team": "Team · {0}",
-    "chosen": "{0} chosen: touch a homunculus of the collection to put it in its place.",
     "hint": "Touch a homunculus of the collection to put it in or take it out of the team. Touch one of the team to swap it or make it Leader. Hold any homunculus to see its summary.",
     "saved": "The last team used here is kept.",
     "boss_room": "Boss room",
@@ -874,6 +891,7 @@
   },
 
   "runes": {
+    "why_marked": "Mark at least one sigil in the list first.",
     "tab_runes": "Sigils",
     "tab_grindstones": "Grindstones",
     "tab_gems": "Enchanted Gems",
@@ -912,8 +930,8 @@
     "sell_many_confirm": "Sell {0} sigils for {1} Essence? They are gone for good.",
     "sell_button": "Sell (+{0})",
     "sell_button_short": "Sell",
-    "upgrade_one": "Upgrade to +{0}",
-    "upgrade_button": "Upgrade to +{0}",
+    "upgrade_one": "Upgrade +{0}",
+    "upgrade_button": "Up to +{0}",
     "pick_one": "Touch a sigil to see it here.",
     "enchanted_line": "(enchanted)",
     "grind_hint": "Grindstones add a bonus to an HP, Attack, Defense or Speed substat. Use them from Grind & Enchant on the sigil sheet.",
@@ -928,6 +946,15 @@
     "reappraise_title": "Reappraise the sigil?",
     "reappraise_button": "Reappraise",
     "reappraise_none": "The Reappraisal Gem, sold in the Shop, returns this sigil to the state it dropped in.",
+    "why_no_monster": "Pick a homunculus in the list on the left to equip or try this sigil.",
+    "why_try_equipped": "This sigil is already equipped on this homunculus.",
+    "why_max": "The sigil is already at its maximum (+{0}).",
+    "why_essence": "Not enough Essence for this upgrade.",
+    "why_same": "The next milestone is the next upgrade: use Upgrade +1.",
+    "why_twelve": "The direct +{0} is only for sigils below +9. From here, use the To button beside it; or the sigil is already past +{0}.",
+    "why_sell_equipped": "Remove the sigil from the homunculus before selling.",
+    "why_no_forge": "None of the stones you have fit this sigil's substats.",
+    "why_no_reappraise": "You can reappraise only sigils that have upgraded.",
     "reappraise_level": "Back to +0 (it is at +{0}).",
     "reappraise_removed": "The substats that came with the upgrades go away: {0}.",
     "reappraise_rolls": "The substats it was born with lose {0} upgrade rolls.",
@@ -1221,8 +1248,9 @@
   },
 
   "arena": {
+    "why_beaten": "You already beat this opponent. The list renews next cycle.",
+    "why_pending": "An Arena fight is in progress: finish it before starting another.",
     "defense": "Defense",
-    "defense_text": "The defense fights by itself, run by the AI, when someone challenges you. For now it is only stored: other alchemists arrive with the server.",
     "duel_against": "Duel against {0}",
     "draw": "Draw",
     "draw_text": "The round limit passed with fighters standing on both sides. The Invite is spent, but nobody loses points.",
@@ -1236,7 +1264,8 @@
     "streak_bonus": "+{0}% Health, +{1}% Attack · {2}",
     "next_grade": "{0} points to {1}",
     "top_grade": "The highest Arena Grade.",
-    "cycle_ends": "The week ends in {0}: the prize comes by Grade and points go back to 1000.",
+    "cycle_short": "Week: {0}",
+    "list_short": "{0}/{1} beaten",
     "help_title": "Arena scoring",
     "defense_text": "This is the team that defends your account: with an account on the server, other players fight it.",
     "defense_edit": "Edit defense",
@@ -1697,1274 +1726,4166 @@
   },
 
   "names": {
-    "Aprendiz": "Apprentice",
-    "Adepto I": "Adept I",
-    "Adepto II": "Adept II",
-    "Adepto III": "Adept III",
-    "Alquimista I": "Alchemist I",
-    "Alquimista II": "Alchemist II",
-    "Alquimista III": "Alchemist III",
-    "Magister": "Magister",
-    "Calcinadora de Cinzas": "Ash Calciner",
-    "Destilador das Marés": "Tide Distiller",
-    "Vigia do Athanor": "Athanor Watcher",
-    "Tecelã de Mercúrio": "Mercury Weaver",
-    "Senhor da Retorta": "Lord of the Retort",
-    "Pergaminho de Luz e Trevas": "Light and Dark Scroll",
-    "Bandido": "Bandit",
-    "Bandidos": "Bandits",
-    "Bandido de Fogo": "Fire Bandit",
-    "Chamusco": "Scorch",
-    "Emboscada": "Ambush",
-    "Flecha de Fogo": "Fire Arrow",
-    "Frasco de Óleo": "Oil Flask",
-    "Bandido de Água": "Water Bandit",
-    "Ressaca": "Undertow",
-    "Cortina de Fumaça": "Smoke Screen",
-    "Golpe Sujo": "Dirty Blow",
-    "Bomba de Fumaça": "Smoke Bomb",
-    "Bandido de Vento": "Wind Bandit",
-    "Surrupio": "Swipe",
-    "Corte Rápido": "Quick Cut",
-    "Saque": "Ransack",
-    "Bandido de Luz": "Light Bandit",
-    "Robin": "Robin",
-    "Grande Golpe": "Grand Heist",
-    "Moeda Ofuscante": "Blinding Coin",
-    "Dividir o Butim": "Share the Loot",
-    "Bandido de Trevas": "Dark Bandit",
-    "Estilete": "Shiv",
-    "Truque Sujo": "Cheap Trick",
-    "Sumiço": "Vanish",
-    "Pássaro": "Bird",
-    "Pássaros": "Birds",
-    "Pássaro de Fogo": "Fire Bird",
-    "Chispa": "Flick",
-    "Voo Esquivo": "Evasive Flight",
-    "Bicada Quente": "Hot Peck",
-    "Mergulho de Fogo": "Fire Dive",
-    "Pássaro de Água": "Water Bird",
-    "Garoa": "Drizzle",
-    "Dança da Chuva": "Rain Dance",
-    "Respingo": "Splash",
-    "Alisar as Penas": "Preen",
-    "Pássaro de Vento": "Wind Bird",
-    "Assobio": "Whistle",
-    "Bicada Rápida": "Quick Peck",
-    "Vento a Favor": "Tailwind",
-    "Pássaro de Luz": "Light Bird",
-    "Pio": "Chirp",
-    "Nascer do Sol": "Sunrise",
-    "Brilho Ofuscante": "Glare",
-    "Canto da Manhã": "Morning Song",
-    "Pássaro de Trevas": "Dark Bird",
-    "Fuligem": "Soot",
-    "Bicada Sombria": "Shadow Peck",
-    "Grito Noturno": "Night Screech",
-    "Corvo": "Crow",
-    "Corvos": "Crows",
-    "Corvo de Fogo": "Fire Crow",
-    "Asa de Cinza": "Ashwing",
-    "Bicada de Brasa": "Ember Peck",
-    "Bando Chamuscado": "Scorched Flock",
-    "Mau Agouro": "Ill Omen",
-    "Corvo de Água": "Water Crow",
-    "Grasnalodo": "Mirecaw",
-    "Bicada do Brejo": "Bog Peck",
-    "Presságio Afogado": "Drowning Omen",
-    "Corvo de Vento": "Wind Crow",
-    "Pena de Vendaval": "Galefeather",
-    "Rasgo de Garras": "Talon Rake",
-    "Mergulho Carniceiro": "Carrion Dive",
-    "Revoada de Corvos": "Murder of Crows",
-    "Corvo de Luz": "Light Crow",
-    "Chama-Aurora": "Dawncaller",
-    "Bugiganga Brilhante": "Shiny Trinket",
-    "Coro da Alvorada": "Dawn Chorus",
-    "Augúrio": "Augury",
-    "Corvo de Trevas": "Dark Crow",
-    "Nunca Mais": "Nevermore",
-    "Bicada no Olho": "Eye Peck",
-    "Presságio de Morte": "Death Omen",
-    "Dragão": "Dragon",
-    "Dragões": "Dragons",
-    "Dragão de Fogo": "Fire Dragon",
-    "Pyrrhax": "Pyrrhax",
-    "Garra": "Claw",
-    "Sopro": "Breath",
-    "Fogo de Dragão": "Dragonfire",
-    "Dragão de Água": "Water Dragon",
-    "Maelstra": "Maelstra",
-    "Garra da Maré": "Tidal Claw",
-    "Dilúvio": "Deluge",
-    "Sorvedouro": "Maelstrom",
-    "Dragão de Vento": "Wind Dragon",
-    "Zephyrax": "Zephyrax",
-    "Garra de Rajada": "Gust Claw",
-    "Ciclone": "Cyclone",
-    "Tempestade": "Tempest",
-    "Dragão de Luz": "Light Dragon",
-    "Aurelion": "Aurelion",
-    "Garra Radiante": "Radiant Claw",
-    "Sopro Sagrado": "Holy Breath",
-    "Dragão de Trevas": "Dark Dragon",
-    "Umbrax": "Umbrax",
-    "Garra Sombria": "Shadow Claw",
-    "Sopro do Vazio": "Void Breath",
-    "Druida": "Druid",
-    "Druidas": "Druids",
-    "Druida de Fogo": "Fire Druid",
-    "Chifre de Brasa": "Emberhorn",
-    "Dilacerar": "Maul",
-    "Fogo Selvagem": "Wildfire",
-    "Couro de Espinhos": "Thornhide",
-    "Druida de Água": "Water Druid",
-    "Guarda-Riacho": "Brookwarden",
-    "Chuva Calmante": "Soothing Rain",
-    "Rejuvenescer": "Rejuvenate",
-    "Maré da Primavera": "Spring Tide",
-    "Druida de Vento": "Wind Druid",
-    "Casca de Vendaval": "Galebark",
-    "Chicote de Espinhos": "Thorn Lash",
-    "Raízes Enredantes": "Entangling Roots",
-    "Druida de Luz": "Light Druid",
-    "Raiz do Sol": "Sunroot",
-    "Investida de Galhada": "Antler Charge",
-    "Bosque Sagrado": "Sacred Grove",
-    "Druida de Trevas": "Dark Druid",
-    "Espinho-Praga": "Blightthorn",
-    "Mordida Podre": "Rot Bite",
-    "Esporos da Praga": "Plague Spores",
-    "Definhar": "Wither",
-    "Gárgula": "Gargoyle",
-    "Gárgulas": "Gargoyles",
-    "Gárgula de Fogo": "Fire Gargoyle",
-    "Pedra-Pira": "Pyrestone",
-    "Garra Dilacerante": "Rending Claw",
-    "Mergulho Derretido": "Molten Dive",
-    "Olhar de Pedra": "Stone Gaze",
-    "Gárgula de Água": "Water Gargoyle",
-    "Vigia-Maré": "Tidewatch",
-    "Punho de Pedra": "Stone Fist",
-    "Bica de Chuva": "Rain Spout",
-    "Gárgula de Vento": "Wind Gargoyle",
-    "Poleiro da Tormenta": "Stormperch",
-    "Rasante": "Swoop",
-    "Mergulho Explosivo": "Dive Bomb",
-    "Asas da Tempestade": "Tempest Wings",
-    "Gárgula de Luz": "Light Gargoyle",
-    "Torre da Aurora": "Dawnspire",
-    "Pedra Abençoada": "Blessed Stone",
-    "Guarda da Catedral": "Cathedral Ward",
-    "Gárgula de Trevas": "Dark Gargoyle",
-    "Sorriso Sombrio": "Gloomgrin",
-    "Garra Sinistra": "Grim Talon",
-    "Olhar Temível": "Dread Gaze",
-    "Desmoronar": "Crumble",
-    "Goblin": "Goblin",
-    "Goblins": "Goblins",
-    "Goblin de Fogo": "Fire Goblin",
-    "Resmungo": "Grizzle",
-    "Golpe Baixo": "Cheap Shot",
-    "Facada de Tocha": "Torch Stab",
-    "Bomba de Fogo": "Firebomb",
-    "Goblin de Água": "Water Goblin",
-    "Fungão": "Snivvel",
-    "Laço Afogador": "Drowning Snare",
-    "Arremesso de Rede": "Net Throw",
-    "Armadilha Encharcada": "Soaking Trap",
-    "Goblin de Vento": "Wind Goblin",
-    "Zás": "Zipp",
-    "Facada Rápida": "Quick Stab",
-    "Chuva de Facas": "Knife Flurry",
-    "Goblin de Luz": "Light Goblin",
-    "Glimmik": "Glimmik",
-    "Amuleto Dourado": "Golden Charm",
-    "Distração Brilhante": "Shiny Distraction",
-    "Amuleto da Sorte": "Lucky Charm",
-    "Goblin de Trevas": "Dark Goblin",
-    "Espreita": "Skulk",
-    "Punhalada nas Costas": "Backstab",
-    "Lâmina Envenenada": "Poisoned Blade",
-    "Diabrete": "Imp",
-    "Diabretes de Selo": "Seal Imps",
-    "Diabrete de Fogo": "Fire Imp",
-    "Fagulha": "Cinder",
-    "Fuga Covarde": "Coward's Flight",
-    "Faísca": "Spark",
-    "Selo Rompido": "Broken Seal",
-    "Diabrete de Água": "Water Imp",
-    "Sorvo": "Gulp",
-    "Sede Profunda": "Deep Thirst",
-    "Mordisco Gelado": "Frost Nip",
-    "Sede do Selo": "Seal's Thirst",
-    "Diabrete de Vento": "Wind Imp",
-    "Rodamoinho": "Eddy",
-    "Rodopio": "Spin",
-    "Redemoinho": "Whirlpool",
-    "Diabrete de Luz": "Light Imp",
-    "Lampejo": "Glint",
-    "Presságio Radiante": "Radiant Omen",
-    "Clarão": "Flash",
-    "Olhar Adiante": "Foresee",
-    "Diabrete de Trevas": "Dark Imp",
-    "Negrume": "Murk",
-    "Golpe Sombrio": "Shadow Strike",
-    "Sumir no Selo": "Vanish into the Seal",
-    "Cavaleiro": "Knight",
-    "Cavaleiros Juramentados": "Sworn Knights",
-    "Cavaleiro de Fogo": "Fire Knight",
-    "Dom Brasa": "Sir Ember",
-    "Lâmina Ardente": "Burning Blade",
-    "Carga Flamejante": "Flaming Charge",
-    "Juramento em Chamas": "Blazing Oath",
-    "Cavaleiro de Água": "Water Knight",
-    "Dama Maré": "Dame Tide",
-    "Golpe de Escudo": "Shield Bash",
-    "Muralha de Maré": "Tide Wall",
-    "Último Voto": "Last Vow",
-    "Cavaleiro de Vento": "Wind Knight",
-    "Dom Vendaval": "Sir Gale",
-    "Estocada Veloz": "Swift Thrust",
-    "Clarim de Guerra": "War Horn",
-    "Estandarte do Vendaval": "Gale Banner",
-    "Cavaleiro de Luz": "Light Knight",
-    "Dom Alvor": "Sir Dawn",
-    "Juramento": "Oath",
-    "Voto de Escudo": "Shield Vow",
-    "Cavaleiro de Trevas": "Dark Knight",
-    "Dom Sepulcro": "Sir Sepulcher",
-    "Lâmina Faminta": "Hungry Blade",
-    "Juramento Sombrio": "Dark Oath",
-    "Paladino": "Paladin",
-    "Paladinos": "Paladins",
-    "Paladino de Fogo": "Fire Paladin",
-    "Valoriano": "Valorian",
-    "Castigo": "Smite",
-    "Cruzada": "Crusade",
-    "Devoção": "Devotion",
-    "Paladino de Água": "Water Paladin",
-    "Thalassar": "Thalassar",
-    "Martelo da Maré": "Tide Hammer",
-    "Bastião": "Bastion",
-    "Égide da Maré": "Tidal Aegis",
-    "Paladino de Vento": "Wind Paladin",
-    "Windric": "Windric",
-    "Golpe de Vendaval": "Gale Strike",
-    "Vento Inspirador": "Rallying Wind",
-    "Paladino de Luz": "Light Paladin",
-    "Seraphiel": "Seraphiel",
-    "Golpe Sagrado": "Holy Strike",
-    "Imposição de Mãos": "Lay on Hands",
-    "Paladino de Trevas": "Dark Paladin",
-    "Mordain": "Mordain",
-    "Lâmina Temível": "Dread Blade",
-    "Desafio Sinistro": "Grim Challenge",
-    "Juramento de Sangue": "Blood Oath",
-    "Fênix": "Phoenix",
-    "Fênix de Fogo": "Fire Phoenix",
-    "Ignara": "Ignara",
-    "Chama Espiral": "Spiral Flame",
-    "Voo Rubro": "Crimson Flight",
-    "Das Cinzas": "From the Ashes",
-    "Fênix de Água": "Water Phoenix",
-    "Nereia": "Nereia",
-    "Orvalho": "Dew",
-    "Chuva Renovadora": "Renewing Rain",
-    "Maré da Renovação": "Tide of Renewal",
-    "Fênix de Vento": "Wind Phoenix",
-    "Zéfira": "Zephyra",
-    "Rasante de Brasa": "Ember Dive",
-    "Tempestade de Penas": "Feather Storm",
-    "Furacão de Penas": "Hurricane of Feathers",
-    "Fênix de Luz": "Light Phoenix",
-    "Solária": "Solaria",
-    "Aurora": "Aurora",
-    "Coroa Solar": "Solar Crown",
-    "Fênix de Trevas": "Dark Phoenix",
-    "Nictéria": "Nycteria",
-    "Garra Velada": "Veiled Claw",
-    "Eclipse": "Eclipse",
-    "Fada": "Fairy",
-    "Fadas": "Fairies",
-    "Fada de Fogo": "Fire Fairy",
-    "Acendalha": "Kindle",
-    "Pó de Incêndio": "Wildfire Dust",
-    "Pó de Faísca": "Spark Dust",
-    "Fogo-Fátuo": "Will-o'-Wisp",
-    "Fada de Água": "Water Fairy",
-    "Gota de Orvalho": "Dewdrop",
-    "Pó de Pixie": "Pixie Dust",
-    "Gotinha": "Droplet",
-    "Orvalho da Manhã": "Morning Dew",
-    "Fada de Vento": "Wind Fairy",
-    "Cardo": "Thistle",
-    "Cócegas": "Tickle",
-    "Círculo de Fadas": "Fairy Ring",
-    "Fada de Luz": "Light Fairy",
-    "Cintila": "Twinkle",
-    "Brilhinho": "Sparkle",
-    "Encanto": "Glamour",
-    "Fada de Trevas": "Dark Fairy",
-    "Urtiga": "Nettle",
-    "Má Sorte": "Bad Luck",
-    "Pó de Feitiço": "Hex Dust",
-    "Pesadelo": "Nightmare",
-    "Gosma": "Goo",
-    "Gosmas": "Goos",
-    "Gosma de Fogo": "Fire Goo",
-    "Magmalodo": "Magmire",
-    "Corpo Gelatinoso": "Gelatinous Body",
-    "Bolota Escaldante": "Scalding Glob",
-    "Erupção": "Eruption",
-    "Gosma de Água": "Water Goo",
-    "Salmoura": "Brine",
-    "Fortaleza de Gosma": "Ooze Fortress",
-    "Bola de Gosma": "Ooze Ball",
-    "Engolfar": "Engulf",
-    "Gosma de Vento": "Wind Goo",
-    "Espuma": "Froth",
-    "Respingo Grudento": "Sticky Splash",
-    "Estouro de Cola": "Glue Burst",
-    "Gosma de Luz": "Light Goo",
-    "Geleluz": "Gleamgel",
-    "Gel Radiante": "Radiant Gel",
-    "Gosma Calmante": "Soothing Ooze",
-    "Gel Curativo": "Mending Gel",
-    "Gosma de Trevas": "Dark Goo",
-    "Piche": "Tarrow",
-    "Agarrão de Piche": "Tar Grip",
-    "Lodo Negro": "Black Mire",
-    "Troll": "Troll",
-    "Trolls": "Trolls",
-    "Troll de Fogo": "Fire Troll",
-    "Queixo de Cinza": "Ashjaw",
-    "Porrete Ardente": "Burning Club",
-    "Esmagar": "Smash",
-    "Pancada de Magma": "Magma Slam",
-    "Troll de Água": "Water Troll",
-    "Costas de Musgo": "Mossback",
-    "Porrete": "Club",
-    "Pele de Pedra": "Stone Skin",
-    "Regeneração": "Regeneration",
-    "Troll de Vento": "Wind Troll",
-    "Couro de Trovão": "Thunderhide",
-    "Arremesso de Pedra": "Boulder Toss",
-    "Tremor": "Quake",
-    "Pedregulho Rolante": "Rolling Boulder",
-    "Troll de Luz": "Light Troll",
-    "Chifre da Aurora": "Dawnhorn",
-    "Porrete Abençoado": "Blessed Club",
-    "Rebrotar": "Regrowth",
-    "Troll de Trevas": "Dark Troll",
-    "Bocarra de Túmulo": "Gravemaw",
-    "Aperto Esmagador": "Crushing Grip",
-    "Ameaça": "Menace",
-    "Vampiro": "Vampire",
-    "Vampiros": "Vampires",
-    "Vampiro de Fogo": "Fire Vampire",
-    "Conde Embris": "Count Embris",
-    "Mordida Escaldante": "Scalding Bite",
-    "Sangue Fervente": "Blood Boil",
-    "Sede de Sangue": "Blood Thirst",
-    "Vampiro de Água": "Water Vampire",
-    "Condessa Mirelle": "Countess Mirelle",
-    "Abraço Frio": "Cold Embrace",
-    "Forma de Névoa": "Mist Form",
-    "Vampiro de Vento": "Wind Vampire",
-    "Conde Vesper": "Count Vesper",
-    "Presas Velozes": "Swift Fangs",
-    "Enxame de Morcegos": "Bat Swarm",
-    "Voo Noturno": "Night Flight",
-    "Vampiro de Luz": "Light Vampire",
-    "Condessa Aurelle": "Countess Aurelle",
-    "Toque Pálido": "Pale Touch",
-    "Transfusão": "Transfusion",
-    "Pacto de Sangue": "Sanguine Pact",
-    "Vampiro de Trevas": "Dark Vampire",
-    "Conde Noctis": "Count Noctis",
-    "Drenar Vida": "Drain Life",
-    "Banquete": "Feast",
-    "Mago": "Wizard",
-    "Magos": "Wizards",
-    "Mago de Fogo": "Fire Wizard",
-    "Vulcaris": "Vulcaris",
-    "Sigilo de Brasa": "Ember Sigil",
-    "Salva de Chamas": "Flame Barrage",
-    "Fluxo Arcano": "Arcane Flow",
-    "Mago de Água": "Water Wizard",
-    "Rimewald": "Rimewald",
-    "Estilhaço de Gelo": "Frost Shard",
-    "Geada Quebradiça": "Brittle Frost",
-    "Tumba Glacial": "Glacial Tomb",
-    "Mago de Vento": "Wind Wizard",
-    "Galewyn": "Galewyn",
-    "Faísca Voltaica": "Arc Spark",
-    "Relâmpago em Cadeia": "Chain Lightning",
-    "Mago de Luz": "Light Wizard",
-    "Lumenar": "Lumenar",
-    "Faísca da Aurora": "Dawn Spark",
-    "Sigilo de Proteção": "Sigil of Warding",
-    "Mago de Trevas": "Dark Wizard",
-    "Noctivar": "Noctivar",
-    "Raio Maldito": "Hex Bolt",
-    "Sigilo da Ruína": "Doom Sigil",
-    "Aniquilar": "Annihilate",
-    "Lobo": "Wolf",
-    "Lobos": "Wolves",
-    "Lobo de Fogo": "Fire Wolf",
-    "Presa de Brasa": "Cinderfang",
-    "Instinto de Caça": "Hunter's Instinct",
-    "Mordida de Brasa": "Ember Bite",
-    "Investida Flamejante": "Blazing Rush",
-    "Lobo de Água": "Water Wolf",
-    "Juba de Gelo": "Frostmane",
-    "Matilha de Ferro": "Iron Pack",
-    "Mordida Gelada": "Cold Bite",
-    "Guarda da Matilha": "Pack Guard",
-    "Lobo de Vento": "Wind Wolf",
-    "Pata de Rajada": "Gustpaw",
-    "Mordida": "Bite",
-    "Uivo": "Howl",
-    "Lobo de Luz": "Light Wolf",
-    "Pelo de Lua": "Moonfur",
-    "Lua Cheia": "Full Moon",
-    "Mordida Radiante": "Radiant Bite",
-    "Uivo Lunar": "Moon Howl",
-    "Lobo de Trevas": "Dark Wolf",
-    "Bocarra da Noite": "Nightmaw",
-    "Mordida Sombria": "Shadow Bite",
-    "Caçada": "Hunt",
-    "Estrada dos Menires": "Menhir Road",
-    "Pedras Caídas": "Fallen Stones",
-    "Trilha dos Pastores": "Shepherds' Trail",
-    "Uivos no Vale": "Howls in the Valley",
-    "Ponte Velha": "Old Bridge",
-    "Charco Parado": "Still Marsh",
-    "Acampamento Queimado": "Burned Camp",
-    "Menir Rachado": "Cracked Menhir",
-    "Toca dos Lobos": "Wolves' Den",
-    "Colina do Troll": "Troll Hill",
-    "Estrada Sem Placas": "Unmarked Road",
-    "Moinho Abandonado": "Abandoned Mill",
-    "Vau do Rio": "River Ford",
-    "Cemitério de Menires": "Menhir Graveyard",
-    "Ninho de Cinzas": "Ash Nest",
-    "Portão de Pedra": "Stone Gate",
-    "Floresta de Correntes": "Forest of Chains",
-    "Guarda do Mestre": "The Master's Guard",
-    "Salão dos Elos": "Hall of Links",
-    "O Mestre de Correntes": "The Chain Master",
-    "Golem Rúnico": "Runic Golem",
-    "Forja Rachada": "Cracked Forge",
-    "Ninho da Serpe": "Wyvern's Nest",
-    "Cripta do Rei Ossudo": "Crypt of the Bone King",
-    "Santuário Afogado": "Drowned Sanctum",
-    "Corrente": "Chain",
-    "Grilhões": "Shackles",
-    "Terremoto": "Earthquake",
-    "Serpe Anciã": "Elder Wyvern",
-    "Mordida Ardente": "Searing Bite",
-    "Sopro de Cinzas": "Ash Breath",
-    "Rei Ossudo": "Bone King",
-    "Toque do Túmulo": "Grave Touch",
-    "Coroa de Pó": "Crown of Dust",
-    "Guardião Afogado": "Drowned Guardian",
-    "Tentáculo": "Tentacle",
-    "Maré Negra": "Black Tide",
-    "Guardião da Forja": "Forge Guardian",
-    "Martelada": "Hammer Blow",
-    "Brasa da Bigorna": "Anvil Ember",
-    "Frasco de Mana": "Mana Flask",
-    "Cântaro de Mana": "Mana Jug",
-    "Transmutação Alquímica": "Alchemical Transmutation",
-    "Maço de Transmutações": "Bundle of Transmutations",
-    "Gema de Reavaliação": "Reappraisal Gem",
-    "Núcleo de Infusão": "Infusion Core",
-    "Maré Purificadora": "Cleansing Tide",
-    "Expansão de Coleção": "Collection Expansion",
-    "Bastião Rúnico": "Runic Bastion",
-    "Vigia Rúnico": "Runic Warden",
-    "Pulso Rúnico": "Runic Pulse",
-    "Égide Rúnica": "Runic Aegis",
-    "Sigilo Partido": "Broken Sigil",
-    "Olhar Rúnico": "Runic Gaze",
-    "Selo Partido": "Broken Seal",
-    "Núcleo Rúnico": "Runic Core",
-    "Ninho em Chamas": "Burning Nest",
-    "Coroa Imortal": "Undying Crown",
-    "Maré Revolta": "Raging Tide",
-    "Cais Submerso": "Sunken Pier",
-    "Praia das Âncoras": "Anchor Beach",
-    "Recife dos Corvos": "Crow Reef",
-    "Farol Apagado": "Dark Lighthouse",
-    "Ilha das Gárgulas": "Gargoyle Isle",
-    "Estreito Enevoado": "Misty Strait",
-    "Gruta das Marés": "Tide Grotto",
-    "Naufrágio Antigo": "Old Shipwreck",
-    "Vila dos Pescadores": "Fishers' Village",
-    "Templo Inundado": "Flooded Temple",
-    "Mangue Sombrio": "Shadow Mangrove",
-    "Ilhota das Pixies": "Pixie Islet",
-    "Ponte de Coral": "Coral Bridge",
-    "Baía das Sereias": "Siren Bay",
-    "Torre da Maré": "Tide Tower",
-    "Abismo Raso": "Shallow Abyss",
-    "Ruínas Afogadas": "Drowned Ruins",
-    "Covil Profundo": "Deep Lair",
-    "A Serpe-Mãe": "The Mother Serpent",
-    "Portões da Cidadela": "Citadel Gates",
-    "Pátio dos Selos": "Seal Courtyard",
-    "Muralha Rachada": "Cracked Wall",
-    "Biblioteca Calada": "Hushed Library",
-    "Capela Sem Voz": "Voiceless Chapel",
-    "Corredor dos Ecos": "Hall of Echoes",
-    "Sala dos Arautos": "Heralds' Hall",
-    "Escadaria Partida": "Broken Stairway",
-    "Trono Vazio": "Empty Throne",
-    "O Arauto do Silêncio": "The Herald of Silence",
-    "Mordida das Profundezas": "Deep Bite",
-    "Maremoto": "Tidal Wave",
-    "Sussurro do Fim": "Whisper of the End",
-    "Silêncio": "Silence",
-    "Troca de nome": "Name change",
-    "Unicórnio": "Unicorn",
-    "Unicórnios": "Unicorns",
-    "Unicórnio de Fogo": "Fire Unicorn",
-    "Pirálio": "Pyralis",
-    "Unicórnio de Água": "Water Unicorn",
-    "Maréfila": "Tidemane",
-    "Unicórnio de Vento": "Wind Unicorn",
-    "Ventália": "Galemane",
-    "Unicórnio de Luz": "Light Unicorn",
-    "Alvorina": "Dawnmane",
-    "Unicórnio de Trevas": "Dark Unicorn",
-    "Noctícorne": "Nightcorn",
-    "Chifrada Ardente": "Blazing Horn",
-    "Galope Flamejante": "Flaming Gallop",
-    "Chifre Purificador": "Purifying Horn",
-    "Toque da Fonte": "Spring Touch",
-    "Fonte Sagrada": "Sacred Spring",
-    "Coice Veloz": "Swift Kick",
-    "Corrida Celeste": "Sky Run",
-    "Arco-Íris": "Rainbow",
-    "Chifre de Luz": "Horn of Light",
-    "Bênção da Aurora": "Dawn Blessing",
-    "Lágrima de Unicórnio": "Unicorn Tear",
-    "Chifre Profano": "Profane Horn",
-    "Galope Sombrio": "Shadow Gallop",
-    "Chifre Corrompido": "Corrupted Horn",
-    "Princesa": "Princess",
-    "Princesas": "Princesses",
-    "Princesa de Fogo": "Fire Princess",
-    "Rainha Escarlate": "Scarlet Queen",
-    "Princesa de Água": "Water Princess",
-    "Rainha das Marés": "Tide Queen",
-    "Princesa de Vento": "Wind Princess",
-    "Rainha dos Ventos": "Wind Queen",
-    "Princesa de Luz": "Light Princess",
-    "Rainha Solar": "Sun Queen",
-    "Princesa de Trevas": "Dark Princess",
-    "Rainha do Eclipse": "Eclipse Queen",
-    "Leque de Brasas": "Ember Fan",
-    "Decreto Real": "Royal Decree",
-    "Tirania Ardente": "Burning Tyranny",
-    "Cetro da Maré": "Tide Scepter",
-    "Baile das Ondas": "Wave Ball",
-    "Graça Real": "Royal Grace",
-    "Leque de Vento": "Wind Fan",
-    "Valsa Celeste": "Sky Waltz",
-    "Ordem Real": "Royal Order",
-    "Toque Real": "Royal Touch",
-    "Proteção Real": "Royal Protection",
-    "Coroa Radiante": "Radiant Crown",
-    "Beijo Venenoso": "Poison Kiss",
-    "Canção de Ninar": "Lullaby",
-    "Maldição Real": "Royal Curse",
-    "Anjo": "Angel",
-    "Anjos": "Angels",
-    "Anjo de Fogo": "Fire Angel",
-    "Serafon": "Seraphon",
-    "Anjo de Água": "Water Angel",
-    "Ondiel": "Ondiel",
-    "Anjo de Vento": "Wind Angel",
-    "Aeriel": "Aeriel",
-    "Anjo de Luz": "Light Angel",
-    "Luminael": "Luminael",
-    "Anjo de Trevas": "Dark Angel",
-    "Morvael": "Morvael",
-    "Espada Flamejante": "Flaming Sword",
-    "Juízo Ardente": "Burning Judgment",
-    "Ira Celestial": "Celestial Wrath",
-    "Toque Purificador": "Purifying Touch",
-    "Chuva Celestial": "Celestial Rain",
-    "Asas Guardiãs": "Guardian Wings",
-    "Lança do Vento": "Wind Lance",
-    "Asas Velozes": "Swift Wings",
-    "Luz Divina": "Divine Light",
-    "Graça Divina": "Divine Grace",
-    "Halo Sagrado": "Holy Halo",
-    "Lâmina Caída": "Fallen Blade",
-    "Asas Negras": "Black Wings",
-    "Queda": "The Fall",
-    "Monge": "Monk",
-    "Monges": "Monks",
-    "Monge de Fogo": "Fire Monk",
-    "Mestre Brasa": "Master Ember",
-    "Monge de Água": "Water Monk",
-    "Mestre Maré": "Master Tide",
-    "Monge de Vento": "Wind Monk",
-    "Mestre Vendaval": "Master Gale",
-    "Monge de Luz": "Light Monk",
-    "Mestre Alvor": "Master Dawn",
-    "Monge de Trevas": "Dark Monk",
-    "Mestre Sombra": "Master Shade",
-    "Punho Flamejante": "Flaming Fist",
-    "Cem Golpes": "Hundred Blows",
-    "Chi Ardente": "Burning Chi",
-    "Palma Fluida": "Flowing Palm",
-    "Postura da Maré": "Tide Stance",
-    "Contrafluxo": "Undertow",
-    "Chute Giratório": "Spinning Kick",
-    "Passo do Vento": "Wind Step",
-    "Mil Punhos": "Thousand Fists",
-    "Palma Iluminada": "Lit Palm",
-    "Meditação": "Meditation",
-    "Equilíbrio": "Balance",
-    "Golpe de Pressão": "Pressure Strike",
-    "Toque da Morte": "Touch of Death",
-    "Pontos Vitais": "Vital Points",
-    "Pirata": "Pirate",
-    "Piratas": "Pirates",
-    "Pirata de Fogo": "Fire Pirate",
-    "Capitão Brasa": "Captain Ember",
-    "Pirata de Água": "Water Pirate",
-    "Capitã Maré": "Captain Tide",
-    "Pirata de Vento": "Wind Pirate",
-    "Vento-Bravo": "Wildwind",
-    "Pirata de Luz": "Light Pirate",
-    "Estrela-Guia": "Guiding Star",
-    "Pirata de Trevas": "Dark Pirate",
-    "Barbatreva": "Darkbeard",
-    "Tiro de Pistola": "Pistol Shot",
-    "Barril de Pólvora": "Powder Keg",
-    "Abordagem": "Boarding",
-    "Gancho": "Hook",
-    "Rum da Tripulação": "Crew's Rum",
-    "Âncora": "Anchor",
-    "Sabre Ágil": "Nimble Saber",
-    "Vento de Popa": "Tailwind",
-    "Canhonada": "Cannonade",
-    "Moeda de Ouro": "Gold Coin",
-    "Mapa do Tesouro": "Treasure Map",
-    "Dobrão da Sorte": "Lucky Doubloon",
-    "Tiro Traiçoeiro": "Treacherous Shot",
-    "Andar na Prancha": "Walk the Plank",
-    "Maldição do Tesouro": "Treasure Curse",
-    "Dríade": "Dryad",
-    "Dríades": "Dryads",
-    "Dríade de Fogo": "Fire Dryad",
-    "Flor-de-Brasa": "Emberbloom",
-    "Dríade de Água": "Water Dryad",
-    "Ninfa do Lago": "Lake Nymph",
-    "Dríade de Vento": "Wind Dryad",
-    "Sopro-de-Folha": "Leafbreath",
-    "Dríade de Luz": "Light Dryad",
-    "Guardiã do Bosque": "Grove Warden",
-    "Dríade de Trevas": "Dark Dryad",
-    "Flor da Noite": "Nightbloom",
-    "Espinho Ardente": "Burning Thorn",
-    "Pólen Incandescente": "Glowing Pollen",
-    "Seiva Fervente": "Boiling Sap",
-    "Gota de Seiva": "Sap Drop",
-    "Orvalho Vivo": "Living Dew",
-    "Raízes Profundas": "Deep Roots",
-    "Folha Cortante": "Cutting Leaf",
-    "Pólen Sonífero": "Sleeping Pollen",
-    "Brisa da Floresta": "Forest Breeze",
-    "Galho Abençoado": "Blessed Branch",
-    "Abraço da Floresta": "Forest Embrace",
-    "Casca Viva": "Living Bark",
-    "Espinho Venenoso": "Venom Thorn",
-    "Jardim Murcho": "Withered Garden",
-    "Colheita": "Harvest",
-    "Gorila": "Gorilla",
-    "Gorilas": "Gorillas",
-    "Gorila de Fogo": "Fire Gorilla",
-    "Punho Vulcânico": "Volcanic Fist",
-    "Gorila de Água": "Water Gorilla",
-    "Rocha-Viva": "Living Rock",
-    "Gorila de Vento": "Wind Gorilla",
-    "Trovão da Selva": "Jungle Thunder",
-    "Gorila de Luz": "Light Gorilla",
-    "Ancião Prateado": "Silverback Elder",
-    "Gorila de Trevas": "Dark Gorilla",
-    "Sombra da Selva": "Jungle Shade",
-    "Soco Ardente": "Burning Punch",
-    "Fúria Primal": "Primal Fury",
-    "Tapa Pesado": "Heavy Slap",
-    "Peito de Ferro": "Iron Chest",
-    "Couro Grosso": "Thick Hide",
-    "Galhada": "Branch Swing",
-    "Rugido": "Roar",
-    "Bater no Peito": "Chest Pound",
-    "Soco Protetor": "Guarding Punch",
-    "Proteger o Bando": "Guard the Troop",
-    "Líder do Bando": "Troop Leader",
-    "Agarrão": "Grapple",
-    "Esmagar Ossos": "Bone Crusher",
-    "Minerador": "Miner",
-    "Mineradores": "Miners",
-    "Minerador de Fogo": "Fire Miner",
-    "Quebra-Runas": "Runebreaker",
-    "Minerador de Água": "Water Miner",
-    "Escavador do Abismo": "Abyss Digger",
-    "Minerador de Vento": "Wind Miner",
-    "Picareta Veloz": "Swiftpick",
-    "Minerador de Luz": "Light Miner",
-    "Lanterna da Mina": "Mine Lantern",
-    "Minerador de Trevas": "Dark Miner",
-    "Garimpeiro Sombrio": "Grim Prospector",
-    "Picareta Rúnica": "Runic Pickaxe",
-    "Detonar o Veio": "Blast the Vein",
-    "Veio Profundo": "Deep Vein",
-    "Pá Encharcada": "Soaked Shovel",
-    "Escorar a Galeria": "Shore the Tunnel",
-    "Faro de Minério": "Ore Sense",
-    "Picada Dupla": "Double Pick",
-    "Dinamite": "Dynamite",
-    "Lampião": "Oil Lamp",
-    "Luz na Galeria": "Light in the Tunnel",
-    "Cristal Curativo": "Healing Crystal",
-    "Picareta Sombria": "Shadow Pickaxe",
-    "Desabamento": "Cave-In",
-    "Múmia": "Mummy",
-    "Múmias": "Mummies",
-    "Múmia de Fogo": "Fire Mummy",
-    "Faraó em Brasa": "Ember Pharaoh",
-    "Múmia de Água": "Water Mummy",
-    "Guardião da Tumba": "Tomb Guardian",
-    "Múmia de Vento": "Wind Mummy",
-    "Tempestade de Areia": "Sandstorm",
-    "Múmia de Luz": "Light Mummy",
-    "Sacerdotisa Solar": "Sun Priestess",
-    "Múmia de Trevas": "Dark Mummy",
-    "Faraó Esquecido": "Forgotten Pharaoh",
-    "Faixa Ardente": "Burning Wrap",
-    "Maldição do Sarcófago": "Sarcophagus Curse",
-    "Imortal": "Undead",
-    "Bandagem": "Bandage",
-    "Faixas Aprisionantes": "Binding Wraps",
-    "Embalsamar": "Embalm",
-    "Areia nos Olhos": "Sand in the Eyes",
-    "Tempestade do Deserto": "Desert Storm",
-    "Maldição Antiga": "Ancient Curse",
-    "Selo Solar": "Sun Seal",
-    "Rito de Passagem": "Rite of Passage",
-    "Bênção do Sol": "Sun Blessing",
-    "Toque da Praga": "Plague Touch",
-    "Dez Pragas": "Ten Plagues",
-    "Lich": "Lich",
-    "Liches": "Liches",
-    "Lich de Fogo": "Fire Lich",
-    "Rei Cinzento": "Ashen King",
-    "Lich de Água": "Water Lich",
-    "Arquimago Afogado": "Drowned Archmage",
-    "Lich de Vento": "Wind Lich",
-    "Lamento do Vento": "Wind Wail",
-    "Lich de Luz": "Light Lich",
-    "Arquilich Radiante": "Radiant Archlich",
-    "Lich de Trevas": "Dark Lich",
-    "Senhor dos Mortos": "Lord of the Dead",
-    "Chama Fantasma": "Ghost Flame",
-    "Fogo Necrótico": "Necrotic Fire",
-    "Filactério": "Phylactery",
-    "Toque Gélido": "Icy Touch",
-    "Silêncio Profundo": "Deep Silence",
-    "Sopro Fantasma": "Ghost Breath",
-    "Roubar Alma": "Soul Steal",
-    "Vendaval de Almas": "Soul Gale",
-    "Raio Pálido": "Pale Ray",
-    "Selo da Eternidade": "Seal of Eternity",
-    "Toque Mortal": "Deathly Touch",
-    "Dreno de Almas": "Soul Drain",
-    "Exército dos Mortos": "Army of the Dead",
-    "Samurai": "Samurai",
-    "Samurais": "Samurai",
-    "Samurai de Fogo": "Fire Samurai",
-    "Lâmina Rubra": "Crimson Blade",
-    "Samurai de Água": "Water Samurai",
-    "Lâmina Serena": "Serene Blade",
-    "Samurai de Vento": "Wind Samurai",
-    "Lâmina do Vento": "Wind Blade",
-    "Samurai de Luz": "Light Samurai",
-    "Lâmina da Aurora": "Dawn Blade",
-    "Samurai de Trevas": "Dark Samurai",
-    "Ronin Maldito": "Cursed Ronin",
-    "Corte Flamejante": "Flaming Cut",
-    "Iaijutsu": "Iaijutsu",
-    "Bushido": "Bushido",
-    "Corte da Correnteza": "Current Cut",
-    "Postura do Rio": "River Stance",
-    "Mente Calma": "Calm Mind",
-    "Corte Veloz": "Swift Cut",
-    "Mil Cortes": "Thousand Cuts",
-    "Corte Honrado": "Honorable Cut",
-    "Código de Honra": "Code of Honor",
-    "Duelo": "Duel",
-    "Corte Sombrio": "Shadow Cut",
-    "Corte Final": "Final Cut",
-    "Arqueiro": "Archer",
-    "Arqueiros": "Archers",
-    "Arqueiro de Fogo": "Fire Archer",
-    "Ígnis": "Ignis",
-    "Arqueiro de Água": "Water Archer",
-    "Mira": "Aim",
-    "Arqueiro de Vento": "Wind Archer",
-    "Zéfiro": "Zephyr",
-    "Arqueiro de Luz": "Light Archer",
-    "Alvorada": "Daybreak",
-    "Arqueiro de Trevas": "Dark Archer",
-    "Sombra": "Shade",
-    "Flecha Flamejante": "Flaming Arrow",
-    "Chuva de Flechas": "Arrow Rain",
-    "Flecha Explosiva": "Explosive Arrow",
-    "Flecha de Gelo": "Ice Arrow",
-    "Flecha Rastreadora": "Tracking Arrow",
-    "Flecha Purificadora": "Purifying Arrow",
-    "Tiro Duplo": "Double Shot",
-    "Rajada de Flechas": "Arrow Volley",
-    "Olho de Águia": "Eagle Eye",
-    "Flecha de Luz": "Light Arrow",
-    "Sinalizador": "Flare",
-    "Flecha Sagrada": "Holy Arrow",
-    "Flecha Envenenada": "Poisoned Arrow",
-    "Tiro Silenciador": "Silencing Shot",
-    "Caçador Paciente": "Patient Hunter",
-    "Minotauro": "Minotaur",
-    "Minotauros": "Minotaurs",
-    "Minotauro de Fogo": "Fire Minotaur",
-    "Chifre-Fúria": "Furyhorn",
-    "Minotauro de Água": "Water Minotaur",
-    "Muralha": "Bulwark",
-    "Minotauro de Vento": "Wind Minotaur",
-    "Turbilhão": "Whirlwind",
-    "Minotauro de Luz": "Light Minotaur",
-    "Sentinela": "Sentinel",
-    "Minotauro de Trevas": "Dark Minotaur",
-    "Carniceiro": "Butcher",
-    "Machado Ardente": "Burning Axe",
-    "Investida do Touro": "Bull Charge",
-    "Fúria do Labirinto": "Labyrinth Fury",
-    "Cabeçada": "Headbutt",
-    "Bramido": "Bellow",
-    "Casco de Pedra": "Stone Hoof",
-    "Chifrada": "Gore",
-    "Estouro da Manada": "Stampede",
-    "Labirinto": "Labyrinth",
-    "Machado Abençoado": "Blessed Axe",
-    "Grito de Guerra": "War Cry",
-    "Guarda do Labirinto": "Labyrinth Guard",
-    "Machado Sombrio": "Shadow Axe",
-    "Chifrada Brutal": "Brutal Gore",
-    "Faro de Sangue": "Blood Scent",
-    "Medusa": "Medusa",
-    "Medusas": "Medusas",
-    "Medusa de Fogo": "Fire Medusa",
-    "Víbora": "Viper",
-    "Medusa de Água": "Water Medusa",
-    "Nereida": "Nereid",
-    "Medusa de Vento": "Wind Medusa",
-    "Sibila": "Sibyl",
-    "Medusa de Luz": "Light Medusa",
-    "Estela": "Stela",
-    "Medusa de Trevas": "Dark Medusa",
-    "Górgona": "Gorgon",
-    "Flecha de Serpente": "Serpent Arrow",
-    "Cabelo de Serpentes": "Snake Hair",
-    "Veneno de Serpente": "Serpent Venom",
-    "Olhar Gelado": "Icy Gaze",
-    "Olhar Petrificante": "Petrifying Gaze",
-    "Petrificar": "Petrify",
-    "Bote": "Strike",
-    "Dança das Serpentes": "Serpent Dance",
-    "Escamas Lisas": "Smooth Scales",
-    "Reflexo": "Reflection",
-    "Escudo Espelhado": "Mirror Shield",
-    "Olhar Sereno": "Serene Gaze",
-    "Olhar Maldito": "Cursed Gaze",
-    "Petrificação": "Petrification",
-    "Olhar Fatal": "Fatal Gaze",
-    "Esqueleto": "Skeleton",
-    "Esqueletos": "Skeletons",
-    "Esqueleto de Fogo": "Fire Skeleton",
-    "Ossobrasa": "Emberbones",
-    "Esqueleto de Água": "Water Skeleton",
-    "Ossomar": "Seabones",
-    "Esqueleto de Vento": "Wind Skeleton",
-    "Ossovento": "Windbones",
-    "Esqueleto de Luz": "Light Skeleton",
-    "Ossoluz": "Lightbones",
-    "Esqueleto de Trevas": "Dark Skeleton",
-    "Ossonegro": "Darkbones",
-    "Espada Enferrujada": "Rusty Sword",
-    "Explosão de Ossos": "Bone Burst",
-    "Ossos Teimosos": "Stubborn Bones",
-    "Escudo de Ossos": "Bone Shield",
-    "Muralha de Ossos": "Bone Wall",
-    "Lança Óssea": "Bone Spear",
-    "Arremesso de Crânio": "Skull Toss",
-    "Toque Ósseo": "Bone Touch",
-    "Dança Macabra": "Danse Macabre",
-    "Reerguer": "Rise Again",
-    "Garra Óssea": "Bone Claw",
-    "Maldição do Túmulo": "Grave Curse",
-    "Assassino": "Assassin",
-    "Assassinos": "Assassins",
-    "Assassino de Fogo": "Fire Assassin",
-    "Brasa Oculta": "Hidden Ember",
-    "Assassino de Água": "Water Assassin",
-    "Lâmina d'Água": "Waterblade",
-    "Assassino de Vento": "Wind Assassin",
-    "Vulto": "Wraith",
-    "Assassino de Luz": "Light Assassin",
-    "Juíza": "Judge",
-    "Assassino de Trevas": "Dark Assassin",
-    "Sussurro": "Whisper",
-    "Adaga Ardente": "Burning Dagger",
-    "Golpe Fatal": "Fatal Blow",
-    "Fumaça Escaldante": "Scalding Smoke",
-    "Lâmina Fria": "Cold Blade",
-    "Envenenar": "Poison",
-    "Sombra Líquida": "Liquid Shadow",
-    "Corte Silencioso": "Silent Cut",
-    "Passo Sombrio": "Shadow Step",
-    "Instinto Assassino": "Killer Instinct",
-    "Lâmina Ofuscante": "Dazzling Blade",
-    "Marcar o Alvo": "Mark the Target",
-    "Execução Sagrada": "Holy Execution",
-    "Punhal Sombrio": "Shadow Dagger",
-    "Golpe nas Sombras": "Strike from the Shadows",
-    "Desaparecer": "Vanish",
-    "Cogumelo": "Mushroom",
-    "Cogumelos": "Mushrooms",
-    "Cogumelo de Fogo": "Fire Mushroom",
-    "Fungo-Brasa": "Emberfungus",
-    "Cogumelo de Água": "Water Mushroom",
-    "Musgo": "Moss",
-    "Cogumelo de Vento": "Wind Mushroom",
-    "Esporinha": "Sporelet",
-    "Cogumelo de Luz": "Light Mushroom",
-    "Luzinha": "Glimmer",
-    "Cogumelo de Trevas": "Dark Mushroom",
-    "Bolor": "Mold",
-    "Esporo Ardente": "Burning Spore",
-    "Nuvem de Esporos": "Spore Cloud",
-    "Esporos": "Spores",
-    "Esporo Úmido": "Damp Spore",
-    "Chá de Cogumelo": "Mushroom Tea",
-    "Anel de Cogumelos": "Mushroom Ring",
-    "Sopro de Esporos": "Spore Puff",
-    "Pó Sonífero": "Sleeping Dust",
-    "Nuvem Tóxica": "Toxic Cloud",
-    "Brilho Fúngico": "Fungal Glow",
-    "Esporos Curativos": "Healing Spores",
-    "Micélio": "Mycelium",
-    "Esporo Podre": "Rotten Spore",
-    "Fungo Parasita": "Parasitic Fungus",
-    "Mofo": "Mildew",
-    "Lagarto": "Lizard",
-    "Lagartos": "Lizards",
-    "Lagarto de Fogo": "Fire Lizard",
-    "Salamandra": "Salamander",
-    "Lagarto de Água": "Water Lizard",
-    "Iguana": "Iguana",
-    "Lagarto de Vento": "Wind Lizard",
-    "Corredor": "Runner",
-    "Lagarto de Luz": "Light Lizard",
-    "Lumi": "Lumi",
-    "Lagarto de Trevas": "Dark Lizard",
-    "Camaleão": "Chameleon",
-    "Mordida Quente": "Hot Bite",
-    "Cuspe de Fogo": "Fire Spit",
-    "Cauda Nova": "New Tail",
-    "Lambida": "Lick",
-    "Mergulho Frio": "Cold Dive",
-    "Arranhão Rápido": "Quick Scratch",
-    "Disparada": "Dash",
-    "Chicote de Cauda": "Tail Whip",
-    "Escama Brilhante": "Shiny Scale",
-    "Banho de Sol": "Sunbathe",
-    "Troca de Pele": "Shed Skin",
-    "Língua Ácida": "Acid Tongue",
-    "Camuflagem": "Camouflage",
-    "Bote Camuflado": "Hidden Strike",
-    "Planta Carnívora": "Carnivorous Plant",
-    "Plantas Carnívoras": "Carnivorous Plants",
-    "Planta Carnívora de Fogo": "Fire Carnivorous Plant",
-    "Boca-de-Brasa": "Embermaw",
-    "Planta Carnívora de Água": "Water Carnivorous Plant",
-    "Papa-Moscas": "Flytrap",
-    "Planta Carnívora de Vento": "Wind Carnivorous Plant",
-    "Chicote-Verde": "Greenwhip",
-    "Planta Carnívora de Luz": "Light Carnivorous Plant",
-    "Flor do Sol": "Sunflower",
-    "Planta Carnívora de Trevas": "Dark Carnivorous Plant",
-    "Dente-Negro": "Blackfang",
-    "Bocada Ardente": "Burning Chomp",
-    "Devorar": "Devour",
-    "Seiva Ácida": "Acid Sap",
-    "Cipó": "Vine",
-    "Armadilha de Néctar": "Nectar Trap",
-    "Raízes Sedentas": "Thirsty Roots",
-    "Chicote de Cipó": "Vine Whip",
-    "Pólen ao Vento": "Windborne Pollen",
-    "Bote da Planta": "Plant Lunge",
-    "Pétala": "Petal",
-    "Néctar Doce": "Sweet Nectar",
-    "Fotossíntese": "Photosynthesis",
-    "Presas Sombrias": "Shadow Fangs",
-    "Engolir": "Swallow",
-    "Digestão": "Digestion",
-    "Ursa Menor": "Ursa Minor",
-    "Estrela Polar": "Pole Star",
-    "Girafa": "Camelopardalis",
-    "Vista do Alto": "High Lookout",
-    "Cocheiro": "Auriga",
-    "Carruagem": "Chariot",
-    "Lince": "Lynx",
-    "Olhos na Penumbra": "Eyes in the Dusk",
-    "Ursa Maior": "Ursa Major",
-    "Pele Grossa": "Thick Hide",
-    "Leão Menor": "Leo Minor",
-    "Rugido Pequeno": "Little Roar",
-    "Cães de Caça": "Canes Venatici",
-    "Matilha": "Pack",
-    "Cabeleira de Berenice": "Coma Berenices",
-    "Oferenda": "Offering",
-    "Boieiro": "Boötes",
-    "Pastor de Estrelas": "Star Herder",
-    "Coroa Boreal": "Corona Borealis",
-    "Coroa de Ariadne": "Ariadne's Crown",
-    "Hércules": "Hercules",
-    "Doze Trabalhos": "Twelve Labors",
-    "Lira": "Lyra",
-    "Canção de Orfeu": "Orpheus's Song",
-    "Raposa": "Vulpecula",
-    "Astúcia": "Cunning",
-    "Cisne": "Cygnus",
-    "Asas Abertas": "Open Wings",
-    "Hálito Antigo": "Ancient Breath",
-    "Cefeu": "Cepheus",
-    "Cassiopeia": "Cassiopeia",
-    "Vaidade": "Vanity",
-    "Triângulo": "Triangulum",
-    "Trindade": "Trinity",
-    "Perseu": "Perseus",
-    "Olhar da Medusa": "Medusa's Gaze",
-    "Andrômeda": "Andromeda",
-    "Acorrentada": "Chained",
-    "Peixes": "Pisces",
-    "Águas Calmas": "Calm Waters",
-    "Baleia": "Cetus",
-    "Abismo": "Abyss",
-    "Áries": "Aries",
-    "Investida do Carneiro": "Ram's Charge",
-    "Touro": "Taurus",
-    "Fúria do Touro": "Bull's Fury",
-    "Órion": "Orion",
-    "Marca do Caçador": "Hunter's Mark",
-    "Lebre": "Lepus",
-    "Correria": "Scamper",
-    "Cão Maior": "Canis Major",
-    "Canícula": "Dog Days",
-    "Gêmeos": "Gemini",
-    "Castor e Pólux": "Castor and Pollux",
-    "Cão Menor": "Canis Minor",
-    "Cão de Guarda": "Watchdog",
-    "Câncer": "Cancer",
-    "Carapaça": "Carapace",
-    "Leão": "Leo",
-    "Rugido do Rei": "King's Roar",
-    "Sextante": "Sextans",
-    "Ângulo Certo": "Right Angle",
-    "Hidra": "Hydra",
-    "Cabeças que Voltam": "Regrowing Heads",
-    "Taça": "Crater",
-    "Taça Amarga": "Bitter Cup",
-    "Virgem": "Virgo",
-    "Libra": "Libra",
-    "Pesos Iguais": "Equal Weights",
-    "Serpente": "Serpens",
-    "Veneno da Serpente": "Serpent Venom",
-    "Serpentário": "Ophiuchus",
-    "Bastão de Asclépio": "Rod of Asclepius",
-    "Escorpião": "Scorpius",
-    "Ferrão Mortal": "Deadly Sting",
-    "Sagitário": "Sagittarius",
-    "Segunda Flecha": "Second Arrow",
-    "Escudo": "Scutum",
-    "Égide": "Aegis",
-    "Águia": "Aquila",
-    "Raio de Zeus": "Zeus's Bolt",
-    "Flecha": "Sagitta",
-    "Voo Reto": "Straight Flight",
-    "Delfim": "Delphinus",
-    "Brincadeira": "Playfulness",
-    "Cavalo Menor": "Equuleus",
-    "Coice": "Kick",
-    "Capricórnio": "Capricornus",
-    "Duas Formas": "Two Forms",
-    "Aquário": "Aquarius",
-    "Enxurrada": "Flood",
-    "Pégaso": "Pegasus",
-    "Asas de Pégaso": "Pegasus's Wings",
-    "Peixe Austral": "Piscis Austrinus",
-    "Último de Pé": "Last One Standing",
-    "Escultor": "Sculptor",
-    "Pedra Viva": "Living Stone",
-    "Fornalha": "Fornax",
-    "Têmpera": "Tempering",
-    "Erídano": "Eridanus",
-    "Correnteza": "Current",
-    "Buril": "Caelum",
-    "Entalhe": "Engraving",
-    "Pomba": "Columba",
-    "Trégua": "Truce",
-    "Popa": "Puppis",
-    "Tripulação": "Crew",
-    "Bússola": "Pyxis",
-    "Desorientação": "Disorientation",
-    "Máquina Pneumática": "Antlia",
-    "Vácuo": "Vacuum",
-    "Centauro": "Centaurus",
-    "Mestre Centauro": "Centaur Master",
-    "Matilha Faminta": "Hungry Pack",
-    "Esquadro": "Norma",
-    "Medida Justa": "Fair Measure",
-    "Altar": "Ara",
-    "Coroa Austral": "Corona Australis",
-    "Coroa Partida": "Broken Crown",
-    "Telescópio": "Telescopium",
-    "Lente": "Lens",
-    "Microscópio": "Microscopium",
-    "Contágio": "Contagion",
-    "Grou": "Grus",
-    "Vigília": "Vigil",
-    "Relógio": "Horologium",
-    "Tique-Taque": "Tick-Tock",
-    "Retículo": "Reticulum",
-    "Dourado": "Dorado",
-    "Nuvem de Magalhães": "Magellanic Cloud",
-    "Pintor": "Pictor",
-    "Paleta": "Palette",
-    "Quilha": "Carina",
-    "Casco Firme": "Sturdy Hull",
-    "Vela": "Vela",
-    "Vento em Popa": "Fair Wind",
-    "Peixe Voador": "Volans",
-    "Salto": "Leap",
-    "Mesa": "Mensa",
-    "Rocha": "Bedrock",
-    "Hidra Macho": "Hydrus",
-    "Tucano": "Tucana",
-    "Algazarra": "Racket",
-    "Índio": "Indus",
-    "Pavão": "Pavo",
-    "Exibição": "Display",
-    "Oitante": "Octans",
-    "Inabalável": "Unshakable",
-    "Ave-do-Paraíso": "Apus",
-    "Plumagem": "Plumage",
-    "Triângulo Austral": "Triangulum Australe",
-    "Três Pontas": "Three Points",
-    "Compasso": "Circinus",
-    "Rodízio": "Rotation",
-    "Mosca": "Musca",
-    "Enxame": "Swarm",
-    "Cruzeiro do Sul": "Crux",
-    "Guia do Sul": "Southern Guide",
-    "Exploração da Aurora": "Dawn Exploration",
-    "Exploração do Zênite": "Zenith Exploration",
-    "Exploração do Crepúsculo": "Dusk Exploration",
-    "Urso Celeste": "Celestial Bear",
-    "Patada": "Swipe",
-    "Abraço de Urso": "Bear Hug",
-    "Hibernar": "Hibernate",
-    "Carneiro de Ouro": "Golden Ram",
-    "Investida": "Charge",
-    "Velo de Ouro": "Golden Fleece",
-    "Touro Celeste": "Celestial Bull",
-    "Estouro": "Stampede",
-    "Bufar": "Snort",
-    "Caçador das Estrelas": "Star Hunter",
-    "Flecha Estelar": "Star Arrow",
-    "Cinto de Órion": "Orion's Belt",
-    "Unicórnio Celeste": "Celestial Unicorn",
-    "Galope Puro": "Pure Gallop",
-    "Crina Prateada": "Silver Mane",
-    "Caranguejo Celeste": "Celestial Crab",
-    "Pinça": "Pincer",
-    "Esmagar Casco": "Shell Crush",
-    "Casco Duro": "Hard Shell",
-    "Leão de Nemeia": "Nemean Lion",
-    "Garra de Nemeia": "Nemean Claw",
-    "Pele Invulnerável": "Invulnerable Hide",
-    "Hidra de Lerna": "Lernaean Hydra",
-    "Mordidas": "Bites",
-    "Veneno das Cabeças": "Venom of the Heads",
-    "Cabeças": "Heads",
-    "Balança de Astreia": "Astraea's Scales",
-    "Peso": "Weight",
-    "Juízo": "Judgment",
-    "Contrapeso": "Counterweight",
-    "Escorpião Celeste": "Celestial Scorpion",
-    "Pinça Venenosa": "Venom Pincer",
-    "Ferroada": "Sting",
-    "Carapaça Venenosa": "Venomous Shell",
-    "Cabra-Marinha": "Sea-Goat",
-    "Chifres": "Horns",
-    "Maré Montanhosa": "Mountain Tide",
-    "Centauro Celeste": "Celestial Centaur",
-    "Flecha de Quíron": "Chiron's Arrow",
-    "Saraivada": "Volley",
-    "Mestre dos Heróis": "Master of Heroes",
-    "Raposa": "Fox",
-    "Raposas": "Foxes",
-    "Raposa de Fogo": "Fire Fox",
-    "Raposa de Fogo Desperta": "Awakened Fire Fox",
-    "Raposa de Água": "Water Fox",
-    "Raposa de Água Desperta": "Awakened Water Fox",
-    "Raposa de Vento": "Wind Fox",
-    "Raposa de Vento Desperta": "Awakened Wind Fox",
-    "Raposa de Luz": "Light Fox",
-    "Raposa de Luz Desperta": "Awakened Light Fox",
-    "Raposa de Trevas": "Dark Fox",
-    "Raposa de Trevas Desperta": "Awakened Dark Fox",
-    "Bode": "Goat",
-    "Bodes": "Goats",
-    "Bode de Fogo": "Fire Goat",
-    "Bode de Fogo Desperto": "Awakened Fire Goat",
-    "Bode de Água": "Water Goat",
-    "Bode de Água Desperto": "Awakened Water Goat",
-    "Bode de Vento": "Wind Goat",
-    "Bode de Vento Desperto": "Awakened Wind Goat",
-    "Bode de Luz": "Light Goat",
-    "Bode de Luz Desperto": "Awakened Light Goat",
-    "Bode de Trevas": "Dark Goat",
-    "Bode de Trevas Desperto": "Awakened Dark Goat",
-    "Golfinho": "Dolphin",
-    "Golfinhos": "Dolphins",
-    "Golfinho de Fogo": "Fire Dolphin",
-    "Golfinho de Fogo Desperto": "Awakened Fire Dolphin",
-    "Golfinho de Água": "Water Dolphin",
-    "Golfinho de Água Desperto": "Awakened Water Dolphin",
-    "Golfinho de Vento": "Wind Dolphin",
-    "Golfinho de Vento Desperto": "Awakened Wind Dolphin",
-    "Golfinho de Luz": "Light Dolphin",
-    "Golfinho de Luz Desperto": "Awakened Light Dolphin",
-    "Golfinho de Trevas": "Dark Dolphin",
-    "Golfinho de Trevas Desperto": "Awakened Dark Dolphin",
-    "Golpe": "Strike"
+    "arena": {
+      "grades": {
+        "apprentice": {
+          "name": "Apprentice"
+        },
+        "adept_1": {
+          "name": "Adept I"
+        },
+        "adept_2": {
+          "name": "Adept II"
+        },
+        "adept_3": {
+          "name": "Adept III"
+        },
+        "alchemist_1": {
+          "name": "Alchemist I"
+        },
+        "alchemist_2": {
+          "name": "Alchemist II"
+        },
+        "alchemist_3": {
+          "name": "Alchemist III"
+        },
+        "magister": {
+          "name": "Magister"
+        }
+      },
+      "rivals": {
+        "calcinadora": {
+          "name": "Ash Calciner"
+        },
+        "destilador": {
+          "name": "Tide Distiller"
+        },
+        "vigia": {
+          "name": "Athanor Watcher"
+        },
+        "tecela": {
+          "name": "Mercury Weaver"
+        },
+        "retorta": {
+          "name": "Lord of the Retort"
+        }
+      },
+      "shop": {
+        "transmutation": {
+          "name": "Alchemical Transmutation"
+        },
+        "light_dark": {
+          "name": "Light and Dark Scroll"
+        },
+        "core": {
+          "name": "Infusion Core"
+        },
+        "reappraisal_gem": {
+          "name": "Reappraisal Gem"
+        },
+        "mana_flask": {
+          "name": "Mana Flask"
+        }
+      }
+    },
+    "dungeons": {
+      "golem": {
+        "name": "Runic Golem"
+      },
+      "wyvern": {
+        "name": "Wyvern's Nest"
+      },
+      "crypt": {
+        "name": "Crypt of the Bone King"
+      },
+      "sanctum": {
+        "name": "Drowned Sanctum"
+      },
+      "forge": {
+        "name": "Cracked Forge"
+      }
+    },
+    "enemies": {
+      "chain_master": {
+        "name": "The Chain Master",
+        "skills": {
+          "0": {
+            "name": "Chain"
+          },
+          "1": {
+            "name": "Shackles"
+          }
+        }
+      },
+      "runic_golem": {
+        "name": "Runic Golem",
+        "skills": {
+          "0": {
+            "name": "Stone Fist"
+          },
+          "1": {
+            "name": "Earthquake"
+          },
+          "2": {
+            "name": "Runic Core"
+          }
+        }
+      },
+      "golem_bastion": {
+        "name": "Runic Bastion",
+        "skills": {
+          "0": {
+            "name": "Runic Pulse"
+          },
+          "1": {
+            "name": "Runic Aegis"
+          },
+          "2": {
+            "name": "Broken Sigil"
+          }
+        }
+      },
+      "golem_warden": {
+        "name": "Runic Warden",
+        "skills": {
+          "0": {
+            "name": "Runic Gaze"
+          },
+          "1": {
+            "name": "Broken Seal"
+          }
+        }
+      },
+      "elder_wyvern": {
+        "name": "Elder Wyvern",
+        "skills": {
+          "0": {
+            "name": "Searing Bite"
+          },
+          "1": {
+            "name": "Ash Breath"
+          },
+          "2": {
+            "name": "Burning Nest"
+          }
+        }
+      },
+      "bone_king": {
+        "name": "Bone King",
+        "skills": {
+          "0": {
+            "name": "Grave Touch"
+          },
+          "1": {
+            "name": "Crown of Dust"
+          },
+          "2": {
+            "name": "Undying Crown"
+          }
+        }
+      },
+      "drowned_guardian": {
+        "name": "Drowned Guardian",
+        "skills": {
+          "0": {
+            "name": "Tentacle"
+          },
+          "1": {
+            "name": "Black Tide"
+          },
+          "2": {
+            "name": "Raging Tide"
+          }
+        }
+      },
+      "forge_guardian": {
+        "name": "Forge Guardian",
+        "skills": {
+          "0": {
+            "name": "Hammer Blow"
+          },
+          "1": {
+            "name": "Anvil Ember"
+          }
+        }
+      },
+      "mother_serpent": {
+        "skills": {
+          "0": {
+            "name": "Deep Bite"
+          },
+          "1": {
+            "name": "Tidal Wave"
+          }
+        }
+      },
+      "silence_herald": {
+        "name": "The Herald of Silence",
+        "skills": {
+          "0": {
+            "name": "Whisper of the End"
+          },
+          "1": {
+            "name": "Silence"
+          }
+        }
+      },
+      "celestial_bear": {
+        "name": "Celestial Bear",
+        "skills": {
+          "0": {
+            "name": "Swipe"
+          },
+          "1": {
+            "name": "Bear Hug"
+          },
+          "2": {
+            "name": "Hibernate"
+          }
+        }
+      },
+      "celestial_ram": {
+        "name": "Golden Ram",
+        "skills": {
+          "0": {
+            "name": "Headbutt"
+          },
+          "1": {
+            "name": "Charge"
+          },
+          "2": {
+            "name": "Golden Fleece"
+          }
+        }
+      },
+      "celestial_bull": {
+        "name": "Celestial Bull",
+        "skills": {
+          "0": {
+            "name": "Gore"
+          },
+          "1": {
+            "name": "Stampede"
+          },
+          "2": {
+            "name": "Snort"
+          }
+        }
+      },
+      "celestial_hunter": {
+        "name": "Star Hunter",
+        "skills": {
+          "0": {
+            "name": "Star Arrow"
+          },
+          "1": {
+            "name": "Arrow Rain"
+          },
+          "2": {
+            "name": "Orion's Belt"
+          }
+        }
+      },
+      "celestial_unicorn": {
+        "name": "Celestial Unicorn",
+        "skills": {
+          "0": {
+            "name": "Horn of Light"
+          },
+          "1": {
+            "name": "Pure Gallop"
+          },
+          "2": {
+            "name": "Silver Mane"
+          }
+        }
+      },
+      "celestial_crab": {
+        "name": "Celestial Crab",
+        "skills": {
+          "0": {
+            "name": "Pincer"
+          },
+          "1": {
+            "name": "Shell Crush"
+          },
+          "2": {
+            "name": "Hard Shell"
+          }
+        }
+      },
+      "celestial_lion": {
+        "name": "Nemean Lion",
+        "skills": {
+          "0": {
+            "name": "Nemean Claw"
+          },
+          "1": {
+            "name": "Roar"
+          },
+          "2": {
+            "name": "Invulnerable Hide"
+          }
+        }
+      },
+      "celestial_hydra": {
+        "name": "Lernaean Hydra",
+        "skills": {
+          "0": {
+            "name": "Bites"
+          },
+          "1": {
+            "name": "Venom of the Heads"
+          },
+          "2": {
+            "name": "Heads"
+          }
+        }
+      },
+      "celestial_scales": {
+        "name": "Astraea's Scales",
+        "skills": {
+          "0": {
+            "name": "Weight"
+          },
+          "1": {
+            "name": "Judgment"
+          },
+          "2": {
+            "name": "Counterweight"
+          }
+        }
+      },
+      "celestial_scorpion": {
+        "name": "Celestial Scorpion",
+        "skills": {
+          "0": {
+            "name": "Venom Pincer"
+          },
+          "1": {
+            "name": "Sting"
+          },
+          "2": {
+            "name": "Venomous Shell"
+          }
+        }
+      },
+      "celestial_sea_goat": {
+        "name": "Sea-Goat",
+        "skills": {
+          "0": {
+            "name": "Horns"
+          },
+          "1": {
+            "name": "Mountain Tide"
+          }
+        }
+      },
+      "celestial_centaur": {
+        "name": "Celestial Centaur",
+        "skills": {
+          "0": {
+            "name": "Chiron's Arrow"
+          },
+          "1": {
+            "name": "Volley"
+          },
+          "2": {
+            "name": "Master of Heroes"
+          }
+        }
+      }
+    },
+    "exploration": {
+      "explorations": {
+        "aurora": {
+          "name": "Dawn Exploration"
+        },
+        "zenith": {
+          "name": "Zenith Exploration"
+        },
+        "dusk": {
+          "name": "Dusk Exploration"
+        }
+      },
+      "constellations": {
+        "ursa_minor": {
+          "name": "Ursa Minor",
+          "influence": {
+            "name": "Pole Star"
+          }
+        },
+        "camelopardalis": {
+          "name": "Camelopardalis",
+          "influence": {
+            "name": "High Lookout"
+          }
+        },
+        "auriga": {
+          "name": "Auriga",
+          "influence": {
+            "name": "Chariot"
+          }
+        },
+        "lynx": {
+          "name": "Lynx",
+          "influence": {
+            "name": "Eyes in the Dusk"
+          }
+        },
+        "ursa_major": {
+          "name": "Ursa Major",
+          "influence": {
+            "name": "Thick Hide"
+          }
+        },
+        "leo_minor": {
+          "name": "Leo Minor",
+          "influence": {
+            "name": "Little Roar"
+          }
+        },
+        "canes_venatici": {
+          "name": "Canes Venatici",
+          "influence": {
+            "name": "Pack"
+          }
+        },
+        "coma_berenices": {
+          "name": "Coma Berenices",
+          "influence": {
+            "name": "Offering"
+          }
+        },
+        "bootes": {
+          "name": "Boötes",
+          "influence": {
+            "name": "Star Herder"
+          }
+        },
+        "corona_borealis": {
+          "name": "Corona Borealis",
+          "influence": {
+            "name": "Ariadne's Crown"
+          }
+        },
+        "hercules": {
+          "name": "Hercules",
+          "influence": {
+            "name": "Twelve Labors"
+          }
+        },
+        "lyra": {
+          "name": "Lyra",
+          "influence": {
+            "name": "Orpheus's Song"
+          }
+        },
+        "vulpecula": {
+          "name": "Vulpecula",
+          "influence": {
+            "name": "Cunning"
+          }
+        },
+        "cygnus": {
+          "name": "Cygnus",
+          "influence": {
+            "name": "Open Wings"
+          }
+        },
+        "draco": {
+          "name": "Dragon",
+          "influence": {
+            "name": "Ancient Breath"
+          }
+        },
+        "cepheus": {
+          "name": "Cepheus",
+          "influence": {
+            "name": "Royal Decree"
+          }
+        },
+        "lacerta": {
+          "name": "Lizard",
+          "influence": {
+            "name": "Regeneration"
+          }
+        },
+        "cassiopeia": {
+          "name": "Cassiopeia",
+          "influence": {
+            "name": "Vanity"
+          }
+        },
+        "triangulum": {
+          "name": "Triangulum",
+          "influence": {
+            "name": "Trinity"
+          }
+        },
+        "perseus": {
+          "name": "Perseus",
+          "influence": {
+            "name": "Medusa's Gaze"
+          }
+        },
+        "andromeda": {
+          "name": "Andromeda",
+          "influence": {
+            "name": "Chained"
+          }
+        },
+        "pisces": {
+          "name": "Pisces",
+          "influence": {
+            "name": "Calm Waters"
+          }
+        },
+        "cetus": {
+          "name": "Cetus",
+          "influence": {
+            "name": "Abyss"
+          }
+        },
+        "aries": {
+          "name": "Aries",
+          "influence": {
+            "name": "Ram's Charge"
+          }
+        },
+        "taurus": {
+          "name": "Taurus",
+          "influence": {
+            "name": "Bull's Fury"
+          }
+        },
+        "orion": {
+          "name": "Orion",
+          "influence": {
+            "name": "Hunter's Mark"
+          }
+        },
+        "lepus": {
+          "name": "Lepus",
+          "influence": {
+            "name": "Scamper"
+          }
+        },
+        "canis_major": {
+          "name": "Canis Major",
+          "influence": {
+            "name": "Dog Days"
+          }
+        },
+        "monoceros": {
+          "name": "Unicorn",
+          "influence": {
+            "name": "Purifying Horn"
+          }
+        },
+        "gemini": {
+          "name": "Gemini",
+          "influence": {
+            "name": "Castor and Pollux"
+          }
+        },
+        "canis_minor": {
+          "name": "Canis Minor",
+          "influence": {
+            "name": "Watchdog"
+          }
+        },
+        "cancer": {
+          "name": "Cancer",
+          "influence": {
+            "name": "Carapace"
+          }
+        },
+        "leo": {
+          "name": "Leo",
+          "influence": {
+            "name": "King's Roar"
+          }
+        },
+        "sextans": {
+          "name": "Sextans",
+          "influence": {
+            "name": "Right Angle"
+          }
+        },
+        "hydra": {
+          "name": "Hydra",
+          "influence": {
+            "name": "Regrowing Heads"
+          }
+        },
+        "crater": {
+          "name": "Crater",
+          "influence": {
+            "name": "Bitter Cup"
+          }
+        },
+        "corvus": {
+          "name": "Crow",
+          "influence": {
+            "name": "Ill Omen"
+          }
+        },
+        "virgo": {
+          "name": "Virgo",
+          "influence": {
+            "name": "Harvest"
+          }
+        },
+        "libra": {
+          "name": "Libra",
+          "influence": {
+            "name": "Equal Weights"
+          }
+        },
+        "serpens": {
+          "name": "Serpens",
+          "influence": {
+            "name": "Serpent Venom"
+          }
+        },
+        "ophiuchus": {
+          "name": "Ophiuchus",
+          "influence": {
+            "name": "Rod of Asclepius"
+          }
+        },
+        "scorpius": {
+          "name": "Scorpius",
+          "influence": {
+            "name": "Deadly Sting"
+          }
+        },
+        "sagittarius": {
+          "name": "Sagittarius",
+          "influence": {
+            "name": "Second Arrow"
+          }
+        },
+        "scutum": {
+          "name": "Scutum",
+          "influence": {
+            "name": "Aegis"
+          }
+        },
+        "aquila": {
+          "name": "Aquila",
+          "influence": {
+            "name": "Zeus's Bolt"
+          }
+        },
+        "sagitta": {
+          "name": "Sagitta",
+          "influence": {
+            "name": "Straight Flight"
+          }
+        },
+        "delphinus": {
+          "name": "Delphinus",
+          "influence": {
+            "name": "Playfulness"
+          }
+        },
+        "equuleus": {
+          "name": "Equuleus",
+          "influence": {
+            "name": "Kick"
+          }
+        },
+        "capricornus": {
+          "name": "Capricornus",
+          "influence": {
+            "name": "Two Forms"
+          }
+        },
+        "aquarius": {
+          "name": "Aquarius",
+          "influence": {
+            "name": "Flood"
+          }
+        },
+        "pegasus": {
+          "name": "Pegasus",
+          "influence": {
+            "name": "Pegasus's Wings"
+          }
+        },
+        "piscis_austrinus": {
+          "name": "Piscis Austrinus",
+          "influence": {
+            "name": "Last One Standing"
+          }
+        },
+        "sculptor": {
+          "name": "Sculptor",
+          "influence": {
+            "name": "Living Stone"
+          }
+        },
+        "fornax": {
+          "name": "Fornax",
+          "influence": {
+            "name": "Tempering"
+          }
+        },
+        "eridanus": {
+          "name": "Eridanus",
+          "influence": {
+            "name": "Current"
+          }
+        },
+        "caelum": {
+          "name": "Caelum",
+          "influence": {
+            "name": "Engraving"
+          }
+        },
+        "columba": {
+          "name": "Columba",
+          "influence": {
+            "name": "Truce"
+          }
+        },
+        "puppis": {
+          "name": "Puppis",
+          "influence": {
+            "name": "Crew"
+          }
+        },
+        "pyxis": {
+          "name": "Pyxis",
+          "influence": {
+            "name": "Disorientation"
+          }
+        },
+        "antlia": {
+          "name": "Antlia",
+          "influence": {
+            "name": "Vacuum"
+          }
+        },
+        "centaurus": {
+          "name": "Centaurus",
+          "influence": {
+            "name": "Centaur Master"
+          }
+        },
+        "lupus": {
+          "name": "Wolf",
+          "influence": {
+            "name": "Hungry Pack"
+          }
+        },
+        "norma": {
+          "name": "Norma",
+          "influence": {
+            "name": "Fair Measure"
+          }
+        },
+        "ara": {
+          "name": "Ara",
+          "influence": {
+            "name": "Sanguine Pact"
+          }
+        },
+        "corona_australis": {
+          "name": "Corona Australis",
+          "influence": {
+            "name": "Broken Crown"
+          }
+        },
+        "telescopium": {
+          "name": "Telescopium",
+          "influence": {
+            "name": "Lens"
+          }
+        },
+        "microscopium": {
+          "name": "Microscopium",
+          "influence": {
+            "name": "Contagion"
+          }
+        },
+        "grus": {
+          "name": "Grus",
+          "influence": {
+            "name": "Vigil"
+          }
+        },
+        "phoenix": {
+          "name": "Phoenix",
+          "influence": {
+            "name": "From the Ashes"
+          }
+        },
+        "horologium": {
+          "name": "Horologium",
+          "influence": {
+            "name": "Tick-Tock"
+          }
+        },
+        "reticulum": {
+          "name": "Reticulum",
+          "influence": {
+            "name": "Aim"
+          }
+        },
+        "dorado": {
+          "name": "Dorado",
+          "influence": {
+            "name": "Magellanic Cloud"
+          }
+        },
+        "pictor": {
+          "name": "Pictor",
+          "influence": {
+            "name": "Palette"
+          }
+        },
+        "carina": {
+          "name": "Carina",
+          "influence": {
+            "name": "Sturdy Hull"
+          }
+        },
+        "vela": {
+          "name": "Vela",
+          "influence": {
+            "name": "Fair Wind"
+          }
+        },
+        "volans": {
+          "name": "Volans",
+          "influence": {
+            "name": "Leap"
+          }
+        },
+        "mensa": {
+          "name": "Mensa",
+          "influence": {
+            "name": "Bedrock"
+          }
+        },
+        "hydrus": {
+          "name": "Hydrus",
+          "influence": {
+            "name": "Strike"
+          }
+        },
+        "tucana": {
+          "name": "Tucana",
+          "influence": {
+            "name": "Racket"
+          }
+        },
+        "indus": {
+          "name": "Indus",
+          "influence": {
+            "name": "Ambush"
+          }
+        },
+        "pavo": {
+          "name": "Pavo",
+          "influence": {
+            "name": "Display"
+          }
+        },
+        "octans": {
+          "name": "Octans",
+          "influence": {
+            "name": "Unshakable"
+          }
+        },
+        "apus": {
+          "name": "Apus",
+          "influence": {
+            "name": "Plumage"
+          }
+        },
+        "triangulum_australe": {
+          "name": "Triangulum Australe",
+          "influence": {
+            "name": "Three Points"
+          }
+        },
+        "circinus": {
+          "name": "Circinus",
+          "influence": {
+            "name": "Rotation"
+          }
+        },
+        "chamaeleon": {
+          "name": "Chameleon",
+          "influence": {
+            "name": "Camouflage"
+          }
+        },
+        "musca": {
+          "name": "Musca",
+          "influence": {
+            "name": "Swarm"
+          }
+        },
+        "crux": {
+          "name": "Crux",
+          "influence": {
+            "name": "Southern Guide"
+          }
+        }
+      }
+    },
+    "shop": {
+      "mana_flask": {
+        "name": "Mana Flask"
+      },
+      "mana_jug": {
+        "name": "Mana Jug"
+      },
+      "scroll": {
+        "name": "Alchemical Transmutation"
+      },
+      "scrolls_10": {
+        "name": "Bundle of Transmutations"
+      },
+      "reappraisal_gem": {
+        "name": "Reappraisal Gem"
+      },
+      "collection_expansion": {
+        "name": "Collection Expansion"
+      },
+      "rename": {
+        "name": "Name change"
+      }
+    },
+    "stages": {
+      "0": {
+        "name": "Menhir Road"
+      },
+      "1": {
+        "name": "Fallen Stones"
+      },
+      "2": {
+        "name": "Shepherds' Trail"
+      },
+      "3": {
+        "name": "Howls in the Valley"
+      },
+      "4": {
+        "name": "Old Bridge"
+      },
+      "5": {
+        "name": "Still Marsh"
+      },
+      "6": {
+        "name": "Burned Camp"
+      },
+      "7": {
+        "name": "Cracked Menhir"
+      },
+      "8": {
+        "name": "Wolves' Den"
+      },
+      "9": {
+        "name": "Troll Hill"
+      },
+      "10": {
+        "name": "Unmarked Road"
+      },
+      "11": {
+        "name": "Abandoned Mill"
+      },
+      "12": {
+        "name": "River Ford"
+      },
+      "13": {
+        "name": "Menhir Graveyard"
+      },
+      "14": {
+        "name": "Ash Nest"
+      },
+      "15": {
+        "name": "Stone Gate"
+      },
+      "16": {
+        "name": "Forest of Chains"
+      },
+      "17": {
+        "name": "The Master's Guard"
+      },
+      "18": {
+        "name": "Hall of Links"
+      },
+      "19": {
+        "name": "The Chain Master"
+      },
+      "20": {
+        "name": "Sunken Pier"
+      },
+      "21": {
+        "name": "Anchor Beach"
+      },
+      "22": {
+        "name": "Crow Reef"
+      },
+      "23": {
+        "name": "Dark Lighthouse"
+      },
+      "24": {
+        "name": "Gargoyle Isle"
+      },
+      "25": {
+        "name": "Misty Strait"
+      },
+      "26": {
+        "name": "Tide Grotto"
+      },
+      "27": {
+        "name": "Old Shipwreck"
+      },
+      "28": {
+        "name": "Fishers' Village"
+      },
+      "29": {
+        "name": "Flooded Temple"
+      },
+      "30": {
+        "name": "Shadow Mangrove"
+      },
+      "31": {
+        "name": "Pixie Islet"
+      },
+      "32": {
+        "name": "Coral Bridge"
+      },
+      "33": {
+        "name": "Siren Bay"
+      },
+      "34": {
+        "name": "Tide Tower"
+      },
+      "35": {
+        "name": "Shallow Abyss"
+      },
+      "36": {
+        "name": "Drowned Ruins"
+      },
+      "37": {
+        "name": "Whirlpool"
+      },
+      "38": {
+        "name": "Deep Lair"
+      },
+      "39": {
+        "name": "The Mother Serpent"
+      },
+      "40": {
+        "name": "Citadel Gates"
+      },
+      "41": {
+        "name": "Seal Courtyard"
+      },
+      "42": {
+        "name": "Cracked Wall"
+      },
+      "43": {
+        "name": "Hushed Library"
+      },
+      "44": {
+        "name": "Voiceless Chapel"
+      },
+      "45": {
+        "name": "Hall of Echoes"
+      },
+      "46": {
+        "name": "Heralds' Hall"
+      },
+      "47": {
+        "name": "Broken Stairway"
+      },
+      "48": {
+        "name": "Empty Throne"
+      },
+      "49": {
+        "name": "The Herald of Silence"
+      }
+    },
+    "summons": {
+      "angel_family": {
+        "base_name": "Angel",
+        "name": "Angels",
+        "variations": {
+          "fire": {
+            "name": "Fire Angel",
+            "awakening": {
+              "name": "Seraphon"
+            },
+            "skills": {
+              "0": {
+                "name": "Flaming Sword"
+              },
+              "1": {
+                "name": "Burning Judgment"
+              },
+              "2": {
+                "name": "Celestial Wrath"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Angel",
+            "awakening": {
+              "name": "Ondiel"
+            },
+            "skills": {
+              "0": {
+                "name": "Purifying Touch"
+              },
+              "1": {
+                "name": "Celestial Rain"
+              },
+              "2": {
+                "name": "Guardian Wings"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Angel",
+            "awakening": {
+              "name": "Aeriel"
+            },
+            "skills": {
+              "0": {
+                "name": "Wind Lance"
+              },
+              "1": {
+                "name": "Swift Wings"
+              },
+              "2": {
+                "name": "Guardian Wings"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Angel",
+            "awakening": {
+              "name": "Luminael"
+            },
+            "skills": {
+              "0": {
+                "name": "Divine Light"
+              },
+              "1": {
+                "name": "Divine Grace"
+              },
+              "2": {
+                "name": "Holy Halo"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Angel",
+            "awakening": {
+              "name": "Morvael"
+            },
+            "skills": {
+              "0": {
+                "name": "Fallen Blade"
+              },
+              "1": {
+                "name": "Black Wings"
+              },
+              "2": {
+                "name": "The Fall"
+              }
+            }
+          }
+        }
+      },
+      "archer_family": {
+        "base_name": "Archer",
+        "name": "Archers",
+        "variations": {
+          "fire": {
+            "name": "Fire Archer",
+            "awakening": {
+              "skill": {
+                "name": "Explosive Arrow"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Flaming Arrow"
+              },
+              "1": {
+                "name": "Arrow Rain"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Archer",
+            "awakening": {
+              "skill": {
+                "name": "Purifying Arrow"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Ice Arrow"
+              },
+              "1": {
+                "name": "Tracking Arrow"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Archer",
+            "awakening": {
+              "skill": {
+                "name": "Eagle Eye"
+              }
+            },
+            "skills": {
+              "1": {
+                "name": "Arrow Volley"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Archer",
+            "awakening": {
+              "skill": {
+                "name": "Holy Arrow"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Light Arrow"
+              },
+              "1": {
+                "name": "Flare"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Archer",
+            "awakening": {
+              "skill": {
+                "name": "Patient Hunter"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Poisoned Arrow"
+              },
+              "1": {
+                "name": "Silencing Shot"
+              }
+            }
+          }
+        }
+      },
+      "assassin_family": {
+        "base_name": "Assassin",
+        "name": "Assassins",
+        "variations": {
+          "fire": {
+            "name": "Fire Assassin",
+            "skills": {
+              "0": {
+                "name": "Burning Dagger"
+              },
+              "1": {
+                "name": "Fatal Blow"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Assassin",
+            "awakening": {
+              "skill": {
+                "name": "Liquid Shadow"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Cold Blade"
+              },
+              "1": {
+                "name": "Poison"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Assassin",
+            "awakening": {
+              "name": "Wraith",
+              "skill": {
+                "name": "Killer Instinct"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Silent Cut"
+              },
+              "1": {
+                "name": "Shadow Step"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Assassin",
+            "awakening": {
+              "skill": {
+                "name": "Holy Execution"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Dazzling Blade"
+              },
+              "1": {
+                "name": "Mark the Target"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Assassin",
+            "awakening": {
+              "skill": {
+                "name": "Vanish"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Shadow Dagger"
+              },
+              "1": {
+                "name": "Strike from the Shadows"
+              }
+            }
+          }
+        }
+      },
+      "bandit_family": {
+        "base_name": "Bandit",
+        "name": "Bandits",
+        "variations": {
+          "fire": {
+            "name": "Fire Bandit"
+          },
+          "water": {
+            "name": "Water Bandit",
+            "awakening": {
+              "skill": {
+                "name": "Smoke Screen"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Dirty Blow"
+              },
+              "1": {
+                "name": "Smoke Bomb"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Bandit",
+            "awakening": {
+              "skill": {
+                "name": "Ambush"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Quick Cut"
+              },
+              "1": {
+                "name": "Ransack"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Bandit",
+            "awakening": {
+              "name": "Robin",
+              "skill": {
+                "name": "Grand Heist"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Blinding Coin"
+              },
+              "1": {
+                "name": "Share the Loot"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Bandit",
+            "awakening": {
+              "skill": {
+                "name": "Ambush"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Cheap Trick"
+              },
+              "1": {
+                "name": "Vanish"
+              }
+            }
+          }
+        }
+      },
+      "bird_family": {
+        "base_name": "Bird",
+        "name": "Birds",
+        "variations": {
+          "neutral": {
+            "name": "Bird",
+            "awakening": {
+              "skill": {
+                "name": "Evasive Flight"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Quick Peck"
+              },
+              "1": {
+                "name": "Tailwind"
+              }
+            }
+          },
+          "fire": {
+            "name": "Fire Bird",
+            "awakening": {
+              "skill": {
+                "name": "Evasive Flight"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Hot Peck"
+              },
+              "1": {
+                "name": "Fire Dive"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Bird",
+            "awakening": {
+              "skill": {
+                "name": "Rain Dance"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Splash"
+              },
+              "1": {
+                "name": "Preen"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Bird",
+            "awakening": {
+              "skill": {
+                "name": "Evasive Flight"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Quick Peck"
+              },
+              "1": {
+                "name": "Tailwind"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Bird",
+            "awakening": {
+              "skill": {
+                "name": "Sunrise"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Glare"
+              },
+              "1": {
+                "name": "Morning Song"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Bird",
+            "awakening": {
+              "skill": {
+                "name": "Evasive Flight"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Shadow Peck"
+              },
+              "1": {
+                "name": "Night Screech"
+              }
+            }
+          }
+        }
+      },
+      "carnivorous_plant_family": {
+        "base_name": "Carnivorous Plant",
+        "name": "Carnivorous Plants",
+        "variations": {
+          "neutral": {
+            "name": "Carnivorous Plant",
+            "awakening": {
+              "skill": {
+                "name": "Plant Lunge"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Vine Whip"
+              },
+              "1": {
+                "name": "Windborne Pollen"
+              }
+            }
+          },
+          "fire": {
+            "name": "Fire Carnivorous Plant",
+            "awakening": {
+              "skill": {
+                "name": "Acid Sap"
+              }
+            },
+            "skills": {
+              "1": {
+                "name": "Devour"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Carnivorous Plant",
+            "awakening": {
+              "skill": {
+                "name": "Thirsty Roots"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Vine"
+              },
+              "1": {
+                "name": "Nectar Trap"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Carnivorous Plant",
+            "awakening": {
+              "skill": {
+                "name": "Plant Lunge"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Vine Whip"
+              },
+              "1": {
+                "name": "Windborne Pollen"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Carnivorous Plant",
+            "awakening": {
+              "skill": {
+                "name": "Photosynthesis"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Petal"
+              },
+              "1": {
+                "name": "Sweet Nectar"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Carnivorous Plant",
+            "awakening": {
+              "skill": {
+                "name": "Digestion"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Shadow Fangs"
+              },
+              "1": {
+                "name": "Swallow"
+              }
+            }
+          }
+        }
+      },
+      "crow_family": {
+        "base_name": "Crow",
+        "name": "Crows",
+        "variations": {
+          "fire": {
+            "name": "Fire Crow"
+          },
+          "water": {
+            "name": "Water Crow"
+          },
+          "wind": {
+            "name": "Wind Crow"
+          },
+          "light": {
+            "name": "Light Crow"
+          },
+          "dark": {
+            "name": "Dark Crow"
+          }
+        }
+      },
+      "dolphin_family": {
+        "base_name": "Dolphin",
+        "name": "Dolphins",
+        "variations": {
+          "fire": {
+            "name": "Fire Dolphin",
+            "awakening": {
+              "name": "Awakened Fire Dolphin"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Dolphin",
+            "awakening": {
+              "name": "Awakened Water Dolphin"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Dolphin",
+            "awakening": {
+              "name": "Awakened Wind Dolphin"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Dolphin",
+            "awakening": {
+              "name": "Awakened Light Dolphin"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Dolphin",
+            "awakening": {
+              "name": "Awakened Dark Dolphin"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          }
+        }
+      },
+      "dragon_family": {
+        "base_name": "Dragon",
+        "name": "Dragons",
+        "variations": {
+          "fire": {
+            "name": "Fire Dragon",
+            "awakening": {
+              "name": "Pyrrhax"
+            },
+            "skills": {
+              "0": {
+                "name": "Claw"
+              },
+              "1": {
+                "name": "Breath"
+              },
+              "2": {
+                "name": "Dragonfire"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Dragon",
+            "awakening": {
+              "name": "Maelstra"
+            },
+            "skills": {
+              "0": {
+                "name": "Tidal Claw"
+              },
+              "1": {
+                "name": "Deluge"
+              },
+              "2": {
+                "name": "Maelstrom"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Dragon",
+            "awakening": {
+              "name": "Zephyrax"
+            },
+            "skills": {
+              "0": {
+                "name": "Gust Claw"
+              },
+              "1": {
+                "name": "Cyclone"
+              },
+              "2": {
+                "name": "Tempest"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Dragon",
+            "awakening": {
+              "name": "Aurelion"
+            },
+            "skills": {
+              "0": {
+                "name": "Radiant Claw"
+              },
+              "1": {
+                "name": "Holy Breath"
+              },
+              "2": {
+                "name": "Dragonfire"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Dragon",
+            "awakening": {
+              "name": "Umbrax"
+            },
+            "skills": {
+              "0": {
+                "name": "Shadow Claw"
+              },
+              "1": {
+                "name": "Void Breath"
+              },
+              "2": {
+                "name": "Dragonfire"
+              }
+            }
+          }
+        }
+      },
+      "druid_family": {
+        "base_name": "Druid",
+        "name": "Druids",
+        "variations": {
+          "fire": {
+            "name": "Fire Druid",
+            "skills": {
+              "0": {
+                "name": "Maul"
+              },
+              "1": {
+                "name": "Wildfire"
+              },
+              "2": {
+                "name": "Thornhide"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Druid",
+            "skills": {
+              "0": {
+                "name": "Soothing Rain"
+              },
+              "1": {
+                "name": "Rejuvenate"
+              },
+              "2": {
+                "name": "Spring Tide"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Druid",
+            "skills": {
+              "0": {
+                "name": "Thorn Lash"
+              },
+              "1": {
+                "name": "Entangling Roots"
+              },
+              "2": {
+                "name": "Thornhide"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Druid",
+            "skills": {
+              "0": {
+                "name": "Antler Charge"
+              },
+              "1": {
+                "name": "Sacred Grove"
+              },
+              "2": {
+                "name": "Thornhide"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Druid",
+            "skills": {
+              "0": {
+                "name": "Rot Bite"
+              },
+              "1": {
+                "name": "Plague Spores"
+              },
+              "2": {
+                "name": "Wither"
+              }
+            }
+          }
+        }
+      },
+      "dryad_family": {
+        "base_name": "Dryad",
+        "name": "Dryads",
+        "variations": {
+          "fire": {
+            "name": "Fire Dryad",
+            "skills": {
+              "0": {
+                "name": "Burning Thorn"
+              },
+              "1": {
+                "name": "Glowing Pollen"
+              },
+              "2": {
+                "name": "Boiling Sap"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Dryad",
+            "skills": {
+              "0": {
+                "name": "Sap Drop"
+              },
+              "1": {
+                "name": "Living Dew"
+              },
+              "2": {
+                "name": "Deep Roots"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Dryad",
+            "skills": {
+              "0": {
+                "name": "Cutting Leaf"
+              },
+              "1": {
+                "name": "Sleeping Pollen"
+              },
+              "2": {
+                "name": "Forest Breeze"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Dryad",
+            "skills": {
+              "0": {
+                "name": "Blessed Branch"
+              },
+              "1": {
+                "name": "Forest Embrace"
+              },
+              "2": {
+                "name": "Living Bark"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Dryad",
+            "skills": {
+              "0": {
+                "name": "Venom Thorn"
+              },
+              "1": {
+                "name": "Withered Garden"
+              },
+              "2": {
+                "name": "Harvest"
+              }
+            }
+          }
+        }
+      },
+      "fox_family": {
+        "base_name": "Fox",
+        "name": "Foxes",
+        "variations": {
+          "fire": {
+            "name": "Fire Fox",
+            "awakening": {
+              "name": "Awakened Fire Fox"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Fox",
+            "awakening": {
+              "name": "Awakened Water Fox"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Fox",
+            "awakening": {
+              "name": "Awakened Wind Fox"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Fox",
+            "awakening": {
+              "name": "Awakened Light Fox"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Fox",
+            "awakening": {
+              "name": "Awakened Dark Fox"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          }
+        }
+      },
+      "gargoyle_family": {
+        "base_name": "Gargoyle",
+        "name": "Gargoyles",
+        "variations": {
+          "fire": {
+            "name": "Fire Gargoyle",
+            "skills": {
+              "0": {
+                "name": "Rending Claw"
+              },
+              "1": {
+                "name": "Molten Dive"
+              },
+              "2": {
+                "name": "Stone Gaze"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Gargoyle",
+            "skills": {
+              "0": {
+                "name": "Stone Fist"
+              },
+              "1": {
+                "name": "Rain Spout"
+              },
+              "2": {
+                "name": "Stone Gaze"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Gargoyle",
+            "skills": {
+              "0": {
+                "name": "Swoop"
+              },
+              "1": {
+                "name": "Dive Bomb"
+              },
+              "2": {
+                "name": "Tempest Wings"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Gargoyle",
+            "skills": {
+              "0": {
+                "name": "Blessed Stone"
+              },
+              "1": {
+                "name": "Cathedral Ward"
+              },
+              "2": {
+                "name": "Stone Gaze"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Gargoyle",
+            "skills": {
+              "0": {
+                "name": "Grim Talon"
+              },
+              "1": {
+                "name": "Dread Gaze"
+              },
+              "2": {
+                "name": "Crumble"
+              }
+            }
+          }
+        }
+      },
+      "goat_family": {
+        "base_name": "Goat",
+        "name": "Goats",
+        "variations": {
+          "fire": {
+            "name": "Fire Goat",
+            "awakening": {
+              "name": "Awakened Fire Goat"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Goat",
+            "awakening": {
+              "name": "Awakened Water Goat"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Goat",
+            "awakening": {
+              "name": "Awakened Wind Goat"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Goat",
+            "awakening": {
+              "name": "Awakened Light Goat"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Goat",
+            "awakening": {
+              "name": "Awakened Dark Goat"
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              }
+            }
+          }
+        }
+      },
+      "goblin_family": {
+        "base_name": "Goblin",
+        "name": "Goblins",
+        "variations": {
+          "fire": {
+            "name": "Fire Goblin",
+            "awakening": {
+              "skill": {
+                "name": "Cheap Shot"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Torch Stab"
+              },
+              "1": {
+                "name": "Firebomb"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Goblin",
+            "awakening": {
+              "skill": {
+                "name": "Drowning Snare"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Net Throw"
+              },
+              "1": {
+                "name": "Soaking Trap"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Goblin",
+            "awakening": {
+              "skill": {
+                "name": "Cheap Shot"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Quick Stab"
+              },
+              "1": {
+                "name": "Knife Flurry"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Goblin",
+            "awakening": {
+              "name": "Glimmik",
+              "skill": {
+                "name": "Golden Charm"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Shiny Distraction"
+              },
+              "1": {
+                "name": "Lucky Charm"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Goblin",
+            "awakening": {
+              "skill": {
+                "name": "Cheap Shot"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Backstab"
+              },
+              "1": {
+                "name": "Poisoned Blade"
+              }
+            }
+          }
+        }
+      },
+      "gorilla_family": {
+        "base_name": "Gorilla",
+        "name": "Gorillas",
+        "variations": {
+          "fire": {
+            "name": "Fire Gorilla",
+            "skills": {
+              "0": {
+                "name": "Burning Punch"
+              },
+              "1": {
+                "name": "Hammer Blow"
+              },
+              "2": {
+                "name": "Primal Fury"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Gorilla",
+            "skills": {
+              "0": {
+                "name": "Heavy Slap"
+              },
+              "1": {
+                "name": "Iron Chest"
+              },
+              "2": {
+                "name": "Thick Hide"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Gorilla",
+            "skills": {
+              "0": {
+                "name": "Branch Swing"
+              },
+              "1": {
+                "name": "Roar"
+              },
+              "2": {
+                "name": "Chest Pound"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Gorilla",
+            "skills": {
+              "0": {
+                "name": "Guarding Punch"
+              },
+              "1": {
+                "name": "Guard the Troop"
+              },
+              "2": {
+                "name": "Troop Leader"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Gorilla",
+            "skills": {
+              "0": {
+                "name": "Grapple"
+              },
+              "1": {
+                "name": "Bone Crusher"
+              },
+              "2": {
+                "name": "Primal Fury"
+              }
+            }
+          }
+        }
+      },
+      "imp_family": {
+        "base_name": "Imp",
+        "variations": {
+          "fire": {
+            "name": "Fire Imp",
+            "awakening": {
+              "skill": {
+                "name": "Coward's Flight"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Imp",
+            "awakening": {
+              "skill": {
+                "name": "Deep Thirst"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Frost Nip"
+              },
+              "1": {
+                "name": "Seal's Thirst"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Imp",
+            "awakening": {
+              "skill": {
+                "name": "Coward's Flight"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Spin"
+              },
+              "1": {
+                "name": "Whirlpool"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Imp",
+            "awakening": {
+              "skill": {
+                "name": "Radiant Omen"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Flash"
+              },
+              "1": {
+                "name": "Foresee"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Imp",
+            "awakening": {
+              "skill": {
+                "name": "Coward's Flight"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Shadow Strike"
+              },
+              "1": {
+                "name": "Vanish into the Seal"
+              }
+            }
+          }
+        }
+      },
+      "knight_family": {
+        "base_name": "Knight",
+        "variations": {
+          "fire": {
+            "name": "Fire Knight",
+            "skills": {
+              "0": {
+                "name": "Burning Blade"
+              },
+              "1": {
+                "name": "Flaming Charge"
+              },
+              "2": {
+                "name": "Blazing Oath"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Knight",
+            "skills": {
+              "0": {
+                "name": "Shield Bash"
+              },
+              "1": {
+                "name": "Tide Wall"
+              },
+              "2": {
+                "name": "Last Vow"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Knight",
+            "skills": {
+              "0": {
+                "name": "Swift Thrust"
+              },
+              "1": {
+                "name": "War Horn"
+              },
+              "2": {
+                "name": "Gale Banner"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Knight",
+            "skills": {
+              "0": {
+                "name": "Oath"
+              },
+              "1": {
+                "name": "Shield Vow"
+              },
+              "2": {
+                "name": "Last Vow"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Knight",
+            "skills": {
+              "0": {
+                "name": "Hungry Blade"
+              },
+              "1": {
+                "name": "Dark Oath"
+              },
+              "2": {
+                "name": "Last Vow"
+              }
+            }
+          }
+        }
+      },
+      "lich_family": {
+        "base_name": "Lich",
+        "name": "Liches",
+        "variations": {
+          "fire": {
+            "name": "Fire Lich",
+            "skills": {
+              "0": {
+                "name": "Ghost Flame"
+              },
+              "1": {
+                "name": "Necrotic Fire"
+              },
+              "2": {
+                "name": "Phylactery"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Lich",
+            "skills": {
+              "0": {
+                "name": "Icy Touch"
+              },
+              "1": {
+                "name": "Deep Silence"
+              },
+              "2": {
+                "name": "Phylactery"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Lich",
+            "skills": {
+              "0": {
+                "name": "Ghost Breath"
+              },
+              "1": {
+                "name": "Soul Steal"
+              },
+              "2": {
+                "name": "Soul Gale"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Lich",
+            "skills": {
+              "0": {
+                "name": "Pale Ray"
+              },
+              "1": {
+                "name": "Seal of Eternity"
+              },
+              "2": {
+                "name": "Phylactery"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Lich",
+            "skills": {
+              "0": {
+                "name": "Deathly Touch"
+              },
+              "1": {
+                "name": "Soul Drain"
+              },
+              "2": {
+                "name": "Army of the Dead"
+              }
+            }
+          }
+        }
+      },
+      "lizard_family": {
+        "base_name": "Lizard",
+        "name": "Lizards",
+        "variations": {
+          "neutral": {
+            "name": "Lizard",
+            "awakening": {
+              "skill": {
+                "name": "Tail Whip"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Quick Scratch"
+              },
+              "1": {
+                "name": "Dash"
+              }
+            }
+          },
+          "fire": {
+            "name": "Fire Lizard",
+            "awakening": {
+              "skill": {
+                "name": "New Tail"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Hot Bite"
+              },
+              "1": {
+                "name": "Fire Spit"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Lizard",
+            "awakening": {
+              "skill": {
+                "name": "New Tail"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Lick"
+              },
+              "1": {
+                "name": "Cold Dive"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Lizard",
+            "awakening": {
+              "skill": {
+                "name": "Tail Whip"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Quick Scratch"
+              },
+              "1": {
+                "name": "Dash"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Lizard",
+            "awakening": {
+              "skill": {
+                "name": "Shed Skin"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Shiny Scale"
+              },
+              "1": {
+                "name": "Sunbathe"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Lizard",
+            "awakening": {
+              "skill": {
+                "name": "Hidden Strike"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Acid Tongue"
+              },
+              "1": {
+                "name": "Camouflage"
+              }
+            }
+          }
+        }
+      },
+      "medusa_family": {
+        "base_name": "Medusa",
+        "name": "Medusas",
+        "variations": {
+          "fire": {
+            "name": "Fire Medusa",
+            "awakening": {
+              "skill": {
+                "name": "Serpent Venom"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Serpent Arrow"
+              },
+              "1": {
+                "name": "Snake Hair"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Medusa",
+            "awakening": {
+              "name": "Nereid",
+              "skill": {
+                "name": "Petrify"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Icy Gaze"
+              },
+              "1": {
+                "name": "Petrifying Gaze"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Medusa",
+            "awakening": {
+              "name": "Sibyl",
+              "skill": {
+                "name": "Smooth Scales"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Strike"
+              },
+              "1": {
+                "name": "Serpent Dance"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Medusa",
+            "awakening": {
+              "skill": {
+                "name": "Serene Gaze"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Reflection"
+              },
+              "1": {
+                "name": "Mirror Shield"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Medusa",
+            "awakening": {
+              "skill": {
+                "name": "Fatal Gaze"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Cursed Gaze"
+              },
+              "1": {
+                "name": "Petrification"
+              }
+            }
+          }
+        }
+      },
+      "miner_family": {
+        "base_name": "Miner",
+        "name": "Miners",
+        "variations": {
+          "fire": {
+            "name": "Fire Miner",
+            "skills": {
+              "0": {
+                "name": "Runic Pickaxe"
+              },
+              "1": {
+                "name": "Blast the Vein"
+              },
+              "2": {
+                "name": "Deep Vein"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Miner",
+            "skills": {
+              "0": {
+                "name": "Soaked Shovel"
+              },
+              "1": {
+                "name": "Shore the Tunnel"
+              },
+              "2": {
+                "name": "Ore Sense"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Miner",
+            "skills": {
+              "0": {
+                "name": "Double Pick"
+              },
+              "1": {
+                "name": "Dynamite"
+              },
+              "2": {
+                "name": "Ore Sense"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Miner",
+            "skills": {
+              "0": {
+                "name": "Oil Lamp"
+              },
+              "1": {
+                "name": "Light in the Tunnel"
+              },
+              "2": {
+                "name": "Healing Crystal"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Miner",
+            "skills": {
+              "0": {
+                "name": "Shadow Pickaxe"
+              },
+              "1": {
+                "name": "Cave-In"
+              },
+              "2": {
+                "name": "Ore Sense"
+              }
+            }
+          }
+        }
+      },
+      "minotaur_family": {
+        "base_name": "Minotaur",
+        "name": "Minotaurs",
+        "variations": {
+          "fire": {
+            "name": "Fire Minotaur",
+            "awakening": {
+              "skill": {
+                "name": "Labyrinth Fury"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Burning Axe"
+              },
+              "1": {
+                "name": "Bull Charge"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Minotaur",
+            "awakening": {
+              "skill": {
+                "name": "Stone Hoof"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Headbutt"
+              },
+              "1": {
+                "name": "Bellow"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Minotaur",
+            "awakening": {
+              "skill": {
+                "name": "Labyrinth"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Gore"
+              },
+              "1": {
+                "name": "Stampede"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Minotaur",
+            "awakening": {
+              "skill": {
+                "name": "Labyrinth Guard"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Blessed Axe"
+              },
+              "1": {
+                "name": "War Cry"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Minotaur",
+            "awakening": {
+              "skill": {
+                "name": "Blood Scent"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Shadow Axe"
+              },
+              "1": {
+                "name": "Brutal Gore"
+              }
+            }
+          }
+        }
+      },
+      "monk_family": {
+        "base_name": "Monk",
+        "name": "Monks",
+        "variations": {
+          "fire": {
+            "name": "Fire Monk",
+            "skills": {
+              "0": {
+                "name": "Flaming Fist"
+              },
+              "1": {
+                "name": "Hundred Blows"
+              },
+              "2": {
+                "name": "Burning Chi"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Monk",
+            "skills": {
+              "0": {
+                "name": "Flowing Palm"
+              },
+              "1": {
+                "name": "Tide Stance"
+              },
+              "2": {
+                "name": "Undertow"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Monk",
+            "skills": {
+              "0": {
+                "name": "Spinning Kick"
+              },
+              "1": {
+                "name": "Wind Step"
+              },
+              "2": {
+                "name": "Thousand Fists"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Monk",
+            "skills": {
+              "0": {
+                "name": "Lit Palm"
+              },
+              "1": {
+                "name": "Meditation"
+              },
+              "2": {
+                "name": "Balance"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Monk",
+            "skills": {
+              "0": {
+                "name": "Pressure Strike"
+              },
+              "1": {
+                "name": "Touch of Death"
+              },
+              "2": {
+                "name": "Vital Points"
+              }
+            }
+          }
+        }
+      },
+      "mummy_family": {
+        "base_name": "Mummy",
+        "name": "Mummies",
+        "variations": {
+          "fire": {
+            "name": "Fire Mummy",
+            "skills": {
+              "0": {
+                "name": "Burning Wrap"
+              },
+              "1": {
+                "name": "Sarcophagus Curse"
+              },
+              "2": {
+                "name": "Undead"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Mummy",
+            "skills": {
+              "0": {
+                "name": "Bandage"
+              },
+              "1": {
+                "name": "Binding Wraps"
+              },
+              "2": {
+                "name": "Embalm"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Mummy",
+            "skills": {
+              "0": {
+                "name": "Sand in the Eyes"
+              },
+              "1": {
+                "name": "Desert Storm"
+              },
+              "2": {
+                "name": "Ancient Curse"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Mummy",
+            "skills": {
+              "0": {
+                "name": "Sun Seal"
+              },
+              "1": {
+                "name": "Rite of Passage"
+              },
+              "2": {
+                "name": "Sun Blessing"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Mummy",
+            "skills": {
+              "0": {
+                "name": "Plague Touch"
+              },
+              "1": {
+                "name": "Ten Plagues"
+              },
+              "2": {
+                "name": "Undead"
+              }
+            }
+          }
+        }
+      },
+      "mushroom_family": {
+        "base_name": "Mushroom",
+        "name": "Mushrooms",
+        "variations": {
+          "neutral": {
+            "name": "Mushroom",
+            "awakening": {
+              "skill": {
+                "name": "Toxic Cloud"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Spore Puff"
+              },
+              "1": {
+                "name": "Sleeping Dust"
+              }
+            }
+          },
+          "fire": {
+            "name": "Fire Mushroom",
+            "awakening": {
+              "skill": {
+                "name": "Spores"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Burning Spore"
+              },
+              "1": {
+                "name": "Spore Cloud"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Mushroom",
+            "awakening": {
+              "skill": {
+                "name": "Mushroom Ring"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Damp Spore"
+              },
+              "1": {
+                "name": "Mushroom Tea"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Mushroom",
+            "awakening": {
+              "skill": {
+                "name": "Toxic Cloud"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Spore Puff"
+              },
+              "1": {
+                "name": "Sleeping Dust"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Mushroom",
+            "awakening": {
+              "skill": {
+                "name": "Mycelium"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Fungal Glow"
+              },
+              "1": {
+                "name": "Healing Spores"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Mushroom",
+            "awakening": {
+              "skill": {
+                "name": "Mildew"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Rotten Spore"
+              },
+              "1": {
+                "name": "Parasitic Fungus"
+              }
+            }
+          }
+        }
+      },
+      "paladin_family": {
+        "base_name": "Paladin",
+        "name": "Paladins",
+        "variations": {
+          "fire": {
+            "name": "Fire Paladin",
+            "skills": {
+              "0": {
+                "name": "Smite"
+              },
+              "1": {
+                "name": "Crusade"
+              },
+              "2": {
+                "name": "Devotion"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Paladin",
+            "awakening": {
+              "name": "Thalassar"
+            },
+            "skills": {
+              "0": {
+                "name": "Tide Hammer"
+              },
+              "1": {
+                "name": "Bastion"
+              },
+              "2": {
+                "name": "Tidal Aegis"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Paladin",
+            "awakening": {
+              "name": "Windric"
+            },
+            "skills": {
+              "0": {
+                "name": "Gale Strike"
+              },
+              "1": {
+                "name": "Rallying Wind"
+              },
+              "2": {
+                "name": "Devotion"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Paladin",
+            "awakening": {
+              "name": "Seraphiel"
+            },
+            "skills": {
+              "0": {
+                "name": "Holy Strike"
+              },
+              "1": {
+                "name": "Lay on Hands"
+              },
+              "2": {
+                "name": "Devotion"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Paladin",
+            "awakening": {
+              "name": "Mordain"
+            },
+            "skills": {
+              "0": {
+                "name": "Dread Blade"
+              },
+              "1": {
+                "name": "Grim Challenge"
+              },
+              "2": {
+                "name": "Blood Oath"
+              }
+            }
+          }
+        }
+      },
+      "phoenix_family": {
+        "base_name": "Phoenix",
+        "name": "Phoenix",
+        "variations": {
+          "fire": {
+            "name": "Fire Phoenix",
+            "awakening": {
+              "name": "Ignara"
+            },
+            "skills": {
+              "0": {
+                "name": "Spiral Flame"
+              },
+              "1": {
+                "name": "Crimson Flight"
+              },
+              "2": {
+                "name": "From the Ashes"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Phoenix",
+            "awakening": {
+              "name": "Nereia"
+            },
+            "skills": {
+              "0": {
+                "name": "Dew"
+              },
+              "1": {
+                "name": "Renewing Rain"
+              },
+              "2": {
+                "name": "Tide of Renewal"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Phoenix",
+            "awakening": {
+              "name": "Zephyra"
+            },
+            "skills": {
+              "0": {
+                "name": "Ember Dive"
+              },
+              "1": {
+                "name": "Feather Storm"
+              },
+              "2": {
+                "name": "Hurricane of Feathers"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Phoenix",
+            "awakening": {
+              "name": "Solaria"
+            },
+            "skills": {
+              "0": {
+                "name": "Aurora"
+              },
+              "1": {
+                "name": "Solar Crown"
+              },
+              "2": {
+                "name": "From the Ashes"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Phoenix",
+            "awakening": {
+              "name": "Nycteria"
+            },
+            "skills": {
+              "0": {
+                "name": "Veiled Claw"
+              },
+              "1": {
+                "name": "Eclipse"
+              },
+              "2": {
+                "name": "From the Ashes"
+              }
+            }
+          }
+        }
+      },
+      "pirate_family": {
+        "base_name": "Pirate",
+        "name": "Pirates",
+        "variations": {
+          "fire": {
+            "name": "Fire Pirate",
+            "skills": {
+              "0": {
+                "name": "Pistol Shot"
+              },
+              "1": {
+                "name": "Powder Keg"
+              },
+              "2": {
+                "name": "Boarding"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Pirate",
+            "skills": {
+              "0": {
+                "name": "Hook"
+              },
+              "1": {
+                "name": "Crew's Rum"
+              },
+              "2": {
+                "name": "Anchor"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Pirate",
+            "skills": {
+              "0": {
+                "name": "Nimble Saber"
+              },
+              "1": {
+                "name": "Tailwind"
+              },
+              "2": {
+                "name": "Cannonade"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Pirate",
+            "skills": {
+              "0": {
+                "name": "Gold Coin"
+              },
+              "1": {
+                "name": "Treasure Map"
+              },
+              "2": {
+                "name": "Lucky Doubloon"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Pirate",
+            "skills": {
+              "0": {
+                "name": "Treacherous Shot"
+              },
+              "1": {
+                "name": "Walk the Plank"
+              },
+              "2": {
+                "name": "Treasure Curse"
+              }
+            }
+          }
+        }
+      },
+      "pixie_family": {
+        "base_name": "Fairy",
+        "name": "Fairies",
+        "variations": {
+          "neutral": {
+            "name": "Fairy",
+            "awakening": {
+              "skill": {
+                "name": "Pixie Dust"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Droplet"
+              },
+              "1": {
+                "name": "Morning Dew"
+              }
+            }
+          },
+          "fire": {
+            "name": "Fire Fairy",
+            "skills": {
+              "0": {
+                "name": "Spark Dust"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Fairy",
+            "awakening": {
+              "skill": {
+                "name": "Pixie Dust"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Droplet"
+              },
+              "1": {
+                "name": "Morning Dew"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Fairy",
+            "awakening": {
+              "name": "Thistle",
+              "skill": {
+                "name": "Pixie Dust"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Tickle"
+              },
+              "1": {
+                "name": "Fairy Ring"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Fairy",
+            "awakening": {
+              "skill": {
+                "name": "Pixie Dust"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Sparkle"
+              },
+              "1": {
+                "name": "Glamour"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Fairy",
+            "awakening": {
+              "skill": {
+                "name": "Bad Luck"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Hex Dust"
+              },
+              "1": {
+                "name": "Nightmare"
+              }
+            }
+          }
+        }
+      },
+      "princess_family": {
+        "base_name": "Princess",
+        "name": "Princesses",
+        "variations": {
+          "fire": {
+            "name": "Fire Princess",
+            "skills": {
+              "0": {
+                "name": "Ember Fan"
+              },
+              "1": {
+                "name": "Royal Decree"
+              },
+              "2": {
+                "name": "Burning Tyranny"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Princess",
+            "skills": {
+              "0": {
+                "name": "Tide Scepter"
+              },
+              "1": {
+                "name": "Wave Ball"
+              },
+              "2": {
+                "name": "Royal Grace"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Princess",
+            "skills": {
+              "0": {
+                "name": "Wind Fan"
+              },
+              "1": {
+                "name": "Sky Waltz"
+              },
+              "2": {
+                "name": "Royal Order"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Princess",
+            "skills": {
+              "0": {
+                "name": "Royal Touch"
+              },
+              "1": {
+                "name": "Royal Protection"
+              },
+              "2": {
+                "name": "Radiant Crown"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Princess",
+            "skills": {
+              "0": {
+                "name": "Poison Kiss"
+              },
+              "1": {
+                "name": "Lullaby"
+              },
+              "2": {
+                "name": "Royal Curse"
+              }
+            }
+          }
+        }
+      },
+      "samurai_family": {
+        "base_name": "Samurai",
+        "name": "Samurai",
+        "variations": {
+          "fire": {
+            "name": "Fire Samurai",
+            "skills": {
+              "0": {
+                "name": "Flaming Cut"
+              },
+              "1": {
+                "name": "Iaijutsu"
+              },
+              "2": {
+                "name": "Bushido"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Samurai",
+            "skills": {
+              "0": {
+                "name": "Current Cut"
+              },
+              "1": {
+                "name": "River Stance"
+              },
+              "2": {
+                "name": "Calm Mind"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Samurai",
+            "skills": {
+              "0": {
+                "name": "Swift Cut"
+              },
+              "1": {
+                "name": "Thousand Cuts"
+              },
+              "2": {
+                "name": "Bushido"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Samurai",
+            "skills": {
+              "0": {
+                "name": "Honorable Cut"
+              },
+              "1": {
+                "name": "Code of Honor"
+              },
+              "2": {
+                "name": "Duel"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Samurai",
+            "skills": {
+              "0": {
+                "name": "Shadow Cut"
+              },
+              "1": {
+                "name": "Final Cut"
+              },
+              "2": {
+                "name": "Bushido"
+              }
+            }
+          }
+        }
+      },
+      "skeleton_family": {
+        "base_name": "Skeleton",
+        "name": "Skeletons",
+        "variations": {
+          "fire": {
+            "name": "Fire Skeleton",
+            "awakening": {
+              "skill": {
+                "name": "Stubborn Bones"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Rusty Sword"
+              },
+              "1": {
+                "name": "Bone Burst"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Skeleton",
+            "awakening": {
+              "skill": {
+                "name": "Stubborn Bones"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Bone Shield"
+              },
+              "1": {
+                "name": "Bone Wall"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Skeleton",
+            "awakening": {
+              "skill": {
+                "name": "Stubborn Bones"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Bone Spear"
+              },
+              "1": {
+                "name": "Skull Toss"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Skeleton",
+            "awakening": {
+              "skill": {
+                "name": "Rise Again"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Bone Touch"
+              },
+              "1": {
+                "name": "Danse Macabre"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Skeleton",
+            "awakening": {
+              "skill": {
+                "name": "Stubborn Bones"
+              }
+            },
+            "skills": {
+              "0": {
+                "name": "Bone Claw"
+              },
+              "1": {
+                "name": "Grave Curse"
+              }
+            }
+          }
+        }
+      },
+      "slime_family": {
+        "base_name": "Goo",
+        "name": "Goos",
+        "variations": {
+          "neutral": {
+            "name": "Goo",
+            "awakening": {
+              "skill": {
+                "name": "Ooze Fortress"
+              }
+            },
+            "skills": {
+              "1": {
+                "name": "Cleansing Tide"
+              }
+            }
+          },
+          "fire": {
+            "name": "Fire Goo"
+          },
+          "water": {
+            "name": "Water Goo",
+            "awakening": {
+              "skill": {
+                "name": "Ooze Fortress"
+              }
+            },
+            "skills": {
+              "1": {
+                "name": "Cleansing Tide"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Goo",
+            "skills": {
+              "1": {
+                "name": "Glue Burst"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Goo",
+            "awakening": {
+              "skill": {
+                "name": "Radiant Gel"
+              }
+            },
+            "skills": {
+              "1": {
+                "name": "Mending Gel"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Goo",
+            "awakening": {
+              "name": "Tarrow"
+            },
+            "skills": {
+              "1": {
+                "name": "Black Mire"
+              }
+            }
+          }
+        }
+      },
+      "troll_family": {
+        "base_name": "Troll",
+        "name": "Trolls",
+        "variations": {
+          "fire": {
+            "name": "Fire Troll",
+            "skills": {
+              "0": {
+                "name": "Burning Club"
+              },
+              "1": {
+                "name": "Smash"
+              },
+              "2": {
+                "name": "Magma Slam"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Troll",
+            "skills": {
+              "0": {
+                "name": "Club"
+              },
+              "1": {
+                "name": "Stone Skin"
+              },
+              "2": {
+                "name": "Regeneration"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Troll",
+            "skills": {
+              "0": {
+                "name": "Boulder Toss"
+              },
+              "1": {
+                "name": "Quake"
+              },
+              "2": {
+                "name": "Rolling Boulder"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Troll",
+            "skills": {
+              "0": {
+                "name": "Blessed Club"
+              },
+              "1": {
+                "name": "Regrowth"
+              },
+              "2": {
+                "name": "Regeneration"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Troll",
+            "skills": {
+              "0": {
+                "name": "Crushing Grip"
+              },
+              "1": {
+                "name": "Menace"
+              },
+              "2": {
+                "name": "Regeneration"
+              }
+            }
+          }
+        }
+      },
+      "unicorn_family": {
+        "base_name": "Unicorn",
+        "name": "Unicorns",
+        "variations": {
+          "fire": {
+            "name": "Fire Unicorn",
+            "skills": {
+              "0": {
+                "name": "Blazing Horn"
+              },
+              "1": {
+                "name": "Flaming Gallop"
+              },
+              "2": {
+                "name": "Purifying Horn"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Unicorn",
+            "skills": {
+              "0": {
+                "name": "Spring Touch"
+              },
+              "1": {
+                "name": "Sacred Spring"
+              },
+              "2": {
+                "name": "Purifying Horn"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Unicorn",
+            "skills": {
+              "0": {
+                "name": "Swift Kick"
+              },
+              "1": {
+                "name": "Sky Run"
+              },
+              "2": {
+                "name": "Rainbow"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Unicorn",
+            "awakening": {
+              "name": "Dawnmane"
+            },
+            "skills": {
+              "0": {
+                "name": "Horn of Light"
+              },
+              "1": {
+                "name": "Dawn Blessing"
+              },
+              "2": {
+                "name": "Unicorn Tear"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Unicorn",
+            "skills": {
+              "0": {
+                "name": "Profane Horn"
+              },
+              "1": {
+                "name": "Shadow Gallop"
+              },
+              "2": {
+                "name": "Corrupted Horn"
+              }
+            }
+          }
+        }
+      },
+      "vampire_family": {
+        "base_name": "Vampire",
+        "name": "Vampires",
+        "variations": {
+          "fire": {
+            "name": "Fire Vampire",
+            "skills": {
+              "0": {
+                "name": "Scalding Bite"
+              },
+              "1": {
+                "name": "Blood Boil"
+              },
+              "2": {
+                "name": "Blood Thirst"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Vampire",
+            "skills": {
+              "0": {
+                "name": "Cold Embrace"
+              },
+              "1": {
+                "name": "Mist Form"
+              },
+              "2": {
+                "name": "Blood Thirst"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Vampire",
+            "skills": {
+              "0": {
+                "name": "Swift Fangs"
+              },
+              "1": {
+                "name": "Bat Swarm"
+              },
+              "2": {
+                "name": "Night Flight"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Vampire",
+            "skills": {
+              "0": {
+                "name": "Pale Touch"
+              },
+              "1": {
+                "name": "Transfusion"
+              },
+              "2": {
+                "name": "Sanguine Pact"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Vampire",
+            "skills": {
+              "0": {
+                "name": "Drain Life"
+              },
+              "1": {
+                "name": "Feast"
+              },
+              "2": {
+                "name": "Blood Thirst"
+              }
+            }
+          }
+        }
+      },
+      "wizard_family": {
+        "base_name": "Wizard",
+        "name": "Wizards",
+        "variations": {
+          "fire": {
+            "name": "Fire Wizard",
+            "awakening": {
+              "name": "Vulcaris"
+            },
+            "skills": {
+              "0": {
+                "name": "Ember Sigil"
+              },
+              "1": {
+                "name": "Flame Barrage"
+              },
+              "2": {
+                "name": "Arcane Flow"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Wizard",
+            "awakening": {
+              "name": "Rimewald"
+            },
+            "skills": {
+              "0": {
+                "name": "Frost Shard"
+              },
+              "1": {
+                "name": "Brittle Frost"
+              },
+              "2": {
+                "name": "Glacial Tomb"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Wizard",
+            "skills": {
+              "0": {
+                "name": "Arc Spark"
+              },
+              "1": {
+                "name": "Chain Lightning"
+              },
+              "2": {
+                "name": "Arcane Flow"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Wizard",
+            "awakening": {
+              "name": "Lumenar"
+            },
+            "skills": {
+              "0": {
+                "name": "Dawn Spark"
+              },
+              "1": {
+                "name": "Sigil of Warding"
+              },
+              "2": {
+                "name": "Arcane Flow"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Wizard",
+            "awakening": {
+              "name": "Noctivar"
+            },
+            "skills": {
+              "0": {
+                "name": "Hex Bolt"
+              },
+              "1": {
+                "name": "Doom Sigil"
+              },
+              "2": {
+                "name": "Annihilate"
+              }
+            }
+          }
+        }
+      },
+      "wolf_family": {
+        "base_name": "Wolf",
+        "name": "Wolves",
+        "variations": {
+          "fire": {
+            "name": "Fire Wolf",
+            "skills": {
+              "0": {
+                "name": "Devour"
+              }
+            }
+          },
+          "water": {
+            "name": "Water Wolf",
+            "skills": {
+              "0": {
+                "name": "Devour"
+              }
+            }
+          },
+          "wind": {
+            "name": "Wind Wolf",
+            "skills": {
+              "0": {
+                "name": "Devour"
+              }
+            }
+          },
+          "light": {
+            "name": "Light Wolf",
+            "skills": {
+              "0": {
+                "name": "Devour"
+              }
+            }
+          },
+          "dark": {
+            "name": "Dark Wolf",
+            "skills": {
+              "0": {
+                "name": "Devour"
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

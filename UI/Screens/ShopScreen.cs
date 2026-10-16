@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
@@ -10,10 +12,9 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// A Loja: as ofertas de Data/shop.json em bancas de couro — o que é, escrito ("30 Mana"), o símbolo
-	/// grande e o botão Comprar com o preço em Ouro (sem Ouro, diz quanto falta). Tocar no símbolo abre
-	/// para que a oferta serve. As bancas rolam de lado (arrastando, com o mouse também), com a barra à
-	/// vista embaixo delas. Comprar pede confirmação; o GameRoot aplica a regra (Core/Progression/Shop) e
+	/// A Loja: as ofertas de Data/shop.json em <see cref="ShopShelf"/> (categorias à esquerda, grade de 4 colunas),
+	/// cada uma uma banca com o que é, escrito ("30 Mana"), o símbolo e o botão Comprar com o preço em Ouro (sem
+	/// Ouro, o botão fica apagado e o toque diz quanto falta). Tocar no símbolo abre para que a oferta serve. Comprar pede confirmação; o GameRoot aplica a regra (Core/Progression/Shop) e
 	/// chama <see cref="Refresh"/>.
 	/// </summary>
 	public partial class ShopScreen : Control
@@ -22,7 +23,8 @@ namespace Sigilos.UI.Screens
 		private readonly PlayerState _player;
 
 		private readonly CurrencyBar _currencies = new();
-		private readonly HBoxContainer _offers = Layout.Row(Space.Spacious).Named("Offers");
+		private ShopShelf _shelf = null!;
+		private List<int> _categories = new();
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
 		/// <summary>A troca de nome só vale para quem joga numa conta que já tem nome.</summary>
@@ -44,21 +46,14 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Shop"), _currencies, () => BackRequested?.Invoke()).Header);
-			page.AddChild(Layout.Text(T("shop.intro"), GameTheme.Faded).Named("Intro"));
-			page.AddChild(Layout.Text(T("shop.info_hint"), GameTheme.Faded).Named("InfoHint"));
+			page.AddChild(Layout.Header(T("destination.Shop"), _currencies, () => BackRequested?.Invoke(), this, T("shop.intro"), T("shop.info_hint")).Header);
 
-			// A fileira de bancas no meio da altura, com a barra logo embaixo dela, sempre à vista.
-			_offers.Alignment = BoxContainer.AlignmentMode.Center;
-			var shelf = new MarginContainer { Name = "Shelf" };
-			shelf.AddThemeConstantOverride("margin_bottom", 14);
-			shelf.AddChild(_offers);
-			var scroll = Layout.Scroll(shelf);
-			scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.ShowAlways;
-			scroll.VerticalScrollMode = ScrollContainer.ScrollMode.Disabled;
-			scroll.SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter;
-			GameTheme.Grooved(scroll.GetHScrollBar());
-			page.AddChild(scroll);
+			// Categorias à esquerda, as ofertas da aberta numa grade de 4 colunas à direita.
+			// Só as categorias que têm oferta: cada uma na ordem de sempre (Transmutação, Mana, Especial).
+			var names = new[] { (T("shop.category.scrolls"), "scroll"), (T("shop.category.mana"), "mana"), (T("shop.category.special"), "gem") };
+			_categories = Enumerable.Range(0, names.Length).Where(c => _database.Shop.Any(o => Category(o) == c)).ToList();
+			_shelf = new ShopShelf(_categories.Select(c => names[c]).ToList(), Cards);
+			page.AddChild(_shelf);
 
 			_message.AddThemeColorOverride("font_color", Palette.Gold);
 			page.AddChild(_message);
@@ -68,40 +63,37 @@ namespace Sigilos.UI.Screens
 		public void Refresh()
 		{
 			_currencies.Refresh(_player);
-			Layout.Clear(_offers);
-			for (var i = 0; i < _database.Shop.Count; i++)
-				_offers.AddChild(Card(_database.Shop[i]).Named($"Offer{i + 1}"));
+			_shelf.Refresh();
+		}
+
+		private static int Category(ShopOffer offer) => offer.Item switch
+		{
+			ShopItem.Scrolls => 0,
+			ShopItem.Mana => 1,
+			_ => 2,
+		};
+
+		private IEnumerable<Control> Cards(int category)
+		{
+			foreach (var offer in _database.Shop)
+			{
+				if (Category(offer) == _categories[category])
+					yield return Card(offer);
+			}
 		}
 
 		public void ShowMessage(string text) => _message.Text = text;
 
-		private PanelContainer Card(ShopOffer offer)
+		private Control Card(ShopOffer offer)
 		{
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(260, 340) };
-			var content = new VBoxContainer { Name = "Content", Alignment = BoxContainer.AlignmentMode.Center };
-			content.AddThemeConstantOverride("separation", Space.Wide);
-			panel.AddChild(content);
-
-			var name = new Label { Name = "Name", Text = Texts.Amount(offer.Item, offer.Amount), HorizontalAlignment = HorizontalAlignment.Center, ThemeTypeVariation = GameTheme.Heading };
-			content.AddChild(name);
-			var icon = offer.Item switch
+			var (icon, tint) = offer.Item switch
 			{
-				ShopItem.Mana => Doodle.Icon(Art.Icon("mana"), 100, Palette.Gold),
-				ShopItem.ReappraisalGems => Doodle.Icon(Art.Icon("gem"), 100, Palette.Arcane),
-				ShopItem.RenameAccount => Doodle.Icon(Art.Icon("avatar"), 100, Palette.Gold),
-				ShopItem.CollectionExpander => Doodle.Icon(Art.Icon("monster"), 100, Palette.Gold),
-				_ => Doodle.Icon(Art.Icon("scroll"), 100, Palette.Gold),
+				ShopItem.Mana => ("mana", Palette.Gold),
+				ShopItem.ReappraisalGems => ("gem", Palette.Arcane),
+				ShopItem.RenameAccount => ("avatar", Palette.Gold),
+				ShopItem.CollectionExpander => ("monster", Palette.Gold),
+				_ => ("scroll", Palette.Gold),
 			};
-			icon.SizeFlagsHorizontal = SizeFlags.ShrinkCenter;
-			icon.MouseDefaultCursorShape = CursorShape.PointingHand;
-			// O símbolo explica a oferta (a Gema diz quantas o jogador já tem, a Expansão as vagas de agora e o
-			// máximo: nada disso está em alguma barra).
-			void Explain() => Dialog.Info(icon, offer.Name, T($"shop.info.{offer.Item}", _player.ReappraisalGems, _player.CollectionCapacity, Account.MaxCollectionCapacity));
-			Press.On(icon, Explain, Explain);
-			content.AddChild(icon);
-			var what = Layout.Text(offer.Name, GameTheme.Faded, 220).Named("What");
-			what.HorizontalAlignment = HorizontalAlignment.Center;
-			content.AddChild(what);
 
 			// A troca de nome pede uma conta com nome; a janela do nome já é a confirmação (ela diz o preço).
 			var rename = offer.Item == ShopItem.RenameAccount;
@@ -116,21 +108,18 @@ namespace Sigilos.UI.Screens
 						T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
 						T("shop.buy_button"),
 						() => BuyRequested?.Invoke(offer));
-			}, ButtonKind.Primary).WithCost("gold", Texts.Number(offer.Price)).Named("Buy");
-			buy.Disabled = !canBuy;
-			content.AddChild(buy);
+			}, ButtonKind.Primary, null, 56).WithCost("gold", Texts.Number(offer.Price)).Named("Buy");
 			if (!canBuy)
 			{
-				var message = rename && !_canRename ? T("shop.rename_no_account")
+				buy.Block(rename && !_canRename ? T("shop.rename_no_account")
 					: Shop.IsSoldOut(_player, offer) ? T("shop.sold_out", Texts.Number(Account.MaxCollectionCapacity))
-					: T("shop.no_gold", Texts.Number(offer.Price - _player.Gold));
-				var missing = new Label { Name = "Short", Text = message, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(220, 0) };
-				missing.AddThemeColorOverride("font_color", Palette.Negative);
-				missing.AddThemeFontSizeOverride("font_size", GameTheme.SmallSize);
-				content.AddChild(missing);
+					: T("shop.no_gold", Texts.Number(offer.Price - _player.Gold)), offer.Name);
 			}
 
-			return panel;
+			// O símbolo explica a oferta (a Gema diz quantas o jogador já tem, a Expansão as vagas de agora e o
+			// máximo: nada disso está em alguma barra).
+			return ShopCard.Of(Texts.Amount(offer.Item, offer.Amount), offer.Name, icon, tint, buy,
+				symbol => Dialog.Info(symbol, offer.Name, T($"shop.info.{offer.Item}", _player.ReappraisalGems, _player.CollectionCapacity, Account.MaxCollectionCapacity)));
 		}
 	}
 }

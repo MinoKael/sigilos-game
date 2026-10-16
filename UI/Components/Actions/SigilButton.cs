@@ -276,7 +276,7 @@ namespace Sigilos.UI.Components
 			{
 				var strength = hover || lit ? 0.5f : 0.25f + 0.35f * pulse;
 				for (var i = 1; i <= 4; i++)
-					Outline(center, radius + i * 1.6f, new Color(aura, strength * (1 - i / 5f)), 2);
+					Outline(center, radius + i * 0.7f, new Color(aura, strength * (1 - i / 5f)), 2);
 			}
 
 			Body(center, radius, fill);

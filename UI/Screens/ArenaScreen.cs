@@ -155,7 +155,7 @@ namespace Sigilos.UI.Screens
 			_status.AddChild(Layout.Labeled("fight", state.Streak.ToString(), StreakText(), Palette.Gold).Named("Streak"));
 
 			var left = Arena.CycleEnds(_now) - _now;
-			_status.AddChild(Layout.Text(T("arena.cycle_ends", Duration(left)), GameTheme.Faded).Named("Cycle"));
+			_status.AddChild(Layout.Text(T("arena.cycle_short", Duration(left)), GameTheme.Faded).Named("Cycle"));
 		}
 
 		/// <summary>O "?" dos pontos: como se ganha e perde, a semana e o que cada Grau paga.</summary>
@@ -255,7 +255,6 @@ namespace Sigilos.UI.Screens
 			if (_chosen is { } picked && team.All(m => m.Id != picked))
 				_chosen = null;
 
-			_list.AddChild(Layout.Text(T("arena.defense_text"), GameTheme.Faded, 560).Named("DefenseText"));
 			var row = Layout.Row(Space.Regular, true).Named("DefenseTeam");
 			for (var i = 0; i < team.Count; i++)
 			{
@@ -292,22 +291,21 @@ namespace Sigilos.UI.Screens
 				return;
 			}
 
+			// Os botões da edição ficam sempre nos mesmos lugares: sem escolha, Líder e Remover só apagam.
 			var actions = Layout.Row(Space.Regular, true).Named("DefenseActions");
-			if (team.FirstOrDefault(m => m.Id == _chosen) is { } chosen)
+			actions.AddChild(SigilButton.Of("help", () => Dialog.Info(this, T("arena.defense_edit"), T("prep.hint") + "\n\n" + T("arena.defense_text"), 520), 40).Named("DefenseHelp"));
+			var chosen = team.FirstOrDefault(m => m.Id == _chosen);
+			var leaderButton = GameButton.Of(T("teams.make_leader"), () =>
 			{
-				if (team[0].Id != chosen.Id)
-					actions.AddChild(GameButton.Of(T("teams.make_leader"), () =>
-					{
-						_chosen = null;
-						LeaderRequested?.Invoke(chosen.Id);
-					}, ButtonKind.Primary, "leader", 44).Named("MakeLeader"));
-				actions.AddChild(GameButton.Of(T("teams.remove"), () => ToggleRequested?.Invoke(chosen.Id), ButtonKind.Secondary, "cancel", 44).Named("Remove"));
-			}
-			else
-			{
-				actions.AddChild(Layout.Text(T("prep.hint"), GameTheme.Faded, 520).Named("Hint"));
-			}
-
+				var id = chosen!.Id;
+				_chosen = null;
+				LeaderRequested?.Invoke(id);
+			}, ButtonKind.Primary, "leader", 44).Named("MakeLeader");
+			leaderButton.Block(chosen == null ? T("teams.why_pick") : team[0].Id == chosen.Id ? T("teams.why_leader") : null, T("teams.make_leader"));
+			actions.AddChild(leaderButton);
+			var removeButton = GameButton.Of(T("teams.remove"), () => ToggleRequested?.Invoke(chosen!.Id), ButtonKind.Secondary, "cancel", 44).Named("Remove");
+			removeButton.Block(chosen == null ? T("teams.why_pick") : null, T("teams.remove"));
+			actions.AddChild(removeButton);
 			actions.AddChild(GameButton.Of(T("arena.defense_done"), () =>
 			{
 				_editing = false;
@@ -376,9 +374,10 @@ namespace Sigilos.UI.Screens
 			var opponents = Arena.Opponents(_player, _database);
 			var beaten = opponents.Count(o => o.Beaten);
 			var header = Layout.Row(Space.Wide).Named("ListHeader");
-			var text = Layout.Text(T("arena.list_progress", beaten, opponents.Count, arena.ListBonusInvites), GameTheme.Faded, 560).Named("Progress");
+			var text = Layout.Text(T("arena.list_short", beaten, opponents.Count), GameTheme.Faded, 10).Named("Progress");
 			text.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			header.AddChild(text);
+			header.AddChild(Layout.HelpButton(this, T("arena.tab_opponents"), T("arena.list_progress", beaten, opponents.Count, arena.ListBonusInvites)));
 			header.AddChild(GameButton.Of(T("arena.refresh"), () => RefreshRequested?.Invoke(), ButtonKind.Secondary, "repeat", 44).Named("Renew"));
 			_list.AddChild(header);
 
@@ -402,24 +401,20 @@ namespace Sigilos.UI.Screens
 
 			row.AddChild(Team("Defense", opponent.Team));
 
+			// Lutar fica sempre no mesmo lugar: vencido, só apaga (o aviso vai embaixo do nome).
 			if (opponent.Beaten)
+				who.AddChild(new Label { Name = "Beaten", Text = T("arena.beaten"), ThemeTypeVariation = GameTheme.Faded });
+			var canFight = Arena.CanFight(_player, arena, opponent.Index);
+			var fight = GameButton.Of(T("common.fight"), () =>
 			{
-				row.AddChild(new Label { Name = "Beaten", Text = T("arena.beaten"), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
-			}
-			else
-			{
-				var canFight = Arena.CanFight(_player, arena, opponent.Index);
-				var fight = GameButton.Of(T("common.fight"), () =>
-				{
-					if (_player.Arena.Invites <= 0)
-						ShowMessage(T("arena.no_invites"));
-					else
-						OpponentRequested?.Invoke(opponent.Index);
-				}, ButtonKind.Primary, "fight", 52).WithCost("astral_invite", "1").Named("Fight");
-				fight.Disabled = !canFight && _player.Arena.Invites > 0;
-				fight.Wide(120).SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
-				row.AddChild(fight);
-			}
+				if (_player.Arena.Invites <= 0)
+					ShowMessage(T("arena.no_invites"));
+				else
+					OpponentRequested?.Invoke(opponent.Index);
+			}, ButtonKind.Primary, "fight", 52).WithCost("astral_invite", "1").Named("Fight");
+			fight.Block(opponent.Beaten ? T("arena.why_beaten") : !canFight && _player.Arena.Invites > 0 ? T("arena.why_pending") : null, T("common.fight"));
+			fight.Wide(120).SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
+			row.AddChild(fight);
 
 			return panel;
 		}
@@ -427,7 +422,10 @@ namespace Sigilos.UI.Screens
 		private void FillRivals()
 		{
 			var arena = _database.Arena;
-			_list.AddChild(Layout.Text(T("arena.rivals_text"), GameTheme.Faded, 700).Named("RivalsText"));
+			var header = Layout.Row(Space.Wide).Named("ListHeader");
+			header.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore });
+			header.AddChild(Layout.HelpButton(this, T("arena.tab_rivals"), T("arena.rivals_text")));
+			_list.AddChild(header);
 			foreach (var rival in arena.Rivals)
 				_list.AddChild(RivalRow(rival, arena).Named($"Rival_{rival.Id}"));
 		}
@@ -447,22 +445,20 @@ namespace Sigilos.UI.Screens
 
 			row.AddChild(Team("Team", ArenaTeams.Rival(_database, rival)));
 
-			if (Arena.RivalReadyAt(_player, rival, _now) is { } at)
+			// Em espera: Lutar continua no lugar, apagado, e o tempo que falta vai embaixo do nome.
+			var waiting = Arena.RivalReadyAt(_player, rival, _now);
+			if (waiting is { } at)
+				who.AddChild(new Label { Name = "Wait", Text = T("arena.rival_wait", Duration(at - _now)), ThemeTypeVariation = GameTheme.Faded });
+			var rivalFight = GameButton.Of(T("common.fight"), () =>
 			{
-				row.AddChild(new Label { Name = "Wait", Text = T("arena.rival_wait", Duration(at - _now)), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
-			}
-			else
-			{
-				var fight = GameButton.Of(T("common.fight"), () =>
-				{
-					if (_player.Arena.Invites <= 0)
-						ShowMessage(T("arena.no_invites"));
-					else
-						RivalRequested?.Invoke(rival);
-				}, ButtonKind.Primary, "fight", 52).WithCost("astral_invite", "1").Named("Fight");
-				fight.Wide(120).SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
-				row.AddChild(fight);
-			}
+				if (_player.Arena.Invites <= 0)
+					ShowMessage(T("arena.no_invites"));
+				else
+					RivalRequested?.Invoke(rival);
+			}, ButtonKind.Primary, "fight", 52).WithCost("astral_invite", "1").Named("Fight");
+			rivalFight.Block(waiting is { } until ? T("arena.rival_wait", Duration(until - _now)) : null, T("common.fight"));
+			rivalFight.Wide(120).SizeFlagsHorizontal = SizeFlags.ShrinkEnd;
+			row.AddChild(rivalFight);
 
 			return panel;
 		}

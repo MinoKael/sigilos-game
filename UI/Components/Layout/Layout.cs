@@ -88,6 +88,14 @@ namespace Sigilos.UI.Components
 		/// (<c>Extra</c>, para o que a tela quiser mostrar ao lado do título: contagem, abas) e o cabeçalho
 		/// de recursos à direita. A seta também responde ao Esc e ao Voltar do celular.
 		/// </summary>
+		/// <summary>O cabeçalho com o "?" da tela logo depois do título (<see cref="HelpButton"/>): o texto que explica a tela mora nele.</summary>
+		public static (HBoxContainer Header, HBoxContainer Extra) Header(string title, CurrencyBar? currencies, Action onBack, Control helpFrom, params string[] help)
+		{
+			var header = Header(title, currencies, onBack);
+			header.Extra.AddChild(HelpButton(helpFrom, title, help));
+			return header;
+		}
+
 		public static (HBoxContainer Header, HBoxContainer Extra) Header(string title, CurrencyBar? currencies, Action onBack)
 		{
 			var header = new HBoxContainer { Name = "Header" };
@@ -105,6 +113,24 @@ namespace Sigilos.UI.Components
 			header.AddChild(new BackButton(onBack) { Name = "Back" });
 
 			return (header, extra);
+		}
+
+		/// <summary>
+		/// O botão de ajuda ("?") de uma tela ou bloco: todo texto que explica ação, botão ou regra mora aqui, num
+		/// diálogo, e não na tela. Nas telas fica ao lado do título (<c>Extra</c> do <see cref="Header"/>); nos blocos,
+		/// ao lado do que explica. O diálogo fecha pelo ✕.
+		/// </summary>
+		public static SigilButton HelpButton(Control from, string title, params string[] paragraphs)
+		{
+			var button = SigilButton.Of("help", () =>
+			{
+				var dialog = Dialog.Open(from, title, 520, null, "HelpDialog");
+				foreach (var text in paragraphs.Where(p => p.Length > 0))
+					dialog.Body.AddChild(Text(text, null, 10).Named("Paragraph"));
+			}, 40);
+			button.Name = "Help";
+			button.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
+			return button;
 		}
 
 		/// <summary>Cápsula de símbolo e número: custo, contagem, recompensa. O nó leva o nome do símbolo (<c>Essence</c>).</summary>

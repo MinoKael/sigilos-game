@@ -75,7 +75,7 @@ namespace Sigilos.UI.Screens
 		private IReadOnlyList<Rune> _visible = Array.Empty<Rune>();
 
 		/// <summary>Os botões da runa escolhida: mais baixos que o toque padrão, para a ficha caber inteira.</summary>
-		private const float ActionHeight = 40;
+		private const float ActionHeight = 50;
 
 		/// <summary>Na escolha da ordem, as por subatributo vêm depois das outras: o valor é este mais o atributo.</summary>
 		private const int SubstatOrder = 100;
@@ -107,6 +107,7 @@ namespace Sigilos.UI.Screens
 		private ScrollContainer? _listScroll;
 		private int _listTab;
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
+
         private readonly GridContainer _actions = new()
         {
             Name = "Actions",
@@ -157,7 +158,7 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Runes"), _currencies, () => BackRequested?.Invoke(_monsterId)).Header);
+			page.AddChild(Layout.Header(T("destination.Runes"), _currencies, () => BackRequested?.Invoke(_monsterId), this, T("runes.no_monster_text"), T("runes.pick_one")).Header);
 
 			var body = Layout.Row(Space.Large).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -184,7 +185,7 @@ namespace Sigilos.UI.Screens
 			rightColumn.AddThemeConstantOverride("separation", Space.Medium);
 			_detail.AddThemeConstantOverride("separation", Space.Medium);
 			rightColumn.AddChild(Layout.Scroll(_detail));
-			ConfigureGrid(_actions, 8);
+			ConfigureGrid(_actions, 6);
 			rightColumn.AddChild(_actions);
 			right.AddChild(rightColumn);
 			body.AddChild(right);
@@ -283,7 +284,6 @@ namespace Sigilos.UI.Screens
 			Layout.Clear(_head);
 			if (Monster is not { } monster)
 			{
-				_head.AddChild(Layout.Text(T("runes.no_monster_text"), GameTheme.Faded, 300).Named("None"));
 				_head.AddChild(GameButton.Of(T("runes.choose_monster"), ChooseMonster, ButtonKind.Primary, "monster", 44).Named("Choose"));
 				return;
 			}
@@ -642,7 +642,7 @@ namespace Sigilos.UI.Screens
 			row.AddChild(GameButton.Of(T("runes.mark_all"), () => Mark(_visible.Where(r => r.EquippedOn == null && !r.Locked), true),
 				ButtonKind.Secondary, null, 40).Named("MarkAll"));
 			var unmark = GameButton.Of(T("runes.unmark"), () => Mark(marked, false), ButtonKind.Secondary, null, 40).Named("Unmark");
-			unmark.Disabled = marked.Count == 0;
+			unmark.Block(marked.Count == 0 ? T("runes.why_marked") : null, T("runes.unmark"));
 			row.AddChild(unmark);
 
 			var value = marked.Sum(RuneRules.SellValue);
@@ -659,7 +659,7 @@ namespace Sigilos.UI.Screens
 				}, ButtonKind.Danger), ButtonKind.Danger, "dismantle", 40).Named("SellMarked");
 			if (marked.Count > 0)
 				sell.WithCost("essence", $"+{value}");
-			sell.Disabled = marked.Count == 0;
+			sell.Block(marked.Count == 0 ? T("runes.why_marked") : null, T("runes.sell_button_short"));
 			row.AddChild(sell);
 		}
 
@@ -719,7 +719,6 @@ namespace Sigilos.UI.Screens
 			_actions.Visible = rune != null;
 			if (rune == null)
 			{
-				_detail.AddChild(Layout.Text(T("runes.pick_one"), GameTheme.Faded, 300).Named("Empty"));
 				return;
 			}
 
@@ -740,85 +739,94 @@ namespace Sigilos.UI.Screens
 			if (rune.EquippedOn is { } owner && _player.Monster(owner) is { } holder)
 				_detail.AddChild(OwnerRow(holder));
 
+			// Cada ação tem a sua célula na grade e ela nunca muda, todas da mesma altura: o que não vale agora
+			// fica no lugar, apagado, e o toque diz o motivo.
+			var cells = new Control[ActionCells];
 			var full = RuneInventory.IsFull(_player);
-			if (rune.EquippedOn != null && (rune.EquippedOn == _monsterId || Monster == null))
+			var here = rune.EquippedOn != null && (rune.EquippedOn == _monsterId || Monster == null);
+			if (here)
 			{
-				var remove = GameButton.Of(T("runes.remove"), () => UnequipRequested?.Invoke(rune.Id), ButtonKind.Secondary, "cancel", ActionHeight).Named("Unequip");
-				remove.Disabled = full;
-				_actions.AddChild(remove);
-				if (full)
-					_detail.AddChild(Layout.Text(T("runes.inventory_full", RuneInventory.Capacity), GameTheme.Faded).Named("Full"));
+				cells[CellEquip] = GameButton.Of(T("runes.remove"), () => UnequipRequested?.Invoke(rune.Id), ButtonKind.Secondary, "cancel", ActionHeight)
+					.Block(full ? T("runes.inventory_full", RuneInventory.Capacity) : null, T("runes.remove")).Named("Unequip");
 			}
-			else if (Monster is { } monster)
+			else
 			{
-				_actions.AddChild(GameButton.Of(T("runes.equip_on"), () =>
+				var monster = Monster;
+				cells[CellEquip] = GameButton.Of(T("runes.equip_on"), () =>
 				{
 					_trial.Remove(rune.Slot);
-					EquipRequested?.Invoke(rune.Id, monster.Id);
-				}, ButtonKind.Primary, "confirm", ActionHeight).Named("Equip"));
-				var trying = _trial.TryGetValue(rune.Slot, out var tried) && tried == rune.Id;
-				_actions.AddChild(GameButton.Of(trying ? T("runes.untry") : T("runes.try"), () =>
-				{
-					if (trying)
-						_trial.Remove(rune.Slot);
-					else
-						_trial[rune.Slot] = rune.Id;
-					RefreshLeft();
-					RefreshDetail();
-				}, ButtonKind.Secondary, trying ? "cancel" : "stats", ActionHeight).Named("Try"));
+					EquipRequested?.Invoke(rune.Id, monster!.Id);
+				}, ButtonKind.Primary, "confirm", ActionHeight).Block(monster == null ? T("runes.why_no_monster") : null, T("runes.equip_on")).Named("Equip");
 			}
 
-			if (rune.Level < RuneRules.MaxLevel)
+			var trying = _trial.TryGetValue(rune.Slot, out var tried) && tried == rune.Id;
+			cells[CellTry] = GameButton.Of(trying ? T("runes.untry") : T("runes.try"), () =>
 			{
-				var next = RuneRules.UpgradeCost(rune);
-				var up = GameButton.Of(T("runes.upgrade_one", 1), () => Upgrade(rune, rune.Level + 1), ButtonKind.Primary, "level_max", ActionHeight).WithCost("essence", Texts.Number(next)).Named("Upgrade");
-				up.Disabled = _player.Essence < next;
-				_actions.AddChild(up);
+				if (trying)
+					_trial.Remove(rune.Slot);
+				else
+					_trial[rune.Slot] = rune.Id;
+				RefreshLeft();
+				RefreshDetail();
+			}, ButtonKind.Secondary, trying ? "cancel" : "stats", ActionHeight)
+				.Block(Monster == null ? T("runes.why_no_monster") : here ? T("runes.why_try_equipped") : null, T("runes.try")).Named("Try");
 
-				// O próximo marco (+3, +6, +9, +12 ou +15) vale na hora, sem pergunta.
-				var milestone = RuneRules.NextMilestone(rune.Level);
-				if (milestone > rune.Level + 1)
-				{
-					var total = RuneRules.UpgradeCost(rune, milestone);
-					var jump = GameButton.Of(T("runes.upgrade_button", milestone), () => Upgrade(rune, milestone),
-						ButtonKind.Secondary, "level_max", ActionHeight).WithCost("essence", Texts.Number(total)).Named("UpgradeToMilestone");
-					jump.Disabled = _player.Essence < total;
-					_actions.AddChild(jump);
-				}
+			var maxed = rune.Level >= RuneRules.MaxLevel;
+			var next = maxed ? 0 : RuneRules.UpgradeCost(rune);
+			cells[CellUpgrade] = GameButton.Of(T("runes.upgrade_one", 1), () => Upgrade(rune, rune.Level + 1), ButtonKind.Primary, "level_max", ActionHeight)
+				.WithCost("essence", maxed ? "" : Texts.Number(next))
+				.Block(maxed ? T("runes.why_max", RuneRules.MaxLevel) : _player.Essence < next ? T("runes.why_essence") : null, T("runes.upgrade_one", 1)).Named("Upgrade");
 
-				// O +12 direto, pulando os marcos que faltam (de +8 para baixo): o gasto é grande, então pergunta.
-				// De +9 em diante o próximo marco já é o +12, e o botão de cima vai direto, sem pergunta.
-				if (milestone < DirectLevel)
-				{
-					var total = RuneRules.UpgradeCost(rune, DirectLevel);
-					var direct = GameButton.Of(T("runes.upgrade_button", DirectLevel),
-						() => RuneDialog.ConfirmDirect(this, rune, _player.Essence, () => UpgradeDirect(rune)),
-						ButtonKind.Secondary, "level_max", ActionHeight).WithCost("essence", Texts.Number(total)).Named("UpgradeToTwelve");
-					direct.Disabled = _player.Essence < total;
-					_actions.AddChild(direct);
-				}
+			// O próximo marco (+3, +6, +9, +12 ou +15) vale na hora, sem pergunta.
+			var milestone = maxed ? RuneRules.MaxLevel : RuneRules.NextMilestone(rune.Level);
+			var milestoneCost = milestone > rune.Level + 1 ? RuneRules.UpgradeCost(rune, milestone) : 0;
+			cells[CellMilestone] = GameButton.Of(T("runes.upgrade_button", milestone), () => Upgrade(rune, milestone), ButtonKind.Secondary, "level_max", ActionHeight)
+				.WithCost("essence", milestoneCost > 0 ? Texts.Number(milestoneCost) : "")
+				.Block(maxed ? T("runes.why_max", RuneRules.MaxLevel) : milestone <= rune.Level + 1 ? T("runes.why_same") : _player.Essence < milestoneCost ? T("runes.why_essence") : null, T("runes.upgrade_button", milestone)).Named("UpgradeToMilestone");
+
+			// O +12 direto, pulando os marcos que faltam (de +8 para baixo): o gasto é grande, então pergunta.
+			// De +9 em diante o próximo marco já é o +12, e o botão de cima vai direto, sem pergunta.
+			var twelveOpen = !maxed && milestone < DirectLevel;
+			var twelveCost = twelveOpen ? RuneRules.UpgradeCost(rune, DirectLevel) : 0;
+			cells[CellTwelve] = GameButton.Of(T("runes.upgrade_button", DirectLevel),
+					() => RuneDialog.ConfirmDirect(this, rune, _player.Essence, () => UpgradeDirect(rune)), ButtonKind.Secondary, "level_max", ActionHeight)
+				.WithCost("essence", twelveOpen ? Texts.Number(twelveCost) : "")
+				.Block(!twelveOpen ? T("runes.why_twelve", DirectLevel) : _player.Essence < twelveCost ? T("runes.why_essence") : null, T("runes.upgrade_button", DirectLevel)).Named("UpgradeToTwelve");
+
+			cells[CellLock] = GameButton.Of(rune.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(rune.Id), ButtonKind.Secondary, rune.Locked ? "unlock" : "lock", ActionHeight).Named("Lock");
+			cells[CellReappraise] = Reappraise(rune);
+			cells[CellSpare] = new Control { Name = "Spare", CustomMinimumSize = new Vector2(0, ActionHeight), MouseFilter = MouseFilterEnum.Ignore };
+
+			var value = RuneRules.SellValue(rune);
+			cells[CellSell] = GameButton.Of(T("runes.sell_button_short"), () => Dialog.Confirm(this, T("runes.sell_title"), T("runes.sell_confirm", value), T("runes.sell_button_short"),
+					() => SellRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Danger, "dismantle", ActionHeight)
+				.WithCost("essence", $"+{value}")
+				.Block(rune.Locked ? T("runes.locked_note") : rune.EquippedOn != null ? T("runes.why_sell_equipped") : null, T("runes.sell_button_short")).Named("Sell");
+
+			cells[CellForge] = GameButton.Of(T("runes.forge"), OpenForge, ButtonKind.Secondary, "grindstone", ActionHeight)
+				.Block(Forgeable(rune) ? null : T("runes.why_no_forge"), T("runes.forge")).Named("Forge");
+
+			foreach (var cell in cells)
+			{
+				if (cell is GameButton button)
+					button.FixedHeight();
+				_actions.AddChild(cell);
 			}
+		}
 
-			_actions.AddChild(GameButton.Of(rune.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(rune.Id), ButtonKind.Secondary, rune.Locked ? "unlock" : "lock", ActionHeight).Named("Lock"));
-			Reappraise(rune);
-            var value = RuneRules.SellValue(rune);
-			var sellBtn = GameButton.Of(T("runes.sell_button_short"), () => Dialog.Confirm(this, T("runes.sell_title"), T("runes.sell_confirm", value), T("runes.sell_button_short"),
-				() => SellRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Danger, "dismantle", ActionHeight).WithCost("essence", $"+{value}").Named("Sell");
-            if (rune.Locked)
-			{
-				_detail.AddChild(Layout.Text(T("runes.locked_note"), GameTheme.Faded).Named("Locked"));
-				sellBtn.Disabled = true;
-                _actions.AddChild(sellBtn);
-            }
-            else if (rune.EquippedOn == null)
-			{
-                _actions.AddChild(sellBtn);
-            }
-
-			// O último da grade de duas colunas: na runa solta que já mudou, em geral cai embaixo de Reavaliar.
-			if (Forgeable(rune))
-				_actions.AddChild(GameButton.Of(T("runes.forge"), OpenForge, ButtonKind.Secondary, "grindstone", ActionHeight).Named("Forge"));
-        }
+		// As células da grade de ações, na ordem de sempre (duas colunas).
+		// Equipar | Provar, e abaixo as fileiras do dono: Evoluir +1 | vazio, Até +X | Até +12, Reavaliar | Afiar, Bloquear | Vender.
+		private const int CellEquip = 0;
+		private const int CellTry = 1;
+		private const int CellUpgrade = 2;
+		private const int CellSpare = 3;
+		private const int CellMilestone = 4;
+		private const int CellTwelve = 5;
+		private const int CellReappraise = 6;
+		private const int CellForge = 7;
+		private const int CellLock = 8;
+		private const int CellSell = 9;
+		private const int ActionCells = 10;
 
 		/// <summary>Pede a melhora. A ficha da runa, refeita logo em seguida, mostra os níveis subindo.</summary>
 		private void Upgrade(Rune rune, int target)
@@ -850,7 +858,7 @@ namespace Sigilos.UI.Screens
 		{
 			var summon = _database.Summon(holder.SummonId);
 			var row = Layout.Row(Space.Regular).Named("Owner");
-			row.AddChild(Portrait(summon, holder, 44));
+			row.AddChild(Portrait(summon, holder, 36));
 			var name = Layout.Text(T(holder.Stored ? "rune.owner_vault" : "rune.owner", summon.NameFor(holder.Awakened)), GameTheme.Faded, 240).Named("Name");
 			name.SizeFlagsVertical = SizeFlags.ShrinkCenter;
 			row.AddChild(name);
@@ -868,22 +876,16 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>
-		/// Reavaliar: só aparece numa runa que mudou desde que caiu. Sem gema, fica apagado e diz onde
-		/// comprar; com, pergunta antes, listando tudo o que vai ser desfeito.
+		/// Reavaliar: sempre no lugar. Numa runa que não mudou desde que caiu, ou sem gema, fica apagado e diz o
+		/// motivo; com, pergunta antes, listando tudo o que vai ser desfeito.
 		/// </summary>
-		private void Reappraise(Rune rune)
+		private GameButton Reappraise(Rune rune)
 		{
 			var changes = RuneReappraisal.Preview(rune);
-			if (!changes.Any)
-				return;
-
 			var gems = _player.ReappraisalGems;
 			var button = GameButton.Of(T("runes.reappraise", gems), () => Dialog.Confirm(this, T("runes.reappraise_title"), ReappraisalText(changes, gems),
 				T("runes.reappraise_button"), () => ReappraiseRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Secondary, "gem", ActionHeight).Named("Reappraise");
-			button.Disabled = gems == 0;
-			_actions.AddChild(button);
-			if (gems == 0)
-				_detail.AddChild(Layout.Text(T("runes.reappraise_none"), GameTheme.Faded, 300).Named("ReappraiseNone"));
+			return button.Block(!changes.Any ? T("runes.why_no_reappraise") : gems == 0 ? T("runes.reappraise_none") : null, T("runes.reappraise_title"));
 		}
 
 		/// <summary>O que a gema vai desfazer, uma linha por mudança, e o custo.</summary>

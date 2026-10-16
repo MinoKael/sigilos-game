@@ -148,7 +148,6 @@ namespace Sigilos.UI.Screens
 			_pityBox.AddChild(_pityText);
 			column.AddChild(_pityBox);
 
-			column.AddChild(Layout.Text(T("summon.note"), GameTheme.Faded).Named("Note"));
 			body.AddChild(panel);
 
 			body.AddChild(_stage);
@@ -199,7 +198,7 @@ namespace Sigilos.UI.Screens
 			_pityText.Text = T("summon.pity_progress", SummonRates.Pity - left, SummonRates.Pity);
 			Kinds();
 			_exchange.WithCost("fragments", Texts.Number(FragmentExchange.Cost));
-			_exchange.Disabled = _ritual || _lesson || _player.Fragments < FragmentExchange.Cost;
+			_exchange.Block(_ritual ? T("summon.why_ritual") : _lesson ? T("summon.why_lesson") : _player.Fragments < FragmentExchange.Cost ? T("summon.why_fragments") : null, T("summon.exchange"));
 		}
 
 		/// <summary>
@@ -223,10 +222,10 @@ namespace Sigilos.UI.Screens
                 row.AddChild(who);
 
                 var single = GameButton.Of(T("summon.times_one"), () => SummonRequested?.Invoke(1, kind), ButtonKind.Primary, null, 52).Wide(76).Named("Single");
-				single.Disabled = _ritual || _lesson || owned < SummonRitual.CostFor(1);
+				single.Block(_ritual ? T("summon.why_ritual") : _lesson ? T("summon.why_lesson") : owned < SummonRitual.CostFor(1) ? T("summon.why_scrolls") : null, T("summon.times_one"));
 				row.AddChild(single);
 				var ten = GameButton.Of(T("summon.times_ten"), () => SummonRequested?.Invoke(10, kind), ButtonKind.Primary, null, 52).Wide(76).Named("Ten");
-				ten.Disabled = _ritual || owned < SummonRitual.CostFor(10);
+				ten.Block(_ritual ? T("summon.why_ritual") : owned < SummonRitual.CostFor(10) ? T("summon.why_scrolls") : null, T("summon.times_ten"));
 				row.AddChild(ten);
 				_kindRow.AddChild(row);
 			}

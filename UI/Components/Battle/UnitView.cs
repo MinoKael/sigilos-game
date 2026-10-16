@@ -36,7 +36,7 @@ namespace Sigilos.UI.Components
 		private readonly Label _healthText;
 		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Label _cooldown = new() { Name = "Cooldowns", MouseFilter = MouseFilterEnum.Ignore };
-		private readonly Press _press = new();
+		private readonly Press _press = new() { Bounce = false };
 		private readonly float _scale;
 		private readonly Doodle _focusMark;
 		private bool _active;

@@ -280,7 +280,7 @@ namespace Sigilos.UI.Screens
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
 			// Antes de abrirem, as Masmorras não aparecem nem no nome do caminho.
 			var detail = Features.IsOpen(_player, _database, Feature.Dungeons) ? T("hub.battle_detail", next, _database.Stages.Count) : T("hub.battle_detail_campaign", next, _database.Stages.Count);
-			var size = new Vector2(184, 150);
+			var size = new Vector2(184, 144);
 			_battle = new TileButton(T("hub.battle"), detail, Art.Icon("fight"), size, ButtonKind.Secondary) { Name = "Battle" };
 			_battle.Pressed += () => Requested?.Invoke(Destination.Map);
 			column.AddChild(_battle);
@@ -313,6 +313,7 @@ namespace Sigilos.UI.Screens
 			for (var i = 1; i <= 2; i++)
 			{
 				var soon = new TileButton(T("hub.soon"), "", Art.Icon("tower"), size, ButtonKind.Secondary) { Name = $"Soon{i}" }.Locked();
+				soon.Pressed += () => Dialog.Info(soon, T("hub.soon"), T("hub.soon_text"), 420);
 				column.AddChild(soon);
 			}
 			return column;
@@ -390,7 +391,7 @@ namespace Sigilos.UI.Screens
 			_pending.AddChild(Layout.Labeled("essence", Texts.Number(preview.Essence), T("currency.essence"), labelMinimumSize: new Vector2(40,22)));
 			_pending.AddChild(Layout.Labeled("gold", Texts.Number(preview.Gold), T("currency.gold"), labelMinimumSize: new Vector2(23, 22)));
 			_pending.AddChild(Layout.Labeled("mana", Texts.Number(preview.Mana), T("currency.mana"), labelMinimumSize: new Vector2(26, 22)));
-			_collect.Disabled = preview.IsEmpty;
+			_collect.Block(preview.IsEmpty ? T("hub.why_collect") : null, T("hub.collect"));
 		}
 	}
 }

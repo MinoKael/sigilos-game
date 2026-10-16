@@ -82,9 +82,6 @@ namespace Sigilos.UI.Screens
 
 		public string? DefenderName { get; init; }
 
-		/// <summary>Só montar a equipe (a defesa da Arena): sem inimigos, sem Lutar.</summary>
-		public bool EditOnly { get; init; }
-
 		/// <summary>Custo em Convites Astrais do duelo (o botão Lutar mostra).</summary>
 		public int Invites { get; init; }
 
@@ -173,9 +170,8 @@ namespace Sigilos.UI.Screens
 			}
 
 			var ready = Members().Count > 0;
-			_fight.Disabled = !ready;
-			if (_autoBattle != null)
-				_autoBattle.Disabled = !ready;
+			_fight.Block(ready ? null : T("teams.why_empty"), T("common.fight"));
+			_autoBattle?.Block(!ready ? T("teams.why_empty") : !_auto ? T("common.why_no_auto") : null, T("common.auto_battle"));
 		}
 
 		/// <summary>Os monstros da equipe que lutam, na ordem (a Líder primeiro).</summary>
@@ -236,6 +232,7 @@ namespace Sigilos.UI.Screens
 			var header = Layout.Row(Space.Regular).Named("Header");
 			header.AddChild(new Label { Name = "Title", Text = T("prep.team", Texts.ContentName(_database, _content)), ThemeTypeVariation = GameTheme.Heading });
 			header.AddChild(new Label { Name = "Count", Text = $"{team.Count}/{Teams.SizeOf(_content)}", ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+			header.AddChild(SigilButton.Of("help", () => Dialog.Info(this, T("prep.team", Texts.ContentName(_database, _content)), T("prep.hint") + " " + T("prep.saved"), 520), 36).Named("Help"));
 			_side.AddChild(header);
 
 			var leader = team.Count > 0 ? _database.Summon(team[0].SummonId) : null;
@@ -244,25 +241,21 @@ namespace Sigilos.UI.Screens
 			else
 				_side.AddChild(Layout.Text(team.Count == 0 ? T("teams.no_team") : T("teams.no_leadership"), GameTheme.Faded).Named("Leadership"));
 
-			if (team.FirstOrDefault(m => m.Id == _chosen) is { } chosen)
+			// Os dois botões ficam sempre aqui; sem um da equipe escolhido, só apagam.
+			var chosen = team.FirstOrDefault(m => m.Id == _chosen);
+			var buttons = Layout.Grid(2, 8).Named("Actions");
+			var makeLeader = GameButton.Of(T("teams.make_leader"), () =>
 			{
-				_side.AddChild(Layout.Text(T("prep.chosen", _database.Summon(chosen.SummonId).NameFor(chosen.Awakened))).Named("Chosen"));
-				var buttons = Layout.Grid(2, 8).Named("Actions");
-				if (team[0].Id != chosen.Id)
-					buttons.AddChild(GameButton.Of(T("teams.make_leader"), () =>
-					{
-						_chosen = null;
-						LeaderRequested?.Invoke(chosen.Id);
-					}, ButtonKind.Primary, "leader", 44).Named("MakeLeader"));
-				buttons.AddChild(GameButton.Of(T("teams.remove"), () => ToggleRequested?.Invoke(chosen.Id), ButtonKind.Secondary, "cancel", 44).Named("Remove"));
-				_side.AddChild(buttons);
-			}
-			else
-			{
-				_side.AddChild(Layout.Text(T("prep.hint"), GameTheme.Faded).Named("Hint"));
-			}
-
-			_side.AddChild(Layout.Text(T("prep.saved"), GameTheme.Faded).Named("Saved"));
+				var id = chosen!.Id;
+				_chosen = null;
+				LeaderRequested?.Invoke(id);
+			}, ButtonKind.Primary, "leader", 44).Named("MakeLeader");
+			makeLeader.Block(chosen == null ? T("teams.why_pick") : team[0].Id == chosen.Id ? T("teams.why_leader") : null, T("teams.make_leader"));
+			buttons.AddChild(makeLeader);
+			var remove = GameButton.Of(T("teams.remove"), () => ToggleRequested?.Invoke(chosen!.Id), ButtonKind.Secondary, "cancel", 44).Named("Remove");
+			remove.Block(chosen == null ? T("teams.why_pick") : null, T("teams.remove"));
+			buttons.AddChild(remove);
+			_side.AddChild(buttons);
 		}
 
 		// Inimigos ----------------------------------------------------------------------------------
@@ -273,16 +266,9 @@ namespace Sigilos.UI.Screens
 			var panel = new PanelContainer { Name = "Enemies", CustomMinimumSize = new Vector2(440, 0) };
 			var column = new VBoxContainer { Name = "Column" };
 			column.AddThemeConstantOverride("separation", Space.Medium);
-			if (EditOnly || Defenders != null)
+			if (Defenders != null)
 			{
-				column.AddChild(new Label { Name = "Title", Text = EditOnly ? T("arena.defense") : T("arena.duel_against", DefenderName ?? ""), ThemeTypeVariation = GameTheme.Heading });
-				if (EditOnly)
-				{
-					column.AddChild(Layout.Text(T("arena.defense_text"), GameTheme.Faded, 400).Named("Note"));
-					_fight = GameButton.Of(T("common.fight"), () => { }, ButtonKind.Primary, "fight", 60).Named("Fight");
-					_fight.Visible = false;
-				}
-				else
+				column.AddChild(new Label { Name = "Title", Text = T("arena.duel_against", DefenderName ?? ""), ThemeTypeVariation = GameTheme.Heading });
 				{
 					var duel = new VBoxContainer { Name = "Formation", SizeFlagsVertical = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
 					duel.AddThemeConstantOverride("separation", Space.Regular);
@@ -318,16 +304,14 @@ namespace Sigilos.UI.Screens
 				formation.AddChild(FoeRow("Back", rest, 60));
 			column.AddChild(formation);
 
-			var buttons = Layout.Grid(_auto ? 2 : 1, 10).Named("Buttons");
+			// A Batalha automática tem o seu lugar sempre; sem ela neste conteúdo, só fica apagada.
+			var buttons = Layout.Grid(2, 10).Named("Buttons");
 			_fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(), ButtonKind.Primary, "fight", 60).Named("Fight");
 			if (_mana > 0)
 				_fight.WithCost("mana", _mana.ToString());
 			buttons.AddChild(_fight);
-			if (_auto)
-			{
-				_autoBattle = GameButton.Of(T("common.auto_battle"), () => AutoBattleRequested?.Invoke(), ButtonKind.Secondary, "repeat", 60).Named("AutoBattle");
-				buttons.AddChild(_autoBattle);
-			}
+			_autoBattle = GameButton.Of(T("common.auto_battle"), () => AutoBattleRequested?.Invoke(), ButtonKind.Secondary, "repeat", 60).Named("AutoBattle");
+			buttons.AddChild(_autoBattle);
 
 			column.AddChild(buttons);
 			panel.AddChild(column);

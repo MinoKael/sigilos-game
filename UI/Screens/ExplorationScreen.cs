@@ -68,7 +68,7 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("exploration.title"), _currencies, () => BackRequested?.Invoke()).Header);
+			page.AddChild(Layout.Header(T("exploration.title"), _currencies, () => BackRequested?.Invoke(), this, T("campaign.enemies_hint"), T("exploration.manual")).Header);
 
 			var body = Layout.Row(Space.Section).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -250,7 +250,6 @@ namespace Sigilos.UI.Screens
 			}
 
 			_detail.AddChild(waves);
-			_detail.AddChild(Layout.Text(T("campaign.enemies_hint"), GameTheme.Faded).Named("EnemiesHint"));
 
 			_detail.AddChild(Heading("RewardsTitle", T("exploration.rewards")));
 			if (cleared)
@@ -270,7 +269,6 @@ namespace Sigilos.UI.Screens
 
 			_detail.AddChild(Heading("TeamTitle", T("common.team")));
 			_detail.AddChild(new TeamStrip(_database, _player, Teams.Exploration));
-			_detail.AddChild(Layout.Text(T("exploration.manual"), GameTheme.Faded).Named("ManualHint"));
 
 			var problem = Core.Progression.Exploration.Check(_player, Exploration, number, _now);
 			if (!Core.Progression.Exploration.IsOpen(_player, Exploration))
@@ -279,7 +277,7 @@ namespace Sigilos.UI.Screens
 				_actions.AddChild(Refusal(T("exploration.locked", number - 1)));
 
 			var fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(number), ButtonKind.Primary, "fight", 68).Named("Fight");
-			fight.Disabled = problem != EntryProblem.None;
+			fight.Block(problem != EntryProblem.None ? Texts.Refusal(problem, 0) : null, T("common.fight"));
 			var row = Layout.Row(Space.Wide).Named("Buttons");
 			row.AddChild(fight.Wide(220));
 			row.AddChild(new Label { Name = "Free", Text = T("exploration.free"), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
