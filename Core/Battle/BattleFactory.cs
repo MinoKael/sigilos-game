@@ -66,6 +66,28 @@ namespace Sigilos.Core.Battle
 			return new BattleSession(allies, waves, seed, encounter.Victory);
 		}
 
+		/// <summary>
+		/// Um duelo da Arena: o time do jogador (com o bônus da sequência de vitórias, em frações de Vida e Ataque)
+		/// contra a defesa de outro alquimista, uma onda só. A defesa luta como o jogador: sem o reforço
+		/// de inimigo de Campanha (<see cref="FoeBoost"/>, <see cref="FoeScale"/>), com a Liderança da própria Líder.
+		/// </summary>
+		public static BattleSession CreateDuel(GameDatabase database, BattleTeam attacker, BattleTeam defender, int seed, double health = 0, double attack = 0)
+		{
+			var allies = attacker.Members.Select(member => Duelist(member, attacker.Members[0].Summon.Leader, Side.Allies, health, attack)).ToList();
+			foreach (var ally in allies)
+				ally.Team = allies;
+
+			var foes = defender.Members.Select(member => Duelist(member, defender.Members[0].Summon.Leader, Side.Enemies, 0, 0)).ToList();
+			foreach (var foe in foes)
+				foe.Team = foes;
+
+			return new BattleSession(allies, new List<IReadOnlyList<BattleUnit>> { foes }, seed, VictoryCondition.AllWaves);
+		}
+
+		/// <summary>Uma invocação de defesa da Arena pronta para lutar, para o resumo dela antes da luta.</summary>
+		public static BattleUnit DefenderUnit(BattleTeam team, int index) =>
+			Duelist(team.Members[index], team.Members[0].Summon.Leader, Side.Enemies, 0, 0);
+
 		/// <summary>Quem leva uma regra da Influência: os inimigos de todas as ondas, só o guardião, o time do jogador ou todos.</summary>
 		private static IEnumerable<BattleUnit> Bearers(InfluenceSide side, IReadOnlyList<BattleUnit> allies, IReadOnlyList<IReadOnlyList<BattleUnit>> waves)
 		{
@@ -86,20 +108,25 @@ namespace Sigilos.Core.Battle
 			return (prepared.Where(s => !s.IsPassive).ToList(), prepared.FirstOrDefault(s => s.IsPassive)?.Passive);
 		}
 
-		private static BattleUnit Ally(TeamMember member, LeaderDefinition? leader)
+		private static BattleUnit Ally(TeamMember member, LeaderDefinition? leader) => Duelist(member, leader, Side.Allies, 0, 0);
+
+		/// <summary>Uma invocação do jogador (ou de uma defesa da Arena) pronta para lutar, de qualquer lado.</summary>
+		private static BattleUnit Duelist(TeamMember member, LeaderDefinition? leader, Side side, double health, double attack)
 		{
 			var summon = member.Summon;
 			var sheet = SummonStats.For(summon, member.Stars, member.Level, member.Awakened, member.Runes.ToList());
 
 			// A Liderança da primeira invocação vale para o time inteiro, sobre a base (não sobre as runas).
 			var stats = sheet.TotalWith(leader);
+			if (health != 0 || attack != 0)
+				stats = stats with { Health = stats.Health * (1 + health), Attack = stats.Attack * (1 + attack) };
 			var (actives, passive) = Prepare(summon.SkillsFor(member.Awakened), member.SkillLevels, member.Awakened);
 
 			return new BattleUnit(
 				summon.Id,
 				summon.NameFor(member.Awakened),
 				summon.Image,
-				Side.Allies,
+				side,
 				summon.Element,
 				member.Level,
 				member.Awakened,
@@ -130,7 +157,7 @@ namespace Sigilos.Core.Battle
 		{
 			var stats = Growth.FoeStats(summon.Stats, encounter.Stars, encounter.Level);
 			var (health, attack) = FoeScale(summon.Rarity);
-			stats = Boosted(stats with { Health = stats.Health * health * encounter.Scale, Attack = stats.Attack * attack * encounter.Scale });
+			stats = Pressed(Boosted(stats with { Health = stats.Health * health * encounter.Scale, Attack = stats.Attack * attack * encounter.Scale }), encounter);
 			var (actives, passive) = Prepare(summon.Skills, System.Array.Empty<int>(), false);
 			return new BattleUnit(
 				summon.Id,
@@ -154,11 +181,11 @@ namespace Sigilos.Core.Battle
 		{
 			var stats = Awakening.Apply(Growth.FoeStats(summon.AwakenedStats, encounter.Stars, encounter.Level), summon.Awakening);
 			var (health, attack) = FoeScale(summon.Rarity);
-			stats = Boosted(stats with
+			stats = Pressed(Boosted(stats with
 			{
 				Health = stats.Health * health * GuardianHealth * encounter.Scale,
 				Attack = stats.Attack * attack * encounter.Scale,
-			});
+			}), encounter);
 			var skills = summon.AllSkills;
 			var (actives, passive) = Prepare(skills, skills.Select(skill => skill.MaxLevel).ToList(), true);
 			return new BattleUnit(
@@ -178,12 +205,12 @@ namespace Sigilos.Core.Battle
 		private static BattleUnit EnemyFoe(EnemyDefinition enemy, Element element, Encounter encounter)
 		{
 			var stats = Growth.FoeStats(enemy.Stats, encounter.Stars, encounter.Level);
-			stats = Boosted(stats with
+			stats = Pressed(Boosted(stats with
 			{
 				Health = stats.Health * enemy.HealthScale * encounter.Scale,
 				Attack = stats.Attack * enemy.AttackScale * encounter.Scale,
 				Defense = stats.Defense * enemy.DefenseScale,
-			});
+			}), encounter);
 			var (actives, passive) = Prepare(enemy.Skills, System.Array.Empty<int>(), false);
 			// Inimigo único é chefe (só o que não existe como invocação mora em Data/enemies.json), menos o lacaio.
 			return new BattleUnit(
@@ -199,6 +226,15 @@ namespace Sigilos.Core.Battle
 				passive,
 				RuneSetEffects.None) { IsBoss = !enemy.Minion };
 		}
+
+		/// <summary>
+		/// A pressão da fase (<see cref="Encounter.Attack"/> e <see cref="Encounter.Speed"/>): Ataque e Velocidade a
+		/// mais conforme a Campanha avança. Vale 1 onde não se pede.
+		/// </summary>
+		private static StatBlock Pressed(StatBlock stats, Encounter encounter) =>
+			encounter.Attack == 1 && encounter.Speed == 1
+				? stats
+				: stats with { Attack = stats.Attack * encounter.Attack, Speed = stats.Speed * encounter.Speed };
 
 		/// <summary>A força a mais de todo inimigo (<see cref="FoeBoost"/>).</summary>
 		private static StatBlock Boosted(StatBlock stats) => stats with

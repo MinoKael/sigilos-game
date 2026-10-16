@@ -141,6 +141,7 @@ namespace Sigilos.GameEntry.Account
 			_mail = new CloudMail(_auth);
 			Chat = new ChatLink(_http.BaseAddress!, _auth.Token);
 			Friends = new CloudFriends(_auth);
+			Arena = new CloudArena(_auth);
 		}
 
 		/// <summary>Chegou a chave de recuperação da conta (<see cref="PendingRecoveryKey"/>): o GameRoot mostra.</summary>
@@ -255,6 +256,9 @@ namespace Sigilos.GameEntry.Account
 
 		/// <summary>Os amigos da conta no servidor (só com <see cref="Connected"/> responde).</summary>
 		public CloudFriends Friends { get; }
+
+		/// <summary>A Arena no servidor: a defesa da conta e as defesas dos outros (só com <see cref="Connected"/> responde).</summary>
+		public CloudArena Arena { get; }
 
 		/// <summary>Há um token guardado: dá para entrar sem senha (<see cref="Resume"/>).</summary>
 		public bool Remembered => _auth.SignedIn;

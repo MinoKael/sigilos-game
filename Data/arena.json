@@ -1,0 +1,76 @@
+// A Arena Astral (Core/Progression/Arena, ArenaTeams): duelos por pontos contra a defesa de outros alquimistas.
+// Cada luta custa 1 Convite Astral (maxInvites, uma recarga a cada inviteMinutes; vencer a lista inteira devolve
+// listBonusInvites). A lista tem um adversário por valor de "listOffsets", a diferença de pontos dele para a conta.
+// Vitória: pointsBase + diferença/pointsSlope pontos, limitado a pointsMin..pointsMax (quanto mais forte o
+// adversário, mais pontos); derrota: o inverso. Sequência: cada degrau soma Vida e Ataque (%) de "wins" vitórias
+// em diante, vale streakMinutes depois da última vitória e acaba na derrota, no empate ou ao renovar a lista.
+// "grades": do menor ao maior; "points" é o piso do Grau, "astrarium" o que cada vitória paga (Rival também), e
+// "gold" e "legendaryScrolls" o prêmio do fim da semana (domingo 22h). "ghost" é a defesa que o Grau enfrenta:
+// estrelas e nível das invocações e grau e nível das runas. Toda conta começa com 1000 pontos (Adepto III).
+// "rivals": equipes fixas, com espera depois de vencidas e Ouro garantido; não dão nem tiram pontos.
+// "shop": a Loja Cósmica, em Astrarium; "limit" por "period" (Day ou Week); o limite volta junto com o ciclo.
+{
+  "maxInvites": 10,
+  "inviteMinutes": 30,
+  "listBonusInvites": 2,
+  "listOffsets": [-150, -100, -50, -25, 0, 25, 50, 75, 125, 175],
+  "pointsBase": 20,
+  "pointsSlope": 10,
+  "pointsMin": 8,
+  "pointsMax": 40,
+  "streakMinutes": 60,
+  "streak": [
+    {"wins": 2, "health": 5, "attack": 0},
+    {"wins": 4, "health": 0, "attack": 5},
+    {"wins": 6, "health": 5, "attack": 0},
+    {"wins": 8, "health": 0, "attack": 5},
+    {"wins": 10, "health": 10, "attack": 10}
+  ],
+  "grades": [
+    {"id": "apprentice", "name": "Aprendiz", "points": 0, "astrarium": 2, "gold": 5,
+      "ghost": {"stars": 5, "level": 16, "runeGrade": 5, "runeLevel": 0}},
+    {"id": "adept_1", "name": "Adepto I", "points": 900, "astrarium": 3, "gold": 30,
+      "ghost": {"stars": 5, "level": 18, "runeGrade": 5, "runeLevel": 3}},
+    {"id": "adept_2", "name": "Adepto II", "points": 950, "astrarium": 3, "gold": 60,
+      "ghost": {"stars": 5, "level": 22, "runeGrade": 5, "runeLevel": 5}},
+    {"id": "adept_3", "name": "Adepto III", "points": 1000, "astrarium": 3, "gold": 90,
+      "ghost": {"stars": 6, "level": 18, "runeGrade": 6, "runeLevel": 5}},
+    {"id": "alchemist_1", "name": "Alquimista I", "points": 1100, "astrarium": 4, "gold": 150,
+      "ghost": {"stars": 6, "level": 26, "runeGrade": 6, "runeLevel": 8}},
+    {"id": "alchemist_2", "name": "Alquimista II", "points": 1200, "astrarium": 4, "gold": 200,
+      "ghost": {"stars": 6, "level": 33, "runeGrade": 6, "runeLevel": 10}},
+    {"id": "alchemist_3", "name": "Alquimista III", "points": 1300, "astrarium": 4, "gold": 250,
+      "ghost": {"stars": 6, "level": 38, "runeGrade": 6, "runeLevel": 12}},
+    {"id": "magister", "name": "Magister", "points": 1700, "astrarium": 5, "gold": 750, "legendaryScrolls": 1,
+      "ghost": {"stars": 6, "level": 40, "runeGrade": 6, "runeLevel": 15, "awakened": true}}
+  ],
+  "names": [
+    "Aurélia", "Cassiano", "Dalila", "Eustáquio", "Fulgêncio", "Giselda", "Heitor", "Iolanda", "Jasão", "Kaleb",
+    "Lavínia", "Mavro", "Noêmia", "Olegário", "Pérola", "Quirino", "Rosalvo", "Selena", "Tobias", "Úrsula",
+    "Valério", "Wanda", "Xavier", "Ysolda", "Zeferino"
+  ],
+  "rivals": [
+    {"id": "calcinadora", "name": "Calcinadora de Cinzas", "cooldownHours": 4, "gold": 10,
+      "members": ["wolf_fire", "knight_fire", "miner_fire", "pirate_fire"],
+      "team": {"stars": 5, "level": 22, "runeGrade": 5, "runeLevel": 3}},
+    {"id": "destilador", "name": "Destilador das Marés", "cooldownHours": 4, "gold": 15,
+      "members": ["dolphin_water", "pirate_water", "crow_water", "druid_water"],
+      "team": {"stars": 5, "level": 28, "runeGrade": 5, "runeLevel": 6}},
+    {"id": "vigia", "name": "Vigia do Athanor", "cooldownHours": 4, "gold": 20,
+      "members": ["lich_light", "knight_light", "miner_light", "wolf_light"],
+      "team": {"stars": 6, "level": 24, "runeGrade": 6, "runeLevel": 6}},
+    {"id": "tecela", "name": "Tecelã de Mercúrio", "cooldownHours": 4, "gold": 25,
+      "members": ["fox_wind", "bandit_wind", "wizard_wind", "crow_wind"],
+      "team": {"stars": 6, "level": 32, "runeGrade": 6, "runeLevel": 9}},
+    {"id": "retorta", "name": "Senhor da Retorta", "cooldownHours": 4, "gold": 30,
+      "members": ["lich_dark", "wizard_dark", "pirate_dark", "druid_dark"],
+      "team": {"stars": 6, "level": 40, "runeGrade": 6, "runeLevel": 12}}
+  ],
+  "shop": [
+    {"id": "transmutation", "name": "Transmutação Alquímica", "item": "Scrolls", "amount": 1, "price": 75, "limit": 15, "period": "Week"},
+    {"id": "light_dark", "name": "Pergaminho de Luz e Trevas", "item": "LightDarkScrolls", "amount": 1, "price": 250, "limit": 2, "period": "Week"},
+    {"id": "core", "name": "Núcleo de Infusão", "item": "InfusionCores", "amount": 1, "price": 100, "limit": 5, "period": "Week"},
+    {"id": "reappraisal_gem", "name": "Gema de Reavaliação", "item": "ReappraisalGems", "amount": 1, "price": 150, "limit": 3, "period": "Week"},
+    {"id": "mana_flask", "name": "Frasco de Mana", "item": "Mana", "amount": 120, "price": 20, "limit": 5, "period": "Day"}
+  ]
+}

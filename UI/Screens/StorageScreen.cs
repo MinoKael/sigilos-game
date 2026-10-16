@@ -416,8 +416,38 @@ namespace Sigilos.UI.Screens
 			if (stack.Count > 1)
 				CopiesDialog.Open(this, _database, _player, stack,
 					retrieved => RetrieveManyRequested?.Invoke(retrieved),
-					(target, materials) => FuseRequested?.Invoke(target, materials),
+					(target, materials) => Fuse(target, materials),
 					released => ReleaseRequested?.Invoke(released));
+		}
+
+		/// <summary>
+		/// Funde as cópias e, com a ficha refeita, sobe em verde o "+n" sobre cada habilidade que subiu de nível
+		/// (a mesma animação dos marcos da runa).
+		/// </summary>
+		private void Fuse(int target, IReadOnlyList<int> materials)
+		{
+			var monster = _player.Monster(target);
+			var before = monster == null ? new List<int>() : Enumerable.Range(0, _database.Summon(monster.SummonId).AllSkills.Count).Select(monster.SkillLevel).ToList();
+			FuseRequested?.Invoke(target, materials);
+			if (monster == null)
+				return;
+
+			// Só quando a ficha na tela é a do monstro que subiu (a fusão aberta pelas cópias pode ser de outro).
+			if (_selected != target)
+				return;
+
+			var gains = before.Select((level, i) => monster.SkillLevel(i) - level).ToList();
+			// A ficha acabou de ser refeita: espera o próximo quadro para os ícones já estarem no lugar.
+			Callable.From(() => Callable.From(() =>
+			{
+				if (!IsInsideTree())
+					return;
+				for (var i = 0; i < gains.Count; i++)
+				{
+					if (gains[i] > 0 && _detail.FindChild($"Skill{i + 1}", true, false) is Control tile)
+						GainPop.Show(this, tile, $"+{gains[i]}");
+				}
+			}).CallDeferred()).CallDeferred();
 		}
 
 		// Ficha ------------------------------------------------------------------------------------
@@ -732,7 +762,7 @@ namespace Sigilos.UI.Screens
 			var left = Fusion.SkillUpsLeft(_database, monster);
 			//_detail.AddChild(Layout.Text(left == 0 ? T("monsters.fuse_full") : T("monsters.fuse_hint", left, copies), GameTheme.Faded).Named("FuseHint"));
 			var actions = Layout.Grid(2, 10).Named("Actions");
-			var fuse = GameButton.Of(T("monsters.fuse_open"), () => FusionDialog.Open(this, _database, _player, monster, ids => FuseRequested?.Invoke(monster.Id, ids)), ButtonKind.Primary, "fuse").Named("Fuse");
+			var fuse = GameButton.Of(T("monsters.fuse_open"), () => FusionDialog.Open(this, _database, _player, monster, ids => Fuse(monster.Id, ids)), ButtonKind.Primary, "fuse").Named("Fuse");
 			fuse.Disabled = copies == 0 || left == 0;
 			actions.AddChild(fuse);
 			_detail.AddChild(actions);

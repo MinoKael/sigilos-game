@@ -32,6 +32,21 @@ namespace Sigilos.Core.Content
 		/// <summary>Marco: Pergaminhos Lendários da primeira vitória (as fases que fecham uma região).</summary>
 		public int FirstClearLegendary { get; init; }
 
+		/// <summary>Marco: Pergaminhos de Luz e Trevas da primeira vitória (a última fase).</summary>
+		public int FirstClearLightDark { get; init; }
+
+		/// <summary>
+		/// Marco: kits de 6 sigilos 6★ Lendários da primeira vitória, de um conjunto à escolha do jogador
+		/// (<see cref="Progression.RuneKits"/>).
+		/// </summary>
+		public int FirstClearKits { get; init; }
+
+		/// <summary>
+		/// Sigilos Lendários da primeira vitória, com as estrelas dos inimigos da fase: metade do que antes eram
+		/// Pergaminhos (<see cref="FirstClearScrolls"/>) vem assim.
+		/// </summary>
+		public int FirstClearRunes { get; init; }
+
 		/// <summary>Marco: Núcleos de Infusão da primeira vitória.</summary>
 		public int FirstClearCores { get; init; }
 
@@ -47,6 +62,14 @@ namespace Sigilos.Core.Content
 		/// <summary>Até 3 falas antes da luta: "a história é tempero" (GDD, seção 4).</summary>
 		public IReadOnlyList<string> Lines { get; init; } = new List<string>();
 
-		public Encounter Encounter => new(Stars, Level, Waves, Scale);
+		/// <summary>
+		/// A pressão que cresce com a Campanha, além de <see cref="Scale"/>: Ataque e Velocidade dos inimigos
+		/// (1 = os de sempre). A dificuldade do fim do jogo vem daqui e do nível, não do XP.
+		/// </summary>
+		public double AttackScale { get; init; } = 1;
+
+		public double SpeedScale { get; init; } = 1;
+
+		public Encounter Encounter => new(Stars, Level, Waves, Scale, Attack: AttackScale, Speed: SpeedScale);
 	}
 }

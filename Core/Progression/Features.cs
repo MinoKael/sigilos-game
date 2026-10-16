@@ -24,6 +24,7 @@ namespace Sigilos.Core.Progression
 			[Feature.Shop] = 4,
 			[Feature.AutoBattle] = 5,
 			[Feature.Grimoire] = 8,
+			[Feature.Arena] = 20,
 		};
 
 		/// <summary>A fase que abre a parte; 0 para Monstros, que abre na primeira invocação.</summary>
@@ -32,6 +33,7 @@ namespace Sigilos.Core.Progression
 			Feature.Monsters => 0,
 			Feature.Dungeons => database.Dungeons.Select(d => d.UnlockStage).DefaultIfEmpty(0).Min(),
 			Feature.Exploration => database.Exploration.Constellations.Count > 0 ? database.Exploration.UnlockStage : 0,
+			Feature.Observatory => int.MaxValue,
 			_ => Stages[feature],
 		};
 
@@ -41,6 +43,7 @@ namespace Sigilos.Core.Progression
 			// Uma Masmorra já vencida continua aberta (Dungeons.IsUnlocked), e a porta junto.
 			Feature.Dungeons => database.Dungeons.Any(d => Dungeons.IsUnlocked(player, d)),
 			Feature.Exploration => Exploration.IsOpen(player, database.Exploration),
+			Feature.Observatory => false,
 			_ => player.HighestStage >= StageOf(database, feature),
 		};
 
@@ -48,7 +51,7 @@ namespace Sigilos.Core.Progression
 		public static bool IsNew(PlayerState player, GameDatabase database, Feature feature)
 		{
 			var stage = StageOf(database, feature);
-			return stage > 0 && player.HighestStage == stage;
+			return stage is > 0 and < int.MaxValue && player.HighestStage == stage;
 		}
 
 		/// <summary>O que a primeira vitória da fase abre, na ordem da tabela.</summary>

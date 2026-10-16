@@ -23,6 +23,12 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>A escolha de batalha: Campanha, Masmorras e a Exploração Estelar.</summary>
 		Map,
+
+		/// <summary>A Arena Astral: duelos contra defesas de outros alquimistas, com Grau, sequência e Loja Cósmica.</summary>
+		Arena,
+
+		/// <summary>O Observatório (a Guilda): versão futura, o botão só avisa.</summary>
+		Observatory,
 	}
 
 	/// <summary>O símbolo e o nome escrito de cada destino.</summary>
@@ -40,6 +46,8 @@ namespace Sigilos.UI.Screens
 			Destination.Grimoire => "grimoire",
 			Destination.Friends => "friends",
 			Destination.Exploration => "star_exploration",
+			Destination.Arena => "target",
+			Destination.Observatory => "observatory",
 			_ => "fight",
 		};
 
@@ -55,6 +63,8 @@ namespace Sigilos.UI.Screens
 			Feature.Grimoire => (Icon(Destination.Grimoire), Name(Destination.Grimoire)),
 			Feature.Dungeons => (Icon(Destination.Dungeons), Name(Destination.Dungeons)),
 			Feature.Exploration => (Icon(Destination.Exploration), Name(Destination.Exploration)),
+			Feature.Arena => (Icon(Destination.Arena), Name(Destination.Arena)),
+			Feature.Observatory => (Icon(Destination.Observatory), Name(Destination.Observatory)),
 			Feature.Channel => ("collect", T("hub.channel")),
 			_ => ("repeat", T("common.auto_battle")),
 		};

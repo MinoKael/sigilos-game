@@ -58,7 +58,7 @@ namespace Sigilos.UI.Screens
 	/// diz o que fazer para ficar mais forte; na primeira vitória de uma fase, <paramref name="Opened"/> diz
 	/// o que ela abriu no Santuário.
 	/// </summary>
-	public sealed record BattleOutcome(bool Victory, VictoryReward? Reward, IReadOnlyList<ResultMonster> Team, int AccountLevel, double? Best, bool NewBest, IReadOnlyList<DefeatTip>? Tips = null, IReadOnlyList<Feature>? Opened = null);
+	public sealed record BattleOutcome(bool Victory, VictoryReward? Reward, IReadOnlyList<ResultMonster> Team, int AccountLevel, double? Best, bool NewBest, IReadOnlyList<DefeatTip>? Tips = null, IReadOnlyList<Feature>? Opened = null, ArenaOutcome? Arena = null);
 
 	/// <summary>
 	/// O fim da luta, por cima do campo: "Vitória" ou "Derrota" grande no alto; no canto, o tempo da luta
@@ -106,7 +106,7 @@ namespace Sigilos.UI.Screens
 			ZIndex = 60;
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 
-			AddChild(Title(outcome.Victory));
+			AddChild(Title(outcome.Victory, outcome.Arena?.Result == ArenaResult.Draw));
 			AddChild(Time(seconds, outcome));
 			AddChild(Rewards(outcome, defeat));
 			AddChild(Team(outcome.Team));
@@ -133,7 +133,18 @@ namespace Sigilos.UI.Screens
 
 		public override void _Ready()
 		{
-			if (_outcome.Reward?.Rune is not { } rune)
+			// Os sigilos que caíram, um por vez (o de drop e os Lendários da primeira vitória).
+			var runes = new Queue<Rune>();
+			if (_outcome.Reward?.Rune is { } dropped)
+				runes.Enqueue(dropped);
+			foreach (var bonus in _outcome.Reward?.BonusRunes ?? Array.Empty<Rune>())
+				runes.Enqueue(bonus);
+			ShowNextRune(runes);
+		}
+
+		private void ShowNextRune(Queue<Rune> runes)
+		{
+			if (!runes.TryDequeue(out var rune))
 			{
 				Animate();
 				return;
@@ -154,8 +165,8 @@ namespace Sigilos.UI.Screens
 			// Bloquear também guarda: a runa fica, e com o cadeado não sai numa venda em lote.
 			dialog.AddAction(T("lock.lock"), () => _lock(rune), ButtonKind.Secondary, true, "lock").Named("Lock");
 			dialog.AddAction(T("battle.keep_rune"), null, ButtonKind.Primary, true, "confirm").Named("Keep");
-			// As barras só sobem depois que a runa sai da frente, para o jogador ver.
-			dialog.Closed += Animate;
+			// As barras só sobem depois que a última runa sai da frente, para o jogador ver.
+			dialog.Closed += () => Callable.From(() => ShowNextRune(runes)).CallDeferred();
 		}
 
 		private void Animate()
@@ -185,12 +196,12 @@ namespace Sigilos.UI.Screens
 				Sfx.Play("rewards.level_up", 1.4);
 		}
 
-		private static Label Title(bool victory)
+		private static Label Title(bool victory, bool draw = false)
 		{
-			var title = new Label { Name = "Title", Text = victory ? T("battle.victory") : T("battle.defeat"), HorizontalAlignment = HorizontalAlignment.Center };
+			var title = new Label { Name = "Title", Text = draw ? T("arena.draw") : victory ? T("battle.victory") : T("battle.defeat"), HorizontalAlignment = HorizontalAlignment.Center };
 			title.AddThemeFontOverride("font", GameTheme.Serif);
 			title.AddThemeFontSizeOverride("font_size", 76);
-			title.AddThemeColorOverride("font_color", victory ? Palette.Gold : Palette.Negative);
+			title.AddThemeColorOverride("font_color", victory ? Palette.Gold : draw ? Palette.TextFaded : Palette.Negative);
 			title.AddThemeColorOverride("font_outline_color", Palette.Background);
 			title.AddThemeConstantOverride("outline_size", 14);
 			title.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.6f));
@@ -262,6 +273,12 @@ namespace Sigilos.UI.Screens
 			// Cresce para os dois lados da linha: a derrota tem mais linhas que a vitória.
 			band.GrowVertical = GrowDirection.Both;
 
+			if (outcome.Arena is { } arena)
+			{
+				band.AddChild(ArenaBand(arena, defeat));
+				return band;
+			}
+
 			if (outcome.Reward == null && defeat is { } reason)
 			{
 				band.AddChild(DefeatBand(reason, outcome.Tips ?? Array.Empty<DefeatTip>()));
@@ -308,6 +325,42 @@ namespace Sigilos.UI.Screens
 			}
 
 			return band;
+		}
+
+		/// <summary>
+		/// O que o duelo da Arena mudou: pontos (com o Grau, se mudou), a sequência de vitórias, o Astrarium, o
+		/// Ouro do Rival e os Convites da lista vencida. Na derrota por tempo, o motivo vem junto.
+		/// </summary>
+		private static Control ArenaBand(ArenaOutcome arena, (string Icon, string Text)? defeat)
+		{
+			var column = new VBoxContainer { Name = "Arena", Alignment = BoxContainer.AlignmentMode.Center, MouseFilter = MouseFilterEnum.Ignore };
+			column.AddThemeConstantOverride("separation", Space.Regular);
+			var chips = Layout.Row(Space.Wide, true).Named("Chips");
+			column.AddChild(chips);
+
+			if (!arena.Rival)
+			{
+				var sign = arena.PointsDelta > 0 ? "+" : arena.PointsDelta < 0 ? "−" : "";
+				var ink = arena.PointsDelta > 0 ? Palette.Spirit : arena.PointsDelta < 0 ? Palette.Negative : Palette.Gold;
+				chips.AddChild(Layout.Labeled("target", $"{sign}{Math.Abs(arena.PointsDelta)}", T("arena.points", Texts.Number(arena.Points)), ink).Named("Points"));
+				if (arena.GradeAfter.Id != arena.GradeBefore.Id)
+					chips.AddChild(Layout.Labeled("target", arena.GradeAfter.Name, T(arena.PointsDelta >= 0 ? "arena.grade_up" : "arena.grade_down"), Palette.Gold).Named("Grade"));
+				chips.AddChild(Layout.Labeled("fight", arena.Streak.ToString(), T("arena.streak"), Palette.Gold).Named("Streak"));
+			}
+
+			if (arena.Astrarium > 0)
+				chips.AddChild(Layout.Labeled("astrarium", $"+{Texts.Number(arena.Astrarium)}", T("arena.astrarium"), Palette.Spirit).Named("Astrarium"));
+			if (arena.Gold > 0)
+				chips.AddChild(Layout.Labeled("gold", $"+{Texts.Number(arena.Gold)}", T("currency.gold")).Named("Gold"));
+			if (arena.ListCleared)
+				chips.AddChild(Layout.Labeled("astral_invite", $"+{arena.BonusInvites}", T("arena.list_cleared"), Palette.Arcane).Named("ListCleared"));
+
+			if (arena.Result == ArenaResult.Draw)
+				column.AddChild(Centered(T("arena.draw_text"), 700).Named("DrawText"));
+			else if (arena.Result == ArenaResult.Loss && defeat is { } reason)
+				column.AddChild(Layout.Labeled(reason.Icon, "", reason.Text, Palette.Negative).Named("Reason"));
+
+			return column;
 		}
 
 		/// <summary>O que a primeira vitória abriu: "Abriu no Santuário", e cada parte com o símbolo e o nome.</summary>
@@ -508,6 +561,8 @@ namespace Sigilos.UI.Screens
 				row.AddChild(Layout.Labeled("scroll", $"+{prize.LightDarkScrolls}", T("summon.scroll.LightDark"), Palette.Arcane).Named("LightDark"));
 			if (prize.InfusionCores > 0)
 				row.AddChild(Layout.Labeled("monster", $"+{prize.InfusionCores}", T("reward.infusion_cores"), Palette.Arcane).Named("InfusionCores"));
+			if (prize.RuneKits > 0)
+				row.AddChild(Layout.Labeled("rune", $"+{prize.RuneKits}", T("reward.rune_kit", Texts.Stars(RuneKits.Grade)), Palette.Gold).Named("RuneKit"));
 		}
 	}
 }

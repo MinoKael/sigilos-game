@@ -8,5 +8,5 @@ namespace Sigilos.Core.Content
 	/// 6★ nível 40), o que vence a luta (<see cref="VictoryCondition"/>) e as regras que valem a luta inteira
 	/// (a Influência de uma constelação; nulo: nenhuma).
 	/// </summary>
-	public sealed record Encounter(int Stars, int Level, IReadOnlyList<IReadOnlyList<StageEnemy>> Waves, double Scale = 1, VictoryCondition Victory = VictoryCondition.AllWaves, IReadOnlyList<InfluenceRule>? Rules = null);
+	public sealed record Encounter(int Stars, int Level, IReadOnlyList<IReadOnlyList<StageEnemy>> Waves, double Scale = 1, VictoryCondition Victory = VictoryCondition.AllWaves, IReadOnlyList<InfluenceRule>? Rules = null, double Attack = 1, double Speed = 1);
 }

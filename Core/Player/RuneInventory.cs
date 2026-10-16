@@ -29,9 +29,10 @@ namespace Sigilos.Core.Player
 			PlayerState player,
 			int grade,
 			IReadOnlyList<RuneSet>? sets = null,
-			RuneRarity? rarity = null)
+			RuneRarity? rarity = null,
+			int? slot = null)
 		{
-			var rune = RuneForge.Generate(random, player.NextRuneId++, grade, null, sets, rarity);
+			var rune = RuneForge.Generate(random, player.NextRuneId++, grade, slot, sets, rarity);
 			player.Runes.Add(rune);
 			return rune;
 		}

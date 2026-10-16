@@ -17,6 +17,49 @@ namespace Sigilos.Core.Player
 		/// <summary>A equipe da Exploração Estelar, a mesma nas 88 constelações.</summary>
 		public const string Exploration = "exploration";
 
+		/// <summary>A equipe que ataca na Arena Astral: quatro, escolhida na preparação de cada luta.</summary>
+		public const string Arena = "arena";
+
+		/// <summary>A defesa da Arena: quatro, editada no menu da Arena. Hoje só fica guardada (ninguém a ataca sem servidor).</summary>
+		public const string ArenaDefense = "arena_defense";
+
+		/// <summary>Quantos monstros a equipe do conteúdo leva: <see cref="PlayerState.MapTeamSize"/> nos mapas, <see cref="PlayerState.TeamSize"/> nas Masmorras.</summary>
+		public static int SizeOf(string content) =>
+			content is Campaign or Exploration or Arena or ArenaDefense ? PlayerState.MapTeamSize : PlayerState.TeamSize;
+
+		/// <summary>
+		/// A equipe de <paramref name="content"/> ainda vazia começa com a da Campanha (até o tamanho dela): quem
+		/// abre a Arena pela primeira vez já tem com quem lutar. Devolve verdadeiro se copiou.
+		/// </summary>
+		public static bool SeedFromCampaign(PlayerState player, string content)
+		{
+			var team = Get(player, content);
+			if (team.Count > 0)
+				return false;
+
+			var size = SizeOf(content);
+			foreach (var id in Of(player, Campaign))
+			{
+				if (team.Count >= size)
+					break;
+				if (player.Monster(id) is { Stored: false, IsInfusionCore: false })
+					team.Add(id);
+			}
+
+			return team.Count > 0;
+		}
+
+		/// <summary>Corta as equipes dos mapas ao tamanho de agora (saves de quando eram de cinco): ficam a Líder e os seguintes.</summary>
+		public static void Trim(PlayerState player)
+		{
+			foreach (var (content, team) in player.Teams)
+			{
+				var size = SizeOf(content);
+				if (team.Count > size)
+					team.RemoveRange(size, team.Count - size);
+			}
+		}
+
 		public static IReadOnlyList<int> Of(PlayerState player, string content) =>
 			player.Teams.TryGetValue(content, out var team) ? team : Array.Empty<int>();
 
@@ -27,7 +70,7 @@ namespace Sigilos.Core.Player
 			if (team.Remove(monsterId))
 				return true;
 
-			if (team.Count >= PlayerState.TeamSize || player.Monster(monsterId) is not { Stored: false, IsInfusionCore: false })
+			if (team.Count >= SizeOf(content) || player.Monster(monsterId) is not { Stored: false, IsInfusionCore: false })
 				return false;
 
 			team.Add(monsterId);
@@ -83,7 +126,7 @@ namespace Sigilos.Core.Player
 			foreach (var monster in monsters.Where(m => !m.Stored && !m.IsInfusionCore))
 			{
 				var team = Get(player, Campaign);
-				if (team.Count >= PlayerState.TeamSize)
+				if (team.Count >= SizeOf(Campaign))
 					return;
 				if (!team.Contains(monster.Id))
 					team.Add(monster.Id);

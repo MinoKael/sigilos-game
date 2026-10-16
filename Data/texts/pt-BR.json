@@ -499,7 +499,7 @@
   },
 
   "hub": {
-    "channeling": "{0}h {1}min acumulados (até {2} h)",
+    "channeling": "{0}:{1}/{2}:00",
     "account_level": "Conta · Nível {0}",
     "account_progress": "{0}/{1} de experiência",
     "account_max_short": "Nível máximo",
@@ -509,6 +509,8 @@
     "battle": "Batalha",
     "battle_detail": "Campanha (fase {0} de {1}) e Masmorras",
     "summon_detail": "Homúnculos novos",
+    "arena_detail": "Duelos, Grau e Loja Cósmica",
+    "soon": "Em breve",
     "version": "v{0}",
     "version_debug": "v{0} · depuração",
     "account_named": "{0} · Nível {1}",
@@ -527,6 +529,7 @@
     "rewards": "Recompensas por vitória",
     "rewards_first": "Recompensas da primeira vitória",
     "rune_always": "Sigilo (sempre)",
+    "rune_legendary": "Sigilo Lendário {0}",
     "rune_chance_short": "Sigilo ({0} de chance)",
     "monster_chance": "de chance de um homúnculo {0}",
     "auto_locked": "A Batalha automática abre depois da primeira vitória nesta fase.",
@@ -690,13 +693,14 @@
   },
 
   "summon": {
-    "pity": "Uma 5★ garantida em até {0} transmutações.",
     "shop": "Comprar Transmutações",
     "new": "Novo!",
     "copy": "Cópia",
     "sent_to_vault": "Foi ao Baú",
-    "pull_one": "Transmutar ×1",
-    "pull_ten": "Transmutar ×10",
+    "scrolls_title": "Pergaminhos",
+    "times_one": "×1",
+    "times_ten": "×10",
+    "pity_progress": "{0}/{1} · uma 5★ garantida ao completar.",
     "pity_title": "Garantia de 5★",
     "rates": "Chances de cada transmutação:",
     "light_dark_rate": "Luz e Trevas {0} ({1} cada)",
@@ -795,7 +799,7 @@
     "core_info": "O Núcleo de Infusão sobe uma habilidade de qualquer homúnculo, de qualquer família: abra o homúnculo, Habilidades, Fundir, e escolha o Núcleo. Ele ocupa uma vaga na coleção ou no Baú, mas não luta, não entra em equipe, não usa sigilos e não se solta. Vem dos marcos: o fim de cada região, os andares de Masmorra e os níveis da conta.",
     "core_count": "{0} na conta",
     "none_selected": "Escolha um homúnculo à esquerda.",
-    "level_hint": "Sobe de nível infundindo Essência: {0} de experiência por Essência. Vitórias também dão experiência a quem lutou.",
+    "level_hint": "Sobe de nível infundindo Essência: {0} de experiência por Essência. A experiência das vitórias é dividida entre a equipe que lutou.",
     "fully_grown": "No máximo: 6★ e nível máximo.",
     "stats_hint": "O número é o total, com sigilos e conjuntos; em verde, quanto disso os sigilos somaram.",
     "no_runes": "Nenhum sigilo equipado ainda.",
@@ -1045,7 +1049,8 @@
       "stats": "Atributos",
       "planets": "Sigilos",
       "effects": "Efeitos",
-      "runes": "Sigilos"
+      "runes": "Sigilos",
+      "catalog": "Catálogo"
     },
     "basic": {
       "campaign": { "title": "Campanha", "text": "50 fases em três regiões, com até 3 ondas; cada vitória custa Mana. A primeira vitória dá Transmutações Alquímicas e sempre um sigilo; as seguintes dão Essência e chance de sigilo. A Campanha apresenta o jogo aos poucos: cada parte do Observatório abre numa fase. Ela solta sigilos de até {0} estrelas; vencer a fase 50 pede cerca de nível 20 com sigilos, ou 6★ nível 40 sem." },
@@ -1055,16 +1060,16 @@
       "gold": { "title": "Ouro e Loja", "text": "O Ouro é a moeda rara: vem da canalização, de cada nível da conta (+{0}) e da primeira vitória em cada andar de Masmorra. Na Loja, compra Mana (pode passar do máximo) ou Transmutações." },
       "summon": { "title": "Transmutação", "text": "A Transmutação Alquímica cria homúnculos. Cada transmutação é uma cópia nova, nas estrelas naturais e no nível 1. A Alquímica tira Fogo, Água e Vento, com a garantia de 5★ sempre à vista e {0} de chance de um homúnculo de Luz ou Trevas (repartida por igual entre os de 3★ que podem sair); a de Luz e Trevas, só Luz e Trevas; a Lendária, só 4★ e 5★. As duas especiais vêm dos marcos do jogo. A primeira 5★ da conta é garantida, e Fragmentos trocam por uma 4★ escolhida." },
       "monsters": { "title": "Homúnculos e Baú", "text": "A coleção começa com {0} vagas e cresce na Loja, com a Expansão de Coleção, até {2}; o Baú guarda o que passar disso, sem limite. Homúnculo no Baú não luta, mas guarda os sigilos dele: eles não ocupam as {1} vagas do inventário de sigilos. Bloqueie um homúnculo ou um sigilo (o cadeado) para nunca soltar, fundir ou vender por engano; desbloqueie para fazer isso." },
-      "teams": { "title": "Equipes", "text": "A equipe, de até {0} homúnculos, se monta na preparação de cada luta (o Lutar). A Campanha, cada Masmorra e a Exploração Estelar guardam a última usada nelas. A primeira é a Líder." },
-      "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou; em Homúnculos, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de sigilos." },
+      "teams": { "title": "Equipes", "text": "A equipe, de até {0} homúnculos nos mapas (Campanha e Exploração Estelar) e {1} nas Masmorras, se monta na preparação de cada luta (o Lutar). A Campanha, cada Masmorra e a Exploração Estelar guardam a última usada nelas. A primeira é a Líder." },
+      "level": { "title": "Nível", "text": "Cada estrela tem o seu nível máximo: {0} no 3★, até {1} no 6★. Vitórias dão experiência à equipe que lutou, dividida entre os homúnculos da equipe; em Homúnculos, cada Essência infundida vale {2} de experiência. A mesma Essência paga a evolução, o Despertar e a melhora de sigilos." },
       "stars": { "title": "Estrelas e evolução", "text": "As estrelas naturais são só o começo: todo homúnculo chega a {0}★. No nível máximo, pague Fragmentos para ganhar uma estrela: o homúnculo mantém o nível, os atributos sobem para os da estrela nova e o máximo sobe 5. De 3★ para 4★: {1} Fragmentos; de 4★ para 5★: {2}; de 5★ para 6★: {3}." },
       "skills": { "title": "Habilidades e cópias", "text": "Cada habilidade tem níveis: mais dano, recuperação ou chance de efeito, ou menos recarga. Fundir uma cópia da mesma família (de qualquer elemento) sobe uma habilidade sorteada em um nível. As cópias que sobram podem ser soltas em troca de Fragmentos, que pagam a evolução. Alguns homúnculos têm uma Passiva, que age sozinha." },
-      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o homúnculo ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada homúnculo tem os seus atributos despertos: veja no Grimório), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
+      "awaken": { "title": "Despertar", "text": "Pague Essência ({0}, {1} ou {2}, pelas estrelas naturais) e o homúnculo ganha nome próprio, uma aura viva com o anel do elemento, estrelas roxas e mais Vida, Ataque e Defesa (cada homúnculo tem os seus atributos despertos: veja no Catálogo, aqui no Compêndio), e mais um bônus: uma habilidade nova (quase sempre 3★), uma habilidade mais forte (quase sempre 4★) ou um atributo (quase sempre 5★: {3}, {4}, {5} ou {6})." },
       "sanctuary": { "title": "Observatório e controles", "text": "O Observatório é a tela de início. A Canalização junta Essência, Ouro e Mana enquanto você está fora, até {0} horas: colete lá. Batalha leva à Campanha e às Masmorras; a barra de baixo leva a Homúnculos, Sigilos, Loja e aos livros. Toque numa moeda, numa recompensa ou numa palavra que não conhece para ver o que é; segure um homúnculo para ver o resumo dele." }
     },
     "combat": {
       "impetus": { "title": "Ímpeto", "text": "Cada unidade tem uma barra de {0} que enche em proporção à Velocidade; quem chega a 100% age. Empurrar ou atrasar a barra muda a ordem — a faixa \"Próximos\" mostra quem vem." },
-      "fight": { "title": "A luta", "text": "Até {0} homúnculos contra até {2} inimigos por onda, em até {1} ondas. Passar de {3} rodadas é derrota." },
+      "fight": { "title": "A luta", "text": "Até {0} homúnculos nos mapas e {4} nas Masmorras, contra até {2} inimigos por onda, em até {1} ondas. Passar de {3} rodadas é derrota." },
       "damage": { "title": "Dano", "text": "Ataque × multiplicador da habilidade × {0} / ({0} + Defesa do alvo). Defesa {0} corta o dano pela metade." },
       "crit": { "title": "Crítico", "text": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo homúnculo começa com 15% de Crítico e 50% de Dano crítico." },
       "resistance": { "title": "Resistência e Precisão", "text": "Todo efeito negativo pode ser barrado: a chance é a Resistência do alvo menos a Precisão de quem lança, nunca abaixo de {0}." },
@@ -1094,7 +1099,7 @@
       "grind": { "title": "Pedra de Afiar", "text": "Soma um bônus a um subatributo de Vida, Ataque, Defesa ou Velocidade do mesmo tipo da pedra. Uma pedra nova troca o bônus antigo." },
       "gem": { "title": "Gema Encantada", "text": "Troca um subatributo de um sigilo +{0} pelo da gema. Só um subatributo por sigilo pode ser encantado." },
       "where": { "title": "Onde conseguir", "text": "A Campanha solta sigilos de até {0} estrelas (sempre na primeira vitória, {1} de chance depois). As Masmorras soltam sigilos Raros ou melhores de 2 a 6 estrelas, maiores a cada andar, e as pedras." },
-      "grimoire": { "title": "Tabelas", "text": "Os números de cada estrela, os custos de melhora e as faixas das pedras estão no Grimório." },
+      "grimoire": { "title": "Tabelas", "text": "Os números de cada estrela, os custos de melhora e as faixas das pedras estão na aba Catálogo." },
       "rarity": {
         "title": "Raridade dos sigilos",
         "text": "A cor do sigilo mostra a raridade dele: com quantos subatributos ele nasce. As melhoras em +3, +6, +9 e +12 dão os que faltam até chegar a quatro; o Lendário já nasce com os quatro, então cada uma dessas melhoras sobe um deles.",
@@ -1216,6 +1221,67 @@
     "duration": "{0} {1}"
   },
 
+  "arena": {
+    "defense": "Defesa",
+    "defense_text": "A defesa luta sozinha, pela IA, quando alguém te enfrentar. Por enquanto ela só fica guardada: os outros alquimistas chegam com o servidor.",
+    "duel_against": "Duelo contra {0}",
+    "draw": "Empate",
+    "draw_text": "O limite de rodadas passou com gente de pé dos dois lados. O Convite foi gasto, mas ninguém perde pontos.",
+    "points": "{0} pontos",
+    "astrarium": "Astrarium",
+    "invites_full": "Convites cheios",
+    "invites_next": "próximo em {0}",
+    "streak": "Sequência",
+    "streak_none": "sem sequência",
+    "streak_building": "faltam {0} para o bônus",
+    "streak_bonus": "+{0}% Vida, +{1}% Ataque · {2}",
+    "next_grade": "{0} pontos para {1}",
+    "top_grade": "O maior Grau da Arena.",
+    "cycle_ends": "A semana acaba em {0}: o prêmio sai pelo Grau e os pontos voltam a 1000.",
+    "help_title": "Pontuação da Arena",
+    "defense_text": "Esta é a equipe que defende a sua conta: com a conta no servidor, outros jogadores a enfrentam.",
+    "defense_edit": "Editar defesa",
+    "defense_done": "Pronto",
+    "help_points": "Vencer um duelo da lista dá de {0} a {1} pontos, e perder tira de {0} a {1}: contra quem tem mais pontos que você vale mais ganhar e menos perder. Empate e Rivais não mexem nos pontos. Vitórias seguidas dão bônus de Vida e Ataque, e cada vitória paga Astrarium pelo seu Grau.",
+    "help_week": "No fim da semana (domingo, 22h) o Grau em que você está paga o prêmio e os pontos voltam a 1000. Sem nenhuma luta na semana, não há prêmio.",
+    "help_rewards": "Prêmio semanal e Astrarium por vitória de cada Grau:",
+    "help_grade": "{0} de Ouro{2} na semana · {1} Astrarium por vitória",
+    "tab_opponents": "Oponentes",
+    "tab_rivals": "Rivais",
+    "cosmic_shop": "Loja Cósmica",
+    "list_progress": "{0} de {1} vencidos. Vencer a lista toda devolve {2} Convites e traz uma lista nova.",
+    "refresh": "Renovar lista",
+    "no_team": "Monte a equipe que ataca antes de lutar.",
+    "refresh_confirm": "Uma lista nova acaba com a sequência de vitórias. Os Convites ficam. Continuar?",
+    "stake": "+{0} pontos se vencer, −{1} se perder",
+    "beaten": "Vencido",
+    "no_invites": "Sem Convites Astrais. Eles voltam com o tempo.",
+    "rivals_text": "Rivais têm equipe fixa e uma espera depois de vencidos. Pagam Astrarium e Ouro, mas não dão nem tiram pontos.",
+    "rival_reward": "{0} Astrarium e {1} de Ouro",
+    "rival_wait": "volta em {0}",
+    "grade_up": "Grau novo",
+    "grade_down": "Grau perdido",
+    "list_cleared": "lista vencida",
+    "shop_intro": "O Astrarium vem das vitórias na Arena. Cada oferta tem um limite por dia ou por semana; a semana vira no domingo às 22h.",
+    "limit_day": "{0} de {1} hoje",
+    "limit_week": "{0} de {1} na semana",
+    "shop_confirm": "Comprar {0} (×{1}) por {2} Astrarium?",
+    "sold_out_day": "Esgotado hoje.",
+    "sold_out_week": "Esgotado na semana.",
+    "no_astrarium": "Faltam {0} Astrarium.",
+    "bought": "{0} comprado.",
+    "payout_title": "Prêmio da semana",
+    "payout_text": "A semana acabou e você terminou como {0}. Recebeu {1} de Ouro{2}.",
+    "payout_legendary": " e {0} Pergaminho Lendário",
+    "abandoned": "Uma luta ficou pela metade e valeu como derrota."
+  },
+
+  "locked": {
+    "stage": "Abre ao vencer a fase {0} da Campanha.",
+    "monsters": "Abre na sua primeira invocação.",
+    "observatory": "Em breve: chega com a Guilda."
+  },
+
   "destination": {
     "Campaign": "Campanha",
     "Dungeons": "Masmorras",
@@ -1228,13 +1294,23 @@
     "Friends": "Amigos",
     "Exploration": "Exploração Estelar",
     "Map": "Batalha",
+    "Arena": "Arena Astral",
+    "Observatory": "Observatório",
     "Bag": "Bolsa",
     "Config": "Ajustes"
   },
 
   "reward": {
     "experience": "Experiência",
-    "infusion_cores": "Núcleos de Infusão"
+    "infusion_cores": "Núcleos de Infusão",
+    "rune_kit": "Kit de 6 sigilos {0}"
+  },
+
+  "kit": {
+    "title": "Kit de sigilos",
+    "text": "Você tem {0} kit(s): 6 sigilos Lendários {1}, um para cada espaço, do conjunto que escolher.",
+    "later": "Depois",
+    "opened": "Sigilos do kit"
   },
 
   "map": {
@@ -1430,7 +1506,7 @@
     "auto": "Por fim, o Automático, embaixo à esquerda: a equipe luta sozinha, usando a habilidade pronta mais forte. Termine a luta como quiser.",
     "end": "Muito bem, Conjurador! Agora invoque os seus próprios homúnculos. Depois, a Campanha espera.",
     "to_summon": "Transmutar",
-    "summon": "Agora, os seus próprios homúnculos. Toque em Transmutar ×10: são dez transmutações, por {0} Transmutações Alquímicas, e a primeira da conta traz o {1} e uma 5★.",
+    "summon": "Agora, os seus próprios homúnculos. Toque em ×10, na Alquímica: são dez transmutações, por {0} Transmutações Alquímicas, e a primeira da conta traz o {1} e uma 5★.",
     "summon_done": "Os seus primeiros homúnculos! Os mais fortes, o {0} e a 5★ entre eles, já entraram na equipe da Campanha. Toque em {1} para conhecê-los, ou volte ao Observatório: a Campanha espera."
   },
 

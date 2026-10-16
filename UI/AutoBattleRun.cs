@@ -131,6 +131,8 @@ namespace Sigilos.UI
 			Prize += reward.Prize ?? Prize.None;
 			if (reward.Rune is { } rune)
 				Runes.Add(rune);
+			if (reward.BonusRunes is { } bonus)
+				Runes.AddRange(bonus);
 			Tools.AddRange(reward.Tools);
 			if (reward.SummonResult is { } summon)
 				Monsters.Add(summon);

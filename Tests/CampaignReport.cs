@@ -33,9 +33,21 @@ namespace Sigilos.Tests
 			Console.WriteLine("stage  enemies         wins  rounds |     wins  rounds");
 			foreach (var stage in database.Stages)
 			{
-				var reference = Run(database, stage.Encounter, ReferenceTeams.AtStage(database, stage.Number));
-				var bare = Run(database, stage.Encounter, ReferenceTeams.Bare(database));
+				var reference = Run(database, stage.Encounter, ReferenceTeams.AtCampaign(database, stage.Number));
+				var bare = Run(database, stage.Encounter, ReferenceTeams.BareOnMap(database));
 				Console.WriteLine($"{stage.Number,5}  {stage.Stars + "★" + stage.Level + " ×" + stage.Scale.ToString("0.00"),-12}  {reference.Wins,6:P0}  {reference.Rounds,6:F1} | {bare.Wins,8:P0}  {bare.Rounds,6:F1}");
+			}
+
+			// O ponto de farm: um time só (o da fase 35) em todas as fases; a experiência por Mana é o que se ganha por energia gasta.
+			Console.WriteLine();
+			Console.WriteLine("Farm: the stage 35 team on every stage | experience per Mana and per round");
+			Console.WriteLine("stage  wins  rounds  xp/mana  xp/round");
+			var farmer = ReferenceTeams.AtCampaign(database, 35);
+			foreach (var stage in database.Stages)
+			{
+				var farm = Run(database, stage.Encounter, farmer);
+				var xp = stage.Experience * farm.Wins;
+				Console.WriteLine($"{stage.Number,5}  {farm.Wins,4:P0}  {farm.Rounds,6:F1}  {xp / stage.Mana,7:F0}  {xp / Math.Max(1, farm.Rounds),8:F0}");
 			}
 
 			Console.WriteLine();
@@ -150,8 +162,8 @@ namespace Sigilos.Tests
 
 			var teams = new (string Name, BattleTeam Team)[]
 			{
-				("st30", ReferenceTeams.AtStage(database, 30)),
-				("st50", ReferenceTeams.AtStage(database, 50)),
+				("st30", ReferenceTeams.AtMapStage(database, 30)),
+				("st50", ReferenceTeams.AtMapStage(database, 50)),
 				("r5", ReferenceTeams.AtFloor(database, 4)),
 				("r6", ReferenceTeams.AtFloor(database, 5)),
 				("pow", ReferenceTeams.Powerful(database)),

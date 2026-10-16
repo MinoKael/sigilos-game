@@ -57,7 +57,8 @@ namespace Sigilos.Core.Progression
 
 			var prize = firstClear ? Milestones.ForFirstClear(stage) : Prize.None;
 			Milestones.Grant(player, prize);
-			var levelUps = Leveling.GiveExperience(player, Teams.Of(player, Teams.Campaign), stage.Experience);
+			var share = Leveling.Share(player, Teams.Campaign, stage.Experience);
+			var levelUps = Leveling.GiveExperience(player, Teams.Campaign, stage.Experience);
 			var level = player.AccountLevel;
 			var account = Account.GiveExperience(player, stage.Experience);
 			essence += account.Essence;
@@ -65,6 +66,11 @@ namespace Sigilos.Core.Progression
 			var rune = firstClear || random.NextDouble() < RepeatRuneChance
 				? RuneInventory.Create(random, player, stage.RuneGrade)
 				: null;
+
+			// Metade do que eram Pergaminhos da primeira vitória vem em sigilos Lendários, das estrelas da fase.
+			var bonus = new List<Rune>();
+			for (var i = 0; firstClear && i < stage.FirstClearRunes; i++)
+				bonus.Add(RuneInventory.Create(random, player, stage.Stars, null, RuneRarity.Legendary));
 
             var pool = database.Summons.Where(s => s.Rarity == MonsterRarityDrop).ToList();
             var summon = SummonRitual.WeightedPick(random, pool);
@@ -76,7 +82,7 @@ namespace Sigilos.Core.Progression
 				summonResult = new SummonResult(summon, Roster.Add(player, summon), firstCopy);
 			}
 
-			return new VictoryReward(mana, scrolls, 0, essence, stage.Experience, firstClear, rune, summonResult, Array.Empty<RuneTool>(), levelUps, account.Levels, prize);
+			return new VictoryReward(mana, scrolls, 0, essence, share, firstClear, rune, summonResult, Array.Empty<RuneTool>(), levelUps, account.Levels, prize, bonus);
 		}
 	}
 }

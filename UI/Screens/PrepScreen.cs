@@ -35,9 +35,6 @@ namespace Sigilos.UI.Screens
 		/// <summary>Os cartões da coleção, na lista que rola de lado.</summary>
 		private const float CardWidth = 104;
 
-		/// <summary>Quantos vão na fileira da frente da formação; o resto, atrás.</summary>
-		private const int FrontRow = 3;
-
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
 		private readonly string _title;
@@ -80,6 +77,17 @@ namespace Sigilos.UI.Screens
 			_filter = filter;
 		}
 
+		/// <summary>Um duelo da Arena: os quatro da defesa no lugar dos inimigos de onda, e o nome de quem defende.</summary>
+		public IReadOnlyList<BattleUnit>? Defenders { get; init; }
+
+		public string? DefenderName { get; init; }
+
+		/// <summary>Só montar a equipe (a defesa da Arena): sem inimigos, sem Lutar.</summary>
+		public bool EditOnly { get; init; }
+
+		/// <summary>Custo em Convites Astrais do duelo (o botão Lutar mostra).</summary>
+		public int Invites { get; init; }
+
 		public event Action? FightRequested;
 		public event Action? AutoBattleRequested;
 
@@ -105,12 +113,14 @@ namespace Sigilos.UI.Screens
 
 			var top = Layout.Row(Space.Loose).Named("Top");
 			var team = new PanelContainer { Name = "Team", SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			var teamRow = Layout.Row(Space.Section).Named("Row");
-			_formation.AddThemeConstantOverride("separation", Space.Medium);
-			teamRow.AddChild(_formation);
+			// O texto que explica vai em cima; embaixo, todos os homúnculos da equipe lado a lado, numa linha só.
+			var teamRow = new VBoxContainer { Name = "Row" };
+			teamRow.AddThemeConstantOverride("separation", Space.Regular);
 			_side.SizeFlagsHorizontal = SizeFlags.ExpandFill;
 			_side.AddThemeConstantOverride("separation", Space.Regular);
 			teamRow.AddChild(_side);
+			_formation.AddThemeConstantOverride("separation", Space.Medium);
+			teamRow.AddChild(_formation);
 			team.AddChild(teamRow);
 			top.AddChild(team);
 			top.AddChild(Enemies());
@@ -181,12 +191,10 @@ namespace Sigilos.UI.Screens
 		{
 			Layout.Clear(_formation);
 			var team = Members();
-			var front = Layout.Row(Space.Regular, centered: true).Named("Front");
-			var back = Layout.Row(Space.Regular, centered: true).Named("Back");
-			for (var i = 0; i < PlayerState.TeamSize; i++)
-				(i < FrontRow ? front : back).AddChild(Slot(i, i < team.Count ? team[i] : null));
-			_formation.AddChild(front);
-			_formation.AddChild(back);
+			var line = Layout.Row(Space.Regular, centered: true).Named("Team");
+			for (var i = 0; i < Teams.SizeOf(_content); i++)
+				line.AddChild(Slot(i, i < team.Count ? team[i] : null));
+			_formation.AddChild(line);
 		}
 
 		/// <summary>Uma vaga: o cartão do monstro (a Líder com a faixa) ou a pedra vazia.</summary>
@@ -227,7 +235,7 @@ namespace Sigilos.UI.Screens
 			var team = Members();
 			var header = Layout.Row(Space.Regular).Named("Header");
 			header.AddChild(new Label { Name = "Title", Text = T("prep.team", Texts.ContentName(_database, _content)), ThemeTypeVariation = GameTheme.Heading });
-			header.AddChild(new Label { Name = "Count", Text = $"{team.Count}/{PlayerState.TeamSize}", ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+			header.AddChild(new Label { Name = "Count", Text = $"{team.Count}/{Teams.SizeOf(_content)}", ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
 			_side.AddChild(header);
 
 			var leader = team.Count > 0 ? _database.Summon(team[0].SummonId) : null;
@@ -265,6 +273,34 @@ namespace Sigilos.UI.Screens
 			var panel = new PanelContainer { Name = "Enemies", CustomMinimumSize = new Vector2(440, 0) };
 			var column = new VBoxContainer { Name = "Column" };
 			column.AddThemeConstantOverride("separation", Space.Medium);
+			if (EditOnly || Defenders != null)
+			{
+				column.AddChild(new Label { Name = "Title", Text = EditOnly ? T("arena.defense") : T("arena.duel_against", DefenderName ?? ""), ThemeTypeVariation = GameTheme.Heading });
+				if (EditOnly)
+				{
+					column.AddChild(Layout.Text(T("arena.defense_text"), GameTheme.Faded, 400).Named("Note"));
+					_fight = GameButton.Of(T("common.fight"), () => { }, ButtonKind.Primary, "fight", 60).Named("Fight");
+					_fight.Visible = false;
+				}
+				else
+				{
+					var duel = new VBoxContainer { Name = "Formation", SizeFlagsVertical = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
+					duel.AddThemeConstantOverride("separation", Space.Regular);
+					var row = Layout.Row(Space.Regular, centered: true).Named("Defenders");
+					for (var i = 0; i < Defenders!.Count; i++)
+						row.AddChild(Defender(Defenders[i], 72).Named($"Foe{i + 1}"));
+					duel.AddChild(row);
+					column.AddChild(duel);
+
+					_fight = GameButton.Of(T("common.fight"), () => FightRequested?.Invoke(), ButtonKind.Primary, "fight", 60).Named("Fight");
+					if (Invites > 0)
+						_fight.WithCost("astral_invite", Invites.ToString());
+					column.AddChild(_fight);
+				}
+
+				panel.AddChild(column);
+				return panel;
+			}
 
 			var last = _encounter.Waves[^1];
 			var lead = Enumerable.Range(0, last.Count).Where(i => IsBoss(last[i])).ToList();
@@ -296,6 +332,17 @@ namespace Sigilos.UI.Screens
 			column.AddChild(buttons);
 			panel.AddChild(column);
 			return panel;
+		}
+
+		/// <summary>Um da defesa: o retrato na cor do elemento; tocar ou segurar abre o resumo dele.</summary>
+		private Control Defender(BattleUnit unit, float size)
+		{
+			var frame = new PanelContainer { MouseFilter = MouseFilterEnum.Stop, MouseDefaultCursorShape = CursorShape.PointingHand };
+			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Of(unit.Element).Darkened(0.3f), 2, (int)(size / 2) + 4, 3));
+			frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), size));
+			void Open() => MonsterSummary.Open(frame, unit);
+			Press.On(frame, Open, Open);
+			return frame;
 		}
 
 		private bool IsBoss(StageEnemy slot) => slot.Guardian || slot.Enemy != null && !_database.Enemy(slot.Enemy).Minion;
@@ -372,7 +419,7 @@ namespace Sigilos.UI.Screens
 			}
 
 			var team = Teams.Of(_player, _content);
-			if (!team.Contains(id) && team.Count >= PlayerState.TeamSize)
+			if (!team.Contains(id) && team.Count >= Teams.SizeOf(_content))
 			{
 				_message.Text = T("prep.full");
 				Sfx.Play("ui.action_unavailable");

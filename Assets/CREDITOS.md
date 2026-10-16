@@ -42,7 +42,7 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Creatures/crowned_skull.svg` | [Crowned-skull - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Crowned-skull_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Creatures/kraken.svg` | [Kraken-tentacle - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Kraken-tentacle_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Creatures/golem_head.svg` | [Golem-head - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Golem-head_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
-| `Creatures/infusion_core.svg` | Desenho próprio do Sigilos (o Núcleo de Infusão), no estilo das silhuetas de game-icons.net | Sigilos | a mesma do jogo |
+| `Creatures/infusion_core.svg` | [Double-ringed-orb - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Double-ringed-orb_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/chest.svg` | [Locked-chest - game-icons.svg](https://commons.wikimedia.org/wiki/File:Locked-chest_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/team.svg` | [Meeple-group - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Meeple-group_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Icons/dungeon.svg` | [Dungeon-gate - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Dungeon-gate_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
@@ -156,6 +156,35 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Zodiac/aquarius.svg` | [Aquarius - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Aquarius_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Zodiac/pisces.svg` | [Pisces - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Pisces_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Planets/*.svg`, `Elements/moon.svg` (símbolos planetários e a Lua) | desenhos do projeto (formas geométricas simples) | Sigilos | Domínio público (CC0) |
+| `Icons/astrarium.svg` | [Black sulfur symbol.svg](https://commons.wikimedia.org/wiki/File:Black_sulfur_symbol.svg) | Wikimedia Commons (obra própria do enviador) | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
+| `Icons/astral_invite.svg` | [Sulfur symbol.svg](https://commons.wikimedia.org/wiki/File:Sulfur_symbol.svg) | Urhixidur; Chabacano | [Public domain](https://en.wikipedia.org/wiki/Public_domain) |
+| `Icons/observatory.svg` | [Observatory - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Observatory_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Avatars/astronaut_helmet.svg` | [Astronaut-helmet - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Astronaut-helmet_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Avatars/natural_1.svg` | [Dice-twenty-faces-one - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Dice-twenty-faces-one_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Avatars/natural_20.svg` | [Dice-twenty-faces-twenty - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Dice-twenty-faces-twenty_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Avatars/plague_doctor.svg` | [Plague-doctor-profile - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Plague-doctor-profile_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/angel.svg` | [Angel-outfit - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Angel-outfit_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/archer.svg` | [Archer - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Archer_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/assassin.svg` | [Hooded-assassin - Darkzaitzev - game-icons.svg](https://commons.wikimedia.org/wiki/File:Hooded-assassin_-_Darkzaitzev_-_game-icons.svg) | Darkzaitzev | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/carnivorous_plant.svg` | [Carnivorous-plant - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Carnivorous-plant_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/dryad.svg` | [Deku-tree - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Deku-tree_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/gorilla.svg` | [Gorilla - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Gorilla_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/lich.svg` | [Death-note - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Death-note_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/lizard.svg` | [Horned-reptile - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Horned-reptile_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/medusa.svg` | [Medusa-head - Cathelineau - game-icons.svg](https://commons.wikimedia.org/wiki/File:Medusa-head_-_Cathelineau_-_game-icons.svg) | Cathelineau | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/miner.svg` | [Dwarf-face - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Dwarf-face_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/minotaur.svg` | [Minotaur - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Minotaur_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/monk.svg` | [Monk-face - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Monk-face_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/mummy.svg` | [Mummy-head - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Mummy-head_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/mushroom.svg` | [Super-mushroom - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Super-mushroom_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/pirate.svg` | [Pirate-captain - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Pirate-captain_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/princess.svg` | [Tarot-03-the-empress - Caro Asercion - game-icons.svg](https://commons.wikimedia.org/wiki/File:Tarot-03-the-empress_-_Caro_Asercion_-_game-icons.svg) | Caro Asercion | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/samurai.svg` | [Samurai-helmet - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Samurai-helmet_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/skeleton.svg` | [Skeleton-inside - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Skeleton-inside_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Creatures/unicorn.svg` | [Unicorn - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Unicorn_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/monster.svg` | [Monster-grasp - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Monster-grasp_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+
+| `Icons/help.svg` | [Help - Sbed - game-icons.svg](https://commons.wikimedia.org/wiki/File:Help_-_Sbed_-_game-icons.svg) | Sbed | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 
 ## Fontes
 

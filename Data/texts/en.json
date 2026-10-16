@@ -498,7 +498,7 @@
   },
 
   "hub": {
-    "channeling": "{0}h {1}min gathered (up to {2} h)",
+    "channeling": "{0}:{1}/{2}:00",
     "account_level": "Account · Level {0}",
     "account_progress": "{0}/{1} experience",
     "account_max_short": "Maximum level",
@@ -508,6 +508,8 @@
     "battle": "Battle",
     "battle_detail": "Campaign (stage {0} of {1}) and Dungeons",
     "summon_detail": "New homunculi · you have {0} Transmutations",
+    "arena_detail": "Duels, Grade and Cosmic Shop",
+    "soon": "Coming soon",
     "version": "v{0}",
     "version_debug": "v{0} · debug",
     "account_named": "{0} · Level {1}",
@@ -526,6 +528,7 @@
     "rewards": "Rewards per victory",
     "rewards_first": "Rewards of the first victory",
     "rune_always": "Sigil (always)",
+    "rune_legendary": "Legendary {0} sigil",
     "rune_chance_short": "Sigil ({0} chance)",
     "monster_chance": "chance of a {0} homunculus",
     "auto_locked": "Auto Battle opens after the first victory on this stage.",
@@ -689,13 +692,14 @@
   },
 
   "summon": {
-    "pity": "A 5★ is guaranteed within {0} transmutations.",
     "shop": "Buy Transmutations",
     "new": "New!",
     "copy": "Copy",
     "sent_to_vault": "To the Vault",
-    "pull_one": "Transmute ×1",
-    "pull_ten": "Transmute ×10",
+    "scrolls_title": "Scrolls",
+    "times_one": "×1",
+    "times_ten": "×10",
+    "pity_progress": "{0}/{1} · a 5★ is guaranteed when it fills.",
     "pity_title": "5★ guarantee",
     "rates": "Chances of each transmutation:",
     "light_dark_rate": "Light and Dark {0} ({1} each)",
@@ -794,7 +798,7 @@
     "core_info": "The Infusion Core raises a skill of any homunculus, of any family: open the homunculus, Skills, Fuse, and pick the Core. It takes a slot in the collection or the Vault, but it doesn't fight, join teams, use sigils or get released. It comes from milestones: the end of each region, Dungeon floors and account levels.",
     "core_count": "{0} on the account",
     "none_selected": "Choose a homunculus on the left.",
-    "level_hint": "Levels up by infusing Essence: {0} experience per Essence. Victories also give experience to the team that fought.",
+    "level_hint": "Levels up by infusing Essence: {0} experience per Essence. Victory experience is split among the team that fought.",
     "fully_grown": "At the maximum: 6★ and max level.",
     "stats_hint": "The number is the total, sigils and sets included; in green, how much of it the sigils added.",
     "no_runes": "No sigils equipped yet.",
@@ -1044,7 +1048,8 @@
       "stats": "Stats",
       "planets": "Sigils",
       "effects": "Effects",
-      "runes": "Sigils"
+      "runes": "Sigils",
+      "catalog": "Catalog"
     },
     "basic": {
       "campaign": { "title": "Campaign", "text": "50 stages in three regions, with up to 3 waves; each victory costs Mana. The first victory gives Transmutations and always a sigil; later ones give Essence and a chance of a sigil. The Campaign introduces the game little by little: each part of the Observatory opens at a stage. It drops sigils of up to {0} stars; beating stage 50 takes about level 20 with sigils, or 6★ level 40 without." },
@@ -1054,16 +1059,16 @@
       "gold": { "title": "Gold and Shop", "text": "Gold is the rare currency: it comes from channeling, from every account level (+{0}) and from the first victory on each Dungeon floor. At the Shop it buys Mana (which can go past the maximum) or Transmutations." },
       "summon": { "title": "Transmutation", "text": "The Alchemical Transmutation creates homunculi. Every transmutation is a new copy, at its natural stars and level 1. The Alchemical one brings Fire, Water and Wind, with the 5★ guarantee always on display and a {0} chance of a Light or Dark homunculus (shared equally among the 3★ ones that can come out); the Light and Dark one, only Light and Dark; the Legendary one, only 4★ and 5★. The two special ones come from game milestones. The account's first 5★ is guaranteed, and Fragments trade for a chosen 4★." },
       "monsters": { "title": "Homunculi and Vault", "text": "The collection starts with {0} slots and grows in the Shop, with the Collection Expansion, up to {2}; the Vault keeps whatever goes past that, with no limit. A homunculus in the Vault doesn't fight, but keeps its sigils: they don't take any of the {1} slots of the sigil inventory. Lock a homunculus or a sigil (the padlock) so it is never released, fused away or sold by mistake; unlock it to do so." },
-      "teams": { "title": "Teams", "text": "The team, of up to {0} homunculi, is set up in the preparation of each fight (Fight). The Campaign, each Dungeon and the Star Exploration keep the last one used in them. The first one is the Leader." },
-      "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought; in Homunculi, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and sigil upgrades." },
+      "teams": { "title": "Teams", "text": "The team, of up to {0} homunculi on the maps (Campaign and Star Exploration) and {1} in the Dungeons, is set up in the preparation of each fight (Fight). The Campaign, each Dungeon and the Star Exploration keep the last one used in them. The first one is the Leader." },
+      "level": { "title": "Level", "text": "Each star has its max level: {0} at 3★, up to {1} at 6★. Victories give experience to the team that fought, split among the homunculi on it; in Homunculi, each Essence infused is worth {2} experience. The same Essence pays for evolution, Awakening and sigil upgrades." },
       "stars": { "title": "Stars and evolution", "text": "Natural stars are only where a homunculus starts: every homunculus reaches {0}★. At max level, pay Fragments to gain a star: the homunculus keeps its level, its stats jump to the new star's and the max rises by 5. 3★ to 4★: {1} Fragments; 4★ to 5★: {2}; 5★ to 6★: {3}." },
       "skills": { "title": "Skills and copies", "text": "Each skill has levels: more damage, recovery or effect rate, or a shorter cooldown. Fusing a copy of the same family (any element) raises a random skill by one level. Leftover copies can be released into Fragments, which pay for evolution. Some homunculi have a Passive, which acts on its own." },
-      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the homunculus gets its own name, a living aura with the ring of its element, purple stars and higher HP, Attack and Defense (each homunculus has its own awakened stats: see the Grimoire), plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {3}, {4}, {5} or {6})." },
+      "awaken": { "title": "Awakening", "text": "Pay Essence ({0}, {1} or {2}, by natural stars) and the homunculus gets its own name, a living aura with the ring of its element, purple stars and higher HP, Attack and Defense (each homunculus has its own awakened stats: see the Catalog, here in the Compendium), plus one bonus: a new skill (usually 3★), a stronger skill (usually 4★) or a stat (usually 5★: {3}, {4}, {5} or {6})." },
       "sanctuary": { "title": "Observatory and controls", "text": "The Observatory is the home screen. The Channeling gathers Essence, Gold and Mana while you are away, up to {0} hours: collect it there. Battle leads to the Campaign and the Dungeons; the bar at the bottom leads to Homunculi, Sigils, the Shop and the books. Touch a currency, a reward or a word you don't know to see what it is; hold a homunculus to see its summary." }
     },
     "combat": {
       "impetus": { "title": "Impetus", "text": "Each unit has a {0} bar that fills in proportion to Speed; whoever reaches 100% acts. Pushing or delaying the bar changes the order — the \"Next\" strip shows who is coming." },
-      "fight": { "title": "The fight", "text": "Up to {0} homunculi against up to {2} enemies per wave, in up to {1} waves. Going past {3} rounds is a defeat." },
+      "fight": { "title": "The fight", "text": "Up to {0} homunculi on the maps and {4} in the Dungeons, against up to {2} enemies per wave, in up to {1} waves. Going past {3} rounds is a defeat." },
       "damage": { "title": "Damage", "text": "Attack × skill multiplier × {0} / ({0} + target's Defense). {0} Defense halves the damage." },
       "crit": { "title": "Critical hits", "text": "A critical hit multiplies damage by 1 + Crit Damage. Every homunculus starts with 15% Crit Rate and 50% Crit Damage." },
       "resistance": { "title": "Resistance and Accuracy", "text": "Every harmful effect can be blocked: the chance is the target's Resistance minus the caster's Accuracy, never below {0}." },
@@ -1093,7 +1098,7 @@
       "grind": { "title": "Grindstone", "text": "Adds a bonus to an HP, Attack, Defense or Speed substat of the same type as the stone. A new stone replaces the old bonus." },
       "gem": { "title": "Enchanted Gem", "text": "Swaps a substat of a +{0} sigil for the gem's. Only one substat per sigil can be enchanted." },
       "where": { "title": "Where to get them", "text": "The Campaign drops sigils of up to {0} stars (always on the first victory, {1} chance afterwards). The Dungeons drop Rare or better sigils from 2 to 6 stars, bigger on each floor, and the tools." },
-      "grimoire": { "title": "Tables", "text": "The numbers for each star, the upgrade costs and the tool ranges are in the Grimoire." },
+      "grimoire": { "title": "Tables", "text": "The numbers for each star, the upgrade costs and the tool ranges are in the Catalog tab." },
       "rarity": {
         "title": "Sigil rarity",
         "text": "The sigil's color shows its rarity: how many substats it is born with. The upgrades at +3, +6, +9 and +12 add the missing ones until there are four; a Legendary sigil is born with all four, so each of those upgrades raises one of them.",
@@ -1215,6 +1220,67 @@
     "duration": "{0} {1}"
   },
 
+  "arena": {
+    "defense": "Defense",
+    "defense_text": "The defense fights by itself, run by the AI, when someone challenges you. For now it is only stored: other alchemists arrive with the server.",
+    "duel_against": "Duel against {0}",
+    "draw": "Draw",
+    "draw_text": "The round limit passed with fighters standing on both sides. The Invite is spent, but nobody loses points.",
+    "points": "{0} points",
+    "astrarium": "Astrarium",
+    "invites_full": "Invites full",
+    "invites_next": "next in {0}",
+    "streak": "Streak",
+    "streak_none": "no streak",
+    "streak_building": "{0} more for the bonus",
+    "streak_bonus": "+{0}% Health, +{1}% Attack · {2}",
+    "next_grade": "{0} points to {1}",
+    "top_grade": "The highest Arena Grade.",
+    "cycle_ends": "The week ends in {0}: the prize comes by Grade and points go back to 1000.",
+    "help_title": "Arena scoring",
+    "defense_text": "This is the team that defends your account: with an account on the server, other players fight it.",
+    "defense_edit": "Edit defense",
+    "defense_done": "Done",
+    "help_points": "Winning a list duel gives {0} to {1} points, and losing takes {0} to {1}: against someone with more points than you, winning is worth more and losing costs less. Draws and Rivals do not change points. Win streaks give Health and Attack bonuses, and every win pays Astrarium by your Grade.",
+    "help_week": "At the end of the week (Sunday, 10 PM) your Grade pays the prize and points go back to 1000. With no fights in the week, there is no prize.",
+    "help_rewards": "Weekly prize and Astrarium per win for each Grade:",
+    "help_grade": "{0} Gold{2} per week · {1} Astrarium per win",
+    "tab_opponents": "Opponents",
+    "tab_rivals": "Rivals",
+    "cosmic_shop": "Cosmic Shop",
+    "list_progress": "{0} of {1} beaten. Clearing the whole list returns {2} Invites and brings a new list.",
+    "refresh": "Renew list",
+    "no_team": "Set up the attacking team before fighting.",
+    "refresh_confirm": "A new list ends the winning streak. Your Invites stay. Continue?",
+    "stake": "+{0} points if you win, −{1} if you lose",
+    "beaten": "Beaten",
+    "no_invites": "No Astral Invites. They come back over time.",
+    "rivals_text": "Rivals have a fixed team and a wait after being beaten. They pay Astrarium and Gold, but give or take no points.",
+    "rival_reward": "{0} Astrarium and {1} Gold",
+    "rival_wait": "back in {0}",
+    "grade_up": "New Grade",
+    "grade_down": "Grade lost",
+    "list_cleared": "list cleared",
+    "shop_intro": "Astrarium comes from Arena victories. Each offer has a limit per day or per week; the week turns on Sunday at 10 pm.",
+    "limit_day": "{0} of {1} today",
+    "limit_week": "{0} of {1} this week",
+    "shop_confirm": "Buy {0} (×{1}) for {2} Astrarium?",
+    "sold_out_day": "Sold out today.",
+    "sold_out_week": "Sold out this week.",
+    "no_astrarium": "{0} Astrarium short.",
+    "bought": "{0} bought.",
+    "payout_title": "Weekly prize",
+    "payout_text": "The week is over and you finished as {0}. You received {1} Gold{2}.",
+    "payout_legendary": " and {0} Legendary Scroll",
+    "abandoned": "A fight was left halfway and counted as a defeat."
+  },
+
+  "locked": {
+    "stage": "Opens when you win stage {0} of the Campaign.",
+    "monsters": "Opens at your first transmutation.",
+    "observatory": "Coming soon: it arrives with the Guild."
+  },
+
   "destination": {
     "Campaign": "Campaign",
     "Dungeons": "Dungeons",
@@ -1227,13 +1293,23 @@
     "Friends": "Friends",
     "Exploration": "Star Exploration",
     "Map": "Battle",
+    "Arena": "Astral Arena",
+    "Observatory": "Observatory",
     "Bag": "Bag",
     "Config": "Settings"
   },
 
   "reward": {
     "experience": "Experience",
-    "infusion_cores": "Infusion Cores"
+    "infusion_cores": "Infusion Cores",
+    "rune_kit": "Kit of 6 {0} sigils"
+  },
+
+  "kit": {
+    "title": "Sigil kit",
+    "text": "You have {0} kit(s): 6 Legendary {1} sigils, one for each slot, of the set you choose.",
+    "later": "Later",
+    "opened": "Kit sigils"
   },
 
   "map": {
@@ -1429,7 +1505,7 @@
     "auto": "Last, the Auto button, at the bottom left: the team fights on its own, using the strongest ready skill. Finish the fight as you like.",
     "end": "Well done, Conjurer! Now transmutation your own homunculi. Then the Campaign awaits.",
     "to_summon": "Summon",
-    "summon": "Your own homunculi, at last. Touch Transmute ×10: ten transmutations for {0} Transmutations, and the first transmutation of the account brings the {1} and a 5★.",
+    "summon": "Your own homunculi, at last. Touch ×10 on the Alchemical scroll: ten transmutations for {0} Transmutations, and the first transmutation of the account brings the {1} and a 5★.",
     "summon_done": "Your first homunculi! The strongest, the {0} and the 5★ among them, already joined the Campaign team. Touch {1} to meet them, or go back to the Observatory: the Campaign awaits."
   },
 
@@ -1621,6 +1697,20 @@
   },
 
   "names": {
+    "Aprendiz": "Apprentice",
+    "Adepto I": "Adept I",
+    "Adepto II": "Adept II",
+    "Adepto III": "Adept III",
+    "Alquimista I": "Alchemist I",
+    "Alquimista II": "Alchemist II",
+    "Alquimista III": "Alchemist III",
+    "Magister": "Magister",
+    "Calcinadora de Cinzas": "Ash Calciner",
+    "Destilador das Marés": "Tide Distiller",
+    "Vigia do Athanor": "Athanor Watcher",
+    "Tecelã de Mercúrio": "Mercury Weaver",
+    "Senhor da Retorta": "Lord of the Retort",
+    "Pergaminho de Luz e Trevas": "Light and Dark Scroll",
     "Bandido": "Bandit",
     "Bandidos": "Bandits",
     "Bandido de Fogo": "Fire Bandit",

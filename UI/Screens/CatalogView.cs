@@ -14,13 +14,13 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// O Grimório: o catálogo de tudo o que existe no jogo, com as abas escritas no alto. Invocações
+	/// O Catálogo, uma página do Compêndio: tudo o que existe no jogo, com as abas escritas no alto. Invocações
 	/// agrupadas por família (Fênix, Diabretes...), os elementos em botões com o nome no detalhe e a
 	/// ficha nas estrelas naturais nível 1 e em 6★ nível 40, antes e depois do Despertar; conjuntos de
 	/// runa e onde caem, as tabelas das runas por estrela e as faixas das Pedras de Afiar e das Gemas
-	/// Encantadas. Os números vêm do Core e de Data/; o porquê de cada regra fica no Compêndio.
+	/// Encantadas. Os números vêm do Core e de Data/; o porquê de cada regra fica nas outras abas do Compêndio.
 	/// </summary>
-	public partial class GrimoireScreen : Control
+	public partial class CatalogView : VBoxContainer
 	{
 		private readonly GameDatabase _database;
 		private readonly PlayerState _player;
@@ -33,26 +33,22 @@ namespace Sigilos.UI.Screens
 		private FamilyTheme? _theme;
 		private readonly HBoxContainer _themes = new() { Name = "Themes" };
 
-		public GrimoireScreen(GameDatabase database, PlayerState player)
+		public CatalogView(GameDatabase database, PlayerState player)
 		{
 			_database = database;
 			_player = player;
 			_selected = database.Summons.OrderByDescending(s => s.Rarity).First();
 		}
 
-		public event Action? BackRequested;
-
 		public override void _Ready()
 		{
-			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-			AddChild(Layout.Background());
-			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Grimoire"), null, () => BackRequested?.Invoke()).Header);
+			Name = "Catalog";
+			SizeFlagsVertical = SizeFlags.ExpandFill;
 			var sigils = new TextTabs { Name = "Tabs" };
-			page.AddChild(sigils);
+			AddChild(sigils);
 
 			var tabs = new TabContainer { Name = "Pages", SizeFlagsVertical = SizeFlags.ExpandFill, TabsVisible = false };
-			page.AddChild(tabs);
+			AddChild(tabs);
 			Summons(tabs);
 			Sets(Layout.Tab(tabs, "Sets", T("grimoire.tab.sets")));
 			RuneTables(Layout.Tab(tabs, "RuneTables", T("grimoire.tab.runes")));
@@ -69,7 +65,6 @@ namespace Sigilos.UI.Screens
 				Sfx.Play("grimoire.page_turn");
 				tabs.CurrentTab = index;
 			};
-			Sfx.Play("grimoire.book_open");
 		}
 
 		// Invocações --------------------------------------------------------------------------------

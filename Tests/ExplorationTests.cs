@@ -136,7 +136,7 @@ namespace Sigilos.Tests
 		private static void InfluenceRulesLandOnTheirSide()
 		{
 			var database = TestData.Database;
-			var team = ReferenceTeams.AtStage(database, 30);
+			var team = ReferenceTeams.AtMapStage(database, 30);
 			foreach (var constellation in database.Exploration.Constellations)
 			{
 				var session = BattleFactory.Create(database, team, constellation.Encounter(0), 1);
@@ -202,7 +202,7 @@ namespace Sigilos.Tests
 			var database = TestData.Database;
 			var dogDays = database.Exploration.Constellations.First(c => c.Id == "canis_major");
 			Assert.True(dogDays.Influence.Rules.All(r => r.Side == InfluenceSide.Everyone), "a Canícula é de todos");
-			var session = BattleFactory.Create(database, ReferenceTeams.AtStage(database, 30), dogDays.Encounter(1), 1);
+			var session = BattleFactory.Create(database, ReferenceTeams.AtMapStage(database, 30), dogDays.Encounter(1), 1);
 			Assert.True(session.Allies.All(u => u.Influences.Count == 1), "no time do jogador");
 			Assert.True(Waves(session).All(u => u.Influences.Count == 1), "e nos inimigos");
 		}

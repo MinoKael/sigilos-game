@@ -12,5 +12,11 @@ namespace Sigilos.Core.Progression
 		Grimoire,
 		Dungeons,
 		Exploration,
+
+		/// <summary>A Arena Astral: abre ao vencer a fase 20.</summary>
+		Arena,
+
+		/// <summary>O Observatório (a Guilda): versão futura, nunca abre.</summary>
+		Observatory,
 	}
 }

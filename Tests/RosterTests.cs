@@ -186,7 +186,7 @@ namespace Sigilos.Tests
 			var player = TestData.PlayerWith(TestData.TypicalTeam);
 			var extra = Roster.Add(player, TestData.Summon("knight_fire"));
 
-			Assert.False(Teams.Toggle(player, Teams.Campaign, extra.Id), $"a Campanha já tem {PlayerState.TeamSize}");
+			Assert.False(Teams.Toggle(player, Teams.Campaign, extra.Id), $"a Campanha já tem {PlayerState.MapTeamSize}");
 			Assert.True(Teams.Toggle(player, "golem", extra.Id), "a equipe do Golem é outra");
 			Assert.True(Teams.MakeLeader(player, Teams.Campaign, player.Monsters[3].Id), "troca a Líder");
 			Assert.Equal(player.Monsters[3].Id, Teams.Of(player, Teams.Campaign)[0], "a Líder vai para a frente");
@@ -195,16 +195,35 @@ namespace Sigilos.Tests
 			Assert.True(Teams.Replace(player, Teams.Campaign, leader, extra.Id), "a equipe cheia ainda troca");
 			Assert.Equal(extra.Id, Teams.Of(player, Teams.Campaign)[0], "quem entra fica na vaga de quem saiu (a Líder)");
 			Assert.False(Teams.Of(player, Teams.Campaign).Contains(leader), "e quem saiu sai");
-			var last = Teams.Of(player, Teams.Campaign)[4];
+			var last = Teams.Of(player, Teams.Campaign)[3];
 			Assert.True(Teams.Replace(player, Teams.Campaign, extra.Id, last), "quem já está na equipe troca de lugar");
 			Assert.Equal(last, Teams.Of(player, Teams.Campaign)[0], "um vai para a vaga do outro");
-			Assert.Equal(extra.Id, Teams.Of(player, Teams.Campaign)[4], "e o outro, para a dele");
+			Assert.Equal(extra.Id, Teams.Of(player, Teams.Campaign)[3], "e o outro, para a dele");
 			Assert.False(Teams.Replace(player, Teams.Campaign, leader, last), "quem não está na equipe não sai");
 			Roster.Store(player, leader);
 			Assert.False(Teams.Replace(player, Teams.Campaign, last, leader), "monstro do Baú não entra");
 
-			Assert.Equal(5, PlayerTeam.Build(player, database, Teams.Campaign).Members.Count, "cinco na Campanha");
+			Assert.Equal(4, PlayerTeam.Build(player, database, Teams.Campaign).Members.Count, "quatro na Campanha");
 			Assert.Equal("knight_fire", PlayerTeam.Build(player, database, "golem").Members.Single().Summon.Id, "um no Golem");
+			foreach (var monster in player.Monsters.Where(m => !m.Stored).Take(4))
+				Teams.Toggle(player, "golem", monster.Id);
+			Assert.Equal(5, Teams.Of(player, "golem").Count, "cinco na Masmorra");
+		}
+
+		/// <summary>Um save de quando os mapas levavam cinco volta com quatro: a Líder e os três seguintes; a Masmorra segue com cinco.</summary>
+		[Test]
+		private static void SaveOfFiveOnTheMapIsTrimmedToFour()
+		{
+			var player = TestData.PlayerWith(TestData.TypicalTeam);
+			var ids = player.Monsters.Select(m => m.Id).ToList();
+			player.Teams[Teams.Campaign] = ids.ToList();
+			player.Teams[Teams.Exploration] = ids.ToList();
+			player.Teams["golem"] = ids.ToList();
+
+			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
+			Assert.True(Teams.Of(loaded, Teams.Campaign).SequenceEqual(ids.Take(4)), "a Campanha fica com quatro, a Líder primeiro");
+			Assert.Equal(4, Teams.Of(loaded, Teams.Exploration).Count, "a Exploração também");
+			Assert.Equal(5, Teams.Of(loaded, "golem").Count, "a Masmorra segue com cinco");
 		}
 
 		[Test]

@@ -55,8 +55,8 @@ namespace Sigilos.Tests
 			player.AccountLevel = Account.MaxLevel;
 			var stage = database.Stage(20);
 			var first = Campaign.ApplyVictory(new Random(1), player, stage, database);
-			Assert.Equal(new Prize(1, 0, 2), first.Prize, "o fim da região 1 dá um Lendário e dois Núcleos");
-			Assert.Equal(1, player.LegendaryScrolls, "o Lendário na conta");
+			Assert.Equal(new Prize(0, 0, 2, 0, 1), first.Prize, "o fim da região 1 dá um Kit de Sigilos e dois Núcleos");
+			Assert.Equal(1, player.PendingRuneKits, "o Kit espera na conta");
 			Assert.Equal(2, player.Monsters.Count(m => m.IsInfusionCore), "os Núcleos na coleção");
 			Assert.Equal(Prize.None, Campaign.ApplyVictory(new Random(1), player, stage, database).Prize, "repetir não dá de novo");
 

@@ -160,11 +160,11 @@ namespace Sigilos.Tests
 			Assert.True(first.FirstClear, "primeira vitória");
 			Assert.Equal(stage.FirstClearScrolls, first.Scrolls, "Pergaminhos da primeira vitória");
 			Assert.True(first.Rune != null && player.Runes.Count == 1, "a primeira vitória sempre solta runa");
-			// A fase 1 dá menos experiência do que o nível 1 do 3★ pede: fica guardada.
+			// A experiência é dividida pela equipe: sozinho, o monstro leva a parte de cinco e já sobe.
 			var leader = player.Monster(Teams.Of(player, Teams.Campaign)[0])!;
-			Assert.Equal(1, leader.Level, "ainda no nível 1");
-			Assert.Equal(stage.Experience, leader.Experience, "a experiência fica");
-			Assert.Equal(0, first.LevelUps.Count, "ninguém subiu");
+			var share = stage.Experience * Teams.SizeOf(Teams.Campaign);
+			Assert.Equal(share, first.Experience, "a parte de quem luta sozinho");
+			Assert.True(leader.Level >= 2 && first.LevelUps.Count == 1, "sozinho, sobe de nível");
 			Assert.True(Campaign.IsUnlocked(player, 2), "fase 2 abre");
 
 			var again = Campaign.ApplyVictory(new Random(1), player, stage, database);

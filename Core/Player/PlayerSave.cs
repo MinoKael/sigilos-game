@@ -20,7 +20,11 @@ namespace Sigilos.Core.Player
 				return null;
 
 			var player = node.Deserialize<PlayerState>(Options);
-			return player is { Version: PlayerState.CurrentVersion } ? player : null;
+			if (player is not { Version: PlayerState.CurrentVersion })
+				return null;
+
+			Teams.Trim(player);
+			return player;
 		}
 
 		/// <summary>

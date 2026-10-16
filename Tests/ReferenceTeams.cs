@@ -27,6 +27,34 @@ namespace Sigilos.Tests
 			return Staged(database, stage, level, null);
 		}
 
+		/// <summary>
+		/// Quem chega à fase da Campanha com as recompensas e o XP de agora: a experiência da vitória é generosa,
+		/// então o nível sobe até 40 na fase 45; as runas são as que a Campanha solta (1★ a 4★) até a fase 19 e,
+		/// da 20 em diante, as 6★ do kit (o prêmio da fase 20), melhoradas aos poucos até +12 com a Essência
+		/// que as fases pagam. Só a Campanha usa este time; as Masmorras ficam com <see cref="AtStage"/>.
+		/// </summary>
+		public static BattleTeam AtCampaign(GameDatabase database, int stage) => OnMap(CampaignFull(database, stage));
+
+		/// <summary>Os mapas levam quatro homúnculos (Teams.SizeOf): sai o último do time típico, que é o de menos peso.</summary>
+		public static BattleTeam OnMap(BattleTeam team) =>
+			new(team.Members.Take(Core.Player.PlayerState.MapTeamSize).ToList());
+
+		/// <summary><see cref="AtStage"/> com quatro homúnculos, como a Exploração Estelar luta.</summary>
+		public static BattleTeam AtMapStage(GameDatabase database, int stage) => OnMap(AtStage(database, stage));
+
+		private static BattleTeam CampaignFull(GameDatabase database, int stage)
+		{
+			var level = (int)Math.Round(1 + 39 * Math.Min(1.0, (stage - 1) / 44.0));
+			if (stage < 3)
+				return Team(database, s => s.Rarity, level);
+
+			var grade = stage < 8 ? 1 : stage < 13 ? 2 : stage < 18 ? 3 : stage < 20 ? 4 : 6;
+			var runeLevel = Math.Min(12, 3 * ((stage - 1) / 8));
+			var team = Team(database, s => s.Rarity, level, grade, runeLevel);
+			var count = Math.Min(6, stage - 1);
+			return new BattleTeam(team.Members.Select(m => m with { Runes = m.Runes.Take(count).ToList() }).ToList());
+		}
+
 		/// <summary>As runas que a Campanha soltou até a fase (1★ a 4★, até +12), nas primeiras vagas.</summary>
 		private static BattleTeam Staged(GameDatabase database, int stage, int level, IReadOnlyList<Member>? members)
 		{
@@ -39,6 +67,9 @@ namespace Sigilos.Tests
 
 		/// <summary>O time 6★ nível 40 sem runas: vence até o fim da região 2 (fase 40); a fase 50 pede runas.</summary>
 		public static BattleTeam Bare(GameDatabase database) => Team(database, _ => 6, 40);
+
+		/// <summary><see cref="Bare"/> com quatro homúnculos, como os mapas levam.</summary>
+		public static BattleTeam BareOnMap(GameDatabase database) => OnMap(Bare(database));
 
 		/// <summary>
 		/// Quem o andar de Masmorra pede, o mesmo em todas (Data/dungeons.json): a dificuldade acompanha o

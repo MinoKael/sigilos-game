@@ -40,10 +40,6 @@ namespace Sigilos.UI.Components
 		/// <summary>A espera antes do primeiro nível (s): a ficha se acomoda na tela antes de se mexer.</summary>
 		private const float Lead = 0.12f;
 
-		/// <summary>O ganho sobe tanto (px) e leva tanto (s) para subir e sumir.</summary>
-		private const float RiseHeight = 30;
-		private const float RiseSeconds = 0.75f;
-
 		private readonly Rune _rune;
 		private readonly int _finalLevel;
 		private readonly int _opened;
@@ -237,42 +233,8 @@ namespace Sigilos.UI.Components
 			}
 		}
 
-		/// <summary>
-		/// Um ganho que aparece sobre o valor e sobe, sumindo: um texto solto (<c>TopLevel</c>, que o container
-		/// não arruma) que parte do valor e sobe sozinho.
-		/// </summary>
-		private void Rise(Control from, string text)
-		{
-			if (!IsInsideTree() || !from.IsInsideTree())
-				return;
-
-			// TopLevel sai da árvore de desenho do pai: o z das janelas por cima deixa de somar, e o texto, com 20
-			// sozinho, ficava atrás da ficha da Batalha automática. Soma aqui o que o pai somaria.
-			var z = 0;
-			for (Node? node = this; node is CanvasItem item; node = node.GetParent())
-			{
-				z += item.ZIndex;
-				if (!item.ZAsRelative || item.TopLevel)
-					break;
-			}
-
-			var pop = new Label { Name = "Rise", Text = text, TopLevel = true, MouseFilter = MouseFilterEnum.Ignore, ZIndex = Math.Min(z + 20, (int)RenderingServer.CanvasItemZMax) };
-			pop.AddThemeColorOverride("font_color", Palette.Positive);
-			pop.AddThemeColorOverride("font_outline_color", new Color(0, 0, 0, 0.9f));
-			pop.AddThemeConstantOverride("outline_size", 4);
-			pop.AddThemeFontOverride("font", GameTheme.Serif);
-			pop.AddThemeFontSizeOverride("font_size", 20);
-			AddChild(pop);
-			// No fim do valor, onde o ganho em verde se escreve, e sobe dali.
-			var rect = from.GetGlobalRect();
-			var start = new Vector2(rect.End.X + 6, rect.Position.Y - 2);
-			pop.GlobalPosition = start;
-
-			var tween = pop.CreateTween().SetParallel();
-			tween.TweenProperty(pop, "global_position:y", start.Y - RiseHeight, RiseSeconds).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
-			tween.TweenProperty(pop, "modulate:a", 0f, RiseSeconds * 0.55f).SetDelay(RiseSeconds * 0.45f);
-			tween.Chain().TweenCallback(Callable.From(pop.QueueFree));
-		}
+		/// <summary>Um ganho que aparece sobre o valor e sobe, sumindo (<see cref="GainPop"/>).</summary>
+		private void Rise(Control from, string text) => GainPop.Show(this, from, text);
 
 		/// <summary>
 		/// Um subatributo: o nome em ouro, o valor (com a Pedra de Afiar) em branco e, entre parênteses e

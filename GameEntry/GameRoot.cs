@@ -107,6 +107,7 @@ namespace Sigilos.GameEntry
 		private Action _current = () => { };
 
 		// Para onde cada tela de conteúdo volta: vale também depois de uma luta ou da Loja.
+		private Action _arenaBack = null!;
 		private Action _campaignBack = null!;
 		private Action _dungeonsBack = null!;
 		private Action _explorationBack = null!;
@@ -122,6 +123,7 @@ namespace Sigilos.GameEntry
 		public override void _Ready()
 		{
 			_campaignBack = _dungeonsBack = _explorationBack = ShowMap;
+			_arenaBack = ShowHub;
 			_storageBack = _summonBack = ShowHub;
 			_slot = Argument("--save=") ?? DefaultSlot;
 			_account = new AccountSession(_slot, Argument("--server=") ?? AccountSession.DefaultServer) { Name = "Account" };
@@ -299,7 +301,7 @@ namespace Sigilos.GameEntry
 					Go(Destination.Compendium, ShowHub);
 					break;
 				case "grimoire":
-					Go(Destination.Grimoire, ShowHub);
+					ShowHub();
 					break;
 				case "friends":
 					ShowHub();
@@ -896,6 +898,20 @@ namespace Sigilos.GameEntry
 			Swap(hub, ShowHub);
 			hub.SetMail(_mail?.Count);
 			RefreshMail();
+			PromptRuneKit(hub);
+		}
+
+		/// <summary>Há um kit de sigilos por abrir (prêmio da fase 20): pergunta o conjunto. "Depois" o deixa guardado.</summary>
+		private void PromptRuneKit(Control from)
+		{
+			if (!RuneKits.HasPending(_player))
+				return;
+
+			Callable.From(() =>
+			{
+				if (GodotObject.IsInstanceValid(from) && from.IsInsideTree() && RuneKits.HasPending(_player))
+					RuneKitDialog.Open(from, _player, _random, Save);
+			}).CallDeferred();
 		}
 
 		// Correio ------------------------------------------------------------------------------------
@@ -1133,11 +1149,12 @@ namespace Sigilos.GameEntry
 				case Destination.Compendium:
 					ShowCompendium(back);
 					break;
-				case Destination.Grimoire:
-					ShowGrimoire(back);
-					break;
 				case Destination.Map:
 					ShowMap();
+					break;
+				case Destination.Arena:
+					_arenaBack = back;
+					ShowArena();
 					break;
 				case Destination.Friends:
 					OpenFriends();
@@ -1303,16 +1320,9 @@ namespace Sigilos.GameEntry
 
 		private void ShowCompendium(Action back)
 		{
-			var compendium = new CompendiumScreen();
+			var compendium = new CompendiumScreen(_database, _player);
 			compendium.BackRequested += back;
 			Swap(compendium, () => ShowCompendium(back));
-		}
-
-		private void ShowGrimoire(Action back)
-		{
-			var grimoire = new GrimoireScreen(_database, _player);
-			grimoire.BackRequested += back;
-			Swap(grimoire, () => ShowGrimoire(back));
 		}
 
 		// Lutas -------------------------------------------------------------------------------------
@@ -1329,6 +1339,13 @@ namespace Sigilos.GameEntry
 			prep.FightRequested += fight;
 			if (auto != null)
 				prep.AutoBattleRequested += () => auto(prep);
+			WirePrep(prep, content);
+			Swap(prep, () => ShowPrep(title, content, encounter, mana, fight, auto, back));
+		}
+
+		/// <summary>Liga a montagem da equipe (pôr, tirar, trocar, Líder, filtro) de uma preparação ao conteúdo dela.</summary>
+		private void WirePrep(PrepScreen prep, string content)
+		{
 			prep.ToggleRequested += id => Change(() =>
 			{
 				if (Teams.Toggle(_player, content, id))
@@ -1339,7 +1356,220 @@ namespace Sigilos.GameEntry
 			prep.ReplaceRequested += (outgoing, incoming) => Change(() => Sfx.Play(Teams.Replace(_player, content, outgoing, incoming) ? "ui.equip_item" : "ui.action_unavailable"), prep.Refresh);
 			prep.LeaderRequested += id => Change(() => Sfx.PlayIf(Teams.MakeLeader(_player, content, id), "ui.equip_item"), prep.Refresh);
 			prep.FilterChanged += filter => _prepFilter = filter;
-			Swap(prep, () => ShowPrep(title, content, encounter, mana, fight, auto, back));
+		}
+
+		// Arena Astral -------------------------------------------------------------------------------
+
+		/// <summary>
+		/// A Arena: antes de abrir põe a conta em dia (<see cref="Arena.Renew"/>: luta deixada pela metade vira
+		/// derrota, Convites recarregam, a semana virada paga o prêmio).
+		/// </summary>
+		private void ShowArena(string? message = null)
+		{
+			var now = DateTime.Now;
+			var abandoned = _player.Arena.Pending != null;
+			Arena.Renew(_player, _database.Arena, now, _random);
+			Save();
+
+			// A tela abre já, com a lista local. Com a conta no servidor, a defesa sobe e a lista se completa com
+			// defesas de outros jogadores (uma vez por lista) quando elas chegam, na própria tela.
+			if (Teams.SeedFromCampaign(_player, Teams.ArenaDefense))
+				Save();
+			var screen = ShowArenaScreen(message, abandoned, now);
+			if (_account.Connected && !_arenaSyncing)
+				SyncArena(screen);
+		}
+
+		private bool _arenaSyncing;
+
+		/// <summary>A aba da Arena em que o jogador estava: a volta de uma preparação ou luta abre nela.</summary>
+		private ArenaScreen.View _arenaTab = ArenaScreen.View.Defense;
+
+		private async void SyncArena(ArenaScreen screen)
+		{
+			_arenaSyncing = true;
+			try
+			{
+				if (_account.AccountName != null)
+				{
+					if (Teams.SeedFromCampaign(_player, Teams.ArenaDefense))
+						Save();
+					var team = PlayerTeam.Build(_player, _database, Teams.ArenaDefense);
+					if (team.Members.Count > 0)
+						_ = _account.Arena.UploadDefense(_player.Arena.Points, team);
+				}
+
+				if (Arena.NeedsOnline(_player))
+				{
+					var fetch = await _account.Arena.Opponents(_player.Arena.Points);
+					if (fetch.Opponents != null)
+					{
+						Arena.SetOnline(_player, _database.Arena, fetch.Opponents);
+						Save();
+					}
+				}
+			}
+			catch (Exception exception)
+			{
+				GD.PushWarning($"Arena: {exception.Message}");
+			}
+			finally
+			{
+				_arenaSyncing = false;
+			}
+
+			// Só mexe na tela se ela ainda é a de agora: quem saiu da Arena nesse meio tempo não é puxado de volta.
+			if (IsInstanceValid(screen) && screen.IsInsideTree())
+				screen.Refresh();
+		}
+
+		private ArenaScreen ShowArenaScreen(string? message, bool abandoned, DateTime now)
+		{
+			var arena = new ArenaScreen(_database, _player, now) { Filter = _prepFilter, Current = _arenaTab };
+			arena.TabChanged += tab => _arenaTab = tab;
+			arena.BackRequested += () => _arenaBack();
+			arena.OpponentRequested += PrepArenaOpponent;
+			arena.RivalRequested += PrepArenaRival;
+			arena.ToggleRequested += id => Change(() =>
+			{
+				if (Teams.Toggle(_player, Teams.ArenaDefense, id))
+					Sfx.Play(Teams.Of(_player, Teams.ArenaDefense).Contains(id) ? "ui.equip_item" : "ui.unequip_item");
+				else
+					Sfx.Play("ui.action_unavailable");
+			}, arena.Refresh);
+			arena.ReplaceRequested += (outgoing, incoming) => Change(() => Sfx.Play(Teams.Replace(_player, Teams.ArenaDefense, outgoing, incoming) ? "ui.equip_item" : "ui.action_unavailable"), arena.Refresh);
+			arena.LeaderRequested += id => Change(() => Sfx.PlayIf(Teams.MakeLeader(_player, Teams.ArenaDefense, id), "ui.equip_item"), arena.Refresh);
+			arena.FilterChanged += filter => _prepFilter = filter;
+			arena.ShopRequested += ShowCosmicShop;
+			arena.RefreshRequested += () => Dialog.Confirm(arena, T("arena.refresh"), T("arena.refresh_confirm"), T("arena.refresh"), () =>
+				Change(() => Arena.RefreshList(_player, _random), () => ShowArena()));
+			Swap(arena, () => ShowArena());
+
+			if (message != null)
+				arena.ShowMessage(message);
+			else if (abandoned)
+				arena.ShowMessage(T("arena.abandoned"));
+
+			if (_player.Arena.PayoutUnseen)
+			{
+				var state = _player.Arena;
+				var legendary = state.LastPayoutLegendary > 0 ? T("arena.payout_legendary", state.LastPayoutLegendary) : "";
+				state.PayoutUnseen = false;
+				Save();
+				Dialog.Info(arena, T("arena.payout_title"), T("arena.payout_text", state.LastPayoutGrade ?? "", Texts.Number(state.LastPayoutGold), legendary));
+			}
+
+			return arena;
+		}
+
+		/// <summary>A preparação contra um da lista: a equipe que ataca (quatro) e a defesa dele.</summary>
+		private void PrepArenaOpponent(int index)
+		{
+			var opponent = Arena.Opponents(_player, _database)[index];
+			ShowArenaPrep(opponent.Name, opponent.Team, () => FightArena(Arena.ListKey(index), opponent.Name, opponent.Team));
+		}
+
+		private void PrepArenaRival(ArenaRival rival)
+		{
+			var team = ArenaTeams.Rival(_database, rival);
+			ShowArenaPrep(rival.Name, team, () => FightArena(Arena.RivalKey(rival.Id), rival.Name, team));
+		}
+
+		private void ShowArenaPrep(string opponent, BattleTeam defense, Action fight)
+		{
+			var title = T("destination.Arena");
+			if (Teams.SeedFromCampaign(_player, Teams.Arena))
+				Save();
+			var prep = new PrepScreen(_database, _player, title, Teams.Arena, ArenaEncounter, 0, false, _prepFilter)
+			{
+				Defenders = Enumerable.Range(0, defense.Members.Count).Select(i => BattleFactory.DefenderUnit(defense, i)).ToList(),
+				DefenderName = opponent,
+				Invites = 1,
+			};
+			prep.BackRequested += () => ShowArena();
+			prep.FightRequested += fight;
+			WirePrep(prep, Teams.Arena);
+			Swap(prep, () => ShowArenaPrep(opponent, defense, fight));
+		}
+
+		/// <summary>O encontro vazio que a preparação pede: a Arena não tem onda, a defesa vem pronta.</summary>
+		private static readonly Encounter ArenaEncounter = new(1, 1, new List<IReadOnlyList<StageEnemy>>());
+
+		/// <summary>
+		/// O duelo: o Convite sai ao começar (sair no meio vale derrota), a sequência de vitórias soma Vida e
+		/// Ataque ao time, e o resultado traz os pontos, a sequência e o Astrarium. Estourar as rodadas é empate.
+		/// </summary>
+		private void FightArena(string key, string title, BattleTeam defense)
+		{
+			if (NeedsTeam(Teams.Arena, () => ShowArena(T("arena.no_team"))) || BusyWithAutoBattle(() => FightArena(key, title, defense)))
+				return;
+
+			if (!Arena.Begin(_player, key))
+			{
+				ShowArena(T("arena.no_invites"));
+				return;
+			}
+
+			Save();
+			var (health, attack) = Arena.StreakBonus(_player, _database.Arena, DateTime.Now);
+			var team = PlayerTeam.Build(_player, _database, Teams.Arena);
+			var session = BattleFactory.CreateDuel(_database, team, defense, _random.Next(), health, attack);
+			var battle = new BattleScreen(session, T("destination.Arena") + " · " + title, false, focusBoss: _player.FocusBoss);
+			var finished = false;
+
+			ArenaOutcome? Resolve(ArenaResult result)
+			{
+				finished = true;
+				var outcome = Arena.Finish(_player, _database.Arena, _database, result, DateTime.Now, _random);
+				Save();
+				return outcome;
+			}
+
+			battle.Finished += victory =>
+			{
+				var members = Teams.Of(_player, Teams.Arena)
+					.Select(_player.Monster)
+					.OfType<OwnedSummon>()
+					.Where(m => !m.Stored && _database.HasSummon(m.SummonId))
+					.ToList();
+				var result = victory ? ArenaResult.Win : session.TimedOut ? ArenaResult.Draw : ArenaResult.Loss;
+				var outcome = Resolve(result);
+				var monsters = members.Select(m => ResultOf(m, m.Level, m.Experience)).ToList();
+				battle.ShowResult(new BattleOutcome(victory, null, monsters, _player.AccountLevel, null, false, Arena: outcome));
+			};
+			battle.FocusBossChanged += on =>
+			{
+				_player.FocusBoss = on;
+				Save();
+			};
+			// A Arena sempre começa no manual e não guarda o que se escolheu nela para os outros conteúdos.
+			battle.Closed += _ =>
+			{
+				if (!finished)
+					Resolve(ArenaResult.Loss);
+				ShowArena();
+			};
+			battle.RestartRequested += _ =>
+			{
+				if (!finished)
+					Resolve(ArenaResult.Loss);
+				ShowArena();
+			};
+			Swap(battle, () => ShowArena());
+		}
+
+		private void ShowCosmicShop()
+		{
+			var shop = new CosmicShopScreen(_database, _player, DateTime.Now);
+			shop.BackRequested += () => ShowArena();
+			shop.BuyRequested += offer => Change(() =>
+			{
+				if (!Arena.Buy(_player, _database.Arena, offer, DateTime.Now))
+					return;
+				Sfx.Play("rewards.gold");
+				shop.ShowMessage(T("arena.bought", offer.Name));
+			}, shop.Refresh);
+			Swap(shop, ShowCosmicShop);
 		}
 
 		/// <summary>O Lutar de uma fase da Campanha: a preparação, que volta para a fase.</summary>

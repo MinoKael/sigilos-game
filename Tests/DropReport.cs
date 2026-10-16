@@ -115,6 +115,7 @@ namespace Sigilos.Tests
 			var problems = FirstClear(dungeon, number, random).ToList();
 			var player = Player(dungeon, dungeon.Floors.Count);
 			var essence = floor.Essence + floor.Experience / Account.ExperiencePerEssenceAtMax;
+			var experience = Leveling.Share(player, dungeon.Id, floor.Experience);
 			var grades = new Dictionary<int, int>();
 			var rarities = new Dictionary<RuneRarity, int>();
 			var sets = new Dictionary<RuneSet, int>();
@@ -128,7 +129,7 @@ namespace Sigilos.Tests
 				player.Tools.Clear();
 				var reward = Dungeons.ApplyVictory(random, player, dungeon, number);
 				var prize = reward.Prize ?? Prize.None;
-				if (!fixedWrong && (reward.Mana != floor.Mana || reward.Essence != essence || reward.Experience != floor.Experience
+				if (!fixedWrong && (reward.Mana != floor.Mana || reward.Essence != essence || reward.Experience != experience
 					|| reward.Gold != 0 || reward.FirstClear || prize.LegendaryScrolls + prize.LightDarkScrolls != 0))
 				{
 					fixedWrong = true;
@@ -208,6 +209,8 @@ namespace Sigilos.Tests
 			var player = TestData.PlayerWith("wizard_fire");
 			player.AccountLevel = Account.MaxLevel;
 			player.DungeonFloors[dungeon.Id] = cleared;
+			foreach (var id in Teams.Of(player, Teams.Campaign).ToList())
+				Teams.Toggle(player, dungeon.Id, id);
 			return player;
 		}
 

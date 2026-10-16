@@ -85,14 +85,15 @@ namespace Sigilos.Core.Progression
 			player.Essence += reward.Essence;
 			player.Scrolls += reward.Scrolls;
 
-			var levelUps = Leveling.GiveExperience(player, Teams.Of(player, Teams.Exploration), reward.Experience);
+			var share = Leveling.Share(player, Teams.Exploration, reward.Experience);
+			var levelUps = Leveling.GiveExperience(player, Teams.Exploration, reward.Experience);
 			var level = player.AccountLevel;
 			var account = Account.GiveExperience(player, reward.Experience);
 			var prize = PrizeOf(reward);
 			Milestones.Grant(player, prize);
 			prize += Milestones.ForAccountLevels(level, player.AccountLevel);
 
-			return new VictoryReward(0, reward.Scrolls, reward.Gold, reward.Essence + account.Essence, reward.Experience, true, null, null, Array.Empty<RuneTool>(), levelUps, account.Levels, prize);
+			return new VictoryReward(0, reward.Scrolls, reward.Gold, reward.Essence + account.Essence, share, true, null, null, Array.Empty<RuneTool>(), levelUps, account.Levels, prize);
 		}
 
 		/// <summary>O total que o percurso inteiro paga num mês: a soma das recompensas das 88 constelações.</summary>

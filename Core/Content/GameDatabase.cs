@@ -36,7 +36,8 @@ namespace Sigilos.Core.Content
 			IReadOnlyList<StageDefinition> stages,
 			IReadOnlyList<DungeonDefinition> dungeons,
 			IReadOnlyList<ShopOffer> shop,
-			ExplorationDefinition? exploration = null)
+			ExplorationDefinition? exploration = null,
+			ArenaDefinition? arena = null)
 		{
 			StatModel = statModel;
 			// Famílias e Masmorras fora do jogo (Active = false) saem das listas do jogador, mas os ids
@@ -49,6 +50,7 @@ namespace Sigilos.Core.Content
 			Dungeons = AllDungeons.Where(d => d.Active).ToList();
 			Shop = shop;
 			Exploration = exploration ?? new ExplorationDefinition();
+			Arena = arena ?? new ArenaDefinition();
 
 			// As variantes saem dos arquivos das famílias, na ordem dos elementos. O arquivo só traz Vida,
 			// Ataque, Defesa e Velocidade: os outros quatro atributos são os de base do modelo.
@@ -106,6 +108,9 @@ namespace Sigilos.Core.Content
 		/// <summary>A Exploração Estelar (Data/exploration.json); sem o arquivo, vazia.</summary>
 		public ExplorationDefinition Exploration { get; }
 
+		/// <summary>A Arena Astral (Data/arena.json); sem o arquivo, vazia.</summary>
+		public ArenaDefinition Arena { get; }
+
 		public SummonDefinition Summon(string id) => _summonsById[id];
 		public EnemyDefinition Enemy(string id) => _enemiesById[id];
 		public StageDefinition Stage(int number) => Stages.First(s => s.Number == number);
@@ -142,7 +147,8 @@ namespace Sigilos.Core.Content
 			string stages,
 			string dungeons,
 			string shop,
-			string? exploration = null)
+			string? exploration = null,
+			string? arena = null)
 		{
 			return new GameDatabase(
 				Parse<StatModel>(statModel, "stat_model.json"),
@@ -151,7 +157,8 @@ namespace Sigilos.Core.Content
 				Parse<List<StageDefinition>>(stages, "stages.json"),
 				Parse<List<DungeonDefinition>>(dungeons, "dungeons.json"),
 				Parse<List<ShopOffer>>(shop, "shop.json"),
-				exploration == null ? null : Parse<ExplorationDefinition>(exploration, "exploration.json"));
+				exploration == null ? null : Parse<ExplorationDefinition>(exploration, "exploration.json"),
+				arena == null ? null : Parse<ArenaDefinition>(arena, "arena.json"));
 		}
 
 		private static T Parse<T>(string json, string file)
@@ -295,6 +302,45 @@ namespace Sigilos.Core.Content
 				yield return $"Loja, oferta {offer.Id}: sem nome, quantidade ou preço.";
 			if (Shop.Select(o => o.Id).Distinct().Count() != Shop.Count)
 				yield return "Loja: ids repetidos.";
+
+			foreach (var problem in ValidateArena())
+				yield return $"Arena: {problem}";
+		}
+
+		/// <summary>Graus em ordem de pontos a partir do 0, sequência crescente, Rivais com quatro integrantes que existem e ofertas válidas.</summary>
+		private IEnumerable<string> ValidateArena()
+		{
+			var arena = Arena;
+			if (arena.Grades.Count == 0)
+				yield break;
+
+			if (arena.Grades[0].Points != 0)
+				yield return "o primeiro Grau começa nos 0 pontos.";
+			if (arena.Grades.Zip(arena.Grades.Skip(1)).Any(pair => pair.Second.Points <= pair.First.Points))
+				yield return "os Graus têm de subir de pontos.";
+			if (arena.Grades.Any(g => g.Id.Length == 0 || g.Name.Length == 0 || g.Astrarium <= 0))
+				yield return "Grau sem id, nome ou Astrarium por vitória.";
+			if (arena.ListOffsets.Count == 0)
+				yield return "a lista não tem adversários.";
+			if (arena.Streak.Zip(arena.Streak.Skip(1)).Any(pair => pair.Second.Wins <= pair.First.Wins))
+				yield return "a sequência tem de subir de vitórias.";
+			if (arena.Names.Count == 0)
+				yield return "sem nomes para os adversários.";
+
+			foreach (var rival in arena.Rivals)
+			{
+				if (rival.Members.Count != Progression.ArenaTeams.Size)
+					yield return $"Rival {rival.Id}: tem de ter {Progression.ArenaTeams.Size} integrantes.";
+				foreach (var member in rival.Members.Where(m => !HasSummon(m)))
+					yield return $"Rival {rival.Id}: invocação {member} não existe.";
+			}
+
+			if (arena.Rivals.Select(r => r.Id).Distinct().Count() != arena.Rivals.Count)
+				yield return "ids de Rival repetidos.";
+			foreach (var offer in arena.Shop.Where(o => o.Amount <= 0 || o.Price <= 0 || o.Name.Length == 0))
+				yield return $"Loja Cósmica, oferta {offer.Id}: sem nome, quantidade ou preço.";
+			if (arena.Shop.Select(o => o.Id).Distinct().Count() != arena.Shop.Count)
+				yield return "Loja Cósmica: ids repetidos.";
 		}
 
 		/// <summary>

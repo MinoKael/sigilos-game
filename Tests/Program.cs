@@ -63,6 +63,12 @@ namespace Sigilos.Tests
 				return 0;
 			}
 
+			if (args.Contains("--arena"))
+			{
+				ArenaReport.Print(TestData.LoadReal());
+				return 0;
+			}
+
 			if (args.Contains("--simulate"))
 			{
 				CampaignReport.Print(TestData.LoadReal());

@@ -9,14 +9,14 @@ namespace Sigilos.Core.Progression
 	/// O que um marco ou um drop especial dá: Pergaminhos Lendários, Pergaminhos de Luz e Trevas, Núcleos de
 	/// Infusão e Núcleos de Fragmento (cada um vale <see cref="RewardDrops.FragmentCoreValue"/> Fragmentos).
 	/// </summary>
-	public sealed record Prize(int LegendaryScrolls = 0, int LightDarkScrolls = 0, int InfusionCores = 0, int FragmentCores = 0)
+	public sealed record Prize(int LegendaryScrolls = 0, int LightDarkScrolls = 0, int InfusionCores = 0, int FragmentCores = 0, int RuneKits = 0)
 	{
 		public static readonly Prize None = new();
 
-		public bool IsEmpty => LegendaryScrolls == 0 && LightDarkScrolls == 0 && InfusionCores == 0 && FragmentCores == 0;
+		public bool IsEmpty => LegendaryScrolls == 0 && LightDarkScrolls == 0 && InfusionCores == 0 && FragmentCores == 0 && RuneKits == 0;
 
 		public static Prize operator +(Prize a, Prize b) =>
-			new(a.LegendaryScrolls + b.LegendaryScrolls, a.LightDarkScrolls + b.LightDarkScrolls, a.InfusionCores + b.InfusionCores, a.FragmentCores + b.FragmentCores);
+			new(a.LegendaryScrolls + b.LegendaryScrolls, a.LightDarkScrolls + b.LightDarkScrolls, a.InfusionCores + b.InfusionCores, a.FragmentCores + b.FragmentCores, a.RuneKits + b.RuneKits);
 	}
 
 	/// <summary>
@@ -48,7 +48,8 @@ namespace Sigilos.Core.Progression
 		}
 
 		/// <summary>A primeira vitória da fase.</summary>
-		public static Prize ForFirstClear(StageDefinition stage) => new(stage.FirstClearLegendary, 0, stage.FirstClearCores);
+		public static Prize ForFirstClear(StageDefinition stage) =>
+			new(stage.FirstClearLegendary, stage.FirstClearLightDark, stage.FirstClearCores, 0, stage.FirstClearKits);
 
 		/// <summary>A primeira vitória do andar de Masmorra.</summary>
 		public static Prize ForFirstClear(DungeonFloor floor) => new(floor.FirstClearLegendary, floor.FirstClearLightDark, floor.FirstClearCores);
@@ -61,6 +62,7 @@ namespace Sigilos.Core.Progression
 			for (var i = 0; i < prize.InfusionCores; i++)
 				Roster.Add(player, InfusionCore.Summon);
 			player.Fragments += prize.FragmentCores * RewardDrops.FragmentCoreValue;
+			player.PendingRuneKits += prize.RuneKits;
 		}
 	}
 }

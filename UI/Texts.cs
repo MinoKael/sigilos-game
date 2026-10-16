@@ -50,6 +50,8 @@ namespace Sigilos.UI
 		{
 			Teams.Campaign => T("teams.campaign"),
 			Teams.Exploration => T("exploration.title"),
+			Teams.Arena => T("destination.Arena"),
+			Teams.ArenaDefense => T("arena.defense"),
 			_ => database.Dungeons.FirstOrDefault(d => d.Id == content)?.Name ?? content,
 		};
 

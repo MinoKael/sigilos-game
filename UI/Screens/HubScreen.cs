@@ -222,6 +222,12 @@ namespace Sigilos.UI.Screens
 
 			_core.Pressed += () =>
 			{
+				if (!_channelOpen)
+				{
+					LockedDialog.Open(_core, _database, Feature.Channel);
+					return;
+				}
+
 				if (!Idle.Preview(_player, DateTime.Now).IsEmpty)
 					CollectRequested?.Invoke();
 			};
@@ -254,7 +260,6 @@ namespace Sigilos.UI.Screens
 			{
 				// Fechada: a constelação apagada e, no lugar do tempo, a fase que abre a Canalização.
 				time.Visible = _pending.Visible = false;
-				_core.Disabled = true;
 				panel.Modulate = new Color(1, 1, 1, 0.55f);
 				var closed = Layout.Text(T("hub.channel_opens", Features.StageOf(_database, Feature.Channel)), GameTheme.Faded, 300).Named("Closed");
 				closed.HorizontalAlignment = HorizontalAlignment.Center;
@@ -268,20 +273,48 @@ namespace Sigilos.UI.Screens
 		/// <summary>Os dois caminhos principais, em botões grandes: Batalha (Campanha e Masmorras) e Invocar.</summary>
 		private Control Paths()
 		{
-			var column = new VBoxContainer { Name = "Paths", CustomMinimumSize = new Vector2(380, 0) };
-			column.AddThemeConstantOverride("separation", Space.Loose);
-			column.Alignment = BoxContainer.AlignmentMode.Center;
+			var column = new GridContainer { Name = "Paths", Columns = 2, CustomMinimumSize = new Vector2(380, 0) };
+			column.AddThemeConstantOverride("h_separation", Space.Loose);
+			column.AddThemeConstantOverride("v_separation", Space.Loose);
 
 			var next = Math.Min(_player.HighestStage + 1, _database.Stages.Count);
 			// Antes de abrirem, as Masmorras não aparecem nem no nome do caminho.
 			var detail = Features.IsOpen(_player, _database, Feature.Dungeons) ? T("hub.battle_detail", next, _database.Stages.Count) : T("hub.battle_detail_campaign", next, _database.Stages.Count);
-			_battle = new TileButton(T("hub.battle"), detail, Art.Icon("fight"), new Vector2(380, 170), ButtonKind.Secondary, horizontal: true) { Name = "Battle" };
+			var size = new Vector2(184, 150);
+			_battle = new TileButton(T("hub.battle"), detail, Art.Icon("fight"), size, ButtonKind.Secondary) { Name = "Battle" };
 			_battle.Pressed += () => Requested?.Invoke(Destination.Map);
 			column.AddChild(_battle);
 
-			_summon = new TileButton(T("destination.Summon"), T("hub.summon_detail"), Art.Icon("summon"), new Vector2(380, 130), ButtonKind.Secondary, horizontal: true) { Name = "Summon" };
+			// A Arena Astral abre na fase 20; antes, o botão fica apagado e o toque diz quando abre.
+			var arenaOpen = Features.IsOpen(_player, _database, Feature.Arena);
+			var arena = new TileButton(T("destination.Arena"), arenaOpen ? T("hub.arena_detail") : "", Art.Icon("target"), size, ButtonKind.Secondary) { Name = "Arena" };
+			arena.Highlight = Features.IsNew(_player, _database, Feature.Arena);
+			if (!arenaOpen)
+				arena.Locked();
+			arena.Pressed += () =>
+			{
+				if (arenaOpen)
+					Requested?.Invoke(Destination.Arena);
+				else
+					LockedDialog.Open(arena, _database, Feature.Arena);
+			};
+			column.AddChild(arena);
+
+			_summon = new TileButton(T("destination.Summon"), T("hub.summon_detail"), Art.Icon("summon"), size, ButtonKind.Secondary) { Name = "Summon" };
 			_summon.Pressed += () => Requested?.Invoke(Destination.Summon);
 			column.AddChild(_summon);
+
+			// O Observatório (a Guilda) é da versão futura: o botão já ocupa o lugar e só avisa.
+			var observatory = new TileButton(T("destination.Observatory"), "", Art.Icon("observatory"), size, ButtonKind.Secondary) { Name = "Observatory" }.Locked();
+			observatory.Pressed += () => LockedDialog.Open(observatory, _database, Feature.Observatory);
+			column.AddChild(observatory);
+
+			// Dois lugares reservados: fecham a grade em 6 botões e só dizem que vem coisa por aí.
+			for (var i = 1; i <= 2; i++)
+			{
+				var soon = new TileButton(T("hub.soon"), "", Art.Icon("tower"), size, ButtonKind.Secondary) { Name = $"Soon{i}" }.Locked();
+				column.AddChild(soon);
+			}
 			return column;
 		}
 
@@ -310,16 +343,27 @@ namespace Sigilos.UI.Screens
 			var places = new (Destination, Feature?)[]
 			{
 				(Destination.Monsters, Feature.Monsters), (Destination.Runes, Feature.Runes),
-				(Destination.Shop, Feature.Shop), (Destination.Friends, null), (Destination.Grimoire, Feature.Grimoire),
+				(Destination.Shop, Feature.Shop), (Destination.Friends, null),
 				(Destination.Compendium, Feature.Compendium),
 			};
 			foreach (var (destination, feature) in places)
 			{
-				if (feature is { } locked && !Features.IsOpen(_player, _database, locked))
-					continue;
 				var button = TileButton.Nav(Destinations.Name(destination), Destinations.Icon(destination)).Named(destination.ToString());
+				if (feature is { } locked && !Features.IsOpen(_player, _database, locked))
+				{
+					// Fechada: o botão fica na barra, apagado, e o toque diz quando abre.
+					button.Locked();
+					button.Pressed += () => LockedDialog.Open(button, _database, locked);
+					row.AddChild(button);
+					continue;
+				}
+
 				button.Highlight = feature is { } opened && Features.IsNew(_player, _database, opened);
-				button.Pressed += () => Requested?.Invoke(destination);
+				// O Grimório é o do Alquimista: abre o livro aqui mesmo, o do retrato.
+				if (destination == Destination.Grimoire)
+					button.Pressed += OpenBook;
+				else
+					button.Pressed += () => Requested?.Invoke(destination);
 				row.AddChild(button);
 			}
 
@@ -340,7 +384,7 @@ namespace Sigilos.UI.Screens
 			var hours = TimeSpan.FromHours(pendingHours);
 			_constellation.Progress = (float)(pendingHours / Idle.CapHours);
 			_core.Highlight = !preview.IsEmpty;
-			_time.Text = T("hub.channeling", (int)hours.TotalHours, hours.Minutes.ToString("00"), Idle.CapHours);
+			_time.Text = T("hub.channeling", ((int)hours.TotalHours).ToString("00"), hours.Minutes.ToString("00"), Idle.CapHours.ToString("00"));
 
 			Layout.Clear(_pending);
 			_pending.AddChild(Layout.Labeled("essence", Texts.Number(preview.Essence), T("currency.essence"), labelMinimumSize: new Vector2(40,22)));

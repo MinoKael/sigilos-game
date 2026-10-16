@@ -78,6 +78,9 @@ namespace Sigilos.Core.Battle
 		public BattleUnit? Current { get; private set; }
 
 		public bool? Victory { get; private set; }
+
+		/// <summary>A luta acabou por passar do limite de rodadas (<see cref="BattleRules.RoundLimit"/>): na Arena é empate.</summary>
+		public bool TimedOut { get; private set; }
 		public bool IsOver => Victory != null;
 
 		/// <summary>
@@ -111,6 +114,7 @@ namespace Sigilos.Core.Battle
 
 			if (Round > BattleRules.RoundLimit)
 			{
+				TimedOut = true;
 				End(false);
 				return new TurnStart(unit, false, Flush());
 			}

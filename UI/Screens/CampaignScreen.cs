@@ -193,6 +193,8 @@ namespace Sigilos.UI.Screens
 				rewards.AddChild(Layout.Labeled("scroll", stage.FirstClearScrolls.ToString(), T("currency.scrolls_name")));
 				rewards.AddChild(Layout.Labeled("essence", Texts.Number(stage.Essence + stage.FirstClearEssence), T("currency.essence")));
 				rewards.AddChild(Layout.Labeled("rune", Texts.Stars(stage.RuneGrade), T("campaign.rune_always")));
+				if (stage.FirstClearRunes > 0)
+					rewards.AddChild(Layout.Labeled("rune", $"+{stage.FirstClearRunes}", T("campaign.rune_legendary", Texts.Stars(stage.Stars))).Named("LegendaryRunes"));
 				BattleResultPanel.AddPrize(rewards, Milestones.ForFirstClear(stage));
 			}
 			else
@@ -225,12 +227,25 @@ namespace Sigilos.UI.Screens
 			row2.AddChild(fight.Wide(220));
 			// A Batalha automática só aparece quando a Campanha a apresenta (Features); depois, em fase já vencida.
 			var autoOpen = Features.IsOpen(_player, _database, Feature.AutoBattle);
+			GameButton? repeat = null;
+			repeat = GameButton.Of(
+				T("common.auto_battle"),
+				() =>
+				{
+					if (autoOpen)
+						RepeatRequested?.Invoke(stage);
+					else
+						LockedDialog.Open(repeat!, _database, Feature.AutoBattle);
+				},
+				ButtonKind.Secondary,
+				autoOpen ? "repeat" : "lock",
+				68).Named("AutoBattle");
+			// Fechada, a Batalha automática fica apagada e o toque diz quando abre; aberta, só vale em fase já vencida.
 			if (autoOpen)
-			{
-				var repeat = GameButton.Of(T("common.auto_battle"), () => RepeatRequested?.Invoke(stage), ButtonKind.Secondary, "repeat", 68).Named("AutoBattle");
 				repeat.Disabled = !cleared || problem != EntryProblem.None;
-				row2.AddChild(repeat.Wide(240));
-			}
+			else
+				repeat.Modulate = new Color(1, 1, 1, 0.5f);
+			row2.AddChild(repeat.Wide(240));
 
 			_actions.AddChild(row2);
 			if (autoOpen && !cleared)

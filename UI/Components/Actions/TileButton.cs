@@ -80,6 +80,30 @@ namespace Sigilos.UI.Components
 		/// <summary>O botão da barra de baixo do Santuário: símbolo em cima e o nome embaixo.</summary>
 		public static TileButton Nav(string title, string icon, float width = 128) => new(title, "", Art.Icon(icon), new Vector2(width, 86)) { Name = Layout.NodeName(icon) };
 
+		/// <summary>
+		/// Parte do jogo que ainda não abriu: o botão fica apagado, com um cadeado no canto, e segue tocável: quem
+		/// o liga ao toque abre o aviso de quando abre (<see cref="LockedDialog"/>) em vez de entrar.
+		/// </summary>
+		public TileButton Locked()
+		{
+			Highlight = false;
+			foreach (var child in GetChildren())
+			{
+				if (child is Control control)
+					control.Modulate = new Color(1, 1, 1, 0.5f);
+			}
+
+			var padlock = Doodle.Icon(Art.Icon("lock"), 22, Palette.TextFaded).Named("Padlock");
+			padlock.MouseFilter = MouseFilterEnum.Ignore;
+			padlock.SetAnchorsPreset(LayoutPreset.TopRight);
+			padlock.OffsetLeft = -34;
+			padlock.OffsetTop = 8;
+			padlock.OffsetRight = -8;
+			padlock.OffsetBottom = 34;
+			AddChild(padlock);
+			return this;
+		}
+
 		/// <summary>O chamado apagou (ou acendeu): a moldura volta ao repouso, e o pulso a pinta de novo a cada quadro.</summary>
 		protected override void OnHighlightChanged()
 		{

@@ -28,6 +28,7 @@ namespace Sigilos.UI.Screens
 		private readonly VBoxContainer _list = new() { Name = "Dungeons" };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart };
+		private ScrollContainer _detailScroll = null!;
 		private DungeonDefinition _selected;
 
 		public DungeonScreen(GameDatabase database, PlayerState player, string? selected)
@@ -66,7 +67,8 @@ namespace Sigilos.UI.Screens
 
 			var panel = new PanelContainer { Name = "Dungeon", SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			_detail.AddThemeConstantOverride("separation", Space.Regular);
-			panel.AddChild(Layout.Scroll(_detail));
+			_detailScroll = Layout.Scroll(_detail);
+			panel.AddChild(_detailScroll);
 			body.AddChild(panel);
 
 			_message.AddThemeColorOverride("font_color", Palette.Gold);
@@ -162,6 +164,15 @@ namespace Sigilos.UI.Screens
 
 			for (var number = 1; number <= dungeon.Floors.Count; number++)
 				_detail.AddChild(FloorRow(dungeon, number).Named($"Floor{number}"));
+
+			// A primeira escolha de andar é o último derrotado: a lista abre com ele no alto (o próximo, logo abaixo).
+			var last = Math.Clamp(Dungeons.Cleared(_player, dungeon), 1, dungeon.Floors.Count);
+			_detailScroll.ScrollVertical = 0;
+			Callable.From(() => Callable.From(() =>
+			{
+				if (IsInstanceValid(_detailScroll) && _detail.GetNodeOrNull<Control>($"Floor{last}") is { } row)
+					_detailScroll.ScrollVertical = (int)row.Position.Y;
+			}).CallDeferred()).CallDeferred();
 		}
 
 		private Control FloorRow(DungeonDefinition dungeon, int number)

@@ -16,7 +16,7 @@ namespace Sigilos.Core.Progression
 	/// </summary>
 	public static class Leveling
 	{
-		public const int ExperiencePerEssence = 10;
+		public const int ExperiencePerEssence = 3;
 
         /// <summary>Experiência para sair de cada nível e chegar ao próximo, uma linha por estrela.</summary>
         private static readonly int[][] Table =
@@ -75,13 +75,25 @@ namespace Sigilos.Core.Progression
 			return gained;
 		}
 
-		/// <summary>Experiência de vitória para cada monstro da equipe. Devolve os ids de quem subiu de nível.</summary>
-		public static IReadOnlyList<int> GiveExperience(PlayerState player, IReadOnlyList<int> team, int amount)
+		/// <summary>
+		/// A experiência que cada monstro da equipe recebe de uma vitória. <paramref name="amount"/> é o que cada
+		/// monstro de uma equipe cheia (<see cref="Teams.SizeOf"/>: 4 nos mapas, 5 nas Masmorras) ganha; o total é dividido entre os que
+		/// lutam (os de nível máximo contam: a divisão não os deixa de fora), então menos monstros dá mais a cada um.
+		/// </summary>
+		public static int Share(PlayerState player, string content, int amount)
 		{
+			var present = Teams.Of(player, content).Count(id => player.Monster(id) is { Stored: false });
+			return present == 0 ? 0 : amount * Teams.SizeOf(content) / present;
+		}
+
+		/// <summary>Experiência de vitória, dividida pela equipe (<see cref="Share"/>). Devolve os ids de quem subiu de nível.</summary>
+		public static IReadOnlyList<int> GiveExperience(PlayerState player, string content, int amount)
+		{
+			var share = Share(player, content, amount);
 			var levelUps = new List<int>();
-			foreach (var id in team)
+			foreach (var id in Teams.Of(player, content))
 			{
-				if (player.Monster(id) is { Stored: false } monster && AddExperience(monster, amount) > 0)
+				if (player.Monster(id) is { Stored: false } monster && AddExperience(monster, share) > 0)
 					levelUps.Add(id);
 			}
 

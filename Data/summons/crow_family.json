@@ -270,7 +270,7 @@
           "image": "sabotador_de_planos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllAllies", "power": 3.43},
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.43},
             {"kind": "ChangeDuration", "target": "AllEnemies", "scope": "Debuffs", "turns": 1}
           ],
           "levels": [

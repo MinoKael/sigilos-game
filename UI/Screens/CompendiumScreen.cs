@@ -18,14 +18,19 @@ namespace Sigilos.UI.Screens
 	/// o jogador precisa na hora (textos curtos e janelas ao tocar); aqui fica o porquê completo. Todo
 	/// número vem das regras do Core, então a explicação acompanha o balanceamento. As cores de raridade
 	/// (a moldura dos monstros, a cor das runas) têm legenda com exemplos de verdade. O que existe no
-	/// jogo (invocações, tabelas de runa, pedras) fica no Grimório.
+	/// jogo (invocações, conjuntos, tabelas de runa, pedras) fica na aba Catálogo (<see cref="CatalogView"/>).
 	/// </summary>
 	public partial class CompendiumScreen : Control
 	{
 		private const float CardWidth = 560;
 
-		public CompendiumScreen()
+		private readonly GameDatabase _database;
+		private readonly PlayerState _player;
+
+		public CompendiumScreen(GameDatabase database, PlayerState player)
 		{
+			_database = database;
+			_player = player;
 		}
 
 		public event Action? BackRequested;
@@ -47,6 +52,9 @@ namespace Sigilos.UI.Screens
 			Planets(Layout.Tab(tabs, "Planets", T("compendium.tab.planets")));
 			Statuses(Layout.Tab(tabs, "Effects", T("compendium.tab.effects")));
 			Runes(Layout.Tab(tabs, "Runes", T("compendium.tab.runes")));
+			// O Catálogo tem as abas e a rolagem dele: entra direto, sem a rolagem das outras abas.
+			tabs.AddChild(new CatalogView(_database, _player));
+			tabs.SetTabTitle(tabs.GetTabCount() - 1, T("compendium.tab.catalog"));
 
 			sigils.Add(T("compendium.tab.basic"), "", "region").Name = "Basics";
 			sigils.Add(T("compendium.tab.combat"), "", "fight").Name = "Combat";
@@ -54,6 +62,7 @@ namespace Sigilos.UI.Screens
 			sigils.Add(T("compendium.tab.planets"), "", "rune").Name = "Planets";
 			sigils.Add(T("compendium.tab.effects"), "", "effects").Name = "Effects";
 			sigils.Add(T("compendium.tab.runes"), "", "grindstone").Name = "Runes";
+			sigils.Add(T("compendium.tab.catalog"), "", "grimoire").Name = "Catalog";
 			sigils.Changed += index => tabs.CurrentTab = index;
 		}
 
@@ -68,7 +77,7 @@ namespace Sigilos.UI.Screens
 			Card(grid, "Gold", "gold", T("compendium.basic.gold.title"), T("compendium.basic.gold.text", Account.LevelUpGold));
 			Card(grid, "Summon", "summon", T("compendium.basic.summon.title"), T("compendium.basic.summon.text", Texts.Percent(Sigilos.Core.Summoning.SummonRates.MysticLightDark)));
 			Card(grid, "Monsters", "monster", T("compendium.basic.monsters.title"), T("compendium.basic.monsters.text", PlayerState.StartingCollectionCapacity, RuneInventory.Capacity, Account.MaxCollectionCapacity));
-			Card(grid, "Teams", "team", T("compendium.basic.teams.title"), T("compendium.basic.teams.text", PlayerState.TeamSize));
+			Card(grid, "Teams", "team", T("compendium.basic.teams.title"), T("compendium.basic.teams.text", PlayerState.MapTeamSize, PlayerState.TeamSize));
 			Card(grid, "Level", "essence", T("compendium.basic.level.title"), T("compendium.basic.level.text", Growth.MaxLevel(3), Growth.MaxLevel(Growth.MaxStars), Leveling.ExperiencePerEssence));
 			var f3 = Evolution.Cost(3);
 			var f4 = Evolution.Cost(4);
@@ -115,7 +124,7 @@ namespace Sigilos.UI.Screens
 			var top = new Label { Name = "Stars", Text = stars, HorizontalAlignment = HorizontalAlignment.Center };
 			top.AddThemeColorOverride("font_color", color);
 			swatch.AddChild(top);
-			var text = new Label { Name = "Meaning", Text = meaning, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(150, 0) };
+			var text = new Label { Name = "Meaning", Text = meaning, HorizontalAlignment = HorizontalAlignment.Center, AutowrapMode = TextServer.AutowrapMode.Off, CustomMinimumSize = new Vector2(150, 0) };
 			text.AddThemeColorOverride("font_color", color);
 			swatch.AddChild(text);
 			return swatch;
@@ -125,7 +134,7 @@ namespace Sigilos.UI.Screens
 		{
 			var grid = Cards(column);
 			Card(grid, "Impetus", Core.Content.Planet.Mercury, T("compendium.combat.impetus.title"), T("compendium.combat.impetus.text", Texts.Impeto));
-			Card(grid, "Fight", "campaign", T("compendium.combat.fight.title"), T("compendium.combat.fight.text", PlayerState.TeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit));
+			Card(grid, "Fight", "campaign", T("compendium.combat.fight.title"), T("compendium.combat.fight.text", PlayerState.MapTeamSize, GameDatabase.MaxWaves, GameDatabase.MaxEnemiesPerWave, BattleRules.RoundLimit, PlayerState.TeamSize));
 			Card(grid, "Damage", Texts.PlanetOf(Stat.Attack), T("compendium.combat.damage.title"), T("compendium.combat.damage.text", Math.Round(BattleRules.DefenseConstant)));
 			Card(grid, "Crit", Texts.PlanetOf(Stat.Crit), T("compendium.combat.crit.title"), T("compendium.combat.crit.text"));
 			Card(grid, "Resistance", Texts.PlanetOf(Stat.Resistance), T("compendium.combat.resistance.title"), T("compendium.combat.resistance.text", Texts.Percent(BattleRules.MinResistChance)));

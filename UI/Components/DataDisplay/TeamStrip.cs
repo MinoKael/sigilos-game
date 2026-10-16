@@ -21,7 +21,7 @@ namespace Sigilos.UI.Components
 			Name = "Team";
 			AddThemeConstantOverride("separation", Space.Medium);
 			var team = Teams.Of(player, content).Select(player.Monster).OfType<OwnedSummon>().Where(m => database.HasSummon(m.SummonId)).ToList();
-			for (var i = 0; i < PlayerState.TeamSize; i++)
+			for (var i = 0; i < Teams.SizeOf(content); i++)
 			{
 				var column = new VBoxContainer { Name = $"Slot{i + 1}", MouseFilter = MouseFilterEnum.Ignore };
 				column.AddThemeConstantOverride("separation", Space.None);

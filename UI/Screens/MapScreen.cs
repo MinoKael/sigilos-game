@@ -59,9 +59,17 @@ namespace Sigilos.UI.Screens
 			var detail = dungeonsOpen
 				? T("map.dungeons_detail", open, _database.Dungeons.Count, cleared, floors)
 				: T("map.dungeons_opens", Core.Progression.Features.StageOf(_database, Core.Progression.Feature.Dungeons));
-			var dungeons = new TileButton(T("destination.Dungeons"), detail, Art.Creature("crowned_skull"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Dungeons", Disabled = !dungeonsOpen };
+			var dungeons = new TileButton(T("destination.Dungeons"), detail, Art.Creature("crowned_skull"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Dungeons" };
 			dungeons.Highlight = Core.Progression.Features.IsNew(_player, _database, Core.Progression.Feature.Dungeons);
-			dungeons.Pressed += () => Requested?.Invoke(Destination.Dungeons);
+			if (!dungeonsOpen)
+				dungeons.Locked();
+			dungeons.Pressed += () =>
+			{
+				if (dungeonsOpen)
+					Requested?.Invoke(Destination.Dungeons);
+				else
+					LockedDialog.Open(dungeons, _database, Core.Progression.Feature.Dungeons);
+			};
 			row.AddChild(dungeons);
 
 			var exploration = _database.Exploration;
@@ -71,9 +79,17 @@ namespace Sigilos.UI.Screens
 			var starDetail = explorationOpen
 				? T("map.exploration_detail", month, Core.Progression.Exploration.Cleared(_player, now), exploration.Constellations.Count)
 				: T("map.exploration_opens", exploration.UnlockStage);
-			var stars = new TileButton(T("map.exploration"), starDetail, Art.Icon("star_exploration"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Exploration", Disabled = !explorationOpen };
+			var stars = new TileButton(T("map.exploration"), starDetail, Art.Icon("star_exploration"), DoorSize, ButtonKind.Secondary, iconSize: 150) { Name = "Exploration" };
 			stars.Highlight = Core.Progression.Features.IsNew(_player, _database, Core.Progression.Feature.Exploration);
-			stars.Pressed += () => Requested?.Invoke(Destination.Exploration);
+			if (!explorationOpen)
+				stars.Locked();
+			stars.Pressed += () =>
+			{
+				if (explorationOpen)
+					Requested?.Invoke(Destination.Exploration);
+				else
+					LockedDialog.Open(stars, _database, Core.Progression.Feature.Exploration);
+			};
 			row.AddChild(stars);
 		}
 	}

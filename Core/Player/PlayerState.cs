@@ -12,8 +12,11 @@ namespace Sigilos.Core.Player
 	/// </summary>
 	public sealed class PlayerState
 	{
-		/// <summary>Monstros por equipe, em qualquer luta.</summary>
+		/// <summary>Monstros por equipe nas Masmorras: o máximo de qualquer luta (<see cref="Teams.SizeOf"/>).</summary>
 		public const int TeamSize = 5;
+
+		/// <summary>Monstros por equipe nos mapas (a Campanha e a Exploração): uma vaga a menos que nas Masmorras.</summary>
+		public const int MapTeamSize = 4;
 
 		/// <summary>As vagas da coleção numa conta nova (e num save de antes do campo existir).</summary>
 		public const int StartingCollectionCapacity = 50;
@@ -54,6 +57,12 @@ namespace Sigilos.Core.Player
 
 		/// <summary>Gemas de Reavaliação, compradas na Loja: cada uma devolve uma runa ao estado em que caiu.</summary>
 		public int ReappraisalGems { get; set; }
+
+		/// <summary>
+		/// Kits de 6 sigilos ainda não abertos (o prêmio da fase 20): o jogador escolhe o conjunto quando abre
+		/// (<see cref="Progression.RuneKits"/>). Fica no save para não se perder se o jogo fechar antes da escolha.
+		/// </summary>
+		public int PendingRuneKits { get; set; }
 
 		/// <summary>
 		/// Monstros fora do Baú. O que passa disso vai para o Baú, que não tem limite. Cresce com a Expansão de
@@ -162,6 +171,9 @@ namespace Sigilos.Core.Player
 		/// do andar mais fundo de cada Masmorra ganha uma, ao abrir a conta (<see cref="Progression.Records.FillDeepestTeams"/>).
 		/// </summary>
 		public Dictionary<string, List<RecordMember>> BestTeams { get; set; } = new();
+
+		/// <summary>A Arena Astral: pontos, Convites, sequência, lista, Rivais e compras da Loja Cósmica (<see cref="ArenaState"/>).</summary>
+		public ArenaState Arena { get; set; } = new();
 
 		/// <summary>As cartas do correio já coletadas neste save, pelo id do servidor (<see cref="Progression.Mailbox"/>).</summary>
 		public List<string> ClaimedMail { get; set; } = new();
