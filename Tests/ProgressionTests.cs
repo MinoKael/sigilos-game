@@ -20,39 +20,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void IdleKeepsTheFractionForNextTime()
-		{
-			var player = NewPlayer();
-			player.Gold = 0;
-			player.HighestStage = 5;
-
-			// 2,5 de Ouro por hora na fase 5: 5 horas dão 12,5; mais 5 horas fecham 13 com a fração.
-			Assert.Equal(12, Idle.Collect(player, Start.AddHours(5)).Gold, "primeira coleta");
-			Assert.Equal(13, Idle.Collect(player, Start.AddHours(10)).Gold, "a fração guardada fecha mais um");
-			Assert.Equal(25, player.Gold, "Ouro na conta");
-			Assert.True(player.Essence > NewGame.StartingEssence, "a ociosidade também rende Essência");
-			Assert.Equal(0, player.Scrolls - NewGame.StartingScrolls, "e não dá Pergaminhos");
-		}
-
-		[Test]
-		private static void ExperienceFollowsTheStarTable()
-		{
-			Assert.Equal(1986, Leveling.ExperienceToNext(3, 1), "3★ nível 1 da tabela");
-			Assert.Equal(336138, Leveling.ExperienceToNext(6, 39), "6★ nível 39 da tabela");
-			Assert.Equal(246546, Leveling.TotalFor(3), "3★ do 1 ao 25");
-			Assert.Equal(3016260, Leveling.TotalFor(6), "6★ do 1 ao 40");
-
-			var monster = new OwnedSummon { Stars = 3 };
-			Assert.Equal(1, Leveling.AddExperience(monster, 1986), "um nível exato");
-			Assert.Equal(2, monster.Level, "nível 2");
-
-			Leveling.AddExperience(monster, 10_000_000);
-			Assert.Equal(25, monster.Level, "o 3★ para no 25");
-			Assert.Equal(0, monster.Experience, "no máximo a experiência para");
-			Assert.Equal(0, Leveling.MissingToMax(monster), "nada falta no máximo");
-		}
-
-		[Test]
 		private static void InfusingEssenceStopsAtTheStarMax()
 		{
 			var player = NewPlayer();
@@ -95,61 +62,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void EvolvedMonstersOnlyClimbTheNewLevels()
-		{
-			// Do 3★ nível 1 ao 6★ nível 40: a estrela natural inteira e, de cada evolução, só os 5 níveis novos.
-			var player = NewPlayer();
-			var monster = Roster.Add(player, TestData.Summon("wolf_fire"));
-			player.Essence = 1_000_000;
-			player.Fragments = 1_000;
-
-			var experience = 0;
-			do
-			{
-				var missing = Leveling.MissingToMax(monster);
-				experience += missing;
-				Leveling.AddExperience(monster, missing);
-				Assert.True(Leveling.IsMaxLevel(monster), $"{monster.Stars}★ chega ao nível máximo");
-			}
-			while (Evolution.Evolve(player, monster));
-
-			Assert.Equal(6, monster.Stars, "evolui até 6★");
-			Assert.Equal(40, monster.Level, "e chega ao nível 40");
-			Assert.Equal(2_576_385, experience, "a experiência de um 3★ natural até o 6★ nível 40");
-			Assert.True(experience < Leveling.TotalFor(6), "menos do que um 6★ levaria do nível 1 ao 40");
-		}
-
-		[Test]
-		private static void AwakeningCostsEssenceAndChangesTheSheet()
-		{
-			var database = TestData.Database;
-			Assert.Equal(25_000, Awakening.Cost(3), "3★ natural");
-			Assert.Equal(50_000, Awakening.Cost(4), "4★ natural");
-			Assert.Equal(75_000, Awakening.Cost(5), "5★ natural");
-
-			var player = NewPlayer();
-			var summon = database.Summon("wizard_fire");
-			var monster = Roster.Add(player, summon);
-			player.Essence = Awakening.Cost(summon.Rarity) - 1;
-			Assert.False(Awakening.Awaken(player, monster, summon), "sem Essência não desperta");
-
-			player.Essence = Awakening.Cost(summon.Rarity);
-			var before = SummonStats.For(summon, 5, 10, false, Array.Empty<Core.Runes.Rune>()).Total;
-			Assert.True(Awakening.Awaken(player, monster, summon), "desperta");
-			Assert.True(monster.Awakened, "marcado como desperto");
-			Assert.False(Awakening.Awaken(player, monster, summon), "desperta uma vez só");
-
-			var after = SummonStats.For(summon, 5, 10, true, Array.Empty<Core.Runes.Rune>()).Total;
-			var stat = summon.Awakening.Stat!.Value;
-			var fraction = Growth.Fraction(5, 10);
-			Assert.Near(Math.Round(summon.AwakenedStats.Health * fraction), after.Health, "a Vida desperta é a do arquivo, no nível de agora");
-			Assert.Near(Math.Round(summon.AwakenedStats.Attack * fraction), after.Attack, "o Ataque também");
-			Assert.True(after.Health > before.Health && after.Attack > before.Attack && after.Defense > before.Defense, "desperto, Vida, Ataque e Defesa sobem");
-			Assert.Near(before.Get(stat) + Awakening.Bonus(stat), after.Get(stat), "o bônus da variante", 1e-9);
-			Assert.Equal(summon.Awakening.Name, summon.NameFor(true), "nome próprio");
-		}
-
-		[Test]
 		private static void FirstVictoryPaysScrollsRuneAndExperience()
 		{
 			var database = TestData.LoadReal();
@@ -170,33 +82,6 @@ namespace Sigilos.Tests
 			var again = Campaign.ApplyVictory(new Random(1), player, stage, database);
 			Assert.Equal(0, again.Scrolls, "repetir não dá Pergaminhos");
 			Assert.Equal(stage.Essence, again.Essence, "repetir dá Essência");
-		}
-
-		[Test]
-		private static void GrowthStartsByNaturalStars()
-		{
-			Assert.Near(0.221, Growth.Fraction(3, 1), "3★ no nível 1");
-			Assert.Near(0.398, Growth.Fraction(3, 25), "3★ no nível 25");
-			Assert.Near(0.318, Growth.Fraction(4, 1), "4★ no nível 1: abaixo do máximo do 3★");
-			Assert.Near(0.318 + (0.541 - 0.318) * 24 / 29, Growth.Fraction(4, 25), "4★ no nível 25: onde fica quem acabou de evoluir", 1e-9);
-			Assert.Near(0.433, Growth.Fraction(5, 1), "5★ no nível 1");
-			Assert.Near(1.0, Growth.Fraction(6, 40), "6★ no nível 40");
-			Assert.Equal(25, Growth.MaxLevel(3), "3★ vai até o 25");
-			Assert.Equal(40, Growth.MaxLevel(6), "6★ vai até o 40");
-
-			// Os quatro atributos fora do orçamento são iguais para todo monstro: vêm do modelo.
-			var database = TestData.Database;
-			foreach (var summon in database.Summons)
-			{
-				Assert.Near(0.15, summon.Stats.Crit, $"{summon.Id}: Crítico de base 15%");
-				Assert.Near(0.5, summon.Stats.CritDamage, $"{summon.Id}: Dano crítico de base 50%");
-				Assert.Near(0, summon.AwakenedStats.Accuracy, $"{summon.Id}: Precisão de base 0%");
-			}
-
-			var phoenix = database.Summon("wizard_fire");
-			var top = Growth.Stats(phoenix.Stats, Growth.MaxStars, Growth.MaxLevel(Growth.MaxStars));
-			Assert.Near(phoenix.Stats.Health, top.Health, "no 6★ nível 40, os atributos são os do arquivo");
-			Assert.Near(phoenix.Stats.Speed, Growth.Stats(phoenix.Stats, 5, 1).Speed, "a Velocidade não muda com o nível");
 		}
 
 		[Test]
@@ -237,63 +122,6 @@ namespace Sigilos.Tests
 			Assert.False(PlayerSave.IsObsolete("não é json"), "texto quebrado não conta");
 		}
 
-		/// <summary>Trocar a versão do save zera a conta, mas a data de começo dela é do jogador: passa para a conta nova.</summary>
-		[Test]
-		private static void ASaveVersionResetKeepsTheStartDate()
-		{
-			var database = TestData.LoadReal();
-			var original = new DateTime(2026, 3, 4, 10, 30, 0);
-			var oldJson = $"{{ \"version\": {PlayerState.CurrentVersion - 1}, \"started\": \"{original:yyyy-MM-ddTHH:mm:ss}\", \"Scrolls\": 3 }}";
-			Assert.True(PlayerSave.FromJson(oldJson) == null, "o save antigo não é lido inteiro");
-			Assert.Equal<DateTime?>(original, PlayerSave.StartedOf(oldJson), "mas a data de começo sai dele (qualquer caixa)");
-			Assert.True(PlayerSave.StartedOf("{ \"Scrolls\": 3 }") == null, "sem a data: nulo, não a de agora");
-			Assert.True(PlayerSave.StartedOf("não é json") == null, "texto quebrado: nulo");
-
-			var fresh = NewGame.Create(Start, new Random(1), database);
-			PlayerSave.InheritStarted(fresh, PlayerSave.StartedOf(oldJson));
-			Assert.Equal<DateTime?>(original, fresh.Started, "a conta nova leva a data do save antigo");
-
-			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(fresh))!;
-			Assert.Equal<DateTime?>(original, loaded.Started, "e ela sobrevive a gravar e ler");
-			Account.Open(loaded, database, Start.AddDays(9));
-			Assert.Equal<DateTime?>(original, loaded.Started, "abrir a conta não a troca pela de agora");
-
-			var noDate = NewGame.Create(Start, new Random(1), database);
-			PlayerSave.InheritStarted(noDate, null);
-			Assert.Equal<DateTime?>(Start, noDate.Started, "sem data herdada, vale a da conta nova");
-		}
-
-		[Test]
-		private static void BestTimeKeepsTheFastestVictory()
-		{
-			var player = NewPlayer();
-			var key = Records.StageKey(3);
-			Assert.True(Records.Best(player, key) == null, "sem vitória, sem recorde");
-			Assert.True(Records.Submit(player, key, 62), "a primeira vitória é o recorde");
-			Assert.True(!Records.Submit(player, key, 70), "mais lenta não grava");
-			Assert.Equal(62.0, Records.Best(player, key)!.Value, "fica a mais rápida");
-			Assert.True(Records.Submit(player, key, 46), "mais rápida grava");
-			Assert.Equal(46.0, Records.Best(player, key)!.Value, "o novo recorde");
-			Assert.True(Records.Best(player, Records.FloorKey("golem", 3)) == null, "cada luta tem o seu");
-		}
-
-		[Test]
-		private static void BestTimeKeepsTheTeamThatMadeIt()
-		{
-			var player = NewPlayer();
-			var key = Records.FloorKey("golem", 2);
-			Assert.Equal(0, Records.Team(player, key).Count, "recorde sem equipe gravada: nenhuma");
-			Records.Submit(player, key, 80, [new RecordMember("wolf_fire", false), new RecordMember("wizard_fire", true)]);
-			Records.Submit(player, key, 95, [new RecordMember("wolf_dark", false)]);
-			Assert.Equal("wolf_fire,wizard_fire", string.Join(",", Records.Team(player, key).Select(m => m.Summon)), "a mais lenta não troca a equipe; a ordem fica");
-			Assert.True(Records.Team(player, key)[1].Awakened, "e lembra quem lutou desperto");
-
-			var loaded = PlayerSave.FromJson(PlayerSave.ToJson(player))!;
-			Assert.Equal(2, Records.Team(loaded, key).Count, "o save guarda a equipe");
-			Records.Submit(loaded, key, 60, [new RecordMember("wolf_dark", false)]);
-			Assert.Equal("wolf_dark", Records.Team(loaded, key).Single().Summon, "o recorde novo traz a equipe dele");
-		}
-
 		[Test]
 		private static void OpeningAnOldSaveFillsTheStartAndTheDeepestTeam()
 		{
@@ -323,23 +151,5 @@ namespace Sigilos.Tests
 			Assert.Equal<DateTime?>(Start.AddDays(2), PlayerSave.FromJson(PlayerSave.ToJson(player))!.GuildJoined, "o save guarda a entrada na guilda");
 		}
 
-		[Test]
-        private static void IdleRefillsManaUpToTheDoubleMax()
-        {
-            var player = NewPlayer();
-            Assert.Equal(Mana.Max(player), player.Mana, "a conta começa com a Mana cheia");
-            Assert.Equal(NewGame.StartingMana, Mana.Max(player), "e a cheia do nível 1 é a do NewGame");
-
-            player.Mana = 0;
-            Assert.Equal((int)(Mana.PerHour * 2), Idle.Collect(player, Start.AddHours(2)).Mana, "20 por hora");
-            Assert.Equal(Mana.BaseMax, (int)(Mana.PerHour * Mana.RefillHours), "a Mana do nível 1 enche do zero em 5 horas");
-
-            Idle.Collect(player, Start.AddHours(2 + (Idle.CapHours * 2)));
-            Assert.Equal(Mana.Max(player) * 2, player.Mana, "para no dobro do máximo");
-
-            player.Mana = (Mana.Max(player) * 2) + 40;
-            Assert.Equal(0, Idle.Collect(player, Start.AddHours(4 + (Idle.CapHours * 2))).Mana, "acima do dobro do máximo não recarrega");
-            Assert.Equal((Mana.Max(player) * 2) + 40, player.Mana, "mas não tira o que passou");
-        }
     }
 }

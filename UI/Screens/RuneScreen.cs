@@ -816,16 +816,16 @@ namespace Sigilos.UI.Screens
 
 		// As células da grade de ações, na ordem de sempre (duas colunas).
 		// Equipar | Provar, e abaixo as fileiras do dono: Evoluir +1 | vazio, Até +X | Até +12, Reavaliar | Afiar, Bloquear | Vender.
-		private const int CellEquip = 0;
-		private const int CellTry = 1;
-		private const int CellUpgrade = 2;
-		private const int CellSpare = 3;
-		private const int CellMilestone = 4;
-		private const int CellTwelve = 5;
-		private const int CellReappraise = 6;
-		private const int CellForge = 7;
-		private const int CellLock = 8;
-		private const int CellSell = 9;
+		private const int CellSpare = 0;
+		private const int CellEquip = 1;
+		private const int CellReappraise = 2;
+		private const int CellTry = 3;
+		private const int CellForge = 4;
+		private const int CellUpgrade = 5;
+		private const int CellLock = 6;
+		private const int CellMilestone = 7;
+		private const int CellSell = 8;
+		private const int CellTwelve = 9;
 		private const int ActionCells = 10;
 
 		/// <summary>Pede a melhora. A ficha da runa, refeita logo em seguida, mostra os níveis subindo.</summary>
@@ -881,10 +881,11 @@ namespace Sigilos.UI.Screens
 		/// </summary>
 		private GameButton Reappraise(Rune rune)
 		{
-			var changes = RuneReappraisal.Preview(rune);
+		var changes = RuneReappraisal.Preview(rune);
 			var gems = _player.ReappraisalGems;
-			var button = GameButton.Of(T("runes.reappraise", gems), () => Dialog.Confirm(this, T("runes.reappraise_title"), ReappraisalText(changes, gems),
-				T("runes.reappraise_button"), () => ReappraiseRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Secondary, "gem", ActionHeight).Named("Reappraise");
+			var button = GameButton.Of(T("runes.reappraise"), () => Dialog.Confirm(this, T("runes.reappraise_title"), ReappraisalText(changes, gems),
+				T("runes.reappraise_button"), () => ReappraiseRequested?.Invoke(rune.Id), ButtonKind.Danger), ButtonKind.Secondary, "gem", ActionHeight)
+                .WithCost(null, gems.ToString()).Named("Reappraise");
 			return button.Block(!changes.Any ? T("runes.why_no_reappraise") : gems == 0 ? T("runes.reappraise_none") : null, T("runes.reappraise_title"));
 		}
 

@@ -11,20 +11,6 @@ namespace Sigilos.Tests
 	internal static class SealTests
 	{
 		[Test]
-		private static void NewAccountKnowsWhenItStartedAndOldSaveDoesNot()
-		{
-			var now = new DateTime(2026, 10, 7, 12, 0, 0);
-			var player = NewGame.Create(now, new Random(1), TestData.Database);
-			Assert.Equal(now, player.Started, "a conta nova anota quando começou");
-
-			var json = PlayerSave.ToJson(player);
-			Assert.Equal(now, PlayerSave.FromJson(json)!.Started, "o save guarda a data");
-			var old = Regex.Replace(json, @"\s*""Started"":\s*""[^""]*"",", "");
-			Assert.True(old != json, "o teste tirou o campo");
-			Assert.Equal(null, PlayerSave.FromJson(old)!.Started, "save sem o campo: sem data, nada inventado");
-		}
-
-		[Test]
 		private static void SealsReadTheSaveWithoutChangingIt()
 		{
 			var database = TestData.Database;

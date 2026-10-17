@@ -47,11 +47,18 @@ namespace Sigilos.Core.Progression
 			_ => player.HighestStage >= StageOf(database, feature),
 		};
 
-		/// <summary>Aberta na última fase vencida: o botão dela pulsa até a próxima.</summary>
+		/// <summary>Aberta na última fase vencida e ainda não visitada: o botão dela pulsa até o jogador entrar (ou vencer a próxima fase).</summary>
 		public static bool IsNew(PlayerState player, GameDatabase database, Feature feature)
 		{
 			var stage = StageOf(database, feature);
-			return stage is > 0 and < int.MaxValue && player.HighestStage == stage;
+			return stage is > 0 and < int.MaxValue && player.HighestStage == stage && !player.SeenFeatures.Contains(feature.ToString());
+		}
+
+		/// <summary>O jogador entrou na parte: ela deixa de pulsar.</summary>
+		public static void MarkSeen(PlayerState player, Feature feature)
+		{
+			if (!player.SeenFeatures.Contains(feature.ToString()))
+				player.SeenFeatures.Add(feature.ToString());
 		}
 
 		/// <summary>O que a primeira vitória da fase abre, na ordem da tabela.</summary>

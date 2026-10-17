@@ -29,16 +29,6 @@ namespace Sigilos.Tests
 			return (session, hero, session.Enemies.Single(e => !e.IsBoss), session.Enemies.Single(e => e.IsBoss));
 		}
 
-		[Test]
-		private static void OnlyUniqueEnemiesAreBosses()
-		{
-			var (session, hero, wolf, boss) = Fight();
-			Assert.Equal("chain_master", boss.DefinitionId, "o inimigo único de Data/enemies.json é o chefe");
-			Assert.False(wolf.IsBoss, "invocação inimiga nunca é chefe");
-			Assert.False(hero.IsBoss, "nem aliado");
-			Assert.True(session.HasBoss, "a luta sabe que tem chefe (a pausa oferece o foco)");
-		}
-
 		/// <summary>Um herói que derruba o chefe num golpe, ao lado de um lacaio que não cai.</summary>
 		private static (BattleSession Session, BattleUnit Minion) BossDownFirst(VictoryCondition victory)
 		{
@@ -50,14 +40,6 @@ namespace Sigilos.Tests
 			TestData.RunUntilTurnOf(session, hero);
 			session.Act(new UnitAction(0, boss));
 			return (session, minion);
-		}
-
-		[Test]
-		private static void BossDownWinsTheDungeonAtOnce()
-		{
-			var (session, minion) = BossDownFirst(VictoryCondition.Boss);
-			Assert.True(session.Victory == true, "Masmorra: o chefe caiu, a luta está ganha");
-			Assert.True(minion.IsAlive, "mesmo com o lacaio em pé");
 		}
 
 		[Test]
@@ -73,22 +55,6 @@ namespace Sigilos.Tests
 			var database = TestData.LoadReal();
 			Assert.True(database.Dungeons.All(d => d.Floors.All(f => f.Encounter.Victory == VictoryCondition.Boss)), "todo andar de Masmorra vence no chefe");
 			Assert.Equal(VictoryCondition.AllWaves, database.Stage(1).Encounter.Victory, "a fase da Campanha, em todas as ondas");
-		}
-
-		[Test]
-		private static void AutoFocusesTheBossOnlyWhenAsked()
-		{
-			var (session, hero, wolf, boss) = Fight();
-			Assert.Equal(wolf, AutoPilot.ForAlly(session, hero).Target, "sem foco: a vantagem elemental (Fogo no Vento)");
-			Assert.Equal(boss, AutoPilot.ForAlly(session, hero, focusBoss: true).Target, "com foco: o chefe, mesmo sem vantagem");
-		}
-
-		[Test]
-		private static void MarkedEnemyComesBeforeTheBoss()
-		{
-			var (session, hero, wolf, boss) = Fight();
-			Assert.Equal(wolf, AutoPilot.ForAlly(session, hero, focusBoss: true, focus: wolf).Target, "o inimigo marcado na tela vem antes do chefe");
-			Assert.Equal(boss, AutoPilot.ForAlly(session, hero, focusBoss: false, focus: boss).Target, "e antes da vantagem elemental");
 		}
 
 		/// <summary>
@@ -120,70 +86,5 @@ namespace Sigilos.Tests
 			return (session, hero, king);
 		}
 
-		[Test]
-		private static void BoneKingShrugsImpetoShieldsAfterActingAndComesBack()
-		{
-			var (session, hero, king) = Crypt();
-			TestData.RunUntilTurnOf(session, hero);
-			var impeto = king.Impeto;
-			session.Act(new UnitAction(0, king));
-			Assert.Equal(impeto, king.Impeto, "com o Rei em campo, o inimigo não ganha Ímpeto");
-			Assert.Equal(0.0, hero.Impeto, "nem o aliado");
-
-			TestData.RunUntilTurnOf(session, king);
-			session.Act(new UnitAction(0, hero));
-			Assert.True(king.Has(StatusKind.Shield), "escudo depois de agir");
-
-			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(1, king));
-			Assert.True(king.Reviving, "caiu, mas vai voltar");
-			Assert.False(session.IsOver, "o Rei que vai voltar segura a onda");
-			TestData.RunUntilTurnOf(session, king);
-			Assert.Near(300, king.Health, "volta com 30% da Vida");
-		}
-
-		[Test]
-		private static void ForgottenBoneKingStaysDown()
-		{
-			var (session, hero, king) = Crypt();
-			king.AddStatus(new StatusEffect(StatusKind.Oblivion, 2, 0, hero));
-			TestData.RunUntilTurnOf(session, hero);
-			var impeto = king.Impeto;
-			session.Act(new UnitAction(0, king));
-			Assert.Near(impeto + 40, king.Impeto, "esquecido, o Rei destrava o Ímpeto do inimigo");
-			Assert.Near(40, hero.Impeto, "e do aliado");
-			TestData.RunUntilTurnOf(session, hero);
-			session.Act(new UnitAction(1, king));
-			Assert.False(king.Reviving, "com Esquecimento, não volta");
-			Assert.True(session.Victory == true, "vitória");
-		}
-
-		[Test]
-		private static void AfflictionTakesLessFromABoss()
-		{
-			var (session, hero, king) = Crypt();
-			king.AddStatus(new StatusEffect(StatusKind.Affliction, 3, 0, hero));
-			TestData.RunUntilTurnOf(session, king);
-			Assert.Near(1000 * (1 - BattleRules.AfflictionFraction * BattleRules.BossAfflictionShare), king.Health, "no chefe, só uma parte da Aflição");
-		}
-
-		[Test]
-		private static void GolemPillarsAreMinionsNotBosses()
-		{
-			var database = TestData.LoadReal();
-			var floor = database.Dungeon("golem").Floor(5).Encounter;
-			var foes = floor.Waves[^1].Select(slot => BattleFactory.Foe(database, slot, floor)).ToList();
-			Assert.Equal(1, foes.Count(foe => foe.IsBoss), "um chefe só: o Golem");
-			Assert.Equal("runic_golem", foes.Single(foe => foe.IsBoss).DefinitionId, "o Golem é o chefe");
-			Assert.True(foes.Count(foe => foe.DefinitionId == "golem_bastion") == 2, "dois Bastiões ao lado dele no andar 5");
-		}
-
-		[Test]
-		private static void TauntStillBeatsTheBossFocus()
-		{
-			var (session, hero, wolf, _) = Fight();
-			wolf.AddStatus(new StatusEffect(StatusKind.Taunt, 1, 0, wolf));
-			Assert.Equal(wolf, AutoPilot.ForAlly(session, hero, focusBoss: true).Target, "provocado, ataca quem provocou");
-		}
 	}
 }

@@ -182,13 +182,13 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>A segunda linha: o custo em símbolo e número ("⚡ 5"). Vazio esconde.</summary>
-		public GameButton WithCost(string icon, string value)
+		public GameButton WithCost(string? icon, string value)
 		{
 			Layout.Clear(_cost);
 			_cost.Visible = value.Length > 0;
 			if (value.Length > 0)
 			{
-				_cost.AddChild(Doodle.Icon(Art.Icon(icon), 18, Tones.Ink(_kind)).Named("Icon"));
+				if (icon != null) _cost.AddChild(Doodle.Icon(Art.Icon(icon), 18, Tones.Ink(_kind)).Named("Icon"));
 				var amount = new Label { Name = "Value", Text = value, MouseFilter = MouseFilterEnum.Ignore };
 				amount.AddThemeFontOverride("font", GameTheme.Serif);
 				amount.AddThemeFontSizeOverride("font_size", FontSize.Body);

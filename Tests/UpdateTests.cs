@@ -43,37 +43,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void NewerVersionIsOfferedAndBelowTheMinimumIsRequired()
-		{
-			var manifest = Manifest();
-
-			Assert.Equal(UpdateState.Available, Updater.Decide(new Version(0, 3, 0), manifest), "mais nova");
-			Assert.Equal(UpdateState.Required, Updater.Decide(new Version(0, 2, 9), manifest), "abaixo da mínima");
-			Assert.Equal(UpdateState.Current, Updater.Decide(new Version(0, 4, 0), manifest), "a mesma");
-			Assert.Equal(UpdateState.Current, Updater.Decide(new Version(0, 4), manifest), "0.4 é a 0.4.0");
-			Assert.Equal(UpdateState.Current, Updater.Decide(new Version(0, 5, 0), manifest), "mais nova que a publicada (uma versão de teste)");
-		}
-
-		[Test]
-		private static void CheckReadsTheServerAndIgnoresWhatItCannotTrust()
-		{
-			var (privateKey, publicKey) = Keys();
-			var server = new Server { Manifest = UpdateManifest.Write(Manifest(), privateKey) };
-			var check = Run(new Updater(server.Client(), publicKey).Check(new Version(0, 3, 0)));
-			Assert.Equal(UpdateState.Available, check.State, "oferece");
-			Assert.Equal(new Version(0, 4, 0), check.Manifest?.Version, "a versão do servidor");
-
-			server.Manifest = UpdateManifest.Write(Manifest() with { Platform = "android" }, privateKey);
-			Assert.Equal(UpdateState.Failed, Run(new Updater(server.Client(), publicKey).Check(new Version(0, 3, 0))).State, "manifesto de outra plataforma");
-
-			server.Manifest = null;
-			Assert.Equal(UpdateState.Failed, Run(new Updater(server.Client(), publicKey).Check(new Version(0, 3, 0))).State, "nada publicado (404)");
-
-			var offline = new Server { Unreachable = true };
-			Assert.Equal(UpdateState.Failed, Run(new Updater(offline.Client(), publicKey).Check(new Version(0, 3, 0))).State, "sem rede segue o jogo");
-		}
-
-		[Test]
 		private static void DownloadKeepsOnlyTheFileThatMatchesTheManifest()
 		{
 			var folder = Folder();

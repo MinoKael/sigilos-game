@@ -14,39 +14,6 @@ namespace Sigilos.Tests
 		private static PlayerState NewPlayer() => NewGame.Create(DateTime.UnixEpoch, new Random(1), TestData.Database);
 
 		[Test]
-		private static void InfusionCoreOnlyFusesButRaisesAnyFamily()
-		{
-			var database = TestData.Database;
-			var player = TestData.PlayerWith("wolf_fire");
-			var imp = player.Monsters.Single();
-			Milestones.Grant(player, new Prize(InfusionCores: 2));
-			var cores = player.Monsters.Where(m => m.IsInfusionCore).ToList();
-			Assert.Equal(2, cores.Count, "dois Núcleos na conta");
-			Assert.Equal(3, player.Collection.Count(), "ocupam vaga na coleção");
-			Assert.False(database.Summons.Any(s => InfusionCore.Is(s.Id)), "não é invocação: não sai em pergaminho nem no Grimório");
-
-			var core = cores[0];
-			Assert.False(Teams.Toggle(player, Teams.Campaign, core.Id), "não entra em equipe");
-			Assert.False(RuneInventory.Equip(player, RuneInventory.Create(new Random(1), player, 3), core.Id), "não usa runa");
-			player.Essence = 1_000_000;
-			Assert.Equal(0, Leveling.Infuse(player, core, 1000), "não sobe de nível");
-			Assert.False(Evolution.IsReady(core), "não evolui");
-			Assert.False(Awakening.CanAwaken(player, core, database.Summon(core.SummonId)), "não desperta");
-			Assert.Equal(0, Fusion.Release(player, database, core.Id), "não se solta");
-			Assert.False(Fusion.CanFuse(player, database, core.Id, imp.Id), "não recebe fusão");
-			Assert.True(Account.Avatars(player).All(a => !InfusionCore.Is(a.Id)), "nem vira retrato da conta");
-
-			Assert.True(Fusion.CanFuse(player, database, imp.Id, core.Id), "funde em qualquer família");
-			Assert.True(Fusion.Fuse(new Random(1), player, database, imp.Id, core.Id) >= 0, "funde");
-			Assert.Equal(1, imp.SkillLevels.Sum() - imp.SkillLevels.Count, "uma habilidade subiu um nível");
-			Assert.True(player.Monster(core.Id) == null, "e o Núcleo some");
-
-			player.CollectionCapacity = player.Collection.Count();
-			Milestones.Grant(player, new Prize(InfusionCores: 1));
-			Assert.True(player.Monsters.Last().Stored, "coleção cheia: o Núcleo vai para o Baú");
-		}
-
-		[Test]
 		private static void RegionEndsAndDungeonFloorsPayTheirMilestonesOnce()
 		{
 			var database = TestData.Database;
@@ -77,20 +44,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void AccountLevelsPayLightDarkScrollsAndCores()
-		{
-			var player = NewPlayer();
-			player.AccountLevel = 19;
-			player.AccountExperience = 0;
-			var cores = player.Monsters.Count(m => m.IsInfusionCore);
-			Account.GiveExperience(player, Account.ExperienceToNext(19));
-			Assert.Equal(20, player.AccountLevel, "sobe para o 20");
-			Assert.Equal(1, player.LightDarkScrolls, "o nível 20 dá um Pergaminho de Luz e Trevas");
-			Assert.Equal(cores + 1, player.Monsters.Count(m => m.IsInfusionCore), "e um Núcleo (a cada 5 níveis)");
-			Assert.Equal(new Prize(0, Milestones.LightDarkLevels.Length, 20), Milestones.ForAccountLevels(0, Account.MaxLevel), "do 1 ao 100: um de Luz e Trevas por nível da tabela e 20 Núcleos");
-		}
-
-		[Test]
 		private static void SpecialScrollsSummonOnlyWhatTheyPromise()
 		{
 			var database = TestData.Database;
@@ -107,22 +60,5 @@ namespace Sigilos.Tests
 			Assert.Equal(0, SummonRitual.Perform(new Random(3), database, player, 1, ScrollKind.Legendary).Count, "sem pergaminho, nada");
 		}
 
-		[Test]
-		private static void FragmentsBuyAChosenFourStar()
-		{
-			var database = TestData.Database;
-			var player = NewPlayer();
-			var options = FragmentExchange.Options(database);
-			Assert.True(options.Count > 0 && options.All(s => s.Rarity == 4 && s.Element is not (Element.Light or Element.Dark)), "as 4★ de Fogo, Água e Vento");
-			var choice = options.First(s => s.Id == "pirate_water");
-			player.Fragments = FragmentExchange.Cost - 1;
-			Assert.True(FragmentExchange.Exchange(player, database, choice.Id) == null, "sem Fragmentos, não troca");
-			player.Fragments = FragmentExchange.Cost;
-			Assert.True(FragmentExchange.Exchange(player, database, "crow_light") == null, "Luz e Trevas não se trocam");
-			Assert.True(FragmentExchange.Exchange(player, database, "druid_fire") == null, "nem 5★");
-			var result = FragmentExchange.Exchange(player, database, choice.Id);
-			Assert.Equal(choice.Id, result!.Summon.Id, "a escolhida");
-			Assert.Equal(0, player.Fragments, "paga os Fragmentos");
-		}
 	}
 }

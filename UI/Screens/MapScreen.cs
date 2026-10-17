@@ -66,7 +66,10 @@ namespace Sigilos.UI.Screens
 			dungeons.Pressed += () =>
 			{
 				if (dungeonsOpen)
+				{
+					Core.Progression.Features.MarkSeen(_player, Core.Progression.Feature.Dungeons);
 					Requested?.Invoke(Destination.Dungeons);
+				}
 				else
 					LockedDialog.Open(dungeons, _database, Core.Progression.Feature.Dungeons);
 			};
@@ -86,7 +89,10 @@ namespace Sigilos.UI.Screens
 			stars.Pressed += () =>
 			{
 				if (explorationOpen)
+				{
+					Core.Progression.Features.MarkSeen(_player, Core.Progression.Feature.Exploration);
 					Requested?.Invoke(Destination.Exploration);
+				}
 				else
 					LockedDialog.Open(stars, _database, Core.Progression.Feature.Exploration);
 			};

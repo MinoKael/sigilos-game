@@ -294,7 +294,11 @@ namespace Sigilos.UI.Screens
 			arena.Pressed += () =>
 			{
 				if (arenaOpen)
+				{
+					Features.MarkSeen(_player, Feature.Arena);
+					arena.Highlight = false;
 					Requested?.Invoke(Destination.Arena);
+				}
 				else
 					LockedDialog.Open(arena, _database, Feature.Arena);
 			};
@@ -364,7 +368,13 @@ namespace Sigilos.UI.Screens
 				if (destination == Destination.Grimoire)
 					button.Pressed += OpenBook;
 				else
-					button.Pressed += () => Requested?.Invoke(destination);
+					button.Pressed += () =>
+					{
+						if (feature is { } entered)
+							Features.MarkSeen(_player, entered);
+						button.Highlight = false;
+						Requested?.Invoke(destination);
+					};
 				row.AddChild(button);
 			}
 

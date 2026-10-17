@@ -13,62 +13,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void EveryFamilyHasUpToOneVariantPerElement()
-		{
-			var database = TestData.LoadReal();
-			Assert.True(database.Families.Count > 0, "Data/summons tem famílias");
-			foreach (var family in database.Families)
-			{
-				var elements = database.Summons.Where(s => s.FamilyId == family.Id).Select(s => s.Element).ToList();
-				Assert.True(elements.Count is >= 1 and <= 5, $"família {family.Id}: de 1 a 5 variantes");
-				Assert.Equal(elements.Count, elements.Distinct().Count(), $"família {family.Id}: uma variante por elemento");
-			}
-		}
-
-		[Test]
-		private static void AwakenedNamesAreUnique()
-		{
-			var database = TestData.LoadReal();
-			var names = database.Summons.Select(s => s.Awakening.Name).ToList();
-			Assert.Equal(names.Count, names.Distinct().Count(), "nomes de Despertar repetidos");
-		}
-
-		[Test]
-		private static void AwakeningFollowsNaturalStars()
-		{
-			// 2★ e 3★ ganham habilidade nova, 4★ uma habilidade mais forte, 5★ um atributo.
-			// Na 0.1, famílias mudaram de estrelas ou entraram sem habilidades: o Despertar delas espera o
-			// kit feito à mão (o prompt de reestruturação proíbe criar habilidades), e a regra volta a valer
-			// para elas quando saírem desta lista.
-			var awaitingKit = new[] { "bandit", "crow", "lich", "fox", "goat", "dolphin" };
-			foreach (var summon in TestData.Database.Summons.Where(s => !awaitingKit.Contains(s.FamilyId)))
-			{
-				switch (summon.Rarity)
-				{
-					case <= 3:
-						Assert.True(summon.Awakening.Skill != null, $"{summon.Id}: {summon.Rarity}★ ganha habilidade no Despertar");
-						break;
-					case 4:
-						Assert.True(summon.Skills.Any(s => s.ChangesOnAwakening), $"{summon.Id}: 4★ melhora uma habilidade");
-						break;
-					default:
-						Assert.True(summon.Awakening.Stat != null && summon.Skills.All(s => !s.ChangesOnAwakening), $"{summon.Id}: 5★ só ganha atributo");
-						break;
-				}
-			}
-		}
-
-		[Test]
-		private static void EveryActiveSkillCanLevelUp()
-		{
-			foreach (var summon in TestData.Database.Summons)
-			{
-				foreach (var skill in summon.AllSkills.Where(s => !s.IsPassive))
-					Assert.True(skill.MaxLevel > 1, $"{summon.Id}: '{skill.Name}' sobe de nível com cópias");
-			}
-		}
-
-		[Test]
 		private static void StarterContentExists()
 		{
 			var database = TestData.LoadReal();

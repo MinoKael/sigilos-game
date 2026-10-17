@@ -46,15 +46,37 @@ namespace Sigilos.UI.Screens
 
 			var tabs = new TabContainer { Name = "Pages", SizeFlagsVertical = SizeFlags.ExpandFill, TabsVisible = false };
 			page.AddChild(tabs);
-			Basics(Layout.Tab(tabs, "Basics", T("compendium.tab.basic")));
-			Combat(Layout.Tab(tabs, "Combat", T("compendium.tab.combat")));
-			Stats(Layout.Tab(tabs, "Stats", T("compendium.tab.stats")));
-			Planets(Layout.Tab(tabs, "Planets", T("compendium.tab.planets")));
-			Statuses(Layout.Tab(tabs, "Effects", T("compendium.tab.effects")));
-			Runes(Layout.Tab(tabs, "Runes", T("compendium.tab.runes")));
+			// Cada aba só se monta na primeira vez que abre: montar as sete juntas (o Catálogo é a mais pesada) deixava
+			// a abertura do Compêndio 1 a 2 segundos parada.
+			var builders = new Action[7];
+			var built = new bool[7];
+			var basics = Layout.Tab(tabs, "Basics", T("compendium.tab.basic"));
+			builders[0] = () => Basics(basics);
+			var combat = Layout.Tab(tabs, "Combat", T("compendium.tab.combat"));
+			builders[1] = () => Combat(combat);
+			var stats = Layout.Tab(tabs, "Stats", T("compendium.tab.stats"));
+			builders[2] = () => Stats(stats);
+			var planets = Layout.Tab(tabs, "Planets", T("compendium.tab.planets"));
+			builders[3] = () => Planets(planets);
+			var effects = Layout.Tab(tabs, "Effects", T("compendium.tab.effects"));
+			builders[4] = () => Statuses(effects);
+			var runes = Layout.Tab(tabs, "Runes", T("compendium.tab.runes"));
+			builders[5] = () => Runes(runes);
 			// O Catálogo tem as abas e a rolagem dele: entra direto, sem a rolagem das outras abas.
-			tabs.AddChild(new CatalogView(_database, _player));
+			var catalog = new MarginContainer { Name = "Catalog" };
+			tabs.AddChild(catalog);
 			tabs.SetTabTitle(tabs.GetTabCount() - 1, T("compendium.tab.catalog"));
+			builders[6] = () => catalog.AddChild(new CatalogView(_database, _player));
+
+			void Build(int index)
+			{
+				if (built[index])
+					return;
+				built[index] = true;
+				builders[index]();
+			}
+
+			Build(0);
 
 			sigils.Add(T("compendium.tab.basic"), "", "region").Name = "Basics";
 			sigils.Add(T("compendium.tab.combat"), "", "fight").Name = "Combat";
@@ -63,7 +85,11 @@ namespace Sigilos.UI.Screens
 			sigils.Add(T("compendium.tab.effects"), "", "effects").Name = "Effects";
 			sigils.Add(T("compendium.tab.runes"), "", "grindstone").Name = "Runes";
 			sigils.Add(T("compendium.tab.catalog"), "", "grimoire").Name = "Catalog";
-			sigils.Changed += index => tabs.CurrentTab = index;
+			sigils.Changed += index =>
+			{
+				Build(index);
+				tabs.CurrentTab = index;
+			};
 		}
 
 		private static void Basics(VBoxContainer column)

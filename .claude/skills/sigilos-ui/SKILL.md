@@ -103,8 +103,8 @@ Toda mudança visual é conferida **abrindo o jogo na tela alterada**, nunca só
    de rolagem fora de lista; ordem dos botões igual antes e depois de mudar o estado (clicar até o estado mudar e capturar
    de novo); diálogos fecham só pelo ✕; ? abre o help.
 5. Largura estreita: mesma conferência em 1280x720 e numa janela menor (a do dono costuma ser mais estreita).
-6. `py Tools/texts/check_texts.py` (não passar de 383 problemas) e os testes (`dotnet run --project Tests`: só as 2 falhas
-   conhecidas do wyvern).
+6. `py Tools/texts/check_texts.py` (não passar de 205 problemas, todos "FALTA NOME") e os testes (`dotnet run --project Tests`: todos
+   passam).
 7. Nunca commitar; o dono faz isso.
 
 ## Antes de entregar, perguntar

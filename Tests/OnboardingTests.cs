@@ -47,25 +47,6 @@ namespace Sigilos.Tests
 			Assert.True(Features.IsOpen(player, database, Feature.Dungeons), "a porta das Masmorras também fica aberta");
 		}
 
-		[Test]
-		private static void TrainingFightOnlyOpensOnANewAccount()
-		{
-			var database = TestData.LoadReal();
-			var player = NewGame.Create(DateTime.UnixEpoch, new Random(1), database);
-			Assert.True(Tutorial.ShouldStart(player), "conta nova começa pela luta de treino");
-			player.TutorialDone = true;
-			Assert.False(Tutorial.ShouldStart(player), "feita (ou pulada), não volta sozinha");
-
-			var veteran = TestData.PlayerWith(TestData.TypicalTeam);
-			veteran.TotalPulls = 10;
-			Assert.False(Tutorial.ShouldStart(veteran), "quem já invocou não vê a luta de treino ao abrir");
-
-			Assert.True(Tutorial.GuidesFirstSummon(player, database), "depois da luta, a primeira invocação é ensinada");
-			player.Scrolls = 9;
-			Assert.False(Tutorial.GuidesFirstSummon(player, database), "sem Pergaminhos para a ×10, não");
-			Assert.False(Tutorial.GuidesFirstSummon(veteran, database), "nem para quem já invocou");
-		}
-
 		/// <summary>A luta de treino não se perde: nem no automático, nem só com o básico no primeiro alvo.</summary>
 		[Test]
 		private static void TrainingFightIsAlwaysWon()

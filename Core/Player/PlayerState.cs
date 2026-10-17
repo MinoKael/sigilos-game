@@ -114,6 +114,9 @@ namespace Sigilos.Core.Player
 		/// </summary>
 		public int? SeenMonster { get; set; }
 
+		/// <summary>As partes do jogo (<see cref="Progression.Feature"/>) em que a conta já entrou depois de abrirem: param de pulsar.</summary>
+		public List<string> SeenFeatures { get; set; } = new();
+
 		/// <summary>Uma equipe por conteúdo (<see cref="Player.Teams"/>): ids de monstro, a primeira é a Líder.</summary>
 		public Dictionary<string, List<int>> Teams { get; set; } = new();
 

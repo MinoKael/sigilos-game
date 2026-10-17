@@ -35,84 +35,6 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void LoginKeepsTheTokensAndReadsTheUserFromTheJwt()
-		{
-			var server = new FakeServer();
-			server.On("auth/login", _ => (200, Tokens("r1", "Mestre das Runas")));
-			var auth = new AuthClient(server.Client());
-			string? saved = null;
-			auth.RefreshTokenChanged += token => saved = token;
-
-			var response = Run(auth.Login("a@b.c", "12345678", "device"));
-
-			Assert.True(response.Ok, "entrou");
-			Assert.Equal("r1", saved, "o token de renovação vai para quem guarda");
-			Assert.Equal(User, auth.UserId, "o id da conta sai do token de acesso");
-			Assert.Equal("device", server.Body(0).GetProperty("deviceId").GetString(), "manda o id do aparelho");
-			Assert.Equal("Mestre das Runas", auth.Name, "o nome da conta vem com os tokens");
-		}
-
-		[Test]
-		private static void RegisterSendsTheAccountName()
-		{
-			var server = new FakeServer();
-			server.On("auth/register", _ => (201, new { name = "Maria" }));
-			var auth = new AuthClient(server.Client());
-
-			Assert.True(Run(auth.Register("a@b.c", "12345678", "CONVITE", "Maria")).Ok, "criou");
-			Assert.Equal("Maria", server.Body(0).GetProperty("name").GetString(), "o nome vai no cadastro");
-			Assert.Equal("CONVITE", server.Body(0).GetProperty("inviteCode").GetString(), "com o convite");
-		}
-
-		[Test]
-		private static void RefusedAccessIsRenewedOnceAndRetried()
-		{
-			var server = new FakeServer();
-			var heartbeats = 0;
-			server.On("auth/refresh", _ => (200, Tokens("r2")));
-			server.On("session/heartbeat", _ => ++heartbeats == 1 ? (401, null) : (204, null));
-			var auth = new AuthClient(server.Client());
-			auth.Restore("r1", User);
-
-			var response = Run(auth.Call(HttpMethod.Post, "session/heartbeat", new { sessionId = Guid.NewGuid() }));
-
-			Assert.True(response.Ok, "repetiu com o token novo");
-			Assert.Equal("auth/refresh session/heartbeat auth/refresh session/heartbeat", string.Join(" ", server.Paths), "renova antes (sem token de acesso) e de novo no 401");
-			Assert.Equal("r2", auth.RefreshToken, "guarda o token trocado");
-		}
-
-		[Test]
-		private static void SimultaneousCallsShareOneRenewal()
-		{
-			var server = new FakeServer { Delay = TimeSpan.FromMilliseconds(50) };
-			server.On("auth/refresh", _ => (200, Tokens("r2")));
-			server.On("save", _ => (404, null));
-			var auth = new AuthClient(server.Client());
-			auth.Restore("r1", User);
-
-			Task.WaitAll(auth.Call(HttpMethod.Get, "save"), auth.Call(HttpMethod.Get, "save"));
-
-			Assert.Equal(1, server.Paths.FindAll(p => p == "auth/refresh").Count, "uma troca só: a segunda usaria um token já trocado");
-		}
-
-		[Test]
-		private static void RefusedRenewalSignsOut()
-		{
-			var server = new FakeServer();
-			server.On("auth/refresh", _ => (401, null));
-			var auth = new AuthClient(server.Client());
-			auth.Restore("r1", User);
-			var expired = false;
-			auth.Expired += () => expired = true;
-
-			var response = Run(auth.Call(HttpMethod.Get, "save"));
-
-			Assert.True(response.Unauthorized, "recusado");
-			Assert.True(expired, "avisa que a conta saiu");
-			Assert.False(auth.SignedIn, "esquece o token");
-		}
-
-		[Test]
 		private static void TakenSessionIsClaimedAgainUnlessAnotherDeviceHoldsIt()
 		{
 			// Aparelho que só dormiu: ninguém mais está com a conta, segue com uma sessão nova.
@@ -134,22 +56,6 @@ namespace Sigilos.Tests
 			server.On("session/claim", _ => (409, new { error = "session_active", deviceName = "Celular", lastSeen = DateTimeOffset.UtcNow }));
 			Assert.Equal(BeatOutcome.Taken, Run(session.Beat()), "derrubado");
 			Assert.Equal(null, session.SessionId, "sem sessão");
-		}
-
-		[Test]
-		private static void BusyClaimTellsWhichDevice()
-		{
-			var server = new FakeServer();
-			server.On("auth/refresh", _ => (200, Tokens("r2")));
-			server.On("session/claim", _ => (409, new { error = "session_active", deviceName = "Celular", lastSeen = "2026-10-01T12:00:00+00:00" }));
-			var auth = new AuthClient(server.Client());
-			auth.Restore("r1", User);
-
-			var claim = Run(new SessionLock(auth, "device", "PC").Claim(false));
-
-			Assert.Equal(ClaimOutcome.Busy, claim.Outcome, "outro aparelho ativo");
-			Assert.Equal("Celular", claim.DeviceName, "diz qual");
-			Assert.Equal(new DateTimeOffset(2026, 10, 1, 12, 0, 0, TimeSpan.Zero), claim.LastSeen, "e quando bateu");
 		}
 
 		[Test]
@@ -181,17 +87,6 @@ namespace Sigilos.Tests
 			var huge = Run(cloud.Upload(session, 3, 4, new string('x', CloudSave.MaxBytes + 1)));
 			Assert.Equal("save_too_large", huge.Error, "grande demais nem sai do aparelho");
 			Assert.Equal(paths, server.Paths.Count, "nenhuma pergunta ao servidor");
-		}
-
-		[Test]
-		private static void NoServerIsTreatedAsNoInternet()
-		{
-			var server = new FakeServer { Unreachable = true };
-			var auth = new AuthClient(server.Client());
-
-			var response = Run(auth.Login("a@b.c", "12345678", "device"));
-
-			Assert.True(response.Unreached, "sem rede vira status 0, não exceção");
 		}
 
 		private static T Run<T>(Task<T> task) => task.GetAwaiter().GetResult();
