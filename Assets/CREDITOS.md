@@ -187,6 +187,7 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Icons/help.svg` | [Help - Sbed - game-icons.svg](https://commons.wikimedia.org/wiki/File:Help_-_Sbed_-_game-icons.svg) | Sbed | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 
 ## Fontes
+| `Icons/elven_castle.svg` | [Elven-castle - Pepijn Poolman - game-icons.svg](https://commons.wikimedia.org/wiki/File:Elven-castle_-_Pepijn_Poolman_-_game-icons.svg) | Pepijn Poolman | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 
 | Arquivo | Fonte | Autor | Licença |
 |---|---|---|---|

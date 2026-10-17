@@ -32,6 +32,15 @@ namespace Sigilos.Core.Battle
 		public EffectResolver Resolver { get; }
 		public BattleUnit Caster { get; }
 
+		/// <summary>Os efeitos da habilidade ligados a cada golpe (<see cref="EffectDefinition.When"/> diferente de Skill).</summary>
+		public IReadOnlyList<EffectDefinition> HitEffects { get; set; } = System.Array.Empty<EffectDefinition>();
+
+		/// <summary>
+		/// Quem o golpe de agora acertou, enquanto os efeitos de cada golpe agem: o "Target" deles é este, não o alvo
+		/// principal da habilidade. Nulo fora disso.
+		/// </summary>
+		public BattleUnit? Struck { get; set; }
+
 		/// <summary>
 		/// O alvo escolhido, uma vez para a habilidade inteira: se ele cai no primeiro golpe, a Queimadura
 		/// que vinha depois não pula para outro inimigo. Nulo quando não sobrou inimigo.
@@ -81,7 +90,14 @@ namespace Sigilos.Core.Battle
 		}
 
 		/// <summary>As unidades que um efeito atinge, do ponto de vista de quem lança.</summary>
-		public IReadOnlyList<BattleUnit> Targets(EffectDefinition effect) => Targets(Scope(effect), effect.By);
+		public IReadOnlyList<BattleUnit> Targets(EffectDefinition effect)
+		{
+			// O efeito de cada golpe mira quem foi acertado (antes da regra do chefe, que o abriria para todos).
+			if (Struck != null && effect.Target == TargetKind.Target)
+				return Struck.IsAlive ? new[] { Struck } : System.Array.Empty<BattleUnit>();
+
+			return Targets(Scope(effect), effect.By);
+		}
 
 		/// <summary>
 		/// Todo golpe de chefe é em área: o efeito ofensivo de uma habilidade dele que miraria o alvo único atinge todos

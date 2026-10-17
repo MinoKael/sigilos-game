@@ -272,6 +272,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
   "scopes": ["All", "Buffs", "Debuffs"],
+  "hitTriggers": ["Skill", "Hit", "Crit", "Status"],
   "bonuses": ["Damage", "Heal", "Impeto"],
   "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "Conditional"],
   "comparisons": ["Greater", "Less", "Equal"],
@@ -543,12 +544,12 @@ const Core = (() => {
   const VARIANT_ELEMENTS = [NEUTRAL_ELEMENT, ...ELEMENTS];
   const TWO_STAR = 2;
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove", "unremovable"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "when", "whenStatus", "whenScope", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove", "unremovable"];
   // Efeitos e status ---------------------------------------------------------------------------------
   // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
   // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
   // onKill, e o modelo que o botão do tipo insere.
-  const COMMON_FIELDS = ["kind", "target", "onKill", "by", "ifAlly", "ifDefenseAbove"];
+  const COMMON_FIELDS = ["kind", "target", "onKill", "when", "whenStatus", "whenScope", "by", "ifAlly", "ifDefenseAbove"];
   const TARGET_DOCS = {
     Target: "o inimigo escolhido (o alvo da habilidade)",
     AllEnemies: "todos os inimigos de pé",
@@ -605,6 +606,8 @@ const Core = (() => {
     Crit: "a Chance Crítico", CritDamage: "o Dano Crítico", Resistance: "a Resistência", Accuracy: "a Precisão", Impeto: "o Ímpeto acumulado",
   };
   const SCOPE_DOCS = {All: "todos os efeitos", Buffs: "só os positivos", Debuffs: "só os negativos"};
+  const WHEN_LABELS = {Skill: "Ao usar (padrão)", Hit: "A cada golpe", Crit: "A cada golpe crítico", Status: "A cada efeito causado"};
+  const WHEN_DOC = "Quando o efeito acontece. Ao usar: uma vez, na ordem da lista. A cada golpe, a cada golpe crítico ou a cada efeito causado: depois de cada golpe do Damage da mesma habilidade, e o alvo do efeito é quem o golpe acertou (a chance vale em cada golpe).";
   // A conta dos efeitos com valor (Core/Content/EffectScaling.cs e Core/Battle/EffectAmount.cs): power × o
   // atributo de sempre do tipo (ou stat), mais os termos de plus, vezes factor e speed. O BVP não vê a conta:
   // o balanço de uma habilidade que escala em outra coisa é feito na mão.
@@ -1385,7 +1388,8 @@ const Core = (() => {
       }
     }
 
-    for (const effect of [...(skill.effects || []), ...(skill.awakenedEffects || []), ...(skill.passive?.partnerEffects || [])]) {
+    const effectLists = [skill.effects || [], skill.awakenedEffects || [], skill.passive?.partnerEffects || []];
+    for (const effect of effectLists.flat()) {
       if (!isPlain(effect)) { add("error", where, "Cada efeito é um objeto { ... }."); continue; }
       if (!enums.effectKinds.includes(effect.kind)) add("error", where, `Efeito desconhecido: "${effect.kind}".`);
       if (effect.target !== undefined && !enums.targets.includes(effect.target)) add("error", where, `Alvo desconhecido: "${effect.target}".`);
@@ -1404,6 +1408,18 @@ const Core = (() => {
       }
       if (effect.onlyStatus !== undefined && !enums.statuses.includes(effect.onlyStatus)) add("error", where, `Status desconhecido em onlyStatus: "${effect.onlyStatus}".`);
       if (effect.scope !== undefined && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(effect.scope)) add("error", where, `scope desconhecido: "${effect.scope}" (vale: All, Buffs, Debuffs).`);
+      if (effect.when !== undefined && !(enums.hitTriggers || Object.keys(WHEN_LABELS)).includes(effect.when)) add("error", where, `when desconhecido: "${effect.when}" (vale: ${Object.keys(WHEN_LABELS).join(", ")}).`);
+      if (effect.when && effect.when !== "Skill") {
+        if (effect.kind === "Damage") add("error", where, "Damage não vale com when: ele é o golpe que dispara os outros efeitos.");
+        if (effect.onKill) add("error", where, "when e onKill não combinam: escolha um.");
+        const list = effectLists.find(l => l.includes(effect)) || [];
+        if (skill.passive || list === effectLists[2]) add("error", where, "when só vale nos efeitos de habilidade ativa (não na Passiva nem nos efeitos do parceiro).");
+        if (!list.some(e => e.kind === "Damage" && !e.fixed)) add("error", where, "when precisa de um Damage (sem fixed) na mesma lista: os golpes são o gatilho.");
+        if (effect.chance !== undefined && effect.chance < 1 && !["Status", "Impeto", "ChangeDuration", "StealBuff", "IncreaseCooldown"].includes(effect.kind)) add("error", where, `${effect.kind} com chance não vale com when.`);
+      }
+      if ((effect.whenStatus !== undefined || effect.whenScope !== undefined) && effect.when !== "Status") add("error", where, "whenStatus e whenScope só valem com when Status.");
+      if (effect.whenStatus !== undefined && !enums.statuses.includes(effect.whenStatus)) add("error", where, `Status desconhecido em whenStatus: "${effect.whenStatus}".`);
+      if (effect.whenScope !== undefined && !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(effect.whenScope)) add("error", where, `whenScope desconhecido: "${effect.whenScope}" (vale: All, Buffs, Debuffs).`);
       if (effect.bonus !== undefined && !(enums.bonuses || Object.keys(BONUS_DOCS)).includes(effect.bonus)) add("error", where, `bonus desconhecido: "${effect.bonus}" (vale: Damage, Heal, Impeto).`);
       if (effect.from !== undefined && !enums.targets.includes(effect.from)) add("error", where, `from desconhecido: "${effect.from}".`);
       if (effect.by !== undefined && !(enums.ranks || Object.keys(RANK_DOCS)).includes(effect.by)) add("error", where, `by desconhecido: "${effect.by}" (vale: ${Object.keys(RANK_DOCS).join(", ")}).`);
@@ -1561,8 +1577,8 @@ const Core = (() => {
 
   return {
     ELEMENTS, VARIANT_ELEMENTS, ELEMENT_NAMES, NEUTRAL_ELEMENT, elementsOf, isLive, adjustVariants, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
-    EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PARTNER_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS,
-    USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,
+    EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PARTNER_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS, WHEN_LABELS, WHEN_DOC,
+    USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,      
     stripJsonc, parseJsonc, leadingComments, format,
     weights, isNeutral, normalizeModel, stars, budgetOf, bvp, computeStats, explain, variationStats, validateModel, formatModel,
     parseList, imageSlug, importCondition, exportCondition, listOf, ACTION_LABELS, COMPARE_LABELS, blankSkill, importSkill, exportSkill, blankVariation, blankFamily, importFamily, exportFamily, formatFamily, recalculate,
@@ -1978,10 +1994,17 @@ if (typeof module !== "undefined") module.exports = Core;
     if (PICKS.includes(effect.target) || PICKS.includes(effect.from) || "by" in effect)
       cells.push(fxSelect(a("by"), "Comparar por", ui.enums.ranks || Object.keys(RANK_LABELS), effect.by, r => `${RANK_LABELS[r] || r} (${r})`, "Vida (padrão)", C.RANK_DOCS[effect.by] || "o que LowestAlly e HighestAlly comparam"));
     cells.push(`<label class="fx-cell check" title="O efeito só acontece se o dano anterior desta habilidade derrubou o alvo"><input type="checkbox" ${effect.onKill ? "checked" : ""} ${a("onKill")}>só se derrubou</label>`);
+    if (effect.kind !== "Damage" && !effect.onKill) {
+      cells.push(fxSelect(a("when"), "Quando", ui.enums.hitTriggers?.filter(w => w !== "Skill") || ["Hit", "Crit", "Status"], effect.when, w => C.WHEN_LABELS[w] || w, C.WHEN_LABELS.Skill, C.WHEN_DOC));
+      if (effect.when === "Status") {
+        cells.push(`<label class="fx-cell" title="O efeito que dispara (o do escopo, quando vazio)"><span>Efeito causado</span><select ${a("whenStatus")}>${statusOptions(effect.whenStatus, "— qualquer do escopo")}</select></label>`);
+        cells.push(fxSelect(a("whenScope"), "Escopo do gatilho", ui.enums.scopes || Object.keys(SCOPE_LABELS), effect.whenScope, s => `${SCOPE_LABELS[s] || s} (${s})`, "Todos (padrão)", "Qual lado de efeito dispara, quando nenhum efeito específico foi escolhido"));
+      }
+    }
     if (["Status", "Shield"].includes(effect.kind) || effect.unremovable)
       cells.push(`<label class="fx-cell check" title="Irremovível: nada tira o efeito (Purificação, roubo, encurtar, o golpe que acorda o Sono); só os turnos dele o acabam. No combate o ícone fica branco, com borda branca grossa."><input type="checkbox" ${effect.unremovable ? "checked" : ""} ${a("unremovable")}>irremovível</label>`);
     const scales = !!C.USUAL_STAT[effect.kind];
-    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", "unremovable", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
+    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", "when", "whenStatus", "whenScope", "unremovable", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
     return `<div class="fx-row"><span class="fx-n">${index + 1}</span>${cells.join("")}
       <span class="fx-tools">
         <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="-1" ${index === 0 ? "disabled" : ""} title="Subir">↑</button>
@@ -2168,6 +2191,7 @@ if (typeof module !== "undefined") module.exports = Core;
         const allowed = C.EFFECT_DOCS[value]?.targets || ui.enums.targets;
         if (item.target && allowed.includes(item.target)) next.target = item.target;
         if (item.onKill) next.onKill = true;
+        if (item.when && value !== "Damage") next.when = item.when;
         list[index] = next;
       } else if (key === "kind" && field === "levels") {
         list[index] = {kind: value, value: LEVEL_TEMPLATES[value] ?? item.value};
@@ -2276,7 +2300,7 @@ if (typeof module !== "undefined") module.exports = Core;
       <code>target</code>: ${e.targets.join(", ")}<br>
       <code>status</code>: ${e.statuses.join(", ")}<br>
       Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
-      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém), <code>ifAlly</code> (o id de uma variante que precisa estar viva no time, ex.: <code>wolf_light</code>) e <code>ifDefenseAbove</code> (só se a Defesa de quem lança passa a do alvo). Em Status e Shield, <code>unremovable</code> (true): o efeito é irremovível, só os turnos dele o acabam.<br>
+      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém), <code>when</code> (<code>Hit</code>, <code>Crit</code> ou <code>Status</code>: roda depois de cada golpe do Damage da habilidade, a cada crítico ou a cada efeito que o golpe causa, com <code>whenStatus</code>/<code>whenScope</code> escolhendo qual; o <code>target: "Target"</code> passa a ser quem o golpe acertou), <code>ifAlly</code> (o id de uma variante que precisa estar viva no time, ex.: <code>wolf_light</code>) e <code>ifDefenseAbove</code> (só se a Defesa de quem lança passa a do alvo). Em Status e Shield, <code>unremovable</code> (true): o efeito é irremovível, só os turnos dele o acabam.<br>
       A conta de Damage, Heal, HealTeam, Shield e Revive: <code>stat</code> (${(e.scaleStats || []).join(", ")}), <code>plus</code> [{stat, power}],
       <code>factor</code> {by: ${(e.scaleMeasures || []).join(" | ")}, base, slope}, <code>speed</code> {add, over} ou {add, overTarget: true}; o dano também <code>fixed</code>.
       Ex.: <code>{"kind": "Damage", "power": 0.5, "plus": [{"stat": "MaxHealth", "power": 0.08}], "hits": 2}</code>.<br>

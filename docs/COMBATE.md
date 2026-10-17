@@ -171,3 +171,34 @@ O Sigilos não tem essa regra em nenhuma habilidade, e ela não entra sem uma ha
 O mais perto é Ignorar Defesa, que já deixa de fora a Defesa+ (veja Dano); a Passiva de redução e a
 Maldição continuam valendo contra ela, como na referência (`DamageTests.IgnoringDefenseActsOnTheFinalDefense`
 e `ReductionPassiveStillCountsWhenIgnoringDefense`). Nivelar Vida não é dano, então nada reduz.
+
+## Efeitos a cada golpe, crítico ou efeito causado
+
+Um efeito de habilidade ativa com `when` (`HitTrigger`) deixa de rodar uma vez só e roda depois de cada golpe
+do `Damage` da mesma lista (`EffectResolver.LandHit`). Ao usar (o padrão, `Skill`) nada muda.
+
+- `Hit`: depois de todo golpe que acerta. `Crit`: só depois dos golpes críticos (precisa de dano sem `fixed`).
+  `Status`: depois de cada golpe que fez quem bate causar um estado no alvo; `whenStatus` escolhe um estado,
+  e sem ele `whenScope` (`All`, `Buffs`, `Debuffs`; padrão `All`) escolhe o lado.
+- O `target: "Target"` do efeito vira quem o golpe acertou (`Cast.Struck`); se esse alvo já caiu, só os efeitos
+  em outros alvos (Self, aliados) rodam. A `chance` vale em cada golpe.
+- O que o gatilho causa não dispara outro gatilho (nada encadeia). O próprio `Damage` roda uma vez só, como sempre.
+- `GameDatabase.ValidateSkill` recusa `when` em Passiva, em `Damage`, junto de `onKill`, sem um `Damage` (sem `fixed`)
+  na lista e com `chance` num tipo que não a sorteia. O Family Builder tem os mesmos campos e regras.
+- Testes: `HitEffectTests`.
+
+## Como a habilidade é lida
+
+`UI/Texts.Skills.cs` monta a frase a partir dos efeitos; as palavras ficam em `skill.say.*` e `target.*` (`obj`, `to`,
+`on`, `from`, `of`: o alvo como objeto, destino, lugar, origem e posse) nos dois idiomas. Nada fala de uma habilidade
+específica: a frase sai do tipo de efeito, do alvo, da chance, dos turnos e do `when`.
+
+- Cada tipo de efeito tem uma forma fixa ("ataca {alvo} N vezes (X% do Ataque por golpe)", "aplica/concede {estado} ...
+  por N turnos com X% de chance", "recupera/concede/remove X% de Ímpeto"), de modo que um dia a leitura possa ser
+  desfeita (texto → JSON). Esse leitor ainda não existe.
+- Estados seguidos no mesmo alvo viram uma frase só; mesmos turnos e chance se juntam ("Aflição e Maldição por 2 turnos
+  com 70% de chance cada"). O alvo do ataque não se repete nos efeitos que vêm junto.
+- O que depende de `when` vem numa frase à parte ("Em cada golpe, ...", "Em cada golpe crítico, ...", "Toda vez que
+  causa um efeito negativo, ..."). O que depende de derrubar o alvo vai à parte também.
+- `Clause` (sem maiúscula nem ponto) é o mesmo texto para dentro das frases das Passivas e das influências.
+- Conferir: `-- --dump-skills=arquivo` (com `--language=`) escreve uma linha por habilidade, inimigo e influência.

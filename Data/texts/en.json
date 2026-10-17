@@ -317,30 +317,118 @@
   },
 
   "target": {
-    "Target": "on the target",
-    "AllEnemies": "on all enemies",
-    "Self": "on self",
-    "LowestAlly": "on the most injured ally",
-    "AllAllies": "on all allies",
-    "HighestAlly": "on the least injured ally",
-    "RandomAlly": "on a random ally",
-    "RandomEnemy": "on a random enemy",
-    "LowestAlly_by": "on the ally with the least {0}",
-    "HighestAlly_by": "on the ally with the most {0}",
-    "ally": {
+    "obj": {
+      "Target": "the target",
+      "AllEnemies": "all enemies",
+      "Self": "itself",
       "LowestAlly": "the most injured ally",
+      "AllAllies": "all allies",
       "HighestAlly": "the least injured ally",
       "RandomAlly": "a random ally",
+      "RandomEnemy": "a random enemy",
       "LowestAlly_by": "the ally with the least {0}",
       "HighestAlly_by": "the ally with the most {0}"
+    },
+    "to": {
+      "Target": "to the target",
+      "AllEnemies": "to all enemies",
+      "Self": "to itself",
+      "LowestAlly": "to the most injured ally",
+      "AllAllies": "to all allies",
+      "HighestAlly": "to the least injured ally",
+      "RandomAlly": "to a random ally",
+      "RandomEnemy": "to a random enemy",
+      "LowestAlly_by": "to the ally with the least {0}",
+      "HighestAlly_by": "to the ally with the most {0}"
+    },
+    "on": {
+      "Target": "on the target",
+      "AllEnemies": "on all enemies",
+      "Self": "on itself",
+      "LowestAlly": "on the most injured ally",
+      "AllAllies": "on all allies",
+      "HighestAlly": "on the least injured ally",
+      "RandomAlly": "on a random ally",
+      "RandomEnemy": "on a random enemy",
+      "LowestAlly_by": "on the ally with the least {0}",
+      "HighestAlly_by": "on the ally with the most {0}"
+    },
+    "from": {
+      "Target": "from the target",
+      "AllEnemies": "from all enemies",
+      "Self": "from itself",
+      "LowestAlly": "from the most injured ally",
+      "AllAllies": "from all allies",
+      "HighestAlly": "from the least injured ally",
+      "RandomAlly": "from a random ally",
+      "RandomEnemy": "from a random enemy",
+      "LowestAlly_by": "from the ally with the least {0}",
+      "HighestAlly_by": "from the ally with the most {0}"
+    },
+    "of": {
+      "Target": "of the target",
+      "AllEnemies": "of all enemies",
+      "Self": "of itself",
+      "LowestAlly": "of the most injured ally",
+      "AllAllies": "of all allies",
+      "HighestAlly": "of the least injured ally",
+      "RandomAlly": "of a random ally",
+      "RandomEnemy": "of a random enemy",
+      "LowestAlly_by": "of the ally with the least {0}",
+      "HighestAlly_by": "of the ally with the most {0}"
     }
   },
 
   "skill": {
-    "chance": "{0} chance of ",
-    "damage": "{0}{1} Attack damage {2}",
-    "damage_formula": "{0}{1} damage {2}",
-    "fixed": ", fixed damage (no Defense, element or crit)",
+    "say": {
+      "attack": "attacks {0}{1}{2}",
+      "based": "based on {0}",
+      "speed_target": "the target's Speed",
+      "stat": {"Attack": "Attack", "Defense": "Defense", "MaxHealth": "Max HP", "Speed": "Speed", "TargetMaxHealth": "the target's Max HP", "Level": "level"},
+      "measure": {"HealthFraction": "current HP", "TargetHealthFraction": "the target's current HP", "LivingAllies": "living allies"},
+      "times": " {0} times",
+      "ignores": "ignores {0} of Defense",
+      "drains": "drains {0} of the damage as HP",
+      "fixed": "fixed damage, ignoring Defense, element and crit",
+      "inflict": "inflicts",
+      "grant": "grants",
+      "gain": "gains",
+      "for": "for {0}",
+      "chance": " with {0} chance",
+      "chance_each": " with {0} chance each",
+      "shield_of": "{0} HP",
+      "life_share": "{0} HP",
+      "heal": "heals {0} for {1}",
+      "heal_team": "heals the {0} most injured allies for {1}",
+      "impetus_give": "grants {0}% {1}{2}",
+      "impetus_self": "restores {0}% {1}",
+      "impetus_remove": "removes {0}% {1}{2}",
+      "cleanse": "removes one harmful effect{0}",
+      "steal": "steals one {0}{1}",
+      "steal_impetus": " (without one, steals {0}% {1})",
+      "steal_all_impetus": " (without one, steals all its {0})",
+      "prolong": "increases the duration {1}{2} by {0}",
+      "shorten": "reduces the duration {1}{2} by {0}",
+      "of": "of {0}",
+      "equalize": "equalizes the HP {0} to the same share",
+      "joint_one": "calls {0} to attack along, with the basic skill",
+      "joint": "calls {0} allies to attack along, with the basic skill",
+      "joint_all": "calls all allies to attack along, with the basic skill",
+      "cooldown_up": "increases the cooldown of skills {1} by {0} (ready ones too)",
+      "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}",
+      "revive": "revives fallen allies with {0}",
+      "revive_some": "revives {0} fallen allies, at random, with {1}",
+      "per_status": "{0} for each {1} {2}",
+      "bonus": {
+        "Damage": "gains +{0} damage on the next hits",
+        "Heal": "gains +{0} healing and shield on the next effects",
+        "Impeto": "grants {0}% {1} {2}"
+      },
+      "on_hit": "on each hit, {0}",
+      "on_crit": "on each critical hit, {0}",
+      "on_status": "each time it causes {1}, {0}",
+      "on_kill": "on a knockout, {0}"
+    },
     "term": {
       "Attack": "{0} Attack",
       "Defense": "{0} Defense",
@@ -361,18 +449,7 @@
     },
     "speed": "(Speed{0}) / {1}",
     "speed_target": "target's Speed",
-    "hits": "{0} hits of ",
-    "ignores": ", ignoring {0} of Defense",
-    "drain": ", draining {0} as HP",
-    "heal": "heals {0} HP {1}",
-    "heal_formula": "heals {0} {1}",
-    "shield": "{0} of {1} HP {2} for {3}",
-    "shield_formula": "{0} of {1} {2} for {3}",
-    "effect": "{0}{1} {2} for {3}",
     "unremovable": "(unremovable)",
-    "impetus": "{0}{1}% {2} {3}",
-    "cleanse": "removes one harmful effect {0}",
-    "on_kill": "on a knockout, {0}",
     "awakened": "Awakened: {0}",
     "header": "Skill {0} · {1}",
     "header_passive": "Passive · {0}",
@@ -391,29 +468,7 @@
     },
     "passive_name": "Passive · {0}",
     "cooldown_short": "Cooldown {0}",
-    "passive_only": "Passive",
-    "steal": "{0}steals one {1} {2}",
-    "steal_impetus": "; without one, steals {0}% {1}",
-    "steal_all_impetus": "; without one, steals all its {0}",
-    "bonus": {
-      "Damage": "+{0} damage on the next hits",
-      "Heal": "+{0} healing and shield on the next effects",
-      "Impeto": "+{0}% {1} {2}"
-    },
-    "per_status": "{0} for each {1} {2}",
-    "prolong": "{0}extends {2} {3} by {1}",
-    "shorten": "{0}shortens {2} {3} by {1}",
-    "equalize": "levels the HP {0} to the same share",
-    "heal_team": "heals {0} HP of the {1} most injured {2}",
-    "heal_team_formula": "heals {0} to the {1} most injured {2}",
-    "revive": "revives the fallen allies with {0}",
-    "revive_some": "revives {1} random fallen allies with {0}",
-    "revive_health": "{0} HP",
-    "joint": "{0} allies attack along with their basic skill",
-    "joint_all": "all allies attack along with their basic skill",
-    "cooldown_up": "{0}raises skill cooldowns by {1} {2} (ready ones too)",
-    "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}",
-    "joint_one": "{0} attacks along with their basic skill"
+    "passive_only": "Passive"
   },
 
   "passive": {
@@ -512,8 +567,8 @@
     "channel_text": "While you are away, the Observatory gathers Essence, Gold and Mana, up to {0} hours. Collect it here.",
     "collect": "Collect",
     "battle": "Battle",
-    "battle_detail": "Campaign (stage {0} of {1}) and Dungeons",
-    "summon_detail": "New homunculi · you have {0} Transmutations",
+    "battle_detail": "Campaign and Dungeons",
+    "summon_detail": "New homunculi",
     "arena_detail": "Duels, Grade and Cosmic Shop",
     "soon": "Coming soon",
     "version": "v{0}",
@@ -1713,15 +1768,21 @@
   "scope": {
     "All": {
       "one": "effect",
-      "many": "all effects"
+      "many": "all effects",
+      "any": "any effect",
+      "of": "of effects"
     },
     "Buffs": {
       "one": "beneficial effect",
-      "many": "beneficial effects"
+      "many": "beneficial effects",
+      "any": "a beneficial effect",
+      "of": "of beneficial effects"
     },
     "Debuffs": {
       "one": "harmful effect",
-      "many": "harmful effects"
+      "many": "harmful effects",
+      "any": "a harmful effect",
+      "of": "of harmful effects"
     }
   },
 

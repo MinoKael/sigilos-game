@@ -51,6 +51,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>O alvo anulou o golpe: não acontece mais nada.</summary>
 		public bool Blocked { get; set; }
 
+		/// <summary>O golpe chegou ao dano: não errou, não foi anulado.</summary>
+		public bool Landed { get; set; }
+
 		/// <summary>O dano do golpe, antes do escudo. Preenchido quando o golpe acerta.</summary>
 		public double Amount { get; set; }
 

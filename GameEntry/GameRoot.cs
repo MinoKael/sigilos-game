@@ -156,6 +156,14 @@ namespace Sigilos.GameEntry
 			_database = ContentLoader.Load();
 			UiSession.Database = _database;
 
+			// Ferramenta de conferência: -- --dump-skills=arquivo escreve a descrição de toda habilidade no idioma de agora e sai.
+			if (Argument("--dump-skills=") is { Length: > 0 } dump)
+			{
+				DumpSkills(dump);
+				GetTree().Quit();
+				return;
+			}
+
 			// O Voltar do celular vira Esc (ui_cancel): fecha a janela de cima ou volta de tela.
 			GetTree().QuitOnGoBack = false;
 			// Fechar a janela espera o save subir para a nuvem (Quit).
@@ -2047,6 +2055,35 @@ namespace Sigilos.GameEntry
 			_bubble.Follow(screen);
 			// A Batalha toca na tela de luta; todo o resto é o Plano Celestial (a Batalha automática não tem tela).
 			_music.Play(screen is BattleScreen ? MusicPlayer.Track.Battle : MusicPlayer.Track.Celestial);
+		}
+
+		/// <summary>Uma linha por habilidade (e por versão desperta): id, nome e a descrição lida na tela.</summary>
+		private void DumpSkills(string path)
+		{
+			var lines = new List<string>();
+			foreach (var summon in _database.Summons)
+			{
+				foreach (var skill in summon.Skills)
+				{
+					lines.Add($"{summon.Id} | {skill.Name} | {Texts.Describe(skill).Replace("\n", " // ")}");
+					if (skill.AwakenedEffects.Count > 0 || skill.Passive is { AwakenedValue: > 0 })
+						lines.Add($"{summon.Id} | {skill.Name} (desperta) | {Texts.Describe(skill, true)}");
+				}
+			}
+
+			foreach (var enemy in _database.Enemies)
+			{
+				foreach (var skill in enemy.Skills)
+					lines.Add($"inimigo {enemy.Id} | {skill.Name} | {Texts.Describe(skill).Replace("\n", " // ")}");
+			}
+
+			foreach (var constellation in _database.Exploration.Constellations)
+			{
+				foreach (var rule in constellation.Influence.Rules)
+					lines.Add($"influência {constellation.Id} | {Texts.Name(rule.Side)} | {Texts.Describe(rule.Prepared, false)}");
+			}
+
+			System.IO.File.WriteAllLines(path, lines);
 		}
 
 		private static string? Argument(string prefix) => OS.GetCmdlineUserArgs()

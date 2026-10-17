@@ -23,5 +23,16 @@ namespace Sigilos.Core.Battle.Statuses
 		/// Acima disso vale o limite de efeitos do monstro (<see cref="BattleRules.MaxStatuses"/>).
 		/// </summary>
 		public virtual int MaxStacks => 1;
+
+		/// <summary>
+		/// A contagem do efeito (a Bomba) quando encurtada até o fim: em vez de sumir em silêncio, ele age agora, como
+		/// agiria no último turno dele. Falso: o efeito só sai.
+		/// </summary>
+		public virtual bool TriggersWhenCutShort => false;
+
+		/// <summary>O efeito age por ter a contagem encurtada até o fim (<see cref="TriggersWhenCutShort"/>).</summary>
+		public virtual void OnCutShort(UnitRule rule, EffectResolver resolver)
+		{
+		}
 	}
 }

@@ -45,5 +45,28 @@ namespace Sigilos.Tests
 			Assert.True(turn.NeedsDecision, "no turno seguinte age normalmente");
 		}
 
+		[Test]
+		private static void BombCutShortExplodesAtOnceAndShowsTheCut()
+		{
+			// Ignição Maestral: a cada Bomba posta, a contagem dela cai 2 (a de 2 turnos chega a 0 e explode na hora).
+			var passive = new PassiveDefinition
+			{
+				Kind = PassiveKind.ForEachStatusOrEffectAppliedDo,
+				Statuses = new[] { StatusKind.Bomb },
+				Effects = new[] { new EffectDefinition { Kind = EffectKind.ChangeDuration, Target = TargetKind.Target, Scope = StatusScope.Debuffs, OnlyStatus = StatusKind.Bomb, Chance = 1, Turns = -2 } },
+			};
+			var bomb = new SkillDefinition { Name = "bomba", Cooldown = 4, Effects = new[] { new EffectDefinition { Kind = EffectKind.Status, Status = StatusKind.Bomb, Target = TargetKind.Target, Chance = 1, Turns = 2 } } };
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, attack: 100, special: bomb, passive: passive);
+			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000, attack: 1, speed: 1);
+			var session = TestData.Session(new[] { hero }, new[] { foe });
+			session.Start();
+			TestData.RunUntilTurnOf(session, hero);
+
+			var events = session.Act(new UnitAction(1, foe));
+			Assert.True(events.OfType<DurationChanged>().Any(e => e.Status == StatusKind.Bomb && e.Turns == -2), "o corte da contagem aparece");
+			Assert.True(foe.Health < foe.MaxHealth, "a Bomba explodiu na hora");
+			Assert.False(foe.Has(StatusKind.Bomb), "e saiu");
+			Assert.True(foe.Has(StatusKind.Stun), "quem sobrevive fica atordoado");
+		}
 	}
 }

@@ -287,7 +287,7 @@ namespace Sigilos.UI.Screens
 
 			// A Arena Astral abre na fase 20; antes, o botão fica apagado e o toque diz quando abre.
 			var arenaOpen = Features.IsOpen(_player, _database, Feature.Arena);
-			var arena = new TileButton(T("destination.Arena"), arenaOpen ? T("hub.arena_detail") : "", Art.Icon("target"), size, ButtonKind.Secondary) { Name = "Arena" };
+			var arena = new TileButton(T("destination.Arena"), arenaOpen ? T("hub.arena_detail") : "", Art.Icon("arena"), size, ButtonKind.Secondary) { Name = "Arena" };
 			arena.Highlight = Features.IsNew(_player, _database, Feature.Arena);
 			if (!arenaOpen)
 				arena.Locked();

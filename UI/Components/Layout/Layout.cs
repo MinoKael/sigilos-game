@@ -92,7 +92,10 @@ namespace Sigilos.UI.Components
 		public static (HBoxContainer Header, HBoxContainer Extra) Header(string title, CurrencyBar? currencies, Action onBack, Control helpFrom, params string[] help)
 		{
 			var header = Header(title, currencies, onBack);
-			header.Extra.AddChild(HelpButton(helpFrom, title, help));
+			// O "?" fica entre o título e o balão do chat.
+			var button = HelpButton(helpFrom, title, help);
+			header.Header.AddChild(button);
+			header.Header.MoveChild(button, 1);
 			return header;
 		}
 

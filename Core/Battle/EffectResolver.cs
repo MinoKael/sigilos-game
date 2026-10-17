@@ -53,6 +53,9 @@ namespace Sigilos.Core.Battle
 			var allies = _session.SideOf(caster.Side);
 			var opponents = _session.SideOf(caster.Side == Side.Allies ? Side.Enemies : Side.Allies);
 			var cast = new Cast(this, caster, Targeting.PickMain(caster, chosen, opponents), allies, opponents, counter, joint);
+			// Os efeitos ligados a cada golpe saem da fila: agem depois de cada golpe do dano (LandHit).
+			if (effects.Any(effect => effect.When != HitTrigger.Skill))
+				cast.HitEffects = effects.Where(effect => effect.When != HitTrigger.Skill).ToList();
 
 			foreach (var effect in effects)
 			{
@@ -60,12 +63,10 @@ namespace Sigilos.Core.Battle
 				if (!caster.IsAlive)
 					break;
 
-				if ((effect.OnKill && !cast.Killed) || !cast.Allows(effect))
+				if (effect.When != HitTrigger.Skill)
 					continue;
 
-				SkillEffects.Of(effect.Kind).Apply(cast, effect);
-				foreach (var rule in caster.Rules())
-					rule.Behavior.AfterEffect(rule, cast, effect);
+				ApplyEffect(cast, effect);
 			}
 
 			foreach (var rule in caster.Rules())
@@ -83,7 +84,87 @@ namespace Sigilos.Core.Battle
 			return cast;
 		}
 
+		/// <summary>Um efeito da lista, se as condições dele valem agora, e o aviso às regras de quem lança.</summary>
+		private void ApplyEffect(Cast cast, EffectDefinition effect)
+		{
+			if ((effect.OnKill && !cast.Killed) || !cast.Allows(effect))
+				return;
+
+			SkillEffects.Of(effect.Kind).Apply(cast, effect);
+			foreach (var rule in cast.Caster.Rules())
+				rule.Behavior.AfterEffect(rule, cast, effect);
+		}
+
 		private bool _triggering;
+
+		/// <summary>Os efeitos de status que o golpe de agora causou no alvo, enquanto ele acontece (nulo fora de um golpe com efeitos de golpe).</summary>
+		private sealed class HitWindow
+		{
+			public BattleUnit Attacker = null!;
+			public BattleUnit Target = null!;
+			public readonly List<StatusKind> Statuses = new();
+		}
+
+		private HitWindow? _window;
+
+		/// <summary>
+		/// Um golpe do dano de uma habilidade. Sem efeitos ligados a cada golpe, é só <see cref="Land"/>. Com eles, e se o
+		/// golpe chegou ao dano, depois dele agem: os de cada golpe, os de cada crítico e os de cada efeito de status causado
+		/// (na ordem da lista de cada grupo), todos com o alvo acertado como "Target".
+		/// </summary>
+		public void LandHit(Strike strike)
+		{
+			var cast = strike.Cast;
+			if (cast.HitEffects.Count == 0)
+			{
+				Land(strike);
+				return;
+			}
+
+			var outer = _window;
+			var window = _window = new HitWindow { Attacker = strike.Attacker, Target = strike.Target };
+			try
+			{
+				Land(strike);
+				if (!strike.Landed || !strike.Attacker.IsAlive)
+					return;
+
+				cast.Struck = strike.Target;
+				foreach (var effect in cast.HitEffects.Where(e => e.When == HitTrigger.Hit || (e.When == HitTrigger.Crit && strike.Crit == true)))
+				{
+					if (!strike.Attacker.IsAlive)
+						return;
+					ApplyEffect(cast, effect);
+				}
+
+				// O que os efeitos acima causaram já conta; o que os de status causarem, não.
+				_window = outer;
+				foreach (var status in window.Statuses.ToList())
+				{
+					foreach (var effect in cast.HitEffects.Where(e => e.When == HitTrigger.Status && Triggers(e, status)))
+					{
+						if (!strike.Attacker.IsAlive)
+							return;
+						ApplyEffect(cast, effect);
+					}
+				}
+			}
+			finally
+			{
+				_window = outer;
+				cast.Struck = null;
+			}
+		}
+
+		/// <summary>O efeito de status causado dispara o efeito de golpe: o escolhido, ou o do escopo.</summary>
+		private static bool Triggers(EffectDefinition effect, StatusKind status) => effect.WhenStatus is { } only
+			? only == status
+			: (effect.WhenScope ?? StatusScope.All) switch
+			{
+				StatusScope.Buffs => !BattleRules.IsNegative(status),
+				StatusScope.Debuffs => BattleRules.IsNegative(status),
+				_ => true,
+			};
 
 		/// <summary>
 		/// Os efeitos de uma Passiva genérica, como se <paramref name="owner"/> os lançasse mirando em
@@ -158,6 +239,7 @@ namespace Sigilos.Core.Battle
 			var amount = EffectAmount.Of(strike.Effect, strike.Power, strike.Cast.Scale, attacker, target);
 			strike.Amount = DamageFormula.Apply(attacker, target, amount, strike.IgnoreDefense, crit, strike.Fixed);
 			strike.Absorbed = Absorb(target, strike.Amount);
+			strike.Landed = true;
 
 			var dealt = strike.Dealt;
 			target.Health = Math.Max(0, target.Health - dealt);
@@ -379,7 +461,16 @@ namespace Sigilos.Core.Battle
 
 			status.Turns += turns;
 			if (status.Turns <= 0)
-				Remove(status);
+			{
+				// A Bomba com a contagem cortada até o fim explode na hora, e o ícone aparece antes de ela sair.
+				if (StatusBehaviors.Of(status.Kind) is { TriggersWhenCutShort: true } cut)
+				{
+					Emit(new DurationChanged(status.Owner, status.Kind, turns));
+					cut.OnCutShort(status, this);
+				}
+				else
+					Remove(status);
+			}
 			else
 			{
 				Emit(new DurationChanged(status.Owner, status.Kind, turns));
@@ -451,6 +542,8 @@ namespace Sigilos.Core.Battle
 
 			Emit(new StatusApplied(target, status, turns));
 			Emit(StatusesChanged.Of(target));
+			if (_window is { } window && source == window.Attacker && target == window.Target)
+				window.Statuses.Add(status);
 
 			// "Para cada efeito posto / recebido": as Passivas de quem pôs e de quem recebeu.
 			if (source != null)

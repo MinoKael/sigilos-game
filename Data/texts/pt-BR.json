@@ -318,30 +318,118 @@
   },
 
   "target": {
-    "Target": "no alvo",
-    "AllEnemies": "em todos os inimigos",
-    "Self": "em si",
-    "LowestAlly": "no aliado mais ferido",
-    "AllAllies": "em todos os aliados",
-    "HighestAlly": "no aliado menos ferido",
-    "RandomAlly": "num aliado ao acaso",
-    "RandomEnemy": "num inimigo ao acaso",
-    "LowestAlly_by": "no aliado com menos {0}",
-    "HighestAlly_by": "no aliado com mais {0}",
-    "ally": {
+    "obj": {
+      "Target": "o alvo",
+      "AllEnemies": "todos os inimigos",
+      "Self": "a si",
       "LowestAlly": "o aliado mais ferido",
+      "AllAllies": "todos os aliados",
       "HighestAlly": "o aliado menos ferido",
       "RandomAlly": "um aliado ao acaso",
+      "RandomEnemy": "um inimigo ao acaso",
       "LowestAlly_by": "o aliado com menos {0}",
       "HighestAlly_by": "o aliado com mais {0}"
+    },
+    "to": {
+      "Target": "ao alvo",
+      "AllEnemies": "a todos os inimigos",
+      "Self": "a si",
+      "LowestAlly": "ao aliado mais ferido",
+      "AllAllies": "a todos os aliados",
+      "HighestAlly": "ao aliado menos ferido",
+      "RandomAlly": "a um aliado ao acaso",
+      "RandomEnemy": "a um inimigo ao acaso",
+      "LowestAlly_by": "ao aliado com menos {0}",
+      "HighestAlly_by": "ao aliado com mais {0}"
+    },
+    "on": {
+      "Target": "no alvo",
+      "AllEnemies": "em todos os inimigos",
+      "Self": "em si",
+      "LowestAlly": "no aliado mais ferido",
+      "AllAllies": "em todos os aliados",
+      "HighestAlly": "no aliado menos ferido",
+      "RandomAlly": "num aliado ao acaso",
+      "RandomEnemy": "num inimigo ao acaso",
+      "LowestAlly_by": "no aliado com menos {0}",
+      "HighestAlly_by": "no aliado com mais {0}"
+    },
+    "from": {
+      "Target": "do alvo",
+      "AllEnemies": "de todos os inimigos",
+      "Self": "de si",
+      "LowestAlly": "do aliado mais ferido",
+      "AllAllies": "de todos os aliados",
+      "HighestAlly": "do aliado menos ferido",
+      "RandomAlly": "de um aliado ao acaso",
+      "RandomEnemy": "de um inimigo ao acaso",
+      "LowestAlly_by": "do aliado com menos {0}",
+      "HighestAlly_by": "do aliado com mais {0}"
+    },
+    "of": {
+      "Target": "do alvo",
+      "AllEnemies": "de todos os inimigos",
+      "Self": "de si",
+      "LowestAlly": "do aliado mais ferido",
+      "AllAllies": "de todos os aliados",
+      "HighestAlly": "do aliado menos ferido",
+      "RandomAlly": "de um aliado ao acaso",
+      "RandomEnemy": "de um inimigo ao acaso",
+      "LowestAlly_by": "do aliado com menos {0}",
+      "HighestAlly_by": "do aliado com mais {0}"
     }
   },
 
   "skill": {
-    "chance": "{0} de chance de ",
-    "damage": "{0}{1} do Ataque {2}",
-    "damage_formula": "{0}{1} {2}",
-    "fixed": ", dano fixo (sem Defesa, elemento nem crítico)",
+    "say": {
+      "attack": "ataca {0}{1}{2}",
+      "based": "baseado em {0}",
+      "speed_target": "Velocidade do alvo",
+      "stat": {"Attack": "Ataque", "Defense": "Defesa", "MaxHealth": "Vida máxima", "Speed": "Velocidade", "TargetMaxHealth": "Vida máxima do alvo", "Level": "nível"},
+      "measure": {"HealthFraction": "Vida atual", "TargetHealthFraction": "Vida atual do alvo", "LivingAllies": "aliados de pé"},
+      "times": " {0} vezes",
+      "ignores": "ignora {0} da Defesa",
+      "drains": "drena {0} do dano como Vida",
+      "fixed": "dano fixo, sem Defesa, elemento ou crítico",
+      "inflict": "aplica",
+      "grant": "concede",
+      "gain": "ganha",
+      "for": "por {0}",
+      "chance": " com {0} de chance",
+      "chance_each": " com {0} de chance cada",
+      "shield_of": "{0} da Vida",
+      "life_share": "{0} da Vida",
+      "heal": "cura {0} em {1}",
+      "heal_team": "cura os {0} aliados mais feridos em {1}",
+      "impetus_give": "concede {0}% de {1}{2}",
+      "impetus_self": "recupera {0}% de {1}",
+      "impetus_remove": "remove {0}% de {1}{2}",
+      "cleanse": "remove um efeito negativo{0}",
+      "steal": "rouba um {0}{1}",
+      "steal_impetus": " (sem nenhum, rouba {0}% de {1})",
+      "steal_all_impetus": " (sem nenhum, rouba todo o {0})",
+      "prolong": "aumenta em {0} a duração {1}{2}",
+      "shorten": "reduz em {0} a duração {1}{2}",
+      "of": "de {0}",
+      "equalize": "nivela a Vida {0} na mesma fração",
+      "joint_one": "chama {0} para atacar junto, com a básica",
+      "joint": "chama {0} aliados para atacar junto, com a básica",
+      "joint_all": "chama todos os aliados para atacar junto, com a básica",
+      "cooldown_up": "aumenta em {0} a recarga das habilidades {1} (as prontas também)",
+      "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}",
+      "revive": "revive os aliados caídos com {0}",
+      "revive_some": "revive {0} aliados caídos, sorteados, com {1}",
+      "per_status": "{0} para cada {1} {2}",
+      "bonus": {
+        "Damage": "ganha +{0} de dano nos golpes seguintes",
+        "Heal": "ganha +{0} de cura e escudo nos efeitos seguintes",
+        "Impeto": "concede {0}% de {1} {2}"
+      },
+      "on_hit": "em cada golpe, {0}",
+      "on_crit": "em cada golpe crítico, {0}",
+      "on_status": "toda vez que causa {1}, {0}",
+      "on_kill": "se derrubar o alvo, {0}"
+    },
     "term": {
       "Attack": "{0} do Ataque",
       "Defense": "{0} da Defesa",
@@ -362,18 +450,7 @@
     },
     "speed": "(Velocidade{0}) / {1}",
     "speed_target": "Velocidade do alvo",
-    "hits": "{0} golpes de ",
-    "ignores": ", ignora {0} da Defesa",
-    "drain": ", drena {0} como Vida",
-    "heal": "cura {0} da Vida {1}",
-    "heal_formula": "cura {0} {1}",
-    "shield": "{0} de {1} da Vida {2} por {3}",
-    "shield_formula": "{0} de {1} {2} por {3}",
-    "effect": "{0}{1} {2} por {3}",
     "unremovable": "(irremovível)",
-    "impetus": "{0}{1}% de {2} {3}",
-    "cleanse": "remove um efeito negativo {0}",
-    "on_kill": "se derrubar o alvo, {0}",
     "awakened": "Desperta: {0}",
     "header": "Habilidade {0} · {1}",
     "header_passive": "Passiva · {0}",
@@ -392,29 +469,7 @@
     },
     "passive_name": "Passiva · {0}",
     "cooldown_short": "Recarga {0}",
-    "passive_only": "Passiva",
-    "steal": "{0}rouba um {1} {2}",
-    "steal_impetus": "; sem nenhum, rouba {0}% de {1}",
-    "steal_all_impetus": "; sem nenhum, rouba todo o {0}",
-    "bonus": {
-      "Damage": "+{0} de dano nos golpes seguintes",
-      "Heal": "+{0} de cura e escudo nos efeitos seguintes",
-      "Impeto": "+{0}% de {1} {2}"
-    },
-    "per_status": "{0} para cada {1} {2}",
-    "prolong": "{0}prolonga em {1} {2} {3}",
-    "shorten": "{0}encurta em {1} {2} {3}",
-    "equalize": "nivela a Vida {0} na mesma fração",
-    "heal_team": "cura {0} da Vida dos {1} mais feridos {2}",
-    "heal_team_formula": "cura {0} nos {1} mais feridos {2}",
-    "revive": "traz de volta os aliados caídos com {0}",
-    "revive_some": "traz de volta {1} aliados caídos, sorteados, com {0}",
-    "revive_health": "{0} da Vida",
-    "joint": "{0} aliados atacam junto, com a básica",
-    "joint_all": "todos os aliados atacam junto, com a básica",
-    "cooldown_up": "{0}aumenta em {1} a recarga das habilidades {2} (as prontas também)",
-    "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}",
-    "joint_one": "{0} ataca junto, com a básica"
+    "passive_only": "Passiva"
   },
 
   "passive": {
@@ -513,7 +568,7 @@
     "channel_text": "Enquanto você está fora, o Observatório junta Essência, Ouro e Mana, até {0} horas. Colete aqui.",
     "collect": "Coletar",
     "battle": "Batalha",
-    "battle_detail": "Campanha (fase {0} de {1}) e Masmorras",
+    "battle_detail": "Campanha e Masmorras",
     "summon_detail": "Homúnculos novos",
     "arena_detail": "Duelos, Grau e Loja Cósmica",
     "soon": "Em breve",
@@ -1714,15 +1769,21 @@
   "scope": {
     "All": {
       "one": "efeito",
-      "many": "os efeitos"
+      "many": "os efeitos",
+      "any": "qualquer efeito",
+      "of": "dos efeitos"
     },
     "Buffs": {
       "one": "efeito positivo",
-      "many": "os efeitos positivos"
+      "many": "os efeitos positivos",
+      "any": "um efeito positivo",
+      "of": "dos efeitos positivos"
     },
     "Debuffs": {
       "one": "efeito negativo",
-      "many": "os efeitos negativos"
+      "many": "os efeitos negativos",
+      "any": "um efeito negativo",
+      "of": "dos efeitos negativos"
     }
   }
 }

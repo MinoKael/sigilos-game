@@ -88,7 +88,8 @@ namespace Sigilos.UI.Components
 			_width = width;
 			_full = full;
 			Name = name;
-			Color = new Color(0, 0, 0, full ? 0.5f : anchor == null ? 0.6f : 0.35f);
+			// Tela cheia quase opaca: o cabeçalho do jogo atrás não pode se misturar com o título e o voltar.
+			Color = new Color(0, 0, 0, full ? 0.95f : anchor == null ? 0.6f : 0.35f);
 			MouseFilter = MouseFilterEnum.Stop;
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 

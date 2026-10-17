@@ -39,6 +39,9 @@ namespace Sigilos.Core.Content
 	/// <see cref="By"/> diz o que LowestAlly e HighestAlly comparam (em qualquer tipo, e no <see cref="From"/>).
 	///
 	/// <see cref="OnKill"/> faz o efeito só acontecer se o dano anterior da mesma habilidade derrubou o alvo.
+	///
+	/// <see cref="When"/> liga o efeito a cada golpe do dano da habilidade (a cada golpe, a cada crítico, a cada efeito de
+	/// status causado): ali, o "Target" do efeito é quem o golpe acertou, e a <see cref="Chance"/> vale em cada golpe.
 	/// </summary>
 	public sealed record EffectDefinition
 	{
@@ -52,6 +55,15 @@ namespace Sigilos.Core.Content
 		public double Chance { get; init; } = 1;
 		public int Turns { get; init; } = 1;
 		public bool OnKill { get; init; }
+
+		/// <summary>Quando acontece: uma vez (padrão) ou a cada golpe do dano da habilidade (<see cref="HitTrigger"/>).</summary>
+		public HitTrigger When { get; init; }
+
+		/// <summary>When = Status: só o efeito causado que for este dispara.</summary>
+		public StatusKind? WhenStatus { get; init; }
+
+		/// <summary>When = Status, sem <see cref="WhenStatus"/>: dispara com os efeitos causados deste escopo (padrão: todos).</summary>
+		public StatusScope? WhenScope { get; init; }
 
 		/// <summary>Status e Shield: o efeito posto é irremovível; só os turnos dele o acabam (<see cref="Battle.StatusEffect.Unremovable"/>).</summary>
 		public bool Unremovable { get; init; }

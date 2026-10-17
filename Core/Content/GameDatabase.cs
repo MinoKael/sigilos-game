@@ -518,6 +518,27 @@ namespace Sigilos.Core.Content
 					yield return $"'{skill.Name}': Revive sem Vida para voltar.";
 			}
 
+			foreach (var list in new[] { skill.Effects, skill.AwakenedEffects })
+			{
+				foreach (var effect in list.Where(e => e.When != HitTrigger.Skill))
+				{
+					if (skill.IsPassive)
+						yield return $"'{skill.Name}': efeito ligado a cada golpe numa Passiva.";
+					if (effect.Kind == EffectKind.Damage)
+						yield return $"'{skill.Name}': o dano não se liga a cada golpe.";
+					if (effect.OnKill)
+						yield return $"'{skill.Name}': efeito ligado a cada golpe não combina com OnKill.";
+					if (!list.Any(e => e.Kind == EffectKind.Damage && e.When == HitTrigger.Skill && !e.Fixed))
+						yield return $"'{skill.Name}': efeito ligado a cada golpe sem um dano (não fixo) na habilidade.";
+					if (effect.Chance < 1 && effect.Kind is not (EffectKind.Status or EffectKind.Impeto or EffectKind.ChangeDuration or EffectKind.StealBuff or EffectKind.IncreaseCooldown))
+						yield return $"'{skill.Name}': {effect.Kind} não sorteia chance; num efeito de golpe ela fica em 1.";
+					if (effect.When == HitTrigger.Crit && list.Where(e => e.Kind == EffectKind.Damage).All(e => e.Fixed))
+						yield return $"'{skill.Name}': efeito de crítico numa habilidade de dano fixo (nunca crítica).";
+					if (effect.When != HitTrigger.Status && (effect.WhenStatus != null || effect.WhenScope != null))
+						yield return $"'{skill.Name}': whenStatus e whenScope só valem com When = Status.";
+				}
+			}
+
 			if (skill.Passive is { UsesEffects: true } && skill.Effects.Count == 0)
 				yield return $"'{skill.Name}': a Passiva {skill.Passive.Kind} não tem efeitos.";
 

@@ -46,7 +46,7 @@ namespace Sigilos.UI.Screens
 			Destination.Grimoire => "grimoire",
 			Destination.Friends => "friends",
 			Destination.Exploration => "star_exploration",
-			Destination.Arena => "target",
+			Destination.Arena => "arena",
 			Destination.Observatory => "observatory",
 			_ => "fight",
 		};

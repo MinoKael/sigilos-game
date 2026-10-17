@@ -22,7 +22,7 @@ namespace Sigilos.UI
 	/// mais a marca [planet=Nome], que o <see cref="Components.RichText"/> desenha; em dica de mouse,
 	/// use <see cref="Plain"/>.
 	/// </summary>
-	public static class Texts
+	public static partial class Texts
 	{
 		public static string Name(Element element) => T($"element.{element}");
 		public static string Name(Role role) => T($"role.{role}");
@@ -396,115 +396,6 @@ namespace Sigilos.UI
 			? T("skill.level_up.Cooldown", (int)up.Value)
 			: T($"skill.level_up.{up.Kind}", Percent(up.Value));
 
-		public static string Describe(IEnumerable<EffectDefinition> effects) => Sentence(Clause(effects) + ".");
-
-		/// <summary>Os efeitos numa frase só, sem maiúscula nem ponto ("cura 5%…; põe Aflição…").</summary>
-		private static string Clause(IEnumerable<EffectDefinition> effects) => string.Join("; ", effects.Select(Describe));
-
-		/// <summary>A frase começa com maiúscula ("remove um efeito…" vira "Remove um efeito…").</summary>
-		private static string Sentence(string text) =>
-			text.Length > 0 && char.IsLower(text[0]) ? char.ToUpperInvariant(text[0]) + text[1..] : text;
-
-		private static string Describe(EffectDefinition effect)
-		{
-			var where = Where(effect.Target, effect.By);
-			var chance = effect.Chance < 1 ? T("skill.chance", Percent(effect.Chance)) : "";
-			var text = effect.Kind switch
-			{
-				EffectKind.Damage => DamageText(effect, where),
-				EffectKind.Heal => HealText(effect, where),
-				EffectKind.Shield => EffectScaling.IsCustom(effect)
-					? T("skill.shield_formula", Term(StatusKind.Shield), Formula(effect), where, Turns(effect.Turns))
-					: T("skill.shield", Term(StatusKind.Shield), Percent(effect.Power), where, Turns(effect.Turns)),
-				EffectKind.Status => T("skill.effect", chance, Term(effect.Status), where, Turns(effect.Turns)),
-				EffectKind.Impeto => T("skill.impetus", effect.Power >= 0 ? "+" : "−", Math.Abs(effect.Power), Impeto, where),
-				EffectKind.Cleanse => T("skill.cleanse", where),
-				EffectKind.StealBuff => StealText(effect, chance, where),
-				EffectKind.BonusPerStatus => BonusText(effect, where),
-				EffectKind.ChangeDuration => T(effect.Turns >= 0 ? "skill.prolong" : "skill.shorten", chance, Turns(Math.Abs(effect.Turns)), Statuses(effect, many: true), where),
-				EffectKind.EqualizeHealth => T("skill.equalize", where),
-				EffectKind.HealTeam => HealText(effect, where),
-				EffectKind.JointAttack => effect.Target != TargetKind.AllAllies ? T("skill.joint_one", Ally(effect.Target, effect.By))
-					: effect.Count > 0 ? T("skill.joint", effect.Count) : T("skill.joint_all"),
-				EffectKind.IncreaseCooldown => T("skill.cooldown_up", chance, Turns(effect.Turns > 0 ? effect.Turns : 1), where),
-				EffectKind.ExtraTurnOnKill => T("skill.extra_turn_on_kill", Turns(effect.Turns)),
-				EffectKind.Revive => ReviveText(effect),
-				_ => effect.Kind.ToString(),
-			};
-			if (effect.Unremovable && effect.Kind is EffectKind.Status or EffectKind.Shield)
-				text += " " + T("skill.unremovable");
-			return effect.OnKill ? T("skill.on_kill", text) : text;
-		}
-
-		/// <summary>"rouba um efeito positivo do alvo; sem nenhum, rouba 20% de Ímpeto".</summary>
-		private static string StealText(EffectDefinition effect, string chance, string where)
-		{
-			var what = effect.OnlyStatus is { } only ? Term(only) : T("scope.Buffs.one");
-			var text = T("skill.steal", chance, what, where);
-			if (effect.Fallback)
-				text += effect.Power > 0 ? T("skill.steal_impetus", Math.Abs(effect.Power), Impeto) : T("skill.steal_all_impetus", Impeto);
-			return text;
-		}
-
-		/// <summary>"+20% de dano nos golpes seguintes para cada efeito negativo no alvo".</summary>
-		private static string BonusText(EffectDefinition effect, string where)
-		{
-			var bonus = effect.Bonus switch
-			{
-				BonusKind.Damage => T("skill.bonus.Damage", Percent(effect.Power)),
-				BonusKind.Heal => T("skill.bonus.Heal", Percent(effect.Power)),
-				_ => T("skill.bonus.Impeto", effect.Power, Impeto, where),
-			};
-			return T("skill.per_status", bonus, Statuses(effect, many: false), Where(effect.From, effect.By));
-		}
-
-		/// <summary>"no aliado com mais Ataque": o alvo, com o valor que escolhe o aliado quando não é a Vida.</summary>
-		private static string Where(TargetKind kind, TargetRank by) => Ranked(kind, by) ? T($"target.{kind}_by", Name(by)) : T($"target.{kind}");
-
-		/// <summary>"o aliado com mais Ataque": quem o ataque conjunto chama.</summary>
-		private static string Ally(TargetKind kind, TargetRank by) => Ranked(kind, by) ? T($"target.ally.{kind}_by", Name(by)) : T($"target.ally.{kind}");
-
-		private static bool Ranked(TargetKind kind, TargetRank by) => by != TargetRank.Health && kind is TargetKind.LowestAlly or TargetKind.HighestAlly;
-
-		/// <summary>O nome do valor que LowestAlly e HighestAlly comparam.</summary>
-		public static string Name(TargetRank by) => Targeting.StatOf(by) is { } stat ? Name(stat) : Impeto;
-
-		/// <summary>Os efeitos que o efeito olha: o escolhido (<see cref="EffectDefinition.OnlyStatus"/>) ou os do escopo.</summary>
-		private static string Statuses(EffectDefinition effect, bool many) =>
-			effect.OnlyStatus is { } only ? Term(only) : T($"scope.{effect.Scope}.{(many ? "many" : "one")}");
-
-		private static string DamageText(EffectDefinition effect, string where)
-		{
-			var hits = effect.Hits > 1 ? T("skill.hits", effect.Hits) : "";
-			var text = EffectScaling.IsCustom(effect)
-				? T("skill.damage_formula", hits, Formula(effect), where)
-				: T("skill.damage", hits, Percent(effect.Power), where);
-			if (effect.IgnoreDefense > 0)
-				text += T("skill.ignores", Percent(effect.IgnoreDefense));
-			if (effect.Drain > 0)
-				text += T("skill.drain", Percent(effect.Drain));
-			if (effect.Fixed)
-				text += T("skill.fixed");
-			return text;
-		}
-
-		/// <summary>Heal e HealTeam: "cura 15% da Vida", ou a conta inteira quando ela vai além do de sempre.</summary>
-		private static string HealText(EffectDefinition effect, string where)
-		{
-			var custom = EffectScaling.IsCustom(effect);
-			var amount = custom ? Formula(effect) : Percent(effect.Power);
-			return effect is { Kind: EffectKind.HealTeam, Count: > 0 }
-				? T(custom ? "skill.heal_team_formula" : "skill.heal_team", amount, effect.Count, where)
-				: T(custom ? "skill.heal_formula" : "skill.heal", amount, where);
-		}
-
-		/// <summary>"traz de volta 1 aliado caído, sorteado, com 30% da Vida".</summary>
-		private static string ReviveText(EffectDefinition effect)
-		{
-			var health = EffectScaling.IsCustom(effect) ? Formula(effect) : T("skill.revive_health", Percent(effect.Power));
-			return effect.Count > 0 ? T("skill.revive_some", health, effect.Count) : T("skill.revive", health);
-		}
-
 		/// <summary>
 		/// A conta do efeito (<see cref="EffectScaling"/>) em palavras: "(50% do Ataque + 8% da Vida máxima)",
 		/// "100% da Defesa × (8,5 com a Vida vazia a 5,5 com a Vida cheia)", "180% do Ataque × (Velocidade + 80) / Velocidade do alvo".
@@ -556,12 +447,18 @@ namespace Sigilos.UI
 				.Concat(Keys<RuneRarity>("rarity.{0}"))
 				.Concat(Keys<StatusKind>("effect.{0}.name"))
 				.Concat(Keys<StatusKind>("effect.{0}.info"))
-				.Concat(Keys<TargetKind>("target.{0}"))
+				.Concat(Keys<TargetKind>("target.obj.{0}"))
+				.Concat(Keys<TargetKind>("target.to.{0}"))
+				.Concat(Keys<TargetKind>("target.on.{0}"))
+				.Concat(Keys<TargetKind>("target.from.{0}"))
+				.Concat(Keys<TargetKind>("target.of.{0}"))
 				// A Passiva de condição não tem texto próprio: a descrição é a frase da condição e das ações.
 				.Concat(Keys<PassiveKind>("passive.{0}").Where(key => key != $"passive.{PassiveKind.Conditional}"))
 				.Concat(Keys<SkillLevelKind>("skill.level_up.{0}"))
 				.Concat(SpecialAvatars.All.Select(id => $"avatar.special.{id}"))
 				.Concat(Keys<ScaleStat>("skill.term.{0}"))
+				.Concat(Keys<ScaleStat>("skill.say.stat.{0}"))
+				.Concat(Keys<ScaleMeasure>("skill.say.measure.{0}"))
 				.Concat(Keys<ScaleMeasure>("skill.measure.{0}"))
 				.Concat(Keys<ScaleMeasure>("skill.factor.{0}"))
 				.Concat(Keys<SkillBehavior>("filter.behavior_kind.{0}"))

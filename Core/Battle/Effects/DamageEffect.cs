@@ -24,7 +24,7 @@ namespace Sigilos.Core.Battle.Effects
 					if (!cast.Caster.IsAlive)
 						return;
 
-					cast.Resolver.Land(new Strike(cast, target, effect));
+					cast.Resolver.LandHit(new Strike(cast, target, effect));
 				}
 			}
 		}
