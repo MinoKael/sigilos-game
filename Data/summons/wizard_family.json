@@ -103,8 +103,8 @@
           ]
         },
         {
-          "name": "Tumba Glacial",
-          "image": "tumba_glacial",
+          "name": "Magia de Gelo Eterno",
+          "image": "magia_gelo_eterno",
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.53},
@@ -153,7 +153,7 @@
         {
           "name": "Magia de Aniquilação",
           "image": "magia_aniquilacao",
-          "cooldown": 4,
+          "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 0.85, "ignoreDefense": 0.9, "hits": 3},
             {"kind": "Impeto", "target": "Self", "power": 50, "onKill": true}
@@ -208,8 +208,8 @@
           ]
         },
         {
-          "name": "Fluxo Arcano",
-          "image": "fluxo_arcano",
+          "name": "Maga Branca",
+          "image": "maga_branca",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
             {"kind": "Cleanse", "target": "AllAllies", "count": 1},
