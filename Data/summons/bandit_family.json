@@ -135,7 +135,7 @@
           "name": "Corte Rápido",
           "image": "corte_rapido",
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.8, "turns": 1},
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.8, "turns": 1},
             {"kind": "Damage", "target": "Target", "power": 1.22, "hits": 2, "ignoreDefense": 0.1}
           ],
           "levels": [

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb5wh2gs2pu7n"
-path="res://.godot/imported/karma_128.png-81884b2aae9bc7c72f01b69c165a59d7.ctex"
+uid="uid://c7n7fprh07pgk"
+path="res://.godot/imported/stigma_64.png-d0faddf343412b70807d085eab50472e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Rendered/Effects/karma_128.png"
-dest_files=["res://.godot/imported/karma_128.png-81884b2aae9bc7c72f01b69c165a59d7.ctex"]
+source_file="res://Assets/Rendered/Effects/stigma_64.png"
+dest_files=["res://.godot/imported/stigma_64.png-d0faddf343412b70807d085eab50472e.ctex"]
 
 [params]
 

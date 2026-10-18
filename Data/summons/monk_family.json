@@ -170,7 +170,7 @@
           "image": "palma_iluminada",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},

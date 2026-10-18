@@ -36,7 +36,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.92},
-            {"kind": "Status", "target": "Target", "status": "Curse", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Stigma", "turns": 2},
             {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 0.6, "turns": 2}
           ],
           "levels": [
@@ -46,7 +46,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Damage", "target": "Target", "power": 4.41},
-            {"kind": "Status", "target": "Target", "status": "Curse", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Stigma", "turns": 2},
             {"kind": "Status", "target": "Target", "status": "Unrecoverable", "turns": 2}
           ]
         },
@@ -112,11 +112,11 @@
           "passive": {"kind": "StatusOrEffectWhenLowest"},
           "effects": [
             {"kind": "Heal", "target": "Self", "power": 0.12},
-            {"kind": "Cleanse", "target": "Self"}
+            {"kind": "Cleanse", "target": "Self", "count": 1}
           ],
           "awakenedEffects": [
             {"kind": "Heal", "target": "Self", "power": 0.17},
-            {"kind": "Cleanse", "target": "Self"}
+            {"kind": "Cleanse", "target": "Self", "count": 1}
           ]
         }
       ]
@@ -169,10 +169,10 @@
           "image": "maldicao_antiga",
           "passive": {"kind": "StatusOrEffectOnAttacker"},
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.25, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.25, "turns": 2}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.35, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.35, "turns": 2}
           ]
         }
       ]
@@ -192,7 +192,7 @@
           "image": "selo_solar",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -264,7 +264,7 @@
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
             {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -274,7 +274,7 @@
           "awakenedEffects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.7, "turns": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.5, "turns": 2}
           ]
         },
         {

@@ -198,7 +198,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.21},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ]
         },
         {
@@ -230,7 +230,7 @@
           "image": "drenar_vida",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

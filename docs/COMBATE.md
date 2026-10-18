@@ -89,13 +89,13 @@ recebido (Marca) e as Passivas de redução.
 
 No Sigilos é o campo `fixed` de um efeito de dano (`EffectDefinition.Fixed`): a conta inteira chega ao
 alvo sem Defesa, elemento nem crítico, e sem sortear o crítico. Conta o dano recebido pelo alvo
-(Maldição, Passivas de redução) e o escudo absorve; o dano causado por quem bate não entra. Dano no
+(Estigma, Passivas de redução) e o escudo absorve; o dano causado por quem bate não entra. Dano no
 mínimo 1, como o resto (`DamageFormula.Apply`).
 
 Fora ele, o dano que não passa pela fórmula é dano de efeito:
 
 - **Bomba:** ATQ de quem pôs × `BattleRules.BombDamageMultiplier`; sem Defesa, elemento ou crítico;
-  conta o dano recebido pelo alvo (Maldição) e o escudo absorve. É o mesmo comportamento do dano fixo
+  conta o dano recebido pelo alvo (Estigma) e o escudo absorve. É o mesmo comportamento do dano fixo
   da referência.
 - **Aflição:** uma fração da Vida máxima no começo do turno (`BattleRules.AfflictionFraction`, e no
   chefe só `BossAfflictionShare` disso); não passa por Defesa, escudo nem modificador, como o dano
@@ -169,7 +169,7 @@ efeitos negativos que aumentam o dano continuam valendo.
 
 O Sigilos não tem essa regra em nenhuma habilidade, e ela não entra sem uma habilidade que a use.
 O mais perto é Ignorar Defesa, que já deixa de fora a Defesa+ (veja Dano); a Passiva de redução e a
-Maldição continuam valendo contra ela, como na referência (`DamageTests.IgnoringDefenseActsOnTheFinalDefense`
+Estigma continuam valendo contra ela, como na referência (`DamageTests.IgnoringDefenseActsOnTheFinalDefense`
 e `ReductionPassiveStillCountsWhenIgnoringDefense`). Nivelar Vida não é dano, então nada reduz.
 
 ## Efeitos a cada golpe, crítico ou efeito causado
@@ -196,7 +196,7 @@ específica: a frase sai do tipo de efeito, do alvo, da chance, dos turnos e do 
 - Cada tipo de efeito tem uma forma fixa ("ataca {alvo} N vezes (X% do Ataque por golpe)", "aplica/concede {estado} ...
   por N turnos com X% de chance", "recupera/concede/remove X% de Ímpeto"), de modo que um dia a leitura possa ser
   desfeita (texto → JSON). Esse leitor ainda não existe.
-- Estados seguidos no mesmo alvo viram uma frase só; mesmos turnos e chance se juntam ("Aflição e Maldição por 2 turnos
+- Estados seguidos no mesmo alvo viram uma frase só; mesmos turnos e chance se juntam ("Aflição e Estigma por 2 turnos
   com 70% de chance cada"). O alvo do ataque não se repete nos efeitos que vêm junto.
 - O que depende de `when` vem numa frase à parte ("Em cada golpe, ...", "Em cada golpe crítico, ...", "Toda vez que
   causa um efeito negativo, ..."). O que depende de derrubar o alvo vai à parte também.

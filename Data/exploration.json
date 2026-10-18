@@ -596,8 +596,8 @@
       "ra": 5.6, "dec": 5.9, "chart": [202, 330], "stars": 6, "level": 46, "scale": 0.85,
       "reward": {"essence": 810, "gold": 15, "experience": 2100},
       "influence": {"name": "Marca do Caçador", "rules": [
-        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.4, "turns": 2}]},
-        {"side": "Guardian", "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.5, "statuses": ["Curse"]}}
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnHit"}, "effects": [{"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.4, "turns": 2}]},
+        {"side": "Guardian", "passive": {"kind": "BonusVsStatusOrEffect", "value": 0.5, "statuses": ["Stigma"]}}
       ]},
       "challenges": [
         {"waves": [
@@ -900,7 +900,7 @@
       "ra": 13.4, "dec": -4.2, "chart": [291, 760], "stars": 6, "level": 49, "scale": 1.16,
       "reward": {"essence": 960, "gold": 20, "experience": 2400},
       "influence": {"name": "Colheita", "rules": [
-        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Heal", "target": "AllAllies", "power": 0.04}, {"kind": "Cleanse", "target": "LowestAlly"}]}
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Heal", "target": "AllAllies", "power": 0.04}, {"kind": "Cleanse", "target": "LowestAlly", "count": 1}]}
       ]},
       "challenges": [
         {"waves": [
@@ -1582,7 +1582,7 @@
       "ra": 18.6, "dec": -41.1, "chart": [506, 353], "stars": 6, "level": 55, "scale": 2.33,
       "reward": {"essence": 1300, "gold": 30, "experience": 3100},
       "influence": {"name": "Coroa Partida", "rules": [
-        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.7, "turns": 2}]}
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2}]}
       ]},
       "challenges": [
         {"waves": [
@@ -2013,7 +2013,7 @@
       "ra": 23.0, "dec": -82.2, "chart": [323, 321], "stars": 6, "level": 59, "scale": 3.6,
       "reward": {"essence": 1510, "gold": 40, "experience": 3500},
       "influence": {"name": "Inabalável", "rules": [
-        {"side": "Foes", "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"}, "effects": [{"kind": "Cleanse", "target": "Self"}]}
+        {"side": "Foes", "passive": {"kind": "ForEachStatusOrEffectReceivedDo", "scope": "Debuffs"}, "effects": [{"kind": "Cleanse", "target": "Self", "count": 1}]}
       ]},
       "challenges": [
         {"waves": [
@@ -2166,7 +2166,7 @@
       "reward": {"essence": 1590, "gold": 40, "experience": 3700, "scrolls": 1, "cores": 1, "legendary": 1, "lightDark": 1},
       "influence": {"name": "Guia do Sul", "rules": [
         {"side": "Guardian", "passive": {"kind": "StatusOrEffectOnWaveStart"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "Revive", "turns": 4}]},
-        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Heal", "target": "AllAllies", "power": 0.05}, {"kind": "Cleanse", "target": "AllAllies"}]},
+        {"side": "Guardian", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [{"kind": "Heal", "target": "AllAllies", "power": 0.05}, {"kind": "Cleanse", "target": "AllAllies", "count": 1}]},
         {"side": "Foes", "passive": {"kind": "StatusOrEffectOnDeath"}, "effects": [{"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 3}]}
       ]},
       "challenges": [

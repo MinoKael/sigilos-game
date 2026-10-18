@@ -184,7 +184,7 @@ namespace Sigilos.Tests
 		/// </summary>
 		public static readonly IReadOnlyDictionary<string, IReadOnlyList<Member>> Free = new Dictionary<string, IReadOnlyList<Member>>
 		{
-			// Quebra de Defesa ao acertar, roubar a Imunidade e a Defesa+ dos Bastiões, Maldição e cura, Ataque−
+			// Quebra de Defesa ao acertar, roubar a Imunidade e a Defesa+ dos Bastiões, Estigma e cura, Ataque−
 			// contra o Terremoto e dano em quem já está ferido.
 			["golem"] = new Member[]
 			{

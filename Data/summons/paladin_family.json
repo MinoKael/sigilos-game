@@ -98,7 +98,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
@@ -182,7 +182,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Heal", "target": "LowestAlly", "power": 0.35},
-            {"kind": "Cleanse", "target": "LowestAlly"},
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1},
             {"kind": "Status", "target": "LowestAlly", "status": "Aegis", "turns": 2}
           ],
           "levels": [

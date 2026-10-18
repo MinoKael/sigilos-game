@@ -3,7 +3,7 @@ using Sigilos.Core.Content;
 namespace Sigilos.Core.Battle.Passives
 {
 	/// <summary>
-	/// Em cada alvo atingido que ficou de pé, uma vez por habilidade: a Aflição dos Dragões e a Maldição
+	/// Em cada alvo atingido que ficou de pé, uma vez por habilidade: a Aflição dos Dragões e a Estigma
 	/// dos Corvos ("Target" é o atingido).
 	/// </summary>
 	internal sealed class StatusOrEffectOnHitPassive : EffectPassive

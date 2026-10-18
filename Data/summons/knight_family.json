@@ -103,7 +103,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.21, "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Status", "target": "LowestAlly", "status": "Aegis"}
           ]
         },
@@ -116,7 +116,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ]
         }
       ]
@@ -265,7 +265,7 @@
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.7, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.7, "turns": 2},
             {"kind": "Damage", "target": "AllEnemies", "power": 3.45, "drain": 0.15, "ignoreDefense": 0.35}
           ]
         },

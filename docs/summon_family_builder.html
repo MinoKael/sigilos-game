@@ -270,7 +270,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive", "IncreaseCooldown", "InvertBuffs", "BombTrigger"],
   "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy"],
   "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
-  "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
+  "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Stigma", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Curse", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "hitTriggers": ["Skill", "Hit", "Crit", "Status"],
   "bonuses": ["Damage", "Heal", "Impeto"],
@@ -508,7 +508,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -687,11 +687,11 @@ const Core = (() => {
       fields: {power: "fração da Vida máxima do alvo (0.15 = 15%)", count: "só os N alvos mais feridos (0 ou ausente = todos)", ...SCALE_FIELDS},
       template: {kind: "Heal", target: "LowestAlly", power: 0.07}},
     Shield: {label: "Escudo", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
-      text: "Escudo de power da Vida máxima de quem lança (ou a conta: stat, plus, factor, speed). Escudos não somam: fica o maior. O Karma barra.",
+      text: "Escudo de power da Vida máxima de quem lança (ou a conta: stat, plus, factor, speed). Escudos não somam: fica o maior. O Maldição barra.",
       fields: {power: "fração da Vida máxima de quem lança", turns: "duração", ...SCALE_FIELDS},
       template: {kind: "Shield", target: "AllAllies", power: 0.07, turns: 2}},
     Status: {label: "Efeito de status", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
-      text: "Põe status com chance, por turns. Negativo no outro lado: a Imunidade e a Resistência barram. Positivo: o Karma barra.",
+      text: "Põe status com chance, por turns. Negativo no outro lado: a Imunidade e a Resistência barram. Positivo: o Maldição barra.",
       fields: {status: "o efeito (veja a lista de status)", chance: "0 a 1", turns: "duração em turnos do alvo"},
       template: {kind: "Status", target: "Target", status: "Affliction", chance: 0.3, turns: 2}},
     Impeto: {label: "Ímpeto", targets: null,
@@ -699,9 +699,9 @@ const Core = (() => {
       fields: {power: "pontos (negativo atrasa)", chance: "0 a 1 (só ao atrasar inimigo)"},
       template: {kind: "Impeto", target: "Target", power: -20}},
     Cleanse: {label: "Purificar", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
-      text: "Remove um efeito negativo de cada alvo (o mais antigo).",
-      fields: {},
-      template: {kind: "Cleanse", target: "LowestAlly"}},
+      text: "Remove count efeitos negativos de cada alvo, os mais antigos primeiro.",
+      fields: {count: "quantos (0 = todos)"},
+      template: {kind: "Cleanse", target: "LowestAlly", count: 1}},
     StealBuff: {label: "Roubar efeito", targets: ["Target", "AllEnemies", "RandomEnemy"],
       text: "Com chance, rouba de cada alvo um efeito positivo (o mais novo) e o põe em quem lança com os turnos que sobravam. Sem nenhum e com fallback, rouba Ímpeto.",
       fields: {chance: "0 a 1", onlyStatus: "só rouba este status (opcional)", fallback: "true: sem efeito positivo, rouba Ímpeto", power: "Ímpeto roubado no fallback (0 = todo o do alvo)"},
@@ -754,7 +754,7 @@ const Core = (() => {
     Stun: ["Atordoamento", true, "Perde o turno."],
     Taunt: ["Provocação", false, "Efeito positivo: os inimigos só podem escolher o dono como alvo único."],
     Hidden: ["Oculto", false, "Não pode ser alvo de ataques únicos."],
-    Curse: ["Maldição", true, "Recebe 25% a mais de dano."],
+    Stigma: ["Estigma", true, "Recebe 25% a mais de dano."],
     Blind: ["Cegueira", true, "Cada golpe tem 50% de chance de errar."],
     Aegis: ["Égide", false, "Inatingível: não recebe dano nenhum enquanto durar (golpes, Aflição, Bomba). Ainda recebe efeitos negativos e pode perder a Égide."],
     Foresight: ["Presságio", false, "O próximo golpe causado é crítico."],
@@ -771,7 +771,7 @@ const Core = (() => {
     Blessing: ["Bênção", false, "Recupera 15% da Vida máxima no começo de cada turno (a Ferida barra)."],
     Counter: ["Contragolpe", false, "Revida com a básica, a 75% do dano, toda vez que uma habilidade inimiga o atinge."],
     Revive: ["Reviver", false, "Ao cair, volta na hora com 30% da Vida máxima; o efeito se gasta."],
-    Karma: ["Karma", true, "Nenhum efeito positivo pega (nem escudo, nem efeito roubado)."],
+    Curse: ["Maldição", true, "Nenhum efeito positivo pega (nem escudo, nem efeito roubado)."],
     Sleep: ["Sono", true, "Perde os turnos até a duração acabar ou até levar um golpe."],
     Unrecoverable: ["Ferida", true, "Não recebe cura (nem dreno, nem Bênção)."],
     Silence: ["Silêncio", true, "Só usa habilidades sem recarga."],
@@ -2460,7 +2460,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         ${code('{"kind": "Revive", "target": "AllAllies", "power": 0.5, "factor": {"by": "HealthFraction", "base": 0, "slope": 1}}')}<br>
         ${code('{"kind": "Damage", "power": 2, "fixed": true}')}</p>
       <h3>Opções</h3><p>${code("by")} (LowestAlly e HighestAlly)<br>${option(C.RANK_DOCS)}</p><p>${code("scope")}<br>${option(C.SCOPE_DOCS)}</p><p>${code("bonus")}<br>${option(C.BONUS_DOCS)}</p>
-      <h3>Status</h3><p class="note">Use em ${code("status")} (efeito Status) ou em ${code("onlyStatus")}. Negativo: a Resistência e a Imunidade barram, a Purificação tira. Positivo: o Karma barra, o Roubar efeito leva.</p>
+      <h3>Status</h3><p class="note">Use em ${code("status")} (efeito Status) ou em ${code("onlyStatus")}. Negativo: a Resistência e a Imunidade barram, a Purificação tira. Positivo: o Maldição barra, o Roubar efeito leva.</p>
       <div class="table-wrap"><table><tr><th>status</th><th>Nome</th><th>Tipo</th><th>O que faz</th></tr>${statuses}</table></div>`;
   }
 

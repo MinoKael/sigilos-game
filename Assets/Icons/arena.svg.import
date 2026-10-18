@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bq0ppqbb6pclp"
-path="res://.godot/imported/elven_castle.svg-f78fef6fc281027489db089edeb1f9db.ctex"
+path="res://.godot/imported/arena.svg-c9336d4e25682b0328c654e249ced2a0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Icons/elven_castle.svg"
-dest_files=["res://.godot/imported/elven_castle.svg-f78fef6fc281027489db089edeb1f9db.ctex"]
+source_file="res://Assets/Icons/arena.svg"
+dest_files=["res://.godot/imported/arena.svg-c9336d4e25682b0328c654e249ced2a0.ctex"]
 
 [params]
 

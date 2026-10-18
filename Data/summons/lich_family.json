@@ -177,7 +177,7 @@
           "image": "raio_palido",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Karma", "chance": 0.2, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.2, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
@@ -239,7 +239,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "drain": 0.3},
-            {"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.4, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -248,7 +248,7 @@
           ],
           "awakenedEffects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2, "drain": 0.4},
-            {"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.6, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
           ]
         },
         {

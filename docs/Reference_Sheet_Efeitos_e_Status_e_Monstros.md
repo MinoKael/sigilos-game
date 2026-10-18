@@ -280,7 +280,7 @@ Recupera Vida com base, por padrão, na Vida máxima do alvo. A **Ferida** imped
 
 ### Escudo (`Shield`)
 
-Cria um escudo calculado, por padrão, a partir da Vida máxima de quem lança a habilidade. Escudos **não se acumulam**: permanece o maior escudo. O status **Karma** impede a aplicação de escudo.
+Cria um escudo calculado, por padrão, a partir da Vida máxima de quem lança a habilidade. Escudos **não se acumulam**: permanece o maior escudo. O status **Maldição** impede a aplicação de escudo.
 
 **Campos principais**
 - **Potência (`power`):** fração da Vida máxima de quem lança.
@@ -295,7 +295,7 @@ Tenta aplicar um status positivo ou negativo ao alvo.
 - **Chance (`chance`):** probabilidade de aplicação, de 0 a 1.
 - **Duração (`turns`):** duração em turnos do alvo.
 
-Status negativos podem ser impedidos por **Imunidade** e **Resistência**. Status positivos podem ser impedidos por **Karma**.
+Status negativos podem ser impedidos por **Imunidade** e **Resistência**. Status positivos podem ser impedidos por **Maldição**.
 
 ### Ímpeto (`Impeto`)
 
@@ -387,7 +387,7 @@ Este efeito usa o alvo `AllAllies`.
 
 ## 4. Status disponíveis
 
-Os status negativos podem ser barrados por **Resistência** e **Imunidade**, e removidos por **Purificar**. Os positivos podem ser barrados por **Karma** e roubados por **Roubar efeito positivo**, quando aplicável.
+Os status negativos podem ser barrados por **Resistência** e **Imunidade**, e removidos por **Purificar**. Os positivos podem ser barrados por **Maldição** e roubados por **Roubar efeito positivo**, quando aplicável.
 
 | Status (identificador) | Nome | Tipo | Efeito |
 |---|---|---|---|
@@ -396,7 +396,7 @@ Os status negativos podem ser barrados por **Resistência** e **Imunidade**, e r
 | `Stun` | Atordoamento | Negativo | Faz perder o turno. |
 | `Taunt` | Provocação | Negativo | O alvo só pode mirar em quem o provocou. |
 | `Hidden` | Oculto | Positivo | Não pode ser escolhido como alvo de ataques únicos. |
-| `Curse` | Maldição | Negativo | Faz receber 25% a mais de dano. |
+| `Stigma` | Estigma | Negativo | Faz receber 25% a mais de dano. |
 | `Blind` | Cegueira | Negativo | Cada golpe tem 50% de chance de errar. |
 | `Aegis` | Égide | Positivo | Inatingível: não recebe dano nenhum (golpes, Aflição, Bomba) enquanto durar. Ainda recebe efeitos negativos e pode ser removida. |
 | `Foresight` | Presságio | Positivo | O próximo golpe causado é crítico. |
@@ -413,7 +413,7 @@ Os status negativos podem ser barrados por **Resistência** e **Imunidade**, e r
 | `Blessing` | Bênção | Positivo | No começo de cada turno, recupera 15% da Vida máxima. Ferida impede a cura. |
 | `Counter` | Contragolpe | Positivo | Revida com o ataque básico, causando 75% do dano, sempre que uma habilidade inimiga o atinge. |
 | `Revive` | Reviver | Positivo | Quando o portador cai, volta imediatamente com 30% da Vida máxima. O efeito é consumido. |
-| `Karma` | Karma | Negativo | Impede efeitos positivos, incluindo escudos e efeitos roubados. |
+| `Curse` | Maldição | Negativo | Impede efeitos positivos, incluindo escudos e efeitos roubados. |
 | `Sleep` | Sono | Negativo | Faz perder turnos até a duração acabar ou até o alvo receber um golpe. |
 | `Unrecoverable` | Ferida | Negativo | Impede receber cura, incluindo dreno e Bênção. |
 | `Silence` | Silêncio | Negativo | Só permite usar habilidades sem recarga. |
@@ -597,7 +597,7 @@ Os exemplos abaixo ilustram combinações de configuração. Os nomes técnicos 
 ## Consulta rápida
 
 - **Impedir status negativos:** Imunidade.
-- **Impedir efeitos positivos:** Karma.
+- **Impedir efeitos positivos:** Maldição (`Curse`).
 - **Remover um efeito negativo:** Purificar.
 - **Impedir cura:** Ferida.
 - **Reduzir a duração de efeitos:** Alterar duração com um número negativo de turnos.

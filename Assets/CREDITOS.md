@@ -88,7 +88,7 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Effects/stun.svg` | [Star-swirl - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Star-swirl_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/taunt.svg` | [Target-arrows - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Target-arrows_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/hidden.svg` | [Hood - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Hood_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
-| `Effects/curse.svg` | [Cursed-star - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Cursed-star_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Effects/stigma.svg` | [Cursed-star - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Cursed-star_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/blind.svg` | [Blindfold - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Blindfold_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/aegis.svg` | [Magic-shield - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Magic-shield_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/foresight.svg` | [Crystal-ball - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Crystal-ball_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
@@ -125,7 +125,7 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 | `Effects/blessing.svg` | [Angel-wings - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Angel-wings_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/counter.svg` | [Sword-spin - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Sword-spin_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/revive.svg` | [Ankh - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Ankh_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
-| `Effects/karma.svg` | [Yin-yang - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Yin-yang_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Effects/curse.svg` | [Bleeding-eye - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Bleeding-eye_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/sleep.svg` | [Sleepy - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Sleepy_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/unrecoverable.svg` | [Bleeding-wound - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Bleeding-wound_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `Effects/silence.svg` | [Silence - Lorc - game-icons.svg](https://commons.wikimedia.org/wiki/File:Silence_-_Lorc_-_game-icons.svg) | Lorc | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |

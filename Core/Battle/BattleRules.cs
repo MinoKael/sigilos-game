@@ -43,7 +43,7 @@ namespace Sigilos.Core.Battle
 		/// da Aflição). Cheio, um efeito novo não pega; o que ele já tem ainda se renova.
 		/// </summary>
 		public const int MaxStatuses = 10;
-        public const double CurseBonus = 0.25;
+        public const double StigmaBonus = 0.25;
 		public const double BlindMissChance = 0.5;
 
 		/// <summary>

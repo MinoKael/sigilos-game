@@ -10,24 +10,24 @@
       "variation_id": "druid_fire",
       "name": "Druida de Fogo",
       "element": "Fire",
-      "role": "Attack",
-      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
-      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
-      "leader": {"stat": "Attack", "value": 0.18},
-      "awakening": {"name": "Cathad", "stat": "Crit"},
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "Defense", "value": 0.35},
+      "awakening": {"name": "Cahad", "stat": "Speed"},
       "skills": [
         {
-          "name": "Dilacerar",
-          "image": "dilacerar",
+          "name": "Raízes Naturais",
+          "image": "raizes_naturais",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 1.47, "hits": 2},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.25, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 0.19, "hits": 1, "stat": "MaxHealth"},
+            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.15, "turns": 2, "when": "Hit"}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "EffectRate", "value": 0.2}
           ]
         },
         {
@@ -37,18 +37,21 @@
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
             {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2},
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
           ]
         },
         {
-          "name": "Couro de Espinhos",
-          "image": "couro_de_espinhos",
-          "passive": {"kind": "Thorns", "value": 0.25}
+          "name": "Totem Infernal",
+          "image": "totem_infernal",
+          "passive": {"kind": "BonusPerStatusOrEffect", "value": 0.3}
         }
       ]
     },
@@ -56,50 +59,60 @@
       "variation_id": "druid_water",
       "name": "Druida de Água",
       "element": "Water",
-      "role": "Support",
-      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
-      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
-      "leader": {"stat": "Resistance", "value": 0.25},
-      "awakening": {"name": "Taliesan", "stat": "Resistance"},
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "Crit", "value": 0.25},
+      "awakening": {"name": "Talizen", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Chuva Calmante",
-          "image": "chuva_calmante",
+          "name": "Raízes Naturais",
+          "image": "raizes_naturais",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Heal", "target": "AllAllies", "power": 0.02}
+            {"kind": "Damage", "target": "Target", "power": 0.19, "hits": 1, "stat": "MaxHealth"},
+            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.15, "turns": 2, "when": "Hit"}
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.2}
           ]
         },
         {
-          "name": "Rejuvenescer",
-          "image": "rejuvenescer",
-          "cooldown": 4,
+          "name": "Força da Natureza",
+          "image": "forca_natureza",
+          "cooldown": 7,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.14},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Status", "target": "HighestAlly", "status": "AttackUp", "turns": 2, "chance": 1, "by": "Attack"},
+            {"kind": "Impeto", "target": "HighestAlly", "power": 100, "by": "Attack"}
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ]
         },
         {
-          "name": "Maré da Primavera",
-          "image": "mare_da_primavera",
-          "cooldown": 5,
+          "name": "Lago Calmo",
+          "image": "lago_calmo",
+          "cooldown": 6,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.21},
-            {"kind": "Impeto", "target": "AllAllies", "power": 20}
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
+            {
+              "kind": "Heal",
+              "target": "AllAllies",
+              "power": 0.17,
+              "stat": "MaxHealth",
+              "factor": {"by": "LivingAllies", "slope": 1.3, "base": 1}
+            }
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Recovery", "value": 0.01},
+            {"kind": "Recovery", "value": 0.01},
+            {"kind": "Recovery", "value": 0.01},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ]
         }
@@ -109,45 +122,51 @@
       "variation_id": "druid_wind",
       "name": "Druida de Vento",
       "element": "Wind",
-      "role": "Defense",
-      "stats": {"hp": 9675, "atk": 601, "def": 731, "spd": 100},
-      "awakened_stats": {"hp": 10485, "atk": 652, "def": 793, "spd": 101},
-      "leader": {"stat": "Defense", "value": 0.25},
-      "awakening": {"name": "Merlien", "stat": "Speed"},
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.25},
+      "awakening": {"name": "Meren", "stat": "Speed"},
       "skills": [
         {
-          "name": "Chicote de Espinhos",
-          "image": "chicote_de_espinhos",
+          "name": "Raízes Naturais",
+          "image": "raizes_naturais",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.4, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 0.19, "hits": 1, "stat": "MaxHealth"},
+            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.15, "turns": 2, "when": "Hit"}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "EffectRate", "value": 0.2}
           ]
         },
         {
-          "name": "Raízes Enredantes",
-          "image": "raizes_enredantes",
+          "name": "Chamado Animal",
+          "image": "chamado_animal",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -20}
+            {"kind": "Damage", "target": "Target", "stat": "MaxHealth", "power": 0.26, "drain": 0.3},
+            {"kind": "JointAttack", "target": "HighestAlly", "count": 2, "by": "Attack"},
+            {"kind": "Impeto", "target": "AllAllies", "power": 20}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ]
         },
         {
-          "name": "Couro de Espinhos",
-          "image": "couro_de_espinhos",
-          "passive": {"kind": "Thorns", "value": 0.25}
+          "name": "Aura Revigorante",
+          "image": "aura_revigorante",
+          "passive": {"kind": "StatusOrEffectEachTurn"},
+          "effects": [
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.07, "stat": "MaxHealth"}
+          ]
         }
       ]
     },
@@ -158,42 +177,52 @@
       "role": "HP",
       "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
       "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
-      "leader": {"stat": "Health", "value": 0.2},
-      "awakening": {"name": "Myrddin", "stat": "Resistance"},
+      "leader": {"stat": "Health", "value": 0.35},
+      "awakening": {"name": "Mirya", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Investida de Galhada",
-          "image": "investida_de_galhada",
+          "name": "Raízes Naturais",
+          "image": "raizes_naturais",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.35}
+            {"kind": "Damage", "target": "Target", "power": 0.19, "hits": 1, "stat": "MaxHealth"},
+            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.15, "turns": 2, "when": "Hit"}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "EffectRate", "value": 0.2}
           ]
         },
         {
-          "name": "Bosque Sagrado",
-          "image": "bosque_sagrado",
-          "cooldown": 4,
+          "name": "Força da Natureza",
+          "image": "forca_natureza",
+          "cooldown": 7,
           "effects": [
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.7},
-            {"kind": "Shield", "target": "Self", "power": 0.17, "turns": 2},
-            {"kind": "Heal", "target": "Self", "power": 0.1}
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "chance": 1, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "chance": 1, "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 50}
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ]
         },
         {
-          "name": "Couro de Espinhos",
-          "image": "couro_de_espinhos",
-          "passive": {"kind": "Thorns", "value": 0.25}
+          "name": "Benção da Mãe Natureza",
+          "image": "bencao_mae_natureza",
+          "cooldown": 7,
+          "effects": [
+            {"kind": "Cleanse", "target": "AllAllies", "count": 0},
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "chance": 1, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Revive", "chance": 1, "turns": 2}
+          ],
+          "levels": [
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1}
+          ]
         }
       ]
     },
@@ -201,53 +230,56 @@
       "variation_id": "druid_dark",
       "name": "Druida de Trevas",
       "element": "Dark",
-      "role": "Attack",
-      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
-      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
-      "leader": {"stat": "Accuracy", "value": 0.25},
-      "awakening": {"name": "Ruith", "stat": "Accuracy"},
+      "role": "HP",
+      "stats": {"hp": 10995, "atk": 647, "def": 597, "spd": 100},
+      "awakened_stats": {"hp": 11925, "atk": 701, "def": 648, "spd": 101},
+      "leader": {"stat": "CritDamage", "value": 0.3},
+      "awakening": {"name": "Riuran", "stat": "Accuracy"},
       "skills": [
         {
-          "name": "Mordida Podre",
-          "image": "mordida_podre",
+          "name": "Raízes Naturais",
+          "image": "raizes_naturais",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.94},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "chance": 0.5, "turns": 2}
+            {"kind": "Damage", "target": "Target", "power": 0.19, "hits": 1, "stat": "MaxHealth"},
+            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.15, "turns": 2, "when": "Hit"}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "EffectRate", "value": 0.2}
           ]
         },
         {
-          "name": "Esporos da Praga",
-          "image": "esporos_da_praga",
-          "cooldown": 4,
-          "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 3}
-          ],
-          "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Cooldown", "value": 1}
-          ]
-        },
-        {
-          "name": "Definhar",
-          "image": "definhar",
+          "name": "Chamado Animal",
+          "image": "chamado_animal",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.41},
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "AttackDown", "turns": 2}
+            {
+              "kind": "Damage",
+              "target": "Target",
+              "power": 2.43,
+              "drain": 0.3,
+              "plus": [
+                {"stat": "MaxHealth", "power": 0.18}
+              ]
+            },
+            {"kind": "JointAttack", "target": "HighestAlly", "count": 2, "by": "Attack"},
+            {"kind": "Impeto", "target": "AllAllies", "power": 20},
+            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 1}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Damage", "value": 0.01},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ]
+        },
+        {
+          "name": "Ciclo de Morte",
+          "image": "ciclo_morte",
+          "passive": {"kind": "CooldownEachTurn", "value": 0.95}
         }
       ]
     }

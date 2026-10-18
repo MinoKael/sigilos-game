@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3io8ajq0sw87"
-path="res://.godot/imported/karma.svg-f8280471f287a2b19b82bce6d2c57199.ctex"
+uid="uid://cs6jjm4w6tahf"
+path="res://.godot/imported/arena_128.png-7be34966b9e67860dec37a9e1582634e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Effects/karma.svg"
-dest_files=["res://.godot/imported/karma.svg-f8280471f287a2b19b82bce6d2c57199.ctex"]
+source_file="res://Assets/Rendered/Icons/arena_128.png"
+dest_files=["res://.godot/imported/arena_128.png-7be34966b9e67860dec37a9e1582634e.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

@@ -96,7 +96,7 @@
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.21},
             {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},

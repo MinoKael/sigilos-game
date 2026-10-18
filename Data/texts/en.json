@@ -226,8 +226,8 @@
       "name": "Hidden",
       "info": "Cannot be targeted by single-target attacks."
     },
-    "Curse": {
-      "name": "Curse",
+    "Stigma": {
+      "name": "Stigma",
       "info": "Takes {0} more damage."
     },
     "Blind": {
@@ -294,8 +294,8 @@
       "name": "Revive",
       "info": "On falling, comes right back with {0} of max HP. Works once."
     },
-    "Karma": {
-      "name": "Karma",
+    "Curse": {
+      "name": "Stigma",
       "info": "No beneficial effect takes hold."
     },
     "Sleep": {
@@ -386,6 +386,12 @@
       "speed_target": "the target's Speed",
       "stat": {"Attack": "Attack", "Defense": "Defense", "MaxHealth": "Max HP", "Speed": "Speed", "TargetMaxHealth": "the target's Max HP", "Level": "level"},
       "measure": {"HealthFraction": "current HP", "TargetHealthFraction": "the target's current HP", "LivingAllies": "living allies"},
+      "more_allies": "the more allies alive, the stronger the effect",
+      "less_allies": "the more allies alive, the weaker the effect",
+      "attack_details": "the attack {0}",
+      "is_based": "is based on {0}",
+      "is_fixed": "deals fixed damage, ignoring Defense, element and crit",
+      "multiple": "{0}x {1}",
       "times": " {0} times",
       "ignores": "ignores {0} of Defense",
       "drains": "drains {0} of the damage as HP",
@@ -404,6 +410,8 @@
       "impetus_self": "restores {0}% {1}",
       "impetus_remove": "removes {0}% {1}{2}",
       "cleanse": "removes one harmful effect{0}",
+      "cleanse_many": "removes {1} harmful effects{0}",
+      "cleanse_all": "removes all harmful effects{0}",
       "steal": "steals one {0}{1}",
       "steal_impetus": " (without one, steals {0}% {1})",
       "steal_all_impetus": " (without one, steals all its {0})",
@@ -690,7 +698,7 @@
       "cetus": "The Sea Monster drags you down: on each foe's turn, your team may lose Impetus. High Speed and Impetus boosters beat the undertow.",
       "aries": "The Golden Ram charges head first: the guardian starts its wave ahead and each of its hits knocks the target back on the bar. Speed and Impetus boosters make up for it.",
       "taurus": "The more the Bull is struck, the harder it charges: whoever hits the guardian gives it Attack Up and Impetus. A few strong hits, Attack Down and stuns hold the fury.",
-      "orion": "Orion marks his prey: enemy hits may apply Curse, and the guardian hits marked targets much harder. Cleanse and Immunity erase the mark.",
+      "orion": "Orion marks his prey: enemy hits may apply Stigma, and the guardian hits marked targets much harder. Cleanse and Immunity erase the mark.",
       "lepus": "The Hare runs for it: the foe with the least HP gets much faster, and the guardian starts its wave ahead. Area damage leaves no one behind.",
       "canis_major": "Sirius's heat scorches both sides: at the start of each turn, anyone may catch Affliction. Cleanse and healing let your team outlast theirs.",
       "monoceros": "The Unicorn's horn cleanses any harm: at the start of each turn, a foe may remove a harmful effect from an ally. Win on damage, not on effects.",
@@ -729,7 +737,7 @@
       "lupus": "The Wolf smells blood: foes hit the wounded harder and heal from their damage. Keep HP high and bring the pack down before it recovers.",
       "norma": "The Carpenter's Square measures everyone alike: everyone takes less damage, on both sides, and the fight drags on. Affliction, Bomb and healing decide who lasts.",
       "ara": "At the Altar, blood pays for blood: foes drain much of the damage they deal. Attack Down, Wound and fast damage break the pact.",
-      "corona_australis": "The southern crown is broken: at the start of each wave, your team may get Karma and can't receive buffs. Resistance and Cleanse bring the blessings back.",
+      "corona_australis": "The southern crown is broken: at the start of each wave, your team may get Curse and can't receive buffs. Resistance and Cleanse bring the blessings back.",
       "telescopium": "Through the Telescope everyone sees weak spots: both sides start each wave with Crit Up and Foresight. Whoever strikes first, with more Crit Damage, wins.",
       "microscopium": "Under the Microscope, harm spreads: enemy hits lengthen the target's harmful effects and may apply Affliction. Cleansing every turn beats the contagion.",
       "grus": "The Crane keeps watch on one leg: a foe that is hit may gain Counter. Stun before striking, and favor strong single hits.",
@@ -950,6 +958,10 @@
   },
 
   "runes": {
+    "auto": "Auto-equip",
+    "auto_none": "The homunculus's sigils are already the best combination among your loose ones.",
+    "why_auto_core": "The Infusion Core uses no sigils.",
+    "auto_help": "Auto-equip builds the combination that helps the homunculus most, by its role, the stat the variant is strongest in, the stats its skills scale on and the sets. It uses only loose sigils and its own; the result goes to the trial, and Equip confirms.",
     "why_marked": "Mark at least one sigil in the list first.",
     "tab_runes": "Sigils",
     "tab_grindstones": "Grindstones",

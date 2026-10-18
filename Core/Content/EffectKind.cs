@@ -39,7 +39,7 @@ namespace Sigilos.Core.Content
 
 		/// <summary>
 		/// Inverte os efeitos positivos do alvo no equivalente negativo (<see cref="Battle.EffectResolver.Invert"/>), com os
-		/// mesmos turnos; sem equivalente vira Maldição. Sem nenhum efeito positivo e com <see cref="EffectDefinition.Fallback"/>,
+		/// mesmos turnos; sem equivalente vira Estigma. Sem nenhum efeito positivo e com <see cref="EffectDefinition.Fallback"/>,
 		/// tira <see cref="EffectDefinition.Power"/> pontos de Ímpeto do alvo (0 = todo).
 		/// </summary>
 		InvertBuffs,

@@ -20,7 +20,7 @@ namespace Sigilos.Core.Content
 		Hidden,
 
 		/// <summary>Recebe mais dano.</summary>
-		Curse,
+		Stigma,
 
 		/// <summary>Cada golpe tem chance de errar.</summary>
 		Blind,
@@ -61,8 +61,8 @@ namespace Sigilos.Core.Content
 		/// <summary>Reviver: ao cair, volta na hora com uma fração da Vida máxima (e o efeito se gasta).</summary>
 		Revive,
 
-		/// <summary>Karma: nenhum efeito positivo pega.</summary>
-		Karma,
+		/// <summary>Maldição: nenhum efeito positivo pega.</summary>
+		Curse,
 
 		/// <summary>Sono: perde os turnos até a duração acabar ou até ser atingido.</summary>
 		Sleep,

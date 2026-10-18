@@ -26,7 +26,7 @@ namespace Sigilos.UI.Screens
 			body.AddChild(Facts(skill, level, awakened, locked));
 
 			AddFlavor(body, skill);
-			body.AddChild(RichText.Label(Texts.Describe(skill, awakened), TextWidth).Named("Description"));
+			body.AddChild(RichText.Label(Texts.Describe(skill, awakened, level), TextWidth).Named("Description"));
 
 			if (skill.Levels.Count > 0)
 				body.AddChild(Upgrades(skill, level));
@@ -44,8 +44,8 @@ namespace Sigilos.UI.Screens
 			body.AddChild(Facts(skill, level, true, false));
 			AddFlavor(body, skill);
 
-			body.AddChild(Stage(T("skill.before_awakening"), Palette.TextFaded, Texts.DescribeBeforeAwakening(skill), "Before"));
-			body.AddChild(Stage(T("skill.after_awakening"), Palette.Awakened, Texts.Describe(skill, true), "After"));
+			body.AddChild(Stage(T("skill.before_awakening"), Palette.TextFaded, Texts.DescribeBeforeAwakening(skill, level), "Before"));
+			body.AddChild(Stage(T("skill.after_awakening"), Palette.Awakened, Texts.Describe(skill, true, level), "After"));
 
 			if (skill.Levels.Count > 0)
 				body.AddChild(Upgrades(skill, level));
@@ -88,11 +88,12 @@ namespace Sigilos.UI.Screens
 		private static Control Facts(SkillDefinition skill, int level, bool awakened, bool locked)
 		{
 			var facts = Layout.Flow(Space.Wide).Named("Facts");
+			var cooldown = skill.At(level, awakened).Cooldown;
 			var kind = skill.IsPassive ? T("skill.passive_only")
-				: skill.Cooldown > 0 ? T("skill.cooldown_short", skill.At(level, awakened).Cooldown)
+				: skill.Cooldown > 0 ? T("skill.cooldown_short", cooldown)
 				: "";
 			if (kind.Length > 0)
-				facts.AddChild(Fact(kind, Palette.TextFaded).Named("Kind"));
+				facts.AddChild(Fact(kind, !skill.IsPassive && cooldown < skill.Cooldown ? Palette.Gold : Palette.TextFaded).Named("Kind"));
 			if (skill.MaxLevel > 1)
 				facts.AddChild(Fact(T("skill.level", level, skill.MaxLevel), level >= skill.MaxLevel ? Palette.Gold : Palette.Text).Named("Level"));
 			if (locked)

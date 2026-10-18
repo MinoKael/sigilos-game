@@ -196,7 +196,7 @@
           "image": "marcar_o_alvo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.8, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.8, "turns": 2},
             {"kind": "ChangeDuration", "target": "Target", "turns": -2, "scope": "Buffs"}
           ],
           "levels": [

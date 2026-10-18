@@ -89,7 +89,7 @@
           "image": "baile_das_ondas",
           "cooldown": 4,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2},
             {"kind": "Heal", "target": "AllAllies", "power": 0.1}
           ],
@@ -257,7 +257,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 4.41},
-            {"kind": "Status", "target": "Target", "status": "Curse", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Stigma", "turns": 2},
             {"kind": "Status", "target": "Target", "status": "Silence", "chance": 0.6, "turns": 2}
           ],
           "levels": [

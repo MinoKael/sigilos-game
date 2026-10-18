@@ -227,8 +227,8 @@
       "name": "Oculto",
       "info": "Não pode ser alvo de ataques únicos."
     },
-    "Curse": {
-      "name": "Maldição",
+    "Stigma": {
+      "name": "Estigma",
       "info": "Recebe {0} a mais de dano."
     },
     "Blind": {
@@ -295,8 +295,8 @@
       "name": "Reviver",
       "info": "Ao cair, volta na hora com {0} da Vida máxima. Serve uma vez."
     },
-    "Karma": {
-      "name": "Karma",
+    "Curse": {
+      "name": "Maldição",
       "info": "Nenhum efeito positivo pega."
     },
     "Sleep": {
@@ -398,6 +398,12 @@
         "TargetHealthFraction": "Vida atual do alvo",
         "LivingAllies": "aliados de pé"
       },
+      "more_allies": "quanto mais aliados vivos, maior o efeito",
+      "less_allies": "quanto mais aliados vivos, menor o efeito",
+      "attack_details": "o ataque {0}",
+      "is_based": "é baseado em {0}",
+      "is_fixed": "tem dano fixo, sem Defesa, elemento ou crítico",
+      "multiple": "{0}x {1}",
       "times": " {0} vezes",
       "ignores": "ignora {0} da Defesa",
       "drains": "drena {0} do dano como Vida",
@@ -416,6 +422,8 @@
       "impetus_self": "recupera {0}% de {1}",
       "impetus_remove": "remove {0}% de {1}{2}",
       "cleanse": "remove um efeito negativo{0}",
+      "cleanse_many": "remove {1} efeitos negativos{0}",
+      "cleanse_all": "remove todos os efeitos negativos{0}",
       "steal": "rouba um {0}{1}",
       "steal_impetus": " (sem nenhum, rouba {0}% de {1})",
       "steal_all_impetus": " (sem nenhum, rouba todo o {0})",
@@ -702,7 +710,7 @@
       "cetus": "O Monstro Marinho puxa para o fundo: no turno de cada inimigo, o seu time pode perder Ímpeto. Velocidade alta e quem empurra o Ímpeto do time vencem a correnteza.",
       "aries": "O Carneiro de Ouro investe de cabeça: o guardião começa a onda adiantado e cada golpe dele empurra o alvo para trás na barra. Velocidade e quem empurra o Ímpeto do time compensam.",
       "taurus": "Quanto mais o Touro apanha, mais ele investe: quem atinge o guardião o deixa com Ataque+ e mais Ímpeto. Poucos golpes fortes, Ataque− e atordoar seguram a fúria.",
-      "orion": "Órion marca a presa: os golpes inimigos podem pôr Maldição, e o guardião bate muito mais em quem está marcado. Purificação e Imunidade apagam a marca.",
+      "orion": "Órion marca a presa: os golpes inimigos podem pôr Estigma, e o guardião bate muito mais em quem está marcado. Purificação e Imunidade apagam a marca.",
       "lepus": "A Lebre foge correndo: o inimigo com menos Vida fica muito mais rápido, e o guardião começa a onda adiantado. Dano em área deixa ninguém para trás.",
       "canis_major": "O calor de Sírius queima os dois lados: no começo de cada turno, qualquer um pode pegar Aflição. Purificação e cura fazem o seu time aguentar mais que o deles.",
       "monoceros": "O chifre do Unicórnio limpa qualquer mal: no começo de cada turno, um inimigo pode tirar um efeito negativo de um aliado. Vença no dano, não nos efeitos.",
@@ -741,7 +749,7 @@
       "lupus": "O Lobo sente o cheiro do sangue: os inimigos batem mais em quem está ferido e se curam com o dano. Mantenha a Vida alta e derrube a matilha antes que ela se cure.",
       "norma": "O Esquadro mede tudo por igual: todos recebem menos dano, dos dois lados, e a luta fica longa. Aflição, Bomba e cura decidem quem aguenta mais.",
       "ara": "No Altar, o sangue paga o sangue: os inimigos drenam boa parte do dano que causam. Ataque−, Ferida e dano rápido quebram o pacto.",
-      "corona_australis": "A coroa do sul se partiu: no começo de cada onda, o seu time pode ficar com Karma e não recebe efeitos positivos. Resistência e Purificação devolvem as bênçãos.",
+      "corona_australis": "A coroa do sul se partiu: no começo de cada onda, o seu time pode ficar com Maldição e não recebe efeitos positivos. Resistência e Purificação devolvem as bênçãos.",
       "telescopium": "Pelo Telescópio, todos veem os pontos fracos: os dois lados começam cada onda com Crítico+ e Presságio. Quem bate primeiro, e com mais Dano Crítico, leva.",
       "microscopium": "No Microscópio, o mal se espalha: os golpes inimigos alongam os efeitos negativos do alvo e podem pôr Aflição. Purificação a cada turno vence o contágio.",
       "grus": "O Grou vigia num pé só: o inimigo atingido pode ficar com Contragolpe. Atordoe antes de bater, e prefira golpes únicos fortes.",
@@ -962,6 +970,10 @@
   },
 
   "runes": {
+    "auto": "Auto-equipar",
+    "auto_none": "Os sigilos do homúnculo já são a melhor combinação entre os que você tem soltos.",
+    "why_auto_core": "O Núcleo de Infusão não usa sigilos.",
+    "auto_help": "Auto-equipar monta a combinação que mais ajuda o homúnculo, pelo papel dele, pelo atributo em que a variante é mais forte, pelos atributos em que as habilidades escalam e pelos conjuntos. Usa só sigilos soltos e os dele; o resultado vai para a prova, e Equipar confirma.",
     "why_marked": "Marque ao menos um sigilo na lista primeiro.",
     "tab_runes": "Sigilos",
     "tab_grindstones": "Pedras de Afiar",

@@ -239,7 +239,7 @@
           "cooldown": 3,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 3.43},
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.6, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.6, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

@@ -195,7 +195,7 @@
             "kind": "StatusOrEffectOnHit",
             "partner": "crow_dark",
             "partnerEffects": [
-              {"kind": "Status", "target": "Target", "status": "Karma", "turns": 1, "chance": 1}
+              {"kind": "Status", "target": "Target", "status": "Curse", "turns": 1, "chance": 1}
             ]
           },
           "effects": [

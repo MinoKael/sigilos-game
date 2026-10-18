@@ -49,7 +49,7 @@
           "image": "chifre_purificador",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ]
         }
       ]
@@ -69,7 +69,7 @@
           "image": "toque_da_fonte",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -97,7 +97,7 @@
           "image": "chifre_purificador",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ]
         }
       ]
@@ -132,7 +132,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Impeto", "target": "AllAllies", "power": 25},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
@@ -234,7 +234,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Karma", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

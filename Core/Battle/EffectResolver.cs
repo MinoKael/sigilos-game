@@ -480,7 +480,7 @@ namespace Sigilos.Core.Battle
 
 		/// <summary>
 		/// Rouba o efeito: ele sai de quem tinha e entra em <paramref name="thief"/> com os turnos e o valor
-		/// que sobravam (o Karma de quem rouba barra, e o efeito se perde).
+		/// que sobravam (o Maldição de quem rouba barra, e o efeito se perde).
 		/// </summary>
 		public void Steal(StatusEffect status, BattleUnit thief)
 		{
@@ -521,12 +521,12 @@ namespace Sigilos.Core.Battle
 			}
 		}
 
-		/// <summary>Remove um efeito negativo do alvo: o mais antigo.</summary>
-		public void Cleanse(BattleUnit target)
+		/// <summary>Remove até <paramref name="count"/> efeitos negativos do alvo, do mais antigo ao mais novo (0 = todos).</summary>
+		public void Cleanse(BattleUnit target, int count = 1)
 		{
-			var harmful = target.Statuses.FirstOrDefault(s => StatusBehaviors.Of(s.Kind).Harmful && !s.Unremovable);
-			if (harmful != null)
-				Remove(harmful);
+			var harmful = target.Statuses.Where(s => StatusBehaviors.Of(s.Kind).Harmful && !s.Unremovable).ToList();
+			foreach (var status in count > 0 ? harmful.Take(count) : harmful)
+				Remove(status);
 		}
 
 		/// <summary>

@@ -52,7 +52,6 @@
           "cooldown": 3,
           "effects": [
             {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 1, "turns": 2},
-            {"kind": "Damage", "target": "Target", "power": 3.95},
             {"kind": "BombTrigger", "target": "Target"}
           ],
           "levels": [
@@ -213,7 +212,7 @@
           "image": "fluxo_arcano",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Status", "target": "AllAllies", "status": "Immunity", "chance": 1, "turns": 2},
             {"kind": "Status", "target": "AllAllies", "status": "Blessing", "chance": 1, "turns": 2}
           ]

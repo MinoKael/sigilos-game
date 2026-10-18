@@ -74,7 +74,7 @@
           "image": "toque_purificador",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Cleanse", "target": "LowestAlly"},
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1},
             {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
           ],
           "levels": [
@@ -104,7 +104,7 @@
           "passive": {"kind": "StatusOrEffectOnDeath"},
           "effects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.3},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ]
         }
       ]

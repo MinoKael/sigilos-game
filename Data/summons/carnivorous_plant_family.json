@@ -239,7 +239,7 @@
           "image": "petala",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},

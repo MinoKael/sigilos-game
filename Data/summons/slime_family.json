@@ -21,7 +21,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.17, "turns": 2},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -48,7 +48,7 @@
           "image": "mare_purificadora",
           "cooldown": 5,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Heal", "target": "AllAllies", "power": 0.06}
           ],
           "levels": [
@@ -120,7 +120,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Shield", "target": "AllAllies", "power": 0.17, "turns": 2},
-            {"kind": "Cleanse", "target": "LowestAlly"}
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
@@ -147,7 +147,7 @@
           "image": "mare_purificadora",
           "cooldown": 5,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Heal", "target": "AllAllies", "power": 0.06}
           ],
           "levels": [
@@ -226,7 +226,7 @@
           "image": "gel_radiante",
           "cooldown": 5,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Status", "target": "AllAllies", "status": "Aegis", "turns": 2}
           ],
           "levels": [

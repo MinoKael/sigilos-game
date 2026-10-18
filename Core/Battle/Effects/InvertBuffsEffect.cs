@@ -6,7 +6,7 @@ namespace Sigilos.Core.Battle.Effects
 {
 	/// <summary>
 	/// Inverter efeitos: com <see cref="EffectDefinition.Chance"/>, cada efeito positivo removível do alvo vira o equivalente
-	/// negativo (ou Maldição, sem equivalente), com os mesmos turnos. Sem nenhum efeito positivo e com
+	/// negativo (ou Estigma, sem equivalente), com os mesmos turnos. Sem nenhum efeito positivo e com
 	/// <see cref="EffectDefinition.Fallback"/>, tira <see cref="EffectDefinition.Power"/> pontos de Ímpeto (0 = todo).
 	/// </summary>
 	internal sealed class InvertBuffsEffect : SkillEffect

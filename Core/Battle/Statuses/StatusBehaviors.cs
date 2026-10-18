@@ -17,7 +17,7 @@ namespace Sigilos.Core.Battle.Statuses
 			[StatusKind.Stun] = new StunStatus(),
 			[StatusKind.Taunt] = new TauntStatus(),
 			[StatusKind.Hidden] = new HiddenStatus(),
-			[StatusKind.Curse] = new CurseStatus(),
+			[StatusKind.Stigma] = new StigmaStatus(),
 			[StatusKind.Blind] = new BlindStatus(),
 			[StatusKind.Aegis] = new AegisStatus(),
 			[StatusKind.Foresight] = new ForesightStatus(),
@@ -33,7 +33,7 @@ namespace Sigilos.Core.Battle.Statuses
 			[StatusKind.Blessing] = new HealOverTime(BattleRules.BlessingFraction),
 			[StatusKind.Counter] = new CounterStatus(),
 			[StatusKind.Revive] = new ReviveStatus(),
-			[StatusKind.Karma] = new KarmaStatus(),
+			[StatusKind.Curse] = new CurseStatus(),
 			[StatusKind.Sleep] = new SleepStatus(),
 			[StatusKind.Unrecoverable] = new UnrecoverableStatus(),
 			[StatusKind.Silence] = new SilenceStatus(),
@@ -55,7 +55,10 @@ namespace Sigilos.Core.Battle.Statuses
 		};
 
 		/// <summary>O efeito negativo em que um positivo se inverte quando não tem equivalente.</summary>
-		public const StatusKind Fallback = StatusKind.Curse;
+		public const StatusKind Fallback = StatusKind.Stigma;
+
+		/// <summary>O equivalente negativo de um positivo, se ele tem um (sem equivalente, <see cref="OppositeOf"/> dá o <see cref="Fallback"/>).</summary>
+		public static StatusKind? EquivalentOf(StatusKind kind) => Opposites.TryGetValue(kind, out var opposite) ? opposite : null;
 
 		public static StatusKind OppositeOf(StatusKind kind) => Opposites.TryGetValue(kind, out var opposite) ? opposite : Fallback;
 

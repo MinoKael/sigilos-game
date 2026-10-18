@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
@@ -67,7 +68,7 @@ namespace Sigilos.UI
 		public static string Explain(StatusKind status) => status switch
 		{
 			StatusKind.Affliction => T("effect.Affliction.info", Percent(BattleRules.AfflictionFraction), BattleRules.MaxStatuses),
-			StatusKind.Curse => T("effect.Curse.info", Percent(BattleRules.CurseBonus)),
+			StatusKind.Stigma => T("effect.Stigma.info", Percent(BattleRules.StigmaBonus)),
 			StatusKind.Blind => T("effect.Blind.info", Percent(BattleRules.BlindMissChance)),
 			StatusKind.AttackUp => T("effect.AttackUp.info", Percent(BattleRules.AttackUpBonus)),
 			StatusKind.AttackDown => T("effect.AttackDown.info", Percent(BattleRules.AttackDownPenalty)),
@@ -332,7 +333,7 @@ namespace Sigilos.UI
 			return parts.Count == 0 ? "" : " " + T("passive.with_partner", name, string.Join("; ", parts)) + ".";
 		}
 
-		/// <summary>Os efeitos que a Passiva olha: os escolhidos ("Aflição ou Maldição") ou os do escopo ("efeito negativo").</summary>
+		/// <summary>Os efeitos que a Passiva olha: os escolhidos ("Aflição ou Estigma") ou os do escopo ("efeito negativo").</summary>
 		private static string Counted(PassiveDefinition passive) => passive.Statuses.Count > 0
 			? string.Join(T("common.or"), passive.Statuses.Select(s => Term(s)))
 			: T($"scope.{passive.Scope}.one");
@@ -357,9 +358,57 @@ namespace Sigilos.UI
 			return skill.AwakenedEffects.Count > 0 ? $"{basic}\n{T("skill.awakened", Describe(skill.AwakenedEffects))}" : basic;
 		}
 
+		/// <summary>
+		/// A descrição no nível <paramref name="level"/> do aprimoramento: os números de agora (chance, cura, escudo),
+		/// com em dourado os que subiram em relação ao nível 1.
+		/// </summary>
+		public static string Describe(SkillDefinition skill, bool awakened, int level)
+		{
+			var plain = Describe(skill, awakened);
+			return level <= 1 ? plain : Highlight(plain, Describe(Leveled(skill, level), awakened));
+		}
+
+		/// <summary>A habilidade no nível pedido, mantendo a versão do Despertar (também no nível) para a linha "Desperta:".</summary>
+		private static SkillDefinition Leveled(SkillDefinition skill, int level)
+		{
+			var now = skill.At(level, false);
+			return skill.AwakenedEffects.Count > 0 ? now with { AwakenedEffects = skill.At(level, true).Effects } : now;
+		}
+
 		/// <summary>O que a habilidade faz antes do Despertar, sem a linha do que ele muda (o "antes" do antes e depois).</summary>
-		public static string DescribeBeforeAwakening(SkillDefinition skill) =>
-			skill.Passive is { } passive ? Describe(passive, false, skill.Effects) : Describe(skill.Effects);
+		public static string DescribeBeforeAwakening(SkillDefinition skill, int level = 1)
+		{
+			string Text(SkillDefinition s) => s.Passive is { } passive ? Describe(passive, false, s.Effects) : Describe(s.Effects);
+			var plain = Text(skill);
+			return level <= 1 ? plain : Highlight(plain, Text(Leveled(skill, level)));
+		}
+
+		private static readonly Regex TagOrNumber = new(@"\[[^\]]*\]|(\d+(?:[.,]\d+)?%?)");
+
+		/// <summary>
+		/// Os números de <paramref name="changed"/> que diferem dos de <paramref name="basic"/> (mesma frase, só os valores mudam)
+		/// ficam em dourado. Os números dentro de marcações ([color=#d8b268]) não contam. Se as frases não casam, devolve a nova.
+		/// </summary>
+		private static string Highlight(string basic, string changed)
+		{
+			var before = TagOrNumber.Matches(basic).Where(m => m.Groups[1].Success).Select(m => m.Value).ToList();
+			var after = TagOrNumber.Matches(changed).Where(m => m.Groups[1].Success).ToList();
+			if (before.Count != after.Count)
+				return changed;
+
+			var gold = Palette.Gold.ToHtml(false);
+			var text = new System.Text.StringBuilder();
+			var at = 0;
+			for (var i = 0; i < after.Count; i++)
+			{
+				var match = after[i];
+				text.Append(changed, at, match.Index - at);
+				text.Append(match.Value == before[i] ? match.Value : $"[color=#{gold}]{match.Value}[/color]");
+				at = match.Index + match.Length;
+			}
+
+			return text.Append(changed, at, changed.Length - at).ToString();
+		}
 
 		/// <summary>"Habilidade 2 · Selo Rompido (recarga 3) · Nv 1/4", "Passiva · Das Cinzas".</summary>
 		public static string SkillHeader(SkillDefinition skill, int index, int level, bool awakened)
@@ -407,7 +456,8 @@ namespace Sigilos.UI
 				terms.Insert(0, Amount(EffectScaling.MainStat(effect), effect.Power));
 
 			var factors = new List<string>();
-			if (effect.Factor is { } factor)
+			// Os aliados de pé não entram na conta: a frase "Quanto mais aliados vivos, maior o efeito" já diz.
+			if (effect.Factor is { } factor && factor.By != ScaleMeasure.LivingAllies)
 				factors.Add(factor is { Base: 0, Slope: 1 }
 					? T($"skill.measure.{factor.By}")
 					: $"({T($"skill.factor.{factor.By}", Plain(factor.Base), Plain(factor.Base + factor.Slope))})");

@@ -48,7 +48,7 @@ namespace Sigilos.Core.Battle
 		/// </summary>
 		public virtual bool Forces(UnitRule rule, BattleUnit attacker) => false;
 
-		/// <summary>Nenhum efeito positivo pega no dono (Karma).</summary>
+		/// <summary>Nenhum efeito positivo pega no dono (Maldição).</summary>
 		public virtual bool BlocksBeneficial => false;
 
 		/// <summary>O dono não recebe dano de nenhuma fonte (Égide).</summary>

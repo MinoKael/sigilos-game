@@ -4,7 +4,7 @@ namespace Sigilos.Core.Battle.Statuses
 	/// Bomba: espera a contagem e explode no começo do último turno dela — com 1 turno, no próximo turno
 	/// do alvo; com 2, no seguinte. A explosão vale o Ataque de quem pôs vezes
 	/// <see cref="BattleRules.BombDamageMultiplier"/>: ignora a Defesa e não tem elemento nem crítico,
-	/// mas o escudo absorve e o que mexe no dano recebido pelo alvo (Maldição) conta. Quem sobrevive à
+	/// mas o escudo absorve e o que mexe no dano recebido pelo alvo (Estigma) conta. Quem sobrevive à
 	/// explosão fica atordoado (<see cref="BattleRules.BombStunTurns"/>): a Imunidade barra, a Resistência não.
 	/// </summary>
 	internal sealed class BombStatus : StatusBehavior

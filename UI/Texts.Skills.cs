@@ -17,7 +17,7 @@ namespace Sigilos.UI
 	/// Como se lê:
 	/// - cada tipo de efeito tem uma forma fixa de frase, para que a leitura um dia possa ser desfeita (texto → JSON);
 	/// - efeitos seguidos no mesmo alvo viram uma frase só ("e"), efeitos iguais em turnos e chance se juntam
-	///   ("Aflição e Maldição por 2 turnos com 50% de chance cada");
+	///   ("Aflição e Estigma por 2 turnos com 50% de chance cada");
 	/// - depois de um ataque, o alvo dele não se repete ("Ataca o alvo ... e aplica Cegueira por 2 turnos");
 	/// - o que dispara a cada golpe, crítico ou efeito causado vem em frase à parte ("Em cada golpe, ...").
 	/// </summary>
@@ -53,7 +53,7 @@ namespace Sigilos.UI
 			// Cada gatilho vira uma frase; o "alvo" dos efeitos é quem o golpe acertou.
 			foreach (var group in effects.Where(e => e.When != HitTrigger.Skill).GroupBy(e => (e.When, e.WhenStatus, e.WhenScope)))
 			{
-				var body = And(Compose(group.ToList(), none, false).Select(a => a.Text).ToList());
+				var body = And(Compose(group.ToList(), none, false, false).Select(a => a.Text).ToList());
 				var (when, status, scope) = group.Key;
 				sentences.Add(when switch
 				{
@@ -62,6 +62,11 @@ namespace Sigilos.UI
 					_ => T("skill.say.on_status", body, status is { } s ? Term(s) : T($"scope.{scope ?? StatusScope.All}.any")),
 				});
 			}
+
+			// Efeito que escala com os aliados de pé: a frase final diz o sentido ("Quanto mais aliados vivos, maior o efeito.").
+			var allies = effects.Select(e => e.Factor).Where(f => f is { By: ScaleMeasure.LivingAllies }).Select(f => f!.Slope).FirstOrDefault();
+			if (allies != 0)
+				sentences.Add(T(allies > 0 ? "skill.say.more_allies" : "skill.say.less_allies"));
 			return sentences;
 		}
 
@@ -102,8 +107,10 @@ namespace Sigilos.UI
 		/// Os trechos da lista de efeitos, na ordem. Efeitos de estado seguidos no mesmo alvo viram um trecho só.
 		/// <paramref name="subject"/> é o alvo do ataque que veio antes (não se repete);
 		/// <paramref name="insideKill"/> diz que já estamos dentro do "se derrubar o alvo".
+		/// <paramref name="sentences"/>: o que o ataque tem de especial (base do dano, Defesa ignorada, drenar) vai em
+		/// frase própria; sem isso (dentro de "em cada golpe" ou "se derrubar"), fica entre parênteses no ataque.
 		/// </summary>
-		private static List<(string Text, bool Attack, bool Apart)> Compose(IReadOnlyList<EffectDefinition> list, Subject? subject, bool insideKill)
+		private static List<(string Text, bool Attack, bool Apart)> Compose(IReadOnlyList<EffectDefinition> list, Subject? subject, bool insideKill, bool sentences = true)
 		{
 			var atoms = new List<(string Text, bool Attack, bool Apart)>();
 			for (var i = 0; i < list.Count;)
@@ -114,7 +121,7 @@ namespace Sigilos.UI
 					var end = i;
 					while (end < list.Count && list[end].OnKill)
 						end++;
-					var inner = Compose(list.Skip(i).Take(end - i).ToList(), subject, true);
+					var inner = Compose(list.Skip(i).Take(end - i).ToList(), subject, true, false);
 					atoms.Add((T("skill.say.on_kill", And(inner.Select(a => a.Text).ToList())), false, true));
 					i = end;
 					continue;
@@ -131,7 +138,9 @@ namespace Sigilos.UI
 				}
 
 				var attack = effect.Kind == EffectKind.Damage;
-				atoms.Add((EffectText(effect, subject), attack, effect.Kind == EffectKind.ExtraTurnOnKill));
+				atoms.Add((attack ? AttackText(effect, !sentences) : EffectText(effect, subject), attack, effect.Kind == EffectKind.ExtraTurnOnKill));
+				if (attack && sentences && AttackDetails(effect, true) is { Count: > 0 } details)
+					atoms.Add((T("skill.say.attack_details", And(details)), false, true));
 				subject = attack ? Spoken(effect) : subject;
 				i++;
 			}
@@ -179,14 +188,16 @@ namespace Sigilos.UI
 			var verb = T(good ? (self ? "skill.say.gain" : "skill.say.grant") : "skill.say.inflict");
 			var place = self && good ? "" : Where(first, good ? Form.To : Form.On, subject);
 
-			// Mesmos turnos e mesma chance, uma frase só: "Aflição e Maldição por 2 turnos com 50% de chance cada".
+			// Mesmos turnos e mesma chance, uma frase só: "Aflição e Estigma por 2 turnos com 50% de chance cada".
 			var groups = new List<string>();
 			for (var i = 0; i < run.Count;)
 			{
 				var end = i + 1;
 				while (end < run.Count && run[end].Turns == run[i].Turns && run[end].Chance == run[i].Chance)
 					end++;
-				var names = And(run.Skip(i).Take(end - i).Select(StateName).ToList());
+				// Estados iguais no mesmo grupo viram "3x Aflição", em vez de repetir o nome.
+				var names = And(run.Skip(i).Take(end - i).Select(StateName).GroupBy(name => name)
+					.Select(g => g.Count() > 1 ? T("skill.say.multiple", g.Count(), g.Key) : g.Key).ToList());
 				// Quando o certo e o incerto se alternam, o verbo se repete: a chance vale só para o grupo dela.
 				var again = i > 0 && (run[i].Chance < 1) != (run[i - 1].Chance < 1) ? verb + " " : "";
 				groups.Add(again + names + (i == 0 ? place : "") + " " + T("skill.say.for", Turns(run[i].Turns)) + ChanceText(run[i], end - i > 1));
@@ -213,7 +224,7 @@ namespace Sigilos.UI
 			var chance = ChanceText(effect);
 			return effect.Kind switch
 			{
-				EffectKind.Damage => AttackText(effect),
+				EffectKind.Damage => AttackText(effect, true),
 				EffectKind.Heal => HealText(effect),
 				EffectKind.HealTeam => HealText(effect),
 				EffectKind.Impeto => effect.Power < 0
@@ -221,7 +232,7 @@ namespace Sigilos.UI
 					: effect.Target == TargetKind.Self
 						? T("skill.say.impetus_self", effect.Power, Impeto) + chance
 						: T("skill.say.impetus_give", effect.Power, Impeto, Where(effect, Form.To, subject)) + chance,
-				EffectKind.Cleanse => T("skill.say.cleanse", Where(effect, Form.From, subject)),
+				EffectKind.Cleanse => T(effect.Count switch { 0 => "skill.say.cleanse_all", 1 => "skill.say.cleanse", _ => "skill.say.cleanse_many" }, Where(effect, Form.From, subject), effect.Count),
 				EffectKind.StealBuff => StealText(effect, chance, subject),
 				EffectKind.InvertBuffs => InvertText(effect, chance, subject),
 				EffectKind.BombTrigger => T("skill.say.bomb_trigger", Term(StatusKind.Bomb), Where(effect, Form.Of, subject)),
@@ -238,21 +249,34 @@ namespace Sigilos.UI
 			};
 		}
 
-		/// <summary>"ataca o alvo 3 vezes (ignora 30% da Defesa)", "ataca o alvo (baseado em Defesa)": sem o multiplicador do Ataque.</summary>
-		private static string AttackText(EffectDefinition effect)
+		/// <summary>
+		/// "ataca o alvo 3 vezes", e com <paramref name="inline"/> também "(ignora 30% da Defesa)" entre parênteses;
+		/// sem ele, o que o ataque tem de especial sai em frase própria (<see cref="AttackDetails"/>). Sem o multiplicador do Ataque.
+		/// </summary>
+		private static string AttackText(EffectDefinition effect, bool inline)
+		{
+			var details = inline ? AttackDetails(effect, false) : new List<string>();
+			var times = effect.Hits > 1 ? T("skill.say.times", effect.Hits) : "";
+			var extra = details.Count > 0 ? $" ({string.Join(", ", details)})" : "";
+			return T("skill.say.attack", Who(effect.Target, effect.By, Form.Obj), times, extra);
+		}
+
+		/// <summary>
+		/// O que o ataque tem de especial: de que o dano é feito, a Defesa que ignora, o que drena, se é fixo. Em frase
+		/// ("é baseado em Defesa, ignora 30% da Defesa") ou em parênteses ("baseado em Defesa, ignora ...").
+		/// </summary>
+		private static List<string> AttackDetails(EffectDefinition effect, bool sentence)
 		{
 			var details = new List<string>();
 			if (EffectScaling.IsCustom(effect) && BasedOn(effect) is { Length: > 0 } based)
-				details.Add(T("skill.say.based", based));
+				details.Add(T(sentence ? "skill.say.is_based" : "skill.say.based", based));
 			if (effect.IgnoreDefense > 0)
 				details.Add(T("skill.say.ignores", Percent(effect.IgnoreDefense)));
 			if (effect.Drain > 0)
 				details.Add(T("skill.say.drains", Percent(effect.Drain)));
 			if (effect.Fixed)
-				details.Add(T("skill.say.fixed"));
-			var times = effect.Hits > 1 ? T("skill.say.times", effect.Hits) : "";
-			var extra = details.Count > 0 ? $" ({string.Join(", ", details)})" : "";
-			return T("skill.say.attack", Who(effect.Target, effect.By, Form.Obj), times, extra);
+				details.Add(T(sentence ? "skill.say.is_fixed" : "skill.say.fixed"));
+			return details;
 		}
 
 		/// <summary>"Defesa e Vida máxima": o que a conta do dano lê, quando não é só o Ataque.</summary>
@@ -300,7 +324,7 @@ namespace Sigilos.UI
 			return text;
 		}
 
-		/// <summary>"inverte os efeitos positivos do alvo em negativos equivalentes (Maldição, sem equivalente)".</summary>
+		/// <summary>"inverte os efeitos positivos do alvo em negativos equivalentes (Estigma, sem equivalente)".</summary>
 		private static string InvertText(EffectDefinition effect, string chance, Subject? subject)
 		{
 			var text = T("skill.say.invert", Where(effect, Form.Of, subject), Term(StatusBehaviors.Fallback)) + chance;

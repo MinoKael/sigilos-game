@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccrq7mp31q4t"
-path="res://.godot/imported/karma_256.png-32143e93e24610f4f8e56be57cf623f3.ctex"
+uid="uid://dupfell0ic2tp"
+path="res://.godot/imported/help_512.png-16c2acffd17b35c2294d1971f0966399.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Rendered/Effects/karma_256.png"
-dest_files=["res://.godot/imported/karma_256.png-32143e93e24610f4f8e56be57cf623f3.ctex"]
+source_file="res://Assets/Rendered/Icons/help_512.png"
+dest_files=["res://.godot/imported/help_512.png-16c2acffd17b35c2294d1971f0966399.ctex"]
 
 [params]
 

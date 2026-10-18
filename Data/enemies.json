@@ -204,7 +204,7 @@
         "cooldown": 4,
         "effects": [
           {"kind": "Damage", "target": "AllEnemies", "power": 3},
-          {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.6, "turns": 2}
+          {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.6, "turns": 2}
         ]
       },
       {
@@ -320,7 +320,7 @@
         "name": "Sussurro do Fim",
         "effects": [
           {"kind": "Damage", "target": "AllEnemies", "power": 3.6},
-          {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.4, "turns": 2}
+          {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.4, "turns": 2}
         ]
       },
       {
@@ -411,7 +411,7 @@
     "skills": [
       { "name": "Flecha Estelar", "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 3.4},
-        {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.3, "turns": 2}
+        {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.3, "turns": 2}
       ] },
       { "name": "Chuva de Flechas", "cooldown": 4, "effects": [
         {"kind": "Damage", "target": "AllEnemies", "power": 1.1, "hits": 2}
@@ -436,7 +436,7 @@
         {"kind": "Heal", "target": "LowestAlly", "power": 0.1}
       ] },
       { "name": "Galope Puro", "cooldown": 4, "effects": [
-        {"kind": "Cleanse", "target": "AllAllies"},
+        {"kind": "Cleanse", "target": "AllAllies", "count": 1},
         {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 2}
       ] },
       { "name": "Crina Prateada", "passive": {"kind": "StatusOrEffectEachTurn"}, "effects": [

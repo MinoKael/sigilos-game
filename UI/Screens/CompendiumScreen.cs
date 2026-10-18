@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Godot;
 using Sigilos.Core.Battle;
+using Sigilos.Core.Battle.Statuses;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
@@ -224,18 +225,25 @@ namespace Sigilos.UI.Screens
 			column.AddChild(grid);
 		}
 
-		/// <summary>Os efeitos lado a lado: os positivos na primeira coluna, os negativos na segunda.</summary>
+		/// <summary>
+		/// Os efeitos lado a lado, sem vagas no meio: primeiro os positivos que têm inverso, cada um ao lado do seu
+		/// (Ataque+ com Ataque−); depois as duas colunas seguem com o que sobrou de cada lado. Dentro de cada trecho, a
+		/// ordem é alfabética; a vaga vazia só aparece no fim, na coluna que acabou antes.
+		/// </summary>
 		private static void Statuses(VBoxContainer column)
 		{
 			column.AddChild(Layout.Text(T("compendium.effects.intro", Texts.Percent(BattleRules.MinResistChance)), GameTheme.Faded).Named("Intro"));
 			var grid = Cards(column);
 			var statuses = Enum.GetValues<StatusKind>();
 			var positives = statuses.Where(s => !BattleRules.IsNegative(s)).ToList();
-			var negatives = statuses.Where(BattleRules.IsNegative).ToList();
-			for (var i = 0; i < Math.Max(positives.Count, negatives.Count); i++)
+			var pairs = positives.Where(s => StatusBehaviors.EquivalentOf(s) != null).OrderBy(Texts.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
+			var left = pairs.Concat(positives.Except(pairs).OrderBy(Texts.Name, StringComparer.CurrentCultureIgnoreCase)).ToList();
+			var inverses = pairs.Select(s => StatusBehaviors.EquivalentOf(s)!.Value).ToList();
+			var right = inverses.Concat(statuses.Where(s => BattleRules.IsNegative(s) && !inverses.Contains(s)).OrderBy(Texts.Name, StringComparer.CurrentCultureIgnoreCase)).ToList();
+			for (var i = 0; i < Math.Max(left.Count, right.Count); i++)
 			{
-				StatusCard(grid, i < positives.Count ? positives[i] : null, false, i);
-				StatusCard(grid, i < negatives.Count ? negatives[i] : null, true, i);
+				StatusCard(grid, i < left.Count ? left[i] : null, false, i);
+				StatusCard(grid, i < right.Count ? right[i] : null, true, i);
 			}
 		}
 

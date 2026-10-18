@@ -238,7 +238,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Curse", "chance": 0.5, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.5, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

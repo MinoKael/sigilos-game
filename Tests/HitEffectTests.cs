@@ -10,7 +10,7 @@ namespace Sigilos.Tests
 	{
 		private static EffectDefinition Strikes(int hits) => new() { Kind = EffectKind.Damage, Power = 1, Hits = hits };
 
-		private static EffectDefinition Per(HitTrigger when, EffectKind kind, StatusKind status = StatusKind.Curse, TargetKind target = TargetKind.Target, double power = 0, int turns = 2) =>
+		private static EffectDefinition Per(HitTrigger when, EffectKind kind, StatusKind status = StatusKind.Stigma, TargetKind target = TargetKind.Target, double power = 0, int turns = 2) =>
 			new() { Kind = kind, When = when, Status = status, Target = target, Power = power, Turns = turns, Chance = 1 };
 
 		private static BattleUnit Attacker(SkillDefinition special, double crit)
@@ -57,11 +57,11 @@ namespace Sigilos.Tests
 		private static void StatusCausedEffectsFollowTheStatusAndDoNotChain()
 		{
 			var trigger = Per(HitTrigger.Status, EffectKind.Impeto, target: TargetKind.Self, power: 5) with { WhenScope = StatusScope.Debuffs };
-			var skill = new SkillDefinition { Name = "marca", Cooldown = 3, Effects = new[] { Strikes(2), Per(HitTrigger.Hit, EffectKind.Status, StatusKind.Curse), trigger } };
+			var skill = new SkillDefinition { Name = "marca", Cooldown = 3, Effects = new[] { Strikes(2), Per(HitTrigger.Hit, EffectKind.Status, StatusKind.Stigma), trigger } };
 			var (hero, _, events) = Cast(skill);
 			Assert.Equal(2, events.OfType<ImpetoChanged>().Count(e => ReferenceEquals(e.Target, hero)), "um por efeito negativo causado, e o que ele mesmo causa não o dispara de novo");
 
-			var buff = new SkillDefinition { Name = "marca", Cooldown = 3, Effects = new[] { Strikes(2), Per(HitTrigger.Hit, EffectKind.Status, StatusKind.Curse), trigger with { WhenScope = StatusScope.Buffs } } };
+			var buff = new SkillDefinition { Name = "marca", Cooldown = 3, Effects = new[] { Strikes(2), Per(HitTrigger.Hit, EffectKind.Status, StatusKind.Stigma), trigger with { WhenScope = StatusScope.Buffs } } };
 			var none = Cast(buff);
 			Assert.Equal(0, none.Events.OfType<ImpetoChanged>().Count(e => ReferenceEquals(e.Target, none.Hero)), "o escopo filtra");
 		}
@@ -72,7 +72,7 @@ namespace Sigilos.Tests
 			var skill = new SkillDefinition
 			{
 				Name = "fim", Cooldown = 3,
-				Effects = new[] { Strikes(1), Per(HitTrigger.Hit, EffectKind.Status, StatusKind.Curse), Per(HitTrigger.Hit, EffectKind.Impeto, target: TargetKind.Self, power: 10) },
+				Effects = new[] { Strikes(1), Per(HitTrigger.Hit, EffectKind.Status, StatusKind.Stigma), Per(HitTrigger.Hit, EffectKind.Impeto, target: TargetKind.Self, power: 10) },
 			};
 			var (hero, foe, events) = Cast(skill, foeHealth: 1);
 			Assert.False(foe.IsAlive, "o golpe derrubou o alvo");

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cp770blg4pq8w"
-path="res://.godot/imported/karma_32.png-9f3204c99a793750a980b1195560d105.ctex"
+uid="uid://bjpi4e68fdm43"
+path="res://.godot/imported/arena_512.png-79e161a3d3fe4fbae1049159727c76de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Rendered/Effects/karma_32.png"
-dest_files=["res://.godot/imported/karma_32.png-9f3204c99a793750a980b1195560d105.ctex"]
+source_file="res://Assets/Rendered/Icons/arena_512.png"
+dest_files=["res://.godot/imported/arena_512.png-79e161a3d3fe4fbae1049159727c76de.ctex"]
 
 [params]
 

@@ -49,7 +49,7 @@ namespace Sigilos.Tests
 			var events = new System.Collections.Generic.List<BattleEvent>();
 			AutoBattle.Run(BattleFactory.Create(database, BattleDigest.Team(database, new[] { "crow_light", "crow_dark" }, 6, 40, true, false), encounter, 7), events);
 			Assert.True(events.OfType<StatusApplied>().Any(e => e.Status == StatusKind.Oblivion), "o Corvo de Luz põe Esquecimento nos que atinge");
-			Assert.True(events.OfType<StatusApplied>().Any(e => e.Status == StatusKind.Karma), "e, com o irmão, Karma");
+			Assert.True(events.OfType<StatusApplied>().Any(e => e.Status == StatusKind.Curse), "e, com o irmão, Maldição");
 
 			events.Clear();
 			AutoBattle.Run(BattleFactory.Create(database, BattleDigest.Team(database, new[] { "wolf_light", "wolf_dark" }, 6, 40, true, false), encounter, 7), events);

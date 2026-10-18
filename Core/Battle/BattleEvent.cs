@@ -69,7 +69,7 @@ namespace Sigilos.Core.Battle
 	/// <summary>Um aliado foi chamado para um ataque conjunto: ataca com a básica.</summary>
 	public sealed record JointAttack(BattleUnit Unit) : BattleEvent;
 
-	/// <summary>Um efeito positivo não pegou: o alvo está com Karma.</summary>
+	/// <summary>Um efeito positivo não pegou: o alvo está com Maldição.</summary>
 	public sealed record StatusBlocked(BattleUnit Target, StatusKind Status) : BattleEvent;
 
 	/// <summary>A duração de um efeito mudou em <paramref name="Turns"/> turnos (negativo encurtou).</summary>

@@ -27,7 +27,7 @@
           "image": "traquinagem_infernal",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 1.35, "hits": 2},
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},

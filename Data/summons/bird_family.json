@@ -138,7 +138,7 @@
           "image": "alisar_as_penas",
           "cooldown": 4,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Heal", "target": "AllAllies", "power": 0.07}
           ],
           "levels": [

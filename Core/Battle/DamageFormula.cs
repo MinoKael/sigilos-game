@@ -5,7 +5,7 @@ namespace Sigilos.Core.Battle
 	/// <summary>
 	/// D = ATQ × M × K / (K + DEF) × E × C (GDD, seção 15), com K = <see cref="BattleRules.DefenseConstant"/>.
 	/// M já vem com o bônus de nível da habilidade; C é 1 + Dano crítico no crítico. No fim entram as
-	/// regras em vigor nas duas unidades: o que aumenta ou corta o dano recebido pelo alvo (Maldição,
+	/// regras em vigor nas duas unidades: o que aumenta ou corta o dano recebido pelo alvo (Estigma,
 	/// a Passiva dos Limos) e o que aumenta o dano de quem ataca (as Passivas dos Goblins e dos Lobos).
 	///
 	/// ATQ × M é a conta do efeito (<see cref="EffectAmount"/>), que pode ler outros atributos. O dano fixo

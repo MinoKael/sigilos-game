@@ -13,7 +13,7 @@ namespace Sigilos.Core.Content
 	/// - Shield: <see cref="Power"/> é a fração da Vida máxima de quem lança, por <see cref="Turns"/>.
 	/// - Status: aplica <see cref="Status"/> com <see cref="Chance"/>, por <see cref="Turns"/>.
 	/// - Impeto: soma <see cref="Power"/> pontos de Ímpeto (negativo atrasa).
-	/// - Cleanse: remove um efeito negativo de cada alvo.
+	/// - Cleanse: remove <see cref="Count"/> efeitos negativos de cada alvo, os mais antigos primeiro (0 = todos).
 	/// - StealBuff: com <see cref="Chance"/>, rouba de cada alvo um efeito positivo (o mais novo; só
 	///   <see cref="OnlyStatus"/>, se houver) e o põe em quem lança; sem nenhum e com <see cref="Fallback"/>,
 	///   rouba <see cref="Power"/> pontos de Ímpeto (0 = todo o Ímpeto do alvo).

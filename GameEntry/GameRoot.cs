@@ -2060,14 +2060,16 @@ namespace Sigilos.GameEntry
 		/// <summary>Uma linha por habilidade (e por versão desperta): id, nome e a descrição lida na tela.</summary>
 		private void DumpSkills(string path)
 		{
+			// -- --level=N: os números no nível N do aprimoramento (os que subiram, em dourado).
+			var level = int.TryParse(Argument("--level="), out var asked) ? asked : 1;
 			var lines = new List<string>();
 			foreach (var summon in _database.Summons)
 			{
 				foreach (var skill in summon.Skills)
 				{
-					lines.Add($"{summon.Id} | {skill.Name} | {Texts.Describe(skill).Replace("\n", " // ")}");
+					lines.Add($"{summon.Id} | {skill.Name} | {Texts.Describe(skill, false, level).Replace("\n", " // ")}");
 					if (skill.AwakenedEffects.Count > 0 || skill.Passive is { AwakenedValue: > 0 })
-						lines.Add($"{summon.Id} | {skill.Name} (desperta) | {Texts.Describe(skill, true)}");
+						lines.Add($"{summon.Id} | {skill.Name} (desperta) | {Texts.Describe(skill, true, level)}");
 				}
 			}
 

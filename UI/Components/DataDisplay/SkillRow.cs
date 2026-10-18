@@ -39,7 +39,13 @@ namespace Sigilos.UI.Components
 			name.AddThemeColorOverride("font_color", locked ? Palette.TextFaded : Palette.Gold);
 			title.AddChild(name);
 			if (!skill.IsPassive && skill.Cooldown > 0)
-				title.AddChild(new Label { Name = "Cooldown", Text = T("skill.cooldown_short", level > 0 ? skill.At(level, awakened).Cooldown : skill.Cooldown), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center });
+			{
+				var cooldown = level > 0 ? skill.At(level, awakened).Cooldown : skill.Cooldown;
+				var recharge = new Label { Name = "Cooldown", Text = T("skill.cooldown_short", cooldown), ThemeTypeVariation = GameTheme.Faded, VerticalAlignment = VerticalAlignment.Center };
+				if (cooldown < skill.Cooldown)
+					recharge.AddThemeColorOverride("font_color", Palette.Gold);
+				title.AddChild(recharge);
+			}
 			if (level > 0 && skill.MaxLevel > 1)
 			{
 				var tag = new Label { Name = "Level", Text = T("skill.level", level, skill.MaxLevel), VerticalAlignment = VerticalAlignment.Center };
@@ -57,7 +63,7 @@ namespace Sigilos.UI.Components
 			}
 
 			column.AddChild(title);
-			column.AddChild(RichText.Label(Texts.Describe(skill, awakened), width, GameTheme.Faded, GameTheme.SmallSize).Named("Description"));
+			column.AddChild(RichText.Label(Texts.Describe(skill, awakened, level), width, GameTheme.Faded, GameTheme.SmallSize).Named("Description"));
 			if (levels && level > 0 && level < skill.MaxLevel)
 			{
 				var next = new Label { Name = "Levels", Text = Texts.LevelUps(skill, level), AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(width, 0) };

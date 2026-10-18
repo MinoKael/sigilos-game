@@ -192,14 +192,14 @@
           "image": "luz_na_galeria",
           "cooldown": 4,
           "effects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 1}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
           ],
           "awakenedEffects": [
-            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
             {"kind": "Status", "target": "AllAllies", "status": "Immunity", "turns": 1},
             {"kind": "Heal", "target": "AllAllies", "power": 0.1}
           ]

@@ -72,7 +72,7 @@ namespace Sigilos.Core.Content
 			{
 				EffectKind.Damage => e with { Power = e.Power * damage, Plus = Scaled(e.Plus, damage) },
 				EffectKind.Heal or EffectKind.Shield or EffectKind.Revive => e with { Power = e.Power * recovery, Plus = Scaled(e.Plus, recovery) },
-				EffectKind.Status when e.Chance < 1 => e with { Chance = Math.Min(1, e.Chance + rate) },
+				EffectKind.Status or EffectKind.StealBuff or EffectKind.InvertBuffs or EffectKind.Impeto when e.Chance < 1 => e with { Chance = Math.Min(1, e.Chance + rate) },
 				_ => e,
 			}).ToList();
 

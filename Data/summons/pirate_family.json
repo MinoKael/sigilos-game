@@ -104,7 +104,7 @@
           "awakenedEffects": [
             {"kind": "Heal", "target": "AllAllies", "power": 0.17},
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies"}
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ]
         },
         {
@@ -244,7 +244,7 @@
           "image": "tiro_traicoeiro",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.3, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

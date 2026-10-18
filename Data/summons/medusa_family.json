@@ -237,7 +237,7 @@
           "image": "olhar_maldito",
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Target", "status": "Curse", "chance": 0.55, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Stigma", "chance": 0.55, "turns": 2}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},

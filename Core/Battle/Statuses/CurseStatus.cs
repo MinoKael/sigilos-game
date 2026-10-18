@@ -1,10 +1,10 @@
 namespace Sigilos.Core.Battle.Statuses
 {
-	/// <summary>Maldição: o dono recebe mais dano.</summary>
+	/// <summary>Maldição: nenhum efeito positivo pega no dono (nem escudo, nem efeito roubado).</summary>
 	internal sealed class CurseStatus : StatusBehavior
 	{
 		public override bool Harmful => true;
 
-		public override double DamageTaken(UnitRule rule) => 1 + BattleRules.CurseBonus;
+		public override bool BlocksBeneficial => true;
 	}
 }

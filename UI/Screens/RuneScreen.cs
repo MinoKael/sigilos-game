@@ -158,7 +158,7 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("destination.Runes"), _currencies, () => BackRequested?.Invoke(_monsterId), this, T("runes.no_monster_text"), T("runes.pick_one")).Header);
+			page.AddChild(Layout.Header(T("destination.Runes"), _currencies, () => BackRequested?.Invoke(_monsterId), this, T("runes.no_monster_text"), T("runes.pick_one"), T("runes.auto_help")).Header);
 
 			var body = Layout.Row(Space.Large).Named("Body");
 			body.SizeFlagsVertical = SizeFlags.ExpandFill;
@@ -716,9 +716,12 @@ namespace Sigilos.UI.Screens
 			}
 
 			Layout.Clear(_actions);
-			_actions.Visible = rune != null;
+			_actions.Visible = rune != null || Monster != null;
 			if (rune == null)
 			{
+				// Sem runa escolhida, o auto-equipar (que não depende dela) é a única ação, na célula de sempre.
+				if (Monster != null)
+					_actions.AddChild(AutoEquipButton().FixedHeight());
 				return;
 			}
 
@@ -795,7 +798,7 @@ namespace Sigilos.UI.Screens
 
 			cells[CellLock] = GameButton.Of(rune.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(rune.Id), ButtonKind.Secondary, rune.Locked ? "unlock" : "lock", ActionHeight).Named("Lock");
 			cells[CellReappraise] = Reappraise(rune);
-			cells[CellSpare] = new Control { Name = "Spare", CustomMinimumSize = new Vector2(0, ActionHeight), MouseFilter = MouseFilterEnum.Ignore };
+			cells[CellAuto] = AutoEquipButton();
 
 			var value = RuneRules.SellValue(rune);
 			cells[CellSell] = GameButton.Of(T("runes.sell_button_short"), () => Dialog.Confirm(this, T("runes.sell_title"), T("runes.sell_confirm", value), T("runes.sell_button_short"),
@@ -815,8 +818,8 @@ namespace Sigilos.UI.Screens
 		}
 
 		// As células da grade de ações, na ordem de sempre (duas colunas).
-		// Equipar | Provar, e abaixo as fileiras do dono: Evoluir +1 | vazio, Até +X | Até +12, Reavaliar | Afiar, Bloquear | Vender.
-		private const int CellSpare = 0;
+		// Auto-equipar | Equipar, e abaixo: Reavaliar | Provar, Afiar | Evoluir +1, Bloquear | Até +X, Vender | Até +12.
+		private const int CellAuto = 0;
 		private const int CellEquip = 1;
 		private const int CellReappraise = 2;
 		private const int CellTry = 3;
@@ -827,6 +830,36 @@ namespace Sigilos.UI.Screens
 		private const int CellSell = 8;
 		private const int CellTwelve = 9;
 		private const int ActionCells = 10;
+
+		/// <summary>
+		/// Auto-equipar: monta a melhor combinação para o homúnculo (<see cref="RuneAutoEquip"/>) e a põe na prova,
+		/// com a comparação e o Equipar N de sempre; nada é equipado sem o toque seguinte. A busca roda só no toque.
+		/// </summary>
+		private GameButton AutoEquipButton()
+		{
+			var monster = Monster;
+			return GameButton.Of(T("runes.auto"), AutoEquip, ButtonKind.Secondary, "auto", ActionHeight)
+				.Block(monster == null ? T("runes.why_no_monster") : monster.IsInfusionCore ? T("runes.why_auto_core") : null, T("runes.auto")).Named("AutoEquip");
+		}
+
+		private void AutoEquip()
+		{
+			if (Monster is not { } monster)
+				return;
+
+			var changes = RuneAutoEquip.Changes(RuneAutoEquip.Choose(_database.Summon(monster.SummonId), monster, _player.Runes, _database.Summons), monster);
+			if (changes.Count == 0)
+			{
+				Dialog.Info(this, T("runes.auto"), T("runes.auto_none"));
+				return;
+			}
+
+			_trial.Clear();
+			foreach (var rune in changes)
+				_trial[rune.Slot] = rune.Id;
+			RefreshLeft();
+			RefreshDetail();
+		}
 
 		/// <summary>Pede a melhora. A ficha da runa, refeita logo em seguida, mostra os níveis subindo.</summary>
 		private void Upgrade(Rune rune, int target)
