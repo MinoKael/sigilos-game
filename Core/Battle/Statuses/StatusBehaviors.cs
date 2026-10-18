@@ -40,6 +40,25 @@ namespace Sigilos.Core.Battle.Statuses
 			[StatusKind.Oblivion] = new OblivionStatus(),
 		};
 
+		/// <summary>
+		/// O equivalente negativo de um efeito positivo (Inverter efeitos). O que não está aqui vira
+		/// <see cref="Fallback"/>.
+		/// </summary>
+		private static readonly Dictionary<StatusKind, StatusKind> Opposites = new()
+		{
+			[StatusKind.AttackUp] = StatusKind.AttackDown,
+			[StatusKind.DefenseUp] = StatusKind.DefenseBreak,
+			[StatusKind.SpeedUp] = StatusKind.SpeedDown,
+			[StatusKind.Blessing] = StatusKind.Unrecoverable,
+			[StatusKind.Foresight] = StatusKind.Blind,
+			[StatusKind.Hidden] = StatusKind.Sleep,
+		};
+
+		/// <summary>O efeito negativo em que um positivo se inverte quando não tem equivalente.</summary>
+		public const StatusKind Fallback = StatusKind.Curse;
+
+		public static StatusKind OppositeOf(StatusKind kind) => Opposites.TryGetValue(kind, out var opposite) ? opposite : Fallback;
+
 		public static StatusBehavior Of(StatusKind kind) => Table[kind];
 	}
 }

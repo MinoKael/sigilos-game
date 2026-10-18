@@ -36,5 +36,15 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Os alvos inimigos ganham <see cref="EffectDefinition.Turns"/> turnos a mais de recarga em cada habilidade (as prontas passam de 0 para 1).</summary>
 		IncreaseCooldown,
+
+		/// <summary>
+		/// Inverte os efeitos positivos do alvo no equivalente negativo (<see cref="Battle.EffectResolver.Invert"/>), com os
+		/// mesmos turnos; sem equivalente vira Maldição. Sem nenhum efeito positivo e com <see cref="EffectDefinition.Fallback"/>,
+		/// tira <see cref="EffectDefinition.Power"/> pontos de Ímpeto do alvo (0 = todo).
+		/// </summary>
+		InvertBuffs,
+
+		/// <summary>Detona na hora todas as Bombas do alvo: cada uma explode como se a contagem tivesse chegado ao fim.</summary>
+		BombTrigger,
 	}
 }

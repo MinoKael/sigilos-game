@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Battle;
+using Sigilos.Core.Battle.Statuses;
 using Sigilos.Core.Content;
 using static Sigilos.UI.Locale;
 
@@ -222,6 +223,8 @@ namespace Sigilos.UI
 						: T("skill.say.impetus_give", effect.Power, Impeto, Where(effect, Form.To, subject)) + chance,
 				EffectKind.Cleanse => T("skill.say.cleanse", Where(effect, Form.From, subject)),
 				EffectKind.StealBuff => StealText(effect, chance, subject),
+				EffectKind.InvertBuffs => InvertText(effect, chance, subject),
+				EffectKind.BombTrigger => T("skill.say.bomb_trigger", Term(StatusKind.Bomb), Where(effect, Form.Of, subject)),
 				EffectKind.BonusPerStatus => BonusText(effect),
 				EffectKind.ChangeDuration => T(effect.Turns >= 0 ? "skill.say.prolong" : "skill.say.shorten",
 					Turns(Math.Abs(effect.Turns)), StatesOf(effect), Where(effect, Form.On, subject)) + chance,
@@ -294,6 +297,15 @@ namespace Sigilos.UI
 			var text = T("skill.say.steal", what, Where(effect, Form.From, subject)) + chance;
 			if (effect.Fallback)
 				text += effect.Power > 0 ? T("skill.say.steal_impetus", Math.Abs(effect.Power), Impeto) : T("skill.say.steal_all_impetus", Impeto);
+			return text;
+		}
+
+		/// <summary>"inverte os efeitos positivos do alvo em negativos equivalentes (Maldição, sem equivalente)".</summary>
+		private static string InvertText(EffectDefinition effect, string chance, Subject? subject)
+		{
+			var text = T("skill.say.invert", Where(effect, Form.Of, subject), Term(StatusBehaviors.Fallback)) + chance;
+			if (effect.Fallback)
+				text += effect.Power > 0 ? T("skill.say.invert_impetus", effect.Power, Impeto) : T("skill.say.invert_all_impetus", Impeto);
 			return text;
 		}
 

@@ -31,6 +31,8 @@ namespace Sigilos.Core.Content
 			[EffectKind.ExtraTurnOnKill] = new[] { TargetKind.Self },
 			[EffectKind.Revive] = new[] { TargetKind.AllAllies },
 			[EffectKind.IncreaseCooldown] = new[] { TargetKind.Target, TargetKind.AllEnemies, TargetKind.RandomEnemy },
+			[EffectKind.InvertBuffs] = new[] { TargetKind.Target, TargetKind.AllEnemies, TargetKind.RandomEnemy },
+			[EffectKind.BombTrigger] = new[] { TargetKind.Target, TargetKind.AllEnemies, TargetKind.RandomEnemy },
 		};
 
 		public static bool Allows(EffectKind kind, TargetKind target) =>

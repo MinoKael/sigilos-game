@@ -106,7 +106,7 @@ namespace Sigilos.Core.Battle
 		/// </summary>
 		private TargetKind Scope(EffectDefinition effect) =>
 			Caster.IsBoss && !IsTrigger && effect.Target == TargetKind.Target
-			&& effect.Kind is EffectKind.Damage or EffectKind.Status or EffectKind.Impeto or EffectKind.StealBuff
+			&& effect.Kind is EffectKind.Damage or EffectKind.Status or EffectKind.Impeto or EffectKind.StealBuff or EffectKind.InvertBuffs or EffectKind.BombTrigger
 				? TargetKind.AllEnemies
 				: effect.Target;
 

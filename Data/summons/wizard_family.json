@@ -11,246 +11,96 @@
       "name": "Mago de Fogo",
       "element": "Fire",
       "role": "Attack",
-      "stats": {
-        "hp": 8970,
-        "atk": 833,
-        "def": 546,
-        "spd": 100
-      },
-      "awakened_stats": {
-        "hp": 9735,
-        "atk": 903,
-        "def": 592,
-        "spd": 101
-      },
-      "bias": {
-        "hp": 1,
-        "atk": 1.17,
-        "def": 1,
-        "spd": 0
-      },
-      "leader": {
-        "stat": "Speed",
-        "value": 0.3
-      },
-      "awakening": {
-        "name": "Vulcaris",
-        "stat": "Speed"
-      },
+      "stats": {"hp": 8970, "atk": 833, "def": 546, "spd": 100},
+      "awakened_stats": {"hp": 9735, "atk": 903, "def": 592, "spd": 101},
+      "bias": {"hp": 1, "atk": 1.17, "def": 1, "spd": 0},
+      "leader": {"stat": "Attack", "value": 0.35},
+      "awakening": {"name": "Vulcar", "stat": "Crit"},
       "skills": [
         {
-          "name": "Sigilo de Brasa",
-          "image": "sigilo_de_brasa",
+          "name": "Sigilo Sequencial",
+          "image": "sigilo_sequencial",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 3.1,
-              "hits": 3
-            },
-            {
-              "kind": "ExtraTurnOnKill",
-              "target": "Self",
-              "turns": 1
-            }
+            {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
+            {"kind": "Impeto", "target": "Self", "power": 15, "when": "Crit"}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Runa Explosiva",
-          "image": "runa_explosiva",
+          "name": "Troca Equivalente",
+          "image": "troca_equivalente",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Bomb",
-              "chance": 0.7,
-              "turns": 2
-            },
-            {
-              "kind": "Impeto",
-              "target": "Self",
-              "power": 40
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "InvertBuffs", "target": "Target", "chance": 0.75, "fallback": true, "power": 25}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         },
         {
           "name": "Ignição Maestral",
           "image": "ignicao_maestral",
-          "passive": {
-            "kind": "ForEachStatusOrEffectAppliedDo",
-            "statuses": [
-              "Bomb"
-            ]
-          },
+          "cooldown": 3,
           "effects": [
-            {
-              "kind": "ChangeDuration",
-              "target": "Target",
-              "scope": "Debuffs",
-              "onlyStatus": "Bomb",
-              "turns": -2
-            }
+            {"kind": "Status", "target": "Target", "status": "Bomb", "chance": 1, "turns": 2},
+            {"kind": "Damage", "target": "Target", "power": 3.95},
+            {"kind": "BombTrigger", "target": "Target"}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
     },
     "water": {
       "variation_id": "wizard_water",
-      "name": "Mago de Água",
+      "name": "Maga de Água",
       "element": "Water",
       "role": "Support",
-      "stats": {
-        "hp": 10305,
-        "atk": 645,
-        "def": 645,
-        "spd": 100
-      },
-      "awakened_stats": {
-        "hp": 11175,
-        "atk": 700,
-        "def": 699,
-        "spd": 101
-      },
-      "leader": {
-        "stat": "Accuracy",
-        "value": 0.4
-      },
-      "awakening": {
-        "name": "Rimewald",
-        "stat": "Accuracy"
-      },
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Accuracy", "value": 0.4},
+      "awakening": {"name": "Rime", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Estilhaços de Gelo",
-          "image": "estilhaco_de_gelo",
+          "name": "Sigilo Sequencial",
+          "image": "sigilo_sequencial",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.69,
-              "hits": 3
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "SpeedDown",
-              "chance": 0.5,
-              "turns": 2
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Affliction",
-              "chance": 0.4,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
+            {"kind": "Impeto", "target": "Self", "power": 15, "when": "Crit"}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Geada Quebradiça",
-          "image": "geada_quebradica",
+          "name": "Troca Equivalente",
+          "image": "troca_equivalente",
           "cooldown": 4,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 1.96
-            },
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "DefenseBreak",
-              "chance": 0.5,
-              "turns": 2
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Blind",
-              "chance": 0.3,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 2.45},
+            {"kind": "InvertBuffs", "target": "Target", "chance": 0.75, "fallback": true, "power": 25}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         },
         {
@@ -258,37 +108,17 @@
           "image": "tumba_glacial",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 3.92
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Stun",
-              "chance": 0.8
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "DefenseBreak",
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 3.53},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.8, "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
+            {"kind": "Status", "target": "Target", "status": "Unrecoverable", "chance": 1, "turns": 2}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]
@@ -298,203 +128,95 @@
       "name": "Mago de Vento",
       "element": "Wind",
       "role": "Attack",
-      "stats": {
-        "hp": 9555,
-        "atk": 758,
-        "def": 582,
-        "spd": 100
-      },
-      "awakened_stats": {
-        "hp": 10365,
-        "atk": 822,
-        "def": 631,
-        "spd": 101
-      },
-      "leader": {
-        "stat": "Speed",
-        "value": 0.25
-      },
-      "awakening": {
-        "name": "Mino",
-        "stat": "Speed"
-      },
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Speed", "value": 0.25},
+      "awakening": {"name": "Imno", "stat": "Speed"},
       "skills": [
         {
-          "name": "Faísca Voltaica",
-          "image": "faisca_voltaica",
+          "name": "Sigilo Sequencial",
+          "image": "sigilo_sequencial",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 0.86,
-              "hits": 2,
-              "ignoreDefense": 0.9
-            }
+            {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
+            {"kind": "Impeto", "target": "Self", "power": 15, "when": "Crit"}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.15
-            }
-          ]
-        },
-        {
-          "name": "Relâmpago em Cadeia",
-          "image": "relampago_em_cadeia",
-          "cooldown": 4,
-          "effects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 1.71,
-              "ignoreDefense": 1
-            },
-            {
-              "kind": "ExtraTurnOnKill",
-              "target": "Self",
-              "turns": 1
-            }
-          ],
-          "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
           "name": "Fluxo Arcano",
           "image": "fluxo_arcano",
-          "passive": {
-            "kind": "CooldownEachTurn",
-            "value": 0.3
-          }
+          "passive": {"kind": "CooldownEachTurn", "value": 0.3}
+        },
+        {
+          "name": "Magia de Aniquilação",
+          "image": "magia_aniquilacao",
+          "cooldown": 4,
+          "effects": [
+            {"kind": "Damage", "target": "AllEnemies", "power": 0.85, "ignoreDefense": 0.9, "hits": 3},
+            {"kind": "Impeto", "target": "Self", "power": 50, "onKill": true}
+          ],
+          "levels": [
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
+          ]
         }
       ]
     },
     "light": {
       "variation_id": "wizard_light",
-      "name": "Mago de Luz",
+      "name": "Maga de Luz",
       "element": "Light",
       "role": "Support",
-      "stats": {
-        "hp": 10305,
-        "atk": 645,
-        "def": 645,
-        "spd": 100
-      },
-      "awakened_stats": {
-        "hp": 11175,
-        "atk": 700,
-        "def": 699,
-        "spd": 101
-      },
-      "leader": {
-        "stat": "Health",
-        "value": 0.4
-      },
-      "awakening": {
-        "name": "Lumenar",
-        "stat": "Resistance"
-      },
+      "stats": {"hp": 10305, "atk": 645, "def": 645, "spd": 100},
+      "awakened_stats": {"hp": 11175, "atk": 700, "def": 699, "spd": 101},
+      "leader": {"stat": "Health", "value": 0.35},
+      "awakening": {"name": "Lume", "stat": "Accuracy"},
       "skills": [
         {
-          "name": "Faísca da Aurora",
-          "image": "faisca_da_aurora",
+          "name": "Sigilo Sequencial",
+          "image": "sigilo_sequencial",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.69
-            },
-            {
-              "kind": "Cleanse",
-              "target": "LowestAlly"
-            }
+            {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
+            {"kind": "Impeto", "target": "Self", "power": 15, "when": "Crit"}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.05
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.15
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Sigilo de Proteção",
-          "image": "sigilo_de_protecao",
-          "cooldown": 5,
+          "name": "Troca Equivalente",
+          "image": "troca_equivalente",
+          "cooldown": 4,
           "effects": [
-            {
-              "kind": "Status",
-              "target": "AllAllies",
-              "status": "Immunity",
-              "turns": 2
-            },
-            {
-              "kind": "Shield",
-              "target": "AllAllies",
-              "power": 0.1,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
+            {"kind": "InvertBuffs", "target": "AllEnemies", "chance": 0.75, "fallback": true, "power": 25}
           ],
           "levels": [
-            {
-              "kind": "Recovery",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         },
         {
           "name": "Fluxo Arcano",
           "image": "fluxo_arcano",
-          "passive": {
-            "kind": "CooldownEachTurn",
-            "value": 0.3
-          }
+          "passive": {"kind": "StatusOrEffectEachTurn"},
+          "effects": [
+            {"kind": "Cleanse", "target": "AllAllies"},
+            {"kind": "Status", "target": "AllAllies", "status": "Immunity", "chance": 1, "turns": 2},
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "chance": 1, "turns": 2}
+          ]
         }
       ]
     },
@@ -503,117 +225,46 @@
       "name": "Mago de Trevas",
       "element": "Dark",
       "role": "Attack",
-      "stats": {
-        "hp": 9555,
-        "atk": 758,
-        "def": 582,
-        "spd": 100
-      },
-      "awakened_stats": {
-        "hp": 10365,
-        "atk": 822,
-        "def": 631,
-        "spd": 101
-      },
-      "leader": {
-        "stat": "Accuracy",
-        "value": 0.4
-      },
-      "awakening": {
-        "name": "Noctivar",
-        "stat": "Crit"
-      },
+      "stats": {"hp": 9555, "atk": 758, "def": 582, "spd": 100},
+      "awakened_stats": {"hp": 10365, "atk": 822, "def": 631, "spd": 101},
+      "leader": {"stat": "Accuracy", "value": 0.4},
+      "awakening": {"name": "Notis", "stat": "Crit"},
       "skills": [
         {
-          "name": "Raio Maldito",
-          "image": "raio_maldito",
+          "name": "Sigilo Sequencial",
+          "image": "sigilo_sequencial",
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 2.94
-            },
-            {
-              "kind": "Status",
-              "target": "Target",
-              "status": "Curse",
-              "chance": 0.3,
-              "turns": 2
-            }
+            {"kind": "Damage", "target": "Target", "power": 1.3, "hits": 3},
+            {"kind": "Impeto", "target": "Self", "power": 15, "when": "Crit"}
           ],
           "levels": [
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Damage",
-              "value": 0.1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.1}
           ]
         },
         {
-          "name": "Sigilo da Ruína",
-          "image": "sigilo_da_ruina",
-          "cooldown": 4,
-          "effects": [
-            {
-              "kind": "Damage",
-              "target": "AllEnemies",
-              "power": 1.47
-            },
-            {
-              "kind": "Status",
-              "target": "AllEnemies",
-              "status": "Bomb",
-              "chance": 0.5,
-              "turns": 2
-            }
-          ],
-          "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "EffectRate",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
-          ]
+          "name": "Fluxo Arcano",
+          "image": "fluxo_arcano",
+          "passive": {"kind": "CooldownEachTurn", "value": 0.3}
         },
         {
-          "name": "Aniquilar",
-          "image": "aniquilar",
+          "name": "Magia das Trevas",
+          "image": "magia_trevas",
           "cooldown": 5,
           "effects": [
-            {
-              "kind": "Damage",
-              "target": "Target",
-              "power": 5.39,
-              "ignoreDefense": 0.3
-            }
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47, "hits": 3},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2, "when": "Hit"},
+            {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.5, "turns": 2, "when": "Hit"},
+            {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.5, "turns": 2, "when": "Hit"},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.5, "turns": 2, "when": "Hit"}
           ],
           "levels": [
-            {
-              "kind": "Damage",
-              "value": 0.1
-            },
-            {
-              "kind": "Cooldown",
-              "value": 1
-            }
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]

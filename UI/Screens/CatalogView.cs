@@ -277,27 +277,22 @@ namespace Sigilos.UI.Screens
 			_sheet.AddChild(table);
 			_sheet.AddChild(new HSeparator { Name = "SkillsLine" });
 
-			// Os mesmos ícones da aba Habilidades: ativa quadrada, passiva em losango, Liderança em pentágono.
+			// A lista de habilidades com o texto, como no resumo do homúnculo (toque longo).
 			var skills = summon.SkillsFor(_awakened);
-			var tiles = SkillTile.Grid().Named("SkillTiles");
+			var list = new VBoxContainer { Name = "Skills" };
+			list.AddThemeConstantOverride("separation", Space.Regular);
 			for (var i = 0; i < summon.AllSkills.Count; i++)
-			{
-				var skill = summon.AllSkills[i];
-				var locked = i >= skills.Count;
-				Control? tile = null;
-				tile = SkillTile.Build(skill, 0, locked, SkillTile.DefaultSize, onPressed: () => SkillDialog.Open(tile!, skill, 1, _awakened, locked)).Named($"Skill{i + 1}");
-				tiles.AddChild(tile);
-			}
+				list.AddChild(SkillRow.Build(summon.AllSkills[i], 0, _awakened, i >= skills.Count, 10, upgrades: true).Named($"Skill{i + 1}"));
 
 			if (summon.Leader is { } leader)
 			{
-				Control? tile = null;
-				tile = SkillTile.Leader(leader.Stat, SkillTile.DefaultSize, () => SkillDialog.OpenLeader(tile!, leader)).Named("Leader");
-				tiles.AddChild(tile);
+				var row = Layout.Row(Space.Regular).Named("Leader");
+				row.AddChild(Doodle.Icon(Art.Icon("leader"), 32, Palette.Gold).Named("Icon"));
+				row.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 10).Named("Text"));
+				list.AddChild(row);
 			}
 
-			_sheet.AddChild(tiles);
-			_sheet.AddChild(Layout.Text(T("monsters.skills_hint"), GameTheme.Faded).Named("SkillsHint"));
+			_sheet.AddChild(list);
 
 			if (!Awakening.CanBeAwakened(summon))
 				return;

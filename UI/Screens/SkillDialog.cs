@@ -112,7 +112,7 @@ namespace Sigilos.UI.Screens
 		/// Um aprimoramento por linha, "+1  Dano +10%": o +N é o nível N+1. Os já recebidos (até o nível de
 		/// agora) ficam em claro; os que faltam, mais apagados.
 		/// </summary>
-		private static Control Upgrades(SkillDefinition skill, int level)
+		public static Control Upgrades(SkillDefinition skill, int level, float width = TextWidth)
 		{
 			var box = new VBoxContainer { Name = "Upgrades" };
 			box.AddThemeConstantOverride("separation", Space.Hair);
@@ -130,7 +130,7 @@ namespace Sigilos.UI.Screens
 					Name = $"Upgrade{i + 1}",
 					Text = T("skill.upgrade_line", $"+{i + 1}", Texts.LevelUp(skill.Levels[i])),
 					AutowrapMode = TextServer.AutowrapMode.WordSmart,
-					CustomMinimumSize = new Vector2(TextWidth, 0),
+					CustomMinimumSize = new Vector2(width, 0),
 				};
 				line.AddThemeFontSizeOverride("font_size", FontSize.Small);
 				line.AddThemeColorOverride("font_color", acquired ? Palette.Text.Lerp(Colors.White, 0.4f) : Palette.TextFaded.Darkened(0.35f));

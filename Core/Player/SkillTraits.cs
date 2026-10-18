@@ -43,6 +43,9 @@ namespace Sigilos.Core.Player
 		/// <summary>Rouba efeitos positivos dos inimigos.</summary>
 		StealBuff,
 
+		/// <summary>Inverte os efeitos positivos dos inimigos em negativos.</summary>
+		InvertBuffs,
+
 		/// <summary>Ímpeto a mais para os aliados.</summary>
 		ImpetoBoost,
 
@@ -121,6 +124,7 @@ namespace Sigilos.Core.Player
 			(SkillBehavior.Debuff, e => e.Kind == EffectKind.Status && BattleRules.IsNegative(e.Status) && !OnAllies(e.Target)),
 			(SkillBehavior.Cleanse, e => e.Kind == EffectKind.Cleanse),
 			(SkillBehavior.StealBuff, e => e.Kind == EffectKind.StealBuff),
+			(SkillBehavior.InvertBuffs, e => e.Kind == EffectKind.InvertBuffs),
 			(SkillBehavior.ImpetoBoost, e => e.Kind == EffectKind.Impeto && e.Power > 0 && OnAllies(e.Target)),
 			(SkillBehavior.ImpetoCut, e => e.Kind == EffectKind.Impeto && e.Power < 0 && !OnAllies(e.Target)),
 			(SkillBehavior.ChangeDuration, e => e.Kind == EffectKind.ChangeDuration),

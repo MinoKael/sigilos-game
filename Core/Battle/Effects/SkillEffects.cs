@@ -23,6 +23,8 @@ namespace Sigilos.Core.Battle.Effects
 			[EffectKind.ExtraTurnOnKill] = new ExtraTurnOnKillEffect(),
 			[EffectKind.Revive] = new ReviveEffect(),
 			[EffectKind.IncreaseCooldown] = new IncreaseCooldownEffect(),
+			[EffectKind.InvertBuffs] = new InvertBuffsEffect(),
+			[EffectKind.BombTrigger] = new BombTriggerEffect(),
 		};
 
 		public static SkillEffect Of(EffectKind kind) => Table[kind];

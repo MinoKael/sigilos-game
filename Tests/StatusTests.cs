@@ -68,5 +68,22 @@ namespace Sigilos.Tests
 			Assert.False(foe.Has(StatusKind.Bomb), "e saiu");
 			Assert.True(foe.Has(StatusKind.Stun), "quem sobrevive fica atordoado");
 		}
+
+		[Test]
+		private static void BombTriggerDetonatesEveryBombOfTheTargetAtOnce()
+		{
+			var bomb = new EffectDefinition { Kind = EffectKind.Status, Status = StatusKind.Bomb, Target = TargetKind.Target, Chance = 1, Turns = 3 };
+			var skill = new SkillDefinition { Name = "ignição", Cooldown = 4, Effects = new[] { bomb, new EffectDefinition { Kind = EffectKind.BombTrigger, Target = TargetKind.Target } } };
+			var hero = TestData.Unit("herói", Side.Allies, speed: 300, attack: 100, special: skill);
+			var foe = TestData.Unit("inimigo", Side.Enemies, health: 1_000_000, attack: 1, speed: 1);
+			var session = TestData.Session(new[] { hero }, new[] { foe });
+			session.Start();
+			TestData.RunUntilTurnOf(session, hero);
+
+			var events = session.Act(new UnitAction(1, foe));
+			Assert.True(foe.Health < foe.MaxHealth, "a Bomba explodiu na hora, sem esperar a contagem");
+			Assert.False(foe.Has(StatusKind.Bomb), "e saiu");
+			Assert.True(events.OfType<DurationChanged>().Any(e => e.Status == StatusKind.Bomb), "o ícone aparece");
+		}
 	}
 }

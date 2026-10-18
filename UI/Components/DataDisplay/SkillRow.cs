@@ -14,7 +14,7 @@ namespace Sigilos.UI.Components
 	public static class SkillRow
 	{
 		/// <param name="level">O nível de agora; 0 esconde o nível (na luta, a habilidade já vem no dela).</param>
-		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400, bool levels = false)
+		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400, bool levels = false, bool upgrades = false)
 		{
 			var row = Layout.Row(Space.Regular).Named("Skill");
 			var icon = new SigilButton(null, 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Square)
@@ -65,6 +65,9 @@ namespace Sigilos.UI.Components
 				next.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.35f));
 				column.AddChild(next);
 			}
+			// Todos os aprimoramentos, como na janela da habilidade (o catálogo, que mostra a habilidade no nível 1).
+			if (upgrades && skill.Levels.Count > 0)
+				column.AddChild(Screens.SkillDialog.Upgrades(skill, 1, width));
 			row.AddChild(column);
 			return row;
 		}

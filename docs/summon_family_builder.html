@@ -267,7 +267,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 {
   "roles": ["HP", "Attack", "Defense", "Support"],
   "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
-  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive", "IncreaseCooldown"],
+  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive", "IncreaseCooldown", "InvertBuffs", "BombTrigger"],
   "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy"],
   "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Curse", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Karma", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
@@ -706,6 +706,14 @@ const Core = (() => {
       text: "Com chance, rouba de cada alvo um efeito positivo (o mais novo) e o põe em quem lança com os turnos que sobravam. Sem nenhum e com fallback, rouba Ímpeto.",
       fields: {chance: "0 a 1", onlyStatus: "só rouba este status (opcional)", fallback: "true: sem efeito positivo, rouba Ímpeto", power: "Ímpeto roubado no fallback (0 = todo o do alvo)"},
       template: {kind: "StealBuff", target: "Target", chance: 1, fallback: true, power: 0}},
+    InvertBuffs: {label: "Inverter efeitos", targets: ["Target", "AllEnemies", "RandomEnemy"],
+      text: "Com chance, cada efeito positivo do alvo vira o equivalente negativo, com os mesmos turnos (Ataque+ → Ataque−, Defesa+ → Defesa−, Velocidade+ → Velocidade−, Bênção → Ferida, Presságio → Cegueira, Oculto → Sono); sem equivalente vira Maldição. Sem nenhum positivo e com fallback, tira Ímpeto.",
+      fields: {chance: "0 a 1", fallback: "true: sem efeito positivo, tira Ímpeto", power: "Ímpeto tirado no fallback (0 = todo o do alvo)"},
+      template: {kind: "InvertBuffs", target: "Target", chance: 1, fallback: true, power: 25}},
+    BombTrigger: {label: "Detonar Bombas", targets: ["Target", "AllEnemies", "RandomEnemy"],
+      text: "Todas as Bombas de cada alvo explodem na hora, como se a contagem tivesse chegado ao fim.",
+      fields: {},
+      template: {kind: "BombTrigger", target: "Target"}},
     BonusPerStatus: {label: "Bônus por efeitos", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly"],
       text: "Conta os efeitos de scope (ou só onlyStatus) nas unidades de from e dá bonus × power por efeito. Dano e cura valem para os efeitos que vêm depois na lista; o Ímpeto vai na hora para os alvos (target).",
       fields: {from: "em quem contar (um alvo: Target, Self, AllEnemies...)", scope: "All, Buffs ou Debuffs", onlyStatus: "só conta este status (opcional)", bonus: "Damage, Heal ou Impeto", power: "valor por efeito"},
@@ -1415,7 +1423,7 @@ const Core = (() => {
         const list = effectLists.find(l => l.includes(effect)) || [];
         if (skill.passive || list === effectLists[2]) add("error", where, "when só vale nos efeitos de habilidade ativa (não na Passiva nem nos efeitos do parceiro).");
         if (!list.some(e => e.kind === "Damage" && !e.fixed)) add("error", where, "when precisa de um Damage (sem fixed) na mesma lista: os golpes são o gatilho.");
-        if (effect.chance !== undefined && effect.chance < 1 && !["Status", "Impeto", "ChangeDuration", "StealBuff", "IncreaseCooldown"].includes(effect.kind)) add("error", where, `${effect.kind} com chance não vale com when.`);
+        if (effect.chance !== undefined && effect.chance < 1 && !["Status", "Impeto", "ChangeDuration", "StealBuff", "IncreaseCooldown", "InvertBuffs"].includes(effect.kind)) add("error", where, `${effect.kind} com chance não vale com when.`);
       }
       if ((effect.whenStatus !== undefined || effect.whenScope !== undefined) && effect.when !== "Status") add("error", where, "whenStatus e whenScope só valem com when Status.");
       if (effect.whenStatus !== undefined && !enums.statuses.includes(effect.whenStatus)) add("error", where, `Status desconhecido em whenStatus: "${effect.whenStatus}".`);

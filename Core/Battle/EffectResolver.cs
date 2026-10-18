@@ -491,6 +491,36 @@ namespace Sigilos.Core.Battle
 			Attach(thief, thief, status.Kind, status.Turns, status.Value);
 		}
 
+		/// <summary>
+		/// Troca os efeitos positivos do alvo pelos equivalentes negativos (<see cref="StatusBehaviors.OppositeOf"/>), com os
+		/// turnos que sobravam. Os positivos saem todos antes (uma Imunidade invertida não barra os outros); a Resistência do
+		/// alvo não barra: a chance da habilidade já decidiu.
+		/// </summary>
+		public void Invert(BattleUnit caster, BattleUnit target, IReadOnlyList<StatusEffect> buffs)
+		{
+			var swaps = buffs.Where(s => !s.Unremovable && target.Holds(s)).Select(s => (Kind: StatusBehaviors.OppositeOf(s.Kind), s.Turns)).ToList();
+			foreach (var buff in buffs.Where(s => !s.Unremovable && target.Holds(s)).ToList())
+				Remove(buff);
+			foreach (var (kind, turns) in swaps)
+				ApplyStatus(caster, target, kind, 1, turns, resistible: false);
+		}
+
+		/// <summary>
+		/// Detona na hora os efeitos do alvo que agem quando a contagem acaba (a Bomba): cada um age como se a contagem tivesse
+		/// chegado ao fim, e o ícone aparece antes de sair.
+		/// </summary>
+		public void Detonate(BattleUnit target)
+		{
+			foreach (var status in target.Statuses.Where(s => StatusBehaviors.Of(s.Kind).TriggersWhenCutShort).ToList())
+			{
+				if (!target.IsAlive || !target.Holds(status))
+					continue;
+
+				Emit(new DurationChanged(target, status.Kind, -status.Turns));
+				StatusBehaviors.Of(status.Kind).OnCutShort(status, this);
+			}
+		}
+
 		/// <summary>Remove um efeito negativo do alvo: o mais antigo.</summary>
 		public void Cleanse(BattleUnit target)
 		{
