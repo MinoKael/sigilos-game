@@ -43,6 +43,14 @@ namespace Sigilos.Core.Battle
 			return chosen != null && choosable.Contains(chosen) ? chosen : choosable.FirstOrDefault();
 		}
 
+		/// <summary>Os aliados que <paramref name="caster"/> pode escolher como alvo (ChosenAlly): os de pé, menos ele. Provocar e Ocultar não valem.</summary>
+		public static IReadOnlyList<BattleUnit> ChoosableAllies(BattleUnit caster, IReadOnlyList<BattleUnit> allies) =>
+			allies.Where(u => u != caster && u.IsAlive).ToList();
+
+		/// <summary>O aliado quando não há escolha válida: o de menor fração de Vida entre os escolhíveis (empate: o primeiro da equipe). Não sorteia.</summary>
+		public static BattleUnit? DefaultAlly(BattleUnit caster, IReadOnlyList<BattleUnit> allies) =>
+			ChoosableAllies(caster, allies).OrderBy(u => u.HealthFraction).FirstOrDefault();
+
 		/// <summary>
 		/// As unidades atingidas por um efeito. <paramref name="main"/> vem de <see cref="PickMain"/>;
 		/// <paramref name="by"/> é o que LowestAlly e HighestAlly comparam (empate: o primeiro da equipe).
@@ -64,6 +72,7 @@ namespace Sigilos.Core.Battle
 			TargetKind.HighestAlly => allies.Where(u => u.IsAlive).OrderByDescending(u => Rank(u, by)).Take(1).ToList(),
 			TargetKind.RandomAlly => Draw(allies, random),
 			TargetKind.RandomEnemy => Draw(opponents, random),
+			TargetKind.ChosenAlly => DefaultAlly(caster, allies) is { } ally ? new[] { ally } : Array.Empty<BattleUnit>(),
 			_ => Array.Empty<BattleUnit>(),
 		};
 

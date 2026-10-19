@@ -177,6 +177,9 @@ namespace Sigilos.GameEntry
 			_ui.AddChild(_screens);
 			_ui.AddChild(_badge);
 			_badge.Pressed += OpenAutoBattle;
+			// Ferramenta de conferência: -- --summon-sheet=lich --out=arquivo.png junta, lado a lado, a ficha do catálogo de cada variante da família.
+			if (Argument("--summon-sheet=") is { Length: > 0 } sheetFamily)
+				SummonSheet(sheetFamily, Argument("--out=") ?? "summon_sheet.png");
 			AddChild(_runner);
 			_runner.RunChanged += run => _badge.Show(run);
 			// O nível e as moedas da conta sobem com cada vitória do automático: o Hub, se está aberto, acompanha.
@@ -2055,6 +2058,57 @@ namespace Sigilos.GameEntry
 			_bubble.Follow(screen);
 			// A Batalha toca na tela de luta; todo o resto é o Plano Celestial (a Batalha automática não tem tela).
 			_music.Play(screen is BattleScreen ? MusicPlayer.Track.Battle : MusicPlayer.Track.Celestial);
+		}
+
+		/// <summary>
+		/// A colagem das fichas do catálogo (<see cref="MonsterSummary"/>, nas estrelas naturais, nível 1) de todas as
+		/// variantes da família <paramref name="family"/> (o prefixo do id: "lich" para lich_fire, lich_water...), lado a lado,
+		/// salva em <paramref name="path"/> (PNG). Sai do jogo no fim. Use com -- --save=debugger.
+		/// </summary>
+		private async void SummonSheet(string family, string path)
+		{
+			for (var i = 0; i < 90; i++)
+				await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+			var order = new[] { Element.Neutral, Element.Fire, Element.Water, Element.Wind, Element.Light, Element.Dark };
+			var variants = _database.Summons.Where(s => s.Id.StartsWith(family + "_", StringComparison.Ordinal)).OrderBy(s => Array.IndexOf(order, s.Element)).ToList();
+			var shots = new List<(Image Image, Rect2I Crop)>();
+			foreach (var variant in variants)
+			{
+				var dialog = MonsterSummary.Open(_ui, variant, null);
+				for (var i = 0; i < 40; i++)
+					await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+				var image = GetViewport().GetTexture().GetImage();
+				var panel = dialog.Body.GetParent().GetParent().GetParent() as Control;
+				var box = panel?.GetGlobalRect() ?? new Rect2(Vector2.Zero, image.GetSize());
+				var crop = new Rect2I((int)box.Position.X - 8, (int)box.Position.Y - 8, (int)box.Size.X + 16, (int)box.Size.Y + 16).Intersection(new Rect2I(Vector2I.Zero, image.GetSize()));
+				shots.Add((image, crop));
+				dialog.Close();
+				for (var i = 0; i < 30; i++)
+					await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+			}
+
+			if (shots.Count > 0)
+			{
+				var width = shots.Sum(shot => shot.Crop.Size.X);
+				var height = shots.Max(shot => shot.Crop.Size.Y);
+				var sheet = Image.CreateEmpty(width, height, false, Image.Format.Rgba8);
+				sheet.Fill(new Color(0.05f, 0.04f, 0.09f));
+				var x = 0;
+				foreach (var (image, crop) in shots)
+				{
+					sheet.BlitRect(image, crop, new Vector2I(x, 0));
+					x += crop.Size.X;
+				}
+
+				sheet.SavePng(path);
+				GD.Print($"SHEET {path} ({variants.Count} variantes)");
+			}
+			else
+			{
+				GD.PushError($"--summon-sheet: nenhuma variante com o prefixo \"{family}_\".");
+			}
+
+			GetTree().Quit();
 		}
 
 		/// <summary>Uma linha por habilidade (e por versão desperta): id, nome e a descrição lida na tela.</summary>

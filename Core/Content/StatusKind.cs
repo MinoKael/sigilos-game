@@ -76,5 +76,7 @@ namespace Sigilos.Core.Content
 		/// <summary>Esquecimento: a Passiva para de funcionar.</summary>
 		Oblivion,
 
+		/// <summary>Filactério: enquanto o dono estiver com ele, quem o pôs não morre (a Vida para em 1). Único por quem põe.</summary>
+		Phylactery,
 	}
 }

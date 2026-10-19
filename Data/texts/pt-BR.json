@@ -314,6 +314,10 @@
     "Oblivion": {
       "name": "Esquecimento",
       "info": "A Passiva para de funcionar."
+    },
+    "Phylactery": {
+      "name": "Filactério",
+      "info": "Quem pôs este efeito não morre enquanto o dono estiver com ele: a Vida fica em 1. Só um por quem pôs."
     }
   },
 
@@ -326,6 +330,7 @@
       "AllAllies": "todos os aliados",
       "HighestAlly": "o aliado menos ferido",
       "RandomAlly": "um aliado ao acaso",
+      "ChosenAlly": "um aliado à sua escolha",
       "RandomEnemy": "um inimigo ao acaso",
       "LowestAlly_by": "o aliado com menos {0}",
       "HighestAlly_by": "o aliado com mais {0}"
@@ -338,6 +343,7 @@
       "AllAllies": "a todos os aliados",
       "HighestAlly": "ao aliado menos ferido",
       "RandomAlly": "a um aliado ao acaso",
+      "ChosenAlly": "a um aliado à sua escolha",
       "RandomEnemy": "a um inimigo ao acaso",
       "LowestAlly_by": "ao aliado com menos {0}",
       "HighestAlly_by": "ao aliado com mais {0}"
@@ -350,6 +356,7 @@
       "AllAllies": "em todos os aliados",
       "HighestAlly": "no aliado menos ferido",
       "RandomAlly": "num aliado ao acaso",
+      "ChosenAlly": "num aliado à sua escolha",
       "RandomEnemy": "num inimigo ao acaso",
       "LowestAlly_by": "no aliado com menos {0}",
       "HighestAlly_by": "no aliado com mais {0}"
@@ -362,6 +369,7 @@
       "AllAllies": "de todos os aliados",
       "HighestAlly": "do aliado menos ferido",
       "RandomAlly": "de um aliado ao acaso",
+      "ChosenAlly": "de um aliado à sua escolha",
       "RandomEnemy": "de um inimigo ao acaso",
       "LowestAlly_by": "do aliado com menos {0}",
       "HighestAlly_by": "do aliado com mais {0}"
@@ -374,6 +382,7 @@
       "AllAllies": "de todos os aliados",
       "HighestAlly": "do aliado menos ferido",
       "RandomAlly": "de um aliado ao acaso",
+      "ChosenAlly": "de um aliado à sua escolha",
       "RandomEnemy": "de um inimigo ao acaso",
       "LowestAlly_by": "do aliado com menos {0}",
       "HighestAlly_by": "do aliado com mais {0}"
@@ -406,6 +415,9 @@
       "multiple": "{0}x {1}",
       "times": " {0} vezes",
       "ignores": "ignora {0} da Defesa",
+      "phylactery": "enquanto o aliado tiver {0}, quem o concedeu não morre: a Vida dele fica em 1",
+      "last_ignores": "o último golpe ignora {0} da Defesa",
+      "bonus_max": " (no máximo +{0})",
       "drains": "drena {0} do dano como Vida",
       "fixed": "dano fixo, sem Defesa, elemento ou crítico",
       "inflict": "aplica",
@@ -424,6 +436,9 @@
       "cleanse": "remove um efeito negativo{0}",
       "cleanse_many": "remove {1} efeitos negativos{0}",
       "cleanse_all": "remove todos os efeitos negativos{0}",
+      "cleanse_all_All": "remove todos os efeitos positivos e negativos{0}",
+      "cleanse_all_Buffs": "remove todos os efeitos positivos{0}",
+      "cleanse_all_Debuffs": "remove todos os efeitos negativos{0}",
       "steal": "rouba um {0}{1}",
       "steal_impetus": " (sem nenhum, rouba {0}% de {1})",
       "steal_all_impetus": " (sem nenhum, rouba todo o {0})",
@@ -449,6 +464,7 @@
         "Impeto": "concede {0}% de {1} {2}"
       },
       "on_hit": "em cada golpe, {0}",
+      "on_hit_each": "em cada inimigo atingido, {0}",
       "on_crit": "em cada golpe crítico, {0}",
       "on_status": "toda vez que causa {1}, {0}",
       "on_kill": "se derrubar o alvo, {0}"
@@ -504,6 +520,7 @@
     "CooldownEachTurn": "{0} de chance, no começo do turno, de encurtar as próprias recargas em 1 turno.",
     "Thorns": "Quem o atinge recebe {0} do dano que causou.",
     "Lifesteal": "Drena {0} de todo dano que causa como Vida.",
+    "SoulDrain": "Todo golpe drena {0} do dano como Vida, e cada alvo atingido perde {0} de {1} para ele (uma vez por habilidade).",
     "Dodge": "{0} de chance de esquivar de cada golpe.",
     "CleanseAllyEachTurn": "{0} de chance, no começo do turno, de remover um efeito negativo de um aliado.",
     "BonusVsStatusOrEffect": "+{0} de dano em alvos com {1}.",
@@ -1295,6 +1312,7 @@
     "continue": "Continuar",
     "restart": "Recomeçar a luta",
     "pick_target": "Toque num inimigo aceso para atacar",
+    "pick_ally": "Toque num aliado aceso",
     "cooldown_badge": "⟳{0}",
     "again": "Lutar de novo",
     "monster_drop": "Homúnculo novo",

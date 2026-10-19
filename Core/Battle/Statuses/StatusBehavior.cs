@@ -25,6 +25,12 @@ namespace Sigilos.Core.Battle.Statuses
 		public virtual int MaxStacks => 1;
 
 		/// <summary>
+		/// Só um em campo por quem pôs: pôr de novo, em outro alvo, tira o anterior (Filactério). Falso: cada alvo
+		/// guarda o seu.
+		/// </summary>
+		public virtual bool UniquePerSource => false;
+
+		/// <summary>
 		/// A contagem do efeito (a Bomba) quando encurtada até o fim: em vez de sumir em silêncio, ele age agora, como
 		/// agiria no último turno dele. Falso: o efeito só sai.
 		/// </summary>

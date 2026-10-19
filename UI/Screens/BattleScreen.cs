@@ -617,13 +617,15 @@ namespace Sigilos.UI.Screens
 				var button = new SigilButton(null, 74, SigilShape.Square)
 				{
 					Name = "Button",
-					Disabled = !ready || _coach?.CanUse(index) == false,
+					Disabled = !ready || _coach?.CanUse(index) == false || skill.NeedsAlly && _session.ChoosableAllies(ally).Count == 0,
 					Badge = ready ? "" : T("battle.cooldown_badge", ally.Cooldown(index)),
 				};
 				button.SetSkill(skill);
 				Press.OnButton(button, () =>
 				{
-					if (skill.NeedsTarget)
+					if (skill.NeedsAlly)
+						PickTarget(ally, button, target => Decide(new UnitAction(index, target)), _session.ChoosableAllies(ally), "battle.pick_ally");
+					else if (skill.NeedsTarget)
 						PickTarget(ally, button, target => Decide(new UnitAction(index, target)));
 					else
 						Decide(new UnitAction(index, null));
@@ -668,19 +670,23 @@ namespace Sigilos.UI.Screens
 			return slot;
 		}
 
-		/// <summary>Os alvos possíveis acendem em azul; o sigilo da habilidade fica aceso até o toque no alvo.</summary>
-		private void PickTarget(BattleUnit actor, SigilButton skill, Action<BattleUnit> onPicked)
+		/// <summary>
+		/// Os alvos possíveis acendem em azul; o sigilo da habilidade fica aceso até o toque no alvo. Sem
+		/// <paramref name="options"/>, são os inimigos que podem ser escolhidos; com ela (os aliados das habilidades de
+		/// ChosenAlly), a lista dada e o texto <paramref name="bannerKey"/>.
+		/// </summary>
+		private void PickTarget(BattleUnit actor, SigilButton skill, Action<BattleUnit> onPicked, IReadOnlyList<BattleUnit>? options = null, string bannerKey = "battle.pick_target")
 		{
 			foreach (var view in _views.Values)
 				view.SetTargetable(false);
 			foreach (var child in _actions.GetChildren().Select(c => c.GetNodeOrNull<SigilButton>("Button")).OfType<SigilButton>())
 				child.Highlight = child == skill;
-			_banner.Text = T("battle.pick_target");
+			_banner.Text = T(bannerKey);
 			_banner.AddThemeColorOverride("font_color", Palette.Arcane);
 
 			// Na luta de treino, o Mestre pode deixar só alguns alvos (os de Fogo, na lição dos elementos).
-			var choosable = _session.ChoosableTargets(actor);
-			if (_coach != null && choosable.Any(_coach.CanTarget))
+			var choosable = options ?? _session.ChoosableTargets(actor);
+			if (options == null && _coach != null && choosable.Any(_coach.CanTarget))
 				choosable = choosable.Where(_coach.CanTarget).ToList();
 			foreach (var unit in choosable)
 				_views[unit].SetTargetable(true);

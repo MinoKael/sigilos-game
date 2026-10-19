@@ -246,6 +246,7 @@ Nem todo tipo de efeito aceita todos os alvos ou todos os campos. A aba **Valida
 | `AllAllies` | Todos os aliados de pé, incluindo quem usa a habilidade. |
 | `HighestAlly` | O aliado de pé com o maior valor da característica escolhida. Por padrão, é a maior fração de Vida restante. |
 | `RandomAlly` | Um aliado de pé escolhido aleatoriamente. A escolha é feita uma vez por habilidade; efeitos seguintes que usem esse alvo escolhem o mesmo aliado. |
+| `ChosenAlly` | Um aliado que o jogador escolhe na hora, menos quem lança (a habilidade pede um aliado, em vez de um inimigo). Sem escolha válida (o automático, um inimigo), o aliado de menor fração de Vida entre os outros. Uma habilidade não mistura `Target` e `ChosenAlly`; não vale em Passiva. |
 | `RandomEnemy` | Um inimigo de pé escolhido aleatoriamente, esteja ele Oculto ou não. A escolha é feita uma vez por habilidade. |
 
 Em `LowestAlly` e `HighestAlly`, a característica usada para comparar pode ser configurada. Consulte **Opções de comparação**.
@@ -306,7 +307,10 @@ Adiciona ou remove pontos de Ímpeto. Um valor negativo atrasa o Ímpeto do alvo
 
 ### Purificar (`Cleanse`)
 
-Remove de cada alvo um efeito negativo: especificamente, o efeito negativo mais antigo. Não exige campos adicionais além do alvo.
+Remove de cada alvo efeitos negativos, os mais antigos primeiro. Efeitos irremovíveis ficam.
+
+- **Quantidade (`count`):** quantos remover; `0` significa todos (ausente: 1).
+- **Escopo (`removes`):** opcional; `All` remove positivos e negativos, `Buffs` só os positivos, `Debuffs` só os negativos (ausente: só os negativos). Com `removes`, use `count: 0`.
 
 ### Roubar efeito positivo (`StealBuff`)
 
@@ -328,6 +332,7 @@ Conta os efeitos presentes nas unidades escolhidas e concede um bônus por efeit
 - **Somente um status (`onlyStatus`):** opcional; conta apenas um status específico.
 - **Tipo de bônus (`bonus`):** dano, cura ou Ímpeto.
 - **Valor por efeito (`power`):** bônus concedido para cada efeito contado.
+- **Teto (`max`):** opcional; limite do bônus de dano (ou de cura) da habilidade inteira, somando todos os efeitos desse tipo (`3` = +300%; `0` ou ausente: sem teto).
 
 O bônus de dano e de cura afeta os efeitos seguintes da mesma habilidade. O bônus de Ímpeto é aplicado imediatamente aos alvos do efeito.
 
@@ -418,6 +423,7 @@ Os status negativos podem ser barrados por **Resistência** e **Imunidade**, e r
 | `Unrecoverable` | Ferida | Negativo | Impede receber cura, incluindo dreno e Bênção. |
 | `Silence` | Silêncio | Negativo | Só permite usar habilidades sem recarga. |
 | `Oblivion` | Esquecimento | Negativo | Desativa a Passiva. Os conjuntos de runas continuam funcionando. |
+| `Phylactery` | Filactério | Positivo | Quem pôs o efeito não morre enquanto o dono estiver de pé com ele: a Vida de quem pôs para em 1. Único por quem pôs (pôr em outro aliado tira o anterior). Costuma ser irremovível. |
 
 ## 5. Passivas
 
@@ -435,6 +441,7 @@ As Passivas usam um **tipo** e um **valor**. As Passivas genéricas executam os 
 | `Lifesteal` | Recupera como Vida uma fração de todo dano causado. O valor define a fração. |
 | `Dodge` | Dá uma chance de esquivar de cada golpe. O valor define a chance. |
 | `CleanseAllyEachTurn` | No começo do turno, existe uma chance de remover um efeito negativo de um aliado. O valor define a chance. |
+| `SoulDrain` | Liches: todo golpe drena uma fração do dano como Vida, e uma vez por habilidade cada alvo atingido que ficou de pé perde o mesmo tanto de Ímpeto (0,15 = 15 pontos) para o dono. O valor define a fração. |
 | `BonusVsStatusOrEffect` | Aumenta o dano contra quem possui status ou efeitos que correspondam aos critérios configurados. O valor define o bônus. |
 | `StatusOrEffectOnHit` | Aplica os efeitos configurados a cada alvo atingido que continue de pé; uma vez por habilidade. O alvo dos efeitos é quem foi atingido. |
 | `StatusOrEffectOnAttacker` | Aplica os efeitos configurados a quem atingir o dono da Passiva; uma vez por habilidade. O alvo dos efeitos é o atacante. |

@@ -20,3 +20,4 @@ releases
 # Relatórios da bancada de balanceamento (dotnet run --project Tests -- --balance)
 reports/
 prompt.txt
+/Tools/shots/*.png

@@ -34,6 +34,8 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Pixies: chance de tirar um efeito negativo de um aliado no começo de cada turno.</summary>
 		CleanseAllyEachTurn,
+		/// <summary>Liches: todo golpe drena o número (0,15 = 15%) do dano como Vida, e a habilidade rouba o mesmo tanto do Ímpeto de cada alvo.</summary>
+		SoulDrain,
 
 		// Genéricas ---------------------------------------------------------------------------------
 

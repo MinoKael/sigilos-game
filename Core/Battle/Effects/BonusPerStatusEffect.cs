@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Sigilos.Core.Content;
 
@@ -11,6 +12,9 @@ namespace Sigilos.Core.Battle.Effects
 	/// </summary>
 	internal sealed class BonusPerStatusEffect : SkillEffect
 	{
+		/// <summary>O bônus somado, sem passar do teto (<see cref="EffectDefinition.Max"/>; 0 = sem teto).</summary>
+		private static double Capped(double total, double max) => max > 0 ? Math.Min(total, max) : total;
+
 		public override void Apply(Cast cast, EffectDefinition effect)
 		{
 			var count = cast.Targets(effect.From, effect.By).Sum(unit => StatusFilter.Of(unit, effect).Count);
@@ -21,10 +25,10 @@ namespace Sigilos.Core.Battle.Effects
 			switch (effect.Bonus)
 			{
 				case BonusKind.Damage:
-					cast.DamageBonus += bonus;
+					cast.DamageBonus = Capped(cast.DamageBonus + bonus, effect.Max);
 					break;
 				case BonusKind.Heal:
-					cast.HealBonus += bonus;
+					cast.HealBonus = Capped(cast.HealBonus + bonus, effect.Max);
 					break;
 				default:
 					foreach (var target in cast.Targets(effect))

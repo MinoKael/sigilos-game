@@ -52,6 +52,9 @@ namespace Sigilos.Core.Content
 		/// <summary>A habilidade pede que se escolha um inimigo.</summary>
 		public bool NeedsTarget => Effects.Any(e => e.Target == TargetKind.Target);
 
+		/// <summary>A habilidade pede que se escolha um aliado (<see cref="TargetKind.ChosenAlly"/>).</summary>
+		public bool NeedsAlly => Effects.Any(e => e.Target == TargetKind.ChosenAlly);
+
 		/// <summary>Soma dos bônus de um tipo até o nível pedido.</summary>
 		public double Bonus(SkillLevelKind kind, int level) =>
 			Levels.Take(Math.Clamp(level, 1, MaxLevel) - 1).Where(l => l.Kind == kind).Sum(l => l.Value);

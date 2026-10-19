@@ -57,6 +57,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>O dono não recebe cura (Ferida).</summary>
 		public virtual bool BlocksHealing => false;
 
+		/// <summary>Quem pôs o efeito não morre enquanto o dono estiver com ele: a Vida de quem pôs para em 1 (Filactério).</summary>
+		public virtual bool ProtectsSource => false;
+
 		/// <summary>O dono só usa habilidades sem recarga (Silêncio).</summary>
 		public virtual bool BlocksCooldownSkills => false;
 

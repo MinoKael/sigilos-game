@@ -313,6 +313,10 @@
     "Oblivion": {
       "name": "Oblivion",
       "info": "Its Passive stops working."
+    },
+    "Phylactery": {
+      "name": "Phylactery",
+      "info": "Whoever applied this effect cannot die while the holder has it: their HP stays at 1. Only one per caster."
     }
   },
 
@@ -325,6 +329,7 @@
       "AllAllies": "all allies",
       "HighestAlly": "the least injured ally",
       "RandomAlly": "a random ally",
+      "ChosenAlly": "an ally of your choice",
       "RandomEnemy": "a random enemy",
       "LowestAlly_by": "the ally with the least {0}",
       "HighestAlly_by": "the ally with the most {0}"
@@ -337,6 +342,7 @@
       "AllAllies": "to all allies",
       "HighestAlly": "to the least injured ally",
       "RandomAlly": "to a random ally",
+      "ChosenAlly": "to an ally of your choice",
       "RandomEnemy": "to a random enemy",
       "LowestAlly_by": "to the ally with the least {0}",
       "HighestAlly_by": "to the ally with the most {0}"
@@ -349,6 +355,7 @@
       "AllAllies": "on all allies",
       "HighestAlly": "on the least injured ally",
       "RandomAlly": "on a random ally",
+      "ChosenAlly": "on an ally of your choice",
       "RandomEnemy": "on a random enemy",
       "LowestAlly_by": "on the ally with the least {0}",
       "HighestAlly_by": "on the ally with the most {0}"
@@ -361,6 +368,7 @@
       "AllAllies": "from all allies",
       "HighestAlly": "from the least injured ally",
       "RandomAlly": "from a random ally",
+      "ChosenAlly": "from an ally of your choice",
       "RandomEnemy": "from a random enemy",
       "LowestAlly_by": "from the ally with the least {0}",
       "HighestAlly_by": "from the ally with the most {0}"
@@ -373,6 +381,7 @@
       "AllAllies": "of all allies",
       "HighestAlly": "of the least injured ally",
       "RandomAlly": "of a random ally",
+      "ChosenAlly": "of an ally of your choice",
       "RandomEnemy": "of a random enemy",
       "LowestAlly_by": "of the ally with the least {0}",
       "HighestAlly_by": "of the ally with the most {0}"
@@ -394,6 +403,9 @@
       "multiple": "{0}x {1}",
       "times": " {0} times",
       "ignores": "ignores {0} of Defense",
+      "phylactery": "while the ally has {0}, whoever granted it cannot die: their HP stays at 1",
+      "last_ignores": "the last hit ignores {0} of Defense",
+      "bonus_max": " (up to +{0})",
       "drains": "drains {0} of the damage as HP",
       "fixed": "fixed damage, ignoring Defense, element and crit",
       "inflict": "inflicts",
@@ -412,6 +424,9 @@
       "cleanse": "removes one harmful effect{0}",
       "cleanse_many": "removes {1} harmful effects{0}",
       "cleanse_all": "removes all harmful effects{0}",
+      "cleanse_all_All": "removes all beneficial and harmful effects{0}",
+      "cleanse_all_Buffs": "removes all beneficial effects{0}",
+      "cleanse_all_Debuffs": "removes all harmful effects{0}",
       "steal": "steals one {0}{1}",
       "steal_impetus": " (without one, steals {0}% {1})",
       "steal_all_impetus": " (without one, steals all its {0})",
@@ -437,6 +452,7 @@
         "Impeto": "grants {0}% {1} {2}"
       },
       "on_hit": "on each hit, {0}",
+      "on_hit_each": "on each enemy hit, {0}",
       "on_crit": "on each critical hit, {0}",
       "on_status": "each time it causes {1}, {0}",
       "on_kill": "on a knockout, {0}"
@@ -492,6 +508,7 @@
     "CooldownEachTurn": "{0} chance at the start of its turn to shorten its own cooldowns by 1 turn.",
     "Thorns": "Whoever hits it takes {0} of the damage dealt.",
     "Lifesteal": "Drains {0} of all the damage it deals as HP.",
+    "SoulDrain": "Every hit drains {0} of the damage as HP, and each target hit loses {0} of {1} to it (once per skill).",
     "Dodge": "{0} chance to dodge each hit.",
     "CleanseAllyEachTurn": "{0} chance at the start of its turn to remove one harmful effect from an ally.",
     "BonusVsStatusOrEffect": "+{0} damage on targets with {1}.",
@@ -1283,6 +1300,7 @@
     "continue": "Continue",
     "restart": "Restart the fight",
     "pick_target": "Touch a glowing enemy to attack it",
+    "pick_ally": "Touch a glowing ally",
     "cooldown_badge": "⟳{0}",
     "again": "Fight again",
     "monster_drop": "New homunculus",
@@ -4267,13 +4285,13 @@
             "name": "Fire Lich",
             "skills": {
               "0": {
-                "name": "Ghost Flame"
+                "name": "Bone Charge"
               },
               "1": {
-                "name": "Necrotic Fire"
+                "name": "Supreme Soul"
               },
               "2": {
-                "name": "Phylactery"
+                "name": "Soul Condemnation"
               }
             }
           },
@@ -4281,13 +4299,13 @@
             "name": "Water Lich",
             "skills": {
               "0": {
-                "name": "Icy Touch"
+                "name": "Bone Charge"
               },
               "1": {
-                "name": "Deep Silence"
+                "name": "Bone Protection"
               },
               "2": {
-                "name": "Phylactery"
+                "name": "Frozen Inferno"
               }
             }
           },
@@ -4295,13 +4313,13 @@
             "name": "Wind Lich",
             "skills": {
               "0": {
-                "name": "Ghost Breath"
+                "name": "Bone Charge"
               },
               "1": {
-                "name": "Soul Steal"
+                "name": "Supreme Soul"
               },
               "2": {
-                "name": "Soul Gale"
+                "name": "Afterlife Winds"
               }
             }
           },
@@ -4309,13 +4327,13 @@
             "name": "Light Lich",
             "skills": {
               "0": {
-                "name": "Pale Ray"
+                "name": "Bone Charge"
               },
               "1": {
-                "name": "Seal of Eternity"
+                "name": "Bone Protection"
               },
               "2": {
-                "name": "Phylactery"
+                "name": "Guardian Ghost"
               }
             }
           },
@@ -4323,13 +4341,13 @@
             "name": "Dark Lich",
             "skills": {
               "0": {
-                "name": "Deathly Touch"
+                "name": "Bone Charge"
               },
               "1": {
-                "name": "Soul Drain"
+                "name": "Supreme Soul"
               },
               "2": {
-                "name": "Army of the Dead"
+                "name": "Imperfect Phylactery"
               }
             }
           }

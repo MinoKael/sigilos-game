@@ -13,13 +13,15 @@ namespace Sigilos.Core.Content
 	/// - Shield: <see cref="Power"/> é a fração da Vida máxima de quem lança, por <see cref="Turns"/>.
 	/// - Status: aplica <see cref="Status"/> com <see cref="Chance"/>, por <see cref="Turns"/>.
 	/// - Impeto: soma <see cref="Power"/> pontos de Ímpeto (negativo atrasa).
-	/// - Cleanse: remove <see cref="Count"/> efeitos negativos de cada alvo, os mais antigos primeiro (0 = todos).
+	/// - Cleanse: remove <see cref="Count"/> efeitos negativos de cada alvo, os mais antigos primeiro (0 = todos); com
+	///   <see cref="Removes"/>, os desse escopo no lugar (positivos, negativos ou todos). Irremovíveis ficam.
 	/// - StealBuff: com <see cref="Chance"/>, rouba de cada alvo um efeito positivo (o mais novo; só
 	///   <see cref="OnlyStatus"/>, se houver) e o põe em quem lança; sem nenhum e com <see cref="Fallback"/>,
 	///   rouba <see cref="Power"/> pontos de Ímpeto (0 = todo o Ímpeto do alvo).
 	/// - BonusPerStatus: conta os efeitos de <see cref="Scope"/> (ou só <see cref="OnlyStatus"/>) nas unidades
 	///   de <see cref="From"/> e dá <see cref="Bonus"/>, <see cref="Power"/> por efeito: dano ou cura nos
-	///   efeitos seguintes da habilidade, ou Ímpeto na hora para os alvos.
+	///   efeitos seguintes da habilidade, ou Ímpeto na hora para os alvos. <see cref="Max"/> é o teto do bônus de
+	///   dano (ou de cura) da habilidade toda, somando os efeitos desse tipo (0 = sem teto).
 	/// - ChangeDuration: com <see cref="Chance"/>, soma <see cref="Turns"/> (negativo encurta) aos efeitos de
 	///   <see cref="Scope"/> (ou só <see cref="OnlyStatus"/>) de cada alvo; o que chega a 0 sai.
 	/// - EqualizeHealth: os alvos ficam todos com a média da fração de Vida deles.
@@ -83,6 +85,10 @@ namespace Sigilos.Core.Content
 		/// <summary>BonusPerStatus: o que cada efeito contado dá.</summary>
 		public BonusKind Bonus { get; init; }
 
+		/// <summary>Cleanse: que efeitos remove (nulo: só os negativos, como sempre).</summary>
+		public StatusScope? Removes { get; init; }
+		/// <summary>BonusPerStatus: o teto do bônus da habilidade inteira, em Dano ou Cura (0,8 = +80%; 0 = sem teto).</summary>
+		public double Max { get; init; }
 		/// <summary>HealTeam, JointAttack e Revive: quantos alvos (0 = todos).</summary>
 		public int Count { get; init; }
 

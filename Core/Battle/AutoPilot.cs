@@ -14,25 +14,32 @@ namespace Sigilos.Core.Battle
 	{
 		public static UnitAction ForAlly(BattleSession session, BattleUnit actor, bool focusBoss = false, BattleUnit? focus = null)
 		{
-			var skill = Strongest(actor);
-			var target = actor.Skill(skill).NeedsTarget ? BestTarget(session, actor, focusBoss, focus) : null;
+			var skill = Strongest(session, actor);
+			var target = Chosen(session, actor, skill) ?? (actor.Skill(skill).NeedsTarget ? BestTarget(session, actor, focusBoss, focus) : null);
 			return new UnitAction(skill, target);
 		}
 
 		public static UnitAction ForEnemy(BattleSession session, BattleUnit actor)
 		{
-			var skill = Strongest(actor);
+			var skill = Strongest(session, actor);
 			var choosable = session.ChoosableTargets(actor);
-			var target = choosable.Count == 0 ? null : choosable[session.Random.Next(choosable.Count)];
+			var target = Chosen(session, actor, skill) ?? (choosable.Count == 0 ? null : choosable[session.Random.Next(choosable.Count)]);
 			return new UnitAction(skill, target);
 		}
 
 		public static UnitAction For(BattleSession session, BattleUnit actor, bool focusBoss = false) =>
 			actor.Side == Side.Allies ? ForAlly(session, actor, focusBoss) : ForEnemy(session, actor);
 
-		/// <summary>A habilidade pronta de maior índice; a básica está sempre pronta.</summary>
-		private static int Strongest(BattleUnit actor) =>
-			Enumerable.Range(0, actor.Skills.Count).Reverse().First(actor.IsReady);
+		/// <summary>
+		/// A habilidade pronta de maior índice; a básica está sempre pronta. A que pede um aliado só vale com algum aliado
+		/// para escolher (senão gastaria a recarga à toa).
+		/// </summary>
+		private static int Strongest(BattleSession session, BattleUnit actor) =>
+			Enumerable.Range(0, actor.Skills.Count).Reverse().First(i => actor.IsReady(i) && (!actor.Skill(i).NeedsAlly || session.ChoosableAllies(actor).Count > 0));
+
+		/// <summary>O aliado das habilidades de ChosenAlly: o de menor fração de Vida (o automático não escolhe de outro jeito).</summary>
+		private static BattleUnit? Chosen(BattleSession session, BattleUnit actor, int skill) =>
+			actor.Skill(skill).NeedsAlly ? Targeting.DefaultAlly(actor, session.SideOf(actor.Side)) : null;
 
 		private static BattleUnit? BestTarget(BattleSession session, BattleUnit actor, bool focusBoss, BattleUnit? focus)
 		{

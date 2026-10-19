@@ -21,5 +21,11 @@ namespace Sigilos.Core.Content
 
 		RandomAlly,
 		RandomEnemy,
+
+		/// <summary>
+		/// Um aliado que o jogador escolhe, menos quem lança (o Filactério). Sem escolha válida (o automático, um
+		/// inimigo), o aliado de menor fração de Vida (<see cref="Battle.Targeting.DefaultAlly"/>).
+		/// </summary>
+		ChosenAlly,
 	}
 }

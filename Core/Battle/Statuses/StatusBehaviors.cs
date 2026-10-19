@@ -38,6 +38,7 @@ namespace Sigilos.Core.Battle.Statuses
 			[StatusKind.Unrecoverable] = new UnrecoverableStatus(),
 			[StatusKind.Silence] = new SilenceStatus(),
 			[StatusKind.Oblivion] = new OblivionStatus(),
+			[StatusKind.Phylactery] = new PhylacteryStatus(),
 		};
 
 		/// <summary>

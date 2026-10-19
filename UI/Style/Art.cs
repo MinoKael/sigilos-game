@@ -79,7 +79,7 @@ namespace Sigilos.UI.Style
 					PassiveKind.CleanseAllyEachTurn => new Symbol(Effect(StatusKind.Immunity)),
 					PassiveKind.RebirthOnce => Symbol.Of(Planet.Earth),
 					PassiveKind.ImpetoAtWaveStart => Symbol.Of(Planet.Mercury),
-					PassiveKind.Lifesteal => Symbol.Of(Planet.Earth),
+					PassiveKind.Lifesteal or PassiveKind.SoulDrain => Symbol.Of(Planet.Earth),
 					PassiveKind.CooldownEachTurn => Symbol.Of(Planet.Mercury),
 					PassiveKind.RunicCore => Symbol.Of(Planet.Sun),
 					PassiveKind.Dodge => Symbol.Of(Planet.Mercury),

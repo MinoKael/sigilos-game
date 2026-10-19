@@ -46,9 +46,9 @@ namespace Sigilos.UI.Components
 		/// <summary>O disco sob um grupo, em frações do campo: o centro e os dois raios (sem giro).</summary>
 		private readonly record struct Disc(Vector2 Center, float RadiusX, float RadiusY);
 
-		private static readonly Row AllyRow = new(new Vector2(0.445f, 0.671f), 0.2754f, 0.0765f, 0.0087f);
+		private static readonly Row AllyRow = new(new Vector2(0.445f, 0.641f), 0.2754f, 0.0765f, 0.0087f);
 		private static readonly Row EnemyRow = new(new Vector2(0.666f, 0.2728f), 0.1963f, 0.0548f, 0.0073f);
-		private static readonly Disc AllyDisc = new(new Vector2(0.4398f, 0.7636f), 0.3733f, 0.0915f);
+		private static readonly Disc AllyDisc = new(new Vector2(0.4398f, 0.7336f), 0.3733f, 0.0915f);
 		private static readonly Disc EnemyDisc = new(new Vector2(0.6597f, 0.3481f), 0.2656f, 0.0436f);
 
 

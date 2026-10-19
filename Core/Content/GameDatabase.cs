@@ -472,7 +472,7 @@ namespace Sigilos.Core.Content
 		private static bool ValidLevel(int stars, int level) => stars is >= 1 and <= 6 && level >= 1 && level <= (stars == 6 ? 60 : 10 + 5 * stars);
 
 		/// <summary>A primeira é ativa e sem recarga; as outras ativas têm recarga; no máximo uma passiva.</summary>
-		private static IEnumerable<string> ValidateSkills(IReadOnlyList<SkillDefinition> skills)
+		internal static IEnumerable<string> ValidateSkills(IReadOnlyList<SkillDefinition> skills)
 		{
 			if (skills.Count == 0 || skills[0].IsPassive || skills[0].Cooldown != 0)
 				yield return "a primeira habilidade é ativa e sem recarga.";
@@ -506,6 +506,10 @@ namespace Sigilos.Core.Content
 					yield return $"'{skill.Name}': bônus por efeito sem valor.";
 				if (effect.Count < 0)
 					yield return $"'{skill.Name}': quantidade {effect.Count} negativa.";
+				if (effect.Removes != null && effect.Kind != EffectKind.Cleanse)
+					yield return $"'{skill.Name}': removes só vale na Purificação.";
+				if (effect.Max < 0 || effect.Max > 0 && effect.Kind != EffectKind.BonusPerStatus)
+					yield return $"'{skill.Name}': max só vale no bônus por efeito, e não é negativo.";
 				if (!EffectScaling.Scales(effect.Kind) && EffectScaling.IsCustom(effect))
 					yield return $"'{skill.Name}': {effect.Kind} não tem conta (stat, plus, factor e speed são de Damage, Heal, HealTeam, Shield e Revive).";
 				if (effect.Fixed && effect.Kind != EffectKind.Damage)
@@ -516,6 +520,15 @@ namespace Sigilos.Core.Content
 					yield return $"'{skill.Name}': factor com base e slope 0: a conta dá sempre 0.";
 				if (effect.Kind == EffectKind.Revive && effect.Power <= 0 && effect.Plus.Count == 0)
 					yield return $"'{skill.Name}': Revive sem Vida para voltar.";
+			}
+
+			foreach (var list in new[] { skill.Effects, skill.AwakenedEffects })
+			{
+				// Uma ação tem um alvo só: ou um inimigo (Target) ou um aliado (ChosenAlly).
+				if (list.Any(e => e.Target == TargetKind.ChosenAlly) && list.Any(e => e.Target == TargetKind.Target))
+					yield return $"'{skill.Name}': a habilidade mistura Target (um inimigo) e ChosenAlly (um aliado); a ação tem um alvo só.";
+				if (skill.IsPassive && list.Any(e => e.Target == TargetKind.ChosenAlly))
+					yield return $"'{skill.Name}': a Passiva não escolhe aliado (ChosenAlly).";
 			}
 
 			foreach (var list in new[] { skill.Effects, skill.AwakenedEffects })

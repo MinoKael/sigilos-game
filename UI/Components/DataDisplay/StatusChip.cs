@@ -11,8 +11,8 @@ namespace Sigilos.UI.Components
 	/// meio para fora (sem selo, o efeito não tem prazo). Fica em cima do cartão da unidade e na barra do
 	/// chefe.
 	///
-	/// O efeito irremovível (<see cref="StatusEffect.Unremovable"/>) inverte o preenchimento: o símbolo fica
-	/// branco sobre a cor cheia (verde no positivo) e a borda é branca e grossa.
+	/// O efeito irremovível (<see cref="StatusEffect.Unremovable"/>) tem a borda dourada e grossa; o preenchimento e
+	/// o símbolo seguem os de sempre, para o desenho continuar legível.
 	/// </summary>
 	public partial class StatusChip : Control
 	{
@@ -29,7 +29,7 @@ namespace Sigilos.UI.Components
 
 			var negative = BattleRules.IsNegative(kind);
 			var fill = negative ? Palette.Negative : Palette.Positive;
-			var box = new StyleBoxFlat { BgColor = fill, BorderColor = unremovable ? Colors.White : fill.Darkened(0.5f), AntiAliasing = true };
+			var box = new StyleBoxFlat { BgColor = fill, BorderColor = unremovable ? Palette.Gold : fill.Darkened(0.5f), AntiAliasing = true };
 			box.SetBorderWidthAll(unremovable ? 2 : 1);
 			box.SetCornerRadiusAll(4);
 			var plate = new Panel { Name = "Plate", MouseFilter = MouseFilterEnum.Ignore };
@@ -37,7 +37,7 @@ namespace Sigilos.UI.Components
 			plate.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(plate);
 
-			var icon = Doodle.Icon(Art.Effect(kind), side - 4, negative || unremovable ? Colors.White : Dark).Named("Icon");
+			var icon = Doodle.Icon(Art.Effect(kind), side - 4, negative ? Colors.White : Dark).Named("Icon");
 			icon.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			icon.OffsetLeft = icon.OffsetTop = 2;
 			icon.OffsetRight = icon.OffsetBottom = -2;

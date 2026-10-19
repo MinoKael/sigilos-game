@@ -292,6 +292,7 @@ namespace Sigilos.UI
 				PassiveKind.BonusVsStatusOrEffect => T("passive.BonusVsStatusOrEffect", value, Counted(passive)),
 				PassiveKind.BonusPerStatusOrEffect => T("passive.BonusPerStatusOrEffect", value, Counted(passive)),
 				PassiveKind.RunicCore => T("passive.RunicCore", value, BattleRules.RunicCoreMaxSteps),
+				PassiveKind.SoulDrain => T("passive.SoulDrain", value, Impeto),
 				_ => T($"passive.{passive.Kind}", value),
 			};
 		}

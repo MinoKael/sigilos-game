@@ -184,6 +184,6 @@ namespace Sigilos.Core.Player
 			EffectScaling.Scales(effect.Kind) && effect.Factor?.By == measure;
 
 		private static bool OnAllies(TargetKind target) =>
-			target is TargetKind.Self or TargetKind.LowestAlly or TargetKind.AllAllies or TargetKind.HighestAlly or TargetKind.RandomAlly;
+			target is TargetKind.Self or TargetKind.LowestAlly or TargetKind.AllAllies or TargetKind.HighestAlly or TargetKind.RandomAlly or TargetKind.ChosenAlly;
 	}
 }

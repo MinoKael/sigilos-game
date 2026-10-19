@@ -185,6 +185,9 @@ namespace Sigilos.Core.Battle
 		public IReadOnlyList<BattleUnit> ChoosableTargets(BattleUnit actor) =>
 			Targeting.Choosable(actor, SideOf(actor.Side == Side.Allies ? Side.Enemies : Side.Allies));
 
+		/// <summary>Aliados que <paramref name="actor"/> pode escolher como alvo (as habilidades de ChosenAlly): os de pé, menos ele.</summary>
+		public IReadOnlyList<BattleUnit> ChoosableAllies(BattleUnit actor) => Targeting.ChoosableAllies(actor, SideOf(actor.Side));
+
 		/// <summary>Os próximos a agir, sem mexer na luta. Serve à barra de ordem da tela.</summary>
 		public IReadOnlyList<BattleUnit> PredictOrder(int count)
 		{

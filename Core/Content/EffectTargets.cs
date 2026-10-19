@@ -13,7 +13,7 @@ namespace Sigilos.Core.Content
 		private static readonly TargetKind[] Usual =
 		{
 			TargetKind.Target, TargetKind.AllEnemies, TargetKind.Self, TargetKind.LowestAlly, TargetKind.AllAllies,
-			TargetKind.HighestAlly, TargetKind.RandomEnemy,
+			TargetKind.HighestAlly, TargetKind.RandomEnemy, TargetKind.ChosenAlly,
 		};
 
 		private static readonly Dictionary<EffectKind, TargetKind[]> Table = new()

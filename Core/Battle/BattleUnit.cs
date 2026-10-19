@@ -115,6 +115,12 @@ namespace Sigilos.Core.Battle
 		public double HealthFraction => MaxHealth <= 0 ? 0 : Health / MaxHealth;
 		public bool IsAlive => Health > 0;
 
+		/// <summary>
+		/// Alguém de pé guarda a alma desta unidade (Filactério, <see cref="Statuses.StatusBehavior"/> com
+		/// <c>ProtectsSource</c>): a Vida dela não desce de 1.
+		/// </summary>
+		public bool IsBound => Team.Any(ally => ally.IsAlive && ally.Statuses.Any(status => status.Source == this && status.Behavior.ProtectsSource));
+
 		/// <summary>De 0 a 100: a unidade age quando chega a 100.</summary>
 		public double Impeto { get; set; }
 
@@ -308,6 +314,9 @@ namespace Sigilos.Core.Battle
 			else
 				_innate.Remove(rule);
 		}
+
+		/// <summary>Tira o efeito mesmo sendo irremovível (a troca do Filactério; <see cref="Remove"/> o respeita).</summary>
+		internal void Evict(StatusEffect status) => _statuses.Remove(status);
 
 		internal void ClearStatuses() => _statuses.Clear();
 

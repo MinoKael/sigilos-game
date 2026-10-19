@@ -17,9 +17,10 @@ namespace Sigilos.Core.Battle
 		private readonly HashSet<(UnitRule Rule, BattleUnit Target)> _once = new();
 		private readonly Dictionary<(TargetKind Kind, bool ExceptCaster), IReadOnlyList<BattleUnit>> _drawn = new();
 
-		public Cast(EffectResolver resolver, BattleUnit caster, BattleUnit? main, IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> opponents, bool counter, bool joint = false, bool trigger = false)
+		public Cast(EffectResolver resolver, BattleUnit caster, BattleUnit? main, IReadOnlyList<BattleUnit> allies, IReadOnlyList<BattleUnit> opponents, bool counter, bool joint = false, bool trigger = false, BattleUnit? chosenAlly = null)
 		{
 			IsTrigger = trigger;
+			_chosenAlly = chosenAlly;
 			Resolver = resolver;
 			Caster = caster;
 			Main = main;
@@ -28,6 +29,8 @@ namespace Sigilos.Core.Battle
 			IsCounter = counter;
 			IsJoint = joint;
 		}
+
+		private readonly BattleUnit? _chosenAlly;
 
 		public EffectResolver Resolver { get; }
 		public BattleUnit Caster { get; }
@@ -92,6 +95,13 @@ namespace Sigilos.Core.Battle
 		/// <summary>As unidades que um efeito atinge, do ponto de vista de quem lança.</summary>
 		public IReadOnlyList<BattleUnit> Targets(EffectDefinition effect)
 		{
+			// ChosenAlly: o aliado que o jogador escolheu; sem escolha que valha, o de menor fração de Vida.
+			if (effect.Target == TargetKind.ChosenAlly)
+			{
+				var ally = _chosenAlly is { IsAlive: true } picked && picked != Caster && _allies.Contains(picked) ? picked : Targeting.DefaultAlly(Caster, _allies);
+				return ally == null ? System.Array.Empty<BattleUnit>() : new[] { ally };
+			}
+
 			// O efeito de cada golpe mira quem foi acertado (antes da regra do chefe, que o abriria para todos).
 			if (Struck != null && effect.Target == TargetKind.Target)
 				return Struck.IsAlive ? new[] { Struck } : System.Array.Empty<BattleUnit>();

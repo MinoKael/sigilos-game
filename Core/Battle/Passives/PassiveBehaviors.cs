@@ -28,6 +28,7 @@ namespace Sigilos.Core.Battle.Passives
 			[PassiveKind.Lifesteal] = new LifestealPassive(),
 			[PassiveKind.Dodge] = new DodgePassive(),
 			[PassiveKind.CleanseAllyEachTurn] = new CleanseAllyEachTurnPassive(),
+			[PassiveKind.SoulDrain] = new SoulDrainPassive(),
 			[PassiveKind.RunicCore] = new RunicCorePassive(),
 			[PassiveKind.Drowning] = new DrowningPassive(),
 		};

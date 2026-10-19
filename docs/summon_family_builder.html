@@ -268,13 +268,13 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   "roles": ["HP", "Attack", "Defense", "Support"],
   "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
   "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive", "IncreaseCooldown", "InvertBuffs", "BombTrigger"],
-  "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy"],
+  "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy", "ChosenAlly"],
   "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
-  "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Stigma", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Curse", "Sleep", "Unrecoverable", "Silence", "Oblivion"],
+  "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Stigma", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Curse", "Sleep", "Unrecoverable", "Silence", "Oblivion", "Phylactery"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "hitTriggers": ["Skill", "Hit", "Crit", "Status"],
   "bonuses": ["Damage", "Heal", "Impeto"],
-  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "Conditional"],
+  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "SoulDrain", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "Conditional"],
   "comparisons": ["Greater", "Less", "Equal"],
   "conditionSides": ["Self", "Opponent"],
   "conditionAgainst": ["Opponent", "Value"],
@@ -544,7 +544,7 @@ const Core = (() => {
   const VARIANT_ELEMENTS = [NEUTRAL_ELEMENT, ...ELEMENTS];
   const TWO_STAR = 2;
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "when", "whenStatus", "whenScope", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove", "unremovable"];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "when", "whenStatus", "whenScope", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove", "unremovable", "removes", "max"];
   // Efeitos e status ---------------------------------------------------------------------------------
   // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
   // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
@@ -558,6 +558,7 @@ const Core = (() => {
     AllAllies: "todos os aliados de pé (a equipe, com quem lança)",
     HighestAlly: "o aliado com o maior valor de by (padrão: a maior fração de Vida)",
     RandomAlly: "um aliado de pé sorteado (uma vez por habilidade: o efeito seguinte cai no mesmo)",
+    ChosenAlly: "um aliado que o jogador escolhe, menos quem lança (sem escolha válida, o de menor fração de Vida); a habilidade pede um aliado em vez de um inimigo",
     RandomEnemy: "um inimigo de pé sorteado, oculto ou não (uma vez por habilidade)",
   };
   // As Passivas genéricas que disparam os efeitos da habilidade (PassiveDefinition.UsesEffects).
@@ -571,6 +572,7 @@ const Core = (() => {
     CooldownEachTurn: "value: chance de encurtar as recargas no começo do turno",
     Thorns: "value: fração do dano devolvida a quem atinge",
     Lifesteal: "value: fração de todo dano que volta como Vida",
+    SoulDrain: "value: fração do dano que volta como Vida, e o mesmo tanto de Ímpeto (0.15 = 15 pontos) que cada alvo atingido perde para o dono, uma vez por habilidade",
     Dodge: "value: chance de esquivar de cada golpe",
     CleanseAllyEachTurn: "value: chance de tirar um efeito negativo de um aliado no começo do turno",
     BonusVsStatusOrEffect: "value: dano a mais em quem tem algum efeito que conta (statuses, ou o scope)",
@@ -677,20 +679,20 @@ const Core = (() => {
     Impeto: "+power pontos de Ímpeto por efeito, na hora, para os alvos do efeito",
   };
   const EFFECT_DOCS = {
-    Damage: {label: "Dano", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
+    Damage: {label: "Dano", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy", "ChosenAlly"],
       text: "Golpes de power × ATK (ou a conta: stat, plus, factor, speed). Cada efeito de dano é um golpe à parte: \"3 golpes e um quarto que ignora a Defesa\" são dois efeitos.",
       fields: {power: "multiplicador do ATK (3.5 = 350%)", hits: "golpes (cada rodada acerta todos os alvos)", ignoreDefense: "fração da Defesa ignorada (0 a 1)", drain: "fração do dano que volta como Vida (0 a 1)",
         ...SCALE_FIELDS, fixed: "true: dano fixo, sem Defesa, elemento nem crítico (o que mexe no dano recebido pelo alvo ainda conta)"},
       template: {kind: "Damage", target: "Target", power: 2.45}},
-    Heal: {label: "Cura", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
+    Heal: {label: "Cura", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy", "ChosenAlly"],
       text: "Cura power da Vida máxima de cada alvo (ou a conta: stat, plus, factor, speed). A Ferida barra.",
       fields: {power: "fração da Vida máxima do alvo (0.15 = 15%)", count: "só os N alvos mais feridos (0 ou ausente = todos)", ...SCALE_FIELDS},
       template: {kind: "Heal", target: "LowestAlly", power: 0.07}},
-    Shield: {label: "Escudo", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
+    Shield: {label: "Escudo", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy", "ChosenAlly"],
       text: "Escudo de power da Vida máxima de quem lança (ou a conta: stat, plus, factor, speed). Escudos não somam: fica o maior. O Maldição barra.",
       fields: {power: "fração da Vida máxima de quem lança", turns: "duração", ...SCALE_FIELDS},
       template: {kind: "Shield", target: "AllAllies", power: 0.07, turns: 2}},
-    Status: {label: "Efeito de status", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
+    Status: {label: "Efeito de status", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy", "ChosenAlly"],
       text: "Põe status com chance, por turns. Negativo no outro lado: a Imunidade e a Resistência barram. Positivo: o Maldição barra.",
       fields: {status: "o efeito (veja a lista de status)", chance: "0 a 1", turns: "duração em turnos do alvo"},
       template: {kind: "Status", target: "Target", status: "Affliction", chance: 0.3, turns: 2}},
@@ -698,9 +700,9 @@ const Core = (() => {
       text: "Soma power pontos de Ímpeto (negativo atrasa). Atrasar inimigo passa pela chance e pela Resistência.",
       fields: {power: "pontos (negativo atrasa)", chance: "0 a 1 (só ao atrasar inimigo)"},
       template: {kind: "Impeto", target: "Target", power: -20}},
-    Cleanse: {label: "Purificar", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy"],
-      text: "Remove count efeitos negativos de cada alvo, os mais antigos primeiro.",
-      fields: {count: "quantos (0 = todos)"},
+    Cleanse: {label: "Purificar", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomEnemy", "ChosenAlly"],
+      text: "Remove count efeitos negativos de cada alvo, os mais antigos primeiro. Com removes, remove os desse escopo (All = positivos e negativos; só com count 0). Irremovíveis ficam.",
+      fields: {count: "quantos (0 = todos)", removes: "All, Buffs ou Debuffs (ausente = só negativos)"},
       template: {kind: "Cleanse", target: "LowestAlly", count: 1}},
     StealBuff: {label: "Roubar efeito", targets: ["Target", "AllEnemies", "RandomEnemy"],
       text: "Com chance, rouba de cada alvo um efeito positivo (o mais novo) e o põe em quem lança com os turnos que sobravam. Sem nenhum e com fallback, rouba Ímpeto.",
@@ -716,7 +718,7 @@ const Core = (() => {
       template: {kind: "BombTrigger", target: "Target"}},
     BonusPerStatus: {label: "Bônus por efeitos", targets: ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly"],
       text: "Conta os efeitos de scope (ou só onlyStatus) nas unidades de from e dá bonus × power por efeito. Dano e cura valem para os efeitos que vêm depois na lista; o Ímpeto vai na hora para os alvos (target).",
-      fields: {from: "em quem contar (um alvo: Target, Self, AllEnemies...)", scope: "All, Buffs ou Debuffs", onlyStatus: "só conta este status (opcional)", bonus: "Damage, Heal ou Impeto", power: "valor por efeito"},
+      fields: {from: "em quem contar (um alvo: Target, Self, AllEnemies...)", scope: "All, Buffs ou Debuffs", onlyStatus: "só conta este status (opcional)", bonus: "Damage, Heal ou Impeto", power: "valor por efeito", max: "teto do bônus de Dano ou Cura da habilidade inteira (0.3 = +30%; 0 = sem teto); vários efeitos dividem o mesmo teto"},
       template: {kind: "BonusPerStatus", target: "Self", from: "Target", scope: "Debuffs", bonus: "Damage", power: 0.2}},
     ChangeDuration: {label: "Alterar duração", targets: null,
       text: "Com chance, soma turns à duração dos efeitos de scope (ou só onlyStatus) de cada alvo. Negativo encurta; o que chega a 0 sai.",
@@ -776,6 +778,7 @@ const Core = (() => {
     Unrecoverable: ["Ferida", true, "Não recebe cura (nem dreno, nem Bênção)."],
     Silence: ["Silêncio", true, "Só usa habilidades sem recarga."],
     Oblivion: ["Esquecimento", true, "A Passiva para de funcionar (os conjuntos de runas seguem)."],
+    Phylactery: ["Filactério", false, "Quem pôs o efeito não morre enquanto o dono estiver com ele (a Vida fica em 1). Só um por quem pôs; em geral irremovível."],
   };
 
   const FAMILY_KEYS = ["family_id", "base_name", "name", "star_grade", "image", "family_bias", "variations"];
@@ -1435,6 +1438,8 @@ const Core = (() => {
       if (effect.kind === "ChangeDuration" && !(Number.isInteger(effect.turns) && effect.turns !== 0)) add("error", where, "ChangeDuration precisa de turns inteiro e diferente de 0 (negativo encurta).");
       if (effect.kind === "BonusPerStatus" && !(num(effect.power) > 0)) add("error", where, "BonusPerStatus sem valor por efeito (power).");
       if (effect.count !== undefined && !(Number.isInteger(effect.count) && effect.count >= 0)) add("error", where, `count ${effect.count}: tem de ser inteiro, 0 ou mais.`);
+      if (effect.removes !== undefined && (effect.kind !== "Cleanse" || !(enums.scopes || Object.keys(SCOPE_DOCS)).includes(effect.removes))) add("error", where, "removes só vale em Cleanse, com All, Buffs ou Debuffs.");
+      if (effect.max !== undefined && (effect.kind !== "BonusPerStatus" || !(effect.max >= 0))) add("error", where, "max só vale em BonusPerStatus e não é negativo.");
       if (effect.fallback !== undefined && typeof effect.fallback !== "boolean") add("error", where, "fallback é true ou false.");
       validateScale(effect, enums, text => add("error", where, text));
       for (const key of Object.keys(effect)) if (!EFFECT_FIELDS.includes(key)) add("warn", where, `Campo "${key}" que o jogo não lê.`);
@@ -1940,7 +1945,7 @@ if (typeof module !== "undefined") module.exports = Core;
   // que se grava; o JSON fica à mão num "avançado" recolhido, e os dois andam juntos.
 
   const TARGET_LABELS = {Target: "Alvo escolhido", AllEnemies: "Todos os inimigos", Self: "Quem lança", LowestAlly: "Aliado com menos",
-    AllAllies: "Todos os aliados", HighestAlly: "Aliado com mais", RandomAlly: "Aliado ao acaso", RandomEnemy: "Inimigo ao acaso"};
+    AllAllies: "Todos os aliados", HighestAlly: "Aliado com mais", RandomAlly: "Aliado ao acaso", RandomEnemy: "Inimigo ao acaso", ChosenAlly: "Aliado à escolha"};
   const RANK_LABELS = {Health: "Vida", Attack: "Ataque", Defense: "Defesa", Speed: "Velocidade", Crit: "Crítico", CritDamage: "Dano crítico",
     Resistance: "Resistência", Accuracy: "Precisão", Impeto: "Ímpeto"};
   const SCOPE_LABELS = {All: "Todos", Buffs: "Positivos", Debuffs: "Negativos"};
@@ -1950,8 +1955,8 @@ if (typeof module !== "undefined") module.exports = Core;
   const MEASURE_LABELS = {HealthFraction: "Vida atual de quem lança", TargetHealthFraction: "Vida atual do alvo", LivingAllies: "Aliados de pé"};
   // Os campos numéricos: rótulo, passo e o valor quando o campo não está no JSON.
   const FX_NUMBERS = {power: ["Poder", "0.01", ""], hits: ["Golpes", "1", "1"], ignoreDefense: ["Ignora Defesa", "0.05", "0"], drain: ["Dreno", "0.05", "0"],
-    chance: ["Chance", "0.05", "1"], turns: ["Turnos", "1", "1"], count: ["Quantos", "1", "0 = todos"]};
-  const FX_ORDER = ["status", "power", "hits", "ignoreDefense", "drain", "chance", "turns", "from", "scope", "onlyStatus", "bonus", "count", "fallback"];
+    chance: ["Chance", "0.05", "1"], turns: ["Turnos", "1", "1"], count: ["Quantos", "1", "0 = todos"], max: ["Teto", "0.1", "0 = sem teto"]};
+  const FX_ORDER = ["status", "power", "hits", "ignoreDefense", "drain", "chance", "turns", "from", "scope", "onlyStatus", "bonus", "max", "count", "removes", "fallback"];
   const FX_STRUCTURAL = ["kind", "target", "from", "factor.by", "speed.mode"];
   const PICKS = ["LowestAlly", "HighestAlly"];
   // Os modelos de lista (vazia) de cada campo: Efeitos depois do Despertar vazios somem do arquivo.
@@ -1991,6 +1996,8 @@ if (typeof module !== "undefined") module.exports = Core;
         cells.push(`<label class="fx-cell" title="${esc(tip)}"><span>Só este status</span><select ${a(key)}>${statusOptions(effect.onlyStatus, "— todos do escopo")}</select></label>`);
       } else if (key === "scope") {
         cells.push(fxSelect(a(key), "Escopo", ui.enums.scopes || Object.keys(SCOPE_LABELS), effect.scope, s => `${SCOPE_LABELS[s] || s} (${s})`, "Todos (padrão)", tip));
+      } else if (key === "removes") {
+        cells.push(fxSelect(a(key), "Remove", ui.enums.scopes || Object.keys(SCOPE_LABELS), effect.removes, s => `${SCOPE_LABELS[s] || s} (${s})`, "Só negativos (padrão)", tip));
       } else if (key === "from") {
         cells.push(fxSelect(a(key), "Contar em", ui.enums.targets, effect.from, t => `${TARGET_LABELS[t] || t} (${t})`, "Alvo escolhido (padrão)", tip));
       } else if (key === "bonus") {
@@ -2010,7 +2017,7 @@ if (typeof module !== "undefined") module.exports = Core;
       }
     }
     if (["Status", "Shield"].includes(effect.kind) || effect.unremovable)
-      cells.push(`<label class="fx-cell check" title="Irremovível: nada tira o efeito (Purificação, roubo, encurtar, o golpe que acorda o Sono); só os turnos dele o acabam. No combate o ícone fica branco, com borda branca grossa."><input type="checkbox" ${effect.unremovable ? "checked" : ""} ${a("unremovable")}>irremovível</label>`);
+      cells.push(`<label class="fx-cell check" title="Irremovível: nada tira o efeito (Purificação, roubo, encurtar, o golpe que acorda o Sono); só os turnos dele o acabam. No combate o quadradinho tem borda dourada grossa."><input type="checkbox" ${effect.unremovable ? "checked" : ""} ${a("unremovable")}>irremovível</label>`);
     const scales = !!C.USUAL_STAT[effect.kind];
     const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", "when", "whenStatus", "whenScope", "unremovable", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
     return `<div class="fx-row"><span class="fx-n">${index + 1}</span>${cells.join("")}

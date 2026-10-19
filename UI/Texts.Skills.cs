@@ -51,17 +51,28 @@ namespace Sigilos.UI
 			Flow(Compose(effects.Where(e => e.When == HitTrigger.Skill).ToList(), none, false), sentences);
 
 			// Cada gatilho vira uma frase; o "alvo" dos efeitos é quem o golpe acertou.
+			// Num ataque em área, o efeito de cada golpe cai em cada inimigo atingido: o alvo não precisa ser dito.
+			var area = effects.Any(e => e.Kind == EffectKind.Damage && e.When == HitTrigger.Skill && e.Target == TargetKind.AllEnemies);
 			foreach (var group in effects.Where(e => e.When != HitTrigger.Skill).GroupBy(e => (e.When, e.WhenStatus, e.WhenScope)))
 			{
-				var body = And(Compose(group.ToList(), none, false, false).Select(a => a.Text).ToList());
+				Subject? said = area ? new Subject(TargetKind.Target, TargetRank.Health) : none;
+				var body = And(Compose(group.ToList(), said, false, false).Select(a => a.Text).ToList());
 				var (when, status, scope) = group.Key;
+				// Um golpe só: "em cada golpe" não diz nada a mais, e o efeito vira frase simples.
+				var oneHit = effects.Where(e => e.Kind == EffectKind.Damage && e.When == HitTrigger.Skill).Sum(e => e.Hits) == 1;
 				sentences.Add(when switch
 				{
+					HitTrigger.Hit when oneHit && area => T("skill.say.on_hit_each", body),
+					HitTrigger.Hit when oneHit => body,
 					HitTrigger.Hit => T("skill.say.on_hit", body),
 					HitTrigger.Crit => T("skill.say.on_crit", body),
 					_ => T("skill.say.on_status", body, status is { } s ? Term(s) : T($"scope.{scope ?? StatusScope.All}.any")),
 				});
 			}
+
+			// O Filactério: a frase final diz o que ele faz por quem o pôs.
+			if (effects.Any(e => e.Kind == EffectKind.Status && e.Status == StatusKind.Phylactery))
+				sentences.Add(T("skill.say.phylactery", Term(StatusKind.Phylactery)));
 
 			// Efeito que escala com os aliados de pé: a frase final diz o sentido ("Quanto mais aliados vivos, maior o efeito.").
 			var allies = effects.Select(e => e.Factor).Where(f => f is { By: ScaleMeasure.LivingAllies }).Select(f => f!.Slope).FirstOrDefault();
@@ -127,12 +138,44 @@ namespace Sigilos.UI
 					continue;
 				}
 
+				// Dois ataques seguidos no mesmo alvo, o segundo de um golpe só que ignora Defesa: "ataca 3 vezes, o último ignora...".
+				if (effect.Kind == EffectKind.Damage && i + 1 < list.Count && LastHitIgnores(effect, list[i + 1]))
+				{
+					var last = list[i + 1];
+					var whole = effect with { Hits = effect.Hits + 1 };
+					var note = T("skill.say.last_ignores", Percent(last.IgnoreDefense));
+					if (sentences)
+					{
+						atoms.Add((AttackText(whole, false), true, false));
+						atoms.Add((note, false, true));
+					}
+					else
+					{
+						atoms.Add((AttackText(whole, true) + $" ({note})", true, false));
+					}
+
+					subject = Spoken(effect);
+					i += 2;
+					continue;
+				}
+
+				// Mesmo efeito em lados diferentes (aliados e inimigos): uma frase só.
+				if (effect.Kind is EffectKind.Cleanse or EffectKind.BonusPerStatus && i + 1 < list.Count && SameBothSides(effect, list[i + 1]))
+				{
+					atoms.Add((effect.Kind == EffectKind.Cleanse ? CleanseText(effect, list[i + 1], subject) : BonusText(effect, list[i + 1]), false, false));
+					i += 2;
+					continue;
+				}
+
 				if (effect.Kind is EffectKind.Status or EffectKind.Shield)
 				{
 					var end = i + 1;
 					while (end < list.Count && SameRun(effect, list[end]))
 						end++;
 					atoms.Add((RunText(list.Skip(i).Take(end - i).ToList(), subject), false, false));
+					// O sorteado vale para a habilidade inteira: o efeito seguinte cai no mesmo e não repete o alvo.
+					if (effect.Target is TargetKind.RandomAlly or TargetKind.ChosenAlly or TargetKind.RandomEnemy)
+						subject = Spoken(effect);
 					i = end;
 					continue;
 				}
@@ -145,6 +188,21 @@ namespace Sigilos.UI
 				i++;
 			}
 			return atoms;
+		}
+
+		/// <summary>O segundo ataque é o último golpe do primeiro (mesmo alvo e mesma conta), só que ignorando Defesa.</summary>
+		private static bool LastHitIgnores(EffectDefinition first, EffectDefinition next) =>
+			next.Kind == EffectKind.Damage && next.Hits == 1 && next.IgnoreDefense > 0 && first.IgnoreDefense == 0
+			&& next.Target == first.Target && next.By == first.By && next.Drain == first.Drain && next.Fixed == first.Fixed
+			&& !EffectScaling.IsCustom(first) && !EffectScaling.IsCustom(next) && next.When == first.When && next.OnKill == first.OnKill;
+
+		/// <summary>Dois efeitos iguais, um em cada lado (aliados e inimigos): o texto junta os dois alvos.</summary>
+		private static bool SameBothSides(EffectDefinition first, EffectDefinition next)
+		{
+			var sides = (first.Kind == EffectKind.Cleanse ? (first.Target, next.Target) : (first.From, next.From)) is (TargetKind.AllAllies, TargetKind.AllEnemies);
+			return sides && next.Kind == first.Kind && next.Count == first.Count && next.Removes == first.Removes && next.Scope == first.Scope
+				&& next.OnlyStatus == first.OnlyStatus && next.Power == first.Power && next.Bonus == first.Bonus && next.Max == first.Max
+				&& next.When == first.When && next.OnKill == first.OnKill;
 		}
 
 		private static Subject? Spoken(EffectDefinition effect) => new Subject(effect.Target, effect.By);
@@ -232,7 +290,7 @@ namespace Sigilos.UI
 					: effect.Target == TargetKind.Self
 						? T("skill.say.impetus_self", effect.Power, Impeto) + chance
 						: T("skill.say.impetus_give", effect.Power, Impeto, Where(effect, Form.To, subject)) + chance,
-				EffectKind.Cleanse => T(effect.Count switch { 0 => "skill.say.cleanse_all", 1 => "skill.say.cleanse", _ => "skill.say.cleanse_many" }, Where(effect, Form.From, subject), effect.Count),
+				EffectKind.Cleanse => CleanseText(effect, null, subject),
 				EffectKind.StealBuff => StealText(effect, chance, subject),
 				EffectKind.InvertBuffs => InvertText(effect, chance, subject),
 				EffectKind.BombTrigger => T("skill.say.bomb_trigger", Term(StatusKind.Bomb), Where(effect, Form.Of, subject)),
@@ -333,8 +391,23 @@ namespace Sigilos.UI
 			return text;
 		}
 
-		/// <summary>"ganha +20% de dano nos golpes seguintes para cada efeito negativo do alvo".</summary>
-		private static string BonusText(EffectDefinition effect)
+		/// <summary>
+		/// "remove um efeito negativo do alvo", "remove todos os efeitos positivos e negativos de todos os aliados e de todos
+		/// os inimigos" (com <paramref name="other"/>, o mesmo efeito no outro lado).
+		/// </summary>
+		private static string CleanseText(EffectDefinition effect, EffectDefinition? other, Subject? subject)
+		{
+			var where = Where(effect, Form.From, subject) + (other == null ? "" : T("common.and") + Who(other.Target, other.By, Form.From));
+			if (effect.Removes is { } removes && effect.Count == 0)
+				return T($"skill.say.cleanse_all_{removes}", where);
+			return T(effect.Count switch { 0 => "skill.say.cleanse_all", 1 => "skill.say.cleanse", _ => "skill.say.cleanse_many" }, where, effect.Count);
+		}
+
+		/// <summary>
+		/// "ganha +20% de dano nos golpes seguintes para cada efeito negativo do alvo"; com <paramref name="other"/>, os dois
+		/// lados na mesma frase; com teto, "(máximo de +300%)".
+		/// </summary>
+		private static string BonusText(EffectDefinition effect, EffectDefinition? other = null)
 		{
 			var bonus = effect.Bonus switch
 			{
@@ -342,7 +415,9 @@ namespace Sigilos.UI
 				BonusKind.Heal => T("skill.say.bonus.Heal", Percent(effect.Power)),
 				_ => T("skill.say.bonus.Impeto", effect.Power, Impeto, Who(effect.Target, effect.By, Form.To)),
 			};
-			return T("skill.say.per_status", bonus, OneState(effect), Who(effect.From, effect.By, Form.On));
+			var where = Who(effect.From, effect.By, Form.On) + (other == null ? "" : T("common.and") + Who(other.From, other.By, Form.On));
+			var text = T("skill.say.per_status", bonus, OneState(effect), where);
+			return effect.Max > 0 && effect.Bonus != BonusKind.Impeto ? text + T("skill.say.bonus_max", Percent(effect.Max)) : text;
 		}
 
 		/// <summary>O efeito de que a conta fala, no singular: o escolhido (<see cref="EffectDefinition.OnlyStatus"/>) ou o do escopo.</summary>

@@ -52,7 +52,9 @@ namespace Sigilos.Core.Battle
 		{
 			var allies = _session.SideOf(caster.Side);
 			var opponents = _session.SideOf(caster.Side == Side.Allies ? Side.Enemies : Side.Allies);
-			var cast = new Cast(this, caster, Targeting.PickMain(caster, chosen, opponents), allies, opponents, counter, joint);
+			// O alvo escolhido é um aliado (ChosenAlly) ou um inimigo; o aliado segue à parte, para o PickMain não o trocar pelo primeiro inimigo.
+			var chosenAlly = chosen != null && chosen != caster && allies.Contains(chosen) ? chosen : null;
+			var cast = new Cast(this, caster, Targeting.PickMain(caster, chosenAlly == null ? chosen : null, opponents), allies, opponents, counter, joint, chosenAlly: chosenAlly);
 			// Os efeitos ligados a cada golpe saem da fila: agem depois de cada golpe do dano (LandHit).
 			if (effects.Any(effect => effect.When != HitTrigger.Skill))
 				cast.HitEffects = effects.Where(effect => effect.When != HitTrigger.Skill).ToList();
@@ -242,7 +244,7 @@ namespace Sigilos.Core.Battle
 			strike.Landed = true;
 
 			var dealt = strike.Dealt;
-			target.Health = Math.Max(0, target.Health - dealt);
+			target.Health = Math.Max(target.IsBound ? 1 : 0, target.Health - dealt);
 			strike.Cast.Dealt[target] = strike.Cast.Dealt.GetValueOrDefault(target) + dealt;
 			var element = strike.Fixed ? 1 : ElementChart.Multiplier(attacker.Element, target.Element);
 			Emit(new Damaged(target, (int)dealt, (int)strike.Absorbed, crit, element, target.Health));
@@ -305,7 +307,7 @@ namespace Sigilos.Core.Battle
 			amount = Math.Max(1, Math.Round(amount));
 			var absorbed = shielded ? Absorb(target, amount) : 0;
 			var dealt = amount - absorbed;
-			target.Health = Math.Max(0, target.Health - dealt);
+			target.Health = Math.Max(target.IsBound ? 1 : 0, target.Health - dealt);
 			Emit(new Damaged(target, (int)dealt, (int)absorbed, false, 1, target.Health));
 			if (absorbed > 0)
 				Emit(StatusesChanged.Of(target));
@@ -521,10 +523,18 @@ namespace Sigilos.Core.Battle
 			}
 		}
 
-		/// <summary>Remove até <paramref name="count"/> efeitos negativos do alvo, do mais antigo ao mais novo (0 = todos).</summary>
-		public void Cleanse(BattleUnit target, int count = 1)
+		/// <summary>
+		/// Remove até <paramref name="count"/> efeitos do alvo, do mais antigo ao mais novo (0 = todos): os negativos, ou os
+		/// de <paramref name="scope"/> (positivos, negativos ou todos). Os irremovíveis ficam.
+		/// </summary>
+		public void Cleanse(BattleUnit target, int count = 1, StatusScope? scope = null)
 		{
-			var harmful = target.Statuses.Where(s => StatusBehaviors.Of(s.Kind).Harmful && !s.Unremovable).ToList();
+			var harmful = target.Statuses.Where(s => !s.Unremovable && (scope ?? StatusScope.Debuffs) switch
+			{
+				StatusScope.Buffs => !StatusBehaviors.Of(s.Kind).Harmful,
+				StatusScope.Debuffs => StatusBehaviors.Of(s.Kind).Harmful,
+				_ => true,
+			}).ToList();
 			foreach (var status in count > 0 ? harmful.Take(count) : harmful)
 				Remove(status);
 		}
@@ -548,6 +558,20 @@ namespace Sigilos.Core.Battle
 			{
 				Emit(new StatusBlocked(target, status));
 				return;
+			}
+
+			// Único por quem pôs (Filactério): o de antes, em outro aliado, sai (mesmo o irremovível: é troca, não remoção).
+			if (source != null && StatusBehaviors.Of(status).UniquePerSource)
+			{
+				foreach (var unit in source.Team.Where(unit => unit != target))
+				{
+					foreach (var old in unit.Statuses.Where(old => old.Kind == status && old.Source == source).ToList())
+					{
+						unit.Evict(old);
+						Emit(new StatusRemoved(unit, status));
+						Emit(StatusesChanged.Of(unit));
+					}
+				}
 			}
 
 			var full = target.Statuses.Count >= BattleRules.MaxStatuses;
