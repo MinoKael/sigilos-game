@@ -1,5 +1,6 @@
 using Godot;
 using Sigilos.Core.Battle;
+using Sigilos.Core.Content;
 using Sigilos.Core.Progression;
 using Sigilos.Core.Runes;
 using Sigilos.UI.Audio;
@@ -23,13 +24,14 @@ namespace Sigilos.UI.Screens
 	/// 3. na vez de um aliado, espera o toque do jogador (manual) ou pergunta ao
 	///    <see cref="AutoPilot"/> (automático). O automático pode ser ligado e desligado no meio.
 	///
-	/// O campo é a <see cref="BattleArena"/>: o círculo oval com os aliados embaixo à esquerda e os
-	/// inimigos em cima à direita, e o que acontece escrito no meio dele. Em volta: no canto de cima à
+	/// O campo é a <see cref="BattleArena"/>, visto em diagonal: os aliados embaixo à esquerda, perto, e os
+	/// inimigos em cima à direita, ao fundo e menores, e o que acontece escrito no meio dele. Em volta: no canto de cima à
 	/// esquerda o nome da luta, a onda e a rodada, escritas, e embaixo, em pé, quem age a seguir; no de
 	/// cima à direita a pausa (<see cref="PauseMenu"/>: continuar, recomeçar, sair); embaixo à esquerda
-	/// os botões Automático, a velocidade e Efeitos; embaixo à direita uma habilidade por botão, com o
-	/// nome embaixo (segurar mostra o que ela faz). Segurar uma unidade abre o resumo dela, sem parar a
-	/// luta; tocar num aliado também, e tocar num inimigo marca o foco (ver abaixo). O painel de Efeitos abre no centro do círculo. No
+	/// os botões Automático (dourado quando ligado), a velocidade, Efeitos e a ajuda, só com o símbolo; embaixo à
+	/// direita uma habilidade por botão, com o nome embaixo (segurar mostra o que ela faz) e, no fim, o losango da
+	/// Passiva, que só serve para ler o texto dela. Segurar uma unidade abre o resumo dela, sem parar a
+	/// luta; tocar num aliado também, e tocar num inimigo marca o foco (ver abaixo). O painel de Efeitos abre no meio do campo. No
 	/// fim avisa <see cref="Finished"/>; o GameRoot aplica a recompensa, grava o melhor tempo e chama
 	/// <see cref="ShowResult"/>, que mostra o <see cref="BattleResultPanel"/>.
 	///
@@ -75,8 +77,8 @@ namespace Sigilos.UI.Screens
 		/// <summary>A faixa da ordem de turno, à esquerda do campo.</summary>
 		private const float ArenaLeft = 96;
 
-		/// <summary>Onde o centro do oval fica na altura da tela (o mesmo da <see cref="BattleArena"/>).</summary>
-		private const float ArenaMiddle = 0.52f;
+		/// <summary>Onde o texto da ação e o painel de Efeitos ficam, na altura da tela: o meio do campo, um pouco acima do <see cref="BattleArena.Middle"/>.</summary>
+		private const float ArenaMiddle = 0.5f;
 
 		private readonly BattleArena _arena = new() { Name = "Arena" };
 		private readonly HBoxContainer _counters = Layout.Row(Space.Medium).Named("Counters");
@@ -203,8 +205,8 @@ namespace Sigilos.UI.Screens
 
 			if (_coach != null)
 			{
-				// A placa do Mestre fica no quarto de cima à esquerda do campo, o único sempre vazio: os
-				// aliados ficam embaixo à esquerda, e os inimigos, em cima à direita.
+				// A placa do Mestre fica no canto de cima à esquerda do campo, sempre vazio: o time fica embaixo
+				// e os inimigos, em cima à direita.
 				_coach.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
 				_coach.OffsetLeft = _coach.OffsetRight = ArenaLeft + 24;
 				_coach.OffsetTop = _coach.OffsetBottom = 100;
@@ -283,7 +285,7 @@ namespace Sigilos.UI.Screens
 			return Pin(header, LayoutPreset.TopLeft);
 		}
 
-		/// <summary>O que acontece (a onda, quem usa o quê), escrito no meio do círculo.</summary>
+		/// <summary>O que acontece (a onda, quem usa o quê), escrito no meio do campo.</summary>
 		private Control Banner()
 		{
 			_banner.HorizontalAlignment = HorizontalAlignment.Center;
@@ -297,14 +299,14 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>
-		/// O canto de baixo à esquerda: automático, velocidade (o número no sigilo) e Efeitos, numa grade de
-		/// três; o Automático tem largura para "Automático: desligado" caber numa linha.
+		/// O canto de baixo à esquerda: automático, velocidade (o número no sigilo), Efeitos e a ajuda, só com
+		/// o símbolo e sem texto (o botão ligado do automático fica aceso).
 		/// </summary>
 		private Control Controls()
 		{
 			var row = Layout.Grid(4, 10).Named("Controls");
 			row.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
-			_autoButton.Wide(150);
+			_autoButton.Wide(56);
 			_autoButton.ButtonPressed = _auto;
 			_autoButton.Toggled += SetAuto;
 			row.AddChild(_autoButton);
@@ -319,7 +321,7 @@ namespace Sigilos.UI.Screens
 			// Assistindo a Batalha automática, o automático e a velocidade são os dela.
 			_autoButton.Visible = _speedButton.Visible = _watch == null;
 
-			_effectsButton.Text = T("battle.effects");
+			_effectsButton.Wide(56);
 			_effectsButton.Toggled += on =>
 			{
 				_effects.Visible = on;
@@ -392,7 +394,7 @@ namespace Sigilos.UI.Screens
 			return control;
 		}
 
-		/// <summary>Centra um controle de tamanho <paramref name="size"/> no meio do círculo da arena.</summary>
+		/// <summary>Centra um controle de tamanho <paramref name="size"/> no meio do campo da arena.</summary>
 		private static Control OnArenaMiddle(Control control, Vector2 size)
 		{
 			// O campo começa depois da faixa da esquerda e acaba na margem da direita: o meio dele fica deslocado.
@@ -636,7 +638,34 @@ namespace Sigilos.UI.Screens
 				_actions.AddChild(slot);
 			}
 
+			// A Passiva, só para conferir o texto: um losango no fim da fileira, que não age (toque ou toque longo abrem a descrição).
+			if (PassiveOf(ally) is { } passive)
+				_actions.AddChild(PassiveSlot(passive, ally.Awakened));
+
 			return await decision.Task;
+		}
+
+		/// <summary>A habilidade de Passiva de um aliado (a luta guarda só o efeito dela, sem o nome e o desenho).</summary>
+		private SkillDefinition? PassiveOf(BattleUnit unit) =>
+			UiSession.Database?.AllSummons.FirstOrDefault(summon => summon.Id == unit.DefinitionId)?.SkillsFor(unit.Awakened).FirstOrDefault(skill => skill.IsPassive);
+
+		/// <summary>O losango da Passiva com o nome embaixo, como as habilidades, mas sem agir: serve para ler o que ela faz.</summary>
+		private static Control PassiveSlot(SkillDefinition passive, bool awakened)
+		{
+			var slot = new VBoxContainer { Name = "Passive" };
+			slot.AddThemeConstantOverride("separation", Space.Hair);
+			var button = new SigilButton(null, 74, SigilShape.Diamond) { Name = "Button" };
+			button.SetSkill(passive);
+			void Read() => Dialog.Info(button, passive.Name, Texts.Describe(passive, awakened));
+			Press.OnButton(button, Read, Read);
+			slot.AddChild(button);
+			var name = new Label { Name = "Name", Text = passive.Name, HorizontalAlignment = HorizontalAlignment.Center, CustomMinimumSize = new Vector2(92, 0), AutowrapMode = TextServer.AutowrapMode.WordSmart };
+			name.AddThemeFontSizeOverride("font_size", FontSize.Detail);
+			name.AddThemeColorOverride("font_color", Palette.Text);
+			name.AddThemeColorOverride("font_outline_color", Palette.Background);
+			name.AddThemeConstantOverride("outline_size", 4);
+			slot.AddChild(name);
+			return slot;
 		}
 
 		/// <summary>Os alvos possíveis acendem em azul; o sigilo da habilidade fica aceso até o toque no alvo.</summary>
@@ -680,7 +709,12 @@ namespace Sigilos.UI.Screens
 				_decideAutomatically?.Invoke();
 		}
 
-		private void RefreshAuto() => _autoButton.Text = _auto ? T("battle.auto_on") : T("battle.auto_off");
+		/// <summary>Sem texto no botão, o automático ligado se mostra pela cor: dourado ligado, comum desligado.</summary>
+		private void RefreshAuto()
+		{
+			_autoButton.ButtonPressed = _auto;
+			_autoButton.Kind = _auto ? ButtonKind.Primary : ButtonKind.Secondary;
+		}
 
 		private void Close()
 		{
@@ -749,6 +783,7 @@ namespace Sigilos.UI.Screens
 				Show(battleEvent);
 			if (_hud)
 				Sfx.Play(_sounds.Of(beat), Speed);
+
 		}
 
 		/// <summary>
@@ -806,7 +841,7 @@ namespace Sigilos.UI.Screens
 			RefreshCounters();
 			if (boss != null)
 			{
-				// A onda do chefe: a barra grande no alto e o anúncio em vermelho no meio do círculo.
+				// A onda do chefe: a barra grande no alto e o anúncio em vermelho no meio do campo.
 				_bossBar.Track(_views[boss]);
 				_banner.Text = T("battle.boss_wave", number, boss.Name);
 				_banner.AddThemeColorOverride("font_color", Palette.Negative.Lightened(0.2f));
@@ -842,7 +877,8 @@ namespace Sigilos.UI.Screens
 					return;
 
 				case SkillUsed used:
-					_banner.Text = T("battle.uses", used.Actor.Name, used.Skill.Name);
+					// O que a unidade usa aparece nos próprios golpes (números e respingos), sem texto no meio da tela.
+					_banner.Text = "";
 					_banner.AddThemeColorOverride("font_color", Palette.Text);
 					return;
 

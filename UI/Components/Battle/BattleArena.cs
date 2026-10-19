@@ -6,29 +6,28 @@ using Sigilos.UI.Style;
 namespace Sigilos.UI.Components
 {
 	/// <summary>
-	/// O campo da luta: um círculo de conjuração oval no chão, com os aliados no arco de baixo à esquerda
-	/// e os inimigos no arco de cima à direita, frente a frente pela diagonal.
+	/// O campo da luta, em perspectiva: a câmera olha para o fundo. O nosso time fica embaixo, perto e maior; os inimigos, no alto, ao fundo e menores. Cada grupo está
+	/// numa fileira em arco (o do meio mais ao fundo, as pontas mais perto, como a metade de trás de um oval) sobre o
+	/// seu disco de conjuração, um oval deitado (o dos inimigos quase achatado, pela inclinação). Quem está mais ao
+	/// fundo é menor (<see cref="DepthScale"/>) e quem está mais perto é desenhado por cima.
+	///
+	/// Os números de cada fileira e de cada disco são frações do campo (<see cref="Row"/>, <see cref="Disc"/>),
+	/// tirados do desenho de referência do jogo.
 	///
 	/// Quem ataca corre até o alvo e para na frente dele (<see cref="Approach"/>), dá um tranco a cada golpe
 	/// (<see cref="Bump"/>) e volta ao seu lugar (<see cref="Return"/>); num golpe em
-	/// área corre até o meio do grupo. Cada alvo atingido ganha um respingo (<see cref="Splash"/>), todos
-	/// juntos quando o golpe é em área.
+	/// área corre até o meio do grupo, e o tamanho acompanha a profundidade no caminho. Cada alvo atingido
+	/// ganha um respingo (<see cref="Splash"/>), todos juntos quando o golpe é em área.
 	///
 	/// As unidades são filhas diretas, em posição absoluta. <see cref="Arrange"/> as recoloca a cada
-	/// mudança de tamanho: o espaço entre vizinhas é medido ao longo da elipse, e o grupo fica centrado no
-	/// seu arco, tenha ele 1 ou 5 unidades. Numa onda com chefe, ele fica no meio do arco (o cartão dele é
-	/// maior) e os outros em volta, um de cada lado, com mais folga junto dele; quem ficaria com os efeitos
-	/// embaixo da barra do chefe (<see cref="Ceiling"/>) desce o bastante para eles aparecerem.
+	/// mudança de tamanho: o grupo fica centrado na sua fileira, tenha ele 1 ou 5 unidades. Numa onda com
+	/// chefe, ele fica no meio da fileira (o cartão dele é maior) e os outros em volta, um de cada lado, com
+	/// mais folga junto dele; quem ficaria com os efeitos embaixo da barra do chefe (<see cref="Ceiling"/>)
+	/// desce o bastante para eles aparecerem.
 	/// </summary>
 	public partial class BattleArena : Control
 	{
-		// Os arcos de cada lado, em graus (0 = direita, 90 = embaixo).
-		private const float AllyFrom = 190;
-		private const float AllyTo = 80;
-		private const float EnemyFrom = -100;
-		private const float EnemyTo = 10;
-
-		/// <summary>Vagas de cada arco: o espaço entre vizinhas é o de um grupo cheio.</summary>
+		/// <summary>Vagas de cada fileira: o espaço entre vizinhas é o de um grupo cheio.</summary>
 		private const int Slots = 5;
 
 		private const int Samples = 64;
@@ -36,11 +35,33 @@ namespace Sigilos.UI.Components
 		/// <summary>A folga a mais (em passos) entre o chefe e quem fica ao lado dele.</summary>
 		private const float BossRoom = 0.3f;
 
+		/// <summary>
+		/// Uma fileira em arco, em frações do campo: <paramref name="Apex"/> é o centro da unidade do meio (a mais ao
+		/// fundo); a unidade da vaga <c>t</c> (de −1 a 1, de meio em meio) fica em
+		/// <c>Apex + (HalfSpan·t, Sag·t² + Tilt·t)</c>, com <c>Sag</c> o quanto as pontas descem e <c>Tilt</c> o quanto a
+		/// direita desce a mais que a esquerda.
+		/// </summary>
+		private readonly record struct Row(Vector2 Apex, float HalfSpan, float Sag, float Tilt);
+
+		/// <summary>O disco sob um grupo, em frações do campo: o centro e os dois raios (sem giro).</summary>
+		private readonly record struct Disc(Vector2 Center, float RadiusX, float RadiusY);
+
+		private static readonly Row AllyRow = new(new Vector2(0.445f, 0.671f), 0.2754f, 0.0765f, 0.0087f);
+		private static readonly Row EnemyRow = new(new Vector2(0.666f, 0.2728f), 0.1963f, 0.0548f, 0.0073f);
+		private static readonly Disc AllyDisc = new(new Vector2(0.4398f, 0.7636f), 0.3733f, 0.0915f);
+		private static readonly Disc EnemyDisc = new(new Vector2(0.6597f, 0.3481f), 0.2656f, 0.0436f);
+
+
+		/// <summary>O tamanho de quem está no fundo (o inimigo mais alto) e de quem está bem perto.</summary>
+		private const float FarScale = 0.72f;
+		private const float NearScale = 1.12f;
+
 		private readonly List<Control> _allies = new();
 		private readonly List<Control> _enemies = new();
 		private Control? _boss;
 		private readonly Dictionary<Control, Vector2> _homes = new();
-		private readonly ImpactLayer _impacts = new() { Name = "Impacts" };
+		private readonly Dictionary<Control, float> _homeScales = new();
+		private readonly ImpactLayer _impacts = new() { Name = "Impacts", ZIndex = 0 };
 
 		public BattleArena()
 		{
@@ -57,10 +78,13 @@ namespace Sigilos.UI.Components
 		/// </summary>
 		public float Ceiling { get; set; }
 
-		/// <summary>O centro do oval, um pouco abaixo do meio.</summary>
-		public Vector2 Middle => new(Size.X * 0.5f, Size.Y * 0.52f);
+		private Vector2 Frac(Vector2 fraction) => new(Size.X * fraction.X, Size.Y * fraction.Y);
 
-		private Vector2 Radii => new(Mathf.Min(Size.X * 0.34f, 430), Mathf.Min(Size.Y * 0.36f, 260));
+		/// <summary>O meio do campo, entre os dois grupos: onde o texto do que acontece e o painel de Efeitos ficam.</summary>
+		public Vector2 Middle => (Frac(AllyRow.Apex) + Frac(EnemyRow.Apex)) / 2;
+
+		/// <summary>O tamanho de uma unidade pela altura do centro dela no campo: mais alto, mais ao fundo, menor.</summary>
+		public float DepthScale(float y) => Mathf.Lerp(FarScale, NearScale, Mathf.Clamp((y / Mathf.Max(1, Size.Y) - 0.25f) / 0.53f, 0, 1));
 
 		public void SetAllies(IReadOnlyList<Control> allies) => Replace(_allies, allies);
 
@@ -73,7 +97,8 @@ namespace Sigilos.UI.Components
 
 		/// <summary>
 		/// Corre até os alvos em <paramref name="seconds"/>: para na frente de um só, do lado de onde veio, ou
-		/// na frente do meio do grupo num golpe em área. Sem alvo (cura, reforço), dá um passo para o centro.
+		/// na frente do meio do grupo num golpe em área. Sem alvo (cura, reforço), dá um passo para o centro. O
+		/// tamanho muda no caminho, para o da profundidade onde ele para.
 		/// </summary>
 		public void Approach(Control actor, IReadOnlyList<Control> targets, double seconds)
 		{
@@ -91,8 +116,9 @@ namespace Sigilos.UI.Components
 				var spot = targets.Aggregate(Vector2.Zero, (sum, target) => sum + CenterOf(target)) / targets.Count;
 				var direction = (from - spot).Normalized();
 				// Encosta no alvo sem cobrir o cartão: anda até os dois retângulos se tocarem (um pouco
-				// antes, no meio de um grupo, para não pisar em ninguém). O cartão do chefe é maior.
-				var extent = targets.Count == 1 ? (actor.Size + targets[0].Size) / 2 : actor.Size;
+				// antes, no meio de um grupo, para não pisar em ninguém). O cartão do chefe é maior; o que vale é o
+				// tamanho que se vê, com a escala.
+				var extent = targets.Count == 1 ? (Seen(actor) + Seen(targets[0])) / 2 : Seen(actor);
 				var reach = Mathf.Min(
 					Mathf.Abs(direction.X) > 0.01f ? extent.X / Mathf.Abs(direction.X) : float.MaxValue,
 					Mathf.Abs(direction.Y) > 0.01f ? extent.Y / Mathf.Abs(direction.Y) : float.MaxValue);
@@ -100,8 +126,9 @@ namespace Sigilos.UI.Components
 			}
 
 			actor.ZIndex = 5;
-			var tween = actor.CreateTween();
+			var tween = actor.CreateTween().SetParallel();
 			tween.TweenProperty(actor, "position", destination - actor.Size / 2, seconds * 0.9).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+			tween.TweenProperty(actor, "scale", Vector2.One * DepthScale(destination.Y), seconds * 0.9).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 		}
 
 		/// <summary>O tranco de um golpe: um passo curto na direção do alvo e de volta.</summary>
@@ -114,15 +141,16 @@ namespace Sigilos.UI.Components
 			tween.TweenProperty(actor, "position", start, seconds * 0.4).SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
 		}
 
-		/// <summary>Volta ao seu lugar no arco em <paramref name="seconds"/>.</summary>
+		/// <summary>Volta ao seu lugar na fileira em <paramref name="seconds"/>, com o tamanho de lá.</summary>
 		public void Return(Control actor, double seconds)
 		{
 			if (!_homes.TryGetValue(actor, out var home))
 				return;
 
-			var tween = actor.CreateTween();
+			var tween = actor.CreateTween().SetParallel();
 			tween.TweenProperty(actor, "position", home, seconds * 0.9).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-			tween.TweenCallback(Callable.From(() => actor.ZIndex = 0));
+			tween.TweenProperty(actor, "scale", Vector2.One * _homeScales.GetValueOrDefault(actor, 1f), seconds * 0.9).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+			tween.Chain().TweenCallback(Callable.From(() => actor.ZIndex = 0));
 		}
 
 		/// <summary>
@@ -130,39 +158,52 @@ namespace Sigilos.UI.Components
 		/// (o tempo do golpe na velocidade da luta); <paramref name="strong"/> num crítico.
 		/// </summary>
 		public void Splash(Control target, Color color, double seconds, bool strong = false) =>
-			_impacts.Splash(CenterOf(target), color, target.Size.X * (strong ? 0.75f : 0.55f), (float)seconds);
+			_impacts.Splash(CenterOf(target), color, Seen(target).X * (strong ? 0.75f : 0.55f), (float)seconds);
 
 		public override void _Draw()
 		{
-			var middle = Middle;
-			var radii = Radii;
-			var ring = Ellipse(middle, radii);
+			DrawDisc(AllyDisc);
+			DrawDisc(EnemyDisc);
+		}
 
-			// O chão: o oval escurecido, o sulco, dois anéis de ouro e as marcas de runa entre eles.
+		/// <summary>
+		/// O disco de um grupo: um oval deitado, com a borda da frente (a de baixo) mais grossa, como quem olha de cima e de
+		/// longe; o anel de dentro e as marcas de runa.
+		/// </summary>
+		private void DrawDisc(Disc disc)
+		{
+			var radii = new Vector2(Size.X * disc.RadiusX, Size.Y * disc.RadiusY);
+			DrawSetTransform(Frac(disc.Center), 0, Vector2.One);
+			var ring = Ellipse(radii);
 			DrawColoredPolygon(ring[..^1], new Color(Palette.Inset, 0.35f));
-			DrawPolyline(ring, new Color(0, 0, 0, 0.5f), 8, true);
-			DrawPolyline(ring, Palette.GoldDark, 2, true);
-			DrawPolyline(Ellipse(middle, radii - new Vector2(16, 16)), new Color(Palette.Gold, 0.4f), 1.5f, true);
-			for (var k = 0; k < 48; k++)
+			DrawPolyline(ring, new Color(0, 0, 0, 0.5f), 4, true);
+			DrawPolyline(ring, Palette.GoldDark, 1.5f, true);
+			// A metade da frente (de 0 a 180 graus, para baixo) em traço grosso.
+			DrawPolyline(ring[..(Samples / 2 + 1)], Palette.GoldDark, 2f + Mathf.Min(6, radii.Y * 0.12f), true);
+			var inner = radii - new Vector2(14, 14 * radii.Y / radii.X);
+			DrawPolyline(Ellipse(inner), new Color(Palette.Gold, 0.4f), 1.2f, true);
+			for (var k = 0; k < 40; k++)
 			{
-				var angle = k * Mathf.Tau / 48;
+				var angle = k * Mathf.Tau / 40;
 				var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-				var length = k % 4 == 0 ? 10 : 5;
-				DrawLine(middle + direction * (radii - new Vector2(15, 15)), middle + direction * (radii - new Vector2(15 - length, 15 - length)), new Color(Palette.Gold, 0.45f), 1.2f, true);
+				var length = k % 4 == 0 ? 8 : 4;
+				DrawLine(inner * direction, (inner - new Vector2(length, length * radii.Y / radii.X)) * direction, new Color(Palette.Gold, 0.45f), 1f, true);
 			}
 
-			// A diagonal do confronto, de um grupo ao outro, e o círculo do centro.
-			DrawLine(Point((AllyFrom + AllyTo) / 2), Point((EnemyFrom + EnemyTo) / 2), new Color(Palette.Gold, 0.14f), 1.5f, true);
-			DrawArc(middle, radii.Y * 0.28f, 0, Mathf.Tau, 64, new Color(Palette.Gold, 0.22f), 1.2f, true);
+			DrawSetTransform(Vector2.Zero, 0, Vector2.One);
 		}
 
 		private static Vector2 CenterOf(Control control) => control.Position + control.Size / 2;
+
+		/// <summary>O tamanho que o cartão tem na tela, com a escala da profundidade.</summary>
+		private static Vector2 Seen(Control control) => control.Size * control.Scale;
 
 		private void Replace(List<Control> group, IReadOnlyList<Control> units)
 		{
 			foreach (var old in group)
 			{
 				_homes.Remove(old);
+				_homeScales.Remove(old);
 				if (IsInstanceValid(old))
 					Layout.Discard(old);
 			}
@@ -179,87 +220,80 @@ namespace Sigilos.UI.Components
 
 		private void Arrange()
 		{
-			Place(_allies, AllyFrom, AllyTo);
-			Place(_enemies, EnemyFrom, EnemyTo, _boss, Ceiling);
+			Place(_allies, AllyRow);
+			Place(_enemies, EnemyRow, _boss, Ceiling);
+			//Sort();
 			QueueRedraw();
 		}
 
+		/// <summary>Quem está mais perto (mais embaixo) é desenhado por cima de quem está atrás; os respingos ficam sobre todos.</summary>
+		private void Sort()
+		{
+			var depth = 0;
+			foreach (var unit in _allies.Concat(_enemies).OrderBy(unit => CenterOf(unit).Y))
+				MoveChild(unit, depth++);
+			MoveChild(_impacts, -1);
+		}
+
 		/// <summary>
-		/// Põe o grupo no arco: vizinhas à mesma distância ao longo da elipse, o grupo no meio do arco. Com
-		/// <paramref name="center"/> (o chefe), ele fica no meio e os outros se alternam dos dois lados.
-		/// Quem ficaria com os efeitos acima de <paramref name="ceiling"/> desce até eles caberem.
+		/// Põe o grupo na fileira em arco: vizinhos a meio passo (<c>t</c> de −1 a 1 em 5 vagas), o grupo no meio da fileira.
+		/// Com <paramref name="boss"/>, ele fica no meio (<c>t = 0</c>) e os outros se alternam dos dois lados. Cada um ganha a
+		/// escala da altura onde fica. Quem ficaria com os efeitos acima de <paramref name="ceiling"/> desce até eles caberem.
 		/// </summary>
-		private void Place(List<Control> group, float from, float to, Control? center = null, float ceiling = 0)
+		private void Place(List<Control> group, Row row, Control? boss = null, float ceiling = 0)
 		{
 			if (group.Count == 0 || Size.X <= 0)
 				return;
 
-			// A elipse não tem fórmula simples de comprimento: soma a distância entre pontos amostrados.
-			var points = new Vector2[Samples + 1];
-			var lengths = new float[Samples + 1];
-			for (var i = 0; i <= Samples; i++)
-			{
-				points[i] = Point(Mathf.Lerp(from, to, i / (float)Samples));
-				if (i > 0)
-					lengths[i] = lengths[i - 1] + points[i].DistanceTo(points[i - 1]);
-			}
-
-			var total = lengths[Samples];
-			var step = total / (Mathf.Max(Slots, group.Count) - 1);
-			var spots = new List<(Control Unit, float At)>();
-			if (center != null && group.Contains(center))
+			const float step = 2f / (Slots - 1);
+			var spots = new List<(Control Unit, float T)>();
+			if (boss != null && group.Contains(boss))
 			{
 				// O chefe no meio; os outros em anéis dos dois lados. O primeiro anel tem folga a mais para
-				// o cartão maior, e o passo encolhe se os anéis não couberem no arco.
-				var others = group.Where(unit => unit != center).ToList();
+				// o cartão maior, e o passo encolhe se os anéis não couberem na fileira.
+				var others = group.Where(unit => unit != boss).ToList();
 				var rings = (others.Count + 1) / 2;
-				var gap = rings == 0 ? step : Mathf.Min(step, total / 2 / (rings + BossRoom));
-				spots.Add((center, total / 2));
+				var gap = rings == 0 ? step : Mathf.Min(step, 1f / (rings + BossRoom));
+				spots.Add((boss, 0));
 				for (var i = 0; i < others.Count; i++)
 				{
 					var side = i % 2 == 0 ? 1 : -1;
-					spots.Add((others[i], total / 2 + side * gap * (i / 2 + 1 + BossRoom)));
+					spots.Add((others[i], side * gap * (i / 2 + 1 + BossRoom)));
 				}
 			}
 			else
 			{
-				var start = (total - step * (group.Count - 1)) / 2;
+				var start = -step * (group.Count - 1) / 2;
 				for (var k = 0; k < group.Count; k++)
 					spots.Add((group[k], start + k * step));
 			}
 
-			foreach (var (unit, at) in spots)
+			foreach (var (unit, t) in spots)
 			{
-				var segment = 1;
-				while (segment < Samples && lengths[segment] < at)
-					segment++;
-				var span = lengths[segment] - lengths[segment - 1];
-				var point = points[segment - 1].Lerp(points[segment], span > 0 ? Mathf.Clamp((at - lengths[segment - 1]) / span, 0, 1) : 0);
-
+				var point = Frac(row.Apex) + new Vector2(Size.X * row.HalfSpan * t, Size.Y * (row.Sag * t * t + row.Tilt * t));
+				var scale = DepthScale(point.Y);
 				unit.Size = unit.CustomMinimumSize;
+				unit.Scale = Vector2.One * scale;
+				if (unit is UnitView view)
+					view.SetDepth(scale);
 				unit.Position = point - unit.Size / 2;
-				var headroom = unit is UnitView view ? view.Headroom : 0;
-				if (unit.Position.Y - headroom < ceiling)
-					unit.Position = new Vector2(unit.Position.X, ceiling + headroom);
+				var headroom = unit is UnitView card ? card.Headroom : 0;
+				// O topo que se vê: o centro menos meia altura com a escala, e a fileira dos efeitos acima.
+				var top = point.Y - unit.Size.Y * scale / 2 - headroom;
+				if (top < ceiling)
+					unit.Position += new Vector2(0, ceiling - top);
 				_homes[unit] = unit.Position;
+				_homeScales[unit] = scale;
 			}
 		}
 
-		/// <summary>O ponto da borda do oval no ângulo dado, em graus.</summary>
-		private Vector2 Point(float degrees)
-		{
-			var angle = Mathf.DegToRad(degrees);
-			var radii = Radii;
-			return Middle + new Vector2(Mathf.Cos(angle) * radii.X, Mathf.Sin(angle) * radii.Y);
-		}
-
-		private static Vector2[] Ellipse(Vector2 middle, Vector2 radii)
+		private static Vector2[] Ellipse(Vector2 radii)
 		{
 			var points = new Vector2[Samples + 1];
 			for (var i = 0; i <= Samples; i++)
 			{
 				var angle = i * Mathf.Tau / Samples;
-				points[i] = middle + new Vector2(Mathf.Cos(angle) * radii.X, Mathf.Sin(angle) * radii.Y);
+				points[i] = new Vector2(Mathf.Cos(angle) * radii.X, Mathf.Sin(angle) * radii.Y);
 			}
 
 			return points;

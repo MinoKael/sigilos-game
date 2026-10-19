@@ -47,7 +47,7 @@ namespace Sigilos.UI.Components
 				return;
 
 			// O selo dos turnos: um círculo escuro com o número branco, preso no canto e meio para fora.
-			var badgeSide = side >= 28 ? 18 : 16;
+			var badgeSide = side >= 28 ? 18 : side >= 22 ? 16 : 14;
 			var badgeBox = new StyleBoxFlat { BgColor = Dark, BorderColor = fill.Lightened(0.35f), AntiAliasing = true };
 			badgeBox.SetBorderWidthAll(1);
 			badgeBox.SetCornerRadiusAll(badgeSide);
@@ -62,7 +62,7 @@ namespace Sigilos.UI.Components
 				MouseFilter = MouseFilterEnum.Ignore,
 			};
 			count.AddThemeFontOverride("font", GameTheme.Serif);
-			count.AddThemeFontSizeOverride("font_size", side >= 28 ? 14 : 11);
+			count.AddThemeFontSizeOverride("font_size", side >= 28 ? 14 : side >= 22 ? 11 : 10);
 			count.AddThemeColorOverride("font_color", Colors.White);
 			count.AddThemeConstantOverride("line_spacing", 0);
 			badge.AddChild(count);

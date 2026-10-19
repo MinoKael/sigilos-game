@@ -12,8 +12,9 @@ namespace Sigilos.UI.Components
 	/// <summary>
 	/// Uma unidade em campo, quase quadrada: o desenho, com o elemento e o nível nos cantos de cima e as
 	/// recargas no de baixo; embaixo dele a barra de Vida (o escudo por cima, o número dentro) e a de
-	/// Ímpeto. Os efeitos ficam numa fileira de quadradinhos em cima do cartão (<see cref="StatusChip"/>:
-	/// vermelho o negativo, verde o positivo, com os turnos no canto). Toque curto é <see cref="Pressed"/> (escolher o alvo); toque longo é
+	/// Ímpeto. Os efeitos ficam em cima do cartão, um quadradinho por cópia, alinhados à esquerda, em até três fileiras de 4
+	/// (<see cref="StatusChip"/>: vermelho o negativo, verde o positivo, com os turnos no canto; a primeira fileira junto
+	/// ao cartão e as outras acima dela). Toque curto é <see cref="Pressed"/> (escolher o alvo); toque longo é
 	/// <see cref="LongPressed"/> (o resumo da unidade, sem parar a luta). Lê o estado do
 	/// <see cref="BattleUnit"/> em <see cref="Refresh"/>; o avanço de quem age é da
 	/// <see cref="BattleArena"/>, o tremor daqui.
@@ -34,7 +35,11 @@ namespace Sigilos.UI.Components
 		private readonly ProgressBar _shield;
 		private readonly ProgressBar _impeto;
 		private readonly Label _healthText;
-		private readonly HBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Ignore };
+		/// <summary>Os efeitos em fileiras de <see cref="PerRow"/>, alinhadas à esquerda do cartão: a primeira junto a ele, as outras acima.</summary>
+		private readonly VBoxContainer _statuses = new() { Name = "Statuses", MouseFilter = MouseFilterEnum.Ignore, GrowHorizontal = GrowDirection.End, GrowVertical = GrowDirection.Begin };
+		private readonly HBoxContainer[] _rows = Enumerable.Range(1, Rows)
+			.Select(number => new HBoxContainer { Name = $"Row{number}", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Begin })
+			.ToArray();
 		private readonly Label _cooldown = new() { Name = "Cooldowns", MouseFilter = MouseFilterEnum.Ignore };
 		private readonly Press _press = new() { Bounce = false };
 		private readonly float _scale;
@@ -69,12 +74,19 @@ namespace Sigilos.UI.Components
 			if (unit.Awakened)
 				level.AddThemeColorOverride("font_color", Palette.Awakened);
 			art.AddChild(level);
-			// Os efeitos em cima do cartão, por fora da moldura, crescendo para a direita (os do chefe ficam na barra dele).
-			// O selo dos turnos sai um pouco do canto de cada quadradinho: o espaço entre eles não deixa cobrir o vizinho.
-			_statuses.AddThemeConstantOverride("separation", 9);
-			_statuses.SetAnchorsAndOffsetsPreset(LayoutPreset.TopLeft);
-			_statuses.OffsetTop = _statuses.OffsetBottom = -(StatusChip.Side + 10);
-			_statuses.OffsetLeft = _statuses.OffsetRight = -4;
+			// Os efeitos em cima do cartão, por fora da moldura, alinhados à esquerda dele e crescendo para cima: até 4 por fileira,
+			// 10 no total (os do chefe ficam na barra dele). O selo dos turnos sai do canto de cada quadradinho, então
+			// a fileira de cima fica a um selo de distância.
+			foreach (var row in _rows)
+				row.AddThemeConstantOverride("separation", RowGap);
+			_statuses.AddThemeConstantOverride("separation", BadgeRoom);
+			foreach (var row in _rows.Reverse())
+				_statuses.AddChild(row);
+			_statuses.SetAnchorsPreset(LayoutPreset.TopLeft);
+			_statuses.OffsetTop = _statuses.OffsetBottom = -9;
+			_statuses.OffsetLeft = _statuses.OffsetRight = -12;
+
+			_statuses.Resized += () => _statuses.PivotOffset = new Vector2(0, _statuses.Size.Y);
 			if (!unit.IsBoss)
 				art.AddChild(_statuses);
 			art.AddChild(Corner(_cooldown, LayoutPreset.BottomRight, (int)(11 * _scale)));
@@ -109,6 +121,16 @@ namespace Sigilos.UI.Components
 			Restyle();
 		}
 
+		/// <summary>
+		/// O cartão na profundidade da luta: a escala dele (menor ao fundo) e, em sentido contrário, a dos efeitos
+		/// em cima dele, que seguem do tamanho de sempre para poder ler; presos pelo meio da borda de baixo.
+		/// </summary>
+		public void SetDepth(float scale)
+		{
+			_statuses.Scale = Vector2.One / scale;
+			_statuses.PivotOffset = new Vector2(0, _statuses.Size.Y);
+		}
+
 		public event Action<UnitView>? Pressed;
 
 		/// <summary>Toque longo (ou clique direito): o resumo da unidade.</summary>
@@ -123,7 +145,18 @@ namespace Sigilos.UI.Components
 		/// Quanto a fileira dos efeitos (com o selo dos turnos) sobe acima da borda do cartão; zero no chefe,
 		/// que não tem a fileira.
 		/// </summary>
-		public float Headroom => Unit.IsBoss ? 0 : StatusChip.Side + 14;
+		public float Headroom => Unit.IsBoss ? 0 : Rows * ChipSide + (Rows - 1) * BadgeRoom + 9 + 8;
+
+		/// <summary>Quadradinhos por fileira (três fileiras: o limite de 10 efeitos).</summary>
+		public const int PerRow = 4;
+
+		private const int Rows = 3;
+
+		private const int ChipSide = 18;
+		private const int RowGap = 4;
+
+		/// <summary>O espaço entre as fileiras: o selo dos turnos da de baixo sobe por ele.</summary>
+		private const int BadgeRoom = 8;
 
 		// A Vida que a tela mostra agora. O simulador anda na frente da animação (a ação inteira já foi
 		// calculada quando o primeiro golpe aparece): quem tem a Vida do momento é o evento (ShowHealth).
@@ -199,12 +232,24 @@ namespace Sigilos.UI.Components
 			_healthText.Text = alive ? $"{health:0}" : Unit.Reviving ? T("battle.reviving") : T("battle.fallen");
 			_impeto.Value = ShownImpeto;
 
-			// Um quadradinho por efeito; vários do mesmo (o Veneno acumula) mostram o prazo mais longo.
-			Layout.Clear(_statuses);
+			// Um quadradinho por efeito, uma cópia cada (o Veneno e a Aflição acumulam): os 4 primeiros na fileira junto
+			// ao cartão e os outros na de cima, para os primeiros nunca mudarem de lugar.
+			foreach (var row in _rows)
+				Layout.Clear(row);
 			if (!Unit.IsBoss)
 			{
-				foreach (var mark in ShownStatuses)
-					_statuses.AddChild(new StatusChip(mark.Kind, mark.Turns, unremovable: mark.Unremovable));
+				var copies = new Dictionary<StatusKind, int>();
+				var marks = ShownStatuses;
+				for (var i = 0; i < marks.Count; i++)
+				{
+					var mark = marks[i];
+					var number = copies[mark.Kind] = copies.GetValueOrDefault(mark.Kind) + 1;
+					var chip = new StatusChip(mark.Kind, mark.Turns, ChipSide, mark.Unremovable) { Name = $"{mark.Kind}{number}" };
+					_rows[Math.Min(i / PerRow, Rows - 1)].AddChild(chip);
+				}
+
+				for (var r = 1; r < Rows; r++)
+					_rows[r].Visible = marks.Count > r * PerRow;
 			}
 
 			_cooldown.Text = string.Join(" ", Enumerable.Range(1, Math.Max(0, Unit.Skills.Count - 1))

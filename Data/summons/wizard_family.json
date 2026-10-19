@@ -252,7 +252,7 @@
           "image": "magia_trevas",
           "cooldown": 5,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.47, "hits": 3},
+            {"kind": "Damage", "target": "AllEnemies", "power": 3.47, "hits": 1},
             {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.5, "turns": 2, "when": "Hit"},
             {"kind": "Status", "target": "AllEnemies", "status": "DefenseBreak", "chance": 0.5, "turns": 2, "when": "Hit"},
             {"kind": "Status", "target": "AllEnemies", "status": "SpeedDown", "chance": 0.5, "turns": 2, "when": "Hit"},

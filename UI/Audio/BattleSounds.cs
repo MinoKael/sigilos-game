@@ -17,9 +17,10 @@ namespace Sigilos.UI.Audio
 	/// - A queda vem <see cref="FollowDelay"/> depois do golpe que a causou.
 	/// - O que não é golpe: uma ação que só cura, fortalece ou enfraquece soa uma vez (o bem ou o mal), e a
 	///   volta à vida soa como o bem. A Bomba que explode soa como o acerto pesado.
+	/// - O que acontece sozinho também soa: o dano de efeito (Veneno e outros) é o acerto simples, a cura
+	///   de efeito é o bem e o turno perdido é o mal.
 	/// - Calados: o caminho até o alvo, o erro e a Égide, o crítico, o efeito que o golpe põe, a resistência
-	///   e a imunidade, o Ímpeto, o turno perdido, o dano de Veneno e o que acontece sozinho no começo e no
-	///   fim do turno.
+	///   e a imunidade, o Ímpeto, e o começo e o fim do turno (a troca de efeitos).
 	/// - A onda (a do chefe tem a entrada dele), a vitória e a derrota.
 	///
 	/// Guarda a ação de agora (quem golpeia e com quê) entre os momentos: uma por tela de luta.
@@ -115,9 +116,10 @@ namespace Sigilos.UI.Audio
 
 		private void Volley(IReadOnlyList<BattleEvent> events, List<Cue> cues)
 		{
-			if (_actor != null && events.Any(e => e is Damaged))
+			if (events.Any(e => e is Damaged))
 			{
-				cues.Add(new Cue(_struck ? HitSound : Strike(_actor, _skill)));
+				// O dano que vem sem ninguém (Veneno, Sangramento, Bomba) soa como o acerto simples.
+				cues.Add(new Cue(_actor == null ? HitSound : _struck ? HitSound : Strike(_actor, _skill)));
 				_struck = true;
 			}
 
@@ -142,7 +144,8 @@ namespace Sigilos.UI.Audio
 			var name = battleEvent switch
 			{
 				WaveStarted wave => wave.Enemies.Any(enemy => enemy.IsBoss) ? "combat.boss.enter" : "progression.new_wave",
-				Healed when _actor != null => BoonSound,
+				Healed => BoonSound,
+				TurnSkipped => BaneSound,
 				StatusApplied applied when _actor != null => BattleRules.IsNegative(applied.Status) ? BaneSound : BoonSound,
 				StatusRemoved { Status: StatusKind.Bomb } when _actor == null => HeavySound,
 				Revived => BoonSound,

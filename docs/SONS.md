@@ -193,9 +193,10 @@ o clique.
 - A queda vem 0,12 s depois do golpe (a do chefe tem a dele).
 - A ação que só cura, fortalece, enfraquece ou revive soa uma vez: o bem ou o mal. A Bomba que
   explode é o acerto pesado.
+- O que acontece sozinho também soa: o dano de efeito (Veneno e outros) é o acerto simples, a cura de
+  efeito é o bem e o turno perdido é o mal.
 - Calados: o erro e a Égide, o crítico, a vantagem de elemento, o escudo, o efeito que o golpe põe,
-  a resistência e a imunidade, o Ímpeto, o turno perdido, o Veneno e o que acontece sozinho no
-  começo e no fim do turno.
+  a resistência e a imunidade, o Ímpeto, e o começo e o fim do turno (a troca de efeitos).
 - A onda (a do chefe tem a entrada dele), a vitória e a derrota.
 
 Os atrasos aceleram com a luta; a vista pequena da Batalha automática é muda. O turno manual soa ao
