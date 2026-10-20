@@ -2,6 +2,7 @@ using Godot;
 using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Progression;
+using Sigilos.Core.Rta;
 using Sigilos.Core.Runes;
 using Sigilos.UI.Audio;
 using Sigilos.UI.Components;
@@ -54,6 +55,9 @@ namespace Sigilos.UI.Screens
 		private readonly BattleSession _session;
 		private readonly string _title;
 		private readonly TutorialCoach? _coach;
+
+		/// <summary>Contra o time de outro jogador (defesa da Arena), a ficha dos monstros dele não abre.</summary>
+		private readonly bool _hideRival;
 		private readonly Dictionary<BattleUnit, UnitView> _views = new();
 
 		/// <summary>A luta da Batalha automática que a tela assiste; nula na luta jogada.</summary>
@@ -61,6 +65,23 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>Com o que fica em volta do campo (cabeçalho, ordem de turno, botões); só o campo na vista pequena.</summary>
 		private readonly bool _hud = true;
+
+		/// <summary>A luta da Arena do Véu contra outro jogador; nulo nas outras. Nela as jogadas vêm do servidor.</summary>
+		private readonly OnlineBattle? _online;
+
+		/// <summary>O lado do jogador: os <c>Allies</c> da sessão, ou os <c>Enemies</c> para quem escolheu em segundo na Arena do Véu.</summary>
+		private readonly Side _mine = Side.Allies;
+
+		private readonly Label _clock = new() { Name = "TurnClock", HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = MouseFilterEnum.Ignore };
+		private readonly Godot.Timer _clockTick = new() { Name = "ClockTick", WaitTime = 0.25, Autostart = false };
+		private double _deadline;
+
+		/// <summary>Cancela a espera da decisão do jogador (o prazo estourou e o servidor já jogou por ele).</summary>
+		private Action? _cancelDecision;
+
+		private IReadOnlyList<BattleUnit> MyUnits => _mine == Side.Allies ? _session.Allies : _session.Enemies;
+
+		private IReadOnlyList<BattleUnit> TheirUnits => _mine == Side.Allies ? _session.Enemies : _session.Allies;
 
 		/// <summary>A seta de voltar da tela cheia que assiste.</summary>
 		private readonly Action? _back;
@@ -86,9 +107,9 @@ namespace Sigilos.UI.Screens
 		private string _round = "";
 		private readonly Label _banner = new() { Name = "Banner" };
 		private readonly HBoxContainer _actions = Layout.Row(Space.Large).Named("Skills");
-		private readonly GameButton _autoButton = new("", ButtonKind.Secondary, "auto", 56) { Name = "Auto", ToggleMode = true };
-		private readonly SigilButton _speedButton = new(null, 56, SigilShape.Square) { Name = "Speed" };
-		private readonly GameButton _effectsButton = new("", ButtonKind.Secondary, "effects", 56) { Name = "Effects", ToggleMode = true };
+		private readonly SigilButton _autoButton = new(null, 56, SigilShape.Square) { Name = "Auto" };
+		private readonly SigilButton _configButton = new(null, 56, SigilShape.Square) { Name = "Config" };
+		private readonly SigilButton _effectsButton = new(Art.Icon("effects"), 56, SigilShape.Square) { Name = "Effects", ToggleMode = true };
 		private readonly TurnOrderBar _order = new();
 		private readonly BossBar _bossBar = new();
 		private readonly PanelContainer _effects = new() { Name = "EffectsPanel", Visible = false };
@@ -99,9 +120,12 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>O inimigo que o jogador marcou: o automático ataca ele primeiro. Some quando ele cai ou a onda acaba.</summary>
 		private BattleUnit? _focus;
-		private int _speedIndex = 1;
+		private int _speedIndex;
 		private bool _closed;
 		private bool _finished;
+
+		/// <summary>Ataca o inimigo tocado com a 1ª habilidade, no manual; nulo quando ninguém espera ou ela não pode.</summary>
+		private Action<BattleUnit>? _quickAttack;
 
 		/// <summary>Decide no automático a vez que está esperando o jogador; nulo quando ninguém espera.</summary>
 		private Action? _decideAutomatically;
@@ -114,8 +138,9 @@ namespace Sigilos.UI.Screens
 
 		/// <param name="coach">O Mestre da luta de treino; nulo nas outras lutas.</param>
 		/// <param name="focusBoss">O automático mira o chefe (a preferência salva; muda na pausa).</param>
-		public BattleScreen(BattleSession session, string title, bool auto, TutorialCoach? coach = null, bool focusBoss = false)
+		public BattleScreen(BattleSession session, string title, bool auto, TutorialCoach? coach = null, bool focusBoss = false, bool hideRival = false)
 		{
+			_hideRival = hideRival;
 			_session = session;
 			_title = title;
 			_auto = auto && coach == null;
@@ -137,6 +162,19 @@ namespace Sigilos.UI.Screens
 			_hud = back != null;
 			_back = back;
 			_speedIndex = BattlePace.Speeds.Count - 1;
+			_sounds = new BattleSounds();
+		}
+
+		/// <summary>
+		/// A luta da Arena do Véu contra outro jogador (<see cref="OnlineBattle"/>): o time dele fica embaixo, de qualquer
+		/// lado que seja na sessão, e as jogadas dos dois vêm do servidor.
+		/// </summary>
+		public BattleScreen(OnlineBattle online, string title)
+		{
+			_online = online;
+			_session = online.Replica.Match.Session;
+			_mine = online.Seat == RtaSeat.First ? Side.Allies : Side.Enemies;
+			_title = title;
 			_sounds = new BattleSounds();
 		}
 
@@ -177,7 +215,7 @@ namespace Sigilos.UI.Screens
 			_arena.OffsetTop = 16;
 			_arena.OffsetBottom = -16;
 			AddChild(_arena);
-			_arena.SetAllies(_session.Allies.Select((ally, i) => (Control)ViewFor(ally, $"Ally{i + 1}")).ToList());
+			_arena.SetAllies(MyUnits.Select((ally, i) => (Control)ViewFor(ally, $"Ally{i + 1}")).ToList());
 
 			AddChild(Header());
 			AddChild(Banner());
@@ -189,7 +227,7 @@ namespace Sigilos.UI.Screens
 			AddChild(_bossBar);
 			AddChild(Pin(_order, LayoutPreset.TopLeft));
 			_order.OffsetTop = _order.OffsetBottom = 104;
-            AddChild(Pin(_back != null ? new BackButton(_back) { Name = "Back" } : SigilButton.Of("pause", OpenPause, 56, SigilShape.Square), LayoutPreset.TopRight));
+            AddChild(Pin(_back != null ? new BackButton(_back) { Name = "Back" } : Help(), LayoutPreset.TopRight));
 			AddChild(Pin(Controls(), LayoutPreset.BottomLeft));
 			AddChild(Pin(_actions, LayoutPreset.BottomRight));
 			AddChild(EffectsPanel());
@@ -203,6 +241,12 @@ namespace Sigilos.UI.Screens
 				return;
 			}
 
+			if (_online != null)
+			{
+				StartOnline();
+				return;
+			}
+
 			if (_coach != null)
 			{
 				// A placa do Mestre fica no canto de cima à esquerda do campo, sempre vazio: o time fica embaixo
@@ -212,6 +256,12 @@ namespace Sigilos.UI.Screens
 				_coach.OffsetTop = _coach.OffsetBottom = 100;
 				AddChild(_coach);
 				_autoButton.Disabled = true;
+			}
+
+			if (_hideRival)
+			{
+				_order.Mine = _mine;
+				_order.HideRival = true;
 			}
 
 			RefreshAuto();
@@ -306,33 +356,33 @@ namespace Sigilos.UI.Screens
 		{
 			var row = Layout.Grid(4, 10).Named("Controls");
 			row.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
-			_autoButton.Wide(56);
-			_autoButton.ButtonPressed = _auto;
-			_autoButton.Toggled += SetAuto;
+			_configButton.SetIcon(Art.Icon("gears"));
+			_configButton.Pressed += OpenPause;
+			row.AddChild(_configButton);
+
+			_autoButton.Pressed += CycleAuto;
 			row.AddChild(_autoButton);
+			// Assistindo a Batalha automática, o automático e a velocidade são os dela; online, a pausa é a desistência.
+			_autoButton.Visible = _watch == null && _online == null;
+			_configButton.Visible = _watch == null;
 
-			ShowSpeed();
-			_speedButton.Pressed += () =>
-			{
-				_speedIndex = (_speedIndex + 1) % BattlePace.Speeds.Count;
-				ShowSpeed();
-			};
-			row.AddChild(_speedButton);
-			// Assistindo a Batalha automática, o automático e a velocidade são os dela.
-			_autoButton.Visible = _speedButton.Visible = _watch == null;
-
-			_effectsButton.Wide(56);
 			_effectsButton.Toggled += on =>
 			{
 				_effects.Visible = on;
 				RefreshEffects();
 			};
 			row.AddChild(_effectsButton);
-            var help = new SigilButton(null, 48) { Name = "Help", Letters = "?" };
-            help.SetLetterSize(26);
-            help.Pressed += () => ExplainEffects(help);
-            row.AddChild(help);
-            return row;
+			if (_back != null)
+				row.AddChild(Help());
+			return row;
+		}
+
+		/// <summary>O "?" dos Efeitos: no canto de cima à direita (na tela cheia da Batalha automática, ao lado dos botões).</summary>
+		private SigilButton Help()
+		{
+			SigilButton help = null!;
+			help = SigilButton.Of("help", () => ExplainEffects(help), 48);
+			return help;
 		}
 
 		/// <summary>A onda e a rodada, em cápsulas.</summary>
@@ -345,17 +395,18 @@ namespace Sigilos.UI.Screens
 				_counters.AddChild(Layout.Labeled("resolve", _round, T("battle.round_tip")).Named("Round"));
 		}
 
-		private void ShowSpeed()
-		{
-			var label = BattlePace.Speeds[_speedIndex].Label;
-			_speedButton.Letters = $"{label}×";
-		}
-
 		/// <summary>Pausa a luta e abre o menu: continuar, recomeçar do começo ou sair.</summary>
 		private void OpenPause()
 		{
 			if (_closed)
 				return;
+			if (_online != null)
+			{
+				if (!_finished)
+					OpenLeave();
+				return;
+			}
+
 			// Foco no chefe só aparece em luta que tem chefe; a preferência vale para todas (e para a Batalha automática).
 			PauseMenu.Open(this, Restart, Close, _session.HasBoss ? (_focusBoss, on =>
 			{
@@ -476,8 +527,8 @@ namespace Sigilos.UI.Screens
 
             var teams = new[]
             {
-				new { Members = _session.Allies, Column = alliesColumn },
-				new { Members = _session.Enemies, Column = enemiesColumn }
+				new { Members = MyUnits, Column = alliesColumn },
+				new { Members = TheirUnits, Column = enemiesColumn }
 			};
 
             foreach (var team in teams)
@@ -488,12 +539,13 @@ namespace Sigilos.UI.Screens
                     var unit = units[i];
                     var row = Layout.Row(Space.Medium).Named($"Unit{i + 1}");
                     var frame = new PanelContainer { Name = "Portrait", MouseFilter = MouseFilterEnum.Stop };
-                    var ring = unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow;
+                    var ring = unit.Side == _mine ? Palette.Health : Palette.HealthLow;
 
                     frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, ring, 2, 18, 2));
                     frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 36));
                     var shown = unit;
-                    Press.On(frame, () => MonsterSummary.Open(frame, shown), () => MonsterSummary.Open(frame, shown));
+                    if (!HidesFromMe(shown))
+                        Press.On(frame, () => MonsterSummary.Open(frame, shown), () => MonsterSummary.Open(frame, shown));
                     row.AddChild(frame);
 
                     var statuses = Layout.Flow(Space.Small).Named("Statuses");
@@ -516,7 +568,7 @@ namespace Sigilos.UI.Screens
         /// <summary>O cartão de <paramref name="unit"/>, de nome <paramref name="name"/> (<c>Ally2</c>, <c>Enemy1</c>).</summary>
         private UnitView ViewFor(BattleUnit unit, string name)
 		{
-			var view = new UnitView(unit) { Name = name };
+			var view = new UnitView(unit) { Name = name, Mine = _mine };
 			view.Pressed += v =>
 			{
 				if (_pickTarget != null)
@@ -526,15 +578,27 @@ namespace Sigilos.UI.Screens
 				}
 
 				// Inimigo: marca (ou desmarca) o foco. Aliado (ou qualquer um, assistindo): o resumo, como no toque longo.
-				if (v.Unit.Side == Side.Enemies && _watch == null)
-					ToggleFocus(v);
-				else
+				if (v.Unit.Side != _mine && _watch == null)
+				{
+					if (_auto)
+						ToggleFocus(v);
+					else
+						_quickAttack?.Invoke(v.Unit);
+				}
+				else if (!HidesFromMe(v.Unit))
 					MonsterSummary.Open(v, v.Unit);
 			};
-			view.LongPressed += v => MonsterSummary.Open(v, v.Unit);
+			view.LongPressed += v =>
+			{
+				if (!HidesFromMe(v.Unit))
+					MonsterSummary.Open(v, v.Unit);
+			};
 			_views[unit] = view;
 			return view;
 		}
+
+		/// <summary>Na Arena do Véu, o monstro do rival não mostra a ficha (atributos e habilidades) durante a luta.</summary>
+		private bool HidesFromMe(BattleUnit unit) => (_online != null || _hideRival) && unit.Side != _mine;
 
 		/// <summary>Marca o inimigo tocado como foco do automático, ou desmarca se já era ele.</summary>
 		private void ToggleFocus(UnitView view)
@@ -579,6 +643,167 @@ namespace Sigilos.UI.Screens
 				Finished?.Invoke(_session.Victory == true);
 		}
 
+		// Arena do Véu ------------------------------------------------------------------------------
+
+		/// <summary>Monta o campo da luta contra outro jogador: o time dele embaixo, o do rival em cima, e o relógio do turno.</summary>
+		private void StartOnline()
+		{
+			_order.Mine = _mine;
+			_order.HideRival = true;
+			_arena.SetEnemies(TheirUnits.Select((unit, i) => (Control)ViewFor(unit, $"Enemy{i + 1}")).ToList());
+			_clock.SetAnchorsAndOffsetsPreset(LayoutPreset.CenterTop);
+			_clock.GrowHorizontal = GrowDirection.Both;
+			_clock.OffsetTop = 8;
+			_clock.OffsetBottom = 44;
+			_clock.OffsetLeft = -200;
+			_clock.OffsetRight = 200;
+			_clock.AddThemeFontOverride("font", GameTheme.Serif);
+			_clock.AddThemeFontSizeOverride("font_size", FontSize.Strong);
+			_clock.AddThemeColorOverride("font_outline_color", Palette.Background);
+			_clock.AddThemeConstantOverride("outline_size", 6);
+			AddChild(_clock);
+			_clockTick.Timeout += ShowClock;
+			AddChild(_clockTick);
+			_clockTick.Start();
+			RunOnline();
+		}
+
+		/// <summary>
+		/// Segue o servidor: cada turno chega como <c>turn</c> (de quem é e quanto tempo tem) e <c>acted</c> (o que foi
+		/// decidido, por quem foi e a impressão digital da luta). A cópia local avança com a decisão e a tela toca o
+		/// resultado. Na vez do jogador, os botões das habilidades abrem e a escolha vai ao servidor; se o prazo
+		/// estourar antes, o servidor já jogou e os botões fecham.
+		/// </summary>
+		private async void RunOnline()
+		{
+			var online = _online!;
+			var replica = online.Replica;
+			var warned = false;
+			RtaMessage? last = null;
+
+			await Play(replica.Start());
+			_order.Show(_session.PredictOrder(TurnsShown));
+			while (!_closed)
+			{
+				var (actor, events) = replica.Advance();
+				await Play(events);
+				if (actor == null || _closed)
+					break;
+
+				var turn = await Message(online, "turn");
+				if (turn.Type != "turn")
+				{
+					last = turn;
+					break;
+				}
+
+				var mine = RtaMatch.SeatOf(actor) == online.Seat;
+				SetClock(turn.Seconds, mine);
+				var acted = Message(online, "acted");
+				if (mine)
+				{
+					var decided = DecideMine(actor);
+					await Task.WhenAny(decided, acted);
+					if (decided.IsCompletedSuccessfully && decided.Result is { } action)
+					{
+						var wire = replica.Match.Describe(action);
+						_ = online.Send(new RtaMessage { Type = "act", Turn = turn.Turn, Skill = wire.Skill, Side = wire.TargetSide, Index = wire.TargetIndex });
+					}
+					else
+					{
+						_cancelDecision?.Invoke();
+						ClearActions();
+					}
+				}
+
+				var reply = await acted;
+				ClearClock();
+				if (reply.Type != "acted" || _closed)
+				{
+					last = reply;
+					break;
+				}
+
+				await Play(replica.Apply(reply));
+				if (!replica.InSync && !warned)
+				{
+					warned = true;
+					Dialog.Info(this, T("veil.desync_title"), T("veil.desync"));
+				}
+			}
+
+			ClearClock();
+			ClearActions();
+			if (_closed)
+				return;
+
+			last ??= await Message(online, "end");
+			_finished = true;
+			ShowVeilResult(last);
+		}
+
+		/// <summary>Espera a mensagem do tipo pedido; o fim da partida e o erro (a conexão caiu) valem no lugar de qualquer uma.</summary>
+		private static async Task<RtaMessage> Message(OnlineBattle online, string type)
+		{
+			while (true)
+			{
+				var message = await online.Next();
+				if (message.Type == type || message.Type is "end" or "error")
+					return message;
+			}
+		}
+
+		private async Task<UnitAction?> DecideMine(BattleUnit actor)
+		{
+			try
+			{
+				return await DecideAlly(actor);
+			}
+			catch (OperationCanceledException)
+			{
+				return null;
+			}
+		}
+
+		private bool _clockMine;
+
+		private void SetClock(int seconds, bool mine)
+		{
+			_deadline = Time.GetTicksMsec() / 1000.0 + seconds;
+			_clockMine = mine;
+			ShowClock();
+		}
+
+		private void ClearClock()
+		{
+			_deadline = 0;
+			_clock.Text = "";
+		}
+
+		private void ShowClock()
+		{
+			if (_deadline <= 0)
+				return;
+
+			var left = Math.Max(0, (int)Math.Ceiling(_deadline - Time.GetTicksMsec() / 1000.0));
+			_clock.Text = T(_clockMine ? "veil.your_turn" : "veil.rival_turn", left);
+			_clock.AddThemeColorOverride("font_color", !_clockMine ? Palette.TextFaded : left <= 5 ? Palette.Negative : Palette.Gold);
+		}
+
+		/// <summary>O jogador desiste: o servidor dá a vitória ao rival e manda o fim, que fecha a luta.</summary>
+		private void OpenLeave() => Dialog.Confirm(this, T("veil.leave_title"), T("veil.leave_text"), T("veil.leave"), () => _ = _online!.Send(new RtaMessage { Type = "leave" }), ButtonKind.Danger);
+
+		/// <summary>O resultado da partida; sem o <c>end</c> (a conexão caiu), o aviso de que o servidor termina a luta sozinho.</summary>
+		private void ShowVeilResult(RtaMessage end)
+		{
+			_banner.Text = "";
+			_effectsButton.ButtonPressed = false;
+			var database = UiSession.Database;
+			var before = database?.Arena.GradeOf(end.NewAster - end.Delta).Name ?? "";
+			var after = database?.Arena.GradeOf(end.NewAster).Name ?? "";
+			AddChild(new VeilResultPanel(end, _online!.Seat, before, after, Close));
+		}
+
 		// Decisões ----------------------------------------------------------------------------------
 
 		private async Task<UnitAction> DecideAlly(BattleUnit ally)
@@ -598,6 +823,7 @@ namespace Sigilos.UI.Screens
 
 			Sfx.Play("progression.turn_start");
 			var decision = new TaskCompletionSource<UnitAction>(TaskCreationOptions.RunContinuationsAsynchronously);
+			_cancelDecision = () => decision.TrySetCanceled();
 			void Decide(UnitAction action)
 			{
 				ClearActions();
@@ -606,6 +832,12 @@ namespace Sigilos.UI.Screens
 			}
 
 			_decideAutomatically = () => Decide(AutoPilot.ForAlly(_session, ally, _focusBoss, _focus));
+			_quickAttack = target =>
+			{
+				var first = ally.Skill(0);
+				if (ally.IsReady(0) && first.NeedsTarget && !first.NeedsAlly && _coach?.CanUse(0) != false && _session.ChoosableTargets(ally).Contains(target) && (_coach == null || _coach.CanTarget(target)))
+					Decide(new UnitAction(0, target));
+			};
 
 			for (var i = 0; i < ally.Skills.Count; i++)
 			{
@@ -701,6 +933,8 @@ namespace Sigilos.UI.Screens
 		private void ClearActions()
 		{
 			_decideAutomatically = null;
+			_quickAttack = null;
+			_cancelDecision = null;
 			_pickTarget = null;
 			foreach (var view in _views.Values)
 				view.SetTargetable(false);
@@ -710,16 +944,40 @@ namespace Sigilos.UI.Screens
 		private void SetAuto(bool on)
 		{
 			_auto = on;
+			if (!on)
+				SetFocus(null);
 			RefreshAuto();
 			if (on)
 				_decideAutomatically?.Invoke();
 		}
 
+		/// <summary>Manual, automático e automático em 2×, nessa ordem; o 2× volta ao manual.</summary>
+		private void CycleAuto()
+		{
+			if (!_auto)
+			{
+				_speedIndex = 0;
+				SetAuto(true);
+			}
+			else if (_speedIndex == 0)
+			{
+				_speedIndex = BattlePace.Speeds.Count - 1;
+				RefreshAuto();
+			}
+			else
+			{
+				_speedIndex = 0;
+				SetAuto(false);
+			}
+		}
+
 		/// <summary>Sem texto no botão, o automático ligado se mostra pela cor: dourado ligado, comum desligado.</summary>
 		private void RefreshAuto()
 		{
-			_autoButton.ButtonPressed = _auto;
-			_autoButton.Kind = _auto ? ButtonKind.Primary : ButtonKind.Secondary;
+			var fast = _auto && _speedIndex > 0;
+			_autoButton.SetIcon(Art.Icon(!_auto ? "play" : fast ? "pause" : "fast_forward"));
+			_autoButton.Badge = fast ? $"{BattlePace.Speeds[_speedIndex].Label}×" : "";
+			_autoButton.Highlight = _auto;
 		}
 
 		private void Close()
@@ -866,6 +1124,9 @@ namespace Sigilos.UI.Screens
 			_coach?.Saw(battleEvent);
 			switch (battleEvent)
 			{
+				case WaveStarted when _online != null:
+					return;
+
 				case WaveStarted wave:
 					ShowWave(wave.Wave, wave.WaveCount, wave.Enemies);
 					return;

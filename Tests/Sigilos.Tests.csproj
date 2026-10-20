@@ -27,6 +27,8 @@
     <Compile Include="..\GameEntry\Account\CloudSave.cs" LinkBase="Account" />
     <Compile Include="..\GameEntry\Account\CloudSync.cs" LinkBase="Account" />
     <Compile Include="..\GameEntry\Account\ChatLink.cs" LinkBase="Account" />
+    <Compile Include="..\GameEntry\Account\IRtaChannel.cs" LinkBase="Account" />
+    <Compile Include="..\GameEntry\Account\RtaLink.cs" LinkBase="Account" />
     <Compile Include="..\GameEntry\Account\CloudFriends.cs" LinkBase="Account" />
     <!-- A atualização do executável: manifesto assinado, download conferido e troca de arquivos. -->
     <Compile Include="..\GameEntry\Update\UpdateManifest.cs" LinkBase="Update" />

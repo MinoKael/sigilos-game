@@ -46,6 +46,9 @@ namespace Sigilos.Core.Content
 		/// <summary>As ofertas da Loja Cósmica, em Astrarium.</summary>
 		public IReadOnlyList<ArenaOffer> Shop { get; init; } = new List<ArenaOffer>();
 
+		/// <summary>As ofertas da Loja do Véu (Arena do Véu), em Ecos do Véu.</summary>
+		public IReadOnlyList<ArenaOffer> VeilShop { get; init; } = new List<ArenaOffer>();
+
 		/// <summary>Nomes dos alquimistas de defesa sorteados na lista.</summary>
 		public IReadOnlyList<string> Names { get; init; } = new List<string>();
 
@@ -88,6 +91,9 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Astrarium por vitória contra a lista ou um Rival.</summary>
 		public int Astrarium { get; init; }
+
+		/// <summary>Ecos do Véu por vitória na Arena do Véu.</summary>
+		public int Ecos { get; init; }
 
 		/// <summary>Ouro do prêmio do fim da semana.</summary>
 		public int Gold { get; init; }
@@ -153,7 +159,7 @@ namespace Sigilos.Core.Content
 		public ArenaItem Item { get; init; }
 		public int Amount { get; init; } = 1;
 
-		/// <summary>Em Astrarium.</summary>
+		/// <summary>Em Astrarium (Loja Cósmica) ou Ecos do Véu (Loja do Véu).</summary>
 		public int Price { get; init; }
 
 		/// <summary>Quantas vezes por <see cref="Period"/>; 0 = sem limite.</summary>

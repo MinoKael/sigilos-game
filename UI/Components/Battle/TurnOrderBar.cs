@@ -19,6 +19,12 @@ namespace Sigilos.UI.Components
 			AddThemeConstantOverride("separation", Space.Small);
 		}
 
+		/// <summary>O lado de quem olha: o time dele tem o anel verde, o outro o vermelho (na Arena do Véu o segundo jogador luta pelos inimigos da sessão).</summary>
+		public Side Mine { get; set; } = Side.Allies;
+
+		/// <summary>A ficha do monstro do outro lado não abre (Arena do Véu).</summary>
+		public bool HideRival { get; set; }
+
 		public void Show(IReadOnlyList<BattleUnit> order)
 		{
 			Layout.Clear(this);
@@ -31,9 +37,10 @@ namespace Sigilos.UI.Components
 			{
 				var unit = order[i];
 				var frame = new PanelContainer { Name = $"Turn{i + 1}", MouseFilter = MouseFilterEnum.Stop };
-				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, unit.Side == Side.Allies ? Palette.Health : Palette.HealthLow, 2, 22, 2));
+				frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, unit.Side == Mine ? Palette.Health : Palette.HealthLow, 2, 22, 2));
 				frame.AddChild(Layout.Medal(Art.Creature(unit.Image), Palette.Of(unit.Element), 40));
-				Press.On(frame, () => MonsterSummary.Open(frame, unit), () => MonsterSummary.Open(frame, unit));
+				if (!HideRival || unit.Side == Mine)
+					Press.On(frame, () => MonsterSummary.Open(frame, unit), () => MonsterSummary.Open(frame, unit));
 				AddChild(frame);
 			}
 		}

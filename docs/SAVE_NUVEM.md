@@ -132,8 +132,8 @@ Como ficou:
 - **Se outro aparelho está com a conta na hora da volta**, este volta para o login, sem perder nada. O
   que se jogou sem rede fica no aparelho e entra na conta na próxima entrada aqui, com a pergunta se a
   conta também mudou.
-- **Jogar sem conta** continua existindo, como hoje: tudo local. Ao criar a conta, o save local sobe
-  para ela.
+- **Jogar sem conta** não é mais oferecido na tela de login (o jogo é um serviço online). O save local que já
+  existe num aparelho ainda sobe para a primeira conta que entrar sem save na nuvem.
 
 ### Limites (bons para um grupo de amigos)
 
@@ -176,7 +176,7 @@ o jogo trata como "sem internet". Só ligar o plano pago (Blaze) se quiser, e co
   - `SessionLock`: tomar a sessão, bater, conferir, soltar;
   - `CloudSave`: da seção anterior.
 - O `GameRoot` cuida do resto:
-  - antes do Santuário, abre a tela de login (Entrar, Criar conta, Jogar sem conta);
+  - antes do Santuário, abre a tela de login (Entrar e Criar conta);
   - liga um `Timer` para o batimento;
   - derruba o jogador quando a sessão some.
 - `PlayerState` só ganha os metadados do save. O Core não sabe que existe conta.

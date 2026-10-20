@@ -341,6 +341,12 @@ namespace Sigilos.Core.Content
 				yield return $"Loja Cósmica, oferta {offer.Id}: sem nome, quantidade ou preço.";
 			if (arena.Shop.Select(o => o.Id).Distinct().Count() != arena.Shop.Count)
 				yield return "Loja Cósmica: ids repetidos.";
+			foreach (var offer in arena.VeilShop.Where(o => o.Amount <= 0 || o.Price <= 0 || o.Name.Length == 0))
+				yield return $"Loja do Véu, oferta {offer.Id}: sem nome, quantidade ou preço.";
+			if (arena.VeilShop.Select(o => o.Id).Distinct().Count() != arena.VeilShop.Count)
+				yield return "Loja do Véu: ids repetidos.";
+			foreach (var grade in arena.Grades.Where(g => g.Ecos <= 0))
+				yield return $"Grau {grade.Id}: Ecos do Véu por vitória tem de ser positivo.";
 		}
 
 		/// <summary>

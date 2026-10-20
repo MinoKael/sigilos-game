@@ -11,7 +11,16 @@ um aparelho por vez), num servidor pequeno na instância Oracle que já existe, 
 ## É viável?
 
 Sim, e é leve: um grupo de amigos gera algumas requisições por minuto e guarda poucos KB por conta.
-Qualquer instância Always Free dá conta: a Ampere A1 sobra, e até a AMD micro (1 GB) basta.
+Qualquer instância Always Free dá conta de um grupo de amigos: a Ampere A1 sobra. A AMD micro (1 GB) serve para
+poucas contas: um save grande (~1 MB de JSON) ocupa centenas de MB ao ser lido e conferido, e o pico passou de 500 MB
+nas medições locais. Passou de dezenas de jogadores ao mesmo tempo, use a A1.
+
+Medido no Windows (Release, um Ryzen, o servidor e os 100 clientes de teste na mesma máquina), com um save de 1 MB e
+100 contas: o corpo de um envio vai de ~1,4 MB (JSON em Base64) a ~33 KB (gzip) ou ~0,2 KB (só o que mudou). Um envio
+custa uns 5 a 8 ms de CPU do servidor com gzip e uns 9 a 10 ms só com o que mudou (o servidor lê o save guardado e
+confere do mesmo jeito); 50 envios por segundo ocuparam um quarto de um núcleo (gzip) a meio núcleo (delta). A memória
+é o limite: 100 contas com saves grandes levaram o processo a 600-800 MB (pico de 950 MB), e com o teto do coletor em
+384 MB o servidor ficou sem memória. O `max_memory_restart` do pm2 (`ecosystem.config.js`) precisa acompanhar isso.
 
 O que se ganha:
 - sem cota diária;
@@ -63,13 +72,13 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
 | `refreshTokens` | `_id` (hash do token), `userId`, `deviceId`, `expiresAt` | o token em si nunca é guardado; troca a cada uso |
 | `sessions` | `_id` = userId, `sessionId`, `deviceId`, `deviceName`, `lastSeen` | a trava: um por conta |
 | `saves` | `_id` = userId, `revision`, `savedAt`, `data` (bytes gzip) | ~15 KB por conta |
-| `invites` | `_id` = código, `usedBy` (o id da conta), `usedAt` | só entra quem tem convite: o servidor não fica aberto para estranhos |
+| `invites` | (antiga) | não é mais lida nem escrita: o cadastro é aberto; os documentos antigos ficam no arquivo |
 
 ## API
 
 | Método e rota | Corpo | Resposta |
 | --- | --- | --- |
-| `POST /auth/register` | e-mail, senha, convite, nome | 201; 400 se o convite ou o nome não valem; 409 se o e-mail ou o nome já existem |
+| `POST /auth/register` | e-mail, senha, nome | 201; 400 se o nome não vale; 409 se o e-mail ou o nome já existem |
 | `POST /auth/login` | e-mail, senha, `deviceId` | token de acesso (JWT, 15 min), de renovação (30 dias) e o nome da conta |
 | `POST /auth/refresh` | token de renovação | um par novo (o velho deixa de valer) e o nome da conta |
 | `PUT /account/name` | nome | 200 com o nome; 400 se não vale; 409 se é de outra conta |
@@ -110,8 +119,8 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
   - Refresh token guardado só como hash e trocado a cada uso.
 - **Abuso:**
   - Limitador de requisições em `/auth/*` (por IP).
-  - Tamanho máximo do save (1 MB).
-  - Cadastro só com convite.
+  - Tamanho máximo do save (8 MB).
+  - Cadastro aberto, com limite de 10 por hora por IP (a conta nova ainda é o mesmo risco: um save de até 8 MB por conta).
 - **Backup:**
   - Um serviço dentro do próprio servidor, uma vez por dia, exporta as coleções para JSON compactado e
     manda para o Object Storage da Oracle (há cota gratuita), guardando 7–14 dias.
@@ -130,7 +139,7 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
   em `user://sigilos.account.json`, e a senha nunca. Duas renovações ao mesmo tempo viram uma só,
   porque o token de renovação troca a cada uso.
 - `SessionLock`: tomar, bater a cada 20 s e soltar a sessão.
-- `CloudSave`: baixar e enviar o save, em Base64.
+- `CloudSave`: baixar e enviar o save em gzip e Base64 (JSON puro com servidor antigo), ou só o que mudou (`SaveDelta`).
 - `CloudSync`: quem ganha entre o aparelho e a nuvem, comparando o hash do save e a revisão com o último
   ponto de sincronização. Gravar sem mudar nada não conta como mudança.
 - `AccountStore`: o arquivo da conta no aparelho.
@@ -140,11 +149,10 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
 
 O fluxo, no `GameRoot`:
 1. **Abrir o jogo.**
-   - Quem escolheu jogar sem conta abre direto no save local.
    - Quem tem conta lembrada entra sozinho. Sem internet, ela abre com o save deste aparelho (se ele
      tem um desta conta) e o Santuário mostra "Sem conexão".
-   - Os outros veem a tela de login: Entrar, Criar conta (com o nome da conta e o convite) e Jogar sem
-     conta.
+   - Os outros veem a tela de login: Entrar e Criar conta (com o nome da conta). Não há mais "Jogar sem
+     conta": o jogo é um serviço online.
 2. **Entrar.**
    - Toma a sessão. Se outro aparelho bateu há menos de 30 s, pergunta "Entrar aqui fecha a conta
      lá?".
@@ -185,10 +193,9 @@ Coisas vistas ao ligar o jogo no servidor. Nenhuma impede o uso; ficam para quan
 - **Limitador de `/auth/*` por IP:** 10 pedidos por minuto para cada IP. O Caddy manda o IP de quem
   chamou em `X-Forwarded-For`, e o `UseForwardedHeaders` só aceita esse cabeçalho vindo de loopback. Sem
   isso, todos os pedidos chegariam como 127.0.0.1 e dividiriam a mesma cota.
-- **Convite e nome:** o cadastro confere o convite antes de tudo (sem convite, a resposta não diz se o
-  e-mail ou o nome existem), cria a conta e só então gasta o convite, gravando nele o id da conta. A
-  conferência e a gravação ficam sob uma trava, para dois cadastros ao mesmo tempo não pegarem o mesmo
-  convite ou o mesmo nome. O índice de `nameKey` não é único de propósito: contas de antes do nome
+- **Cadastro e nome:** o cadastro é aberto (a recuperação de senha segue pela chave de recuperação, sem e-mail).
+  A conferência e a gravação ficam sob uma trava, para dois cadastros ao mesmo tempo não pegarem o mesmo
+  e-mail ou o mesmo nome. O índice de `nameKey` não é único de propósito: contas de antes do nome
   existir não têm `nameKey`, e o LiteDB contaria os nulos como repetidos.
 - **LGPD:** ainda não há rota para apagar a conta.
 

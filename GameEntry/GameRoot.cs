@@ -7,6 +7,7 @@ using Sigilos.Core.Battle;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
 using Sigilos.Core.Progression;
+using Sigilos.Core.Rta;
 using Sigilos.Core.Social;
 using Sigilos.Core.Summoning;
 using Sigilos.GameEntry.Account;
@@ -200,6 +201,7 @@ namespace Sigilos.GameEntry
 			_account.Chat.Received += _chat.Add;
 			_account.Chat.Refused += _chat.Refuse;
 			_account.Chat.LiveChanged += RefreshChat;
+			WireRta();
 			AddChild(_music);
 			AddChild(_sfx);
 			ApplyVolume(MasterBus, _account.MasterVolume);
@@ -233,7 +235,7 @@ namespace Sigilos.GameEntry
 			// Com --screen (desenvolvimento), ou depois de escolher jogar sem conta, abre direto o save local.
 			var screen = Argument("--screen=");
 			_testSave = Argument("--save=") != null && _account.OfflineStore.SavedAt != null;
-			if (_testSave || screen != null || _account.Offline)
+			if (_testSave || screen != null)
 				PlayOffline(screen);
 			else
 				ShowLogin(resume: _account.Remembered);
@@ -318,6 +320,9 @@ namespace Sigilos.GameEntry
 					ShowHub();
 					Go(Destination.Friends, ShowHub);
 					break;
+				case "veil":
+					ShowVeil();
+					break;
 				case "battle":
 					FightStage(_database.Stage(Math.Min(_player.HighestStage + 1, _database.Stages.Count)));
 					break;
@@ -360,15 +365,10 @@ namespace Sigilos.GameEntry
 			RefreshChat();
 			var login = new LoginScreen(_account.Email, _account.AccountName, _account.Remembered);
 			login.LoginRequested += (email, password) => SignIn(login, () => _account.Login(email, password), false);
-			login.RegisterRequested += (email, password, invite, name) => SignIn(login, () => _account.Register(email, password, invite, name), false);
+			login.RegisterRequested += (email, password, name) => SignIn(login, () => _account.Register(email, password, name), false);
 			login.ResumeRequested += () => SignIn(login, _account.Resume, true);
 			login.ForgetRequested += _account.Forget;
 			login.PasswordResetRequested += email => ResetPassword(login, email);
-			login.OfflineRequested += () =>
-			{
-				_account.Offline = true;
-				PlayOffline();
-			};
 			Swap(login, () => ShowLogin());
 			if (message != null)
 				login.ShowMessage(message);
@@ -494,6 +494,12 @@ namespace Sigilos.GameEntry
 			_runner.Dismiss();
 			CloseDialogs();
 			Play(_account.Store!, sync.Player!);
+			if (_account.Corrected)
+			{
+				_account.Corrected = false;
+				if (_screen is { } corrected)
+					Dialog.Info(corrected, T("serverAction.title"), T("serverAction.corrected"));
+			}
 		}
 
 		/// <summary>A janela do jogo parado sem conexão (<see cref="RefreshBlocked"/>); nula com o jogo andando.</summary>
@@ -743,7 +749,6 @@ namespace Sigilos.GameEntry
 			{ Unreached: true } => T("account.error_offline"),
 			{ Status: 429 } => T("account.error_busy"),
 			{ Error: "email_exists" } => T("account.error_exists"),
-			{ Error: "invalid_invite" } => T("account.error_invalid_invite"),
 			{ Error: "invalid_registration" } => T("account.error_registration"),
 			{ Error: "invalid_name" } => T("account.error_name", AccountNameDialog.MinLength, AccountNameDialog.MaxLength),
 			{ Error: "name_taken" } => T("account.error_name_taken"),
@@ -1225,19 +1230,19 @@ namespace Sigilos.GameEntry
 				_storageBack = ShowSummon;
 				ShowStorage(null);
 			};
-			summon.SummonRequested += (count, kind) =>
+			summon.SummonRequested += async (count, kind) =>
 			{
-				var results = SummonRitual.Perform(_random, _database, _player, count, kind);
-				if (results.Count == 0)
+				var delta = await Act(new ActionRequest { Kind = ServerActionKind.Summon, Count = count, Scroll = kind });
+				if (delta == null || !GodotObject.IsInstanceValid(summon))
 					return;
 
+				var results = ServerActions.Results(_database, delta);
 				Share(Feats.Of(results));
 
 				Teams.FillCampaign(_player, results.Select(r => r.Monster).OrderByDescending(m => _database.Summon(m.SummonId).Rarity));
 				Save();
-				// O gasto de Pergaminhos e os monstros sobem para a nuvem antes de o resultado aparecer: fechar
-				// o jogo na hora não desfaz a invocação. O envio corre durante o ritual.
-				summon.ShowResults(results, _account.Connected ? _account.Flush() : null);
+				// A invocação já está na nuvem (o servidor a fez): fechar o jogo na hora não a desfaz.
+				summon.ShowResults(results, null);
 			};
 			summon.ExchangeRequested += id =>
 			{
@@ -1319,13 +1324,22 @@ namespace Sigilos.GameEntry
 			runes.EquipRequested += (id, monster) => Change(() => Sfx.PlayIf(RuneInventory.Equip(_player, Rune(id), monster), "ui.equip_item"), runes.Refresh);
 			runes.EquipManyRequested += (ids, monster) => Change(() => Sfx.PlayIf(RuneInventory.EquipMany(_player, ids.Select(Rune), monster) > 0, "ui.equip_item"), runes.Refresh);
 			runes.UnequipRequested += id => Change(() => Sfx.PlayIf(RuneInventory.Unequip(_player, Rune(id)), "ui.unequip_item"), runes.Refresh);
-			runes.UpgradeRequested += (id, target) => Change(() => UpgradeRune(Rune(id), target), runes.Refresh);
-			runes.GrindRequested += (id, index, tool) => Change(() => Sfx.PlayIf(RuneInventory.Grind(_random, _player, Rune(id), index, tool), "grimoire.magic_ink"), runes.Refresh);
-			runes.EnchantRequested += (id, index, tool) => Change(() => Sfx.PlayIf(RuneInventory.Enchant(_random, _player, Rune(id), index, tool), "grimoire.magic_ink"), runes.Refresh);
+			runes.UpgradeRequested += async (id, target) =>
+			{
+				var from = Rune(id).Level;
+				await UpgradeRune(Rune(id), target);
+				if (!GodotObject.IsInstanceValid(runes))
+					return;
+
+				runes.Upgraded(id, from);
+				runes.Refresh();
+			};
+			runes.GrindRequested += (id, index, tool) => RuneAction(runes, new ActionRequest { Kind = ServerActionKind.GrindRune, RuneId = id, Index = index, Tool = tool });
+			runes.EnchantRequested += (id, index, tool) => RuneAction(runes, new ActionRequest { Kind = ServerActionKind.EnchantRune, RuneId = id, Index = index, Tool = tool });
 			runes.SellRequested += id => Change(() => Sfx.PlayIf(RuneInventory.Sell(_player, Rune(id)) > 0, "rewards.gold"), runes.Refresh);
 			runes.SellManyRequested += ids => Change(() => Sfx.PlayIf(RuneInventory.SellAll(_player, _player.Runes.Where(r => ids.Contains(r.Id))) > 0, "rewards.gold"), runes.Refresh);
 			runes.LockRequested += id => Change(() => Sfx.Play((Rune(id).Locked = !Rune(id).Locked) ? "ui.toggle_on" : "ui.toggle_off"), runes.Refresh);
-			runes.ReappraiseRequested += id => Change(() => Sfx.PlayIf(Core.Runes.RuneReappraisal.Reappraise(_player, Rune(id)), "grimoire.magic_ink"), runes.Refresh);
+			runes.ReappraiseRequested += id => RuneAction(runes, new ActionRequest { Kind = ServerActionKind.ReappraiseRune, RuneId = id });
 			Swap(runes, () => ShowRunes(monsterId, back));
 		}
 
@@ -1396,6 +1410,12 @@ namespace Sigilos.GameEntry
 		/// <summary>A aba da Arena em que o jogador estava: a volta de uma preparação ou luta abre nela.</summary>
 		private ArenaScreen.View _arenaTab = ArenaScreen.View.Defense;
 
+		private async Task UploadDefense(BattleTeam team)
+		{
+			if (await _account.Flush())
+				await _account.Arena.UploadDefense(_player.Arena.Points, team);
+		}
+
 		private async void SyncArena(ArenaScreen screen)
 		{
 			_arenaSyncing = true;
@@ -1406,8 +1426,10 @@ namespace Sigilos.GameEntry
 					if (Teams.SeedFromCampaign(_player, Teams.ArenaDefense))
 						Save();
 					var team = PlayerTeam.Build(_player, _database, Teams.ArenaDefense);
+
+					// O servidor monta a defesa pelo save que guarda: sobe o do aparelho antes de pedir, sem segurar a lista.
 					if (team.Members.Count > 0)
-						_ = _account.Arena.UploadDefense(_player.Arena.Points, team);
+						_ = UploadDefense(team);
 				}
 
 				if (Arena.NeedsOnline(_player))
@@ -1452,6 +1474,7 @@ namespace Sigilos.GameEntry
 			arena.LeaderRequested += id => Change(() => Sfx.PlayIf(Teams.MakeLeader(_player, Teams.ArenaDefense, id), "ui.equip_item"), arena.Refresh);
 			arena.FilterChanged += filter => _prepFilter = filter;
 			arena.ShopRequested += ShowCosmicShop;
+			arena.VeilRequested += () => ShowVeil();
 			arena.RefreshRequested += () => Dialog.Confirm(arena, T("arena.refresh"), T("arena.refresh_confirm"), T("arena.refresh"), () =>
 				Change(() => Arena.RefreshList(_player, _random), () => ShowArena()));
 			Swap(arena, () => ShowArena());
@@ -1525,7 +1548,7 @@ namespace Sigilos.GameEntry
 			var (health, attack) = Arena.StreakBonus(_player, _database.Arena, DateTime.Now);
 			var team = PlayerTeam.Build(_player, _database, Teams.Arena);
 			var session = BattleFactory.CreateDuel(_database, team, defense, _random.Next(), health, attack);
-			var battle = new BattleScreen(session, T("destination.Arena") + " · " + title, false, focusBoss: _player.FocusBoss);
+			var battle = new BattleScreen(session, T("destination.Arena") + " · " + title, false, focusBoss: _player.FocusBoss, hideRival: true);
 			var finished = false;
 
 			ArenaOutcome? Resolve(ArenaResult result)
@@ -1567,6 +1590,210 @@ namespace Sigilos.GameEntry
 				ShowArena();
 			};
 			Swap(battle, () => ShowArena());
+		}
+
+		// Arena do Véu --------------------------------------------------------------------------------
+
+		private VeilScreen? _veil;
+		private OnlineBattle? _online;
+
+		/// <summary>O treino contra um fantasma que está rodando aqui; nulo numa partida pelo servidor.</summary>
+		private LocalRta? _local;
+
+		private IRtaChannel RtaChannel => _local != null ? _local : _account.Rta;
+		private RtaSeat _veilSeat;
+		private string _veilRival = "";
+
+		/// <summary>Liga uma vez a conversa ao vivo da Arena do Véu: o que chega vai para a tela de agora (saguão ou luta).</summary>
+		private void WireRta()
+		{
+			var link = _account.Rta;
+			link.Opened += () => _veil?.SetLive(true, false);
+			link.Closed += reason =>
+			{
+				_veil?.SetLive(false, false);
+				if (_local == null)
+					_online?.Post(new RtaMessage { Type = "error", Error = reason ?? "closed" });
+				if (reason != null)
+					_veil?.ShowMessage(T("veil.err_generic"));
+			};
+			link.Received += OnRta;
+		}
+
+		private void ShowVeil(string? message = null)
+		{
+			var screen = new VeilScreen(_database, _player);
+			_veil = screen;
+			screen.QueueRequested += ghost => _ = ghost ? StartTraining() : SendQueue();
+			screen.CancelRequested += () => _ = RtaChannel.Send(new RtaMessage { Type = "cancel" });
+			screen.PickRequested += id => _ = RtaChannel.Send(new RtaMessage { Type = "pick", Summon = id });
+			screen.BanRequested += id => _ = RtaChannel.Send(new RtaMessage { Type = "ban", Summon = id });
+			screen.LeadRequested += id => _ = RtaChannel.Send(new RtaMessage { Type = "lead", Summon = id });
+			screen.LeaveRequested += () => _ = RtaChannel.Send(new RtaMessage { Type = "leave" });
+			screen.ShopRequested += ShowVeilShop;
+			screen.BackRequested += () => ShowArena();
+			// Sair da tela sem estar numa luta fecha a conversa: quem some da Arena não fica esperando na fila.
+			screen.TreeExiting += () =>
+			{
+				if (_veil == screen)
+					_veil = null;
+				if (_online == null)
+					CloseRta();
+			};
+			Swap(screen, () => ShowVeil());
+			if (message != null)
+				screen.ShowMessage(message);
+
+			if (!_account.Connected)
+			{
+				screen.SetLive(false, false);
+				return;
+			}
+
+			screen.SetLive(_account.Rta.Live, !_account.Rta.Live);
+			_account.Rta.Open();
+		}
+
+		private async Task SendQueue()
+		{
+			if (!_account.Rta.Live)
+				return;
+			// O servidor monta o baú pelo save que ele guarda: o que o aparelho tem de novo precisa subir antes.
+			Save();
+			if (!await _account.Flush())
+			{
+				_veil?.Receive(new RtaMessage { Type = "error", Error = "no_save" });
+				return;
+			}
+
+			await _account.Rta.Send(new RtaMessage { Type = "queue" });
+		}
+
+		/// <summary>O Treino: a sala roda aqui contra um fantasma, sem servidor, e as mensagens dela entram pelo mesmo caminho das do servidor.</summary>
+		private Task StartTraining()
+		{
+			if (_local != null)
+				return Task.CompletedTask;
+			if (_account.Rta.Live)
+				_ = _account.Rta.Send(new RtaMessage { Type = "cancel" });
+			_local = LocalRta.Start(_database, _player, _account.AccountName ?? T("veil.you"), _random, OnRta);
+			if (_local == null)
+				_veil?.ShowMessage(T("veil.err_pool"));
+			return Task.CompletedTask;
+		}
+
+		/// <summary>Fecha o que estiver aberto da Arena do Véu: o treino local e a conexão com o servidor.</summary>
+		private void CloseRta()
+		{
+			_local?.Stop();
+			_local = null;
+			_account.Rta.Close();
+		}
+
+		private void OnRta(RtaMessage message)
+		{
+			switch (message.Type)
+			{
+				case "profile":
+				case "queued":
+					_player.Veil.Aster = message.Aster;
+					_player.Veil.Wins = message.Wins;
+					_player.Veil.Losses = message.Losses;
+					if (message.Type == "profile")
+						Veil.SeeProfile(_player.Veil, message.Ecos);
+
+					Save();
+					_veil?.Receive(message);
+					break;
+
+				case "matched":
+					_veilSeat = message.Seat ?? RtaSeat.First;
+					_veilRival = message.Opponent ?? "";
+					_veil?.Receive(message);
+					break;
+
+				case "battle":
+					StartOnlineBattle(message);
+					break;
+
+				case "turn":
+				case "acted":
+					_online?.Post(message);
+					break;
+
+				case "end":
+					ApplyVeilResult(message);
+					if (_online != null)
+						_online.Post(message);
+					else
+					{
+						_local = null;
+						_veil?.Receive(message);
+					}
+
+					break;
+
+				default:
+					_veil?.Receive(message);
+					break;
+			}
+		}
+
+		/// <summary>O que a partida rendeu à conta: o Áster novo (o do servidor), vitória ou derrota e os Ecos do Véu.</summary>
+		private void ApplyVeilResult(RtaMessage end)
+		{
+			if (!end.Ranked || end.Winner == "Draw")
+				return;
+
+			var veil = _player.Veil;
+			veil.Aster = end.NewAster;
+			Veil.Earn(veil, end.Ecos);
+			if (end.Winner == _veilSeat.ToString())
+			{
+				veil.Wins++;
+				veil.Streak++;
+			}
+			else
+			{
+				veil.Losses++;
+				veil.Streak = 0;
+			}
+
+			Save();
+		}
+
+		private void StartOnlineBattle(RtaMessage message)
+		{
+			if (RtaReplica.From(_database, message) is not { } replica)
+			{
+				_ = RtaChannel.Send(new RtaMessage { Type = "leave" });
+				return;
+			}
+
+			var online = new OnlineBattle(replica, _veilSeat, _account.AccountName ?? "", _veilRival, RtaChannel.Send);
+			_online = online;
+			var battle = new BattleScreen(online, T("veil.title") + " · " + _veilRival);
+			battle.Closed += _ =>
+			{
+				_online = null;
+				_local = null;
+				ShowVeil();
+			};
+			Swap(battle, () => { });
+		}
+
+		private void ShowVeilShop()
+		{
+			var shop = new CosmicShopScreen(_database, _player, DateTime.Now, veil: true);
+			shop.BackRequested += () => ShowVeil();
+			shop.BuyRequested += offer => Change(() =>
+			{
+				if (!Veil.Buy(_player, _database.Arena, offer, DateTime.Now))
+					return;
+				Sfx.Play("rewards.gold");
+				shop.ShowMessage(T("veil.bought", offer.Name));
+			}, shop.Refresh);
+			Swap(shop, ShowVeilShop);
 		}
 
 		private void ShowCosmicShop()
@@ -1898,10 +2125,10 @@ namespace Sigilos.GameEntry
 					run.Notify();
 					RefreshCurrent();
 				},
-				UpgradeRune = (rune, target) =>
+				UpgradeRune = async (rune, target) =>
 				{
 					var before = rune.Level;
-					UpgradeRune(rune, target);
+					await UpgradeRune(rune, target);
 					// Com a tela de Runas por baixo, a ficha dela refaz a melhora (e mantém o verde: ver RefreshCurrent).
 					(_screen as RuneScreen)?.Upgraded(rune.Id, before);
 					Save();
@@ -1972,12 +2199,55 @@ namespace Sigilos.GameEntry
 		private Core.Runes.Rune Rune(int id) => _player.Runes.First(r => r.Id == id);
 
 		/// <summary>Melhora a runa até <paramref name="target"/>; a que chegou a +15 agora vira feito no Chat global.</summary>
-		private void UpgradeRune(Core.Runes.Rune rune, int target)
+		private async Task UpgradeRune(Core.Runes.Rune rune, int target)
 		{
 			var before = rune.Level;
-			Sfx.PlayIf(RuneInventory.Upgrade(_random, _player, rune, target), "rewards.rune");
-			if (Feats.Of(rune, before) is { } feat)
+			var delta = await Act(new ActionRequest { Kind = ServerActionKind.UpgradeRune, RuneId = rune.Id, Target = target });
+			Sfx.PlayIf(delta != null, "rewards.rune");
+			if (delta != null && Feats.Of(rune, before) is { } feat)
 				Share(new[] { feat });
+		}
+
+		/// <summary>Pedra de Afiar, Gema Encantada ou Gema de Reavaliação numa runa: o servidor faz, e a tela refaz com o resultado.</summary>
+		private async void RuneAction(RuneScreen runes, ActionRequest request)
+		{
+			var delta = await Act(request);
+			Sfx.PlayIf(delta != null, "grimoire.magic_ink");
+			if (GodotObject.IsInstanceValid(runes))
+				runes.Refresh();
+		}
+
+		private bool _acting;
+
+		/// <summary>
+		/// Uma ação que sorteia ou gasta. Com conta, o servidor a faz (sem conexão, avisa e nada se gasta); sem
+		/// conta e no save de teste, a mesma regra roda no aparelho. Nulo se não foi feita.
+		/// </summary>
+		private async Task<ActionDelta?> Act(ActionRequest request)
+		{
+			if (_acting)
+				return null;
+
+			_acting = true;
+			try
+			{
+				if (_testSave || !_account.Playing)
+				{
+					var local = ServerActions.Apply(_random, _database, _player, request);
+					if (local != null)
+						Save();
+					return local;
+				}
+
+				var outcome = await _account.Act(request);
+				if (!outcome.Ok && _screen is { } screen && GodotObject.IsInstanceValid(screen))
+					Dialog.Info(screen, T("serverAction.title"), T("serverAction." + outcome.Error));
+				return outcome.Delta;
+			}
+			finally
+			{
+				_acting = false;
+			}
 		}
 
 		/// <summary>Um monstro no resultado da luta: o retrato e a barra de experiência do antes até agora.</summary>

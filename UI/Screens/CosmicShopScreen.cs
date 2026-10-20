@@ -14,7 +14,8 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// A Loja Cósmica: as ofertas de Data/arena.json em bancas, pagas em Astrarium. Cada banca diz quantas
 	/// vezes ainda se pode comprar no dia ou na semana. Comprar pede confirmação; o GameRoot aplica a regra
-	/// (<see cref="Arena.Buy"/>) e chama <see cref="Refresh"/>.
+	/// (<see cref="Arena.Buy"/>) e chama <see cref="Refresh"/>. A Loja do Véu é a mesma banca com as ofertas
+	/// <c>veilShop</c>, paga em Ecos do Véu (<see cref="Veil.Buy"/>).
 	/// </summary>
 	public partial class CosmicShopScreen : Control
 	{
@@ -27,12 +28,29 @@ namespace Sigilos.UI.Screens
 		private List<int> _categories = new();
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
-		public CosmicShopScreen(GameDatabase database, PlayerState player, DateTime now)
+		private readonly bool _veil;
+
+		public CosmicShopScreen(GameDatabase database, PlayerState player, DateTime now, bool veil = false)
 		{
 			_database = database;
 			_player = player;
 			_now = now;
+			_veil = veil;
 		}
+
+		private IReadOnlyList<ArenaOffer> Offers => _veil ? _database.Arena.VeilShop : _database.Arena.Shop;
+
+		private int Balance => _veil ? _player.Veil.Ecos : _player.Arena.Astrarium;
+
+		private string CurrencyIcon => _veil ? "polar_star" : "astrarium";
+
+		private string CurrencyName => T(_veil ? "veil.ecos" : "arena.astrarium");
+
+		private bool CanBuy(ArenaOffer offer) => _veil ? Veil.CanBuy(_player, _database.Arena, offer, _now) : Arena.CanBuy(_player, _database.Arena, offer, _now);
+
+		private bool IsSoldOut(ArenaOffer offer) => _veil ? Veil.IsSoldOut(_player, _database.Arena, offer, _now) : Arena.IsSoldOut(_player, _database.Arena, offer, _now);
+
+		private int Bought(ArenaOffer offer) => _veil ? Veil.BoughtOf(_player, _database.Arena, offer, _now) : Arena.BoughtOf(_player, _database.Arena, offer, _now);
 
 		public event Action<ArenaOffer>? BuyRequested;
 		public event Action? BackRequested;
@@ -42,14 +60,14 @@ namespace Sigilos.UI.Screens
 			SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			AddChild(Layout.Background());
 			var page = Layout.Page(this);
-			page.AddChild(Layout.Header(T("arena.cosmic_shop"), _currencies, () => BackRequested?.Invoke(), this, T("arena.shop_intro")).Header);
+			page.AddChild(Layout.Header(T(_veil ? "veil.shop" : "arena.cosmic_shop"), _currencies, () => BackRequested?.Invoke(), this, T(_veil ? "veil.shop_intro" : "arena.shop_intro")).Header);
 
-			var balance = Layout.Labeled("astrarium", Texts.Number(_player.Arena.Astrarium), T("arena.astrarium"), Palette.Spirit).Named("Balance");
+			var balance = Layout.Labeled(CurrencyIcon, Texts.Number(Balance), CurrencyName, Palette.Spirit).Named("Balance");
 			page.AddChild(balance);
 
 			// Só as categorias que têm oferta: cada uma na ordem de sempre (Transmutação, Mana, Especial).
 			var names = new[] { (T("shop.category.scrolls"), "scroll"), (T("shop.category.mana"), "mana"), (T("shop.category.special"), "gem") };
-			_categories = Enumerable.Range(0, names.Length).Where(c => _database.Arena.Shop.Any(o => Category(o) == c)).ToList();
+			_categories = Enumerable.Range(0, names.Length).Where(c => Offers.Any(o => Category(o) == c)).ToList();
 			_shelf = new ShopShelf(_categories.Select(c => names[c]).ToList(), Cards);
 			page.AddChild(_shelf);
 
@@ -67,7 +85,7 @@ namespace Sigilos.UI.Screens
 			{
 				var value = balance.FindChild("Value", true, false) as Label;
 				if (value != null)
-					value.Text = Texts.Number(_player.Arena.Astrarium);
+					value.Text = Texts.Number(Balance);
 			}
 
 			_shelf.Refresh();
@@ -83,7 +101,7 @@ namespace Sigilos.UI.Screens
 		private IEnumerable<Control> Cards(int category)
 		{
 			var arena = _database.Arena;
-			foreach (var offer in arena.Shop)
+			foreach (var offer in Offers)
 			{
 				if (Category(offer) == _categories[category])
 					yield return Card(offer, arena);
@@ -100,26 +118,26 @@ namespace Sigilos.UI.Screens
 
 		private Control Card(ArenaOffer offer, ArenaDefinition arena)
 		{
-			var canBuy = Arena.CanBuy(_player, arena, offer, _now);
+			var canBuy = CanBuy(offer);
 			var buy = GameButton.Of(T("shop.buy_button"), () =>
 			{
 				Dialog.Confirm(this,
 					T("shop.confirm_title"),
-					T("arena.shop_confirm", offer.Name, offer.Amount, offer.Price),
+					T(_veil ? "veil.shop_confirm" : "arena.shop_confirm", offer.Name, offer.Amount, offer.Price),
 					T("shop.buy_button"),
 					() => BuyRequested?.Invoke(offer));
-			}, ButtonKind.Primary, null, 56).WithCost("astrarium", Texts.Number(offer.Price)).Named("Buy");
+			}, ButtonKind.Primary, null, 56).WithCost(CurrencyIcon, Texts.Number(offer.Price)).Named("Buy");
 			if (!canBuy)
 			{
-				buy.Block(Arena.IsSoldOut(_player, arena, offer, _now)
+				buy.Block(IsSoldOut(offer)
 					? T(offer.Period == ArenaPeriod.Day ? "arena.sold_out_day" : "arena.sold_out_week")
-					: T("arena.no_astrarium", Texts.Number(offer.Price - _player.Arena.Astrarium)), offer.Name);
+					: T(_veil ? "veil.no_ecos" : "arena.no_astrarium", Texts.Number(offer.Price - Balance)), offer.Name);
 			}
 
 			var detail = "";
 			if (offer.Limit > 0)
 			{
-				var left = Math.Max(0, offer.Limit - Arena.BoughtOf(_player, arena, offer, _now));
+				var left = Math.Max(0, offer.Limit - Bought(offer));
 				detail = T(offer.Period == ArenaPeriod.Day ? "arena.limit_day" : "arena.limit_week", left, offer.Limit);
 			}
 

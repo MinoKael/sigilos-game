@@ -178,6 +178,9 @@ namespace Sigilos.Core.Player
 		/// <summary>A Arena Astral: pontos, Convites, sequência, lista, Rivais e compras da Loja Cósmica (<see cref="ArenaState"/>).</summary>
 		public ArenaState Arena { get; set; } = new();
 
+		/// <summary>A Arena do Véu, o duelo em tempo real: Áster, Ecos do Véu e compras da Loja do Véu (<see cref="VeilState"/>).</summary>
+		public VeilState Veil { get; set; } = new();
+
 		/// <summary>As cartas do correio já coletadas neste save, pelo id do servidor (<see cref="Progression.Mailbox"/>).</summary>
 		public List<string> ClaimedMail { get; set; } = new();
 

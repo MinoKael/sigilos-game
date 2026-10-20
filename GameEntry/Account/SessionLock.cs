@@ -71,12 +71,16 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>A sessão deste aparelho; nula antes de tomar, depois de soltar ou quando outro tomou.</summary>
 		public Guid? SessionId { get; private set; }
 
+		/// <summary>O formato de envio do save que o servidor aceita (0: só JSON puro; ausente em servidor antigo).</summary>
+		public int SaveFormat { get; private set; }
+
 		public async Task<ClaimResult> Claim(bool force)
 		{
 			var response = await _auth.Call(HttpMethod.Post, "session/claim", new { deviceId = _deviceId, deviceName = _deviceName, force });
 			if (response.Ok && Guid.TryParse(response.Text("sessionId"), out var id))
 			{
 				SessionId = id;
+				SaveFormat = (int)(response.Number("saveFormat") ?? 0);
 				return new ClaimResult(ClaimOutcome.Claimed, response);
 			}
 

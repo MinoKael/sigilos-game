@@ -163,7 +163,10 @@ namespace Sigilos.Core.Battle
 		/// <summary>Velocidade de agora. A barra enche em proporção a ela.</summary>
 		public double TurnSpeed => Math.Max(1, Current(Stat.Speed));
 
-		public double Attack => Current(Stat.Attack);
+		/// <summary>O Ataque a mais que a pressão da Arena do Véu soma (0,1 = +10%); nada fora dela.</summary>
+		public double AttackPressure { get; internal set; }
+
+		public double Attack => Current(Stat.Attack) * (1 + AttackPressure);
 
 		public double Defense => Current(Stat.Defense);
 

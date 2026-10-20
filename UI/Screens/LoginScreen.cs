@@ -9,14 +9,13 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// A entrada da conta, antes do Santuário (docs/SAVE_NUVEM.md, "Contas"). Deitada para o celular:
 	/// - À esquerda, o nome do jogo, o que a conta faz, o emblema (o sigilo de invocar num astrolábio, com
-	///   uma constelação riscada em volta) e, embaixo, Jogar sem conta.
+	///   uma constelação riscada em volta).
 	/// - À direita, o cartão da conta, com os campos no alto (o teclado do celular cobre a parte de baixo
 	///   da tela). Duas formas:
 	///   - Com uma conta lembrada neste aparelho: o nome e o e-mail, Entrar (sem senha) e Usar outra conta.
-	///   - Sem: as abas Entrar e Criar conta, com e-mail, senha e, para criar, o nome da conta e o código do
-	///     convite.
+	///   - Sem: as abas Entrar e Criar conta, com e-mail, senha e, para criar, o nome da conta.
 	///
-	/// Só confere o óbvio (e-mail com @, senha de 8 letras, nome de 3 a 20, convite escrito) e avisa por
+	/// Só confere o óbvio (e-mail com @, senha de 8 letras, nome de 3 a 20) e avisa por
 	/// evento. O resto, inclusive se o nome está livre, é o servidor que diz: quem fala com ele é o
 	/// GameRoot, que responde com <see cref="SetBusy"/> e <see cref="ShowMessage"/>.
 	/// </summary>
@@ -30,7 +29,6 @@ namespace Sigilos.UI.Screens
 		private readonly string? _name;
 		private readonly VBoxContainer _card = new() { Name = "Card" };
 		private readonly Label _message = new() { Name = "Message", AutowrapMode = TextServer.AutowrapMode.WordSmart, Visible = false };
-		private readonly GameButton _offline;
 		private readonly Doodle _sigil = Doodle.Icon(Art.Icon("summon"), 150, Palette.Gold);
 		private bool _remembered;
 		private bool _register;
@@ -42,7 +40,6 @@ namespace Sigilos.UI.Screens
 		private LineEdit? _emailField;
 		private LineEdit? _passwordField;
 		private LineEdit? _nameField;
-		private LineEdit? _inviteField;
 		private GameButton? _submit;
 		private GameButton? _other;
 
@@ -54,20 +51,17 @@ namespace Sigilos.UI.Screens
 			_email = email;
 			_name = name;
 			_remembered = remembered && email != null;
-			_offline = GameButton.Of(T("account.offline"), () => OfflineRequested?.Invoke()).Wide(260).Named("Offline");
 		}
 
 		public event Action<string, string>? LoginRequested;
-		/// <summary>Criar conta: e-mail, senha, convite e nome (já aparado).</summary>
-		public event Action<string, string, string, string>? RegisterRequested;
+		/// <summary>Criar conta: e-mail, senha e nome (já aparado).</summary>
+		public event Action<string, string, string>? RegisterRequested;
 
 		/// <summary>Entrar com a conta lembrada, sem senha.</summary>
 		public event Action? ResumeRequested;
 
 		/// <summary>Usar outra conta: esquecer a lembrada (a tela já passa para o formulário).</summary>
 		public event Action? ForgetRequested;
-
-		public event Action? OfflineRequested;
 
 		/// <summary>"Esqueci a senha", com o e-mail que já está no campo (pode vir vazio).</summary>
 		public event Action<string>? PasswordResetRequested;
@@ -127,9 +121,6 @@ namespace Sigilos.UI.Screens
 			var emblem = new Emblem { SizeFlagsHorizontal = SizeFlags.ShrinkCenter, SizeFlagsVertical = SizeFlags.Expand | SizeFlags.ShrinkCenter };
 			emblem.AddChild(_sigil);
 			column.AddChild(emblem);
-			_offline.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
-			column.AddChild(_offline);
-			column.AddChild(Layout.Text(T("account.offline_hint"), GameTheme.Faded).Named("OfflineHint"));
 			return column;
 		}
 
@@ -140,7 +131,7 @@ namespace Sigilos.UI.Screens
 			if (_message.GetParent() == _card)
 				_card.RemoveChild(_message);
 			Layout.Clear(_card);
-			_emailField = _passwordField = _nameField = _inviteField = null;
+			_emailField = _passwordField = _nameField = null;
 			_other = null;
 			if (_remembered)
 				BuildRemembered();
@@ -192,11 +183,10 @@ namespace Sigilos.UI.Screens
 				_nameField = Field("AccountName", T("account.name"), T("account.name_hint", AccountNameDialog.MinLength, AccountNameDialog.MaxLength), LineEdit.VirtualKeyboardTypeEnum.Default);
 				_nameField.MaxLength = AccountNameDialog.MaxLength;
 				AccountNameDialog.NoSpaces(_nameField);
-				_inviteField = Field("Invite", T("account.invite"), T("account.invite_hint"), LineEdit.VirtualKeyboardTypeEnum.Default);
 			}
 
 			// Enter no último campo é o mesmo que o botão.
-			(_inviteField ?? _passwordField).TextSubmitted += _ => Submit();
+			(_nameField ?? _passwordField).TextSubmitted += _ => Submit();
 			_emailField.TextSubmitted += _ => _passwordField.GrabFocus();
 			_submit = GameButton.Of(_register ? T("account.register") : T("account.sign_in"), Submit, ButtonKind.Primary).Named("Submit");
 			_card.AddChild(_submit);
@@ -239,7 +229,6 @@ namespace Sigilos.UI.Screens
 
 			var email = _emailField.Text.Trim();
 			var password = _passwordField.Text;
-			var invite = _inviteField?.Text.Trim() ?? "";
 			var name = _nameField != null ? AccountNameDialog.Clean(_nameField.Text) : null;
 			var at = email.IndexOf('@');
 			if (at <= 0 || at == email.Length - 1)
@@ -250,10 +239,8 @@ namespace Sigilos.UI.Screens
 				ShowMessage(T("account.error_password_empty"));
 			else if (_register && name == null)
 				ShowMessage(T("account.error_name", AccountNameDialog.MinLength, AccountNameDialog.MaxLength));
-			else if (_register && invite.Length == 0)
-				ShowMessage(T("account.error_invite"));
 			else if (_register)
-				RegisterRequested?.Invoke(email, password, invite, name!);
+				RegisterRequested?.Invoke(email, password, name!);
 			else
 				LoginRequested?.Invoke(email, password);
 		}
@@ -272,8 +259,7 @@ namespace Sigilos.UI.Screens
 				_submit.Disabled = _busy;
 			if (_other != null)
 				_other.Disabled = _busy;
-			_offline.Disabled = _busy;
-			foreach (var field in new[] { _emailField, _passwordField, _nameField, _inviteField })
+			foreach (var field in new[] { _emailField, _passwordField, _nameField })
 			{
 				if (field != null)
 					field.Editable = !_busy;

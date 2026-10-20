@@ -135,7 +135,7 @@ namespace Sigilos.UI.Screens
 		public event Action<int>? UnequipRequested;
 
 		/// <summary>Id da runa e o nível a alcançar.</summary>
-		public event Action<int, int>? UpgradeRequested;
+		public event Func<int, int, System.Threading.Tasks.Task>? UpgradeRequested;
 
 		/// <summary>Id da runa, índice do subatributo e a Pedra de Afiar.</summary>
 		public event Action<int, int, RuneTool>? GrindRequested;
@@ -776,14 +776,14 @@ namespace Sigilos.UI.Screens
 
 			var maxed = rune.Level >= RuneRules.MaxLevel;
 			var next = maxed ? 0 : RuneRules.UpgradeCost(rune);
-			cells[CellUpgrade] = GameButton.Of(T("runes.upgrade_one", 1), () => Upgrade(rune, rune.Level + 1), ButtonKind.Primary, "level_max", ActionHeight)
+			cells[CellUpgrade] = GameButton.Of(T("runes.upgrade_one", 1), () => _ = Upgrade(rune, rune.Level + 1), ButtonKind.Primary, "level_max", ActionHeight)
 				.WithCost("essence", maxed ? "" : Texts.Number(next))
 				.Block(maxed ? T("runes.why_max", RuneRules.MaxLevel) : _player.Essence < next ? T("runes.why_essence") : null, T("runes.upgrade_one", 1)).Named("Upgrade");
 
 			// O próximo marco (+3, +6, +9, +12 ou +15) vale na hora, sem pergunta.
 			var milestone = maxed ? RuneRules.MaxLevel : RuneRules.NextMilestone(rune.Level);
 			var milestoneCost = milestone > rune.Level + 1 ? RuneRules.UpgradeCost(rune, milestone) : 0;
-			cells[CellMilestone] = GameButton.Of(T("runes.upgrade_button", milestone), () => Upgrade(rune, milestone), ButtonKind.Secondary, "level_max", ActionHeight)
+			cells[CellMilestone] = GameButton.Of(T("runes.upgrade_button", milestone), () => _ = Upgrade(rune, milestone), ButtonKind.Secondary, "level_max", ActionHeight)
 				.WithCost("essence", milestoneCost > 0 ? Texts.Number(milestoneCost) : "")
 				.Block(maxed ? T("runes.why_max", RuneRules.MaxLevel) : milestone <= rune.Level + 1 ? T("runes.why_same") : _player.Essence < milestoneCost ? T("runes.why_essence") : null, T("runes.upgrade_button", milestone)).Named("UpgradeToMilestone");
 
@@ -862,10 +862,10 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>Pede a melhora. A ficha da runa, refeita logo em seguida, mostra os níveis subindo.</summary>
-		private void Upgrade(Rune rune, int target)
+		private async System.Threading.Tasks.Task Upgrade(Rune rune, int target)
 		{
-			Upgraded(rune.Id, rune.Level);
-			UpgradeRequested?.Invoke(rune.Id, target);
+			if (UpgradeRequested != null)
+				await UpgradeRequested.Invoke(rune.Id, target);
 		}
 
 		/// <summary>
@@ -878,10 +878,12 @@ namespace Sigilos.UI.Screens
 		/// Melhora até o +12 e, se a runa mudou, abre o antes e o depois. O pedido é síncrono: quando ele volta, a
 		/// runa já está no nível novo, e a cópia tirada antes guarda como ela era.
 		/// </summary>
-		private void UpgradeDirect(Rune rune)
+		private async void UpgradeDirect(Rune rune)
 		{
 			var before = rune.Clone();
-			Upgrade(rune, DirectLevel);
+			await Upgrade(rune, DirectLevel);
+			if (!IsInsideTree())
+				return;
 			if (_player.Runes.FirstOrDefault(r => r.Id == rune.Id) is { } after && after.Level > before.Level)
 				RuneDialog.ShowUpgraded(this, before, after);
 		}

@@ -374,6 +374,14 @@ namespace Sigilos.Core.Progression
 			var arena = player.Arena;
 			arena.Astrarium -= offer.Price;
 			arena.Bought[offer.Id] = arena.Bought.GetValueOrDefault(offer.Id) + 1;
+			Deliver(player, offer);
+
+			return true;
+		}
+
+		/// <summary>Entrega a compra de uma oferta (Loja Cósmica ou Loja do Véu): Núcleos pelo caminho dos marcos.</summary>
+		internal static void Deliver(PlayerState player, ArenaOffer offer)
+		{
 			switch (offer.Item)
 			{
 				case ArenaItem.Scrolls:
@@ -392,8 +400,6 @@ namespace Sigilos.Core.Progression
 					player.Mana += offer.Amount;
 					break;
 			}
-
-			return true;
 		}
 	}
 }

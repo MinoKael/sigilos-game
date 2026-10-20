@@ -141,6 +141,9 @@ namespace Sigilos.UI.Components
 
 		public BattleUnit Unit { get; }
 
+		/// <summary>O lado de quem olha, para a cor do anel: o time dele em dourado, o outro em vermelho.</summary>
+		public Core.Battle.Side Mine { get; set; } = Core.Battle.Side.Allies;
+
 		/// <summary>
 		/// Quanto a fileira dos efeitos (com o selo dos turnos) sobe acima da borda do cartão; zero no chefe,
 		/// que não tem a fileira.
@@ -298,7 +301,7 @@ namespace Sigilos.UI.Components
 		{
 			var hover = IsInsideTree() && GetGlobalRect().HasPoint(GetGlobalMousePosition());
 			var boss = Unit.IsBoss;
-			var ring = _targetable ? Palette.Arcane : _active ? Palette.Gold : boss ? Palette.Negative : Unit.Side == Core.Battle.Side.Allies ? Palette.GoldDark : Palette.Negative.Darkened(0.4f);
+			var ring = _targetable ? Palette.Arcane : _active ? Palette.Gold : boss ? Palette.Negative : Unit.Side == Mine ? Palette.GoldDark : Palette.Negative.Darkened(0.4f);
 			_box.BorderColor = hover && _targetable ? Palette.Arcane.Lightened(0.3f) : ring;
 			_box.SetBorderWidthAll(_active || _targetable || boss ? 3 : 2);
 			_box.BgColor = _targetable ? Palette.Inset.Lerp(Palette.Arcane, hover ? 0.2f : 0.08f) : Palette.Inset;

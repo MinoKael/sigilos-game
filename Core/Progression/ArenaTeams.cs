@@ -30,6 +30,13 @@ namespace Sigilos.Core.Progression
 			return Build(picks, spec, random);
 		}
 
+		/// <summary>Um baú de <paramref name="count"/> invocações diferentes, sorteadas pela semente: o adversário de treino da Arena do Véu.</summary>
+		public static IReadOnlyList<TeamMember> Bench(GameDatabase database, ArenaTeamSpec spec, Random random, int count)
+		{
+			var picks = database.Summons.OrderBy(s => s.Id, StringComparer.Ordinal).OrderBy(_ => random.Next()).Take(count).ToList();
+			return Build(picks, spec, random).Members;
+		}
+
 		/// <summary>A equipe fixa de um Rival, na ordem do arquivo (a primeira é a Líder).</summary>
 		public static BattleTeam Rival(GameDatabase database, ArenaRival rival) =>
 			Build(rival.Members.Select(database.Summon).ToList(), rival.Team, new Random(StableSeed(rival.Id)));

@@ -64,9 +64,9 @@ namespace Sigilos.GameEntry.Account
 			_accessToken = null;
 		}
 
-		public async Task<ApiResponse> Register(string email, string password, string invite, string name)
+		public async Task<ApiResponse> Register(string email, string password, string name)
 		{
-			var response = await Send(HttpMethod.Post, "auth/register", new { email, password, inviteCode = invite, name }, null);
+			var response = await Send(HttpMethod.Post, "auth/register", new { email, password, name }, null);
 			if (response.Ok)
 				TakeRecoveryKey(response);
 			return response;

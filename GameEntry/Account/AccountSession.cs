@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Godot;
 using Sigilos.Core.Player;
+using Sigilos.Core.Progression;
 using HttpClient = System.Net.Http.HttpClient;
 
 namespace Sigilos.GameEntry.Account
@@ -137,9 +138,10 @@ namespace Sigilos.GameEntry.Account
 				RecoveryKeyIssued?.Invoke();
 			};
 			_lock = new SessionLock(_auth, _data.DeviceId, DeviceName());
-			_cloud = new CloudSave(_auth);
+			_cloud = new CloudSave(_auth, () => _lock.SaveFormat);
 			_mail = new CloudMail(_auth);
 			Chat = new ChatLink(_http.BaseAddress!, _auth.Token);
+			Rta = new RtaLink(_http.BaseAddress!, _auth.Token);
 			Friends = new CloudFriends(_auth);
 			Arena = new CloudArena(_auth);
 		}
@@ -177,6 +179,15 @@ namespace Sigilos.GameEntry.Account
 
 		/// <summary>Entrou e está jogando na conta (entre <see cref="Begin"/> e sair ou cair).</summary>
 		public bool Playing { get; private set; }
+
+		/// <summary>Uma ação do servidor está em andamento: nenhum envio do save sai até ela voltar.</summary>
+		private bool _acting;
+
+		/// <summary>O servidor recusou o save do aparelho (fora das regras): a próxima sincronização fica com a nuvem.</summary>
+		private bool _forceCloud;
+
+		/// <summary>A última sincronização trocou o save do aparelho pelo da nuvem por causa disso; o jogo avisa e zera.</summary>
+		public bool Corrected { get; set; }
 
 		/// <summary>Jogando na conta e falando com o servidor; falso jogando sem internet.</summary>
 		public bool Connected => Playing && _lock.SessionId != null && !_away;
@@ -254,6 +265,9 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>O Chat global: aberto enquanto <see cref="Connected"/> (caído, abre de novo no próximo batimento).</summary>
 		public ChatLink Chat { get; }
 
+		/// <summary>A Arena do Véu ao vivo: aberta só enquanto o jogador está nela (a tela abre e fecha).</summary>
+		public RtaLink Rta { get; }
+
 		/// <summary>Os amigos da conta no servidor (só com <see cref="Connected"/> responde).</summary>
 		public CloudFriends Friends { get; }
 
@@ -298,10 +312,10 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>Esqueci a senha: troca a senha com a chave de recuperação da conta.</summary>
 		public Task<ApiResponse> ResetPassword(string email, string recoveryKey, string password) => _auth.ResetPassword(email.Trim(), recoveryKey.Trim(), password);
 
-		/// <summary>Cria a conta (com o convite e o nome) e já entra nela.</summary>
-		public async Task<ApiResponse> Register(string email, string password, string invite, string name)
+		/// <summary>Cria a conta (com o nome) e já entra nela.</summary>
+		public async Task<ApiResponse> Register(string email, string password, string name)
 		{
-			var response = await _auth.Register(email.Trim(), password, invite.Trim(), name);
+			var response = await _auth.Register(email.Trim(), password, name);
 			return response.Ok ? await Login(email, password) : response;
 		}
 
@@ -416,6 +430,17 @@ namespace Sigilos.GameEntry.Account
 				inheritedStarted = offlineStarted;
 
 			var action = CloudSync.Decide(local, synced, cloud);
+			// Sem save na nuvem (a conta recomeçou), não há para onde voltar: o envio segue pelo caminho de sempre.
+			if (_forceCloud && cloud == null)
+				_forceCloud = false;
+
+			if (_forceCloud && cloud != null)
+			{
+				_forceCloud = false;
+				Corrected = true;
+				action = SyncAction.Download;
+			}
+
 			var chose = action == SyncAction.Ask;
 			if (chose)
 			{
@@ -483,6 +508,58 @@ namespace Sigilos.GameEntry.Account
 		}
 
 		/// <summary>
+		/// Pede ao servidor uma ação que sorteia ou gasta (melhorar runa, invocar...): manda antes o que está no
+		/// aparelho, o servidor faz a ação sobre o save dele e devolve o que mudou, que entra aqui no mesmo quadro e
+		/// já vale como enviado. Sem conexão, nada é feito.
+		/// </summary>
+		public async Task<ActionOutcome> Act(ActionRequest request)
+		{
+			if (!Connected || _player() is not { } player || Store is not { } store)
+				return new ActionOutcome(null, "offline");
+
+			if (!await Flush() || _lock.SessionId is not { } session)
+				return new ActionOutcome(null, _forceCloud ? "resync" : "unsynced");
+
+			var baseline = ServerActions.Snapshot(player);
+			_acting = true;
+			ApiResponse response;
+			try
+			{
+				response = await _cloud.Action(session, _data.CurrentSync?.Revision ?? 0, request);
+			}
+			finally
+			{
+				_acting = false;
+			}
+
+			if (response.Unreached)
+			{
+				Handle(BeatOutcome.Unknown);
+				return new ActionOutcome(null, "offline");
+			}
+
+			if (response.Ok && response.Text("delta") is { } text && ActionDelta.FromJson(text) is { } delta && response.Number("revision") is { } revision)
+			{
+				ServerActions.ApplyDelta(player, delta, baseline);
+				store.Save(player);
+
+				// A cópia do jogo pode ter ganhado coisas enquanto o pedido corria: a revisão passa a ser a do servidor, e o
+				// que o aparelho tem por cima sobe no próximo envio.
+				Mark(revision, "");
+				SaveSoon();
+				return new ActionOutcome(delta, null);
+			}
+
+			if (response.Conflict("save_conflict") || response.Conflict("session_taken") || response.Conflict("save_unreadable"))
+			{
+				SyncNeeded?.Invoke();
+				return new ActionOutcome(null, "conflict");
+			}
+
+			return new ActionOutcome(null, "refused");
+		}
+
+		/// <summary>
 		/// Uma ação mudou a conta (subir nível, melhorar runa, fundir, invocar, vencer, bloquear...): envia
 		/// para a nuvem daqui a <see cref="SoonSeconds"/>, contando de novo a cada ação. O envio a cada
 		/// <see cref="UploadSeconds"/> continua por baixo, para o que muda sozinho (a canalização).
@@ -542,10 +619,15 @@ namespace Sigilos.GameEntry.Account
 			return _checking;
 		}
 
+		private sealed record Baseline(long Revision, string Json);
+
+		/// <summary>O JSON que a nuvem tem na revisão dada, se o aparelho o conhece; o delta parte dele.</summary>
+		private Baseline? _baseline;
+
 		private async Task<bool> FlushOnce()
 		{
 			// Sincronizando, ou sem conexão: quem envia é a sincronização (a de agora, ou a da volta da rede).
-			if (!Playing || _syncing is { IsCompleted: false } || _away || Store is not { } store || _player() is not { } player)
+			if (!Playing || _acting || _syncing is { IsCompleted: false } || _away || Store is not { } store || _player() is not { } player)
 				return false;
 
 			var json = store.Save(player);
@@ -562,6 +644,12 @@ namespace Sigilos.GameEntry.Account
 				return true;
 			if (response.Unreached)
 				Handle(BeatOutcome.Unknown);
+			else if (response.Error == "invalid_save_content" && response.Text("reason") is "rune_changed" or "rune_forged" or "pulls_changed" or "pulls_forged" or "ecos_forged" or "monster_structure" or "monster_growth" or "monster_stars" or "monster_skills" or "arena_points")
+			{
+				// O que o aparelho tem fora das regras não sobe nunca: vale a nuvem, e o do aparelho vira backup.
+				_forceCloud = true;
+				SyncNeeded?.Invoke();
+			}
 			else if (response.Error == "invalid_save_content")
 				Godot.GD.PushWarning("O servidor recusou o save na nuvem (conteúdo fora das regras do jogo); o do aparelho segue valendo.");
 			else if (Playing && (response.Conflict("save_conflict") || response.Conflict("revision_not_newer")))
@@ -602,6 +690,7 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>A nuvem ficou igual ao aparelho: anota, e a conta do tempo sem conexão volta a zero.</summary>
 		private void Mark(long revision, string json)
 		{
+			_baseline = json.Length > 0 ? new Baseline(revision, json) : null;
 			var blocked = Blocked;
 			_data.OfflineSeconds = 0;
 			_data.MarkSynced(new SyncPoint(revision, CloudSync.Hash(json)));
@@ -643,7 +732,11 @@ namespace Sigilos.GameEntry.Account
 			_away = away;
 			_beat.Start(away ? RetrySeconds : SessionLock.BeatSeconds);
 			if (away)
+			{
 				Chat.Close();
+				Rta.Close();
+			}
+
 			ConnectionChanged?.Invoke();
 			if (!away)
 				SyncNeeded?.Invoke();
@@ -681,6 +774,7 @@ namespace Sigilos.GameEntry.Account
 			_upload.Stop();
 			_soon.Stop();
 			Chat.Close();
+			Rta.Close();
 		}
 
 		private static PlayerState? Parse(string json)

@@ -9,6 +9,8 @@
 // estrelas e nível das invocações e grau e nível das runas. Toda conta começa com 1000 pontos (Adepto III).
 // "rivals": equipes fixas, com espera depois de vencidas e Ouro garantido; não dão nem tiram pontos.
 // "shop": a Loja Cósmica, em Astrarium; "limit" por "period" (Day ou Week); o limite volta junto com o ciclo.
+// Arena do Véu (Core/Rta): o duelo em tempo real entre jogadores. Usa os mesmos Graus, com Áster no lugar dos pontos (pointsBase, pointsSlope,
+// pointsMin e pointsMax valem também para ela). "ecos" é o que cada vitória paga ao Grau, e "veilShop" a Loja do Véu, em Ecos do Véu.
 {
   "maxInvites": 10,
   "inviteMinutes": 30,
@@ -27,21 +29,21 @@
     {"wins": 10, "health": 10, "attack": 10}
   ],
   "grades": [
-    {"id": "apprentice", "name": "Aprendiz", "points": 0, "astrarium": 2, "gold": 5,
+    {"id": "apprentice", "name": "Aprendiz", "points": 0, "astrarium": 2, "ecos": 2, "gold": 5,
       "ghost": {"stars": 5, "level": 16, "runeGrade": 5, "runeLevel": 0}},
-    {"id": "adept_1", "name": "Adepto I", "points": 900, "astrarium": 3, "gold": 30,
+    {"id": "adept_1", "name": "Adepto I", "points": 900, "astrarium": 3, "ecos": 3, "gold": 30,
       "ghost": {"stars": 5, "level": 18, "runeGrade": 5, "runeLevel": 3}},
-    {"id": "adept_2", "name": "Adepto II", "points": 950, "astrarium": 3, "gold": 60,
+    {"id": "adept_2", "name": "Adepto II", "points": 950, "astrarium": 3, "ecos": 3, "gold": 60,
       "ghost": {"stars": 5, "level": 22, "runeGrade": 5, "runeLevel": 5}},
-    {"id": "adept_3", "name": "Adepto III", "points": 1000, "astrarium": 3, "gold": 90,
+    {"id": "adept_3", "name": "Adepto III", "points": 1000, "astrarium": 3, "ecos": 3, "gold": 90,
       "ghost": {"stars": 6, "level": 18, "runeGrade": 6, "runeLevel": 5}},
-    {"id": "alchemist_1", "name": "Alquimista I", "points": 1100, "astrarium": 4, "gold": 150,
+    {"id": "alchemist_1", "name": "Alquimista I", "points": 1100, "astrarium": 4, "ecos": 4, "gold": 150,
       "ghost": {"stars": 6, "level": 26, "runeGrade": 6, "runeLevel": 8}},
-    {"id": "alchemist_2", "name": "Alquimista II", "points": 1200, "astrarium": 4, "gold": 200,
+    {"id": "alchemist_2", "name": "Alquimista II", "points": 1200, "astrarium": 4, "ecos": 4, "gold": 200,
       "ghost": {"stars": 6, "level": 33, "runeGrade": 6, "runeLevel": 10}},
-    {"id": "alchemist_3", "name": "Alquimista III", "points": 1300, "astrarium": 4, "gold": 250,
+    {"id": "alchemist_3", "name": "Alquimista III", "points": 1300, "astrarium": 4, "ecos": 4, "gold": 250,
       "ghost": {"stars": 6, "level": 38, "runeGrade": 6, "runeLevel": 12}},
-    {"id": "magister", "name": "Magister", "points": 1700, "astrarium": 5, "gold": 750, "legendaryScrolls": 1,
+    {"id": "magister", "name": "Magister", "points": 1700, "astrarium": 5, "ecos": 6, "gold": 750, "legendaryScrolls": 1,
       "ghost": {"stars": 6, "level": 40, "runeGrade": 6, "runeLevel": 15, "awakened": true}}
   ],
   "names": [
@@ -65,6 +67,13 @@
     {"id": "retorta", "name": "Senhor da Retorta", "cooldownHours": 4, "gold": 30,
       "members": ["lich_dark", "wizard_dark", "pirate_dark", "druid_dark"],
       "team": {"stars": 6, "level": 40, "runeGrade": 6, "runeLevel": 12}}
+  ],
+  "veilShop": [
+    {"id": "transmutation", "name": "Transmutação Alquímica", "item": "Scrolls", "amount": 1, "price": 60, "limit": 20, "period": "Week"},
+    {"id": "light_dark", "name": "Pergaminho de Luz e Trevas", "item": "LightDarkScrolls", "amount": 1, "price": 200, "limit": 3, "period": "Week"},
+    {"id": "core", "name": "Núcleo de Infusão", "item": "InfusionCores", "amount": 1, "price": 80, "limit": 6, "period": "Week"},
+    {"id": "reappraisal_gem", "name": "Gema de Reavaliação", "item": "ReappraisalGems", "amount": 1, "price": 120, "limit": 4, "period": "Week"},
+    {"id": "mana_flask", "name": "Frasco de Mana", "item": "Mana", "amount": 120, "price": 15, "limit": 6, "period": "Day"}
   ],
   "shop": [
     {"id": "transmutation", "name": "Transmutação Alquímica", "item": "Scrolls", "amount": 1, "price": 75, "limit": 15, "period": "Week"},

@@ -43,7 +43,10 @@ namespace Sigilos.Core.Progression
 
 		private static readonly JsonSerializerOptions Options = new(GameDatabase.JsonOptions) { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-		public static List<ArenaWireMember> ToWire(BattleTeam team) => team.Members.Take(MaxMembers).Select(m => new ArenaWireMember
+		public static List<ArenaWireMember> ToWire(BattleTeam team) => team.Members.Take(MaxMembers).Select(ToWire).ToList();
+
+		/// <summary>Um integrante como viaja: só ids e números, as runas sem dono nem trava.</summary>
+		public static ArenaWireMember ToWire(TeamMember m) => new()
 		{
 			Summon = m.Summon.Id,
 			Stars = m.Stars,
@@ -57,7 +60,7 @@ namespace Sigilos.Core.Progression
 				copy.Locked = false;
 				return copy;
 			}).ToList(),
-		}).ToList();
+		};
 
 		/// <summary>O JSON que o servidor guarda (camelCase, enums por nome).</summary>
 		public static JsonElement ToJson(BattleTeam team) => JsonSerializer.SerializeToElement(ToWire(team), Options);
@@ -81,28 +84,35 @@ namespace Sigilos.Core.Progression
 			var nextRune = 1;
 			foreach (var member in members.Take(MaxMembers))
 			{
-				if (!database.HasSummon(member.Summon))
-					continue;
-
-				var summon = database.Summon(member.Summon);
-				var stars = Math.Clamp(member.Stars, 1, Growth.MaxStars);
-				var awakened = member.Awakened && Awakening.CanBeAwakened(summon);
-				var all = summon.AllSkills;
-				var levels = all.Select((skill, i) => Math.Clamp(i < member.Skills.Count ? member.Skills[i] : 1, 1, Math.Max(1, skill.MaxLevel))).ToList();
-				var runes = new List<Rune>();
-				foreach (var rune in member.Runes.Take(6))
-				{
-					if (rune.Grade is < 1 or > 6 || rune.Level is < 0 or > 15 || rune.Slot is < 1 or > 6 || rune.Substats.Count > 4)
-						continue;
-					rune.Id = nextRune++;
-					rune.EquippedOn = null;
-					runes.Add(rune);
-				}
-
-				made.Add(new TeamMember(summon, stars, Math.Clamp(member.Level, 1, Growth.MaxLevel(stars)), awakened, levels, runes));
+				if (ToMember(database, member, ref nextRune) is { } built)
+					made.Add(built);
 			}
 
 			return made.Count == 0 ? null : new BattleTeam(made);
+		}
+
+		/// <summary>O integrante de luta; nulo se a invocação não existe. Estrelas, nível e runas fora do que existe são corrigidos ou descartados.</summary>
+		public static TeamMember? ToMember(GameDatabase database, ArenaWireMember member, ref int nextRune)
+		{
+			if (!database.HasSummon(member.Summon))
+				return null;
+
+			var summon = database.Summon(member.Summon);
+			var stars = Math.Clamp(member.Stars, 1, Growth.MaxStars);
+			var awakened = member.Awakened && Awakening.CanBeAwakened(summon);
+			var all = summon.AllSkills;
+			var levels = all.Select((skill, i) => Math.Clamp(i < member.Skills.Count ? member.Skills[i] : 1, 1, Math.Max(1, skill.MaxLevel))).ToList();
+			var runes = new List<Rune>();
+			foreach (var rune in member.Runes.Take(6))
+			{
+				if (rune.Grade is < 1 or > 6 || rune.Level is < 0 or > 15 || rune.Slot is < 1 or > 6 || rune.Substats.Count > 4)
+					continue;
+				rune.Id = nextRune++;
+				rune.EquippedOn = null;
+				runes.Add(rune);
+			}
+
+			return new TeamMember(summon, stars, Math.Clamp(member.Level, 1, Growth.MaxLevel(stars)), awakened, levels, runes);
 		}
 	}
 }

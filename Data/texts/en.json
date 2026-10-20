@@ -1391,6 +1391,73 @@
     "abandoned": "A fight was left halfway and counted as a defeat."
   },
 
+  "veil": {
+    "title": "Veil Arena",
+    "help_rules": "The Veil Arena is a real-time duel against another player. You need at least 10 different homunculi. Wins earn Aster and Veil Echoes; losses cost Aster. Your Grade follows your Aster, just like in the Astral Arena.",
+    "help_draft": "Team draft: each side picks 5 homunculi in turns (1, 2, 2, 2, 2 and 1, starting with the first player). What one side picked the other cannot pick. Then each player bans 1 of the rival's 5 and chooses the Leader among the 4 left. Every decision has a time limit: when it runs out, the automatic picks for you and the next limit is halved, down to 3 seconds.",
+    "help_battle": "Battle: each player decides the turns of their 4 homunculi within 15 seconds; when time runs out, the automatic plays and the next limit is halved, down to 3 seconds. After 20 turns, and every 15 turns after that, everyone gains 10% Attack and loses 10% max Health, stacking. If you leave or the connection drops, the automatic plays for you.",
+    "help_points": "Aster: beating someone with more Aster than you earns more, and losing to someone with less costs more; a draw changes nothing. Veil Echoes pay for the Veil Shop and depend on your Grade. Ghost training gives no Aster or Echoes.",
+    "aster": "Aster {0}",
+    "aster_now": "Aster now: {0}",
+    "next_grade": "{0} Aster to {1}",
+    "record": "{0} wins · {1} losses",
+    "record_tip": "Wins and losses in the Veil Arena",
+    "ecos": "Veil Echoes",
+    "queue": "Join the queue",
+    "ghost": "Train against a ghost",
+    "shop": "Veil Shop",
+    "shop_intro": "Veil Echoes come from wins in the Veil Arena and depend on your Grade. Each offer has a daily or weekly limit; the week turns on Sunday at 10 pm.",
+    "shop_confirm": "Buy {0} (×{1}) for {2} Veil Echoes?",
+    "no_ecos": "{0} more Veil Echoes needed.",
+    "bought": "{0} bought.",
+    "connecting": "Connecting to the server…",
+    "offline": "No connection to the server. The queue needs a connected account; ghost training works without one.",
+    "need_pool": "You need {0} different homunculi to join (you have {1}).",
+    "ready": "Ready to fight.",
+    "searching": "Looking for an opponent… {0}s",
+    "queue_text": "Looking for someone with Aster near {0}. The search range grows over time.",
+    "cancel": "Leave the queue",
+    "you": "You",
+    "matched": "Opponent: {0}",
+    "pick_you": "Your turn: pick {0}",
+    "pick_rival": "{0} is picking",
+    "ban_you": "Ban one of the rival's homunculi",
+    "ban_rival": "{0} is banning",
+    "lead_you": "Choose your team's Leader",
+    "lead_wait": "Waiting for the rival to choose a Leader",
+    "starting": "The battle is about to start",
+    "banned": "banned",
+    "your_turn": "Your turn · {0}s",
+    "rival_turn": "Rival's turn · {0}s",
+    "leave_title": "Forfeit the match?",
+    "leave_text": "Forfeiting counts as a loss.",
+    "leave": "Forfeit",
+    "desync_title": "Screens differ",
+    "desync": "Your screen diverged from the server's. The server's result is the one that counts.",
+    "lost_title": "Connection lost",
+    "lost_text": "The connection dropped before the end. The server finishes the battle on automatic; your Aster and Echoes arrive when the Veil Arena opens again.",
+    "draw": "Draw",
+    "rival_left": "The rival forfeited.",
+    "you_left": "You forfeited.",
+    "training_result": "Training: no Aster or Echoes.",
+    "err_save": "The server does not have your latest game yet. Wait a few seconds and try again.",
+    "err_pool": "You need at least 10 different homunculi.",
+    "err_busy": "You are already in the queue or in a match.",
+    "err_rate": "Easy: too many messages.",
+    "err_name": "Pick an account name first.",
+    "err_connected": "The account is already connected elsewhere.",
+    "err_generic": "Could not talk to the server."
+  },
+
+  "serverAction": {
+    "title": "Server action",
+    "offline": "Upgrading sigils and transmuting monsters happens on the server, and the game found no connection. Nothing was spent; try again when the connection is back.",
+    "unsynced": "The game could not send the account to the server before the action. Nothing was spent; try again shortly.",
+    "resync": "The server refused what was only on this device and the account was brought from the cloud. Repeat the action.",
+    "corrected": "The server refused changes made only on this device (sigils upgraded or summons done outside the server). The account went back to what is in the cloud; the previous save was kept as a backup.",
+    "conflict": "The account changed somewhere else. The game will sync; then repeat the action.",
+    "refused": "The server did not accept the request. Nothing was spent."
+  },
   "locked": {
     "stage": "Opens when you win stage {0} of the Campaign.",
     "monsters": "Opens at your first transmutation.",
@@ -1496,8 +1563,6 @@
 
   "account": {
     "subtitle": "Sign in to take your progress across devices. The account stays open on one device at a time.",
-    "offline": "Play without an account",
-    "offline_hint": "Progress stays on this device only. You can create an account later in Settings, and your progress comes along.",
     "remembered": "Account on this device",
     "other": "Use another account",
     "sign_in_tab": "Sign in",
@@ -1505,8 +1570,6 @@
     "email": "Email",
     "password": "Password",
     "password_hint": "At least 8 characters",
-    "invite": "Invite code",
-    "invite_hint": "The code you received",
     "sign_in": "Sign in",
     "register": "Create account",
     "connecting": "Connecting…",
@@ -1517,13 +1580,11 @@
     "error_email": "Enter a valid email.",
     "error_password": "The password needs at least {0} characters.",
     "error_password_empty": "Enter your password.",
-    "error_invite": "Enter the invite code.",
     "error_login": "Wrong email or password.",
     "error_exists": "An account with this email already exists. Sign in instead.",
-    "error_invalid_invite": "Invalid or already used invite.",
     "error_registration": "Invalid email or short password (at least 8 characters).",
     "error_offline": "Can't reach the server. Check your connection and try again.",
-    "error_busy": "Too many attempts. Wait a minute and try again.",
+    "error_busy": "Too many attempts. Wait a while and try again.",
     "error_server": "The server answered with an error ({0}). Try again.",
     "error_expired": "Your session expired. Sign in again with your password.",
     "error_cloud": "The cloud progress is from another version of the game and couldn't be opened.",
@@ -1864,6 +1925,23 @@
         }
       },
       "shop": {
+        "transmutation": {
+          "name": "Alchemical Transmutation"
+        },
+        "light_dark": {
+          "name": "Light and Dark Scroll"
+        },
+        "core": {
+          "name": "Infusion Core"
+        },
+        "reappraisal_gem": {
+          "name": "Reappraisal Gem"
+        },
+        "mana_flask": {
+          "name": "Mana Flask"
+        }
+      },
+      "veilShop": {
         "transmutation": {
           "name": "Alchemical Transmutation"
         },

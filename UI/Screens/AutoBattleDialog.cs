@@ -23,7 +23,7 @@ namespace Sigilos.UI.Screens
 		public Action<Rune> SellRune { get; init; } = _ => { };
 
 		/// <summary>A runa e o nível a alcançar.</summary>
-		public Action<Rune, int> UpgradeRune { get; init; } = (_, _) => { };
+		public Func<Rune, int, System.Threading.Tasks.Task> UpgradeRune { get; init; } = (_, _) => System.Threading.Tasks.Task.CompletedTask;
 
 		/// <summary>Bloqueia ou desbloqueia a runa (bloqueada não se vende).</summary>
 		public Action<Rune> LockRune { get; init; } = _ => { };
@@ -311,10 +311,12 @@ namespace Sigilos.UI.Screens
 				var target = RuneRules.NextMilestone(rune.Level);
 				var cost = RuneRules.UpgradeCost(rune, target);
 				// Como na tela de Runas: o próximo marco vale na hora, sem pergunta (inclusive o +12).
-				void Upgrade()
+				async void Upgrade()
 				{
 					var before = rune.Level;
-					actions.UpgradeRune(rune, target);
+					await actions.UpgradeRune(rune, target);
+					if (!GodotObject.IsInstanceValid(sheet))
+						return;
 					upgraded();
 
 					// A janela pode ter sido refeita com a ficha aberta (uma luta acabou): a runa da grade é a de agora, não a que foi tocada.

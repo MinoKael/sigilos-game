@@ -70,6 +70,9 @@ namespace Sigilos.UI.Screens
 		public event Action<MonsterFilter>? FilterChanged;
 		public event Action? ShopRequested;
 
+		/// <summary>Abrir a Arena do Véu, o duelo em tempo real.</summary>
+		public event Action? VeilRequested;
+
 		/// <summary>Uma lista nova, de graça; a sequência acaba.</summary>
 		public event Action? RefreshRequested;
 
@@ -216,6 +219,7 @@ namespace Sigilos.UI.Screens
 			_tabs.AddChild(Tab(T("arena.tab_opponents"), View.Opponents, "target").Named("Opponents"));
 			_tabs.AddChild(Tab(T("arena.tab_rivals"), View.Rivals, "fight").Named("Rivals"));
 			_tabs.AddChild(GameButton.Of(T("arena.cosmic_shop"), () => ShopRequested?.Invoke(), ButtonKind.Secondary, "astrarium", 52).Named("CosmicShop"));
+			_tabs.AddChild(GameButton.Of(T("veil.title"), () => VeilRequested?.Invoke(), ButtonKind.Secondary, "fight", 52).Named("Veil"));
 		}
 
 		private GameButton Tab(string text, View view, string icon) => GameButton.Of(text, () =>
