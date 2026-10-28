@@ -13,19 +13,24 @@ using static Sigilos.UI.Locale;
 namespace Sigilos.UI.Screens
 {
 	/// <summary>
-	/// Monstros: à esquerda a grade de cartões, com as abas Coleção e Baú e o
-	/// botão de selecionar vários; à direita a ficha do escolhido.
+	/// Monstros: à esquerda a grade densa de retratos quadrados, com o lugar e a contagem no alto ("Coleção
+	/// 227/500") ao lado de Selecionar vários, e embaixo a barra Ordem, Filtros, Álbum (<see cref="CollectionDialog"/>)
+	/// e Baú, que troca a grade entre a coleção e o Baú; à direita a ficha do escolhido.
 	///
-	/// A ficha tem duas colunas. Na estreita, à esquerda, a régua de abas escritas em pé (Atributos,
-	/// Habilidades, Despertar, Runas) e, embaixo dela, o que se faz com o monstro em qualquer aba:
-	/// Favoritar, Bloquear, Baú e Soltar. Na larga, o retrato, as estrelas, o elemento, o nível e a aba:
-	/// - Atributos: subir nível (ou evoluir), cada botão dizendo quanto custa, e a ficha (base + runas).
-	/// - Habilidades: cada uma com a recarga, o nível e o que os próximos níveis dão; a Liderança; e
-	///   Fundir cópias, que abre a janela própria da fusão (<see cref="FusionDialog"/>).
+	/// A ficha tem duas colunas. Na estreita, à direita, só a régua de abas escritas em pé (Atributos,
+	/// Habilidades, Despertar, Sigilos). Na larga, a aba:
+	/// - Atributos: o retrato, as estrelas, o elemento, onde está e o nível; subir nível (ou evoluir), cada
+	///   botão dizendo quanto custa; a ficha (a base e, em verde, o que os sigilos somam); e o que se faz com
+	///   o monstro: Favoritar, Bloquear, Baú e Soltar.
+	/// - Habilidades: os ícones numa fileira, com a Liderança; o tocado fica marcado e o texto dele (recarga,
+	///   nível, descrição e aprimoramentos) aparece logo embaixo; e Fundir cópias, que abre a janela própria
+	///   da fusão (<see cref="FusionDialog"/>).
 	/// - Despertar: o desenho de agora e o desperto, o que ganha e o botão Despertar com o custo.
-	/// - Runas: as 6 no círculo, os conjuntos ativos e o botão que abre a tela de Runas.
+	/// - Sigilos: Gerenciar (a tela de Sigilos com este monstro) e Auto-equipar (<see cref="AutoEquipDialog"/>),
+	///   os 6 no círculo e os conjuntos ativos.
+	/// Fora da aba Atributos, o alto da ficha encolhe para uma linha (retrato pequeno, nome, estrelas e nível).
 	///
-	/// Embaixo das abas, Filtros e Ordem (<see cref="MonsterFilter"/>): elemento, papel, estrelas, estrelas
+	/// Ordem e Filtros (<see cref="MonsterFilter"/>): elemento, papel, estrelas, estrelas
 	/// naturais, Despertar, situação e as habilidades (cada campo aceita vários valores: basta um valer; campos
 	/// diferentes valem juntos) (o que fazem, em que escalam, que efeito põem: só as
 	/// opções que algum monstro tem, <see cref="SkillTraits"/>); a ordem por estrelas, nível, elemento, nome, chegada ou por um
@@ -33,14 +38,14 @@ namespace Sigilos.UI.Screens
 	/// qualquer ordem. O GameRoot guarda a busca enquanto o jogo está aberto (<see cref="FilterChanged"/>).
 	///
 	/// Os monstros que chegaram desde a última visita (<see cref="Roster.IsNew"/>) vêm na frente de tudo,
-	/// com a faixa "Novo!", a aba diz quantos e, abrindo a tela sem escolha, o mais novo já vem escolhido
-	/// (na aba dele). Ao sair pelo Voltar, deixam de ser novos.
+	/// com a faixa "Novo!", a contagem do alto diz quantos e, abrindo a tela sem escolha, o mais novo já vem
+	/// escolhido (no lugar dele). Ao sair pelo Voltar, deixam de ser novos.
 	///
 	/// No Baú, cópias iguais em tudo o que importa (<see cref="MonsterStack"/>) viram um cartão só, com
 	/// "×7"; tocar nele abre as cópias uma a uma (<see cref="CopiesDialog"/>): marcar algumas e só com elas
 	/// tirar do Baú, fundir ou soltar. Sobrando uma cópia, o cartão volta a ser normal.
 	///
-	/// Selecionar vários marca cartões (nas duas abas, qualquer monstro, bloqueado ou não) para guardar no
+	/// Selecionar vários marca cartões (nos dois lugares, qualquer monstro, bloqueado ou não) para guardar no
 	/// Baú, tirar dele ou soltar de uma vez; soltar deixa de fora os bloqueados. No Baú, tocar num grupo
 	/// marca (ou desmarca) as cópias todas; o cartão diz quantas estão marcadas ("3/7"). Fundir é só pela
 	/// janela da fusão, para uma escolha não se confundir com a outra. Mudar o filtro desmarca os que somem da
@@ -50,17 +55,30 @@ namespace Sigilos.UI.Screens
 	/// </summary>
 	public partial class StorageScreen : Control
 	{
-		private const float DetailWidth = 610;
+		private const float DetailWidth = 570;
 
-		/// <summary>Cabe o botão mais comprido (Desfavoritar): a ficha não muda de largura ao favoritar.</summary>
-		private const float SideWidth = 180;
+		/// <summary>Cabe a aba mais comprida (Habilidades) com o símbolo.</summary>
+		private const float SideWidth = 150;
 
-		/// <summary>Os cartões da grade: cinco por linha ao lado da ficha.</summary>
-		private const float CardWidth = 98;
+		/// <summary>Os retratos da grade: sete por linha ao lado da ficha em 1280 de largura.</summary>
+		private const float CardWidth = 80;
 
-		/// <summary>A largura do texto das habilidades na coluna larga da ficha.</summary>
-		private const float TextWidth = 300;
+		private const float CardAspect = CreatureCard.Square;
+		private const float CardGap = Space.Small;
 
+		/// <summary>A largura do texto na coluna larga da ficha (a coluna menos a barra de rolagem reservada).</summary>
+		private const float TextWidth = 340;
+
+		/// <summary>Os ícones da aba Habilidades: cinco (quatro e a Liderança) cabem na coluna larga.</summary>
+		private const float SkillSize = 64;
+
+		/// <summary>O retrato do alto da ficha: grande na aba Atributos, pequeno nas outras.</summary>
+		private const float PortraitSize = 96;
+		private const float SmallPortraitSize = 60;
+
+		/// <summary>Os botões grandes da aba (subir nível, evoluir) e os do que se faz com o monstro.</summary>
+		private const int MainHeight = 56;
+		private const int ActionHeight = 44;
 
 		private enum Page
 		{
@@ -81,12 +99,14 @@ namespace Sigilos.UI.Screens
 
 		private readonly CurrencyBar _currencies = new();
 		private readonly HBoxContainer _tools = Layout.Row(Space.Regular).Named("Tools");
-		private readonly GridContainer _search = Layout.Grid(2, 8).Named("Search");
+		private readonly GridContainer _bar = Layout.Grid(4, Space.Medium).Named("Bar");
 		private readonly VBoxContainer _selection = new() { Name = "Selection" };
-		private readonly TileGrid _roster = new(10) { Name = "Roster" };
+		private readonly TileGrid _roster = new(CardGap) { Name = "Roster" };
 		private readonly VBoxContainer _detail = new() { Name = "Detail" };
 		private readonly TextTabs _pages = new(vertical: true, 64) { Name = "Pages" };
-		private readonly VBoxContainer _sideActions = new() { Name = "Actions" };
+
+		/// <summary>A habilidade aberta na aba Habilidades (a posição; depois da última, a Liderança).</summary>
+		private int _skill;
 
 		/// <summary>O cartão de cada monstro da grade (as cópias de um grupo dão no mesmo): o toque muda só ele.</summary>
 		private readonly Dictionary<int, CreatureCard> _cards = new();
@@ -110,6 +130,10 @@ namespace Sigilos.UI.Screens
 		public event Action<int>? AwakenRequested;
 		public event Action<int>? EvolveRequested;
 		public event Action<int>? RunesRequested;
+
+		/// <summary>O Auto-equipar confirmado: os sigilos que entram e o monstro.</summary>
+		public event Action<IReadOnlyList<int>, int>? EquipManyRequested;
+
 		public event Action<int>? StoreRequested;
 		public event Action<int>? RetrieveRequested;
 
@@ -152,7 +176,6 @@ namespace Sigilos.UI.Screens
 			rosterColumn.AddThemeConstantOverride("separation", Space.Regular);
 			rosterPanel.AddChild(rosterColumn);
 			rosterColumn.AddChild(_tools);
-			rosterColumn.AddChild(_search);
 			rosterColumn.AddChild(_selection);
 			_roster.Released += (index, _) =>
 			{
@@ -160,13 +183,13 @@ namespace Sigilos.UI.Screens
 					_cards.Remove(copy.Id);
 			};
 			rosterColumn.AddChild(Layout.Scroll(_roster));
+			rosterColumn.AddChild(_bar);
 			body.AddChild(rosterPanel);
 
 			var detailPanel = new PanelContainer { Name = "Sheet", CustomMinimumSize = new Vector2(DetailWidth, 0) };
 			var detailRow = Layout.Row(Space.Wide).Named("Row");
 
 			var side = new VBoxContainer { Name = "Side", CustomMinimumSize = new Vector2(SideWidth, 0) };
-			side.AddThemeConstantOverride("separation", 22); // Fora da escala: a coluna do lado, mais aberta que os blocos da ficha.
 			_pages.Add(T("monsters.page.stats"), "", "stats").Name = nameof(Page.Stats);
 			_pages.Add(T("monsters.page.skills"), "", "skill").Name = nameof(Page.Skills);
 			_pages.Add(T("monsters.page.awaken"), "", "awaken").Name = nameof(Page.Awaken);
@@ -177,8 +200,6 @@ namespace Sigilos.UI.Screens
 				RefreshDetail();
 			};
 			side.AddChild(_pages);
-			_sideActions.AddThemeConstantOverride("separation", Space.Regular);
-			side.AddChild(_sideActions);
 
 			_detail.AddThemeConstantOverride("separation", Space.Medium);
 			detailRow.AddChild(Layout.Scroll(_detail));
@@ -202,40 +223,53 @@ namespace Sigilos.UI.Screens
 			RefreshDetail();
 		}
 
-		// Abas e seleção ----------------------------------------------------------------------------
+		// Lugar, barra e seleção --------------------------------------------------------------------
 
+		/// <summary>
+		/// No alto, o lugar aberto e a contagem ("Coleção 227/500", "Baú 12") e Selecionar vários; embaixo da grade,
+		/// Ordem, Filtros, Álbum e Baú, que troca de lugar (aceso enquanto o Baú está aberto).
+		/// </summary>
 		private void RefreshTools()
 		{
 			Layout.Clear(_tools);
-			var tabs = new TextTabs { Name = "Places" };
-			tabs.Add(T("monsters.collection"), WithNew($"{_player.Collection.Count()}/{_player.CollectionCapacity}", _player.Collection)).Name = "Collection";
-			tabs.Add(T("monsters.vault"), WithNew(_player.Storage.Count().ToString(), _player.Storage)).Name = "Vault";
-			tabs.Select(_showStorage ? 1 : 0);
-			tabs.Changed += index =>
+			var place = _showStorage ? _player.Storage : _player.Collection;
+			var count = _showStorage ? place.Count().ToString() : $"{place.Count()}/{_player.CollectionCapacity}";
+			var title = new Label
 			{
-				_showStorage = index == 1;
-				Callable.From(Refresh).CallDeferred();
+				Name = "Place",
+				Text = T(_showStorage ? "monsters.place_vault" : "monsters.place_collection", count),
+				ThemeTypeVariation = GameTheme.Heading,
+				// Uma linha só: quebrar empurraria a grade para baixo. Os novos já vêm na frente com o selo "Novo!".
+				TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis,
+				CustomMinimumSize = new Vector2(10, 0),
+				SizeFlagsHorizontal = SizeFlags.ExpandFill,
+				VerticalAlignment = VerticalAlignment.Center,
 			};
-			_tools.AddChild(tabs);
-			_tools.AddChild(new Control { Name = "Spacer", SizeFlagsHorizontal = SizeFlags.ExpandFill });
+			_tools.AddChild(title);
 
 			var select = GameButton.Of(_selecting ? T("monsters.select_done") : T("monsters.select"), () =>
 			{
 				_selecting = !_selecting;
 				_marked.Clear();
 				Callable.From(Refresh).CallDeferred();
-			}, _selecting ? ButtonKind.Primary : ButtonKind.Secondary, "select", 52).Named("Select");
-			_tools.AddChild(select);
+			}, _selecting ? ButtonKind.Primary : ButtonKind.Secondary, "select", 48).Named("Select");
+			_tools.AddChild(select.Wide(220).FixedHeight());
 
-			Layout.Clear(_search);
-			MonsterSearch.Fill(_search, _database, _filter, Filter);
-		}
-
-		/// <summary>A contagem da aba e, se houver, quantos ali são novos.</summary>
-		private string WithNew(string count, IEnumerable<OwnedSummon> place)
-		{
-			var fresh = place.Count(m => Roster.IsNew(_player, m));
-			return fresh == 0 ? count : T("monsters.with_new", count, fresh);
+			Layout.Clear(_bar);
+			MonsterSearch.Fill(_bar, _database, _filter, Filter, 48);
+			// A Ordem vem primeiro: é a que mais se usa.
+			_bar.MoveChild(_bar.GetNode("Sort"), 0);
+			_bar.AddChild(GameButton.Of(T("monsters.album"), () => CollectionDialog.Open(this, _database, _player), ButtonKind.Secondary, "grimoire", 48).Named("Album"));
+			_bar.AddChild(GameButton.Of(T("monsters.vault_button", _player.Storage.Count()), () =>
+			{
+				_showStorage = !_showStorage;
+				Callable.From(Refresh).CallDeferred();
+			}, _showStorage ? ButtonKind.Primary : ButtonKind.Secondary, "chest", 48).Named("Vault"));
+			foreach (var button in _bar.GetChildren().OfType<GameButton>())
+			{
+				button.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+				button.FixedHeight();
+			}
 		}
 
 		/// <summary>A busca nova: desmarca quem saiu da grade, avisa o GameRoot e refaz a tela.</summary>
@@ -293,8 +327,6 @@ namespace Sigilos.UI.Screens
 					EndSelection();
 					ReleaseRequested?.Invoke(released.Select(m => m.Id).ToList());
 				}, ButtonKind.Danger), ButtonKind.Danger, "release", 48).Named("ReleaseMarked");
-			if (released.Count > 0)
-				button.WithCost("fragments", $"+{fragments}");
 			button.Block(released.Count == 0 ? T("monsters.why_marked") : null, T("monsters.release"));
 			return button;
 		}
@@ -356,7 +388,7 @@ namespace Sigilos.UI.Screens
 			// Só os cartões que aparecem na rolagem existem como nós: a coleção e o Baú passam de centenas.
 			_stacks = stacks;
 			if (stacks.Count > 0)
-				_roster.Virtualize(stacks.Count, new Vector2(CardWidth, CardWidth * 1.25f), index => Card(_stacks[index]));
+				_roster.Virtualize(stacks.Count, new Vector2(CardWidth, CardWidth * CardAspect), index => Card(_stacks[index]));
 
 			if (monsters.Count == 0)
 			{
@@ -374,7 +406,7 @@ namespace Sigilos.UI.Screens
 			// Na ordem por atributo, o valor dele (com as runas) fica escrito no cartão; o novo diz que é novo.
 			var tag = Roster.IsNew(_player, monster) ? T("monsters.new")
 				: _filter.Sort == MonsterSort.Stat ? Texts.Value(_filter.SortStat, MonsterFilter.Value(monster, summon, _player, _filter.SortStat)) : null;
-			var card = new CreatureCard(summon, monster, CardWidth, inTeam ? "team" : null, tag) { Name = stack.Count > 1 ? $"Group{monster.Id}" : $"Monster{monster.Id}" };
+			var card = new CreatureCard(summon, monster, CardWidth, inTeam ? "team" : null, tag, aspect: CardAspect) { Name = stack.Count > 1 ? $"Group{monster.Id}" : $"Monster{monster.Id}" };
 			var marked = stack.Copies.Count(c => _marked.Contains(c.Id));
 			card.SetSelected(stack.Copies.Any(c => c.Id == _selected));
 			card.SetMarked(marked == stack.Count);
@@ -410,6 +442,7 @@ namespace Sigilos.UI.Screens
 				if (_selected is { } previous && _cards.TryGetValue(previous, out var before))
 					before.SetSelected(false);
 				_selected = ids[0];
+				_skill = 0;
 				card.SetSelected(true);
 				RefreshDetail();
 			}
@@ -456,10 +489,8 @@ namespace Sigilos.UI.Screens
 		private void RefreshDetail()
 		{
 			Layout.Clear(_detail);
-			Layout.Clear(_sideActions);
 			var hasMonster = _selected is { } id && _player.Monster(id) != null;
 			_pages.Visible = hasMonster;
-			_sideActions.Visible = hasMonster;
 			if (!hasMonster)
 			{
 				_detail.AddChild(Layout.Text(T("monsters.none_selected"), GameTheme.Faded).Named("Empty"));
@@ -468,7 +499,6 @@ namespace Sigilos.UI.Screens
 
 			var monster = _player.Monster(_selected!.Value)!;
 			var summon = _database.Summon(monster.SummonId);
-			SideActions(summon, monster);
 
 			// Homúnculo de 2★ não desperta (versão 0.1): a aba do Despertar nem aparece, e a aberta passa para Atributos.
 			var canAwaken = !monster.IsInfusionCore && Awakening.CanBeAwakened(summon);
@@ -484,10 +514,11 @@ namespace Sigilos.UI.Screens
 				// O Núcleo não tem atributos, runas, habilidades nem Despertar: só o que ele é e como usar.
 				_pages.Visible = false;
 				_detail.AddChild(CoreDetail(summon, monster));
+				_detail.AddChild(Actions(summon, monster));
 				return;
 			}
 
-			_detail.AddChild(Identity(summon, monster));
+			_detail.AddChild(Identity(summon, monster, _page != Page.Stats));
 			switch (_page)
 			{
 				case Page.Stats:
@@ -505,22 +536,26 @@ namespace Sigilos.UI.Screens
 			}
 		}
 
-		/// <summary>Embaixo das abas, o que vale em qualquer aba: Favoritar, Bloquear, Baú e Soltar.</summary>
-		private void SideActions(SummonDefinition summon, OwnedSummon monster)
+		/// <summary>
+		/// O que se faz com o monstro, no fim da aba Atributos (e da ficha do Núcleo), em duas colunas fixas:
+		/// Favoritar e Bloquear; Baú (guardar ou tirar) e Soltar. O que não vale fica apagado e diz o porquê.
+		/// </summary>
+		private GridContainer Actions(SummonDefinition summon, OwnedSummon monster)
 		{
 			var id = monster.Id;
-			_sideActions.AddChild(Side(GameButton.Of(monster.Favorite ? T("monsters.unfavorite") : T("monsters.favorite"), () => FavoriteRequested?.Invoke(id), ButtonKind.Secondary, "favorite")).Named("Favorite"));
-			_sideActions.AddChild(Side(GameButton.Of(monster.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(id), ButtonKind.Secondary, monster.Locked ? "unlock" : "lock")).Named("Lock"));
+			var grid = Layout.Grid(2, Space.Regular).Named("Actions");
+			grid.AddChild(GameButton.Of(monster.Favorite ? T("monsters.unfavorite") : T("monsters.favorite"), () => FavoriteRequested?.Invoke(id), ButtonKind.Secondary, "favorite", ActionHeight).Named("Favorite"));
+			grid.AddChild(GameButton.Of(monster.Locked ? T("lock.unlock") : T("lock.lock"), () => LockRequested?.Invoke(id), ButtonKind.Secondary, monster.Locked ? "unlock" : "lock", ActionHeight).Named("Lock"));
 
 			if (!monster.Stored)
 			{
-				_sideActions.AddChild(Side(GameButton.Of(T("monsters.store_short"), () => StoreRequested?.Invoke(id), ButtonKind.Secondary, "chest")).Named("Store"));
+				grid.AddChild(GameButton.Of(T("monsters.store_short"), () => StoreRequested?.Invoke(id), ButtonKind.Secondary, "chest", ActionHeight).Named("Store"));
 			}
 			else
 			{
-				var retrieve = Side(GameButton.Of(T("monsters.retrieve_short"), () => RetrieveRequested?.Invoke(id), ButtonKind.Secondary, "storage")).Named("Retrieve");
+				var retrieve = GameButton.Of(T("monsters.retrieve_short"), () => RetrieveRequested?.Invoke(id), ButtonKind.Secondary, "storage", ActionHeight).Named("Retrieve");
 				retrieve.Block(Roster.IsFull(_player) ? T("monsters.collection_full") : null, T("monsters.retrieve_short"));
-				_sideActions.AddChild(retrieve);
+				grid.AddChild(retrieve);
 			}
 
 			var fragments = Fusion.FragmentsFor(summon.Rarity);
@@ -528,9 +563,17 @@ namespace Sigilos.UI.Screens
 				T("monsters.release_title"),
 				T("monsters.release_confirm", summon.NameFor(monster.Awakened), monster.Level, fragments) + MonsterNotes.Warning(_database, _player, new[] { monster }),
 				T("monsters.release_button"),
-				() => ReleaseRequested?.Invoke(new[] { id }), ButtonKind.Danger), ButtonKind.Danger, "release").WithCost("fragments", $"+{fragments}");
+				() => ReleaseRequested?.Invoke(new[] { id }), ButtonKind.Danger), ButtonKind.Danger, "release", ActionHeight);
 			release.Block(monster.IsInfusionCore ? T("monsters.why_core_release") : monster.Locked ? T("monsters.locked_note") : null, T("monsters.release"));
-			_sideActions.AddChild(Side(release).Named("Release"));
+			grid.AddChild(release.Named("Release"));
+
+			foreach (var button in grid.GetChildren().OfType<GameButton>())
+			{
+				button.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+				button.FixedHeight();
+			}
+
+			return grid;
 		}
 
 		/// <summary>O Núcleo de Infusão: retrato, nome, onde está e para que serve (fundir em qualquer monstro).</summary>
@@ -544,7 +587,8 @@ namespace Sigilos.UI.Screens
 			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Gold, MaskShape.Rounded, 6));
 			row.AddChild(frame);
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			info.AddChild(new Label { Name = "Name", Text = summon.Name, ThemeTypeVariation = GameTheme.Heading });
+			// O nome quebra em vez de alargar a ficha (sem isso a grade da esquerda perde uma coluna).
+			info.AddChild(Layout.Text(summon.Name, GameTheme.Heading, 10).Named("Name"));
 			var where = new List<string>();
 			if (monster.Stored)
 				where.Add(T("monsters.in_vault"));
@@ -558,28 +602,25 @@ namespace Sigilos.UI.Screens
 			return column;
 		}
 
-		/// <summary>Os botões da coluna estreita ocupam a largura dela inteira.</summary>
-		private static GameButton Side(GameButton button)
-		{
-			button.SizeFlagsHorizontal = SizeFlags.Fill;
-			return button;
-		}
-
-		/// <summary>Retrato, nome, estrelas, elemento e papel, onde está, nível e experiência: igual em toda aba.</summary>
-		private VBoxContainer Identity(SummonDefinition summon, OwnedSummon monster)
+		/// <summary>
+		/// Retrato, nome, estrelas, elemento e papel, onde está, nível e experiência, na aba Atributos. Nas outras
+		/// (<paramref name="compact"/>), uma linha só: retrato pequeno, nome, estrelas e nível.
+		/// </summary>
+		private VBoxContainer Identity(SummonDefinition summon, OwnedSummon monster, bool compact)
 		{
 			var column = new VBoxContainer { Name = "Identity" };
 			column.AddThemeConstantOverride("separation", Space.Small);
 			var row = Layout.Row(Space.Wide).Named("Row");
-			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(112, 112) };
-			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), 3, 10, 8));
+			var side = compact ? SmallPortraitSize : PortraitSize;
+			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(side, side), SizeFlagsVertical = SizeFlags.ShrinkCenter };
+			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Inset, Palette.Frame(summon.Rarity), compact ? 2 : 3, 10, compact ? 4 : 8));
 			frame.AddChild(Doodle.Masked(Art.Creature(summon.Image), Palette.Of(summon.Element), MaskShape.Rounded, 6, aura: monster.Awakened ? summon.Element : null));
 			row.AddChild(frame);
 
 			var info = new VBoxContainer { Name = "Info", SizeFlagsHorizontal = SizeFlags.ExpandFill, Alignment = BoxContainer.AlignmentMode.Center };
-			info.AddThemeConstantOverride("separation", Space.Tight);
+			info.AddThemeConstantOverride("separation", compact ? Space.Hair : Space.Tight);
 			var title = Layout.Row(Space.Medium).Named("Title");
-			var name = new Label { Name = "Name", Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+			var name = new Label { Name = "Name", Text = summon.NameFor(monster.Awakened), ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(10, 0), SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			if (monster.Awakened)
 				name.AddThemeColorOverride("font_color", Palette.Awakened);
 			title.AddChild(name);
@@ -590,6 +631,18 @@ namespace Sigilos.UI.Screens
 			var stars = new Label { Name = "Stars", Text = Texts.Stars(monster.Stars) };
 			stars.AddThemeColorOverride("font_color", Palette.Stars(summon.Rarity, monster.Awakened));
 			stars.AddThemeFontSizeOverride("font_size", FontSize.Strong);
+			if (compact)
+			{
+				// Estrelas e nível na mesma linha, embaixo do nome.
+				var facts = Layout.Row(Space.Wide).Named("Facts");
+				facts.AddChild(stars);
+				facts.AddChild(new Label { Name = "Level", Text = T("monsters.level", monster.Level, Leveling.MaxLevel(monster)), ThemeTypeVariation = GameTheme.Number, VerticalAlignment = VerticalAlignment.Center });
+				info.AddChild(facts);
+				row.AddChild(info);
+				column.AddChild(row);
+				return column;
+			}
+
 			info.AddChild(stars);
 
 			var line = Layout.Row(Space.Medium).Named("Line");
@@ -631,6 +684,11 @@ namespace Sigilos.UI.Screens
 			};
             if (max == 40) textLabel.AddThemeColorOverride("font_color", Palette.Gold);
             level.AddChild(textLabel);
+			// O que o próximo passo custa: um nível (Essência) ou, no nível máximo, a estrela seguinte (Fragmentos).
+			var atMax = Leveling.IsMaxLevel(monster);
+			if (!atMax || Evolution.IsReady(monster))
+				level.AddChild(Layout.Chip(atMax ? "fragments" : "essence", Texts.Number(atMax ? Evolution.Cost(monster.Stars) : Leveling.InfuseCosts(monster).Item1)).Named("Cost"));
+
 			column.AddChild(level);
 			return column;
 		}
@@ -644,29 +702,21 @@ namespace Sigilos.UI.Screens
 			var actions = Layout.Grid(2, Space.Regular).Named("Actions");
 			var maxed = Leveling.IsMaxLevel(monster);
 			var next = maxed ? 0 : Leveling.InfuseCosts(monster).Item1;
-			var one = GameButton.Of(T("monsters.level_up"), () => InfuseRequested?.Invoke(id, false), ButtonKind.Primary, "essence", 64)
-				.WithCost("essence", maxed ? "" : Texts.Number(next)).Named("LevelUp");
+			var one = GameButton.Of(T("monsters.level_up"), () => InfuseRequested?.Invoke(id, false), ButtonKind.Primary, "essence", MainHeight).Named("LevelUp");
 			one.Block(maxed ? T("monsters.why_max_level") : _player.Essence < next ? T("common.why_essence") : null, T("monsters.level_up"));
 			actions.AddChild(one.FixedHeight());
-			var evolveReady = Evolution.IsReady(monster);
-			var fragmentCost = monster.Stars < Growth.MaxStars ? Evolution.Cost(monster.Stars) : 0;
-			var evolve = GameButton.Of(T("monsters.evolve", Texts.Stars(Math.Min(monster.Stars + 1, Growth.MaxStars))), () => EvolveRequested?.Invoke(id), ButtonKind.Primary, "evolve", 64)
-				.WithCost("fragments", evolveReady ? $"{fragmentCost}" : "").Named("Evolve");
+			var evolve = GameButton.Of(T("monsters.evolve", Texts.Stars(Math.Min(monster.Stars + 1, Growth.MaxStars))), () => EvolveRequested?.Invoke(id), ButtonKind.Primary, "evolve", MainHeight).Named("Evolve");
 			evolve.Block(monster.Stars >= Growth.MaxStars ? T("monsters.fully_grown") : !maxed ? T("monsters.why_evolve_level") : !Evolution.CanEvolve(_player, monster) ? T("monsters.why_evolve") : null,
 				T("monsters.evolve", Texts.Stars(Math.Min(monster.Stars + 1, Growth.MaxStars))));
 			actions.AddChild(evolve.FixedHeight());
 			_detail.AddChild(actions);
-			if (monster.Locked)
-				_detail.AddChild(Layout.Text(T("monsters.locked_note"), GameTheme.Faded).Named("Locked"));
-
-			if (Roster.IsFull(_player) && monster.Stored)
-				_detail.AddChild(Layout.Text(T("monsters.collection_full"), GameTheme.Faded).Named("Full"));
 
 			_detail.AddChild(new HSeparator { Name = "StatsLine" });
 			var sheet = SummonStats.For(summon, monster.Stars, monster.Level, monster.Awakened, _player.RunesOn(monster.Id));
 			var table = new StatTable { Name = "Stats" };
 			table.Show(sheet);
 			_detail.AddChild(table);
+			_detail.AddChild(Actions(summon, monster));
 		}
 
 		private void RunesPage(SummonDefinition summon, OwnedSummon monster)
@@ -674,11 +724,19 @@ namespace Sigilos.UI.Screens
 			var runes = _player.RunesOn(monster.Id);
 			var sheet = SummonStats.For(summon, monster.Stars, monster.Level, monster.Awakened, runes);
 
-			var actions = Layout.Row(Space.None, true).Named("Actions");
-			actions.AddChild(GameButton.Of(T("monsters.runes_button"), () => RunesRequested?.Invoke(monster.Id), ButtonKind.Primary, "rune").Named("OpenRunes"));
+			// Gerenciar abre a tela de Sigilos com este monstro; Auto-equipar abre a janela que só equipa no Equipar.
+			var actions = Layout.Grid(2, Space.Regular).Named("Actions");
+			actions.AddChild(GameButton.Of(T("monsters.runes_button"), () => RunesRequested?.Invoke(monster.Id), ButtonKind.Primary, "rune", ActionHeight).Named("OpenRunes"));
+			actions.AddChild(GameButton.Of(T("runes.auto"), () => AutoEquipDialog.Open(this, _database, _player, monster, ids => EquipManyRequested?.Invoke(ids, monster.Id)), ButtonKind.Secondary, "auto", ActionHeight).Named("AutoEquip"));
+			foreach (var button in actions.GetChildren().OfType<GameButton>())
+			{
+				button.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+				button.FixedHeight();
+			}
+
 			_detail.AddChild(actions);
 
-			var ring = new SigilRing(280) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
+			var ring = new SigilRing(260) { Name = "Ring", Spread = 0.72f, SizeFlagsHorizontal = SizeFlags.ShrinkCenter };
 			var tiles = new List<Control>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
@@ -696,7 +754,7 @@ namespace Sigilos.UI.Screens
 				var set = sheet.Runes.ActiveSets[i];
 				var row = Layout.Row(Space.Medium).Named($"{set.Set}{i + 1}");
 				row.AddChild(new PlanetSymbol(RuneSets.PlanetOf(set.Set), 26, Palette.Gold) { Name = "Planet" });
-				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", TextWidth + 30).Named("Effect"));
+				row.AddChild(RichText.Label($"{Texts.Term(set.Set)}: {Texts.Describe(set)}", TextWidth - 34).Named("Effect"));
 				_detail.AddChild(row);
 			}
 
@@ -707,38 +765,74 @@ namespace Sigilos.UI.Screens
 		private void SkillsPage(SummonDefinition summon, OwnedSummon monster)
 		{
 			// Até quatro habilidades e a Liderança numa fileira só: ativas em pedra quadrada, passivas em losango,
-			// a Liderança em pentágono com a coroa; o toque abre a janela, colada no ícone.
+			// a Liderança em pentágono com a coroa. A tocada ganha o traço dourado embaixo e o texto dela aparece
+			// abaixo de Fundir (que fica sempre no mesmo lugar); o toque troca só o traço e o texto.
 			var skills = summon.AllSkills;
-			var tiles = SkillTile.Grid().Named("SkillTiles");
+			var leader = summon.Leader;
+			var count = skills.Count + (leader != null ? 1 : 0);
+			_skill = Math.Clamp(_skill, 0, Math.Max(0, count - 1));
+			var tiles = Layout.Grid(SkillTile.PerRow, Space.Regular).Named("SkillTiles");
+			var markers = new List<Control>();
+			var info = new VBoxContainer { Name = "SkillInfo" };
+			info.AddThemeConstantOverride("separation", Space.Small);
+
+			void Show(int index)
+			{
+				_skill = index;
+				for (var i = 0; i < markers.Count; i++)
+					markers[i].Modulate = new Color(1, 1, 1, i == index ? 1 : 0);
+				Layout.Clear(info);
+				var title = new Label { Name = "Title", ThemeTypeVariation = GameTheme.Heading, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(10, 0) };
+				info.AddChild(title);
+				if (index < skills.Count)
+				{
+					var skill = skills[index];
+					title.Text = SkillDialog.Title(skill);
+					SkillDialog.Fill(info, skill, monster.SkillLevel(index), monster.Awakened, !monster.Awakened && index >= summon.Skills.Count, TextWidth);
+				}
+				else if (leader != null)
+				{
+					title.Text = T("monsters.leader_title");
+					info.AddChild(SkillDialog.LeaderText(leader, TextWidth));
+				}
+			}
+
+			Control Slot(Control tile, string name)
+			{
+				var slot = new VBoxContainer { Name = name };
+				slot.AddThemeConstantOverride("separation", Space.Tight);
+				slot.AddChild(tile.Named("Tile"));
+				var marker = new ColorRect { Name = "Marker", Color = Palette.Gold, CustomMinimumSize = new Vector2(SkillSize * 0.6f, 4), SizeFlagsHorizontal = SizeFlags.ShrinkCenter, MouseFilter = MouseFilterEnum.Ignore };
+				markers.Add(marker);
+				slot.AddChild(marker);
+				return slot;
+			}
+
 			for (var i = 0; i < skills.Count; i++)
 			{
 				var index = i;
-				var skill = skills[i];
-				var level = monster.SkillLevel(i);
 				var locked = !monster.Awakened && i >= summon.Skills.Count;
-				Control? tile = null;
-				tile = SkillTile.Build(skill, level, locked, SkillTile.DefaultSize, onPressed: () => SkillDialog.Open(tile!, skill, monster.SkillLevel(index), monster.Awakened, locked)).Named($"Skill{i + 1}");
-				tiles.AddChild(tile);
+				tiles.AddChild(Slot(SkillTile.Build(skills[i], monster.SkillLevel(i), locked, SkillSize, onPressed: () => Show(index)), $"Skill{i + 1}"));
 			}
 
-			if (summon.Leader is { } leader)
-			{
-				Control? tile = null;
-				tile = SkillTile.Leader(leader.Stat, SkillTile.DefaultSize, () => SkillDialog.OpenLeader(tile!, leader)).Named("Leader");
-				tiles.AddChild(tile);
-			}
+			if (leader != null)
+				tiles.AddChild(Slot(SkillTile.Leader(leader.Stat, SkillSize, () => Show(skills.Count)), "Leader"));
 
 			_detail.AddChild(tiles);
 
-			_detail.AddChild(new HSeparator { Name = "ActionsLine" });
 			var copies = FusionDialog.Candidates(_database, _player, monster).Count(c => !c.Locked);
 			var left = Fusion.SkillUpsLeft(_database, monster);
 			//_detail.AddChild(Layout.Text(left == 0 ? T("monsters.fuse_full") : T("monsters.fuse_hint", left, copies), GameTheme.Faded).Named("FuseHint"));
-			var actions = Layout.Grid(2, 10).Named("Actions");
-			var fuse = GameButton.Of(T("monsters.fuse_open"), () => FusionDialog.Open(this, _database, _player, monster, ids => Fuse(monster.Id, ids)), ButtonKind.Primary, "fuse").Named("Fuse");
+			var actions = Layout.Grid(2, Space.Regular).Named("Actions");
+			var fuse = GameButton.Of(T("monsters.fuse_open"), () => FusionDialog.Open(this, _database, _player, monster, ids => Fuse(monster.Id, ids)), ButtonKind.Primary, "fuse", ActionHeight).Named("Fuse");
 			fuse.Block(left == 0 ? T("monsters.fuse_full") : copies == 0 ? T("monsters.why_no_copies") : null, T("monsters.fuse_open"));
-			actions.AddChild(fuse);
+			actions.AddChild(fuse.Wide(240).FixedHeight());
 			_detail.AddChild(actions);
+
+			_detail.AddChild(new HSeparator { Name = "InfoLine" });
+			_detail.AddChild(info);
+			if (count > 0)
+				Show(_skill);
 		}
 
 		private void AwakenPage(SummonDefinition summon, OwnedSummon monster)
@@ -802,7 +896,7 @@ namespace Sigilos.UI.Screens
 				T("monsters.awaken_title"),
 				T("monsters.awaken_confirm", summon.Name, summon.Awakening.Name, cost),
 				T("monsters.awaken_button"),
-				() => AwakenRequested?.Invoke(monster.Id)), ButtonKind.Primary, "awaken").WithCost("essence", Texts.Number(cost)).Named("Awaken");
+				() => AwakenRequested?.Invoke(monster.Id)), ButtonKind.Primary, "awaken").Named("Awaken");
 			awaken.Block(Awakening.CanAwaken(_player, monster, summon) ? null : _player.Essence < cost ? T("common.why_essence") : T("monsters.why_awaken"), T("monsters.awaken_button"));
 			row.AddChild(awaken.Wide(260));
 			_detail.AddChild(row);

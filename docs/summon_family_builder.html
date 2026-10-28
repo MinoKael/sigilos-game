@@ -1380,7 +1380,7 @@ const Core = (() => {
 
       // Convenções do jogo por estrelas naturais (Tests/DataTests.cs).
       if (star <= 3 && !extra) add("warn", where, "Convenção: as 2★ e as 3★ ganham uma habilidade nova no Despertar.");
-      if (star === 4 && !skills.some(changes)) add("warn", where, "Convenção: as 4★ melhoram uma habilidade no Despertar ("awakened" nos efeitos ou valor desperto da passiva).");
+      if (star === 4 && !skills.some(changes)) add("warn", where, "Convenção: as 4★ melhoram uma habilidade no Despertar ('awakened' nos efeitos ou valor desperto da passiva).");
       if (star >= 5 && (!v.awakening.stat || skills.some(changes))) add("warn", where, "Convenção: as 5★ só ganham um atributo no Despertar.");
     }
     return issues;

@@ -36,7 +36,15 @@ namespace Sigilos.Core.Runes
 
 		/// <summary>Os sigilos da melhor combinação, no máximo um por espaço. Empate: o de menor Id.</summary>
 		/// <param name="peers">Os outros homúnculos do jogo: a média deles diz o que é forte nesta variante.</param>
-		public static IReadOnlyList<Rune> Choose(SummonDefinition summon, OwnedSummon monster, IEnumerable<Rune> runes, IReadOnlyCollection<SummonDefinition>? peers = null)
+		public static IReadOnlyList<Rune> Choose(SummonDefinition summon, OwnedSummon monster, IEnumerable<Rune> runes, IReadOnlyCollection<SummonDefinition>? peers = null) =>
+			Choose(summon, monster, runes, peers, Array.Empty<RuneSet>())!;
+
+		/// <summary>
+		/// A melhor combinação que fecha todos os conjuntos de <paramref name="required"/> (o jogador escolheu, por
+		/// exemplo, Pressa e Vigor): só os planos com eles entram, e a montagem de agora só vale se já os tem.
+		/// Nula quando nenhuma combinação com os sigilos dele e os soltos fecha esses conjuntos.
+		/// </summary>
+		public static IReadOnlyList<Rune>? Choose(SummonDefinition summon, OwnedSummon monster, IEnumerable<Rune> runes, IReadOnlyCollection<SummonDefinition>? peers, IReadOnlyCollection<RuneSet> required)
 		{
 			var pool = runes
 				.Where(r => RuneSets.IsActive(r.Set) && (r.EquippedOn == null || r.EquippedOn == monster.Id))
@@ -62,8 +70,16 @@ namespace Sigilos.Core.Runes
 				return score;
 			}
 
+			bool HasRequired(IReadOnlyCollection<Rune> build)
+			{
+				if (required.Count == 0)
+					return true;
+				var active = RuneBonuses.Compute(baseStats, build).ActiveSets.Select(s => s.Set).ToList();
+				return required.All(active.Contains);
+			}
+
 			var current = pool.Where(r => r.EquippedOn == monster.Id).ToList();
-			var best = (Build: (IReadOnlyList<Rune>)current, Score: Score(current));
+			var best = HasRequired(current) ? (Build: (IReadOnlyList<Rune>?)current, Score: Score(current)) : (Build: null, Score: double.NegativeInfinity);
 
 			// O melhor de cada espaço, sozinho e por conjunto: sozinho um sigilo nunca fecha conjunto, então o
 			// número é só o dos atributos dele.
@@ -79,7 +95,7 @@ namespace Sigilos.Core.Runes
 					bestOfSet[key] = rune;
 			}
 
-			foreach (var plan in Plans())
+			foreach (var plan in Plans().Where(p => required.All(set => p.Any(part => part.Set == set))))
 			{
 				foreach (var build in Builds(plan, bestAny, bestOfSet))
 				{

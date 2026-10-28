@@ -1,0 +1,39 @@
+// O check-in diário (Core/Progression/DailyCheckIn): um ciclo de 28 dias contados por entradas. Cada dia manda uma carta
+// (Core/Progression/Letters, 7 dias de prazo) com "rewards": as moedas do correio, pelo nome (gold, mana, scrolls, essence,
+// fragments, reappraisalGems, legendaryScrolls). Os Pergaminhos de Luz e Trevas e os Núcleos de Infusão são de marcos, não
+// daqui (o jogo recusa o arquivo se aparecerem). "big" marca os dias de prêmio maior, que o painel anuncia: quem os escolhe é
+// este arquivo. O ciclo todo rende 1.500 de Ouro, 800 de Mana, 10 Pergaminhos Místicos, 10.000 de Essência, 400 Fragmentos,
+// 1 Gema de Reavaliação (dia 21) e 1 Pergaminho Lendário (dia 28).
+[
+  {"day": 1,  "rewards": {"gold": 50}},
+  {"day": 2,  "rewards": {"mana": 50}},
+  {"day": 3,  "rewards": {"essence": 400}},
+  {"day": 4,  "rewards": {"scrolls": 1}},
+  {"day": 5,  "rewards": {"gold": 50}},
+  {"day": 6,  "rewards": {"fragments": 30}},
+  {"day": 7,  "big": true, "rewards": {"gold": 150, "mana": 100, "scrolls": 1, "essence": 1000}},
+
+  {"day": 8,  "rewards": {"mana": 50}},
+  {"day": 9,  "rewards": {"gold": 50}},
+  {"day": 10, "rewards": {"essence": 400}},
+  {"day": 11, "rewards": {"scrolls": 1}},
+  {"day": 12, "rewards": {"gold": 50}},
+  {"day": 13, "rewards": {"fragments": 30}},
+  {"day": 14, "big": true, "rewards": {"gold": 250, "mana": 150, "scrolls": 1, "essence": 1500, "fragments": 60}},
+
+  {"day": 15, "rewards": {"gold": 50}},
+  {"day": 16, "rewards": {"mana": 50}},
+  {"day": 17, "rewards": {"essence": 400}},
+  {"day": 18, "rewards": {"scrolls": 1}},
+  {"day": 19, "rewards": {"gold": 50}},
+  {"day": 20, "rewards": {"fragments": 30}},
+  {"day": 21, "big": true, "rewards": {"reappraisalGems": 1, "gold": 300, "mana": 150, "scrolls": 2, "essence": 2400, "fragments": 70}},
+
+  {"day": 22, "rewards": {"mana": 50}},
+  {"day": 23, "rewards": {"gold": 50}},
+  {"day": 24, "rewards": {"essence": 400}},
+  {"day": 25, "rewards": {"scrolls": 1}},
+  {"day": 26, "rewards": {"gold": 50}},
+  {"day": 27, "rewards": {"fragments": 30}},
+  {"day": 28, "big": true, "rewards": {"legendaryScrolls": 1, "gold": 400, "mana": 200, "scrolls": 2, "essence": 3500, "fragments": 150}}
+]

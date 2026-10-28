@@ -36,14 +36,15 @@ namespace Sigilos.UI.Components
 		/// <param name="monster">Nulo quando não é um monstro da conta (Grimório): nível 1, sem Despertar.</param>
 		/// <param name="marker">Símbolo de Assets/Icons embaixo à esquerda (leader, team).</param>
 		/// <param name="tag">Faixa escrita embaixo do desenho ("Novo!", "Líder").</param>
-		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, float width = 104, string? marker = null, string? tag = null, bool awakenedPreview = false)
+		/// <param name="aspect">Altura sobre largura: <see cref="Tall"/> nas listas de escolha, <see cref="Square"/> na grade dos Homúnculos.</param>
+		public CreatureCard(SummonDefinition summon, OwnedSummon? monster, float width = 104, string? marker = null, string? tag = null, bool awakenedPreview = false, float aspect = Tall)
 		{
 			Summon = summon;
 			Monster = monster;
 			_width = width;
 			var awakened = monster?.Awakened ?? awakenedPreview;
 
-			CustomMinimumSize = new Vector2(width, width * 1.25f);
+			CustomMinimumSize = new Vector2(width, width * aspect);
 			MouseFilter = MouseFilterEnum.Pass;
 			MouseDefaultCursorShape = CursorShape.PointingHand;
 			_press.Tapped += () => Pressed?.Invoke(this);
@@ -125,6 +126,12 @@ namespace Sigilos.UI.Components
 			MouseEntered += Restyle;
 			MouseExited += Restyle;
 		}
+
+		/// <summary>O cartão em pé de sempre.</summary>
+		public const float Tall = 1.25f;
+
+		/// <summary>O retrato quadrado da grade densa: o desenho encolhe junto, e as marcas ficam nos cantos.</summary>
+		public const float Square = 1f;
 
 		public event Action<CreatureCard>? Pressed;
 

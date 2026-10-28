@@ -24,7 +24,7 @@ namespace Sigilos.Tests
 
 			Assert.Equal(EntryProblem.None, Campaign.Check(player, stage), "a fase 1 abre");
 			Assert.Equal(mana, player.Mana, "começar não cobra: a derrota não custa nada");
-			Assert.Equal(stage.Mana, Campaign.ApplyVictory(new Random(1), player, stage, database).Mana, "a vitória cobra a Mana da fase");
+			Assert.Equal(stage.Mana, Campaign.ApplyVictory(new Random(1), player, stage, database, DateTime.UnixEpoch).Mana, "a vitória cobra a Mana da fase");
 			Assert.Equal(mana - stage.Mana, player.Mana, "Mana na conta");
 			Assert.Equal(EntryProblem.Locked, Campaign.Check(player, database.Stage(3)), "a fase 3 espera a 2");
 

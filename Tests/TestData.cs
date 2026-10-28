@@ -15,7 +15,7 @@ namespace Sigilos.Tests
 	/// </summary>
 	internal static class TestData
 	{
-		public static GameDatabase LoadReal()
+		public static GameDatabase LoadReal(string? checkIn = null)
 		{
 			var data = Path.Combine(Program.ProjectRoot, "Data");
 			string Read(string file) => File.ReadAllText(Path.Combine(data, file));
@@ -28,7 +28,8 @@ namespace Sigilos.Tests
 				dungeons: Read("dungeons.json"),
 				shop: Read("shop.json"),
 				exploration: Read("exploration.json"),
-				arena: Read("arena.json"));
+				arena: Read("arena.json"),
+				checkIn: checkIn ?? Read("checkin.json"));
 		}
 
 		private static GameDatabase? _database;

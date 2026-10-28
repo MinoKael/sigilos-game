@@ -188,6 +188,7 @@ Windows) são a `Icons/rune.svg` em ouro sobre couro, nas camadas do ícone adap
 
 ## Fontes
 | `Icons/elven_castle.svg` | [Elven-castle - Pepijn Poolman - game-icons.svg](https://commons.wikimedia.org/wiki/File:Elven-castle_-_Pepijn_Poolman_-_game-icons.svg) | Pepijn Poolman | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `Icons/calendar.svg` | [Calendar - Delapouite - game-icons.svg](https://commons.wikimedia.org/wiki/File:Calendar_-_Delapouite_-_game-icons.svg) | Delapouite | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 
 | Arquivo | Fonte | Autor | Licença |
 |---|---|---|---|

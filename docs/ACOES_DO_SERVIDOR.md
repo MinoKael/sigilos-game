@@ -20,14 +20,28 @@ e `PUT /save/delta` devolvem 403 `save_readonly`. No aparelho ficam as telas, as
 - `Core/Progression/ServerAction.cs`: `ActionRequest` (o que o jogador escolheu), `ServerActions.Apply` (a regra, que chama
   os serviços do `Core`) e `ActionDelta` (o que mudou: `Patch`, `Count`, `Gained`, `Idle`, `Monsters`, `Rune`, `Runes`).
 - `ServerActionKind`:
-  - Sigilos: `UpgradeRune`, `GrindRune`, `EnchantRune`, `ReappraiseRune`, `SellRunes`, `EquipRunes`, `UnequipRunes`,
-    `OpenRuneKit`.
+  - Sigilos: `UpgradeRune`, `UpgradeRunes` (a melhora seletiva: todas até o alvo, ou nenhuma), `GrindRune`,
+    `EnchantRune`, `ReappraiseRune`, `SellRunes`, `EquipRunes`, `UnequipRunes`, `OpenRuneKit`.
   - Monstros: `Summon`, `Fuse`, `Release`, `Evolve`, `Awaken`, `Infuse`, `Shelve`, `ExchangeFragments`.
-  - Recursos: `ClaimMail`, `CollectIdle` (a canalização e a recarga de Mana), `BuyShop`.
+  - Recursos: `ClaimMail`, `CollectIdle` (a canalização e a recarga de Mana), `BuyShop`, `CheckIn`.
   - Organização: `Team`, `SetAvatar`, `Toggle` (travas e favoritos), `Preference` (visto, idioma, tutorial, foco do chefe,
     Batalha automática).
   - Arenas: `ArenaOpen`, `ArenaRefresh`, `ArenaBuy`, `VeilBuy`.
-- `ClaimMail`: o servidor confere se a carta existe, é da conta e não venceu, paga e a marca como coletada.
+- `ClaimMail`: o servidor confere se a carta existe, é da conta e não venceu, paga e a marca como coletada. As cartas do
+  próprio jogo (`Letters`: prêmio da temporada da Arena, marcos de nível da conta, marco de 6★) ficam no save (`PlayerState.Inbox`, id
+  `auto:N`), vencem em 7 dias e saem dele ao coletar; o check-in do dia (e abrir a conta) tira as vencidas. As do servidor (Guid) seguem no banco.
+- `CheckIn` (`Core/Progression/DailyCheckIn.cs`, prêmios em `Data/checkin.json`): conta o dia de hoje e manda a carta dele
+  (`Letters.CheckIn`, 7 dias de prazo). É um ciclo de 28 dias contados por entradas: o dia avança na primeira chamada de
+  cada dia UTC, faltar dias não tira nada, e depois do 28 volta o 1. Quem decide é o relógio do servidor; o aparelho pede
+  ao voltar ao Santuário (e ao voltar do segundo plano ou da falta de conexão) e a ação é recusada se hoje já contou. A
+  janela do check-in abre sozinha uma vez por dia por aparelho (`AccountStore.CheckInShown`, só do aparelho); tocar no
+  botão do calendário também conta o dia, se ainda não contou. Limite: sem tocar, o dia que vira com o jogo parado no
+  Santuário só conta na próxima volta a ele. O pedido automático nunca mostra erro (falhou, fica para a próxima vez); o do
+  botão mostra.
+- `Evolve` também paga o marco de 6★ (`Core/Progression/SixStar.cs`): ao chegar a 6★, manda uma carta (`Letters.SixStarFirst`, o primeiro
+  6★ do elemento, ou `Letters.SixStar`, os seguintes) com `Milestones.FirstSixStar`/`NextSixStar`; o elemento fica em
+  `PlayerState.SixStarElements` e o Sigilo Lendário de 6★ da primeira carta é sorteado ao coletar (`rune:6:Legendary`).
+  O servidor e o save de teste (`debugger`) usam a mesma regra, então a carta chega igual nos dois.
 - Feitos no Chat global (sigilo a +15, invocação rara) são anunciados pelo servidor, nunca pelo aparelho.
 - Trocar o nome (`POST /game/rename`): de graça, uma vez a cada 7 dias corridos (UTC, `Core/Progression/AccountRename.cs`).
   O servidor confere o nome e a semana, grava o nome e marca `PlayerState.LastRename` no mesmo pedido; antes da semana
@@ -72,7 +86,7 @@ hora UTC, e grava o save a cada mudança. Só para teste.
 
 ## Versão e publicação
 
-- `Protocol.Minimum = 2`. Um aparelho com protocolo menor recebe 426 `update_required` no `/session/claim` (o jogo mostra
+- `Protocol.Minimum = 3` (3: cartas do jogo no save). Um aparelho com protocolo menor recebe 426 `update_required` no `/session/claim` (o jogo mostra
   `account.update_required` e não entra).
 - Conteúdo (`Data/*.json`) muda pelo servidor sem build novo; código novo (efeito, passiva, tela) exige build e sobe o
   `protocol`. Nada de código remoto: o servidor só envia dados.

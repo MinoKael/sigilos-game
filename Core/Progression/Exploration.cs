@@ -87,11 +87,9 @@ namespace Sigilos.Core.Progression
 
 			var share = Leveling.Share(player, Teams.Exploration, reward.Experience, team);
 			var levelUps = Leveling.GiveExperience(player, Teams.Exploration, reward.Experience, team);
-			var level = player.AccountLevel;
-			var account = Account.GiveExperience(player, reward.Experience);
+			var account = Account.GiveExperience(player, reward.Experience, now);
 			var prize = PrizeOf(reward);
 			Milestones.Grant(player, prize);
-			prize += Milestones.ForAccountLevels(level, player.AccountLevel);
 
 			return new VictoryReward(0, reward.Scrolls, reward.Gold, reward.Essence + account.Essence, share, true, null, null, Array.Empty<RuneTool>(), levelUps, account.Levels, prize);
 		}

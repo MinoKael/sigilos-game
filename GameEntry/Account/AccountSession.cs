@@ -231,6 +231,19 @@ namespace Sigilos.GameEntry.Account
 			}
 		}
 
+		/// <summary>O dia (UTC) em que a janela do check-in abriu sozinha neste aparelho: ela abre uma vez por dia.</summary>
+		public DateTime? CheckInShown
+		{
+			get => _data.CheckInShown;
+			set
+			{
+				if (_data.CheckInShown == value)
+					return;
+				_data.CheckInShown = value;
+				_data.Save();
+			}
+		}
+
 		/// <summary>O e-mail da última conta que entrou neste aparelho.</summary>
 		public string? Email => _data.Email;
 

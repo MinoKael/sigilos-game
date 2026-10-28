@@ -159,8 +159,6 @@ namespace Sigilos.UI.Screens
 			var released = marked.Where(m => !m.Locked && !m.IsInfusionCore).ToList();
 			var fragments = released.Sum(m => Fusion.FragmentsFor(_database.Summon(m.SummonId).Rarity));
 			var release = _dialog.AddAction(T("monsters.release_marked", released.Count), () => ConfirmRelease(released, fragments), ButtonKind.Danger, closes: false, icon: "release").Named("Release");
-			if (released.Count > 0)
-				release.WithCost("fragments", $"+{fragments}");
 			release.Disabled = released.Count == 0;
 		}
 

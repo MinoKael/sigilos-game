@@ -95,6 +95,24 @@ namespace Sigilos.Core.Player
 			return true;
 		}
 
+		/// <summary>
+		/// Melhora várias até <paramref name="target"/> de uma vez (a melhora seletiva): só as que estão abaixo dele
+		/// sobem, e só se a Essência paga todas; senão nenhuma muda. Devolve as que subiram, com o nível de antes.
+		/// </summary>
+		public static IReadOnlyList<(Rune Rune, int LevelBefore)> UpgradeMany(Random random, PlayerState player, IEnumerable<Rune> runes, int target)
+		{
+			target = Math.Min(target, RuneRules.MaxLevel);
+			var below = runes.Where(r => r.Level < target).Distinct().ToList();
+			var cost = below.Sum(r => RuneRules.UpgradeCost(r, target));
+			if (below.Count == 0 || player.Essence < cost)
+				return Array.Empty<(Rune, int)>();
+
+			var raised = below.Select(r => (r, r.Level)).ToList();
+			foreach (var rune in below)
+				Upgrade(random, player, rune, target);
+			return raised;
+		}
+
 		/// <summary>Gasta uma Pedra de Afiar igual a <paramref name="tool"/> no subatributo.</summary>
 		public static bool Grind(Random random, PlayerState player, Rune rune, int index, RuneTool tool)
 		{

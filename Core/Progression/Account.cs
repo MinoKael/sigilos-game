@@ -53,13 +53,15 @@ namespace Sigilos.Core.Progression
 		/// Completa, ao abrir a conta, o que um save anterior aos campos não tem: o começo da conta passa a ser
 		/// agora (<see cref="PlayerState.Started"/>), os monstros que já tem contam como vistos
 		/// (<see cref="PlayerState.SeenMonster"/>) e o recorde do andar mais fundo de cada Masmorra ganha a
-		/// equipe (<see cref="Records.FillDeepestTeams"/>). O que já existe não muda.
+		/// equipe (<see cref="Records.FillDeepestTeams"/>). O que já existe não muda. As cartas vencidas saem do correio
+		/// (<see cref="Letters.Prune"/>).
 		/// </summary>
 		public static void Open(PlayerState player, GameDatabase database, DateTime now)
 		{
 			player.Started ??= now;
 			player.SeenMonster ??= player.NextMonsterId - 1;
 			Records.FillDeepestTeams(player, database);
+			Letters.Prune(player, now);
 		}
 
 		private const string AwakenedSuffix = ":awakened";
@@ -104,11 +106,11 @@ namespace Sigilos.Core.Progression
 		}
 
 		/// <summary>
-		/// Soma experiência; cada nível ganho dá Ouro e o prêmio de marco dele (<see cref="Milestones.ForAccountLevel"/>),
-		/// e a Mana enche. A experiência que chega com a conta no máximo (inclusive a que sobra do nível que
+		/// Soma experiência; cada nível ganho dá Ouro e manda ao correio o prêmio de marco dele
+		/// (<see cref="Milestones.ForAccountLevel"/>, <see cref="Letters"/>), e a Mana enche. A experiência que chega com a conta no máximo (inclusive a que sobra do nível que
 		/// fecha nele) vira Essência, um terço dela. Devolve os níveis ganhos e essa Essência.
 		/// </summary>
-		public static AccountGain GiveExperience(PlayerState player, int amount)
+		public static AccountGain GiveExperience(PlayerState player, int amount, DateTime now)
 		{
 			var gained = 0;
 			var past = Math.Max(0, amount);
@@ -121,7 +123,7 @@ namespace Sigilos.Core.Progression
 					player.AccountExperience -= ExperienceToNext(player.AccountLevel);
 					player.AccountLevel++;
 					player.Gold += LevelUpGold;
-					Milestones.Grant(player, Milestones.ForAccountLevel(player.AccountLevel));
+					Letters.Send(player, Letters.AccountLevel, now, Milestones.ForAccountLevel(player.AccountLevel), player.AccountLevel.ToString());
 					gained++;
 				}
 

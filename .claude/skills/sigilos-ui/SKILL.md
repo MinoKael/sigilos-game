@@ -14,8 +14,16 @@ Vêm do que as telas já fazem (`Layout`, `GameButton`, `TileButton`, `SigilButt
   Arena), painéis retangulares de cantos suaves (`Ornament.Panel`, `GameTheme.InsetPanel`), fileiras e grades.
   Não inventar layout livre, sobreposto ou posicionado à mão. Posição fixa só em desenho (constelação, mapa).
 - **Botões pequenos, agradáveis de ver e de tocar.** Altura de toque padrão (`GameTheme.Touch`; 44–56 nas
-  telas, 40 nos redondos). Texto curto, ícone opcional à esquerda, custo (`WithCost`). Nada de botão gigante que
+  telas, 40 nos redondos). Texto curto, ícone opcional à esquerda. Nada de botão gigante que
   ocupa a coluna inteira sem motivo; botões largos têm largura fixa (`Wide(n)`) e `ShrinkEnd`/`ShrinkCenter`.
+- **Sem segunda linha de texto no botão.** Valor de venda, custo de melhoria, ganho de soltar e afins não vão em
+  `WithCost` (a segunda linha do botão): o diálogo de confirmação já os mostra, ou uma linha/chip da página (o custo de subir
+  de nível mora num chip na linha do nível). `WithCost` fica só nos botões de preço (Loja, Lutar com Mana ou Convite,
+  Continuar). Tela nova: nenhum botão com caption.
+- **Texto que sai do botão encolhe a letra.** `GameButton` de tamanho fixado (`FixedHeight()` ou `Wide(n)`) já diminui a
+  letra, de um em um até `GameButton.FloorFont`, até cada palavra caber na largura e as linhas na altura. Botão que
+  ainda não cabe no piso: encurtar a chave de texto (ou alargar o botão), nunca deixar cortar. Conferir sempre com o
+  texto em inglês e o mais longo do jogo.
 - **Redondo = `SigilButton`** (o ✕ de fechar, o ? de ajuda). Retangular com texto = `GameButton`. Bloco de
   atalho = `TileButton`. Abas = `TextTabs`. Não criar um tipo novo de botão.
 - **Tema pelas fontes do projeto**: cores só de `Palette`, variações de `GameTheme` (`Heading`, `Title`, `Faded`,
@@ -99,7 +107,7 @@ Toda mudança visual é conferida **abrindo o jogo na tela alterada**, nunca só
 3. Capturar a tela com um script de harness (`SceneTree` com `--script`, cliques por `Input.parse_input_event`, ler o
    botão pelo nome do nó, `get_texture().get_image().save_png`) e **olhar a imagem**. Padrão em
    `Godot_v4.7.1-stable_mono_win64_console.exe --path . --script <gd> -- --save=debugger --out=<pasta>/`.
-4. Conferir: nada estoura a coluna; nenhum texto mexe no tamanho (testar nome longo e inglês); medalhas redondas; sem barra
+4. Conferir: nenhum texto de botão sai do limite (nem partido no meio da palavra); nada estoura a coluna; nenhum texto mexe no tamanho (testar nome longo e inglês); medalhas redondas; sem barra
    de rolagem fora de lista; ordem dos botões igual antes e depois de mudar o estado (clicar até o estado mudar e capturar
    de novo); diálogos fecham só pelo ✕; ? abre o help.
 5. Largura estreita: mesma conferência em 1280x720 e numa janela menor (a do dono costuma ser mais estreita).

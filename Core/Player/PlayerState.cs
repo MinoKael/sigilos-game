@@ -187,6 +187,17 @@ namespace Sigilos.Core.Player
 		/// <summary>As cartas do correio já coletadas neste save, pelo id do servidor (<see cref="Progression.Mailbox"/>).</summary>
 		public List<string> ClaimedMail { get; set; } = new();
 
+		/// <summary>As cartas que o próprio jogo mandou e ainda não foram coletadas (<see cref="Letter"/>).</summary>
+		public List<Letter> Inbox { get; set; } = new();
+
+		public int NextLetterId { get; set; } = 1;
+
+		/// <summary>Onde a conta está no ciclo do check-in diário (<see cref="Progression.DailyCheckIn"/>).</summary>
+		public CheckInState CheckIn { get; set; } = new();
+
+		/// <summary>Os elementos (<see cref="Content.Element"/>, pelo nome) em que a conta já teve o primeiro 6★ (<see cref="Progression.SixStar"/>).</summary>
+		public List<string> SixStarElements { get; set; } = new();
+
 		/// <summary>Tem alguma cópia da variante (na coleção ou no Baú).</summary>
 		public bool Owns(string summonId) => Monsters.Any(m => m.SummonId == summonId);
 

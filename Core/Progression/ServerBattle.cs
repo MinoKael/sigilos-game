@@ -459,13 +459,13 @@ namespace Sigilos.Core.Progression
 			{
 				case BattleKind.Stage:
 					var stage = database.Stages.FirstOrDefault(s => s.Number == request.Number);
-					return stage == null ? null : new Door(Campaign.Check(player, stage), Teams.Campaign, stage.Encounter, (random, team) => Campaign.ApplyVictory(random, player, stage, database, team), Records.StageKey(stage.Number));
+					return stage == null ? null : new Door(Campaign.Check(player, stage), Teams.Campaign, stage.Encounter, (random, team) => Campaign.ApplyVictory(random, player, stage, database, now, team), Records.StageKey(stage.Number));
 
 				case BattleKind.Floor:
 					var dungeon = database.Dungeons.FirstOrDefault(d => d.Id == request.Dungeon);
 					if (dungeon == null || request.Floor < 1 || request.Floor > dungeon.Floors.Count)
 						return null;
-					return new Door(Dungeons.Check(player, dungeon, request.Floor), dungeon.Id, dungeon.Floor(request.Floor).Encounter, (random, team) => Dungeons.ApplyVictory(random, player, dungeon, request.Floor, team), Records.FloorKey(dungeon.Id, request.Floor));
+					return new Door(Dungeons.Check(player, dungeon, request.Floor), dungeon.Id, dungeon.Floor(request.Floor).Encounter, (random, team) => Dungeons.ApplyVictory(random, player, dungeon, request.Floor, now, team), Records.FloorKey(dungeon.Id, request.Floor));
 
 				case BattleKind.Constellation:
 					var exploration = database.Exploration;

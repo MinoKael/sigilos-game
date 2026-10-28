@@ -239,6 +239,9 @@ namespace Sigilos.UI.Components
 			return dialog;
 		}
 
+		/// <summary>Há alguma janela aberta sobre a tela de <paramref name="from"/> (o que abre sozinho espera por ela).</summary>
+		public static bool AnyOpen(Control from) => Layout.Host(from).GetChildren().OfType<Dialog>().Any(d => !d._closed);
+
 		/// <summary>Fecha a janela de cima de <paramref name="root"/> que aceita fechar. Falso se não havia nenhuma.</summary>
 		public static bool CloseTop(Node root)
 		{

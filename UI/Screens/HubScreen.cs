@@ -47,6 +47,12 @@ namespace Sigilos.UI.Screens
 		private readonly Label _time = new() { Name = "Time", ThemeTypeVariation = GameTheme.Number };
 		private readonly HBoxContainer _pending = Layout.Row(Space.Medium, true).Named("Pending");
 		private readonly GameButton _collect;
+		/// <summary>A largura da coluna ao lado do retrato da conta (nome, nível com a barra, progresso).</summary>
+		private const float AccountWidth = 220;
+
+		/// <summary>A altura da barra de experiência: a do texto (o que falta, ou "MAX") escrito sobre ela.</summary>
+		private const float ExperienceHeight = 18;
+
 		/// <summary>A cápsula do correio, da altura das moedas e só com a carta.</summary>
 		private static readonly Vector2 MailSize = new(58, CurrencyBar.Height);
 
@@ -70,6 +76,7 @@ namespace Sigilos.UI.Screens
 		public event Action? ConfigRequested;
 		public event Action? CollectRequested;
 		public event Action? MailRequested;
+		public event Action? CheckInRequested;
 
 		/// <summary>O retrato escolhido: a variante e se é a desperta.</summary>
 		public event Action<string, bool>? AvatarRequested;
@@ -88,6 +95,8 @@ namespace Sigilos.UI.Screens
 			// O correio colado nas moedas, no mesmo espaçamento entre as cápsulas.
 			var corner = Layout.Row(Space.Small).Named("Corner");
 			corner.SizeFlagsVertical = SizeFlags.ShrinkCenter;
+			if (_database.CheckIn.Count > 0)
+				corner.AddChild(CheckInButton());
 			corner.AddChild(MailButton());
 			corner.AddChild(_currencies);
 			top.AddChild(corner);
@@ -154,6 +163,21 @@ namespace Sigilos.UI.Screens
 			return mail;
 		}
 
+		/// <summary>O check-in: uma cápsula como a do correio, só com o calendário; abre o ciclo e o prêmio de hoje.</summary>
+		private Control CheckInButton()
+		{
+			var checkIn = CurrencyBar.Capsule("CheckIn");
+			checkIn.CustomMinimumSize = MailSize;
+			checkIn.Pressed += () => CheckInRequested?.Invoke();
+			var icon = Doodle.Icon(Art.Icon("calendar"), 28, Palette.Gold).Named("Icon");
+			icon.SetAnchorsAndOffsetsPreset(LayoutPreset.Center);
+			icon.OffsetLeft = icon.OffsetTop = -14;
+			icon.OffsetRight = icon.OffsetBottom = 14;
+			icon.MouseFilter = MouseFilterEnum.Ignore;
+			checkIn.AddChild(icon);
+			return checkIn;
+		}
+
 		/// <summary>A conexão com o servidor caiu ou voltou: mostra ou esconde o "Sem conexão".</summary>
 		public void SetOffline(bool offline) => _offline.Visible = offline;
 
@@ -168,30 +192,57 @@ namespace Sigilos.UI.Screens
 				_battle.Highlight = _player.TotalPulls > 0 && _player.HighestStage == 0;
 		}
 
-		/// <summary>O retrato da conta, o nível e a barra de experiência.</summary>
+		/// <summary>
+		/// O retrato redondo da conta e, ao lado, três linhas: o nome, o nível e, embaixo dele, a barra de experiência com o
+		/// que falta escrito em cima dela (ou "MAX" no nível máximo). A coluna tem largura fixa: nome grande vira reticências
+		/// e o nível trocando de dígitos não mexe na barra.
+		/// </summary>
 		private void RefreshAccount()
 		{
 			Layout.Clear(_account.Body);
 			var row = Layout.Row(Space.Large).Named("Row");
 			row.MouseFilter = MouseFilterEnum.Ignore;
-			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(68, 68), MouseFilter = MouseFilterEnum.Ignore };
+			// ShrinkCenter: sem isso a fileira estica o quadro até a altura da coluna e o círculo vira oval.
+			var frame = new PanelContainer { Name = "Portrait", CustomMinimumSize = new Vector2(68, 68), SizeFlagsVertical = SizeFlags.ShrinkCenter, MouseFilter = MouseFilterEnum.Ignore };
 			frame.AddThemeStyleboxOverride("panel", GameTheme.Box(Palette.Panel, Palette.Gold, 2, 34, 4));
 			frame.AddChild(AvatarPicker.Portrait(_database, _player));
 			row.AddChild(frame);
 
-			var column = new VBoxContainer { Name = "Info", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center };
+			var column = new VBoxContainer { Name = "Info", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center, CustomMinimumSize = new Vector2(AccountWidth, 0) };
 			column.AddThemeConstantOverride("separation", Space.Tight);
 			var maxed = _player.AccountLevel >= Account.MaxLevel;
 			var toNext = Account.ExperienceToNext(_player.AccountLevel);
-			column.AddChild(new Label { Name = "Level", Text = AccountTitle(), ThemeTypeVariation = GameTheme.Heading, MouseFilter = MouseFilterEnum.Ignore });
-			var bar = Layout.Energy(Palette.Arcane, 10).Named("Experience");
-			bar.CustomMinimumSize = new Vector2(200, 10);
-			bar.MaxValue = 1;
+			column.AddChild(new Label
+			{
+				Name = "Name",
+				Text = _accountName ?? T("hub.account_unnamed"),
+				ThemeTypeVariation = GameTheme.Heading,
+				TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis,
+				CustomMinimumSize = new Vector2(10, 0),
+				MouseFilter = MouseFilterEnum.Ignore,
+			});
+			column.AddChild(new Label { Name = "Level", Text = T("hub.account_level_short", _player.AccountLevel), ThemeTypeVariation = GameTheme.Heading, MouseFilter = MouseFilterEnum.Ignore });
+			var bar = Layout.Energy(Palette.Arcane, ExperienceHeight, 120).Named("Experience");
+            bar.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
+            bar.MaxValue = 1;
 			bar.Step = 0;
 			bar.Value = maxed ? 1 : _player.AccountExperience / (double)Math.Max(1, toNext);
 			bar.MouseFilter = MouseFilterEnum.Ignore;
+			var progress = new Label
+			{
+				Name = "Progress",
+				Text = maxed ? T("hub.account_max") : T("hub.account_progress", Texts.Number(_player.AccountExperience), Texts.Number(toNext)),
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				MouseFilter = MouseFilterEnum.Ignore,
+			};
+			progress.AddThemeFontSizeOverride("font_size", FontSize.Caption);
+			progress.AddThemeColorOverride("font_color", Palette.Text);
+			progress.AddThemeColorOverride("font_outline_color", Colors.Black);
+			progress.AddThemeConstantOverride("outline_size", 6);
+			progress.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+			bar.AddChild(progress);
 			column.AddChild(bar);
-			column.AddChild(new Label { Name = "Progress", Text = maxed ? T("hub.account_max_short") : T("hub.account_progress", _player.AccountExperience, toNext), ThemeTypeVariation = GameTheme.Faded, MouseFilter = MouseFilterEnum.Ignore });
 			row.AddChild(column);
 			_account.Body.AddChild(row);
 		}
@@ -202,10 +253,6 @@ namespace Sigilos.UI.Screens
 			var book = SummonerGrimoireDialog.Open(this, _database, _player, _accountName, DateTime.UtcNow);
 			book.AvatarRequested += () => AvatarPicker.Open(this, _database, _player, (summon, awakened) => AvatarRequested?.Invoke(summon, awakened));
 		}
-
-		/// <summary>"Fulano · Nível 22" com conta que tem nome; "Conta · Nível 22" sem.</summary>
-		private string AccountTitle() =>
-			_accountName != null ? T("hub.account_named", _accountName, _player.AccountLevel) : T("hub.account_level", _player.AccountLevel);
 
 		/// <summary>
 		/// A Canalização: a constelação ocupa o painel inteiro (o sigilo do centro com o anel do tempo

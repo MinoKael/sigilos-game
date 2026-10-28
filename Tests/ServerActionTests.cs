@@ -77,6 +77,56 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void BulkUpgradeRaisesOnlyTheRunesBelowTheTargetAndThePatchReproducesIt()
+		{
+			var server = Player();
+			var (first, second, above) = (Fresh(server, 1), Fresh(server, 2), Fresh(server, 3));
+			RuneInventory.Upgrade(new Random(4), server, above, 9);
+			var game = Copy(server);
+			var essence = server.Essence;
+			var cost = RuneRules.UpgradeCost(first, 6) + RuneRules.UpgradeCost(second, 6);
+
+			var delta = ServerActions.Apply(new Random(5), TestData.Database, server, new ActionRequest { Kind = ServerActionKind.UpgradeRunes, Ids = new() { first.Id, second.Id, above.Id }, Target = 6 })!;
+			Assert.True(delta != null, "a melhora seletiva vale");
+			Assert.Equal(2, delta.Count, "subiram as duas abaixo do alvo");
+			Assert.True(first.Level == 6 && second.Level == 6, "as duas chegaram ao +6");
+			Assert.Equal(9, above.Level, "a que já passava do alvo ficou");
+			Assert.Equal(essence - cost, server.Essence, "gastou o custo das duas, nada mais");
+
+			StatePatch.Apply(game, delta.Patch!);
+			Assert.Equal(PlayerSave.ToJson(server), PlayerSave.ToJson(game), "a cópia do jogo ficou igual à do servidor");
+		}
+
+		[Test]
+		private static void BulkUpgradeIsAllOrNothing()
+		{
+			var player = Player();
+			var (first, second) = (Fresh(player, 1), Fresh(player, 2));
+			var cost = RuneRules.UpgradeCost(first, 12) + RuneRules.UpgradeCost(second, 12);
+			var request = new ActionRequest { Kind = ServerActionKind.UpgradeRunes, Ids = new() { first.Id, second.Id }, Target = 12 };
+
+			player.Essence = cost - 1;
+			Assert.True(ServerActions.Apply(new Random(1), TestData.Database, player, request) == null, "a Essência não paga as duas");
+			Assert.True(first.Level == 0 && second.Level == 0 && player.Essence == cost - 1, "nada mudou");
+
+			player.Essence = cost;
+			Assert.True(ServerActions.Apply(new Random(1), TestData.Database, player, request) != null, "a Essência paga as duas");
+			Assert.True(first.Level == 12 && second.Level == 12 && player.Essence == 0, "as duas subiram e a Essência acabou");
+			Assert.True(ServerActions.Apply(new Random(1), TestData.Database, player, new ActionRequest { Kind = ServerActionKind.UpgradeRunes, Ids = new() { 9999 }, Target = 3 }) == null, "runa que não existe");
+		}
+
+		[Test]
+		private static void BulkUpgradeToTheTopIsAFeatPerRune()
+		{
+			var player = Player();
+			player.Essence = int.MaxValue / 2;
+			var (first, second) = (Fresh(player, 1), Fresh(player, 2));
+			var delta = ServerActions.Apply(new Random(1), TestData.Database, player, new ActionRequest { Kind = ServerActionKind.UpgradeRunes, Ids = new() { first.Id, second.Id }, Target = 99 })!;
+			Assert.True(delta != null && first.Level == RuneRules.MaxLevel && second.Level == RuneRules.MaxLevel, "o alvo acima do teto para no +15");
+			Assert.Equal(2, delta.Feats.Count, "cada runa que chegou ao +15 é um feito");
+		}
+
+		[Test]
 		private static void SummonDeliversMonstersAndKeepsThePityOnTheDelta()
 		{
 			var server = Player();

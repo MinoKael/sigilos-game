@@ -142,6 +142,8 @@ namespace Sigilos.GameEntry
 				RefreshMail();
 				RefreshBlocked();
 				RefreshChat();
+				if (_screen is HubScreen current)
+					AutoCheckIn(current);
 			};
 
 			// Os textos vêm antes dos dados: os nomes dos dados saem no idioma deles. Antes de abrir um save
@@ -257,7 +259,15 @@ namespace Sigilos.GameEntry
 				Save();
 			}
 			else if (what == NotificationApplicationResumed)
+			{
 				_account.Wake();
+				// O dia pode ter virado com o jogo em segundo plano.
+				Callable.From(() =>
+				{
+					if (_screen is HubScreen hub)
+						AutoCheckIn(hub);
+				}).CallDeferred();
+			}
 		}
 
 		// Conta -------------------------------------------------------------------------------------
@@ -849,11 +859,14 @@ namespace Sigilos.GameEntry
 			}, Volumes(), AccountSettings(), ShowTutorial);
 			hub.CollectRequested += () => Do(hub, Request(ServerActionKind.CollectIdle), d => Sfx.PlayIf(d.Idle is { IsEmpty: false }, "rewards.essence"), () => hub.Refresh(DateTime.UtcNow));
 			hub.MailRequested += () => OpenMailbox(hub);
+			hub.CheckInRequested += () => RequestCheckIn(hub);
 			hub.AvatarRequested += (summon, awakened) => Do(hub, Request(ServerActionKind.SetAvatar, flag: awakened, text: summon), null, () => hub.Refresh(DateTime.UtcNow));
 			Swap(hub, ShowHub);
-			hub.SetMail(_mail?.Count);
+			hub.SetMail(AllMail().Count);
 			RefreshMail();
 			PromptRuneKit(hub);
+			// Depois das janelas que já esperam por esta tela (a chave de recuperação, o kit de sigilos).
+			Callable.From(() => AutoCheckIn(hub)).CallDeferred();
 		}
 
 		/// <summary>
@@ -873,51 +886,138 @@ namespace Sigilos.GameEntry
 			}).CallDeferred();
 		}
 
+		// Check-in -----------------------------------------------------------------------------------
+
+		/// <summary>A janela do check-in: o ciclo, o prêmio de hoje e o do próximo dia grande.</summary>
+		private void OpenCheckIn(HubScreen hub) =>
+			CheckInDialog.Open(hub, _player, _database, DateTime.UtcNow, () => OpenMailbox(hub));
+
+		/// <summary>
+		/// O botão do calendário: se o dia de hoje ainda não contou (a meia-noite UTC passou com o jogo aberto), conta antes
+		/// e só então abre a janela, que mostra a conta como ela está.
+		/// </summary>
+		private async void RequestCheckIn(HubScreen hub)
+		{
+			await CountCheckIn(hub, silent: false);
+			if (!HubReady(hub))
+				return;
+
+			_account.CheckInShown = DateTime.UtcNow.Date;
+			OpenCheckIn(hub);
+		}
+
+		/// <summary>
+		/// O check-in do dia, ao voltar ao Santuário (e ao voltar do segundo plano ou da falta de conexão): conta o dia no
+		/// servidor, que manda a carta, e abre a janela sozinho uma vez por dia neste aparelho. Só com o Santuário à vista,
+		/// o treino feito e nenhuma outra janela aberta; sem conexão ou com erro, fica para a próxima vez, sem aviso.
+		/// </summary>
+		private async void AutoCheckIn(HubScreen hub)
+		{
+			await CountCheckIn(hub, silent: true);
+			var now = DateTime.UtcNow;
+			if (!HubReady(hub) || DailyCheckIn.Due(_player, _database, now) || _account.CheckInShown == now.Date || Dialog.AnyOpen(hub))
+				return;
+
+			_account.CheckInShown = now.Date;
+			OpenCheckIn(hub);
+		}
+
+		/// <summary>
+		/// Pede ao servidor que conte o dia de hoje, se ainda não contou e há como (conexão, ou o save de teste). Calado,
+		/// um erro não vira aviso: o pedido automático tenta de novo na próxima volta.
+		/// </summary>
+		private async Task CountCheckIn(HubScreen hub, bool silent)
+		{
+			if (_countingCheckIn || !CanCheckIn(hub) || !DailyCheckIn.Due(_player, _database, DateTime.UtcNow))
+				return;
+
+			_countingCheckIn = true;
+			try
+			{
+				var request = Request(ServerActionKind.CheckIn);
+				var delta = silent ? (await _api.Act(request)).Delta : await Act(request);
+				if (delta != null && _playing)
+					ShowMail(MailNotice());
+			}
+			finally
+			{
+				_countingCheckIn = false;
+			}
+		}
+
+		private bool _countingCheckIn;
+
+		/// <summary>O Santuário está à vista, o treino acabou e há check-in nos dados.</summary>
+		private bool HubReady(HubScreen hub) =>
+			_playing && _database.CheckIn.Count > 0 && GodotObject.IsInstanceValid(hub) && hub.IsInsideTree() && _screen == hub && !Tutorial.ShouldStart(_player);
+
+		private bool CanCheckIn(HubScreen hub) => HubReady(hub) && (_testSave || !_account.Playing || _account.Connected);
+
 		// Correio ------------------------------------------------------------------------------------
 
 		/// <summary>
-		/// Busca as cartas da conta (a cada volta ao Santuário e quando a conexão volta) e atualiza o selo e a
-		/// janela aberta. A carta que a conta já coletou não aparece.
+		/// Busca as cartas do servidor (a cada volta ao Santuário e quando a conexão volta) e atualiza o selo e a janela
+		/// aberta. A carta que a conta já coletou não aparece. As cartas do jogo estão no save e não esperam a busca.
 		/// </summary>
 		private async void RefreshMail()
 		{
 			if (!_account.Connected)
 			{
 				_mail = null;
-				(_screen as HubScreen)?.SetMail(null);
+				ShowMail(MailNotice());
 				return;
 			}
 
 			var fetch = await _account.FetchMail();
 			if (!_playing)
 				return;
-			if (!fetch.Ok)
-			{
-				_mailbox?.ShowMessage(T("mail.error"));
-				return;
-			}
-
-			_mail = Mailbox.Unclaimed(_player, fetch.Mail);
-			(_screen as HubScreen)?.SetMail(_mail.Count);
-			_mailbox?.Show(_mail);
+			if (fetch.Ok)
+				_mail = Mailbox.Unclaimed(_player, fetch.Mail);
+			ShowMail(fetch.Ok ? null : T("mail.error"));
 		}
 
-		/// <summary>A janela do correio: as cartas já buscadas na hora e, depois, as da busca nova.</summary>
+		/// <summary>Todas as cartas a coletar: as do jogo (no save, ainda no prazo) e as do servidor já buscadas, as mais novas primeiro.</summary>
+		private IReadOnlyList<Mail> AllMail()
+		{
+			var now = DateTime.UtcNow;
+			return _player.Inbox.Where(l => l.ExpiresAt > now).Select(LetterMail)
+				.Concat(_mail ?? Array.Empty<Mail>())
+				.OrderByDescending(m => m.SentAt)
+				.ToList();
+		}
+
+		/// <summary>A carta do jogo com o título e o texto na língua de agora (o Grau da Arena, o monstro e o elemento vêm pelo nome).</summary>
+		private Mail LetterMail(Letter letter)
+		{
+			var args = letter.Args.Select((a, i) => LetterArg(letter.Kind, i, a)).ToArray();
+			return Letters.ToMail(letter, T($"mail.letter.{letter.Kind}_title", args), T($"mail.letter.{letter.Kind}_text", args));
+		}
+
+		/// <summary>Um valor do texto da carta: o que é um id ou um nome de dados vira o nome na língua de agora.</summary>
+		private object LetterArg(string kind, int index, string value) => (kind, index) switch
+		{
+			(Letters.ArenaSeason, 0) => _database.Arena.Grades.FirstOrDefault(g => g.Id == value)?.Name ?? value,
+			(Letters.SixStarFirst or Letters.SixStar, 0) => _database.Knows(value) ? _database.Summon(value).Name : value,
+			(Letters.SixStarFirst, 1) => Enum.TryParse<Element>(value, out var element) ? Texts.Name(element) : value,
+			_ => value,
+		};
+
+		/// <summary>O aviso sobre as cartas do servidor: sem conta ou sem conexão elas não chegam (o save de teste não as tem).</summary>
+		private string? MailNotice() =>
+			_testSave ? null : !_account.Playing ? T("mail.no_account") : !_account.Connected ? T("mail.offline") : null;
+
+		/// <summary>O selo do Santuário e a janela aberta com as cartas de agora.</summary>
+		private void ShowMail(string? notice)
+		{
+			var mail = AllMail();
+			(_screen as HubScreen)?.SetMail(mail.Count);
+			_mailbox?.Show(mail, notice);
+		}
+
+		/// <summary>A janela do correio: as cartas que já se sabe na hora e, depois, as da busca nova.</summary>
 		private void OpenMailbox(HubScreen hub)
 		{
 			var mailbox = MailboxDialog.Open(hub, _database);
-			if (!_account.Playing)
-			{
-				mailbox.ShowMessage(T("mail.no_account"));
-				return;
-			}
-
-			if (!_account.Connected)
-			{
-				mailbox.ShowMessage(T("mail.offline"));
-				return;
-			}
-
 			_mailbox = mailbox;
 			mailbox.Closed += () =>
 			{
@@ -925,15 +1025,14 @@ namespace Sigilos.GameEntry
 					_mailbox = null;
 			};
 			mailbox.ClaimRequested += mail => ClaimMail(new[] { mail });
-			mailbox.ClaimAllRequested += () => ClaimMail(_mail ?? Array.Empty<Mail>());
-			if (_mail != null)
-				mailbox.Show(_mail);
+			mailbox.ClaimAllRequested += () => ClaimMail(AllMail());
+			mailbox.Show(AllMail(), _account.Connected ? T("mail.loading") : MailNotice());
 			RefreshMail();
 		}
 
 		/// <summary>
-		/// Coleta, uma carta por vez: o servidor confere a carta, paga e a marca como coletada; o que mudou volta na
-		/// resposta. Sem conexão, nada é coletado.
+		/// Coleta, uma carta por vez: o servidor confere a carta, paga e a tira do correio; o que mudou volta na
+		/// resposta. Sem conexão, nada é coletado (no save de teste, as cartas do jogo são coletadas no aparelho).
 		/// </summary>
 		private async void ClaimMail(IEnumerable<Mail> letters)
 		{
@@ -948,14 +1047,11 @@ namespace Sigilos.GameEntry
 				return;
 
 			Sfx.Play("rewards.daily_reward");
-			_mail = Mailbox.Unclaimed(_player, _mail ?? Array.Empty<Mail>());
+			if (_mail != null)
+				_mail = Mailbox.Unclaimed(_player, _mail);
 			if (_screen is HubScreen hub)
-			{
 				hub.Refresh(DateTime.UtcNow);
-				hub.SetMail(_mail.Count);
-			}
-
-			_mailbox?.Show(_mail);
+			ShowMail(MailNotice());
 		}
 
 		// Amigos -------------------------------------------------------------------------------------
@@ -1201,6 +1297,7 @@ namespace Sigilos.GameEntry
 			};
 			storage.FilterChanged += filter => _monsterFilter = filter;
 			storage.RunesRequested += id => ShowRunes(id, () => ShowStorage(id));
+			storage.EquipManyRequested += (ids, monster) => Do(storage, Request(ServerActionKind.EquipRunes, monster, ids), _ => Sfx.Play("ui.equip_item"), storage.Refresh);
 			storage.InfuseRequested += (id, toMax) => Do(storage, Request(ServerActionKind.Infuse, id, flag: toMax), d => Sfx.Play(d.Count > 0 ? "rewards.level_up" : "rewards.experience"), storage.Refresh);
 			storage.AwakenRequested += id => Do(storage, Request(ServerActionKind.Awaken, id), _ => Sfx.Play("rewards.star_up"), storage.Refresh);
 			storage.EvolveRequested += id => Do(storage, Request(ServerActionKind.Evolve, id), _ => Sfx.Play("rewards.star_up"), storage.Refresh);
@@ -1247,6 +1344,7 @@ namespace Sigilos.GameEntry
 				runes.Upgraded(id, from);
 				runes.Refresh();
 			};
+			runes.UpgradeManyRequested += (ids, target) => Do(runes, new ActionRequest { Kind = ServerActionKind.UpgradeRunes, Ids = ids.ToList(), Target = target }, _ => Sfx.Play("rewards.rune"), runes.Refresh);
 			runes.GrindRequested += (id, index, tool) => RuneAction(runes, new ActionRequest { Kind = ServerActionKind.GrindRune, RuneId = id, Index = index, Tool = tool });
 			runes.EnchantRequested += (id, index, tool) => RuneAction(runes, new ActionRequest { Kind = ServerActionKind.EnchantRune, RuneId = id, Index = index, Tool = tool });
 			runes.SellRequested += id => Do(runes, Request(ServerActionKind.SellRunes, ids: new[] { id }), _ => Sfx.Play("rewards.gold"), runes.Refresh);

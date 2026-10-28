@@ -257,7 +257,7 @@ namespace Sigilos.UI.Components
 				Root = Layout.Row(Space.Small);
 				_isNew = opened is { } level && _substat.Rolls.Count > 0 && _substat.Rolls[0].Level > level;
 				var gained = opened is { } since ? _substat.Rolls.Where(r => r.Level > since).Sum(r => r.Amount) : 0;
-				Root.AddChild(new PlanetSymbol(Texts.PlanetOf(_substat.Stat), 18, _isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Planet" });
+				Root.AddChild(new PlanetSymbol(Texts.PlanetOf(_substat.Stat), 18, _isNew ? Palette.Positive : Palette.GoldDark.Lightened(0.3f)) { Name = "Planet", SizeFlagsVertical = SizeFlags.ShrinkCenter });
 				Root.AddChild(Part("Name", Texts.Name(_substat.Stat), _isNew ? Palette.Positive : Palette.Gold));
 				Value = Part("Value", Texts.Amount(_substat.Stat, _substat.Total), _isNew ? Palette.Positive : Palette.Text);
 				Root.AddChild(Value);

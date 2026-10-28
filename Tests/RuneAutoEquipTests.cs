@@ -125,6 +125,32 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
+		private static void ARequiredSetIsKeptEvenWhenAnotherScoresMore()
+		{
+			// Para um atacante, Letal em 1 a 4 vale mais que Pressa; exigindo Pressa (4 peças), ela entra.
+			var summon = WithRole(Role.Attack);
+			var runes = Pool(RuneSet.Lethal, RuneStat.AttackPercent);
+			for (var slot = 1; slot <= 4; slot++)
+				runes.Add(Rune(RuneSet.Haste, slot, RuneRules.MainOptions(slot)[0]));
+
+			var free = RuneAutoEquip.Choose(summon, Owned(summon), runes);
+			Assert.True(free.Count(r => r.Set == RuneSet.Lethal) >= 4, "sem exigência, Letal: " + string.Join(",", free.Select(r => r.Set)));
+			var chosen = RuneAutoEquip.Choose(summon, Owned(summon), runes, null, new[] { RuneSet.Haste });
+			Assert.True(chosen != null && chosen.Count(r => r.Set == RuneSet.Haste) >= 4, "com Pressa exigida, Pressa completa");
+		}
+
+		[Test]
+		private static void ARequiredSetWithoutEnoughPiecesGivesNothing()
+		{
+			// Só três sigilos de Pressa: o conjunto de 4 não fecha, e o resultado diz que não dá (nulo).
+			var summon = WithRole(Role.Attack);
+			var runes = Pool(RuneSet.Lethal, RuneStat.AttackPercent);
+			for (var slot = 1; slot <= 3; slot++)
+				runes.Add(Rune(RuneSet.Haste, slot, RuneRules.MainOptions(slot)[0]));
+			Assert.True(RuneAutoEquip.Choose(summon, Owned(summon), runes, null, new[] { RuneSet.Haste }) == null, "nulo quando o conjunto não fecha");
+		}
+
+		[Test]
 		private static void TheVariantLeansOnItsStrongestStat()
 		{
 			// Vida% e Defesa% no mesmo espaço: quem tem mais Defesa que Vida, em relação à média, escolhe Defesa%.

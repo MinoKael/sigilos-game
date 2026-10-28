@@ -51,6 +51,13 @@ Investimento (o preset e o que mudar nele)
                            campaign: estrelas naturais, nível 20, runas 4★ +12 | bare: 6★ nível 40, sem runas
   --evo=6|natural  --level=40  --awakened=yes|no  --skills=max|base
   --runes=6:15 (estrelas:melhora, 0 = sem runas)   --picks=8 (runas sorteadas por vaga; fica a melhor)
+  --runed=a,b              só estes levam runas (padrão: todos)
+  --rune-slots=2,4,6       só estas vagas levam runa (padrão: as seis)
+  --speed=a:4,b:-1         sincronia de Velocidade: prioridade de cada um (maior age antes; negativa evita Velocidade)
+Meta
+  --turns=30               sucesso = vencer até esta rodada (a Rodada da tela, somando as ondas); o ranking vem por
+                           sucesso e depois pelo p90 das rodadas (derrota conta como uma rodada além do limite)
+  --swap                   com uma --comp: troca cada membro por cada invocação do pool (quem é indispensável, quem substitui)
 Execução
   --fights=10              lutas por composição e encontro
   --limit=2000             composições no máximo (acima disso, uma amostra ao acaso)
@@ -90,6 +97,11 @@ Execução
 			public string? Leader;
 			public List<string[]>? Comps;
 			public Investment Investment = Presets["prepared"];
+			public List<string>? Runed;
+			public List<int>? RuneSlots;
+			public Dictionary<string, int>? Speed;
+			public int Turns = 30;
+			public bool Swap;
 			public int Fights = 10;
 			public int Limit = 2000;
 			public int Seed = 1;
@@ -98,13 +110,18 @@ Execução
 			public string Out = "reports/balance.html";
 		}
 
-		/// <summary>Uma composição e o que ela fez em cada encontro (vitórias de 0 a 1, rodadas e Vida que sobra nas vitórias).</summary>
+		/// <summary>
+		/// Uma composição e o que ela fez em cada encontro: vitórias de 0 a 1, rodadas e Vida que sobra nas vitórias,
+		/// sucesso (vitórias até <see cref="Settings.Turns"/>, de 0 a 1) e o p90 da Rodada em todas as lutas.
+		/// </summary>
 		internal sealed class Comp
 		{
 			public required string[] Ids;
 			public double[] Wins = Array.Empty<double>();
 			public double[] Rounds = Array.Empty<double>();
 			public double[] Health = Array.Empty<double>();
+			public double[] Success = Array.Empty<double>();
+			public double[] P90 = Array.Empty<double>();
 			public double MeanWins => Wins.Average();
 		}
 
@@ -136,7 +153,10 @@ Execução
 				return 1;
 			}
 
-			Console.WriteLine($"{comps.Count} composições{(total > comps.Count ? $" (amostra de {total:N0} possíveis)" : "")} × {settings.Targets.Count} encontro(s) × {settings.Fights} lutas, {settings.Investment.Describe()}");
+			Console.WriteLine($"{comps.Count} composições{(total > comps.Count ? $" (amostra de {total:N0} possíveis)" : "")} × {settings.Targets.Count} encontro(s) × {settings.Fights} lutas, {settings.Investment.Describe()}" +
+				(settings.Runed != null ? $"; runas só em {string.Join(", ", settings.Runed)}" : "") +
+				(settings.RuneSlots != null ? $"; só nas vagas {string.Join(", ", settings.RuneSlots)}" : "") +
+				(settings.Speed != null ? $"; sincronia {string.Join(" > ", settings.Speed.OrderByDescending(p => p.Value).Select(p => p.Key))}" : ""));
 			var done = 0;
 			var options = new ParallelOptions { MaxDegreeOfParallelism = settings.Threads > 0 ? settings.Threads : Environment.ProcessorCount };
 			Parallel.ForEach(comps, options, comp =>
@@ -145,23 +165,36 @@ Execução
 				comp.Wins = new double[settings.Targets.Count];
 				comp.Rounds = new double[settings.Targets.Count];
 				comp.Health = new double[settings.Targets.Count];
+				comp.Success = new double[settings.Targets.Count];
+				comp.P90 = new double[settings.Targets.Count];
 				for (var t = 0; t < settings.Targets.Count; t++)
 				{
-					int wins = 0;
+					int wins = 0, success = 0;
 					double rounds = 0, health = 0;
+					var reached = new List<int>(settings.Fights);
 					for (var i = 1; i <= settings.Fights; i++)
 					{
 						var session = BattleFactory.Create(database, team, settings.Targets[t].Encounter, FightSeed(settings, i));
 						if (!AutoBattle.Run(session))
+						{
+							reached.Add(BattleRules.RoundLimit + 1);
 							continue;
+						}
+
 						wins++;
 						rounds += session.Time;
 						health += session.Allies.Sum(u => Math.Max(0, u.Health)) / session.Allies.Sum(u => u.MaxHealth);
+						reached.Add(session.Round);
+						if (session.Round <= settings.Turns)
+							success++;
 					}
 
 					comp.Wins[t] = wins / (double)settings.Fights;
 					comp.Rounds[t] = wins > 0 ? rounds / wins : double.NaN;
 					comp.Health[t] = wins > 0 ? health / wins : double.NaN;
+					comp.Success[t] = success / (double)settings.Fights;
+					reached.Sort();
+					comp.P90[t] = reached[Math.Min(reached.Count - 1, (int)Math.Ceiling(0.9 * reached.Count) - 1)];
 				}
 
 				var count = System.Threading.Interlocked.Increment(ref done);
@@ -199,7 +232,8 @@ Execução
 		{
 			var inv = settings.Investment;
 			return ReferenceTeams.Custom(database, ids, s => Math.Max(s.Rarity, inv.Evo ?? s.Rarity), inv.Level, inv.Awakened, inv.MaxSkills,
-				inv.RuneGrade, inv.RuneLevel, inv.EvenLevel, inv.Picks);
+				inv.RuneGrade, inv.RuneLevel, inv.EvenLevel, inv.Picks, settings.Runed is { } runed ? runed.Contains : null, settings.RuneSlots,
+				settings.Speed);
 		}
 
 		// Composições --------------------------------------------------------------------------------
@@ -207,6 +241,20 @@ Execução
 		/// <summary>Todas as composições que passam nos filtros, ou uma amostra ao acaso delas; e quantas são ao todo.</summary>
 		private static (List<Comp> Comps, BigInteger Total) Compositions(Settings settings)
 		{
+			if (settings.Comps != null && settings.Swap)
+			{
+				// A composição e, para cada membro, a mesma com ele trocado por cada invocação do pool que não está nela.
+				var team = settings.Comps[0];
+				var swaps = new List<Comp> { new() { Ids = team } };
+				for (var i = 0; i < team.Length; i++)
+				{
+					foreach (var other in settings.Pool.Where(s => !team.Contains(s.Id)))
+						swaps.Add(new Comp { Ids = team.Select((id, j) => j == i ? other.Id : id).ToArray() });
+				}
+
+				return (swaps, swaps.Count);
+			}
+
 			if (settings.Comps != null)
 				return (settings.Comps.Select(ids => new Comp { Ids = Lead(settings, ids) }).ToList(), settings.Comps.Count);
 
@@ -402,6 +450,15 @@ Execução
 			if (Opt(args, "picks") != null)
 				inv = inv with { Picks = Int(args, "picks", inv.Picks) };
 			settings.Investment = inv with { Name = presetName };
+			settings.Runed = List(Opt(args, "runed")) is { Count: > 0 } runed ? runed : null;
+			settings.RuneSlots = List(Opt(args, "rune-slots")) is { Count: > 0 } slots ? slots.Select(int.Parse).ToList() : null;
+			settings.Speed = List(Opt(args, "speed")) is { Count: > 0 } speed
+				? speed.Select(pair => pair.Split(':')).ToDictionary(pair => pair[0], pair => int.Parse(pair[1]))
+				: null;
+			settings.Turns = Int(args, "turns", settings.Turns);
+			settings.Swap = args.Contains("--swap");
+			if (settings.Swap && settings.Comps is not { Count: 1 })
+				throw new ArgumentException("--swap: dê uma --comp só.");
 
 			settings.Fights = Math.Max(1, Int(args, "fights", 10));
 			settings.Limit = Math.Max(1, Int(args, "limit", 2000));
@@ -439,13 +496,42 @@ Execução
 
 		private static void PrintSummary(GameDatabase database, Settings settings, List<Comp> comps)
 		{
+			string Line(Comp comp, int t) =>
+				$"  {comp.Success[t],5:P0} {comp.P90[t],4:0} {comp.Wins[t],5:P0} {(double.IsNaN(comp.Rounds[t]) ? "   -" : comp.Rounds[t].ToString("0.0").PadLeft(5))}  {string.Join(", ", comp.Ids.Select(id => database.Summon(id).Name))}";
+			IEnumerable<Comp> Ranked(IEnumerable<Comp> list, int t) =>
+				list.OrderByDescending(c => c.Success[t]).ThenBy(c => c.P90[t]).ThenByDescending(c => c.Wins[t]);
+
 			for (var t = 0; t < settings.Targets.Count; t++)
 			{
-				var good = comps.Count(c => c.Wins[t] >= 0.7);
+				var good = comps.Count(c => c.Success[t] >= 0.9);
 				Console.WriteLine();
-				Console.WriteLine($"{settings.Targets[t].Label}: {good} de {comps.Count} composições vencem 70%+");
-				foreach (var comp in comps.OrderByDescending(c => c.Wins[t]).ThenBy(c => double.IsNaN(c.Rounds[t]) ? 999 : c.Rounds[t]).Take(10))
-					Console.WriteLine($"  {comp.Wins[t],5:P0} {(double.IsNaN(comp.Rounds[t]) ? "   -" : comp.Rounds[t].ToString("0.0").PadLeft(5))}  {string.Join(", ", comp.Ids.Select(id => database.Summon(id).Name))}");
+				Console.WriteLine($"{settings.Targets[t].Label}: {good} de {comps.Count} composições vencem até a rodada {settings.Turns} em 90%+");
+				Console.WriteLine("  sucesso  p90 vitórias rodadas");
+				if (!settings.Swap)
+				{
+					foreach (var comp in Ranked(comps, t).Take(10))
+						Console.WriteLine(Line(comp, t));
+					// Uma composição só: a ordem de Velocidade real (para conferir a sincronia).
+					if (comps.Count == 1)
+					{
+						var allies = BattleFactory.Create(database, Team(database, settings, comps[0].Ids), settings.Targets[t].Encounter, 1).Allies;
+						Console.WriteLine("  ordem: " + string.Join(" > ", allies.OrderByDescending(u => u.TurnSpeed).Select(u => $"{u.Name} {u.TurnSpeed:0}")));
+					}
+
+					continue;
+				}
+
+				// Troca: a original e, por membro, as 5 melhores trocas.
+				var team = comps[0];
+				Console.WriteLine(Line(team, t));
+				for (var i = 0; i < team.Ids.Length; i++)
+				{
+					var swaps = comps.Skip(1).Where(c => c.Ids[i] != team.Ids[i] && c.Ids.Where((_, j) => j != i).SequenceEqual(team.Ids.Where((_, j) => j != i))).ToList();
+					var kept = swaps.Count(c => c.Success[t] >= 0.9);
+					Console.WriteLine($"  sem {database.Summon(team.Ids[i]).Name}: {kept} de {swaps.Count} trocas mantêm 90%+");
+					foreach (var comp in Ranked(swaps, t).Take(5))
+						Console.WriteLine($"    {database.Summon(comp.Ids[i]).Name,-26} {comp.Success[t],5:P0} {comp.P90[t],4:0} {comp.Wins[t],5:P0}");
+				}
 			}
 		}
 	}

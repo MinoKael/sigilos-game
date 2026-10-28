@@ -40,6 +40,9 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>A velocidade da luta na tela (o índice em <c>BattlePace.Speeds</c>), no manual e no automático.</summary>
 		public int BattleSpeed { get; set; }
 
+		/// <summary>O dia (UTC) em que a janela do check-in abriu sozinha neste aparelho; nulo se nunca.</summary>
+		public DateTime? CheckInShown { get; set; }
+
 		public string? Email { get; set; }
 
 		/// <summary>O nome da conta (único no servidor), como veio na última entrada ou renovação.</summary>

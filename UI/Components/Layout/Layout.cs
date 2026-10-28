@@ -324,9 +324,9 @@ namespace Sigilos.UI.Components
 		}
 
 		/// <summary>Barra de energia entalhada, na cor dada.</summary>
-		public static ProgressBar Energy(Color color, float height = 10)
+		public static ProgressBar Energy(Color color, float height = 10, float width = 0)
 		{
-			var bar = new ProgressBar { ShowPercentage = false, CustomMinimumSize = new Vector2(0, height), MouseFilter = Control.MouseFilterEnum.Stop };
+			var bar = new ProgressBar { ShowPercentage = false, CustomMinimumSize = new Vector2(width, height), MouseFilter = Control.MouseFilterEnum.Stop };
 			bar.AddThemeStyleboxOverride("fill", GameTheme.Energy(color));
 			return bar;
 		}

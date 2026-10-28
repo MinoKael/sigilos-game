@@ -30,6 +30,14 @@ namespace Sigilos.Core.Progression
 			if (player.ClaimedMail.Contains(mail.Id))
 				return false;
 
+			Pay(player, mail, database, random);
+			player.ClaimedMail.Add(mail.Id);
+			return true;
+		}
+
+		/// <summary>Soma as recompensas e os presentes da carta, sem anotar nada (quem anota é quem chama).</summary>
+		public static void Pay(PlayerState player, Mail mail, GameDatabase? database = null, Random? random = null)
+		{
 			foreach (var (item, amount) in mail.Rewards)
 				Give(player, item, amount);
 			if (database != null)
@@ -38,9 +46,6 @@ namespace Sigilos.Core.Progression
 				foreach (var gift in mail.Gifts)
 					Give(random, database, player, gift);
 			}
-
-			player.ClaimedMail.Add(mail.Id);
-			return true;
 		}
 
 		private static void Give(Random random, GameDatabase database, PlayerState player, MailGift gift)

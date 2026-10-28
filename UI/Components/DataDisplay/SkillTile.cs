@@ -7,9 +7,9 @@ namespace Sigilos.UI.Components
 {
 	/// <summary>
 	/// O ícone de uma habilidade: uma pedra quadrada na ativa e um losango na passiva, com o desenho próprio
-	/// dela (<see cref="Art.SkillImage"/>) ou, sem ele, o símbolo de <see cref="Art.Skill"/>. Com nível,
-	/// uma pastilha redonda no canto de cima diz quanto a habilidade já subiu ("+3"); acesa em ouro quando
-	/// chegou ao máximo. Travada (a do Despertar, antes de despertar), fica apagada.
+	/// dela (<see cref="Art.SkillImage"/>) ou, sem ele, o símbolo de <see cref="Art.Skill"/>. Com nível, o número dele e
+	/// do máximo ("4/5") fica escrito dentro da pedra, no canto de baixo à direita, sem pastilha; em ouro quando chegou
+	/// ao máximo. Travada (a do Despertar, antes de despertar), fica apagada.
 	/// </summary>
 	public static class SkillTile
 	{
@@ -18,14 +18,13 @@ namespace Sigilos.UI.Components
 
 		public const float DefaultSize = 72;
 
-		private const float BadgeSize = 24;
 		private const float CrownSize = 26;
+
+		/// <summary>O respiro entre o número do nível e a borda da pedra.</summary>
+		private const float InnerMargin = 6;
 
 		/// <summary>A grade onde os ícones ficam, numa fileira só.</summary>
 		public static GridContainer Grid() => Layout.Grid(PerRow, Space.Wide);
-
-		/// <summary>O que a pastilha escreve: os aprimoramentos já recebidos, que são o nível menos o primeiro.</summary>
-		public static string Upgrades(int level) => $"+{Math.Max(0, level - 1)}";
 
 		/// <param name="level">O nível de agora; 0 (ou a habilidade travada) esconde a pastilha.</param>
 		/// <param name="shape">Nulo: quadrada na ativa, losango na passiva.</param>
@@ -51,7 +50,7 @@ namespace Sigilos.UI.Components
 			root.AddChild(button);
 
 			if (!locked && level > 0 && skill.MaxLevel > 1)
-				root.AddChild(Badge(level, level >= skill.MaxLevel));
+				root.AddChild(Levels(level, skill.MaxLevel));
 			return root;
 		}
 
@@ -85,30 +84,26 @@ namespace Sigilos.UI.Components
 			return root;
 		}
 
-		private static Control Badge(int level, bool maxed)
+		/// <summary>O nível e o máximo ("4/5") escritos dentro da pedra, no canto de baixo à direita, com contorno para ler sobre o desenho.</summary>
+		private static Control Levels(int level, int max)
 		{
-			var plate = new PanelContainer { Name = "Level", MouseFilter = Control.MouseFilterEnum.Ignore, CustomMinimumSize = new Vector2(BadgeSize, BadgeSize) };
-			var box = GameTheme.Box(new Color(Palette.Inset, 0.96f), maxed ? Palette.Gold : Palette.GoldDark, 2, (int)(BadgeSize / 2), 0);
-			box.ContentMarginLeft = box.ContentMarginRight = 2;
-			plate.AddThemeStyleboxOverride("panel", box);
-			plate.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.TopRight);
-			plate.GrowHorizontal = Control.GrowDirection.Begin;
-			plate.OffsetTop = -6;
-			plate.OffsetRight = 6;
-
 			var text = new Label
 			{
-				Name = "Text",
-				Text = Upgrades(level),
-				HorizontalAlignment = HorizontalAlignment.Center,
-				VerticalAlignment = VerticalAlignment.Center,
+				Name = "Levels",
+				Text = $"{level}/{max}",
+				HorizontalAlignment = HorizontalAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Bottom,
 				MouseFilter = Control.MouseFilterEnum.Ignore,
 				ThemeTypeVariation = GameTheme.Number,
 			};
-			text.AddThemeFontSizeOverride("font_size", 12);
-			text.AddThemeColorOverride("font_color", maxed ? Palette.Gold : Palette.Text);
-			plate.AddChild(text);
-			return plate;
+			text.AddThemeFontSizeOverride("font_size", FontSize.Caption);
+			text.AddThemeColorOverride("font_color", level >= max ? Palette.Gold : Palette.Text);
+			text.AddThemeColorOverride("font_outline_color", Colors.Black);
+			text.AddThemeConstantOverride("outline_size", 5);
+			text.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+			text.OffsetRight = -InnerMargin;
+			text.OffsetBottom = -InnerMargin;
+			return text;
 		}
 	}
 }

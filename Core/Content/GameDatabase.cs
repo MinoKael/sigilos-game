@@ -37,7 +37,8 @@ namespace Sigilos.Core.Content
 			IReadOnlyList<DungeonDefinition> dungeons,
 			IReadOnlyList<ShopOffer> shop,
 			ExplorationDefinition? exploration = null,
-			ArenaDefinition? arena = null)
+			ArenaDefinition? arena = null,
+			IReadOnlyList<CheckInDay>? checkIn = null)
 		{
 			StatModel = statModel;
 			// Famílias e Masmorras fora do jogo (Active = false) saem das listas do jogador, mas os ids
@@ -51,6 +52,7 @@ namespace Sigilos.Core.Content
 			Shop = shop;
 			Exploration = exploration ?? new ExplorationDefinition();
 			Arena = arena ?? new ArenaDefinition();
+			CheckIn = checkIn?.OrderBy(d => d.Day).ToList() ?? new List<CheckInDay>();
 
 			// As variantes saem dos arquivos das famílias, na ordem dos elementos. O arquivo só traz Vida,
 			// Ataque, Defesa e Velocidade: os outros quatro atributos são os de base do modelo.
@@ -111,6 +113,9 @@ namespace Sigilos.Core.Content
 		/// <summary>A Arena Astral (Data/arena.json); sem o arquivo, vazia.</summary>
 		public ArenaDefinition Arena { get; }
 
+		/// <summary>Os dias do ciclo do check-in, em ordem (Data/checkin.json); sem o arquivo, vazio e sem check-in.</summary>
+		public IReadOnlyList<CheckInDay> CheckIn { get; }
+
 		public SummonDefinition Summon(string id) => _summonsById[id];
 		public EnemyDefinition Enemy(string id) => _enemiesById[id];
 		public StageDefinition Stage(int number) => Stages.First(s => s.Number == number);
@@ -140,6 +145,7 @@ namespace Sigilos.Core.Content
 
 		/// <param name="families">O texto de cada arquivo de Data/summons, um por família.</param>
 		/// <param name="exploration">O texto de Data/exploration.json; nulo: sem Exploração Estelar.</param>
+		/// <param name="checkIn">O texto de Data/checkin.json; nulo: sem check-in diário.</param>
 		public static GameDatabase FromJson(
 			string statModel,
 			IEnumerable<string> families,
@@ -148,7 +154,8 @@ namespace Sigilos.Core.Content
 			string dungeons,
 			string shop,
 			string? exploration = null,
-			string? arena = null)
+			string? arena = null,
+			string? checkIn = null)
 		{
 			return new GameDatabase(
 				Parse<StatModel>(statModel, "stat_model.json"),
@@ -158,7 +165,8 @@ namespace Sigilos.Core.Content
 				Parse<List<DungeonDefinition>>(dungeons, "dungeons.json"),
 				Parse<List<ShopOffer>>(shop, "shop.json"),
 				exploration == null ? null : Parse<ExplorationDefinition>(exploration, "exploration.json"),
-				arena == null ? null : Parse<ArenaDefinition>(arena, "arena.json"));
+				arena == null ? null : Parse<ArenaDefinition>(arena, "arena.json"),
+				checkIn == null ? null : Parse<List<CheckInDay>>(checkIn, "checkin.json"));
 		}
 
 		private static T Parse<T>(string json, string file)
@@ -305,6 +313,40 @@ namespace Sigilos.Core.Content
 
 			foreach (var problem in ValidateArena())
 				yield return $"Arena: {problem}";
+
+			foreach (var problem in ValidateCheckIn())
+				yield return $"Check-in: {problem}";
+		}
+
+		/// <summary>
+		/// Sem arquivo, tudo certo. Com ele: os 28 dias em ordem, ao menos um dia grande, e cada dia só com as moedas do dia a dia
+		/// (os Pergaminhos de Luz e Trevas e os Núcleos de Infusão são dos marcos, GDD seção 12), com algo a pagar.
+		/// Uma chave que o correio não conhece pagaria nada, em silêncio: por isso é erro aqui.
+		/// </summary>
+		private IEnumerable<string> ValidateCheckIn()
+		{
+			if (CheckIn.Count == 0)
+				yield break;
+
+			if (!CheckIn.Select(d => d.Day).SequenceEqual(Enumerable.Range(1, CheckInDay.Cycle)))
+				yield return $"os dias têm que ser de 1 a {CheckInDay.Cycle}, cada um uma vez.";
+			if (!CheckIn.Any(d => d.Big))
+				yield return "nenhum dia grande.";
+
+			foreach (var day in CheckIn)
+			{
+				if (!day.Rewards.Any(r => r.Value > 0))
+					yield return $"dia {day.Day}: nada a pagar.";
+				foreach (var (key, amount) in day.Rewards)
+				{
+					if (key.Contains(':') || !Enum.TryParse<Progression.MailItem>(key, true, out var item))
+						yield return $"dia {day.Day}: \"{key}\" não é uma moeda do correio.";
+					else if (item is Progression.MailItem.LightDarkScrolls or Progression.MailItem.InfusionCores)
+						yield return $"dia {day.Day}: \"{key}\" é prêmio de marco, não de check-in.";
+					if (amount < 0)
+						yield return $"dia {day.Day}: \"{key}\" negativo.";
+				}
+			}
 		}
 
 		/// <summary>Graus em ordem de pontos a partir do 0, sequência crescente, Rivais com quatro integrantes que existem e ofertas válidas.</summary>

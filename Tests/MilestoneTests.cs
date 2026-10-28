@@ -21,25 +21,25 @@ namespace Sigilos.Tests
 			player.HighestStage = 19;
 			player.AccountLevel = Account.MaxLevel;
 			var stage = database.Stage(20);
-			var first = Campaign.ApplyVictory(new Random(1), player, stage, database);
+			var first = Campaign.ApplyVictory(new Random(1), player, stage, database, DateTime.UnixEpoch);
 			Assert.Equal(new Prize(0, 0, 2, 0, 1), first.Prize, "o fim da região 1 dá um Kit de Sigilos e dois Núcleos");
 			Assert.Equal(1, player.PendingRuneKits, "o Kit espera na conta");
 			Assert.Equal(2, player.Monsters.Count(m => m.IsInfusionCore), "os Núcleos na coleção");
-			Assert.Equal(Prize.None, Campaign.ApplyVictory(new Random(1), player, stage, database).Prize, "repetir não dá de novo");
+			Assert.Equal(Prize.None, Campaign.ApplyVictory(new Random(1), player, stage, database, DateTime.UnixEpoch).Prize, "repetir não dá de novo");
 
 			var golem = database.Dungeon("golem");
 			player.HighestStage = golem.UnlockStage;
 			player.DungeonFloors[golem.Id] = 3;
-			var fourth = Dungeons.ApplyVictory(new Random(1), player, golem, 4);
+			var fourth = Dungeons.ApplyVictory(new Random(1), player, golem, 4, DateTime.UnixEpoch);
 			Assert.Equal(1, fourth.Prize!.LegendaryScrolls, "o andar 4 dá um Lendário");
 			Assert.True(fourth.Prize.InfusionCores >= golem.Floor(4).FirstClearCores, "e os Núcleos dele");
-			var fifth = Dungeons.ApplyVictory(new Random(1), player, golem, 5);
+			var fifth = Dungeons.ApplyVictory(new Random(1), player, golem, 5, DateTime.UnixEpoch);
 			Assert.Equal(1, fifth.Prize!.LightDarkScrolls, "o andar 5 dá um de Luz e Trevas");
 			Assert.Equal(1, player.LightDarkScrolls, "na conta");
 
 			var cores = 0;
 			for (var seed = 0; seed < 2000; seed++)
-				cores += Dungeons.ApplyVictory(new Random(seed), player, golem, 5).Prize!.InfusionCores;
+				cores += Dungeons.ApplyVictory(new Random(seed), player, golem, 5, DateTime.UnixEpoch).Prize!.InfusionCores;
 			Assert.True(Math.Abs(cores / 2000.0 * 100 - golem.Floor(5).CoreChance) < 1.2, $"repetir o andar 5 dá Núcleo pela chance dele ({cores} em 2000)");
 		}
 

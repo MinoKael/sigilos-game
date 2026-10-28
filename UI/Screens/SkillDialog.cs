@@ -22,17 +22,26 @@ namespace Sigilos.UI.Screens
 		{
 			// Nível guardado acima do teto atual (a habilidade foi refeita): mostra o teto.
 			level = System.Math.Min(level, skill.MaxLevel);
-			var dialog = Dialog.Open(anchor, skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name, Width, anchor, "SkillDialog");
-			var body = dialog.Body;
-
-			body.AddChild(Facts(skill, level, awakened, locked));
-
-			AddFlavor(body, skill);
-			body.AddChild(RichText.Label(Texts.Describe(skill, awakened, level), TextWidth).Named("Description"));
-
-			if (skill.Levels.Count > 0)
-				body.AddChild(Upgrades(skill, level));
+			var dialog = Dialog.Open(anchor, Title(skill), Width, anchor, "SkillDialog");
+			Fill(dialog.Body, skill, level, awakened, locked);
 			return dialog;
+		}
+
+		/// <summary>O nome que a janela (ou o quadro da ficha) leva no alto: as passivas dizem que são.</summary>
+		public static string Title(SkillDefinition skill) => skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name;
+
+		/// <summary>
+		/// O miolo da janela, em <paramref name="body"/>: o que ela é, a ambientação, a descrição e os
+		/// aprimoramentos. A ficha dos Homúnculos usa o mesmo miolo embaixo dos ícones, na largura da coluna.
+		/// </summary>
+		public static void Fill(VBoxContainer body, SkillDefinition skill, int level, bool awakened, bool locked, float width = TextWidth)
+		{
+			level = System.Math.Min(level, skill.MaxLevel);
+			body.AddChild(Facts(skill, level, awakened, locked));
+			AddFlavor(body, skill, width);
+			body.AddChild(RichText.Label(Texts.Describe(skill, awakened, level), width).Named("Description"));
+			if (skill.Levels.Count > 0)
+				body.AddChild(Upgrades(skill, level, width));
 		}
 
 		/// <summary>
@@ -41,10 +50,10 @@ namespace Sigilos.UI.Screens
 		/// </summary>
 		public static Dialog OpenAwakening(Control anchor, SkillDefinition skill, int level)
 		{
-			var dialog = Dialog.Open(anchor, skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name, Width, anchor, "SkillDialog");
+			var dialog = Dialog.Open(anchor, Title(skill), Width, anchor, "SkillDialog");
 			var body = dialog.Body;
 			body.AddChild(Facts(skill, level, true, false));
-			AddFlavor(body, skill);
+			AddFlavor(body, skill, TextWidth);
 
 			body.AddChild(Stage(T("skill.before_awakening"), Palette.TextFaded, Texts.DescribeBeforeAwakening(skill, level), "Before"));
 			body.AddChild(Stage(T("skill.after_awakening"), Palette.Awakened, Texts.Describe(skill, true, level), "After"));
@@ -58,9 +67,13 @@ namespace Sigilos.UI.Screens
 		public static Dialog OpenLeader(Control anchor, LeaderDefinition leader)
 		{
 			var dialog = Dialog.Open(anchor, T("monsters.leader_title"), 420, anchor, "LeaderDialog");
-			dialog.Body.AddChild(RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), 380).Named("Text"));
+			dialog.Body.AddChild(LeaderText(leader, 380));
 			return dialog;
 		}
+
+		/// <summary>O que a Liderança dá à equipe, numa linha que quebra em <paramref name="width"/>.</summary>
+		public static Control LeaderText(LeaderDefinition leader, float width) =>
+			RichText.Label(T("monsters.leadership", Texts.Percent(leader.Value), Texts.Name(leader.Stat)), width).Named("Text");
 
 		private static Control Stage(string title, Color color, string description, string name)
 		{
@@ -74,12 +87,12 @@ namespace Sigilos.UI.Screens
 			return box;
 		}
 
-		private static void AddFlavor(VBoxContainer body, SkillDefinition skill)
+		private static void AddFlavor(VBoxContainer body, SkillDefinition skill, float width)
 		{
 			if (skill.Flavor.Length == 0)
 				return;
 
-			var flavor = new Label { Name = "Flavor", Text = skill.Flavor, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(TextWidth, 0) };
+			var flavor = new Label { Name = "Flavor", Text = skill.Flavor, AutowrapMode = TextServer.AutowrapMode.WordSmart, CustomMinimumSize = new Vector2(width, 0) };
 			flavor.AddThemeFontOverride("font", GameTheme.Serif);
 			flavor.AddThemeFontSizeOverride("font_size", FontSize.Note);
 			flavor.AddThemeColorOverride("font_color", Palette.GoldDark.Lightened(0.45f));

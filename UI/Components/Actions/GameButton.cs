@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 using Sigilos.UI.Style;
 
@@ -21,10 +22,14 @@ namespace Sigilos.UI.Components
 	}
 
 	/// <summary>
-	/// O botão de texto do jogo: diz o que faz, com um símbolo opcional na frente e, numa segunda linha,
-	/// o custo (símbolo e número: "⚡ 5"). Alto o bastante para o dedo (<see cref="GameTheme.Touch"/>),
-	/// afunda ao apertar e apaga quando desligado. Toda ação que possa gerar dúvida usa este botão; o de
-	/// só ícone (<see cref="SigilButton"/>) fica para fechar, voltar, pausar.
+	/// O botão de texto do jogo: diz o que faz, com um símbolo opcional na frente. Alto o bastante para o dedo
+	/// (<see cref="GameTheme.Touch"/>), afunda ao apertar e apaga quando desligado. Toda ação que possa gerar dúvida
+	/// usa este botão; o de só ícone (<see cref="SigilButton"/>) fica para fechar, voltar, pausar.
+	///
+	/// O texto nunca sai do botão: num botão de tamanho fixado (<see cref="FixedHeight"/> ou <see cref="Wide"/>) a letra
+	/// encolhe, uma de cada vez e até <see cref="FloorFont"/>, até caber (<see cref="FitText"/>); o botão não cresce.
+	/// A segunda linha de custo (<see cref="WithCost"/>, símbolo e número) existe só para os botões de preço (Loja, Lutar); as
+	/// telas de Homúnculos, Sigilos, Correio e Check-in não a usam: o valor mora no diálogo de confirmação ou na linha da página.
 	///
 	/// O conteúdo (<c>Content/Row</c>: <c>Icon</c>, <c>Text</c> com <c>Label</c> e <c>Cost</c>) é desenhado
 	/// por cima do botão; foco, afundar, apagar desligado e medir o conteúdo vêm de <see cref="TouchButton"/>.
@@ -49,7 +54,16 @@ namespace Sigilos.UI.Components
 		};
 
 		private readonly HBoxContainer _row = new() { Name = "Row", MouseFilter = MouseFilterEnum.Ignore, Alignment = BoxContainer.AlignmentMode.Center, SizeFlagsHorizontal = SizeFlags.ExpandFill };
+		/// <summary>O menor tamanho de letra a que o texto de um botão encolhe para caber.</summary>
+		public const int FloorFont = FontSize.Caption;
+
 		private readonly float _height;
+
+		/// <summary>O tamanho de letra do peso do botão, sem encolher; o que a tela mostra é <see cref="_shownFont"/>.</summary>
+		private int _baseFont = FontSize.Strong;
+
+		private int _shownFont = FontSize.Strong;
+		private (Vector2 Room, string Text, int Font, float Width, bool Fixed, bool Cost, bool Icon) _fitted;
 		private Doodle? _icon;
 		private string? _iconName;
 		private ButtonKind _kind;
@@ -73,6 +87,7 @@ namespace Sigilos.UI.Components
 
 			_lines.AddThemeConstantOverride("separation", -2); // Negativo: o texto e o custo colados, uma peça só.
 
+			Resized += FitText;
 			_label.Text = text;
 			_label.HorizontalAlignment = HorizontalAlignment.Center;
 			_label.ClipText = false;
@@ -104,6 +119,7 @@ namespace Sigilos.UI.Components
 				_label.Text = value;
 				ShowLines();
 				Fit();
+				FitText();
 			}
 		}
 
@@ -116,6 +132,7 @@ namespace Sigilos.UI.Components
 				_kind = value;
 				Restyle();
 				Fit();
+				FitText();
 			}
 		}
 
@@ -138,6 +155,7 @@ namespace Sigilos.UI.Components
 				}
 
 				Fit();
+				FitText();
 			}
 		}
 
@@ -200,6 +218,7 @@ namespace Sigilos.UI.Components
 
 			ShowLines();
 			Fit();
+			FitText();
 			return this;
 		}
 
@@ -214,6 +233,7 @@ namespace Sigilos.UI.Components
 		{
 			_fixed = true;
 			Fit();
+			FitText();
 			return this;
 		}
 
@@ -222,6 +242,7 @@ namespace Sigilos.UI.Components
 		{
 			_width = width;
 			Fit();
+			FitText();
 			return this;
 		}
 
@@ -241,14 +262,78 @@ namespace Sigilos.UI.Components
 		private float MinimumWidth()
 		{
 			var font = _label.GetThemeFont("font");
-			var size = _label.GetThemeFontSize("font_size");
+			// Medido na letra do peso (nunca na encolhida: o botão que acompanha o conteúdo não pode ir encolhendo a letra e a si mesmo)
+			// e, só quando a largura foi pedida, na menor: o texto encolhe para caber nela.
+			var size = _width > 0 ? Math.Min(FloorFont, _baseFont) : _baseFont;
 			var word = 0f;
-			var pieces = _kind == ButtonKind.Text ? new[] { _label.Text } : _label.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-			foreach (var piece in pieces)
+			foreach (var piece in Words())
 				word = Mathf.Max(word, font.GetStringSize(piece, HorizontalAlignment.Left, -1, size).X);
 			var cost = _cost.Visible ? _cost.GetCombinedMinimumSize().X : 0;
 			var icon = _icon != null ? _icon.CustomMinimumSize.X + 10 : 0;
 			return Padding * 2 + icon + Mathf.Max(word, cost) + 6;
+		}
+
+		/// <summary>As partes do texto que não se quebram: cada palavra (o botão de peso de texto não quebra: o texto inteiro).</summary>
+		private string[] Words() => _kind == ButtonKind.Text ? new[] { _label.Text } : _label.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+		/// <summary>
+		/// Encolhe a letra, de um em um, até o texto caber no botão: cada palavra na largura e, se a altura é fixa, as linhas
+		/// quebradas na altura (descontada a linha de custo, se há). Só age em botão de tamanho fixado (<see cref="FixedHeight"/>
+		/// ou <see cref="Wide"/>); os que acompanham o conteúdo crescem com ele. Refaz-se a cada mudança de tamanho, texto ou
+		/// estilo, sempre a partir da letra do peso: o resultado só depende desses valores.
+		/// </summary>
+		private void FitText()
+		{
+			var size = _baseFont;
+			if ((_fixed || _width > 0) && _label.Text.Length > 0)
+			{
+				var room = Room();
+				var key = (room, _label.Text, _baseFont, _width, _fixed, _cost.Visible, _icon != null);
+				if (key == _fitted)
+					return;
+				_fitted = key;
+				size = FittingFont(room);
+			}
+			else
+				_fitted = default;
+
+			if (size == _shownFont)
+				return;
+			_shownFont = size;
+			_label.AddThemeFontSizeOverride("font_size", size);
+		}
+
+		/// <summary>
+		/// O espaço do botão: o tamanho que a tela lhe deu e, no mínimo, o que ele mesmo pede (a largura de <see cref="Wide"/> e a
+		/// altura fixa). O botão posto à mão, fora de um contêiner, ganha o tamanho antes de entrar na árvore e nenhum
+		/// <c>Resized</c> chega depois; o pedido não depende disso.
+		/// </summary>
+		private Vector2 Room() =>
+			new(Mathf.Max(Size.X, _width > 0 ? Mathf.Max(_width, MinimumWidth()) : 0), Mathf.Max(Size.Y, _fixed ? _height : 0));
+
+		/// <summary>
+		/// A maior letra, da do peso até <see cref="FloorFont"/>, em que cada palavra cabe na largura e as linhas quebradas, na altura.
+		/// Se nem a menor cabe, devolve a menor e o resto é cortado pelo botão: o texto é que deve ser encurtado (ou o botão alargado).
+		/// </summary>
+		private int FittingFont(Vector2 room)
+		{
+			var width = room.X - Padding * 2 - (_icon != null ? _icon.CustomMinimumSize.X + 10 : 0) - 6;
+			if (width <= 0)
+				return _baseFont;
+
+			var height = _fixed ? room.Y - 10 - (_cost.Visible ? _cost.GetCombinedMinimumSize().Y - 2 : 0) : float.MaxValue;
+			var font = _label.GetThemeFont("font");
+			var words = Words();
+			for (var size = _baseFont; size > FloorFont; size--)
+			{
+				if (words.Any(word => font.GetStringSize(word, HorizontalAlignment.Left, -1, size).X > width))
+					continue;
+				if (_kind != ButtonKind.Text && _fixed && font.GetMultilineStringSize(_label.Text, HorizontalAlignment.Left, width, size).Y > height)
+					continue;
+				return size;
+			}
+
+			return Math.Min(FloorFont, _baseFont);
 		}
 
 		/// <summary>As caixas de cada estado, a tinta dos símbolos e o contorno e a cor das letras do peso atual (o de texto é de ouro).</summary>
@@ -256,6 +341,7 @@ namespace Sigilos.UI.Components
 		{
 			var (fill, border) = Tones.Of(_kind);
 			var text = _kind == ButtonKind.Text;
+			_baseFont = text || _height >= GameTheme.Touch ? FontSize.Strong : FontSize.Compact;
 			if (_blockReason != null && !text)
 			{
 				var off = Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false);
@@ -272,7 +358,9 @@ namespace Sigilos.UI.Components
 			AddThemeStyleboxOverride("disabled", text ? new StyleBoxEmpty() : Box(Palette.Disabled, Palette.Disabled.Lightened(0.12f), false));
 			_label.AddThemeConstantOverride("outline_size", text ? 0 : 5);
 			_label.AutowrapMode = text ? TextServer.AutowrapMode.Off : TextServer.AutowrapMode.WordSmart;
-			_label.AddThemeFontSizeOverride("font_size", text || _height >= GameTheme.Touch ? FontSize.Strong : FontSize.Compact);
+			_shownFont = _baseFont;
+			_fitted = default;
+			_label.AddThemeFontSizeOverride("font_size", _baseFont);
 			_label.AddThemeColorOverride("font_color", text ? Tones.Ink(_kind) : Palette.Text);
 			_label.AddThemeColorOverride("font_outline_color", Tones.Outline(_kind));
 

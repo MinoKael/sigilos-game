@@ -6,11 +6,14 @@ namespace Sigilos.Core.Progression
 	/// </summary>
 	public static class Protocol
 	{
-		/// <summary>2: luta em dois pedidos (o fim paga, depois do tempo da luta), kit de sigilos e nome pelo servidor, hora só do servidor.</summary>
-		public const int Version = 2;
+		/// <summary>
+		/// 2: luta em dois pedidos (o fim paga, depois do tempo da luta), kit de sigilos e nome pelo servidor, hora só do servidor.
+		/// 3: o prêmio da temporada da Arena e os marcos de nível da conta chegam por carta do jogo (<see cref="Letters"/>), e o check-in diário (<see cref="ServerActionKind.CheckIn"/>).
+		/// </summary>
+		public const int Version = 3;
 
 		/// <summary>O protocolo mais antigo que o servidor ainda atende; sobe quando uma regra muda de forma incompatível.</summary>
-		public const int Minimum = 2;
+		public const int Minimum = 3;
 
 		public static bool Accepts(int clientProtocol, int minimum) => clientProtocol >= minimum;
 	}

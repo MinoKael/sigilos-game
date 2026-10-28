@@ -18,7 +18,7 @@ namespace Sigilos.Core.Progression
 	/// <summary>Um adversário da lista: a defesa de um alquimista (hoje montada pelo Grau dele; depois, a de um jogador).</summary>
 	public sealed record ArenaOpponent(int Index, string Name, int Points, ArenaGrade Grade, BattleTeam Team, bool Beaten, bool Player = false);
 
-	/// <summary>O prêmio do fim da semana, pelo Grau em que a conta terminou.</summary>
+	/// <summary>O prêmio do fim da semana, pelo Grau em que a conta terminou (chega por carta).</summary>
 	public sealed record ArenaPayout(string GradeName, int Gold, int LegendaryScrolls);
 
 	/// <summary>O que uma luta da Arena mudou, para o resultado mostrar.</summary>
@@ -54,8 +54,8 @@ namespace Sigilos.Core.Progression
 
 		/// <summary>
 		/// Põe a conta em dia ao abrir a Arena (e ao abrir o jogo): luta abandonada vira derrota, os Convites
-		/// recarregam, a sequência vencida some, a semana virada paga o prêmio e a lista nasce se faltar.
-		/// Devolve o prêmio pago nesta chamada, se houve.
+		/// recarregam, a sequência vencida some, a semana virada manda o prêmio ao correio (<see cref="Letters"/>) e a
+		/// lista nasce se faltar. Devolve o prêmio mandado nesta chamada, se houve.
 		/// </summary>
 		public static ArenaPayout? Renew(PlayerState player, ArenaDefinition definition, DateTime now, Random random)
 		{
@@ -81,8 +81,11 @@ namespace Sigilos.Core.Progression
 				{
 					var grade = definition.GradeOf(arena.Points);
 					payout = new ArenaPayout(grade.Name, grade.Gold, grade.LegendaryScrolls);
-					player.Gold += grade.Gold;
-					player.LegendaryScrolls += grade.LegendaryScrolls;
+					Letters.Send(player, Letters.ArenaSeason, now, new Dictionary<string, int>
+					{
+						["gold"] = grade.Gold,
+						["legendaryScrolls"] = grade.LegendaryScrolls,
+					}, grade.Id);
 					arena.LastPayoutGrade = grade.Name;
 					arena.LastPayoutGold = grade.Gold;
 					arena.LastPayoutLegendary = grade.LegendaryScrolls;

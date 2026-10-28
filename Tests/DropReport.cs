@@ -127,7 +127,7 @@ namespace Sigilos.Tests
 				player.Mana = floor.Mana;
 				player.Runes.Clear();
 				player.Tools.Clear();
-				var reward = Dungeons.ApplyVictory(random, player, dungeon, number);
+				var reward = Dungeons.ApplyVictory(random, player, dungeon, number, DateTime.UnixEpoch);
 				var prize = reward.Prize ?? Prize.None;
 				if (!fixedWrong && (reward.Mana != floor.Mana || reward.Essence != essence || reward.Experience != experience
 					|| reward.Gold != 0 || reward.FirstClear || prize.LegendaryScrolls + prize.LightDarkScrolls != 0))
@@ -191,7 +191,7 @@ namespace Sigilos.Tests
 			var floor = dungeon.Floor(number);
 			var player = Player(dungeon, number - 1);
 			player.Mana = floor.Mana;
-			var reward = Dungeons.ApplyVictory(random, player, dungeon, number);
+			var reward = Dungeons.ApplyVictory(random, player, dungeon, number, DateTime.UnixEpoch);
 			var prize = reward.Prize ?? Prize.None;
 			var milestone = Milestones.ForFirstClear(floor);
 			var extraCores = prize.InfusionCores - milestone.InfusionCores;

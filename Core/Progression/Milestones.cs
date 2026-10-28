@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Sigilos.Core.Content;
 using Sigilos.Core.Player;
@@ -22,9 +23,9 @@ namespace Sigilos.Core.Progression
 	/// <summary>
 	/// Os marcos do jogo (GDD, seção 12): o que é especial vem de chegar lá, não da sorte do dia a dia. A
 	/// primeira vitória das fases que fecham uma região e dos andares de Masmorra pagam o que cada uma traz
-	/// nos dados (Data/stages.json, Data/dungeons.json); os níveis da conta pagam pela tabela daqui. A Torre
-	/// (100 andares, ainda por vir) já tem a parte dela reservada no GDD: estes números não podem crescer
-	/// sem tirar dela.
+	/// nos dados (Data/stages.json, Data/dungeons.json); os níveis da conta e os 6★ (<see cref="SixStar"/>) pagam pelas
+	/// tabelas daqui, por carta (<see cref="Letters"/>). A Torre (100 andares, ainda por vir) já tem a parte dela reservada no GDD: estes
+	/// números não podem crescer sem tirar dela.
 	/// </summary>
 	public static class Milestones
 	{
@@ -38,14 +39,24 @@ namespace Sigilos.Core.Progression
 		public static Prize ForAccountLevel(int level) =>
 			new(0, LightDarkLevels.Contains(level) ? 1 : 0, level % CoreLevelStep == 0 ? 1 : 0);
 
-		/// <summary>O prêmio de subir de <paramref name="from"/> até <paramref name="to"/> (cada nível no caminho).</summary>
-		public static Prize ForAccountLevels(int from, int to)
+		/// <summary>
+		/// O primeiro 6★ de cada elemento (<see cref="SixStar"/>): um Núcleo de Infusão, 200 de Mana, 1.000 de Essência e um sigilo 6★
+		/// Lendário sorteado (a chave <c>rune:6:Legendary</c> do correio, sem conjunto: sai de um dos de jogo).
+		/// </summary>
+		public static readonly IReadOnlyDictionary<string, int> FirstSixStar = new Dictionary<string, int>
 		{
-			var prize = Prize.None;
-			for (var level = from + 1; level <= to; level++)
-				prize += ForAccountLevel(level);
-			return prize;
-		}
+			["infusionCores"] = 1,
+			["mana"] = 200,
+			["essence"] = 1000,
+			["rune:6:Legendary"] = 1,
+		};
+
+		/// <summary>Cada 6★ depois do primeiro do elemento: 300 de Mana e 1.000 de Essência.</summary>
+		public static readonly IReadOnlyDictionary<string, int> NextSixStar = new Dictionary<string, int>
+		{
+			["mana"] = 300,
+			["essence"] = 1000,
+		};
 
 		/// <summary>A primeira vitória da fase.</summary>
 		public static Prize ForFirstClear(StageDefinition stage) =>

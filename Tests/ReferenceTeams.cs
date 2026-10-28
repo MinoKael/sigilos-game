@@ -114,7 +114,8 @@ namespace Sigilos.Tests
 		/// <summary>
 		/// Um monstro da equipe de especialista: os conjuntos de cada vaga e, se pede, o principal da vaga 6.
 		/// <see cref="Speed"/> é a prioridade na sincronia de Velocidade (0: nenhuma): Velocidade no principal
-		/// da vaga 2 e nos subatributos, mais quanto maior o número, para agir antes dos outros.
+		/// da vaga 2 e nos subatributos, mais quanto maior o número, para agir antes dos outros. Negativa evita
+		/// a Velocidade (sem o principal, subatributo de Velocidade pesa contra): para quebrar a sincronia.
 		/// </summary>
 		public sealed record Member(string Id, RuneSet[] Sets, RuneStat? Six = null, int Speed = 0);
 
@@ -243,13 +244,17 @@ namespace Sigilos.Tests
 		/// Um time qualquer com o investimento pedido (a ferramenta de balanceamento, <see cref="BalanceLab"/>):
 		/// as estrelas de cada um, o nível, o Despertar, as habilidades e runas de <paramref name="runeGrade"/>
 		/// estrelas até +<paramref name="runeLevel"/> (0: sem runas), com os conjuntos de sempre para o papel.
-		/// O nível fica no máximo das estrelas de cada um.
+		/// O nível fica no máximo das estrelas de cada um. <paramref name="runed"/> diz quem leva runas (nulo: todos) e
+		/// <paramref name="slots"/>, em que vagas (nulo: as seis): para achar o mínimo de runas que um time precisa.
+		/// <paramref name="speed"/> é a prioridade de cada um na sincronia de Velocidade (<see cref="Member.Speed"/>).
 		/// </summary>
 		public static BattleTeam Custom(GameDatabase database, IReadOnlyList<string> ids, Func<SummonDefinition, int> stars, int level,
-			bool awakened, bool maxSkills, int runeGrade, int runeLevel, int evenLevel, int picks)
+			bool awakened, bool maxSkills, int runeGrade, int runeLevel, int evenLevel, int picks,
+			Func<string, bool>? runed = null, IReadOnlyCollection<int>? slots = null, IReadOnlyDictionary<string, int>? speed = null)
 		{
-			var team = Team(database, stars, level, runeGrade, runeLevel, ids.Select(id => new Member(id, Array.Empty<RuneSet>())).ToList(),
-				awakened, maxSkills, Math.Max(1, picks), evenLevel);
+			var team = Team(database, stars, level, runeGrade, runeLevel,
+				ids.Select(id => new Member(id, Array.Empty<RuneSet>(), Speed: speed?.GetValueOrDefault(id) ?? 0)).ToList(),
+				awakened, maxSkills, Math.Max(1, picks), evenLevel, runed, slots);
 			return new BattleTeam(team.Members.Select(m => m with { Level = Math.Min(m.Level, m.Stars >= 6 ? 40 : 10 + 5 * m.Stars) }).ToList());
 		}
 
@@ -263,7 +268,8 @@ namespace Sigilos.Tests
 		/// quando dado, é a melhora das vagas 2, 4 e 6 (as de principal escolhido, as primeiras a ir a +15).
 		/// </summary>
 		private static BattleTeam Team(GameDatabase database, Func<SummonDefinition, int> stars, int level, int runeGrade = 0, int runeLevel = 0,
-			IReadOnlyList<Member>? members = null, bool awakened = false, bool maxSkills = false, int picks = 1, int evenLevel = 0)
+			IReadOnlyList<Member>? members = null, bool awakened = false, bool maxSkills = false, int picks = 1, int evenLevel = 0,
+			Func<string, bool>? runed = null, IReadOnlyCollection<int>? slots = null)
 		{
 			var random = new Random(7);
 			var id = 1;
@@ -271,13 +277,16 @@ namespace Sigilos.Tests
 			return new BattleTeam(members.Select(member =>
 			{
 				var summon = database.Summon(member.Id);
-				var runes = runeGrade > 0 ? Build(random, summon, member, runeGrade, runeLevel, evenLevel, picks, ref id) : new List<Rune>();
+				var runes = runeGrade > 0 && (runed == null || runed(member.Id))
+					? Build(random, summon, member, runeGrade, runeLevel, evenLevel, picks, ref id, slots)
+					: new List<Rune>();
 				var skills = maxSkills ? summon.AllSkills.Select(s => s.MaxLevel).ToList() : new List<int>();
 				return new TeamMember(summon, stars(summon), level, awakened, skills, runes);
 			}).ToList());
 		}
 
-		private static List<Rune> Build(Random random, SummonDefinition summon, Member member, int grade, int level, int evenLevel, int picks, ref int id)
+		private static List<Rune> Build(Random random, SummonDefinition summon, Member member, int grade, int level, int evenLevel, int picks, ref int id,
+			IReadOnlyCollection<int>? slots = null)
 		{
 			var attack = summon.Role == Role.Attack;
 			var sets = member.Sets.Length == RuneRules.Slots
@@ -292,7 +301,7 @@ namespace Sigilos.Tests
 			{
 				RuneStat.AttackFlat,
 				member.Six ?? (attack ? RuneStat.AttackPercent : RuneStat.HealthPercent),
-				attack && member.Speed == 0 ? RuneStat.DefenseFlat : RuneStat.Speed,
+				member.Speed < 0 || (attack && member.Speed == 0) ? RuneStat.DefenseFlat : RuneStat.Speed,
 				RuneStat.DefenseFlat,
 				RuneStat.HealthFlat,
 				RuneStat.AttackFlat,
@@ -301,6 +310,9 @@ namespace Sigilos.Tests
 			var runes = new List<Rune>();
 			for (var slot = 1; slot <= RuneRules.Slots; slot++)
 			{
+				if (slots != null && !slots.Contains(slot))
+					continue;
+
 				Rune? best = null;
 				for (var pick = 0; pick < picks; pick++)
 				{
@@ -325,7 +337,7 @@ namespace Sigilos.Tests
 		{
 			var weight = sub.Stat switch
 			{
-				RuneStat.Speed => 1.2 + speed,
+				RuneStat.Speed => speed < 0 ? -1 : 1.2 + speed,
 				RuneStat.AttackPercent or RuneStat.Crit or RuneStat.CritDamage => attack ? 1 : 0,
 				RuneStat.HealthPercent or RuneStat.DefensePercent => attack ? 0.3 : 1,
 				RuneStat.Resistance or RuneStat.Accuracy => attack ? 0.3 : 0.8,

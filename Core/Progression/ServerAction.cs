@@ -45,6 +45,12 @@ namespace Sigilos.Core.Progression
 
 		/// <summary>Abre um kit de sigilos no conjunto de <see cref="ActionRequest.Text"/> (<see cref="RuneKits"/>).</summary>
 		OpenRuneKit,
+
+		/// <summary>Melhora as runas de <see cref="ActionRequest.Ids"/> até <see cref="ActionRequest.Target"/>, todas ou nenhuma (<see cref="RuneInventory.UpgradeMany"/>).</summary>
+		UpgradeRunes,
+
+		/// <summary>Conta o dia de hoje no check-in e manda a carta do prêmio (<see cref="DailyCheckIn.Open"/>).</summary>
+		CheckIn,
 	}
 
 	/// <summary>Os gestos de <see cref="ServerActionKind.Team"/>.</summary>
@@ -198,6 +204,13 @@ namespace Sigilos.Core.Progression
 						delta.Feats.Add(runeFeat);
 					break;
 
+				case ServerActionKind.UpgradeRunes:
+					var raised = RuneInventory.UpgradeMany(random, player, player.Runes.Where(r => request.Ids.Contains(r.Id)), request.Target);
+					if ((delta.Count = raised.Count) == 0)
+						return null;
+					delta.Feats.AddRange(raised.Select(r => Feats.Of(r.Rune, r.LevelBefore)).OfType<Feat>());
+					break;
+
 				case ServerActionKind.GrindRune:
 					if (request.Tool == null || Find(player, request.RuneId) is not { } ground || !RuneInventory.Grind(random, player, ground, request.Index, request.Tool))
 						return null;
@@ -228,7 +241,12 @@ namespace Sigilos.Core.Progression
 					break;
 
 				case ServerActionKind.ClaimMail:
-					if (context?.Mail(request.Text) is not { } mail || !Mailbox.Claim(player, mail, database, random))
+					if (Letters.Find(player, request.Text) is { } letter)
+					{
+						if (!Letters.Claim(random, database, player, letter, now))
+							return null;
+					}
+					else if (context?.Mail(request.Text) is not { } mail || !Mailbox.Claim(player, mail, database, random))
 						return null;
 					delta.Count = 1;
 					break;
@@ -255,6 +273,7 @@ namespace Sigilos.Core.Progression
 				case ServerActionKind.Evolve:
 					if (player.Monster(request.Id) is not { } evolved || !Evolution.Evolve(player, evolved))
 						return null;
+					SixStar.Reached(player, database, evolved, now);
 					break;
 
 				case ServerActionKind.Awaken:
@@ -316,6 +335,11 @@ namespace Sigilos.Core.Progression
 
 				case ServerActionKind.ArenaOpen:
 					delta.Count = ArenaOpen(random, database, player, context, now) ? 1 : 0;
+					break;
+
+				case ServerActionKind.CheckIn:
+					if (DailyCheckIn.Open(player, database, now) == null)
+						return null;
 					break;
 
 				case ServerActionKind.ArenaRefresh:

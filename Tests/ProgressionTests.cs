@@ -68,7 +68,7 @@ namespace Sigilos.Tests
 			var player = TestData.PlayerWith("wolf_fire");
 			var stage = database.Stage(1);
 
-			var first = Campaign.ApplyVictory(new Random(1), player, stage, database);
+			var first = Campaign.ApplyVictory(new Random(1), player, stage, database, DateTime.UnixEpoch);
 			Assert.True(first.FirstClear, "primeira vitória");
 			Assert.Equal(stage.FirstClearScrolls, first.Scrolls, "Pergaminhos da primeira vitória");
 			Assert.True(first.Rune != null && player.Runes.Count == 1, "a primeira vitória sempre solta runa");
@@ -79,7 +79,7 @@ namespace Sigilos.Tests
 			Assert.True(leader.Level >= 2 && first.LevelUps.Count == 1, "sozinho, sobe de nível");
 			Assert.True(Campaign.IsUnlocked(player, 2), "fase 2 abre");
 
-			var again = Campaign.ApplyVictory(new Random(1), player, stage, database);
+			var again = Campaign.ApplyVictory(new Random(1), player, stage, database, DateTime.UnixEpoch);
 			Assert.Equal(0, again.Scrolls, "repetir não dá Pergaminhos");
 			Assert.Equal(stage.Essence, again.Essence, "repetir dá Essência");
 		}

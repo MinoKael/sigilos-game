@@ -110,7 +110,10 @@ namespace Sigilos.Tests
 			var nextWeek = Arena.CycleEnds(Monday).AddMinutes(1);
 			var payout = Arena.Renew(player, arena, nextWeek, new Random(1));
 			Assert.True(payout is { Gold: > 0 }, "paga o prêmio do Grau em que terminou");
-			Assert.Equal(gold + payout!.Gold, player.Gold, "o Ouro entra");
+			Assert.Equal(gold, player.Gold, "o Ouro não cai direto");
+			var letter = player.Inbox.Single(l => l.Kind == Letters.ArenaSeason);
+			Assert.Equal(payout!.Gold, letter.Rewards["gold"], "vai por carta");
+			Assert.Equal(nextWeek.AddDays(Letters.Days), letter.ExpiresAt, "a carta vale 7 dias");
 			Assert.Equal(1000, player.Arena.Points, "pontos voltam para 1000");
 			Assert.True(player.Arena.Cycle > cycle, "ciclo novo");
 

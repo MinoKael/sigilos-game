@@ -10,10 +10,10 @@ namespace Sigilos.UI.Components
 	/// <summary>
 	/// A ficha de atributos, de dois jeitos:
 	///
-	/// - <see cref="Show"/>: planeta e nome, o total (base mais runas e conjuntos) em branco e, em verde e um
-	///   pouco menor, quanto disso as runas somaram.
+	/// - <see cref="Show"/>: planeta e nome, a base do homúnculo (estrelas, nível e Despertar) em branco e, em
+	///   verde e um pouco menor, quanto as runas e os conjuntos somam por cima dela.
 	/// - <see cref="Compare"/>: a ficha de agora ao lado da que o monstro teria com outras runas, e a
-	///   diferença já feita (+ em verde, − em vermelho; o que não muda fica apagado). Sem troca para
+	///   diferença já feita (▲ em verde, ▼ em vermelho; o que não muda fica apagado). Sem troca para
 	///   mostrar, as mesmas colunas voltam a ser o total e o bônus das runas. As células são montadas uma
 	///   vez e só reescritas, para a ficha acompanhar cada toque na lista sem piscar.
 	///
@@ -49,7 +49,7 @@ namespace Sigilos.UI.Components
 				AddChild(new PlanetSymbol(Texts.PlanetOf(stat), 20, Palette.Gold) { Name = $"{stat}Planet" });
 				AddChild(new Label { Name = $"{stat}Name", Text = Texts.Name(stat) });
 
-				var total = new Label { Name = $"{stat}Total", Text = Texts.Value(stat, sheet.Total.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };
+				var total = new Label { Name = $"{stat}Base", Text = Texts.Value(stat, sheet.Base.Get(stat)), HorizontalAlignment = HorizontalAlignment.Right, CustomMinimumSize = new Vector2(64, 0) };
 				AddChild(total);
 
 				var bonus = sheet.Runes.Stats.Get(stat);
@@ -88,7 +88,7 @@ namespace Sigilos.UI.Components
 				var difference = Shown(stat, after) - Shown(stat, before);
 				var tone = difference > 0 ? Palette.Positive : difference < 0 ? Palette.Negative : new Color(Palette.Text, 0.45f);
 				Paint(bonus, Texts.Value(stat, after), tone, GameTheme.BodySize);
-				Paint(change, difference == 0 ? "" : (difference > 0 ? "+" : "−") + Texts.Value(stat, Math.Abs(difference)), tone, BonusSize);
+				Paint(change, difference == 0 ? "" : (difference > 0 ? "▲" : "▼") + Texts.Value(stat, Math.Abs(difference)), tone, BonusSize);
 			}
 		}
 
