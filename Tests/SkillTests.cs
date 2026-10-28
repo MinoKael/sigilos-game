@@ -51,7 +51,12 @@ namespace Sigilos.Tests
 			var cut = (int)knight.Skills[1].Bonus(SkillLevelKind.Cooldown, knight.Skills[1].MaxLevel);
 			Assert.True(cut > 0, "a especial tem nível de recarga");
 			Assert.Equal(knight.Skills[1].Cooldown - cut, actives[1].Cooldown, "no máximo, a especial perde os turnos de recarga dos níveis");
-			Assert.True(actives[1].Effects.Any(e => e.IgnoreDefense > 0), "desperto, a especial usa a versão do Despertar");
+
+			// Desperto, a habilidade usa a versão do Despertar (o Cavaleiro ainda não tem uma).
+			var awakened = database.Summons.First(s => s.Skills.Any(sk => !sk.IsPassive && sk.AwakenedEffects.Count > 0));
+			var changed = awakened.Skills.First(sk => !sk.IsPassive && sk.AwakenedEffects.Count > 0);
+			var (awakenedActives, _) = BattleFactory.Prepare(awakened.SkillsFor(true), awakened.AllSkills.Select(s => s.MaxLevel).ToList(), true);
+			Assert.True(awakenedActives.Any(skill => skill.Name == changed.Name && skill.Effects.Count == changed.AwakenedEffects.Count), "desperto, a habilidade usa a versão do Despertar");
 		}
 
 	}

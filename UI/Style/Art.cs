@@ -76,7 +76,7 @@ namespace Sigilos.UI.Style
 				{
 					PassiveKind.SpeedWhenLowest => new Symbol(Effect(StatusKind.SpeedUp)),
 					PassiveKind.DamageReduction => new Symbol(Effect(StatusKind.DefenseUp)),
-					PassiveKind.CleanseAllyEachTurn => new Symbol(Effect(StatusKind.Immunity)),
+					PassiveKind.CleanseAllyEachTurn or PassiveKind.StatusImmunity => new Symbol(Effect(StatusKind.Immunity)),
 					PassiveKind.RebirthOnce => Symbol.Of(Planet.Earth),
 					PassiveKind.ImpetoAtWaveStart => Symbol.Of(Planet.Mercury),
 					PassiveKind.Lifesteal or PassiveKind.SoulDrain => Symbol.Of(Planet.Earth),

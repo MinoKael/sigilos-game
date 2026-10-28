@@ -27,15 +27,10 @@ namespace Sigilos.UI.Screens
 		private List<int> _categories = new();
 		private readonly Label _message = new() { Name = "Message", HorizontalAlignment = HorizontalAlignment.Center };
 
-		/// <summary>A troca de nome só vale para quem joga numa conta que já tem nome.</summary>
-		private readonly bool _canRename;
-
-		/// <param name="canRename">Jogando numa conta com nome: a oferta de troca de nome fica liberada.</param>
-		public ShopScreen(GameDatabase database, PlayerState player, bool canRename = false)
+		public ShopScreen(GameDatabase database, PlayerState player)
 		{
 			_database = database;
 			_player = player;
-			_canRename = canRename;
 		}
 
 		public event Action<ShopOffer>? BuyRequested;
@@ -90,29 +85,18 @@ namespace Sigilos.UI.Screens
 			{
 				ShopItem.Mana => ("mana", Palette.Gold),
 				ShopItem.ReappraisalGems => ("gem", Palette.Arcane),
-				ShopItem.RenameAccount => ("avatar", Palette.Gold),
 				ShopItem.CollectionExpander => ("monster", Palette.Gold),
 				_ => ("scroll", Palette.Gold),
 			};
 
-			// A troca de nome pede uma conta com nome; a janela do nome já é a confirmação (ela diz o preço).
-			var rename = offer.Item == ShopItem.RenameAccount;
-			var canBuy = Shop.CanBuy(_player, offer) && (!rename || _canRename);
-			var buy = GameButton.Of(T("shop.buy_button"), () =>
+			var buy = GameButton.Of(T("shop.buy_button"), () => Dialog.Confirm(this,
+				T("shop.confirm_title"),
+				T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
+				T("shop.buy_button"),
+				() => BuyRequested?.Invoke(offer)), ButtonKind.Primary, null, 56).WithCost("gold", Texts.Number(offer.Price)).Named("Buy");
+			if (!Shop.CanBuy(_player, offer))
 			{
-				if (rename)
-					BuyRequested?.Invoke(offer);
-				else
-					Dialog.Confirm(this,
-						T("shop.confirm_title"),
-						T("shop.confirm", offer.Name, Texts.Amount(offer.Item, offer.Amount), offer.Price),
-						T("shop.buy_button"),
-						() => BuyRequested?.Invoke(offer));
-			}, ButtonKind.Primary, null, 56).WithCost("gold", Texts.Number(offer.Price)).Named("Buy");
-			if (!canBuy)
-			{
-				buy.Block(rename && !_canRename ? T("shop.rename_no_account")
-					: Shop.IsSoldOut(_player, offer) ? T("shop.sold_out", Texts.Number(Account.MaxCollectionCapacity))
+				buy.Block(Shop.IsSoldOut(_player, offer) ? T("shop.sold_out", Texts.Number(Account.MaxCollectionCapacity))
 					: T("shop.no_gold", Texts.Number(offer.Price - _player.Gold)), offer.Name);
 			}
 

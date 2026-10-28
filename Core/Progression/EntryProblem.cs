@@ -12,5 +12,8 @@ namespace Sigilos.Core.Progression
 
 		/// <summary>O inventário de runas está cheio e a luta solta runa.</summary>
 		RunesFull,
+
+		/// <summary>Arena Astral: sem Convite, ou a luta (ou o Rival em espera) não pode começar agora.</summary>
+		NoInvites,
 	}
 }

@@ -43,7 +43,8 @@ namespace Sigilos.Core.Progression
 		public static EntryProblem Check(PlayerState player, StageDefinition stage) =>
 			Mana.Check(player, IsUnlocked(player, stage.Number), stage.Mana, dropsRunes: true);
 
-		public static VictoryReward ApplyVictory(Random random, PlayerState player, StageDefinition stage, GameDatabase database)
+		/// <summary>A vitória na fase. <paramref name="team"/> é quem lutou (nulo: a equipe de agora), e é quem ganha a experiência.</summary>
+		public static VictoryReward ApplyVictory(Random random, PlayerState player, StageDefinition stage, GameDatabase database, IReadOnlyList<int>? team = null)
 		{
 			var mana = Mana.Spend(player, stage.Mana);
 			var firstClear = !IsCleared(player, stage.Number);
@@ -57,8 +58,8 @@ namespace Sigilos.Core.Progression
 
 			var prize = firstClear ? Milestones.ForFirstClear(stage) : Prize.None;
 			Milestones.Grant(player, prize);
-			var share = Leveling.Share(player, Teams.Campaign, stage.Experience);
-			var levelUps = Leveling.GiveExperience(player, Teams.Campaign, stage.Experience);
+			var share = Leveling.Share(player, Teams.Campaign, stage.Experience, team);
+			var levelUps = Leveling.GiveExperience(player, Teams.Campaign, stage.Experience, team);
 			var level = player.AccountLevel;
 			var account = Account.GiveExperience(player, stage.Experience);
 			essence += account.Essence;

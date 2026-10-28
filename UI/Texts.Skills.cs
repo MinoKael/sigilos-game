@@ -298,11 +298,14 @@ namespace Sigilos.UI
 				EffectKind.ChangeDuration => T(effect.Turns >= 0 ? "skill.say.prolong" : "skill.say.shorten",
 					Turns(Math.Abs(effect.Turns)), StatesOf(effect), Where(effect, Form.On, subject)) + chance,
 				EffectKind.EqualizeHealth => T("skill.say.equalize", Who(effect.Target, effect.By, Form.Of)),
+				EffectKind.JointAttack when effect.Count > 1 && effect.Target is TargetKind.LowestAlly or TargetKind.HighestAlly =>
+					T($"skill.say.joint_many_{effect.Target}{(effect.By == TargetRank.Health ? "_health" : "")}", effect.Count, Name(effect.By)),
 				EffectKind.JointAttack => effect.Target != TargetKind.AllAllies ? T("skill.say.joint_one", Who(effect.Target, effect.By, Form.Obj))
 					: effect.Count > 0 ? T("skill.say.joint", effect.Count) : T("skill.say.joint_all"),
 				EffectKind.IncreaseCooldown => T("skill.say.cooldown_up", Turns(effect.Turns > 0 ? effect.Turns : 1), Who(effect.Target, effect.By, Form.Of)) + chance,
 				EffectKind.ExtraTurnOnKill => T("skill.say.extra_turn_on_kill", Turns(effect.Turns)),
 				EffectKind.Revive => ReviveText(effect),
+				EffectKind.Sacrifice => SacrificeText(effect),
 				_ => effect.Kind.ToString(),
 			};
 		}
@@ -326,8 +329,8 @@ namespace Sigilos.UI
 		private static List<string> AttackDetails(EffectDefinition effect, bool sentence)
 		{
 			var details = new List<string>();
-			if (EffectScaling.IsCustom(effect) && BasedOn(effect) is { Length: > 0 } based)
-				details.Add(T(sentence ? "skill.say.is_based" : "skill.say.based", based));
+			if (EffectScaling.IsCustom(effect) && BasedOn(effect) is { Length: > 0 })
+				details.Add(T(sentence ? "skill.say.is_formula" : "skill.say.formula", Formula(effect)));
 			if (effect.IgnoreDefense > 0)
 				details.Add(T("skill.say.ignores", Percent(effect.IgnoreDefense)));
 			if (effect.Drain > 0)
@@ -363,6 +366,16 @@ namespace Sigilos.UI
 				return T("skill.say.heal_team", effect.Count, amount);
 			var who = Who(effect is { Kind: EffectKind.HealTeam, Count: 1 } ? TargetKind.LowestAlly : effect.Target, effect.By, Form.Obj);
 			return T("skill.say.heal", who, amount);
+		}
+
+		/// <summary>"sacrifica 10% da Vida máxima", "destrói 50% da Vida atual (a Vida máxima cai, até 70% dela)".</summary>
+		private static string SacrificeText(EffectDefinition effect)
+		{
+			var ofCurrent = effect is { Factor: { Base: 0, Slope: 1, By: ScaleMeasure.HealthFraction }, Plus.Count: 0, Stat: null or ScaleStat.MaxHealth };
+			var amount = ofCurrent ? T("skill.say.of_current_life", Percent(effect.Power)) : Formula(effect);
+			return effect.Destroy
+				? T("skill.say.sacrifice_destroy", amount, Percent(BattleRules.SacrificeDestroyLimit))
+				: T("skill.say.sacrifice", amount);
 		}
 
 		/// <summary>"revive os aliados caídos com 30% da Vida".</summary>

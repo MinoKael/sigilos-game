@@ -34,7 +34,6 @@
     <Compile Include="..\GameEntry\Update\UpdateManifest.cs" LinkBase="Update" />
     <Compile Include="..\GameEntry\Update\Updater.cs" LinkBase="Update" />
     <!-- O ritmo da luta na tela e a luta vista da Batalha automática: contas sem Godot. -->
-    <Compile Include="..\UI\BattlePace.cs" LinkBase="UI" />
     <Compile Include="..\UI\AutoBattleFight.cs" LinkBase="UI" />
     <Compile Include="..\UI\ChatFeed.cs" LinkBase="UI" />
     <!-- Os efeitos sonoros: o catálogo e a luta em sons, sem o nó que toca. -->

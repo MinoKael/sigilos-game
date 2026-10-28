@@ -10,7 +10,7 @@ Versions (check `Sigilos.csproj` if in doubt): Godot 4.7.1 mono, C# net8.0, rend
 
 Sources, in this order:
 1. Local Godot C# API docs: `C:\Godot_v4.7.1\GodotSharp\Api\Release\GodotSharp.xml` (Grep for `M:Godot.Class.Method`, `P:Godot.Class.Prop`, `T:Godot.Class`).
-2. Repo docs: `docs/`, `README.md`, `.claude/skills/`; account server docs and code in `D:\dev\sigilos-server`.
+2. Repo docs: `docs/`, `README.md`, `.claude/skills/`; account server docs and code in `F:\GameDev\sigilos-server`.
 3. Web, only if allowed: docs.godotengine.org (4.x stable or matching version), learn.microsoft.com for .NET. Prefer official sources.
 
 Report:

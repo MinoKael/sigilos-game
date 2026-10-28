@@ -267,20 +267,20 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 {
   "roles": ["HP", "Attack", "Defense", "Support"],
   "stats": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy"],
-  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive", "IncreaseCooldown", "InvertBuffs", "BombTrigger"],
+  "effectKinds": ["Damage", "Heal", "Shield", "Status", "Impeto", "Cleanse", "StealBuff", "BonusPerStatus", "ChangeDuration", "EqualizeHealth", "HealTeam", "JointAttack", "ExtraTurnOnKill", "Revive", "IncreaseCooldown", "InvertBuffs", "BombTrigger", "Sacrifice"],
   "targets": ["Target", "AllEnemies", "Self", "LowestAlly", "AllAllies", "HighestAlly", "RandomAlly", "RandomEnemy", "ChosenAlly"],
   "ranks": ["Health", "Attack", "Defense", "Speed", "Crit", "CritDamage", "Resistance", "Accuracy", "Impeto"],
   "statuses": ["Shield", "Affliction", "Stun", "Taunt", "Hidden", "Stigma", "Blind", "Aegis", "Foresight", "Immunity", "AttackUp", "AttackDown", "DefenseUp", "SpeedUp", "DefenseBreak", "Bomb", "SpeedDown", "CritUp", "CritResist", "Blessing", "Counter", "Revive", "Curse", "Sleep", "Unrecoverable", "Silence", "Oblivion", "Phylactery"],
   "scopes": ["All", "Buffs", "Debuffs"],
   "hitTriggers": ["Skill", "Hit", "Crit", "Status"],
   "bonuses": ["Damage", "Heal", "Impeto"],
-  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "SoulDrain", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "Conditional"],
+  "passives": ["SpeedWhenLowest", "RebirthOnce", "DamageReduction", "BonusVsWounded", "ImpetoAtWaveStart", "CooldownEachTurn", "Thorns", "Lifesteal", "Dodge", "CleanseAllyEachTurn", "SoulDrain", "BonusVsStatusOrEffect", "StatusOrEffectOnHit", "StatusOrEffectOnAttacker", "StatusOrEffectEachTurn", "StatusOrEffectOnWaveStart", "StatusOrEffectOnDeath", "StatusOrEffectWhenLowest", "ForEachStatusOrEffectAppliedDo", "ForEachStatusOrEffectReceivedDo", "StatusOrEffectOnTargetEachTurn", "Undying", "StatusImmunity", "Conditional"],
   "comparisons": ["Greater", "Less", "Equal"],
   "conditionSides": ["Self", "Opponent"],
   "conditionAgainst": ["Opponent", "Value"],
   "passiveActions": ["Force", "Counter", "KeepAsleep"],
   "levelKinds": ["Damage", "Recovery", "EffectRate", "Cooldown"],
-  "scaleStats": ["Attack", "Defense", "MaxHealth", "Speed", "TargetMaxHealth", "Level"],
+  "scaleStats": ["Attack", "Defense", "MaxHealth", "Speed", "TargetMaxHealth", "Level", "Sacrificed"],
   "scaleMeasures": ["HealthFraction", "TargetHealthFraction", "LivingAllies"]
 }
 </script>
@@ -544,12 +544,19 @@ const Core = (() => {
   const VARIANT_ELEMENTS = [NEUTRAL_ELEMENT, ...ELEMENTS];
   const TWO_STAR = 2;
   const AWAKENING_STATS = ["Speed", "Crit", "Resistance", "Accuracy"];
-  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "when", "whenStatus", "whenScope", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove", "unremovable", "removes", "max"];
+  // Referência dos valores de Liderança por estrela (3★, 4★, 5★); só orienta, não valida.
+  const LEADER_REFERENCE = {
+    Health: {3: 0.15, 4: 0.25, 5: 0.35}, Attack: {3: 0.18, 4: 0.28, 5: 0.35}, Defense: {3: 0.18, 4: 0.28, 5: 0.35},
+    Speed: {3: 0.10, 4: 0.18, 5: 0.25}, Crit: {3: 0.10, 4: 0.18, 5: 0.25}, Resistance: {3: 0.20, 4: 0.30, 5: 0.40},
+    Accuracy: {3: 0.20, 4: 0.30, 5: 0.40}, CritDamage: {3: 0.10, 4: 0.20, 5: 0.30},
+  };
+  const leaderReference = (stat, star) => LEADER_REFERENCE[stat]?.[star];
+  const EFFECT_FIELDS = ["kind", "target", "power", "hits", "ignoreDefense", "drain", "status", "chance", "turns", "onKill", "when", "whenStatus", "whenScope", "fallback", "scope", "onlyStatus", "from", "bonus", "count", "by", "stat", "plus", "factor", "speed", "fixed", "ifAlly", "ifDefenseAbove", "unremovable", "removes", "max", "othersOnly", "destroy"];
   // Efeitos e status ---------------------------------------------------------------------------------
   // A documentação de cada tipo de efeito: o que faz, em que alvos vale ("targets" repete
   // Core/Content/EffectTargets.cs; null = qualquer alvo), os campos que ele lê além de kind, target e
   // onKill, e o modelo que o botão do tipo insere.
-  const COMMON_FIELDS = ["kind", "target", "onKill", "when", "whenStatus", "whenScope", "by", "ifAlly", "ifDefenseAbove"];
+  const COMMON_FIELDS = ["kind", "target", "onKill", "when", "whenStatus", "whenScope", "by", "ifAlly", "ifDefenseAbove", "othersOnly"];
   const TARGET_DOCS = {
     Target: "o inimigo escolhido (o alvo da habilidade)",
     AllEnemies: "todos os inimigos de pé",
@@ -583,6 +590,7 @@ const Core = (() => {
     StatusOrEffectOnAttacker: "effects em quem atinge o dono, uma vez por habilidade (Target = quem atacou)",
     StatusOrEffectEachTurn: "effects no começo de cada turno do dono",
     StatusOrEffectOnWaveStart: "effects no começo de cada onda",
+    StatusImmunity: "statuses: os efeitos de status que nunca pegam no dono (Stun e Sleep no Cavaleiro); sem value nem effects",
     StatusOrEffectOnDeath: "effects quando o dono cai (os aliados de pé recebem)",
     StatusOrEffectWhenLowest: "effects no começo do turno do dono, se ele é o aliado com menos Vida",
     ForEachStatusOrEffectAppliedDo: "effects para cada efeito que conta que o dono põe, novo ou renovado (Target = quem recebeu)",
@@ -613,23 +621,24 @@ const Core = (() => {
   // A conta dos efeitos com valor (Core/Content/EffectScaling.cs e Core/Battle/EffectAmount.cs): power × o
   // atributo de sempre do tipo (ou stat), mais os termos de plus, vezes factor e speed. O BVP não vê a conta:
   // o balanço de uma habilidade que escala em outra coisa é feito na mão.
-  const USUAL_STAT = {Damage: "Attack", Heal: "TargetMaxHealth", HealTeam: "TargetMaxHealth", Shield: "MaxHealth", Revive: "TargetMaxHealth"};
+  const USUAL_STAT = {Damage: "Attack", Heal: "TargetMaxHealth", HealTeam: "TargetMaxHealth", Shield: "MaxHealth", Revive: "TargetMaxHealth", Sacrifice: "MaxHealth"};
   const SCALE_KEYS = ["stat", "plus", "factor", "speed", "fixed"];
   const SCALE_STAT_DOCS = {
     Attack: "o ATK de quem lança", Defense: "a DEF de quem lança", MaxHealth: "a Vida máxima de quem lança", Speed: "a Velocidade de quem lança",
     TargetMaxHealth: "a Vida máxima do alvo", Level: "o nível de quem lança (o power é o valor por nível: 110 = 110 por nível)",
+    Sacrificed: "a Vida que o Sacrifício anterior da mesma habilidade tirou de quem lança",
   };
   const SCALE_MEASURE_DOCS = {
     HealthFraction: "a Vida atual de quem lança, de 0 a 1", TargetHealthFraction: "a Vida atual do alvo, de 0 a 1",
     LivingAllies: "os aliados de pé, de 0 a 1 (quem lança conta)",
   };
   const SCALE_FIELDS = {
-    stat: "o atributo do power no lugar do de sempre (Attack, Defense, MaxHealth, Speed, TargetMaxHealth, Level)",
+    stat: "o atributo do power no lugar do de sempre (Attack, Defense, MaxHealth, Speed, TargetMaxHealth, Level, Sacrificed)",
     plus: "termos somados: [{\"stat\": \"MaxHealth\", \"power\": 0.08}] (os bônus de nível valem neles também)",
     factor: "{by, base, slope}: vezes base + slope × a fração by (HealthFraction, TargetHealthFraction, LivingAllies)",
     speed: "{add, over}: vezes (Velocidade + add) / over; com overTarget: true, dividido pela Velocidade do alvo",
   };
-  const STAT_SHORT = {Attack: "ATK", Defense: "DEF", MaxHealth: "MAX HP", Speed: "SPD", TargetMaxHealth: "MAX HP do alvo", Level: "nível"};
+  const STAT_SHORT = {Attack: "ATK", Defense: "DEF", MaxHealth: "MAX HP", Speed: "SPD", TargetMaxHealth: "MAX HP do alvo", Level: "nível", Sacrificed: "Vida sacrificada"};
   const MEASURE_SHORT = {HealthFraction: "Vida atual %", TargetHealthFraction: "Vida atual do alvo %", LivingAllies: "aliados de pé %"};
   const short = x => String(+num(x, 0).toFixed(4));
 
@@ -657,7 +666,7 @@ const Core = (() => {
   }
 
   const SCALE_VALUES = {
-    Attack: c => c.atk, Defense: c => c.def, MaxHealth: c => c.hp, Speed: c => c.spd, TargetMaxHealth: (c, t) => t.hp, Level: c => c.level,
+    Attack: c => c.atk, Defense: c => c.def, MaxHealth: c => c.hp, Speed: c => c.spd, TargetMaxHealth: (c, t) => t.hp, Level: c => c.level, Sacrificed: () => 0,
   };
   const SCALE_MEASURES = {HealthFraction: c => c.health, TargetHealthFraction: (c, t) => t.health, LivingAllies: c => c.living};
 
@@ -712,6 +721,10 @@ const Core = (() => {
       text: "Com chance, cada efeito positivo do alvo vira o equivalente negativo, com os mesmos turnos (Ataque+ → Ataque−, Defesa+ → Defesa−, Velocidade+ → Velocidade−, Bênção → Ferida, Presságio → Cegueira, Oculto → Sono); sem equivalente vira Maldição. Sem nenhum positivo e com fallback, tira Ímpeto.",
       fields: {chance: "0 a 1", fallback: "true: sem efeito positivo, tira Ímpeto", power: "Ímpeto tirado no fallback (0 = todo o do alvo)"},
       template: {kind: "InvertBuffs", target: "Target", chance: 1, fallback: true, power: 25}},
+    Sacrifice: {label: "Sacrifício", targets: ["Self"],
+      text: "Quem lança perde Vida pela conta do efeito (power × Vida máxima; com factor HealthFraction base 0 slope 1, power é a fração da Vida atual). Sem destroy, a Vida é descontada e nunca chega a 0. Com destroy, é a Vida máxima que cai (como o Oblívio), até 70% da Vida base no total. O que saiu fica em stat Sacrificed para os efeitos seguintes da habilidade (Damage fixo, Heal, Shield).",
+      fields: {power: "fração da Vida máxima (ou da conta com factor)", destroy: "true: destrói Vida máxima em vez de só descontar"},
+      template: {kind: "Sacrifice", target: "Self", power: 0.1}},
     BombTrigger: {label: "Detonar Bombas", targets: ["Target", "AllEnemies", "RandomEnemy"],
       text: "Todas as Bombas de cada alvo explodem na hora, como se a contagem tivesse chegado ao fim.",
       fields: {},
@@ -733,8 +746,8 @@ const Core = (() => {
       fields: {power: "fração da Vida máxima de cada um", count: "quantos (0 = todos)", ...SCALE_FIELDS},
       template: {kind: "HealTeam", target: "AllAllies", power: 0.15, count: 2}},
     JointAttack: {label: "Ataque conjunto", targets: ["AllAllies", "LowestAlly", "HighestAlly", "RandomAlly"],
-      text: "count aliados sorteados (0 = todos; com LowestAlly, HighestAlly ou RandomAlly, um aliado sem quem lança) atacam o alvo da habilidade com a básica, com o dano inteiro. Quem perde o turno não vem; a básica deles não chama outros. O que eles derrubam conta para a habilidade.",
-      fields: {count: "quantos aliados (0 = todos)"},
+      text: "Quem lança também ataca o alvo com a básica (othersOnly: true o deixa de fora, para a habilidade que já tem o ataque dele). Junto, count aliados sorteados (0 = todos; o count não conta quem lança; com LowestAlly, HighestAlly ou RandomAlly, um aliado sem quem lança) atacam o alvo da habilidade com a básica, com o dano inteiro. Quem perde o turno não vem; a básica deles não chama outros. O que eles derrubam conta para a habilidade.",
+      fields: {count: "quantos aliados vão junto (0 = todos; quem lança não conta)", othersOnly: "true: quem lança não ataca de novo"},
       template: {kind: "JointAttack", target: "AllAllies", count: 2}},
     ExtraTurnOnKill: {label: "Turno extra ao derrubar", targets: ["Self"],
       text: "Se a habilidade derrubou alguém até aqui (ponha depois do dano), quem lança ganha um turno extra na hora e esta recarga cai turns. Uma vez por habilidade.",
@@ -1037,17 +1050,42 @@ const Core = (() => {
   const listOf = value => Array.isArray(value) ? value : String(value || "").split(",").map(x => x.trim()).filter(Boolean);
   const PASSIVE_KEYS = ["kind", "value", "awakenedValue", "scope", "statuses", "condition", "actions", "partner", "partnerTurns", "partnerScope", "partnerActions", "partnerEffects"];
 
-  const blankSkill = (name = "") => ({name, image: "", flavor: "", cooldown: "", passive: null, effects: "[]", awakenedEffects: "", levels: "[]", extra: {}});
+  const blankSkill = (name = "") => ({name, image: "", flavor: "", cooldown: "", passive: null, effects: "[]", levels: "[]", extra: {}});
+
+  /**
+   * Os efeitos de antes e de depois do Despertar (o formato antigo, "awakenedEffects") numa lista só: cada efeito leva em "awakened" os
+   * campos que mudam, "onlyAwakened" se só existe desperto e "lostAfterAwaken" se sai. Igual a Core/Content/AwakenedForm.cs.
+   */
+  function foldAwakened(effects, awakened) {
+    const same = (a, b) => a.kind === b.kind && (a.target ?? "Target") === (b.target ?? "Target") && a.status === b.status;
+    const DEFAULTS = {chance: 1, turns: 1, hits: 1};
+    const out = [];
+    let j = 0;
+    for (const effect of effects) {
+      let k = j;
+      while (k < awakened.length && !same(awakened[k], effect)) k++;
+      if (k >= awakened.length) { out.push({...effect, lostAfterAwaken: true}); continue; }
+      for (const extra of awakened.slice(j, k)) out.push({...extra, onlyAwakened: true});
+      const after = awakened[k];
+      j = k + 1;
+      const changes = {};
+      for (const [key, value] of Object.entries(after)) if (JSON.stringify(effect[key]) !== JSON.stringify(value)) changes[key] = value;
+      for (const key of Object.keys(effect)) if (!(key in after)) changes[key] = key in DEFAULTS ? DEFAULTS[key] : typeof effect[key] === "boolean" ? false : typeof effect[key] === "number" ? 0 : null;
+      out.push(Object.keys(changes).length ? {...effect, awakened: changes} : {...effect});
+    }
+    for (const extra of awakened.slice(j)) out.push({...extra, onlyAwakened: true});
+    return out;
+  }
 
   function importSkill(source) {
+    const legacy = source?.awakenedEffects?.length && Array.isArray(source?.effects) && !source.effects.some(e => e && (e.awakened || e.onlyAwakened || e.lostAfterAwaken));
     return {
       name: source?.name || "",
       image: source?.image || "",
       flavor: source?.flavor || "",
       cooldown: source?.cooldown ?? "",
       passive: source?.passive ? {kind: source.passive.kind || "", value: source.passive.value ?? 0, awakenedValue: source.passive.awakenedValue ?? "", scope: source.passive.scope ?? "", statuses: (source.passive.statuses || []).join(", "), condition: importCondition(source.passive.condition), actions: listOf(source.passive.actions).join(", "), partner: source.passive.partner ?? "", partnerTurns: source.passive.partnerTurns ?? "", partnerScope: source.passive.partnerScope ?? "", partnerActions: listOf(source.passive.partnerActions).join(", "), partnerEffects: source.passive.partnerEffects?.length ? format(source.passive.partnerEffects) : "", extra: rest(source.passive, PASSIVE_KEYS)} : null,
-      effects: listText(source?.effects),
-      awakenedEffects: source?.awakenedEffects?.length ? format(source.awakenedEffects) : "",
+      effects: listText(legacy ? foldAwakened(source.effects, source.awakenedEffects) : source?.effects),
       levels: listText(source?.levels),
       extra: rest(source, SKILL_KEYS),
     };
@@ -1084,16 +1122,12 @@ const Core = (() => {
       out.passive = Object.assign(passive, skill.passive.extra);
       if (PASSIVE_EFFECTS.includes(skill.passive.kind)) {
         out.effects = parseList(skill.effects).list;
-        const awakened = parseList(skill.awakenedEffects).list;
-        if (awakened.length) out.awakenedEffects = awakened;
       }
     } else {
       if (num(skill.cooldown) > 0) out.cooldown = num(skill.cooldown);
       out.effects = parseList(skill.effects).list;
       const levels = parseList(skill.levels).list;
       if (levels.length) out.levels = levels;
-      const awakened = parseList(skill.awakenedEffects).list;
-      if (awakened.length) out.awakenedEffects = awakened;
     }
     return Object.assign(out, skill.extra);
   }
@@ -1333,7 +1367,7 @@ const Core = (() => {
       const skills = v.skills.map(exportSkill);
       const extra = v.awakening.skill ? exportSkill(v.awakening.skill) : null;
       const all = extra ? [...skills, extra] : skills;
-      const changes = s => (s.awakenedEffects || []).length > 0 || num(s.passive?.awakenedValue) > 0;
+      const changes = s => (s.effects || []).some(e => e && (e.awakened || e.onlyAwakened || e.lostAfterAwaken)) || num(s.passive?.awakenedValue) > 0;
       if (!v.awakening.stat && !extra && !skills.some(changes)) add("error", where, "O Despertar não dá nada: um atributo, uma habilidade nova ou uma habilidade melhorada.");
       if (extra && !extra.passive && !(num(extra.cooldown) > 0)) add("error", where, "A habilidade do Despertar precisa de recarga ou ser passiva.");
 
@@ -1346,7 +1380,7 @@ const Core = (() => {
 
       // Convenções do jogo por estrelas naturais (Tests/DataTests.cs).
       if (star <= 3 && !extra) add("warn", where, "Convenção: as 2★ e as 3★ ganham uma habilidade nova no Despertar.");
-      if (star === 4 && !skills.some(changes)) add("warn", where, "Convenção: as 4★ melhoram uma habilidade no Despertar (awakenedEffects ou valor desperto da passiva).");
+      if (star === 4 && !skills.some(changes)) add("warn", where, "Convenção: as 4★ melhoram uma habilidade no Despertar ("awakened" nos efeitos ou valor desperto da passiva).");
       if (star >= 5 && (!v.awakening.stat || skills.some(changes))) add("warn", where, "Convenção: as 5★ só ganham um atributo no Despertar.");
     }
     return issues;
@@ -1385,7 +1419,7 @@ const Core = (() => {
       if ((skill.effects || []).length === 0) add("error", where, `A Passiva ${skill.passive.kind} precisa de efeitos (effects).`);
     }
 
-    for (const [field, label] of [["effects", "Effects"], ["awakenedEffects", "Awakened effects"], ["levels", "Levels"]]) {
+    for (const [field, label] of [["effects", "Effects"], ["levels", "Levels"]]) {
       const error = editor ? parseList(editor[field]).error : null;
       if (error) add("error", where, `${label}: JSON inválido (${error}).`);
     }
@@ -1399,9 +1433,14 @@ const Core = (() => {
       }
     }
 
-    const effectLists = [skill.effects || [], skill.awakenedEffects || [], skill.passive?.partnerEffects || []];
+    const effectLists = [skill.effects || [], skill.passive?.partnerEffects || []];
     for (const effect of effectLists.flat()) {
       if (!isPlain(effect)) { add("error", where, "Cada efeito é um objeto { ... }."); continue; }
+      for (const key of Object.keys(isPlain(effect.awakened) ? effect.awakened : {})) {
+        if (["kind", "awakened", "lostAfterAwaken", "onlyAwakened"].includes(key)) add("error", where, `awakened não troca "${key}".`);
+        else if (!EFFECT_FIELDS.includes(key)) add("error", where, `awakened tem um campo desconhecido: "${key}".`);
+      }
+      if (effect.lostAfterAwaken && effect.onlyAwakened) add("error", where, "Efeito com lostAfterAwaken e onlyAwakened ao mesmo tempo.");
       if (!enums.effectKinds.includes(effect.kind)) add("error", where, `Efeito desconhecido: "${effect.kind}".`);
       if (effect.target !== undefined && !enums.targets.includes(effect.target)) add("error", where, `Alvo desconhecido: "${effect.target}".`);
       if (effect.kind === "Status" && !enums.statuses.includes(effect.status)) add("error", where, `Status desconhecido: "${effect.status}".`);
@@ -1589,7 +1628,7 @@ const Core = (() => {
   }
 
   return {
-    ELEMENTS, VARIANT_ELEMENTS, ELEMENT_NAMES, NEUTRAL_ELEMENT, elementsOf, isLive, adjustVariants, AWAKENING_STATS, NEUTRAL, round, num, isBlank, clone, keyOf,
+    ELEMENTS, VARIANT_ELEMENTS, ELEMENT_NAMES, NEUTRAL_ELEMENT, elementsOf, isLive, adjustVariants, AWAKENING_STATS, LEADER_REFERENCE, leaderReference, NEUTRAL, round, num, isBlank, clone, keyOf,
     EFFECT_DOCS, STATUS_DOCS, TARGET_DOCS, RANK_DOCS, PASSIVE_DOCS, PARTNER_DOCS, PASSIVE_EFFECTS, SCOPE_DOCS, BONUS_DOCS, COMMON_FIELDS, WHEN_LABELS, WHEN_DOC,
     USUAL_STAT, SCALE_STAT_DOCS, SCALE_MEASURE_DOCS, STAT_SHORT, MEASURE_SHORT, isCustom, formulaText, effectAmount, validateScale,      
     stripJsonc, parseJsonc, leadingComments, format,
@@ -1888,7 +1927,7 @@ if (typeof module !== "undefined") module.exports = Core;
         ${field("Papel", select(`${base}.role`, v.role, ui.enums.roles))}
         ${field("Estrelas da variante", `<select data-path="${base}.star_grade" data-type="optional"><option value="">da família (${esc(ui.family.star_grade)}★)</option>${C.stars(ui.model).filter(s => s !== Number(ui.family.star_grade)).map(s => `<option value="${s}" ${String(s) === String(v.star_grade) ? "selected" : ""}>${s}★</option>`).join("")}</select>`)}
         ${field("Liderança: atributo", select(`${base}.leader.stat`, v.leader.stat, ui.enums.stats, "sem Liderança"))}
-        ${field("Liderança: valor", number(`${base}.leader.value`, v.leader.value, "0.01", `placeholder="0.18 = 18%"`))}
+        ${field(`Liderança: valor${C.leaderReference(v.leader.stat, C.variationStar(ui.family, v)) !== undefined ? ` (referência ${C.variationStar(ui.family, v)}★: ${Math.round(C.leaderReference(v.leader.stat, C.variationStar(ui.family, v)) * 100)}%)` : ""}`, number(`${base}.leader.value`, v.leader.value, "0.01", `placeholder="0.18 = 18%"`))}
         ${field("Nome de Despertar", text(`${base}.awakening.name`, v.awakening.name))}
         ${field("Atributo do Despertar", select(`${base}.awakening.stat`, v.awakening.stat, C.AWAKENING_STATS, "nenhum"))}
       </div>
@@ -1951,7 +1990,7 @@ if (typeof module !== "undefined") module.exports = Core;
   const SCOPE_LABELS = {All: "Todos", Buffs: "Positivos", Debuffs: "Negativos"};
   const BONUS_LABELS = {Damage: "Dano", Heal: "Cura e escudo", Impeto: "Ímpeto"};
   const LEVEL_LABELS = {Damage: "Dano +", Recovery: "Cura e escudo +", EffectRate: "Chance de efeito +", Cooldown: "Recarga −"};
-  const SCALE_LABELS = {Attack: "Ataque", Defense: "Defesa", MaxHealth: "Vida máxima", Speed: "Velocidade", TargetMaxHealth: "Vida máxima do alvo", Level: "Nível"};
+  const SCALE_LABELS = {Attack: "Ataque", Defense: "Defesa", MaxHealth: "Vida máxima", Speed: "Velocidade", TargetMaxHealth: "Vida máxima do alvo", Level: "Nível", Sacrificed: "Vida sacrificada"};
   const MEASURE_LABELS = {HealthFraction: "Vida atual de quem lança", TargetHealthFraction: "Vida atual do alvo", LivingAllies: "Aliados de pé"};
   // Os campos numéricos: rótulo, passo e o valor quando o campo não está no JSON.
   const FX_NUMBERS = {power: ["Poder", "0.01", ""], hits: ["Golpes", "1", "1"], ignoreDefense: ["Ignora Defesa", "0.05", "0"], drain: ["Dreno", "0.05", "0"],
@@ -1960,7 +1999,7 @@ if (typeof module !== "undefined") module.exports = Core;
   const FX_STRUCTURAL = ["kind", "target", "from", "factor.by", "speed.mode"];
   const PICKS = ["LowestAlly", "HighestAlly"];
   // Os modelos de lista (vazia) de cada campo: Efeitos depois do Despertar vazios somem do arquivo.
-  const emptyListText = field => field === "awakenedEffects" ? "" : "[]";
+  const emptyListText = () => "[]";
 
   const fxAttrs = (path, field, index, key) => `data-fx="${esc(key)}" data-skill="${esc(path)}" data-field="${field}" data-index="${index}"`;
   const fxOptions = (options, value, label, empty = null) =>
@@ -1974,6 +2013,25 @@ if (typeof module !== "undefined") module.exports = Core;
     const all = ui.enums.statuses, doc = s => C.STATUS_DOCS[s] || [s, null];
     const group = (title, list) => list.length ? `<optgroup label="${title}">${list.map(s => `<option value="${esc(s)}" ${s === value ? "selected" : ""}>${esc(doc(s)[0])} (${esc(s)})</option>`).join("")}</optgroup>` : "";
     return `${empty !== null ? `<option value="" ${isBlankValue(value) ? "selected" : ""}>${esc(empty)}</option>` : ""}${group("Positivos", all.filter(s => doc(s)[1] === false))}${group("Negativos", all.filter(s => doc(s)[1] === true))}${group("Outros", all.filter(s => doc(s)[1] === null))}${!isBlankValue(value) && !all.includes(value) ? `<option selected>${esc(value)}</option>` : ""}`;
+  }
+
+  /** Habilidade de inimigo ou do Despertar: não desperta, então o efeito não tem campos de Despertar. */
+  const awakeningOff = path => path.includes(".awakening.") || /^(bosses|foes)/.test(path);
+
+  /**
+   * O que o efeito muda no Despertar: os campos numéricos dele (em branco = não muda; o valor de antes aparece de dica) e as
+   * marcas "só desperto" e "sai ao despertar". Os outros campos mudam pelo JSON ("awakened").
+   */
+  function awakenedCells(effect, a, fields) {
+    const cells = [];
+    const changes = isPlainItem(effect.awakened) ? effect.awakened : {};
+    for (const key of Object.keys(FX_NUMBERS).filter(k => fields.includes(k) || k in changes)) {
+      const [title, step] = FX_NUMBERS[key];
+      cells.push(`<label class="fx-cell awake" title="O valor depois do Despertar (em branco: não muda)"><span>${title} ✦</span><input type="number" step="${step}" value="${esc(changes[key] ?? "")}" placeholder="${esc(effect[key] ?? "")}" ${a(`awakened.${key}`)}></label>`);
+    }
+    cells.push(`<label class="fx-cell check" title="O efeito só existe desperto"><input type="checkbox" ${effect.onlyAwakened ? "checked" : ""} ${a("onlyAwakened")}>só desperto</label>`);
+    cells.push(`<label class="fx-cell check" title="O efeito some no Despertar (raro: o Despertar só melhora)"><input type="checkbox" ${effect.lostAfterAwaken ? "checked" : ""} ${a("lostAfterAwaken")}>sai ao despertar</label>`);
+    return cells;
   }
 
   function effectRow(effect, path, field, index, count) {
@@ -2018,8 +2076,9 @@ if (typeof module !== "undefined") module.exports = Core;
     }
     if (["Status", "Shield"].includes(effect.kind) || effect.unremovable)
       cells.push(`<label class="fx-cell check" title="Irremovível: nada tira o efeito (Purificação, roubo, encurtar, o golpe que acorda o Sono); só os turnos dele o acabam. No combate o quadradinho tem borda dourada grossa."><input type="checkbox" ${effect.unremovable ? "checked" : ""} ${a("unremovable")}>irremovível</label>`);
+    if (!awakeningOff(path)) cells.push(...awakenedCells(effect, a, fields));
     const scales = !!C.USUAL_STAT[effect.kind];
-    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", "when", "whenStatus", "whenScope", "unremovable", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
+    const extra = Object.keys(effect).filter(k => !["kind", "target", "by", "onKill", "when", "whenStatus", "whenScope", "unremovable", "awakened", "lostAfterAwaken", "onlyAwakened", ...FX_ORDER, ...(scales ? ["stat", "plus", "factor", "speed", "fixed"] : [])].includes(k));
     return `<div class="fx-row"><span class="fx-n">${index + 1}</span>${cells.join("")}
       <span class="fx-tools">
         <button data-action="fx-move" data-skill="${esc(path)}" data-field="${field}" data-index="${index}" data-step="-1" ${index === 0 ? "disabled" : ""} title="Subir">↑</button>
@@ -2072,7 +2131,7 @@ if (typeof module !== "undefined") module.exports = Core;
     const match = /^variations\.([^.]+)\./.exec(path);
     if (!match || !C.isCustom(effect)) return text;
     const v = ui.family.variations[match[1]];
-    const st = v && C.variationStats(ui.model, ui.family, v, elementOf(match[1]), field === "awakenedEffects" || path.includes(".awakening."));
+    const st = v && C.variationStats(ui.model, ui.family, v, elementOf(match[1]), path.includes(".awakening."));
     if (!st || !(st.atk > 0) || !(st.hp > 0)) return text;
     const at = (health, living, targetHealth) => C.effectAmount(effect, {...st, level: 40, health, living}, {...st, health: targetHealth});
     const show = amount => effect.kind === "Damage" ? `${fmt(amount / st.atk, 2)}× ATK` : `${fmt(amount / st.hp * 100, 1)}% da Vida máxima`;
@@ -2093,6 +2152,13 @@ if (typeof module !== "undefined") module.exports = Core;
       const old = isPlainItem(item.speed) ? item.speed : {};
       if (value === undefined) delete item.speed;
       else item.speed = value === "target" ? {add: old.add ?? 0, overTarget: true} : {add: old.add ?? 0, over: old.over || 100};
+      return;
+    }
+    if (key.startsWith("awakened.")) {
+      const name = key.slice("awakened.".length);
+      item.awakened = isPlainItem(item.awakened) ? item.awakened : {};
+      if (value === undefined) delete item.awakened[name]; else item.awakened[name] = value;
+      if (Object.keys(item.awakened).length === 0) delete item.awakened;
       return;
     }
     const parts = key.split("."), last = parts.pop();
@@ -2125,12 +2191,10 @@ if (typeof module !== "undefined") module.exports = Core;
       ? `<div class="fx-empty">O JSON abaixo tem um erro (${esc(error)}): corrija para voltar a editar pelas listas.</div>`
       : list.length
         ? list.map((item, i) => isPlainItem(item) ? (mode === "levels" ? levelRow(item, path, field, i, list.length) : effectRow(item, path, field, i, list.length)) : `<div class="fx-empty">Item ${i + 1} não é um objeto: edite no JSON.</div>`).join("")
-        : `<div class="fx-empty">${field === "awakenedEffects" ? "Vazio: o Despertar não muda esta habilidade." : "Nenhum ainda: escolha abaixo."}</div>`;
+        : `<div class="fx-empty">Nenhum ainda: escolha abaixo.</div>`;
     const adds = mode === "levels"
       ? ui.enums.levelKinds.map(k => `<button class="chip" data-action="add-level" data-skill="${esc(path)}" data-field="${field}" data-kind="${esc(k)}">+ ${esc(LEVEL_LABELS[k] || k)}</button>`)
       : ui.enums.effectKinds.map(k => `<button class="chip" data-action="add-effect" data-skill="${esc(path)}" data-field="${field}" data-kind="${esc(k)}" title="${esc(C.EFFECT_DOCS[k]?.text || "")}">+ ${esc(C.EFFECT_DOCS[k]?.label || k)}</button>`);
-    if (field === "awakenedEffects" && !error && list.length === 0)
-      adds.unshift(`<button class="chip on" data-action="fx-copy-base" data-skill="${esc(path)}" title="Começa dos efeitos de antes do Despertar, para só ajustar o que muda">Copiar os efeitos de base</button>`);
     return `<div class="fx-list">${rows}</div><div class="chips">${adds.join("")}</div>
       <details class="fx-json" data-json-key="${esc(key)}" ${open ? "open" : ""}><summary>JSON (avançado)</summary>${area(key, skill[field])}</details>`;
   }
@@ -2259,12 +2323,10 @@ if (typeof module !== "undefined") module.exports = Core;
             <p class="note wide">${esc(C.PARTNER_DOCS.partnerEffects)}</p>
             ${field("Efeitos a mais com o parceiro vivo", fxEditor(skill.passive, `${path}.passive`, "partnerEffects", "effects"), "full")}
             ${generic ? `
-            ${field("Efeitos da Passiva: o que ela faz ao disparar, na ordem", fxEditor(skill, path, "effects", "effects"), `full ${bad("effects")}`)}
-            ${awakening || foe ? "" : field("Efeitos depois do Despertar: trocam a lista inteira (vazio = não muda)", fxEditor(skill, path, "awakenedEffects", "effects"), `full ${bad("awakenedEffects")}`)}` : ""}
+            ${field("Efeitos da Passiva: o que ela faz ao disparar, na ordem", fxEditor(skill, path, "effects", "effects"), `full ${bad("effects")}`)}` : ""}
           ` : `
-            ${field("Efeitos: na ordem em que acontecem", fxEditor(skill, path, "effects", "effects"), `full ${bad("effects")}`)}
+            ${field("Efeitos: na ordem em que acontecem (em cada um, o que muda no Despertar)", fxEditor(skill, path, "effects", "effects"), `full ${bad("effects")}`)}
             ${foe ? "" : field("Níveis: o primeiro é o nível 2", fxEditor(skill, path, "levels", "levels"), `full ${bad("levels")}`)}
-            ${awakening || foe ? "" : field("Efeitos depois do Despertar: trocam a lista inteira (vazio = o Despertar não muda a habilidade)", fxEditor(skill, path, "awakenedEffects", "effects"), `full ${bad("awakenedEffects")}`)}
           `}
           <details class="fx-json skill-json full" data-json-key="${esc(path)}.__json" ${ui.openJson.has(`${path}.__json`) ? "open" : ""}><summary>JSON desta habilidade (como vai para o arquivo)</summary><pre data-skill-json="${esc(path)}">${esc(C.format(C.exportSkill(skill)))}</pre></details>
         </div>
@@ -2315,7 +2377,7 @@ if (typeof module !== "undefined") module.exports = Core;
       <code>target</code>: ${e.targets.join(", ")}<br>
       <code>status</code>: ${e.statuses.join(", ")}<br>
       Dano: <code>power</code> (3.5 = 350% do ATK), <code>hits</code>, <code>ignoreDefense</code> (0 a 1), <code>drain</code> (0 a 1).
-      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>onKill</code> (só se a habilidade derrubou alguém), <code>when</code> (<code>Hit</code>, <code>Crit</code> ou <code>Status</code>: roda depois de cada golpe do Damage da habilidade, a cada crítico ou a cada efeito que o golpe causa, com <code>whenStatus</code>/<code>whenScope</code> escolhendo qual; o <code>target: "Target"</code> passa a ser quem o golpe acertou), <code>ifAlly</code> (o id de uma variante que precisa estar viva no time, ex.: <code>wolf_light</code>) e <code>ifDefenseAbove</code> (só se a Defesa de quem lança passa a do alvo). Em Status e Shield, <code>unremovable</code> (true): o efeito é irremovível, só os turnos dele o acabam.<br>
+      Status: <code>chance</code> (0 a 1), <code>turns</code>. Qualquer efeito: <code>awakened</code> (os campos que mudam depois do Despertar, ex.: <code>{"power": 2.94, "ignoreDefense": 0.3}</code>; o resto do efeito fica; não troca o <code>kind</code>), <code>onlyAwakened</code> (o efeito só existe desperto) e <code>lostAfterAwaken</code> (o efeito sai no Despertar; raro), <code>onKill</code> (só se a habilidade derrubou alguém), <code>when</code> (<code>Hit</code>, <code>Crit</code> ou <code>Status</code>: roda depois de cada golpe do Damage da habilidade, a cada crítico ou a cada efeito que o golpe causa, com <code>whenStatus</code>/<code>whenScope</code> escolhendo qual; o <code>target: "Target"</code> passa a ser quem o golpe acertou), <code>ifAlly</code> (o id de uma variante que precisa estar viva no time, ex.: <code>wolf_light</code>) e <code>ifDefenseAbove</code> (só se a Defesa de quem lança passa a do alvo). <code>othersOnly</code> (true: nos alvos de aliados, quem lança fica de fora). Em Status e Shield, <code>unremovable</code> (true): o efeito é irremovível, só os turnos dele o acabam.<br>
       A conta de Damage, Heal, HealTeam, Shield e Revive: <code>stat</code> (${(e.scaleStats || []).join(", ")}), <code>plus</code> [{stat, power}],
       <code>factor</code> {by: ${(e.scaleMeasures || []).join(" | ")}, base, slope}, <code>speed</code> {add, over} ou {add, overTarget: true}; o dano também <code>fixed</code>.
       Ex.: <code>{"kind": "Damage", "power": 0.5, "plus": [{"stat": "MaxHealth", "power": 0.08}], "hits": 2}</code>.<br>
@@ -2456,7 +2518,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         que ele aceita; a aba Validação acusa alvo que o tipo não aceita e campo que ele não lê. Os botões dos tipos, nas habilidades, inserem o modelo.</p>
       <h3>Alvos</h3><div class="table-wrap"><table><tr><th>target</th><th>Quem</th></tr>${targets}</table></div>
       <h3>Tipos de efeito</h3><div class="table-wrap"><table><tr><th>kind</th><th>O que faz</th><th>Alvos aceitos</th><th>Campos</th><th>Modelo</th></tr>${effects}</table></div>
-      <h3>Passivas</h3><p class="note">${code("passive.kind")} e ${code("value")}; as genéricas leem os ${code("effects")} (e ${code("awakenedEffects")}) da habilidade passiva, e as que olham efeitos de status, ${code("passive.scope")} e ${code("passive.statuses")}.</p><p>${option(C.PASSIVE_DOCS)}</p>
+      <h3>Passivas</h3><p class="note">${code("passive.kind")} e ${code("value")}; as genéricas leem os ${code("effects")} da habilidade passiva, e as que olham efeitos de status, ${code("passive.scope")} e ${code("passive.statuses")}.</p><p>${option(C.PASSIVE_DOCS)}</p>
       <h3>Conta</h3><p class="note">Dano, cura, escudo e Revive: ${code("power")} × o atributo de sempre do tipo (dano: Attack; cura, HealTeam e Revive: TargetMaxHealth;
         escudo: MaxHealth) ou ${code("stat")}, mais cada termo de ${code("plus")}, vezes ${code("factor")} e ${code("speed")}. Os bônus de nível de dano e de cura valem no power e nos termos.
         O BVP não vê a conta: o balanço de uma habilidade assim é feito na mão (o editor mostra quanto ela dá na variante).</p>
@@ -2782,7 +2844,7 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         touchAt(node.dataset.path);
       }
       // As listas de cima refletem o JSON novo (ou o erro dele).
-      const skillPath = node.dataset.path.replace(/\.passive\.partnerEffects$|\.(effects|awakenedEffects|levels)$/, "");
+      const skillPath = node.dataset.path.replace(/\.passive\.partnerEffects$|\.(effects|levels)$/, "");
       if (skillPath !== node.dataset.path) rerenderSkill(skillPath);
     } else if (node.dataset.model) {
       renderModelTab();
@@ -2864,11 +2926,6 @@ Multiplicar os atributos no Despertar: o Despertar tem o orçamento dele.</div>`
         item.plus.splice(term, 1);
         if (item.plus.length === 0) delete item.plus;
       })) { rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill); }
-    },
-    "fx-copy-base": node => {
-      const skill = getAt(node.dataset.skill);
-      skill.awakenedEffects = skill.effects;
-      rerenderSkill(node.dataset.skill); touchAt(node.dataset.skill);
     },
     "toggle-passive-list": node => {
       const skill = getAt(node.dataset.skill), field = node.dataset.field, value = node.dataset.value;

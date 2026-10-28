@@ -26,7 +26,7 @@ Véu" da tela da Arena Astral.
 
 ## Como funciona
 
-- **O servidor roda a luta.** `D:\dev\sigilos-server` compila o `Core/` do jogo (projeto `GameCore`, caminho pela
+- **O servidor roda a luta.** `F:\GameDev\sigilos-server` compila o `Core/` do jogo (projeto `GameCore`, caminho pela
   propriedade `SigilosGame`) e lê o `Data/` dele. Cada jogador manda só decisões (`act`: habilidade, lado e posição do
   alvo). O servidor responde com a decisão aplicada e uma impressão digital da luta (`RtaMatch.Hash`); cada jogador
   roda a mesma luta no aparelho (`RtaReplica`) e confere. Divergiu, vale o resultado do servidor.

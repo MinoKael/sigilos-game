@@ -36,7 +36,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.94},
-            {"kind": "JointAttack", "target": "AllAllies", "count": 2}
+            {"kind": "JointAttack", "target": "AllAllies", "count": 2, "othersOnly": true}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
@@ -151,7 +151,7 @@
           "cooldown": 5,
           "effects": [
             {"kind": "Damage", "target": "Target", "power": 2.69},
-            {"kind": "JointAttack", "target": "AllAllies", "count": 0}
+            {"kind": "JointAttack", "target": "AllAllies", "count": 0, "othersOnly": true}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

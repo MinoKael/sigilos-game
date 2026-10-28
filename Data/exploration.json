@@ -164,7 +164,7 @@
       "ra": 13.1, "dec": 40.1, "chart": [253, 142], "stars": 6, "level": 41, "scale": 0.52,
       "reward": {"essence": 580, "gold": 5, "experience": 1650},
       "influence": {"name": "Matilha", "rules": [
-        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnTargetEachTurn", "value": 0.3}, "effects": [{"kind": "JointAttack", "target": "RandomAlly", "count": 1}]}
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnTargetEachTurn", "value": 0.3}, "effects": [{"kind": "JointAttack", "target": "RandomAlly", "count": 1, "othersOnly": true}]}
       ]},
       "challenges": [
         {"waves": [
@@ -2064,7 +2064,7 @@
       "ra": 16.1, "dec": -65.4, "chart": [387, 494], "stars": 6, "level": 59, "scale": 3.79,
       "reward": {"essence": 1540, "gold": 40, "experience": 3600, "scrolls": 1},
       "influence": {"name": "Três Pontas", "rules": [
-        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnTargetEachTurn"}, "effects": [{"kind": "JointAttack", "target": "AllAllies", "count": 2}]}
+        {"side": "Foes", "passive": {"kind": "StatusOrEffectOnTargetEachTurn"}, "effects": [{"kind": "JointAttack", "target": "AllAllies", "count": 2, "othersOnly": true}]}
       ]},
       "challenges": [
         {"waves": [

@@ -110,15 +110,16 @@ alvo em %, Vida atual em %, Vida atual, Vida perdida, nível de quem ataca, Velo
 Velocidade do alvo, aliados vivos em %, inimigos vivos, e as marcas de dano fixo, de vários golpes
 (xN), de soma fixa (+N) e de Passiva.
 
-Os efeitos de dano, cura, cura do time, escudo e Revive têm uma conta (`Core/Content/EffectScaling.cs`,
+Os efeitos de dano, cura, cura do time, escudo, Revive e Sacrifício têm uma conta (`Core/Content/EffectScaling.cs`,
 feita em `Core/Battle/EffectAmount.cs`):
 
 conta = (power × atributo + Σ plus.power × plus.stat) × (factor.base + factor.slope × fração) × (VEL + speed.add) / (speed.over ou VEL do alvo)
 
 - **Atributo:** o de sempre do tipo (dano: Ataque de quem lança; cura, cura do time e Revive: Vida
   máxima do alvo; escudo: Vida máxima de quem lança) ou o de `stat`: Attack, Defense, MaxHealth, Speed,
-  TargetMaxHealth ou Level. Todos são de quem lança, menos TargetMaxHealth; Level usa o power como valor
-  por nível (110 = 110 por nível).
+  TargetMaxHealth, Level ou Sacrificed. Todos são de quem lança, menos TargetMaxHealth; Level usa o power
+  como valor por nível (110 = 110 por nível); Sacrificed é a Vida que o Sacrifício anterior da mesma
+  habilidade tirou de quem lança (0 sem Sacrifício antes; a validação exige um antes).
 - **plus:** termos somados, cada um com o atributo e o power dele. Os bônus da habilidade (nível de dano
   ou de cura, `BonusPerStatus`) valem no power e nos termos.
 - **factor:** `by` é HealthFraction (Vida atual de quem lança), TargetHealthFraction (a do alvo) ou
@@ -140,6 +141,8 @@ relativa, os inimigos vivos e a soma fixa (+N).
 | Cura do time | Vida máxima de cada alvo, ou a conta | `HealTeam` |
 | Escudo | Vida máxima de quem lança, ou a conta | `ShieldEffect` |
 | Revive | Vida máxima de quem volta, ou a conta; quem já ia voltar sozinho (Passiva) fica de fora | `ReviveEffect` |
+| Sacrifício | Vida máxima de quem lança (padrão), ou a conta; com `factor` HealthFraction base 0 slope 1, a fração da Vida atual. Descontada sem passar de Vida 1, ou, com `destroy`, tirada da Vida máxima como o Oblívio até `BattleRules.SacrificeDestroyLimit` (70%). Alimenta `stat: Sacrificed` nos efeitos seguintes | `SacrificeEffect` |
+| Imunidade passiva | Os `statuses` da Passiva nunca pegam no dono, de quem vierem (`UnitBehavior.BlocksStatus`) | `StatusImmunityPassive` |
 | Bomba | Ataque de quem pôs | `BombStatus` |
 | Aflição | Vida máxima do dono | `DamageOverTime` |
 | Bênção | Vida máxima do dono | `HealOverTime` |
@@ -202,3 +205,18 @@ específica: a frase sai do tipo de efeito, do alvo, da chance, dos turnos e do 
   causa um efeito negativo, ..."). O que depende de derrubar o alvo vai à parte também.
 - `Clause` (sem maiúscula nem ponto) é o mesmo texto para dentro das frases das Passivas e das influências.
 - Conferir: `-- --dump-skills=arquivo` (com `--language=`) escreve uma linha por habilidade, inimigo e influência.
+
+## Liderança: valores de referência
+
+Só orienta o valor de `leader.value` por estrela da variante (o Family Builder mostra a referência ao lado do campo; nada valida).
+
+| Liderança | 3★ | 4★ | 5★ |
+| --- | --- | --- | --- |
+| Vida (Health) | 15% | 25% | 35% |
+| Ataque (Attack) | 18% | 28% | 35% |
+| Defesa (Defense) | 18% | 28% | 35% |
+| Velocidade (Speed) | 10% | 18% | 25% |
+| Crítico (Crit) | 10% | 18% | 25% |
+| Resistência (Resistance) | 20% | 30% | 40% |
+| Precisão (Accuracy) | 20% | 30% | 40% |
+| Dano crítico (CritDamage) | 10% | 20% | 30% |

@@ -24,5 +24,8 @@ namespace Sigilos.Core.Content
 
 		/// <summary>O nível de quem lança: o power é o valor por nível (110 = 110 por nível).</summary>
 		Level,
+
+		/// <summary>A Vida que o Sacrifício da mesma habilidade tirou de quem lança (0 sem Sacrifício antes).</summary>
+		Sacrificed,
 	}
 }

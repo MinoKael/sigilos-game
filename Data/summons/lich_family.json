@@ -95,7 +95,7 @@
             {"kind": "BonusPerStatus", "target": "Self", "from": "AllEnemies", "power": 0.2, "bonus": "Damage", "max": 3},
             {"kind": "Cleanse", "target": "AllAllies", "count": 0, "removes": "All"},
             {"kind": "Cleanse", "target": "AllEnemies", "count": 0, "removes": "All"},
-            {"kind": "Damage", "target": "AllEnemies", "power": 4.0}
+            {"kind": "Damage", "target": "AllEnemies", "power": 4}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},

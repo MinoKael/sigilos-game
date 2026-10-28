@@ -14,6 +14,9 @@ namespace Sigilos.GameEntry.Account
 
 		/// <summary>Não deu para perguntar (sem rede, conta fora, servidor com erro).</summary>
 		Failed,
+
+		/// <summary>O servidor pede uma versão mais nova do jogo (<see cref="Sigilos.Core.Progression.Protocol.Minimum"/>).</summary>
+		UpdateRequired,
 	}
 
 	/// <summary>O resultado de tomar a sessão; em <see cref="ClaimOutcome.Busy"/>, qual aparelho está com ela e quando bateu.</summary>
@@ -71,18 +74,17 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>A sessão deste aparelho; nula antes de tomar, depois de soltar ou quando outro tomou.</summary>
 		public Guid? SessionId { get; private set; }
 
-		/// <summary>O formato de envio do save que o servidor aceita (0: só JSON puro; ausente em servidor antigo).</summary>
-		public int SaveFormat { get; private set; }
-
 		public async Task<ClaimResult> Claim(bool force)
 		{
-			var response = await _auth.Call(HttpMethod.Post, "session/claim", new { deviceId = _deviceId, deviceName = _deviceName, force });
+			var response = await _auth.Call(HttpMethod.Post, "session/claim", new { deviceId = _deviceId, deviceName = _deviceName, force, protocol = Sigilos.Core.Progression.Protocol.Version });
 			if (response.Ok && Guid.TryParse(response.Text("sessionId"), out var id))
 			{
 				SessionId = id;
-				SaveFormat = (int)(response.Number("saveFormat") ?? 0);
 				return new ClaimResult(ClaimOutcome.Claimed, response);
 			}
+
+			if (response.Status == 426)
+				return new ClaimResult(ClaimOutcome.UpdateRequired, response);
 
 			return new ClaimResult(response.Conflict("session_active") ? ClaimOutcome.Busy : ClaimOutcome.Failed, response);
 		}

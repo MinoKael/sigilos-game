@@ -78,6 +78,12 @@ namespace Sigilos.Core.Battle
 		/// </summary>
 		public const double DrowningFraction = 0.10;
 
+		/// <summary>
+		/// Sacrifício que destrói (<see cref="Content.EffectDefinition.Destroy"/>): a Vida máxima de quem lança nunca cai
+		/// mais do que isto no total, somando o Oblívio e os Sacrifícios (o Oblívio das runas para em 60%).
+		/// </summary>
+		public const double SacrificeDestroyLimit = 0.70;
+
 		/// <summary>Núcleo Rúnico (Golem Rúnico): bônus de Defesa que ele ganha a cada rodada nova (0,15 = +15% da base).</summary>
 		public const double RunicCoreStep = 0.15;
 

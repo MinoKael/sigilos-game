@@ -20,6 +20,7 @@ namespace Sigilos.Core.Content
 			[EffectKind.HealTeam] = ScaleStat.TargetMaxHealth,
 			[EffectKind.Shield] = ScaleStat.MaxHealth,
 			[EffectKind.Revive] = ScaleStat.TargetMaxHealth,
+			[EffectKind.Sacrifice] = ScaleStat.MaxHealth,
 		};
 
 		/// <summary>O tipo tem conta: lê stat, plus, factor e speed.</summary>

@@ -36,6 +36,9 @@ namespace Sigilos.Core.Player
 		/// <summary>Quando entrou na guilda em que está; nulo sem guilda. Reservado: ainda não há guildas.</summary>
 		public DateTime? GuildJoined { get; set; }
 
+		/// <summary>A última troca do nome da conta (UTC; <see cref="Progression.AccountRename"/>); nulo se nunca trocou.</summary>
+		public DateTime? LastRename { get; set; }
+
 		// Moedas (GDD, seção 12).
 
 		/// <summary>Pergaminhos Místicos: o comum (fases, Masmorras, Loja).</summary>

@@ -148,7 +148,7 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Damage", "target": "Target", "stat": "MaxHealth", "power": 0.26, "drain": 0.3},
-            {"kind": "JointAttack", "target": "HighestAlly", "count": 2, "by": "Attack"},
+            {"kind": "JointAttack", "target": "HighestAlly", "count": 2, "by": "Attack", "othersOnly": true},
             {"kind": "Impeto", "target": "AllAllies", "power": 20}
           ],
           "levels": [
@@ -264,7 +264,7 @@
                 {"stat": "MaxHealth", "power": 0.18}
               ]
             },
-            {"kind": "JointAttack", "target": "HighestAlly", "count": 2, "by": "Attack"},
+            {"kind": "JointAttack", "target": "HighestAlly", "count": 2, "by": "Attack", "othersOnly": true},
             {"kind": "Impeto", "target": "AllAllies", "power": 20},
             {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 1}
           ],

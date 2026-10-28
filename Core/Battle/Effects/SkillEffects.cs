@@ -25,6 +25,7 @@ namespace Sigilos.Core.Battle.Effects
 			[EffectKind.IncreaseCooldown] = new IncreaseCooldownEffect(),
 			[EffectKind.InvertBuffs] = new InvertBuffsEffect(),
 			[EffectKind.BombTrigger] = new BombTriggerEffect(),
+			[EffectKind.Sacrifice] = new SacrificeEffect(),
 		};
 
 		public static SkillEffect Of(EffectKind kind) => Table[kind];

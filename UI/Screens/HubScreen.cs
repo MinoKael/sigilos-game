@@ -108,10 +108,10 @@ namespace Sigilos.UI.Screens
 
 			// A ociosidade anda com a tela aberta: o anel e as recompensas acompanham a cada segundo.
 			var timer = new Timer { Name = "IdleTimer", WaitTime = 1, Autostart = true };
-			timer.Timeout += () => RefreshIdle(DateTime.Now);
+			timer.Timeout += () => RefreshIdle(DateTime.UtcNow);
 			AddChild(timer);
 
-			Refresh(DateTime.Now);
+			Refresh(DateTime.UtcNow);
 		}
 
 		/// <summary>Quantas cartas do correio faltam coletar: o selo vermelho no botão (some com 0 ou sem saber).</summary>
@@ -199,7 +199,7 @@ namespace Sigilos.UI.Screens
 		/// <summary>O retrato abre o Grimório do Alquimista; trocar o retrato de lá abre a escolha.</summary>
 		private void OpenBook()
 		{
-			var book = SummonerGrimoireDialog.Open(this, _database, _player, _accountName, DateTime.Now);
+			var book = SummonerGrimoireDialog.Open(this, _database, _player, _accountName, DateTime.UtcNow);
 			book.AvatarRequested += () => AvatarPicker.Open(this, _database, _player, (summon, awakened) => AvatarRequested?.Invoke(summon, awakened));
 		}
 
@@ -228,7 +228,7 @@ namespace Sigilos.UI.Screens
 					return;
 				}
 
-				if (!Idle.Preview(_player, DateTime.Now).IsEmpty)
+				if (!Idle.Preview(_player, DateTime.UtcNow).IsEmpty)
 					CollectRequested?.Invoke();
 			};
 			_constellation.SetCenter(_core);
@@ -295,7 +295,7 @@ namespace Sigilos.UI.Screens
 			{
 				if (arenaOpen)
 				{
-					Features.MarkSeen(_player, Feature.Arena);
+					UiSession.Seen(Feature.Arena);
 					arena.Highlight = false;
 					Requested?.Invoke(Destination.Arena);
 				}
@@ -371,7 +371,7 @@ namespace Sigilos.UI.Screens
 					button.Pressed += () =>
 					{
 						if (feature is { } entered)
-							Features.MarkSeen(_player, entered);
+							UiSession.Seen(entered);
 						button.Highlight = false;
 						Requested?.Invoke(destination);
 					};
@@ -390,8 +390,8 @@ namespace Sigilos.UI.Screens
 			if (!_channelOpen)
 				return;
 
-			var preview = Idle.Preview(_player, now);
-			var pendingHours = Idle.PendingHours(_player, now);
+			var preview = Idle.Preview(_player, DateTime.UtcNow);
+			var pendingHours = Idle.PendingHours(_player, DateTime.UtcNow);
 			var hours = TimeSpan.FromHours(pendingHours);
 			_constellation.Progress = (float)(pendingHours / Idle.CapHours);
 			_core.Highlight = !preview.IsEmpty;

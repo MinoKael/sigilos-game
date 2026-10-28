@@ -35,17 +35,13 @@
           "image": "esmagar",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
-            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.96, "awakened": {"power": 2.94}},
+            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.2, "awakened": {"chance": 0.4}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.94},
-            {"kind": "Status", "target": "AllEnemies", "status": "Stun", "chance": 0.4}
           ]
         },
         {
@@ -93,17 +89,13 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Heal", "target": "Self", "power": 0.1}
+            {"kind": "Heal", "target": "Self", "power": 0.1, "awakened": {"power": 0.17}},
+            {"kind": "Status", "target": "Self", "status": "Aegis", "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Heal", "target": "Self", "power": 0.17},
-            {"kind": "Status", "target": "Self", "status": "Aegis"}
           ]
         },
         {
@@ -111,10 +103,7 @@
           "image": "regeneracao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
-            {"kind": "Heal", "target": "Self", "power": 0.05}
-          ],
-          "awakenedEffects": [
-            {"kind": "Heal", "target": "Self", "power": 0.08}
+            {"kind": "Heal", "target": "Self", "power": 0.05, "awakened": {"power": 0.08}}
           ]
         }
       ]
@@ -148,17 +137,13 @@
           "image": "tremor",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "awakened": {"power": 2.45}},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -25, "awakened": {"power": -40}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -40}
           ]
         },
         {
@@ -205,16 +190,13 @@
           "image": "rebrotar",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.14}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14, "awakened": {"power": 0.21}},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.21},
-            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ]
         },
         {
@@ -222,10 +204,7 @@
           "image": "regeneracao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
-            {"kind": "Heal", "target": "Self", "power": 0.05}
-          ],
-          "awakenedEffects": [
-            {"kind": "Heal", "target": "Self", "power": 0.08}
+            {"kind": "Heal", "target": "Self", "power": 0.05, "awakened": {"power": 0.08}}
           ]
         }
       ]
@@ -259,18 +238,14 @@
           "image": "ameaca",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5},
-            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5, "awakened": {"chance": 0.8}},
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
+            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.8},
-            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
           ]
         },
         {
@@ -278,10 +253,7 @@
           "image": "regeneracao",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
-            {"kind": "Heal", "target": "Self", "power": 0.05}
-          ],
-          "awakenedEffects": [
-            {"kind": "Heal", "target": "Self", "power": 0.08}
+            {"kind": "Heal", "target": "Self", "power": 0.05, "awakened": {"power": 0.08}}
           ]
         }
       ]

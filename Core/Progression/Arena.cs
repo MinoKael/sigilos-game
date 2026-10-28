@@ -37,8 +37,8 @@ namespace Sigilos.Core.Progression
 
 	/// <summary>
 	/// A Arena Astral: Convites (recarga por tempo), lista de dez adversários por pontos, sequência de vitórias com
-	/// bônus que dura uma hora, Graus, Rivais com espera, ciclo semanal (domingo 22h) com prêmio pelo Grau e a
-	/// Loja Cósmica. Tudo calculado pelo relógio que a tela passa; relógio que volta atrás não repete prêmio nem
+	/// bônus que dura uma hora, Graus, Rivais com espera, ciclo semanal (domingo 22h UTC) com prêmio pelo Grau e a
+	/// Loja Cósmica. Tudo calculado pelo relógio do servidor (UTC); relógio que volta atrás não repete prêmio nem
 	/// desfaz espera. A luta em si é <see cref="BattleFactory.CreateDuel"/>.
 	/// </summary>
 	public static class Arena

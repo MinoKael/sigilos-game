@@ -9,7 +9,7 @@ namespace Sigilos.Core.Progression
 	/// <summary>
 	/// Regras da Exploração Estelar (GDD, seção 11): o percurso pelas 88 constelações abre depois de uma
 	/// fase da Campanha, e cada constelação depois da anterior. O percurso recomeça no dia 1 de cada mês
-	/// (pelo relógio do aparelho), e a cada mês uma das três Explorações traz os desafios, em rodízio. A
+	/// (pelo relógio do servidor, em UTC), e a cada mês uma das três Explorações traz os desafios, em rodízio. A
 	/// primeira vitória de cada constelação no mês paga a recompensa dela, sempre a mesma; vencer de novo
 	/// no mesmo mês não paga nada. A luta não custa Mana: o que limita é o percurso, que só se faz uma
 	/// vez por mês.
@@ -69,9 +69,9 @@ namespace Sigilos.Core.Progression
 		/// A vitória na constelação <paramref name="number"/>. A primeira do mês (a constelação seguinte às
 		/// vencidas) paga a recompensa inteira; repetir uma já vencida não paga nada. Uma vitória que
 		/// termina num mês novo, numa constelação que o mês novo ainda não abriu, também não paga: o
-		/// percurso já recomeçou.
+		/// percurso já recomeçou. <paramref name="team"/> é quem lutou (nulo: a equipe de agora), e é quem ganha a experiência.
 		/// </summary>
-		public static VictoryReward ApplyVictory(PlayerState player, ExplorationDefinition exploration, int number, DateTime now)
+		public static VictoryReward ApplyVictory(PlayerState player, ExplorationDefinition exploration, int number, DateTime now, IReadOnlyList<int>? team = null)
 		{
 			Renew(player, now);
 			var firstClear = number == player.ExplorationCleared + 1 && number <= exploration.Constellations.Count;
@@ -85,8 +85,8 @@ namespace Sigilos.Core.Progression
 			player.Essence += reward.Essence;
 			player.Scrolls += reward.Scrolls;
 
-			var share = Leveling.Share(player, Teams.Exploration, reward.Experience);
-			var levelUps = Leveling.GiveExperience(player, Teams.Exploration, reward.Experience);
+			var share = Leveling.Share(player, Teams.Exploration, reward.Experience, team);
+			var levelUps = Leveling.GiveExperience(player, Teams.Exploration, reward.Experience, team);
 			var level = player.AccountLevel;
 			var account = Account.GiveExperience(player, reward.Experience);
 			var prize = PrizeOf(reward);

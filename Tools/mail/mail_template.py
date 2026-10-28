@@ -3,7 +3,7 @@
 Monta, a partir do jogo, o catálogo do que uma carta pode trazer: as moedas (MailItem), as raridades
 e os conjuntos de runa (RuneRarity, RuneSet) com os nomes de Data/texts/pt-BR.json, os ids de todos
 os monstros de Data/summons e os dos retratos especiais (um por desenho de Assets/Avatars). Antes de
-gravar, confere o "template" e cada exemplo contra as regras do servidor (MailRewards em D:/dev/sigilos-server/Server/Program.cs) e do jogo (MailGift.Parse): um
+gravar, confere o "template" e cada exemplo contra as regras do servidor (MailRewards em F:/GameDev/sigilos-server/Server/Program.cs) e do jogo (MailGift.Parse): um
 exemplo inválido para tudo. Os limites abaixo copiam os do servidor; se ele mudar, mude aqui também.
 
 Uso:
@@ -204,7 +204,7 @@ def main():
     document = {
         "_leia": [
             "Template do correio (POST /admin/mail no sigilos-server). Copie um dos corpos de 'exemplos' (ou o 'template') e mande; o resto do arquivo é referência.",
-            "Fontes: D:\\dev\\sigilos-server\\Server\\Program.cs (MailRequest, MailRewards) e, no jogo, Core/Progression/MailItem.cs, MailGift.cs, Mailbox.cs e GameEntry/Account/CloudMail.cs.",
+            "Fontes: F:\\GameDev\\sigilos-server\\Server\\Program.cs (MailRequest, MailRewards) e, no jogo, Core/Progression/MailItem.cs, MailGift.cs, Mailbox.cs e GameEntry/Account/CloudMail.cs.",
             "O servidor confere só o formato das chaves; o jogo descarta em silêncio monstro/retrato que não conhece e runa com raridade ou conjunto inválidos.",
             "Gerado por py Tools/mail/mail_template.py: rode de novo quando entrar monstro, moeda, raridade ou conjunto.",
         ],

@@ -32,6 +32,8 @@ namespace Sigilos.UI.Components
 		/// <param name="onPressed">Nulo deixa o ícone só de desenho, sem toque.</param>
 		public static Control Build(SkillDefinition skill, int level, bool locked, float size = 64, SigilShape? shape = null, Action? onPressed = null)
 		{
+			// Nível guardado acima do teto atual (a habilidade foi refeita): mostra o teto.
+			level = System.Math.Min(level, skill.MaxLevel);
 			var root = new Control { Name = "Skill", CustomMinimumSize = new Vector2(size, size), SizeFlagsVertical = Control.SizeFlags.ShrinkBegin };
 			var button = new SigilButton(null, size, shape ?? (skill.IsPassive ? SigilShape.Diamond : SigilShape.Square)) { Name = "Symbol" };
 			button.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);

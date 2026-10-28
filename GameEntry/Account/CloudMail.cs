@@ -40,31 +40,22 @@ namespace Sigilos.GameEntry.Account
 			return new MailFetch(response, mail);
 		}
 
-		/// <summary>Avisa que a carta foi coletada. Repetir não faz mal: o servidor só anota de novo.</summary>
-		public Task<ApiResponse> Claim(string id) => _auth.Call(HttpMethod.Post, $"mail/{Uri.EscapeDataString(id)}/claim");
-
 		private static Mail? Read(JsonElement item)
 		{
 			if (item.ValueKind != JsonValueKind.Object || Text(item, "id") is not { } id || Time(item, "sentAt") is not { } sent)
 				return null;
 
-			var rewards = new Dictionary<MailItem, int>();
-			var gifts = new List<MailGift>();
+			var rewards = new List<KeyValuePair<string, int>>();
 			if (item.TryGetProperty("rewards", out var list) && list.ValueKind == JsonValueKind.Object)
 			{
 				foreach (var reward in list.EnumerateObject())
 				{
-					if (reward.Value.ValueKind != JsonValueKind.Number || !reward.Value.TryGetInt32(out var amount) || amount <= 0)
-						continue;
-					// Moeda pelo nome ("gold"); presente pela chave com dois-pontos ("monster:knight_fire").
-					if (!reward.Name.Contains(':') && Enum.TryParse<MailItem>(reward.Name, true, out var kind))
-						rewards[kind] = amount;
-					else if (MailGift.Parse(reward.Name, amount) is { } gift)
-						gifts.Add(gift);
+					if (reward.Value.ValueKind == JsonValueKind.Number && reward.Value.TryGetInt32(out var amount))
+						rewards.Add(new(reward.Name, amount));
 				}
 			}
 
-			return new Mail(id, Text(item, "title") ?? "", Text(item, "text") ?? "", rewards, sent, Time(item, "expiresAt")) { Gifts = gifts };
+			return MailFactory.Of(id, Text(item, "title") ?? "", Text(item, "text") ?? "", rewards, sent, Time(item, "expiresAt"));
 		}
 
 		private static string? Text(JsonElement item, string property) =>

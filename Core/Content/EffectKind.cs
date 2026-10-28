@@ -46,5 +46,12 @@ namespace Sigilos.Core.Content
 
 		/// <summary>Detona na hora todas as Bombas do alvo: cada uma explode como se a contagem tivesse chegado ao fim.</summary>
 		BombTrigger,
+
+		/// <summary>
+		/// Quem lança sacrifica Vida (<see cref="EffectDefinition.Power"/> pela conta do efeito, sempre em si): desconta, sem
+		/// passar de Vida 1, ou destrói Vida máxima (<see cref="EffectDefinition.Destroy"/>). O que saiu fica em
+		/// <see cref="ScaleStat.Sacrificed"/> para os efeitos seguintes da habilidade.
+		/// </summary>
+		Sacrifice,
 	}
 }

@@ -14,52 +14,41 @@
       "role": "Attack",
       "stats": {"hp": 8820, "atk": 687, "def": 534, "spd": 102},
       "awakened_stats": {"hp": 9645, "atk": 751, "def": 583, "spd": 103},
-      "leader": {"stat": "Attack", "value": 0.15},
-      "awakening": {"name": "Sir Lance"},
+      "leader": {"stat": "Attack", "value": 0.28},
+      "awakening": {"name": "Sir Lance", "stat": "Crit"},
       "skills": [
         {
-          "name": "Lâmina Ardente",
-          "image": "lamina_ardente",
+          "name": "Corte X",
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "chance": 0.4, "turns": 1},
-            {"kind": "Damage", "target": "Target", "power": 2.69}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.25, "hits": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.05},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.1}
+            {"kind": "Damage", "value": 0.15}
           ]
         },
         {
-          "name": "Carga Flamejante",
-          "image": "carga_flamejante",
+          "name": "Um por Todos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.96}
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 50}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.94, "ignoreDefense": 0.3}
           ]
         },
         {
-          "name": "Juramento em Chamas",
-          "image": "juramento_em_chamas",
-          "cooldown": 5,
+          "name": "Ferro e Fogo",
+          "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.45},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.5, "turns": 2}
+            {"kind": "Sacrifice", "target": "Self", "power": 0.1},
+            {"kind": "Damage", "target": "AllEnemies", "stat": "Sacrificed", "power": 1, "fixed": true, "awakened": {"power": 1.5}}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Cooldown", "value": 1},
-            {"kind": "EffectRate", "value": 0.15},
             {"kind": "Cooldown", "value": 1}
           ]
         }
@@ -72,51 +61,44 @@
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
-      "leader": {"stat": "Health", "value": 0.15},
-      "awakening": {"name": "Lady Beatrix"},
+      "leader": {"stat": "Health", "value": 0.25},
+      "awakening": {"name": "Lady Beatrix", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Golpe de Escudo",
-          "image": "golpe_de_escudo",
+          "name": "Corte X",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.2},
-            {"kind": "Status", "target": "Target", "status": "AttackDown", "chance": 0.4, "turns": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.25, "hits": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
             {"kind": "Damage", "value": 0.1},
-            {"kind": "EffectRate", "value": 0.15},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "Damage", "value": 0.15}
           ]
         },
         {
-          "name": "Muralha de Maré",
-          "image": "muralha_de_mare",
-          "cooldown": 4,
+          "name": "Cabeça Erguida",
+          "passive": {
+            "kind": "StatusImmunity",
+            "value": 1,
+            "statuses": [
+              "Stun",
+              "Sleep"
+            ]
+          }
+        },
+        {
+          "name": "Honra da Cavalaria",
+          "cooldown": 6,
           "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.14, "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "turns": 2, "awakened": {"turns": 3}},
+            {"kind": "Shield", "target": "Self", "power": 0.2, "turns": 2, "awakened": {"power": 0.3, "turns": 3}},
+            {"kind": "Status", "target": "Self", "status": "Immunity", "turns": 2, "awakened": {"turns": 3}}
           ],
           "levels": [
-            {"kind": "Recovery", "value": 0.1},
-            {"kind": "Recovery", "value": 0.1},
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.21, "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies", "count": 1},
-            {"kind": "Status", "target": "LowestAlly", "status": "Aegis"}
-          ]
-        },
-        {
-          "name": "Último Voto",
-          "image": "ultimo_voto",
-          "passive": {"kind": "StatusOrEffectOnDeath"},
-          "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.15, "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.25, "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ]
         }
       ]
@@ -128,15 +110,14 @@
       "role": "Support",
       "stats": {"hp": 9615, "atk": 573, "def": 595, "spd": 102},
       "awakened_stats": {"hp": 10500, "atk": 627, "def": 650, "spd": 103},
-      "leader": {"stat": "Speed", "value": 0.1},
-      "awakening": {"name": "Sir Gawa"},
+      "leader": {"stat": "Speed", "value": 0.18},
+      "awakening": {"name": "Sir Gawa", "stat": "Speed"},
       "skills": [
         {
-          "name": "Estocada Veloz",
-          "image": "estocada_veloz",
+          "name": "Corte X",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Impeto", "target": "Target", "power": -10}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.25, "hits": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -146,30 +127,26 @@
           ]
         },
         {
-          "name": "Clarim de Guerra",
-          "image": "clarim_de_guerra",
+          "name": "Um por Todos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 25}
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 50}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 40},
-            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
           ]
         },
         {
-          "name": "Estandarte do Vendaval",
-          "image": "estandarte_do_vendaval",
+          "name": "Caminho da Espada",
           "cooldown": 5,
           "effects": [
-            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2},
-            {"kind": "Impeto", "target": "AllAllies", "power": 20},
-            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "chance": 1, "turns": 2}
+            {"kind": "Status", "target": "HighestAlly", "status": "AttackUp", "turns": 2, "by": "Attack", "othersOnly": true},
+            {"kind": "Status", "target": "HighestAlly", "status": "CritUp", "turns": 2, "by": "Attack", "othersOnly": true},
+            {"kind": "JointAttack", "target": "HighestAlly", "count": 1, "by": "Attack", "awakened": {"count": 2}}
           ],
           "levels": [
+            {"kind": "Cooldown", "value": 1},
             {"kind": "Cooldown", "value": 1}
           ]
         }
@@ -182,49 +159,43 @@
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
-      "leader": {"stat": "Defense", "value": 0.2},
-      "awakening": {"name": "Sir Galah"},
+      "leader": {"stat": "Defense", "value": 0.28},
+      "awakening": {"name": "Sir Galah", "stat": "Resistance"},
       "skills": [
         {
-          "name": "Juramento",
-          "image": "juramento",
+          "name": "Corte X",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45},
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.35, "turns": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.25, "hits": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
           ],
           "levels": [
-            {"kind": "EffectRate", "value": 0.1},
-            {"kind": "Damage", "value": 0.2},
-            {"kind": "EffectRate", "value": 0.2},
-            {"kind": "Damage", "value": 0.1}
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.05},
+            {"kind": "Damage", "value": 0.1},
+            {"kind": "Damage", "value": 0.15}
           ]
         },
         {
-          "name": "Voto de Escudo",
-          "image": "voto_de_escudo",
-          "cooldown": 4,
+          "name": "Cabeça Erguida",
+          "passive": {
+            "kind": "StatusImmunity",
+            "value": 1,
+            "statuses": [
+              "Stun",
+              "Sleep"
+            ]
+          }
+        },
+        {
+          "name": "Sacrifício Nobre",
+          "cooldown": 5,
           "effects": [
-            {"kind": "Status", "target": "Self", "status": "CritResist"},
-            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+            {"kind": "Sacrifice", "target": "Self", "power": 0.5, "destroy": true, "factor": {"by": "HealthFraction", "slope": 1, "base": 0}},
+            {"kind": "Heal", "target": "AllAllies", "stat": "Sacrificed", "power": 1},
+            {"kind": "Damage", "target": "AllEnemies", "stat": "Sacrificed", "power": 1, "fixed": true, "plus": [{"stat": "Defense", "power": 0.2}], "awakened": {"power": 1.5, "plus": [{"stat": "Defense", "power": 0.4}]}}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 3},
-            {"kind": "Status", "target": "Self", "status": "Aegis"}
-          ]
-        },
-        {
-          "name": "Último Voto",
-          "image": "ultimo_voto",
-          "passive": {"kind": "StatusOrEffectOnDeath"},
-          "effects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.2, "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Shield", "target": "AllAllies", "power": 0.35, "turns": 2}
           ]
         }
       ]
@@ -236,14 +207,14 @@
       "role": "HP",
       "stats": {"hp": 10230, "atk": 587, "def": 549, "spd": 99},
       "awakened_stats": {"hp": 11175, "atk": 642, "def": 599, "spd": 100},
-      "leader": {"stat": "Resistance", "value": 0.2},
-      "awakening": {"name": "Sir Arto"},
+      "leader": {"stat": "Resistance", "value": 0.3},
+      "awakening": {"name": "Sir Arto", "stat": "Crit"},
       "skills": [
         {
-          "name": "Lâmina Faminta",
-          "image": "lamina_faminta",
+          "name": "Corte X",
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 2.45, "drain": 0.3}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.25, "hits": 2},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.05},
@@ -253,32 +224,27 @@
           ]
         },
         {
-          "name": "Juramento Sombrio",
-          "image": "juramento_sombrio",
+          "name": "Um por Todos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.71, "drain": 0.3}
+            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
+            {"kind": "Impeto", "target": "AllAllies", "power": 50}
           ],
           "levels": [
-            {"kind": "Damage", "value": 0.1},
-            {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Stigma", "chance": 0.7, "turns": 2},
-            {"kind": "Damage", "target": "AllEnemies", "power": 3.45, "drain": 0.15, "ignoreDefense": 0.35}
           ]
         },
         {
-          "name": "Último Voto",
-          "image": "ultimo_voto",
-          "passive": {"kind": "StatusOrEffectOnDeath"},
+          "name": "Todos por um",
+          "cooldown": 6,
           "effects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 30}
+            {"kind": "Status", "target": "ChosenAlly", "status": "Foresight", "turns": 2},
+            {"kind": "Status", "target": "ChosenAlly", "status": "AttackUp", "turns": 2},
+            {"kind": "Impeto", "target": "ChosenAlly", "power": 90, "awakened": {"power": 100}}
           ],
-          "awakenedEffects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 50},
-            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "chance": 1, "turns": 1}
+          "levels": [
+            {"kind": "Cooldown", "value": 1},
+            {"kind": "Cooldown", "value": 1}
           ]
         }
       ]

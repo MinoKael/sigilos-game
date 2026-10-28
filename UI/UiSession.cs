@@ -21,5 +21,24 @@ namespace Sigilos.UI
 		public static event System.Action? Changed;
 
 		public static void NotifyChanged() => Changed?.Invoke();
+
+		/// <summary>O jogador entrou numa parte do jogo pela primeira vez: o jogo grava na conta (a tela não escreve no save).</summary>
+		public static System.Action<Sigilos.Core.Progression.Feature>? FeatureSeen { get; set; }
+
+		public static void Seen(Sigilos.Core.Progression.Feature feature) => FeatureSeen?.Invoke(feature);
+
+		/// <summary>
+		/// A velocidade da luta na tela, deste aparelho (o índice em <see cref="Sigilos.Core.Battle.BattlePace.Speeds"/>): a mesma no
+		/// manual e no automático, e a próxima luta começa nela. Quem lê do aparelho e guarda (<see cref="BattleSpeedSaved"/>) é o GameRoot.
+		/// </summary>
+		public static int BattleSpeed { get; set; }
+
+		public static System.Action<int>? BattleSpeedSaved { get; set; }
+
+		public static void ChooseBattleSpeed(int speed)
+		{
+			BattleSpeed = speed;
+			BattleSpeedSaved?.Invoke(speed);
+		}
 	}
 }

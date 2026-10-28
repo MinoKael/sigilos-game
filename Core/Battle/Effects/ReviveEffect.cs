@@ -22,7 +22,7 @@ namespace Sigilos.Core.Battle.Effects
 
 			var bonus = 1 + cast.HealBonus;
 			foreach (var unit in fallen)
-				resolver.Revive(unit, EffectAmount.Of(effect, effect.Power * bonus, bonus, cast.Caster, unit));
+				resolver.Revive(unit, EffectAmount.Of(effect, effect.Power * bonus, bonus, cast.Caster, unit, cast.Sacrificed));
 		}
 	}
 }

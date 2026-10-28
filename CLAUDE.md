@@ -2,7 +2,7 @@
 
 ## Advisor (Opus 5.5)
 
-The main session runs Sonnet 5.5. `advisorModel` gives it a server-side advisor backed by Opus 5.5. The advisor recommends; the main session executes.
+The main session runs Sonnet 5.5. `advisorModel` gives it a server-side advisor backed by Opus 5.5 Max Effort. The advisor recommends; the main session executes.
 
 Consult it at three checkpoints:
 1. **Before committing to a plan**: nontrivial task (several files, a new mechanism, or an unknown cause), after the first investigation, before the first edit.
@@ -15,9 +15,9 @@ Use the answer: follow it, or state in the reply why not. Treat its claims as hy
 
 Skip it when the task is trivial (one obvious edit, a read, a question answered from code) or the user says so. If the advisor is unavailable or errors, say "advisor unavailable" in the final report and self-review with the `verify-and-stop` checklist.
 
-### Messages starting with `bug:`
+### Messages starting with  `bug:|advisor:`
 
-When the user's message starts with `bug:`, the advisor owns the fix:
+When the user's message starts with `bug:/advisor:`, the advisor owns the fix:
 1. Investigate first (reproduce, read the code, collect evidence), then consult the advisor **before the first edit**, even if the fix looks small.
 2. Consult it again **after the fix is applied and verified**, before reporting. Do not report a bug as fixed without that review.
 3. If the first fix does not resolve it, consult again before the next attempt. Never try a second fix blind.
@@ -41,4 +41,4 @@ Never commit. The user commits manually.
 
 ## Account server
 
-The account server repo `D:\dev\sigilos-server` may be read and modified from this project. Never commit there either.
+The account server repo `F:\GameDev\sigilos-server` may be read and modified from this project. Never commit there either.

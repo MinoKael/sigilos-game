@@ -36,16 +36,12 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1},
-            {"kind": "Damage", "target": "Target", "power": 4.41}
+            {"kind": "Damage", "target": "Target", "power": 4.41, "awakened": {"power": 4.9, "ignoreDefense": 0.3}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "Foresight", "turns": 1},
-            {"kind": "Damage", "target": "Target", "power": 4.9, "ignoreDefense": 0.3}
           ]
         },
         {
@@ -84,19 +80,14 @@
           "image": "postura_do_rio",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5, "turns": 1}
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2, "awakened": {"turns": 3}},
+            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2, "awakened": {"turns": 3}},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.5, "turns": 1, "awakened": {"chance": 0.7}}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 3},
-            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 3},
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.7, "turns": 1}
           ]
         },
         {
@@ -138,17 +129,13 @@
           "image": "mil_cortes",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
+            {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2, "awakened": {"power": 1.22}},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15, "awakened": {"power": -25}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.22, "hits": 2},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -25}
           ]
         },
         {
@@ -188,15 +175,11 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
-            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1}
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1},
+            {"kind": "Impeto", "target": "AllAllies", "power": 20, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
-            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1},
-            {"kind": "Impeto", "target": "AllAllies", "power": 20}
           ]
         },
         {
@@ -244,17 +227,13 @@
           "image": "corte_final",
           "cooldown": 4,
           "effects": [
-            {"kind": "BonusPerStatus", "target": "Self", "power": 0.2, "scope": "Debuffs", "from": "Target", "bonus": "Damage"},
-            {"kind": "Damage", "target": "Target", "power": 3.92}
+            {"kind": "BonusPerStatus", "target": "Self", "power": 0.2, "scope": "Debuffs", "from": "Target", "bonus": "Damage", "awakened": {"power": 0.3}},
+            {"kind": "Damage", "target": "Target", "power": 3.92, "awakened": {"power": 4.41}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "BonusPerStatus", "target": "Self", "power": 0.3, "scope": "Debuffs", "from": "Target", "bonus": "Damage"},
-            {"kind": "Damage", "target": "Target", "power": 4.41}
           ]
         },
         {

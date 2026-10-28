@@ -67,7 +67,7 @@ namespace Sigilos.UI.Screens
 			{
 				if (dungeonsOpen)
 				{
-					Core.Progression.Features.MarkSeen(_player, Core.Progression.Feature.Dungeons);
+					UiSession.Seen(Core.Progression.Feature.Dungeons);
 					Requested?.Invoke(Destination.Dungeons);
 				}
 				else
@@ -77,7 +77,7 @@ namespace Sigilos.UI.Screens
 
 			var exploration = _database.Exploration;
 			var explorationOpen = Core.Progression.Features.IsOpen(_player, _database, Core.Progression.Feature.Exploration) && exploration.Constellations.Count > 0;
-			var now = DateTime.Now;
+			var now = DateTime.UtcNow;
 			var month = exploration.Explorations.Count > 0 ? exploration.Explorations[Core.Progression.Exploration.VariationOf(now) % exploration.Explorations.Count].Name : "";
 			var starDetail = explorationOpen
 				? T("map.exploration_detail", month, Core.Progression.Exploration.Cleared(_player, now), exploration.Constellations.Count)
@@ -90,7 +90,7 @@ namespace Sigilos.UI.Screens
 			{
 				if (explorationOpen)
 				{
-					Core.Progression.Features.MarkSeen(_player, Core.Progression.Feature.Exploration);
+					UiSession.Seen(Core.Progression.Feature.Exploration);
 					Requested?.Invoke(Destination.Exploration);
 				}
 				else

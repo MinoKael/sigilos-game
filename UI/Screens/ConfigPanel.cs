@@ -11,9 +11,9 @@ namespace Sigilos.UI.Screens
 	/// <summary>
 	/// A conta nos Ajustes: o e-mail (nulo: jogando sem conta), o nome (nulo numa conta criada antes do nome
 	/// existir), como está a nuvem e o que os botões fazem (Entrar ou criar conta; Sair da conta; trocar o
-	/// nome).
+	/// nome). <see cref="RenameBlocked"/> diz por que a troca de nome ainda não abre (nulo: abre).
 	/// </summary>
-	public sealed record ConfigAccount(string? Email, string? Name, string Status, Action SignIn, Action SignOut, Action Rename);
+	public sealed record ConfigAccount(string? Email, string? Name, string Status, Action SignIn, Action SignOut, Action Rename, string? RenameBlocked = null);
 
 	/// <summary>Um volume nos Ajustes: o nome do controle, o título, o valor de agora (0 a 1) e quem ouve a mudança.</summary>
 	public sealed record ConfigVolume(string Id, string Title, float Value, Action<float> Changed);
@@ -133,22 +133,17 @@ namespace Sigilos.UI.Screens
 				}).Named("SignOut");
 				signOut.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
 				var buttons = Layout.Row(Space.Regular).Named("Buttons");
-				// Trocar o nome é na Loja; aqui só a conta que ainda não tem nome escolhe o primeiro, de graça.
-				if (account.Name == null)
+				// Escolher o primeiro nome ou trocar o de agora (de graça, uma vez por semana): o botão fica sempre no
+				// mesmo lugar e, antes da semana passar, apagado com o dia em que abre.
+				var rename = GameButton.Of(T(account.Name == null ? "config.choose_name" : "config.rename"), () =>
 				{
-					var choose = GameButton.Of(T("config.choose_name"), () =>
-					{
-						dialog.Close();
-						account.Rename();
-					}).Named("ChooseName");
-					choose.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-					buttons.AddChild(choose);
-				}
-				else
-				{
-					column.AddChild(Layout.Text(T("config.rename_in_shop"), GameTheme.Faded, 470).Named("RenameHint"));
-				}
-
+					dialog.Close();
+					account.Rename();
+				}).Named("Rename");
+				rename.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+				if (account.RenameBlocked != null)
+					rename.Block(account.RenameBlocked, T("config.rename"));
+				buttons.AddChild(rename);
 				buttons.AddChild(signOut);
 				column.AddChild(buttons);
 			}

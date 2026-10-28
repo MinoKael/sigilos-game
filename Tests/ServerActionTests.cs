@@ -30,7 +30,6 @@ namespace Sigilos.Tests
 			var server = Player();
 			var rune = Fresh(server);
 			var game = Copy(server);
-			var baseline = ServerActions.Snapshot(game);
 			var essence = server.Essence;
 
 			var delta = ServerActions.Apply(new Random(5), TestData.Database, server, new ActionRequest { Kind = ServerActionKind.UpgradeRune, RuneId = rune.Id, Target = 12 })!;
@@ -38,8 +37,32 @@ namespace Sigilos.Tests
 			Assert.Equal(12, rune.Level, "chegou ao +12");
 			Assert.True(server.Essence < essence, "gastou Essência");
 
-			ServerActions.ApplyDelta(game, delta, baseline);
+			StatePatch.Apply(game, delta.Patch!);
 			Assert.Equal(PlayerSave.ToJson(server), PlayerSave.ToJson(game), "a cópia do jogo ficou igual à do servidor");
+		}
+
+		[Test]
+		private static void PatchCarriesRemovalsAdditionsAndFieldsToAnotherCopy()
+		{
+			var server = Player();
+			for (var i = 0; i < 4; i++)
+				Fresh(server, 1 + i % 3);
+			foreach (var summon in TestData.Database.Summons.Take(3))
+				Roster.Add(server, summon);
+
+			var game = Copy(server);
+			var kept = game.Runes[0];
+			var after = Copy(server);
+			after.Runes.RemoveAt(1);
+			after.Monsters.RemoveAt(0);
+			after.Runes[0].Locked = !after.Runes[0].Locked;
+			Fresh(after, 2);
+			after.Veil.Aster += 37;
+			after.Essence += 1234;
+
+			StatePatch.Apply(game, StatePatch.Diff(server, after));
+			Assert.Equal(PlayerSave.ToJson(after), PlayerSave.ToJson(game), "a cópia ficou igual à do servidor");
+			Assert.True(ReferenceEquals(kept, game.Runes[0]) && kept.Locked == after.Runes[0].Locked, "a runa que ficou foi atualizada no lugar");
 		}
 
 		[Test]
@@ -58,17 +81,12 @@ namespace Sigilos.Tests
 		{
 			var server = Player();
 			var game = Copy(server);
-			var baseline = ServerActions.Snapshot(game);
 			var delta = ServerActions.Apply(new Random(9), TestData.Database, server, new ActionRequest { Kind = ServerActionKind.Summon, Count = 10, Scroll = ScrollKind.Mystic })!;
 			Assert.True(delta != null, "a invocação vale");
 			Assert.Equal(10, delta.Monsters.Count, "dez monstros");
-			Assert.Equal(10, delta.TotalPulls, "dez invocações contadas");
+			Assert.Equal(10, server.TotalPulls, "dez invocações contadas");
 
-			var earned = game.Essence;
-			game.Essence += 500;
-			ServerActions.ApplyDelta(game, delta, baseline);
-			Assert.Equal(earned + 500, game.Essence, "o que o jogo ganhou enquanto esperava não se perde");
-			game.Essence = earned;
+			StatePatch.Apply(game, delta.Patch!);
 			Assert.Equal(PlayerSave.ToJson(server), PlayerSave.ToJson(game), "a cópia do jogo ficou igual à do servidor");
 			Assert.Equal(10, ServerActions.Results(TestData.Database, ActionDelta.FromJson(delta.ToJson())!).Count, "o resultado atravessa o texto");
 			Assert.True(ServerActions.Apply(new Random(1), TestData.Database, server, new ActionRequest { Kind = ServerActionKind.Summon, Count = 3 }) == null, "só 1 ou 10");
@@ -87,56 +105,65 @@ namespace Sigilos.Tests
 		}
 
 		[Test]
-		private static void AuditRefusesWhatOnlyTheServerMayDo()
+		private static void RuneKitOpensSixRunesOfTheChosenSetOnTheServer()
 		{
-			var before = Player();
-			var rune = Fresh(before);
-			Assert.Equal(null, SaveAudit.Check(Copy(before), before, false), "o mesmo save vale");
+			var server = Player();
+			var set = RuneSets.Active[0].Set;
+			var request = new ActionRequest { Kind = ServerActionKind.OpenRuneKit, Text = set.ToString() };
+			Assert.True(ServerActions.Apply(new Random(2), TestData.Database, server, request) == null, "sem kit não abre");
 
-			var upgraded = Copy(before);
-			upgraded.Runes.First(r => r.Id == rune.Id).Level = 12;
-			Assert.Equal("rune_changed", SaveAudit.Check(upgraded, before, false), "melhora por conta própria");
+			server.PendingRuneKits = 1;
+			var game = Copy(server);
+			Assert.True(ServerActions.Apply(new Random(2), TestData.Database, server, new ActionRequest { Kind = ServerActionKind.OpenRuneKit, Text = "nada" }) == null, "conjunto que não existe");
+			var delta = ServerActions.Apply(new Random(2), TestData.Database, server, request)!;
+			Assert.True(delta != null, "abre o kit");
+			Assert.Equal(RuneRules.Slots, delta.Runes.Count, "um sigilo por espaço");
+			Assert.True(delta.Runes.All(r => r.Set == set), "todos do conjunto escolhido");
+			Assert.Equal(0, server.PendingRuneKits, "o kit foi gasto");
 
-			var substat = Copy(before);
-			substat.Runes.First(r => r.Id == rune.Id).Substats[0].Rolls[0] = new RuneRoll(0, 9999);
-			Assert.Equal("rune_changed", SaveAudit.Check(substat, before, false), "subatributo mexido");
-
-			var pity = Copy(before);
-			pity.PullsSinceFiveStar = 99;
-			Assert.Equal("pulls_changed", SaveAudit.Check(pity, before, false), "garantia mexida");
-
-			var locked = Copy(before);
-			locked.Runes.First(r => r.Id == rune.Id).Locked = true;
-			Assert.Equal(null, SaveAudit.Check(locked, before, false), "o cadeado é do jogador");
+			StatePatch.Apply(game, ActionDelta.FromJson(delta.ToJson())!.Patch!);
+			Assert.Equal(PlayerSave.ToJson(server), PlayerSave.ToJson(game), "a cópia do jogo ficou igual à do servidor");
 		}
 
 		[Test]
-		private static void AuditAcceptsFreshDropsAndRefusesForgedOnes()
+		private static void ShopPurchaseChargesAnOfferAndNoLongerSellsTheName()
 		{
-			var before = Player();
-			Fresh(before);
-			var next = Copy(before);
-			var drop = Fresh(next, 2);
-			Assert.Equal(null, SaveAudit.Check(next, before, false), "um drop novo vale");
+			var player = Player();
+			player.Gold = 1_000_000;
+			Assert.True(ServerActions.Apply(new Random(1), TestData.Database, player, new ActionRequest { Kind = ServerActionKind.BuyShop, Text = "rename" }) == null, "a troca de nome não é mais vendida");
+			Assert.Equal(1_000_000, player.Gold, "nada foi cobrado");
 
-			var maxed = Copy(next);
-			maxed.Runes.First(r => r.Id == drop.Id).Level = 15;
-			Assert.Equal("rune_forged", SaveAudit.Check(maxed, before, false), "runa nova já melhorada");
+			var offer = TestData.Database.Shop.First();
+			Assert.True(ServerActions.Apply(new Random(1), TestData.Database, player, new ActionRequest { Kind = ServerActionKind.BuyShop, Text = offer.Id }) != null, "a oferta vale");
+			Assert.Equal(1_000_000 - offer.Price, player.Gold, "cobrou o preço");
+		}
 
-			var perfect = Copy(next);
-			perfect.Runes.First(r => r.Id == drop.Id).Substats[0].Rolls[0] = new RuneRoll(0, 9999);
-			Assert.Equal("rune_forged", SaveAudit.Check(perfect, before, false), "sorteio fora da faixa");
+		[Test]
+		private static void RenameIsFreeOnceEverySevenDays()
+		{
+			var player = Player();
+			var now = new DateTime(2026, 10, 28, 12, 0, 0, DateTimeKind.Utc);
+			Assert.True(AccountRename.CanRename(player, now), "quem nunca trocou pode trocar");
 
-			var reused = Copy(before);
-			var old = reused.Runes.First();
-			reused.Runes.Remove(old);
-			var back = Copy(before);
-			Assert.Equal(null, SaveAudit.Check(reused, before, false), "vender vale");
-			Assert.Equal("rune_forged", SaveAudit.Check(back, reused, false), "o id vendido não volta");
+			AccountRename.Mark(player, now);
+			Assert.Equal<DateTime?>(now + AccountRename.Cooldown, AccountRename.NextAt(player, now), "a próxima abre em 7 dias");
+			Assert.True(!AccountRename.CanRename(player, now + AccountRename.Cooldown - TimeSpan.FromSeconds(1)), "um segundo antes, ainda não");
+			Assert.True(AccountRename.CanRename(player, now + AccountRename.Cooldown), "com 7 dias, abre");
+			var saved = PlayerSave.FromJson(PlayerSave.ToJson(player))!.LastRename;
+			Assert.Equal<DateTime?>(now, saved, "a data fica no save");
+			Assert.Equal(DateTimeKind.Utc, saved!.Value.Kind, "a data volta em UTC");
+		}
 
-			var replaced = Copy(before);
-			replaced.TotalPulls = 50;
-			Assert.Equal("pulls_forged", SaveAudit.Check(replaced, before, true), "conta nova com invocações");
+		[Test]
+		private static void ActionsKeepTheirFeatsOnTheServer()
+		{
+			var server = Player();
+			server.Scrolls = 1000;
+			var delta = Enumerable.Range(0, 60)
+				.Select(seed => ServerActions.Apply(new Random(seed), TestData.Database, server, new ActionRequest { Kind = ServerActionKind.Summon, Count = 10, Scroll = ScrollKind.Mystic })!)
+				.FirstOrDefault(d => d.Feats.Count > 0);
+			Assert.True(delta != null, "alguma invocação rendeu um feito");
+			Assert.True(ActionDelta.FromJson(delta!.ToJson())!.Feats.Count == 0, "o feito não viaja ao jogo");
 		}
 	}
 }

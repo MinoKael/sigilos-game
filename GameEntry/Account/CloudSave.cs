@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Sigilos.GameEntry.Account
 {
-	/// <summary>A cópia do save na nuvem: a revisão (sobe a cada envio aceito), quando foi gravada e o JSON do save.</summary>
+	/// <summary>A cópia do save na nuvem: a revisão (sobe a cada mudança do servidor), quando foi gravada e o JSON do save.</summary>
 	public sealed record CloudCopy(long Revision, DateTimeOffset SavedAt, string Json);
 
 	/// <summary>O download: <see cref="Copy"/> nula com <see cref="Ok"/> é conta sem save na nuvem (404).</summary>
@@ -15,28 +15,18 @@ namespace Sigilos.GameEntry.Account
 	}
 
 	/// <summary>
-	/// Baixa e envia o save. O servidor guarda o JSON como um bloco opaco (compactado lá) com a revisão ao
-	/// lado: muda o formato do save, o servidor não muda. Quem decide o que fazer com as duas cópias é o
-	/// <see cref="CloudSync"/>.
+	/// As rotas do save da conta. O save é do servidor: o aparelho só baixa a cópia e pede ações, lutas e a troca de nome,
+	/// e cada resposta traz o que mudou. O aparelho nunca envia o save.
 	///
-	/// O envio leva a sessão deste aparelho e a revisão da nuvem de que ele partiu (<c>baseRevision</c>). O
-	/// servidor recusa (409) se a sessão é de outro aparelho (<c>session_taken</c>) ou se a nuvem mudou
-	/// desde aquela revisão (<c>save_conflict</c>): um aparelho nunca apaga, sem saber, o que outro enviou.
+	/// Cada pedido leva a sessão deste aparelho e a revisão de que ele partiu (<c>baseRevision</c>). O servidor recusa
+	/// (409) se a sessão é de outro aparelho (<c>session_taken</c>) ou se a cópia dele já é outra (<c>save_conflict</c>):
+	/// o aparelho então baixa de novo antes de pedir mais.
 	/// </summary>
 	public sealed class CloudSave
 	{
-		/// <summary>O limite do servidor para o save (o JSON, antes do Base64).</summary>
-		public const int MaxBytes = Sigilos.Core.Player.SaveCodec.MaxBytes;
-
 		private readonly AuthClient _auth;
-		private readonly Func<int> _format;
 
-		/// <param name="format">O formato de envio que o servidor disse aceitar ao tomar a sessão (0: só o JSON puro, 1: gzip).</param>
-		public CloudSave(AuthClient auth, Func<int>? format = null)
-		{
-			_auth = auth;
-			_format = format ?? (() => 0);
-		}
+		public CloudSave(AuthClient auth) => _auth = auth;
 
 		public async Task<CloudDownload> Download()
 		{
@@ -61,68 +51,22 @@ namespace Sigilos.GameEntry.Account
 		public Task<ApiResponse> Action(Guid sessionId, long baseRevision, Sigilos.Core.Progression.ActionRequest request) =>
 			_auth.Call(HttpMethod.Post, "game/action", new { sessionId, baseRevision, request = request.ToJson() });
 
-		/// <summary>Quanto tempo o envio do que mudou fica desligado depois de falhar duas vezes seguidas (servidor de outra versão, ou sem a rota).</summary>
-		private const long DeltaPauseMilliseconds = 600_000;
-
-		private int _deltaFailures;
-		private long _deltaPausedUntil;
-
-		/// <summary>O servidor aceita só o que mudou (<see cref="UploadDelta"/>) e o envio não está em pausa.</summary>
-		public bool CanDelta => _format() >= 2 && Environment.TickCount64 >= _deltaPausedUntil;
+		/// <summary>Pede ao servidor que comece o jogo desta conta (a conta nova, ou a de antes de a versão zerar as contas): quem cria é ele.</summary>
+		public Task<ApiResponse> Init(Guid sessionId) =>
+			_auth.Call(HttpMethod.Post, "game/init", new { sessionId });
 
 		/// <summary>
-		/// Envia <paramref name="json"/> sobre a revisão <paramref name="baseRevision"/>: só o que mudou desde
-		/// <paramref name="baseline"/> (o JSON que a nuvem tem naquela revisão) quando o servidor aceita e o delta compensa; o
-		/// save inteiro no resto. Se o servidor não aplica o delta (versão diferente, hash que não bate, rota que não existe), o
-		/// mesmo envio segue com o save inteiro, e duas falhas seguidas desligam o delta por <see cref="DeltaPauseMilliseconds"/>.
+		/// O começo (<paramref name="begin"/>) ou o fim de uma luta do servidor, a partir da revisão <paramref name="baseRevision"/>.
+		/// O começo devolve o bilhete; o fim leva o bilhete e paga.
 		/// </summary>
-		public async Task<ApiResponse> Send(Guid sessionId, long baseRevision, string json, string? baseline)
-		{
-			if (baseline != null && CanDelta)
-			{
-				var delta = await Task.Run(() => Sigilos.Core.Player.SaveDelta.Diff(baseline, json));
-				if (delta != null && delta.Length < json.Length / 2)
-				{
-					var response = await UploadDelta(sessionId, baseRevision, baseRevision + 1, delta, Sigilos.Core.Player.SaveCodec.Hash(json));
-					if (response.Ok)
-					{
-						_deltaFailures = 0;
-						return response;
-					}
-
-					if (!response.Conflict("delta_mismatch") && !response.Conflict("delta_failed") && response.Status is not (404 or 405))
-						return response;
-
-					if (++_deltaFailures >= 2)
-					{
-						_deltaFailures = 0;
-						_deltaPausedUntil = Environment.TickCount64 + DeltaPauseMilliseconds;
-					}
-				}
-			}
-
-			return await Upload(sessionId, baseRevision, baseRevision + 1, json);
-		}
+		public Task<ApiResponse> Battle(Guid sessionId, long baseRevision, Sigilos.Core.Progression.BattleRequest request, bool begin) =>
+			_auth.Call(HttpMethod.Post, begin ? "game/battle/start" : "game/battle", new { sessionId, baseRevision, request = request.ToJson() });
 
 		/// <summary>
-		/// Envia só o que mudou desde a revisão <paramref name="baseRevision"/>, com o hash do save inteiro que o servidor deve
-		/// obter. <c>delta_mismatch</c> ou <c>delta_failed</c> (409) pedem o save inteiro.
+		/// Dá ou troca o nome da conta. O servidor confere o nome e, se a conta já tinha um, cobra a troca da Loja; a
+		/// resposta traz o nome aceito e o que mudou no save.
 		/// </summary>
-		public Task<ApiResponse> UploadDelta(Guid sessionId, long baseRevision, long revision, string delta, string hash) =>
-			_auth.Call(HttpMethod.Put, "save/delta", new { sessionId, baseRevision, revision, delta = Convert.ToBase64String(Sigilos.Core.Player.SaveCodec.Compress(Encoding.UTF8.GetBytes(delta))), hash });
-
-		public async Task<ApiResponse> Upload(Guid sessionId, long baseRevision, long revision, string json)
-		{
-			var bytes = Encoding.UTF8.GetBytes(json);
-			if (bytes.Length > MaxBytes)
-				return new ApiResponse(400, "save_too_large", default);
-			if (_format() >= 1)
-			{
-				var gz = await Task.Run(() => Convert.ToBase64String(Sigilos.Core.Player.SaveCodec.Compress(bytes)));
-				return await _auth.Call(HttpMethod.Put, "save", new { sessionId, baseRevision, revision, gz });
-			}
-
-			return await _auth.Call(HttpMethod.Put, "save", new { sessionId, baseRevision, revision, data = Convert.ToBase64String(bytes) });
-		}
+		public Task<ApiResponse> Rename(Guid sessionId, long baseRevision, string name) =>
+			_auth.Call(HttpMethod.Post, "game/rename", new { sessionId, baseRevision, name });
 	}
 }

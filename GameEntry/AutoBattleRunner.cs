@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Godot;
 using Sigilos.Core.Progression;
 using Sigilos.UI;
@@ -11,22 +12,22 @@ namespace Sigilos.GameEntry
 	/// Roda a Batalha automática fora das telas: é um nó do GameRoot, vivo o tempo todo, então trocar de
 	/// tela, abrir as Runas ou fechar a janela não para nada.
 	///
-	/// Cada luta é resolvida na hora (<see cref="Start"/> recebe como), mas a recompensa só entra depois do
-	/// tempo que ela levaria na tela no automático em 2×; então vem a próxima. Para no fim das lutas, com o
-	/// botão Parar, ou quando a próxima não pode começar (Mana, inventário de runas cheio) — nesses dois
-	/// casos o jogador resolve e retoma de onde parou. Parar no meio de uma luta descarta essa luta: nada
-	/// ganho, nada gasto. Quem mostra é o aviso flutuante e a janela (UI), pelo <see cref="AutoBattleRun"/>;
-	/// a luta de agora anda no mesmo relógio, para ver (<see cref="AutoBattleFight"/>), sem mexer no resultado.
-	/// As lutas não soam; só o começo (e a retomada) e a parada.
+	/// Cada luta começa no servidor (<see cref="Start"/> recebe como): ele a decide na hora e dá o bilhete, mas só paga
+	/// no fim, depois do tempo que ela levaria na tela no automático (<see cref="AutoFight.Finish"/>); então vem a
+	/// próxima. Para no fim das lutas, com o botão Parar, ou quando a próxima não pode começar (Mana, inventário de
+	/// runas cheio) — nesses dois casos o jogador resolve e retoma de onde parou. Parar no meio de uma luta descarta
+	/// essa luta: nada ganho, nada gasto. Quem mostra é o aviso flutuante e a janela (UI), pelo
+	/// <see cref="AutoBattleRun"/>; a luta de agora anda no mesmo relógio, para ver (<see cref="AutoBattleFight"/>), sem
+	/// mexer no resultado. As lutas não soam; só o começo (e a retomada) e a parada.
 	/// </summary>
 	public partial class AutoBattleRunner : Node
 	{
 		private Func<EntryProblem> _check = () => EntryProblem.None;
-		private Func<(bool Victory, double Seconds, AutoBattleFight Fight)> _fight = () => throw new InvalidOperationException();
-		private Func<VictoryReward> _victory = () => throw new InvalidOperationException();
+		private Func<Task<AutoFight?>> _fight = () => throw new InvalidOperationException();
+		private Func<Task<AutoSettled?>>? _finish;
 		private Action _save = () => { };
 		private int _mana;
-		private bool _victoryPending;
+		private bool _waiting;
 
 		public AutoBattleRunner()
 		{
@@ -46,18 +47,17 @@ namespace Sigilos.GameEntry
 		/// <summary>Começou uma nova, ou a de agora foi dispensada (nula).</summary>
 		public event Action<AutoBattleRun?>? RunChanged;
 
-		/// <summary>Uma vitória foi aplicada: o nível, a experiência e as moedas da conta mudaram.</summary>
+		/// <summary>Uma vitória foi paga: o nível, a experiência e as moedas da conta mudaram.</summary>
 		public event Action? Rewarded;
 
 		/// <param name="check">Se a próxima luta pode começar (sem cobrar nada).</param>
-		/// <param name="fight">Resolve uma luta inteira no automático: se venceu, quantos segundos ela levaria na tela e a mesma luta para ver.</param>
-		/// <param name="victory">Aplica a vitória (cobra a Mana, entrega a recompensa).</param>
-		public void Start(AutoBattleRun run, Func<EntryProblem> check, Func<(bool Victory, double Seconds, AutoBattleFight Fight)> fight, Func<VictoryReward> victory, Action save)
+		/// <param name="fight">Começa uma luta no servidor: se venceu, quantos segundos ela leva na tela, a mesma luta para ver e como terminá-la; nula se não deu para começar.</param>
+		public void Start(AutoBattleRun run, Func<EntryProblem> check, Func<Task<AutoFight?>> fight, Action save)
 		{
 			Run = run;
 			_check = check;
 			_fight = fight;
-			_victory = victory;
+			_finish = null;
 			_save = save;
 			_mana = run.Mana;
 			run.Running = true;
@@ -105,7 +105,7 @@ namespace Sigilos.GameEntry
 
 		public override void _Process(double delta)
 		{
-			if (Held || Run is not { Running: true } run)
+			if (Held || _waiting || Run is not { Running: true } run || _finish is not { } finish)
 				return;
 
 			run.Elapsed += delta;
@@ -113,23 +113,59 @@ namespace Sigilos.GameEntry
 			if (run.Elapsed < run.Duration)
 				return;
 
-			run.Record(run.Duration);
-			if (_victoryPending)
+			_finish = null;
+			Settle(run, finish);
+		}
+
+		/// <summary>
+		/// O fim da luta de agora: o servidor confere o bilhete e o tempo e, na vitória, paga. Se não deu para terminar
+		/// (sem conexão, bilhete vencido), a luta não conta e a corrida para, com retomada.
+		/// </summary>
+		private async void Settle(AutoBattleRun run, Func<Task<AutoSettled?>> finish)
+		{
+			_waiting = true;
+			AutoSettled? settled;
+			try
 			{
-				run.Add(_victory());
+				settled = await finish();
+			}
+			finally
+			{
+				_waiting = false;
+			}
+
+			// O servidor pagou mesmo que a corrida tenha parado enquanto ele respondia: a vitória entra.
+			if (settled is { Victory: true, Reward: { } reward })
+			{
+				if (Run == run)
+					run.Add(reward);
 				_save();
 				Rewarded?.Invoke();
 			}
-			else
+
+			if (Run != run || !run.Running)
+				return;
+
+			if (settled == null)
 			{
-				run.Defeats++;
+				Halt(T("serverBattle.offline"), canResume: true);
+				return;
 			}
 
+			if (settled.Problem != EntryProblem.None)
+			{
+				Halt(Texts.Refusal(settled.Problem, _mana), canResume: settled.Problem is EntryProblem.NoMana or EntryProblem.RunesFull);
+				return;
+			}
+
+			run.Record(run.Duration);
+			if (!settled.Victory)
+				run.Defeats++;
 			Next();
 		}
 
 		/// <summary>A próxima luta, ou o fim: acabaram as lutas, ou a próxima não pode começar.</summary>
-		private void Next()
+		private async void Next()
 		{
 			if (Run is not { } run)
 				return;
@@ -147,11 +183,40 @@ namespace Sigilos.GameEntry
 				return;
 			}
 
-			var (victory, seconds, fight) = _fight();
-			_victoryPending = victory;
-			run.Fight = fight;
+			if (_waiting)
+				return;
+
+			_waiting = true;
+			AutoFight? result;
+			try
+			{
+				result = await _fight();
+			}
+			finally
+			{
+				_waiting = false;
+			}
+
+			// Parou enquanto o servidor começava: a luta começada fica sem fim e não paga nada.
+			if (Run != run || !run.Running)
+				return;
+
+			if (result == null)
+			{
+				Halt(T("serverBattle.offline"), canResume: true);
+				return;
+			}
+
+			if (result.Problem != EntryProblem.None)
+			{
+				Halt(Texts.Refusal(result.Problem, _mana), canResume: result.Problem is EntryProblem.NoMana or EntryProblem.RunesFull);
+				return;
+			}
+
+			_finish = result.Finish;
+			run.Fight = result.Fight;
 			run.Number = run.Done + 1;
-			run.Duration = Math.Max(0.1, seconds);
+			run.Duration = Math.Max(0.1, result.Seconds);
 			run.Elapsed = 0;
 			run.Notify();
 		}
@@ -160,15 +225,27 @@ namespace Sigilos.GameEntry
 		{
 			if (Run is not { } run)
 				return;
+			_finish = null;
 			run.Running = false;
 			run.StopReason = reason;
 			run.CanResume = canResume && run.Done < run.Runs;
 			run.Number = run.Done;
 			run.Elapsed = 0;
 			run.Fight = null;
-			_victoryPending = false;
 			run.Notify();
 			Sfx.Play("progression.auto_battle_end");
 		}
 	}
+
+	/// <summary>
+	/// Uma luta do automático começada no servidor: o resultado que ele já decidiu, quanto ela leva na tela, a mesma luta
+	/// para ver e como pedir o fim dela (que paga).
+	/// </summary>
+	public sealed record AutoFight(bool Victory, double Seconds, AutoBattleFight? Fight, Func<Task<AutoSettled?>>? Finish, EntryProblem Problem);
+
+	/// <summary>
+	/// O fim de uma luta do automático: se venceu e a recompensa paga, ou a porta que fechou no meio (a Mana que acabou,
+	/// o inventário de runas cheio), e a luta não conta.
+	/// </summary>
+	public sealed record AutoSettled(bool Victory, VictoryReward? Reward, EntryProblem Problem = EntryProblem.None);
 }

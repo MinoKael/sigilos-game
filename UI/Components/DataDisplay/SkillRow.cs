@@ -16,6 +16,8 @@ namespace Sigilos.UI.Components
 		/// <param name="level">O nível de agora; 0 esconde o nível (na luta, a habilidade já vem no dela).</param>
 		public static Control Build(SkillDefinition skill, int level, bool awakened, bool locked, float width = 400, bool levels = false, bool upgrades = false)
 		{
+			// Nível guardado acima do teto atual (a habilidade foi refeita): mostra o teto.
+			level = System.Math.Min(level, skill.MaxLevel);
 			var row = Layout.Row(Space.Regular).Named("Skill");
 			var icon = new SigilButton(null, 52, skill.IsPassive ? SigilShape.Diamond : SigilShape.Square)
 			{

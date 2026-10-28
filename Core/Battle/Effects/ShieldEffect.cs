@@ -12,7 +12,7 @@ namespace Sigilos.Core.Battle.Effects
 		{
 			var bonus = 1 + cast.HealBonus;
 			foreach (var target in cast.Targets(effect))
-				cast.Resolver.GiveShield(target, EffectAmount.Of(effect, effect.Power * bonus, bonus, cast.Caster, target), effect.Turns, effect.Unremovable);
+				cast.Resolver.GiveShield(target, EffectAmount.Of(effect, effect.Power * bonus, bonus, cast.Caster, target, cast.Sacrificed), effect.Turns, effect.Unremovable);
 		}
 	}
 }

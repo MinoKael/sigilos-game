@@ -18,7 +18,7 @@ namespace Sigilos.Core.Battle.Effects
 
 			var bonus = 1 + cast.HealBonus;
 			foreach (var target in targets.ToList())
-				cast.Resolver.Heal(target, EffectAmount.Of(effect, effect.Power * bonus, bonus, cast.Caster, target));
+				cast.Resolver.Heal(target, EffectAmount.Of(effect, effect.Power * bonus, bonus, cast.Caster, target, cast.Sacrificed));
 		}
 	}
 }

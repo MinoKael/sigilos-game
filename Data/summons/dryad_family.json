@@ -35,17 +35,13 @@
           "image": "polen_incandescente",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
-            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.4, "turns": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "awakened": {"power": 2.2}},
+            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.4, "turns": 2, "awakened": {"chance": 0.6}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Unrecoverable", "chance": 0.6, "turns": 2}
           ]
         },
         {
@@ -53,10 +49,7 @@
           "image": "seiva_fervente",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.2, "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "Sleep", "chance": 0.2, "turns": 2, "awakened": {"chance": 0.3}}
           ]
         }
       ]
@@ -90,14 +83,11 @@
           "image": "orvalho_vivo",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2}
+            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllAllies", "status": "Blessing", "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ]
         },
         {
@@ -105,10 +95,7 @@
           "image": "raizes_profundas",
           "passive": {"kind": "StatusOrEffectEachTurn"},
           "effects": [
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.04}
-          ],
-          "awakenedEffects": [
-            {"kind": "Heal", "target": "LowestAlly", "power": 0.06}
+            {"kind": "Heal", "target": "LowestAlly", "power": 0.04, "awakened": {"power": 0.06}}
           ]
         }
       ]
@@ -142,16 +129,13 @@
           "image": "polen_sonifero",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.4, "turns": 2}
+            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.4, "turns": 2, "awakened": {"chance": 0.6}},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -15, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllEnemies", "status": "Sleep", "chance": 0.6, "turns": 2},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -15}
           ]
         },
         {
@@ -197,18 +181,14 @@
           "image": "abraco_da_floresta",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1},
-            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1, "awakened": {"chance": 0.8}},
+            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
+            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.8, "turns": 1},
-            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 2},
-            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
           ]
         },
         {
@@ -247,17 +227,13 @@
           "image": "jardim_murcho",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.47},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.47, "awakened": {"power": 1.96}},
+            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.6, "turns": 2, "awakened": {"chance": 0.8, "turns": 3}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.96},
-            {"kind": "Status", "target": "AllEnemies", "status": "Affliction", "chance": 0.8, "turns": 3}
           ]
         },
         {

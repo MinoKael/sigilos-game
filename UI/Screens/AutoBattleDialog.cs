@@ -279,7 +279,7 @@ namespace Sigilos.UI.Screens
 		{
 			var rune = tile.Rune!;
 			var sheet = RuneDialog.Show(tile, rune);
-			if (!player.Runes.Contains(rune))
+			if (AutoBattleRun.IsSold(player, rune))
 				return;
 
 			var upgraded = false;

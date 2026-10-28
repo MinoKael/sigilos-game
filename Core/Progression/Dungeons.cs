@@ -33,7 +33,8 @@ namespace Sigilos.Core.Progression
 		public static EntryProblem Check(PlayerState player, DungeonDefinition dungeon, int floor) =>
 			Mana.Check(player, IsFloorUnlocked(player, dungeon, floor), dungeon.Floor(floor).Mana, dungeon.Kind == DungeonKind.Runes);
 
-		public static VictoryReward ApplyVictory(Random random, PlayerState player, DungeonDefinition dungeon, int floorNumber)
+		/// <summary>A vitória no andar. <paramref name="team"/> é quem lutou (nulo: a equipe de agora), e é quem ganha a experiência.</summary>
+		public static VictoryReward ApplyVictory(Random random, PlayerState player, DungeonDefinition dungeon, int floorNumber, IReadOnlyList<int>? team = null)
 		{
 			var floor = dungeon.Floor(floorNumber);
 			var mana = Mana.Spend(player, floor.Mana);
@@ -45,8 +46,8 @@ namespace Sigilos.Core.Progression
 			player.Gold += gold;
 			player.Essence += floor.Essence;
 			var prize = firstClear ? Milestones.ForFirstClear(floor) : Prize.None;
-			var share = Leveling.Share(player, dungeon.Id, floor.Experience);
-			var levelUps = Leveling.GiveExperience(player, dungeon.Id, floor.Experience);
+			var share = Leveling.Share(player, dungeon.Id, floor.Experience, team);
+			var levelUps = Leveling.GiveExperience(player, dungeon.Id, floor.Experience, team);
 			var level = player.AccountLevel;
 			var account = Account.GiveExperience(player, floor.Experience);
 			prize += Milestones.ForAccountLevels(level, player.AccountLevel);

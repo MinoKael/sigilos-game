@@ -123,17 +123,6 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>Manda uma fala. Falso se não estava conectado ou a conexão caiu no envio.</summary>
 		public Task<bool> Say(string text) => Send(JsonSerializer.Serialize(new { type = "say", text }, Json));
 
-		/// <summary>Anuncia um feito deste jogador (só o que o mostra; o nome quem põe é o servidor).</summary>
-		public Task<bool> Share(Feat feat) => Send(Write(feat));
-
-		/// <summary>A mensagem de um feito, como o servidor espera.</summary>
-		public static string Write(Feat feat) => feat switch
-		{
-			SummonFeat summon => JsonSerializer.Serialize(new { type = "feat", feat = "summon", summon = summon.SummonId }, Json),
-			RuneFeat rune => JsonSerializer.Serialize(new { type = "feat", feat = "rune", set = rune.Set.ToString(), slot = rune.Slot, grade = rune.Grade, main = rune.Main.ToString(), substats = rune.Substats.Select(s => new { s.Stat, s.Rolls, s.Grind, s.Enchanted }) }, Json),
-			_ => throw new ArgumentOutOfRangeException(nameof(feat), feat, null),
-		};
-
 		/// <summary>
 		/// Uma mensagem do servidor: a linha, ou nula com o <paramref name="error"/> da recusa. Linha de um tipo
 		/// ou feito que este jogo não conhece (de uma versão mais nova) volta nula sem erro.

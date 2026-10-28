@@ -4,11 +4,10 @@ using Sigilos.Core.Player;
 namespace Sigilos.Core.Progression
 {
 	/// <summary>
-	/// A Loja (GDD, seção 12): troca Ouro por Mana, Pergaminhos, Gemas de Reavaliação, vagas na coleção ou a
-	/// troca do nome da conta, pelas ofertas de Data/shop.json. O nome é do servidor: quem chama <see cref="Buy"/> com a troca
-	/// de nome é o GameRoot, só depois que o servidor aceitou o nome novo (aqui sai só o Ouro). O
-	/// Ouro só vem de jogar: canalização, subida de nível da conta e primeira vitória em andar de
-	/// Masmorra. A Mana comprada pode passar do máximo.
+	/// A Loja (GDD, seção 12): troca Ouro por Mana, Pergaminhos, Gemas de Reavaliação ou vagas na coleção, pelas
+	/// ofertas de Data/shop.json. O Ouro só vem de jogar: canalização, subida de nível da conta e primeira vitória em
+	/// andar de Masmorra. A Mana comprada pode passar do máximo. A troca do nome da conta não é vendida: é de graça,
+	/// uma vez por semana (<see cref="AccountRename"/>).
 	/// </summary>
 	public static class Shop
 	{
@@ -38,8 +37,6 @@ namespace Sigilos.Core.Progression
 					break;
 				case ShopItem.CollectionExpander:
 					player.CollectionCapacity = System.Math.Min(Account.MaxCollectionCapacity, player.CollectionCapacity + offer.Amount);
-					break;
-				case ShopItem.RenameAccount:
 					break;
 			}
 

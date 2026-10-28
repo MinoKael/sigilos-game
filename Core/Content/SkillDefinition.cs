@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Sigilos.Core.Content
 {
@@ -9,8 +10,8 @@ namespace Sigilos.Core.Content
 	/// a partir da segunda) ou passiva (<see cref="Passive"/>, age sozinha e nunca é escolhida).
 	///
 	/// Cada habilidade sobe de nível com cópias da mesma invocação (<see cref="Levels"/>: o nível 2 é o
-	/// primeiro item). Algumas mudam no Despertar: <see cref="AwakenedEffects"/> troca a lista de efeitos
-	/// inteira, não soma. Nas Passivas genéricas, os efeitos são o que a Passiva faz ao disparar.
+	/// primeiro item). Algumas mudam no Despertar: os efeitos trazem o que muda
+	/// (<see cref="AwakenedEffects"/> é a lista já com isso), sem trocar a habilidade inteira. Nas Passivas genéricas, os efeitos são o que a Passiva faz ao disparar.
 	/// </summary>
 	public sealed record SkillDefinition
 	{
@@ -32,10 +33,32 @@ namespace Sigilos.Core.Content
 		/// <summary>Turnos de recarga. A primeira habilidade tem 0.</summary>
 		public int Cooldown { get; init; }
 
-		public IReadOnlyList<EffectDefinition> Effects { get; init; } = new List<EffectDefinition>();
+		private IReadOnlyList<EffectDefinition> _effects = new List<EffectDefinition>();
+		private IReadOnlyList<EffectDefinition> _awakenedEffects = new List<EffectDefinition>();
+
+		/// <summary>
+		/// Os efeitos da forma normal. No arquivo, a lista também diz o que muda no Despertar (<see cref="EffectDefinition.Awakened"/>,
+		/// <see cref="EffectDefinition.LostAfterAwaken"/>, <see cref="EffectDefinition.OnlyAwakened"/>): daqui saem os dois.
+		/// </summary>
+		public IReadOnlyList<EffectDefinition> Effects
+		{
+			get => _effects;
+			init
+			{
+				AwakeningProblems = AwakenedForm.Problems(value).ToList();
+				_effects = AwakenedForm.Normal(value);
+				if (AwakenedForm.Declares(value))
+					_awakenedEffects = AwakenedForm.Awakened(value);
+			}
+		}
 
 		/// <summary>Os efeitos depois do Despertar; vazio quando o Despertar não muda a habilidade.</summary>
-		public IReadOnlyList<EffectDefinition> AwakenedEffects { get; init; } = new List<EffectDefinition>();
+		[JsonIgnore]
+		public IReadOnlyList<EffectDefinition> AwakenedEffects { get => _awakenedEffects; init => _awakenedEffects = value; }
+
+		/// <summary>Os erros das marcas do Despertar na lista de efeitos do arquivo.</summary>
+		[JsonIgnore]
+		public IReadOnlyList<string> AwakeningProblems { get; private init; } = new List<string>();
 
 		public IReadOnlyList<SkillLevelUp> Levels { get; init; } = new List<SkillLevelUp>();
 

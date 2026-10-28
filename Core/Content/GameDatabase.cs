@@ -490,10 +490,19 @@ namespace Sigilos.Core.Content
 				yield return problem;
 		}
 
+		/// <summary>Um Sacrifício vem antes de <paramref name="effect"/> na lista de efeitos da habilidade (ou da forma desperta).</summary>
+		private static bool HasSacrificeBefore(SkillDefinition skill, EffectDefinition effect)
+		{
+			var list = skill.AwakenedEffects.Contains(effect) ? skill.AwakenedEffects : skill.Effects;
+			return list.TakeWhile(e => e != effect).Any(e => e.Kind == EffectKind.Sacrifice);
+		}
+
 		internal static IEnumerable<string> ValidateSkill(SkillDefinition skill)
 		{
 			if (skill.Effects.Count == 0 && !skill.IsPassive)
 				yield return $"'{skill.Name}' não tem efeitos.";
+			foreach (var problem in skill.AwakeningProblems)
+				yield return $"'{skill.Name}': {problem}";
 			if (skill.Levels.Any(l => l.Value <= 0))
 				yield return $"'{skill.Name}': nível que não melhora nada.";
 			foreach (var effect in skill.Effects.Concat(skill.AwakenedEffects))
@@ -517,7 +526,15 @@ namespace Sigilos.Core.Content
 				if (effect.Max < 0 || effect.Max > 0 && effect.Kind != EffectKind.BonusPerStatus)
 					yield return $"'{skill.Name}': max só vale no bônus por efeito, e não é negativo.";
 				if (!EffectScaling.Scales(effect.Kind) && EffectScaling.IsCustom(effect))
-					yield return $"'{skill.Name}': {effect.Kind} não tem conta (stat, plus, factor e speed são de Damage, Heal, HealTeam, Shield e Revive).";
+					yield return $"'{skill.Name}': {effect.Kind} não tem conta (stat, plus, factor e speed são de Damage, Heal, HealTeam, Shield, Revive e Sacrifice).";
+				if (effect.Destroy && effect.Kind != EffectKind.Sacrifice)
+					yield return $"'{skill.Name}': destroy só vale no Sacrifício.";
+				if (effect.Kind == EffectKind.Sacrifice && effect.Power <= 0)
+					yield return $"'{skill.Name}': Sacrifício sem Vida para sacrificar.";
+				if (EffectScaling.StatsOf(effect).Contains(ScaleStat.Sacrificed) && !HasSacrificeBefore(skill, effect))
+					yield return $"'{skill.Name}': Sacrificed lê a Vida de um Sacrifício, e nenhum vem antes na habilidade.";
+				if (effect.OthersOnly && effect.Target is TargetKind.Target or TargetKind.AllEnemies or TargetKind.RandomEnemy or TargetKind.Self)
+					yield return $"'{skill.Name}': othersOnly só vale em alvos de aliados.";
 				if (effect.Fixed && effect.Kind != EffectKind.Damage)
 					yield return $"'{skill.Name}': só o dano é fixo.";
 				if (effect.Speed is { OverTarget: false, Over: <= 0 })
@@ -558,6 +575,8 @@ namespace Sigilos.Core.Content
 				}
 			}
 
+			if (skill.Passive is { Kind: PassiveKind.StatusImmunity, Statuses.Count: 0 })
+				yield return $"'{skill.Name}': a Passiva StatusImmunity precisa de statuses.";
 			if (skill.Passive is { UsesEffects: true } && skill.Effects.Count == 0)
 				yield return $"'{skill.Name}': a Passiva {skill.Passive.Kind} não tem efeitos.";
 

@@ -293,6 +293,7 @@ namespace Sigilos.UI
 				PassiveKind.BonusPerStatusOrEffect => T("passive.BonusPerStatusOrEffect", value, Counted(passive)),
 				PassiveKind.RunicCore => T("passive.RunicCore", value, BattleRules.RunicCoreMaxSteps),
 				PassiveKind.SoulDrain => T("passive.SoulDrain", value, Impeto),
+				PassiveKind.StatusImmunity => T("passive.StatusImmunity", And(passive.Statuses.Select(s => Term(s)).ToList())),
 				_ => T($"passive.{passive.Kind}", value),
 			};
 		}
@@ -356,7 +357,14 @@ namespace Sigilos.UI
 			if (awakened && skill.AwakenedEffects.Count > 0)
 				return Describe(skill.AwakenedEffects);
 			var basic = Describe(skill.Effects);
-			return skill.AwakenedEffects.Count > 0 ? $"{basic}\n{T("skill.awakened", Describe(skill.AwakenedEffects))}" : basic;
+			return skill.AwakenedEffects.Count > 0 ? $"{basic}\n{T("skill.awakened", Describe(AwakenedChanges(skill)))}" : basic;
+		}
+
+		/// <summary>Só os efeitos que o Despertar muda ou acrescenta (a linha "Desperta:" mostra o que melhorou, não a habilidade toda).</summary>
+		private static IReadOnlyList<EffectDefinition> AwakenedChanges(SkillDefinition skill)
+		{
+			var changed = skill.AwakenedEffects.Where(effect => !skill.Effects.Contains(effect)).ToList();
+			return changed.Count > 0 ? changed : skill.AwakenedEffects;
 		}
 
 		/// <summary>

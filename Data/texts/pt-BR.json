@@ -65,7 +65,8 @@
   "entry": {
     "Locked": "Ainda fechado.",
     "NoMana": "Falta Mana: a vitória custa {0} (a derrota não custa nada). Colete a canalização no Observatório ou compre na Loja.",
-    "RunesFull": "Inventário de sigilos cheio ({1}): desfaça sigilos ou guarde-os num homúnculo do Baú antes de lutar."
+    "RunesFull": "Inventário de sigilos cheio ({1}): desfaça sigilos ou guarde-os num homúnculo do Baú antes de lutar.",
+    "NoInvites": "Sem Convite Astral, ou esta luta não pode começar agora."
   },
 
   "term": {
@@ -400,7 +401,8 @@
         "MaxHealth": "Vida máxima",
         "Speed": "Velocidade",
         "TargetMaxHealth": "Vida máxima do alvo",
-        "Level": "nível"
+        "Level": "nível",
+        "Sacrificed": "Vida sacrificada"
       },
       "measure": {
         "HealthFraction": "Vida atual",
@@ -411,6 +413,8 @@
       "less_allies": "quanto mais aliados vivos, menor o efeito",
       "attack_details": "o ataque {0}",
       "is_based": "é baseado em {0}",
+      "is_formula": "causa {0}",
+      "formula": "dano de {0}",
       "is_fixed": "tem dano fixo, sem Defesa, elemento ou crítico",
       "multiple": "{0}x {1}",
       "times": " {0} vezes",
@@ -428,6 +432,9 @@
       "chance_each": " com {0} de chance cada",
       "shield_of": "{0} da Vida",
       "life_share": "{0} da Vida",
+      "of_current_life": "{0} da Vida atual",
+      "sacrifice": "sacrifica {0}",
+      "sacrifice_destroy": "destrói {0} (a Vida máxima cai, até {1} dela)",
       "heal": "cura {0} em {1}",
       "heal_team": "cura os {0} aliados mais feridos em {1}",
       "impetus_give": "concede {0}% de {1}{2}",
@@ -450,9 +457,13 @@
       "shorten": "reduz em {0} a duração {1}{2}",
       "of": "de {0}",
       "equalize": "nivela a Vida {0} na mesma fração",
-      "joint_one": "chama {0} para atacar junto, com a básica",
-      "joint": "chama {0} aliados para atacar junto, com a básica",
-      "joint_all": "chama todos os aliados para atacar junto, com a básica",
+      "joint_many_HighestAlly": "chama os {0} aliados com mais {1} para atacar junto",
+      "joint_many_LowestAlly": "chama os {0} aliados com menos {1} para atacar junto",
+      "joint_many_HighestAlly_health": "chama os {0} aliados menos feridos para atacar junto",
+      "joint_many_LowestAlly_health": "chama os {0} aliados mais feridos para atacar junto",
+      "joint_one": "chama {0} para atacar junto",
+      "joint": "chama {0} aliados para atacar junto",
+      "joint_all": "chama todos os aliados para atacar junto",
       "cooldown_up": "aumenta em {0} a recarga das habilidades {1} (as prontas também)",
       "extra_turn_on_kill": "se derrubar alguém, ganha um turno extra e esta recarga cai {0}",
       "revive": "revive os aliados caídos com {0}",
@@ -475,7 +486,8 @@
       "MaxHealth": "{0} da Vida máxima",
       "Speed": "{0} da Velocidade",
       "TargetMaxHealth": "{0} da Vida máxima do alvo",
-      "Level": "{0} por nível"
+      "Level": "{0} por nível",
+      "Sacrificed": "{0} da Vida sacrificada"
     },
     "measure": {
       "HealthFraction": "a Vida atual em %",
@@ -522,6 +534,7 @@
     "Lifesteal": "Drena {0} de todo dano que causa como Vida.",
     "SoulDrain": "Todo golpe drena {0} do dano como Vida, e cada alvo atingido perde {0} de {1} para ele (uma vez por habilidade).",
     "Dodge": "{0} de chance de esquivar de cada golpe.",
+    "StatusImmunity": "Imune a {0}.",
     "CleanseAllyEachTurn": "{0} de chance, no começo do turno, de remover um efeito negativo de um aliado.",
     "BonusVsStatusOrEffect": "+{0} de dano em alvos com {1}.",
     "StatusOrEffectOnHit": "em cada alvo atingido, uma vez por habilidade: {0}",
@@ -835,7 +848,6 @@
       "Mana": "{0} Mana",
       "Scrolls": "{0} Transmutações",
       "ReappraisalGems": "{0} Gema de Reavaliação",
-      "RenameAccount": "Nome novo",
       "CollectionExpander": "{0} espaços na coleção"
     },
     "no_gold": "Faltam {0} de Ouro.",
@@ -850,12 +862,9 @@
       "Mana": "Paga as vitórias: cada luta vencida, na Campanha ou numa Masmorra, custa Mana (a derrota não custa nada). A Canalização recarrega com o tempo; a Mana comprada aqui pode passar do máximo.",
       "Scrolls": "Cada Transmutação Alquímica faz uma transmutação de homúnculo, e toda transmutação conta para a garantia de 5★.",
       "ReappraisalGems": "Devolve o sigilo ao estado original.",
-      "RenameAccount": "Troca o nome da conta, mostrado no Observatório. O nome segue as regras de sempre e precisa estar livre; o Ouro só sai se o servidor aceitar.",
       "CollectionExpander": "Mais vagas na coleção: os homúnculos fora do Baú, os que lutam. Agora são {1}, e a coleção cresce até {2}."
     },
-    "sold_out": "A coleção já está no máximo ({0} vagas).",
-    "rename_no_account": "Precisa de uma conta com nome.",
-    "renamed": "Nome trocado: {0}."
+    "sold_out": "A coleção já está no máximo ({0} vagas)."
   },
 
   "monsters": {
@@ -1201,7 +1210,7 @@
       "crit": { "title": "Crítico", "text": "O golpe crítico multiplica o dano por 1 + Dano crítico. Todo homúnculo começa com 15% de Crítico e 50% de Dano crítico." },
       "resistance": { "title": "Resistência e Precisão", "text": "Todo efeito negativo pode ser barrado: a chance é a Resistência do alvo menos a Precisão de quem lança, nunca abaixo de {0}." },
       "leader": { "title": "Líder", "text": "A primeira da equipe aplica a Liderança dela a todos. A porcentagem é sobre o atributo de base, nunca sobre o que veio dos sigilos." },
-      "auto": { "title": "Automático e Batalha automática", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 2×. Ela segue enquanto você faz outras coisas (cuidar dos sigilos, subir homúnculos); o aviso no alto da tela mostra o andamento e abre a janela dela. Para quando você aperta Parar, quando a Mana acaba ou quando o inventário de sigilos enche. Toque num inimigo durante a luta para marcá-lo: o automático ataca ele enquanto puder (segure o inimigo para ver o resumo). Numa luta com chefe, a pausa tem \"Focar o chefe no automático\": ligado, a equipe inteira ataca o chefe sempre que pode." },
+      "auto": { "title": "Automático e Batalha automática", "text": "O automático usa sozinho a habilidade pronta mais forte. Fases e andares já vencidos ganham a Batalha automática: você escolhe quantas lutas seguidas ({0} de início), cada uma no tempo que levaria no automático em 3×. Ela segue enquanto você faz outras coisas (cuidar dos sigilos, subir homúnculos); o aviso no alto da tela mostra o andamento e abre a janela dela. Para quando você aperta Parar, quando a Mana acaba ou quando o inventário de sigilos enche. Toque num inimigo durante a luta para marcá-lo: o automático ataca ele enquanto puder (segure o inimigo para ver o resumo). Numa luta com chefe, a pausa tem \"Focar o chefe no automático\": ligado, a equipe inteira ataca o chefe sempre que pode." },
       "elements": "Elementos",
       "elements_text": "Com vantagem o dano sobe {0}; com desvantagem, cai {1}. O automático mira primeiro em quem ele vence. O Neutro, dos homúnculos de 2★, não tem vantagem nem desvantagem.",
       "wins": "{0} vence {1}"
@@ -1461,12 +1470,16 @@
     "err_generic": "Não foi possível falar com o servidor."
   },
 
+  "serverBattle": {
+    "title": "Luta no servidor",
+    "offline": "As lutas da conta são decididas no servidor, e o jogo não achou conexão. Nada foi gasto; tente de novo quando a conexão voltar.",
+    "conflict": "A conta mudou em outro lugar. O jogo vai sincronizar; depois, comece a luta de novo.",
+    "refused": "O servidor não aceitou a luta. Nada foi gasto.",
+    "ticket": "A luta não confere mais com o servidor (ficou parada tempo demais ou outra luta começou). Nada foi pago; comece de novo."
+  },
   "serverAction": {
     "title": "Ação do servidor",
-    "offline": "Melhorar sigilos e transmutar monstros acontece no servidor, e o jogo não achou conexão. Nada foi gasto; tente de novo quando a conexão voltar.",
-    "unsynced": "O jogo não conseguiu enviar a conta ao servidor antes da ação. Nada foi gasto; tente de novo em instantes.",
-    "resync": "O servidor recusou o que estava só neste aparelho e a conta foi trazida da nuvem. Repita a ação.",
-    "corrected": "O servidor recusou mudanças feitas só neste aparelho (sigilos melhorados ou invocações fora do servidor). A conta voltou ao que está na nuvem; o save anterior ficou guardado como backup.",
+    "offline": "As ações da conta acontecem no servidor, e o jogo não achou conexão. Nada foi gasto; tente de novo quando a conexão voltar.",
     "conflict": "A conta mudou em outro lugar. O jogo vai sincronizar; depois, repita a ação.",
     "refused": "O servidor não aceitou o pedido. Nada foi gasto."
   },
@@ -1554,14 +1567,14 @@
     "sign_in": "Entrar ou criar conta",
     "offline": "Jogando sem conta: o progresso fica só neste aparelho. Crie uma conta e ele vai junto.",
     "synced": "Tudo salvo na nuvem (última vez às {0}).",
-    "pending": "Há progresso que ainda não chegou à nuvem; ele sobe sozinho em até um minuto, ou assim que houver conexão.",
     "choose_name": "Escolher nome",
     "no_name": "Conta sem nome",
     "offline_account": "Sem conexão: jogando com o progresso deste aparelho. Ele sobe sozinho quando a conexão voltar.",
     "training": "Treino",
     "training_text": "A luta de treino ensina habilidades, elementos e efeitos, um de cada vez.",
     "training_button": "Refazer a luta de treino",
-    "rename_in_shop": "Para trocar o nome da conta, procure na Loja.",
+    "rename": "Trocar nome",
+    "rename_wait": "A troca de nome é de graça, uma vez a cada 7 dias. A próxima abre em {0}.",
     "sound": "Som",
     "volume_master": "Geral",
     "volume_music": "Música",
@@ -1586,6 +1599,7 @@
     "register": "Criar conta",
     "connecting": "Conectando…",
     "claiming": "Abrindo a conta neste aparelho…",
+    "update_required": "Esta versão do jogo é antiga demais para o servidor. Atualize o jogo para entrar na conta.",
     "syncing": "Buscando o progresso na nuvem…",
     "leaving": "Salvando na nuvem e saindo da conta…",
     "wait_title": "Um momento",
@@ -1606,26 +1620,7 @@
     "seen_now": "agora há pouco",
     "seen_minutes": "há {0} min",
     "lost_taken": "Sua conta foi aberta em outro aparelho.",
-    "signout_offline_title": "Sem conexão",
-    "signout_offline_text": "O progresso mais recente ainda não chegou à nuvem. Ele fica neste aparelho e sobe quando você entrar de novo aqui. Sair mesmo assim?",
     "conflict_title": "Qual progresso usar?",
-    "conflict_text": "O progresso deste aparelho e o da nuvem mudaram desde a última vez que se encontraram. Escolha qual fica na conta.",
-    "conflict_adopt_text": "Esta conta já tem progresso na nuvem, e este aparelho tem um jogo sem conta. Escolha qual fica na conta.",
-    "conflict_note": "O que não for escolhido não se perde: fica guardado neste aparelho.",
-    "conflict_local": "Este aparelho",
-    "conflict_offline": "Jogo sem conta",
-    "conflict_cloud": "Nuvem",
-    "conflict_level": "Nível da conta {0}",
-    "conflict_monsters": "{0} homúnculos",
-    "conflict_stage": "Fase {0} vencida",
-    "conflict_no_stage": "Nenhuma fase vencida",
-    "conflict_floors": "{0} andares de Masmorra",
-    "conflict_saved": "Salvo em {0}",
-    "use_local": "Usar o deste aparelho",
-    "use_offline": "Usar o jogo sem conta",
-    "use_cloud": "Usar o da nuvem",
-    "lost_taken_backup": "Sua conta foi aberta em outro aparelho. O progresso daqui que não chegou à nuvem ficou guardado como backup neste aparelho.",
-    "conflict_wealth": "{0} de Essência · {1} de Ouro",
     "name": "Nome da conta",
     "name_hint": "{0} a {1} letras ou números, sem espaço",
     "name_text": "É o nome que aparece no Observatório. Ele é único: nenhuma outra conta pode ter o mesmo, nem com outras maiúsculas ou acentos.",
@@ -1635,9 +1630,9 @@
     "saving": "Salvando…",
     "error_name": "O nome precisa de {0} a {1} caracteres, sem espaço: letras, números, _ . ou -, começando e terminando em letra ou número.",
     "error_name_taken": "Esse nome já é de outra conta. Escolha outro.",
-    "lost_away": "Sua conta está aberta em outro aparelho. O que você jogou aqui sem conexão ficou neste aparelho: ele vai para a conta na próxima vez que você entrar aqui (se a conta também mudou lá, o jogo pergunta qual progresso fica).",
+    "error_rename_cooldown": "A troca de nome é uma vez a cada 7 dias, e a próxima ainda não abriu. O nome continua o mesmo.",
     "blocked_title": "Sem conexão",
-    "blocked_text": "Você jogou {0} minutos sem conexão com o servidor. Para o progresso da conta não ficar só neste aparelho, o jogo espera a conexão voltar. Confira a internet e toque em Tentar de novo: nada do que você jogou se perde.",
+    "blocked_text": "O jogo da conta é decidido no servidor, e o aparelho só mostra a conta. Sem conexão, nada abre. Confira a internet e toque em Tentar de novo: nada do que você fez se perde.",
     "blocked_retry": "Tentar de novo",
     "blocked_leave": "Voltar ao login",
     "blocked_leaving": "Saindo da conta…",
@@ -1647,7 +1642,7 @@
     "reset_password": "Senha nova (8 caracteres ou mais)",
     "reset_button": "Trocar senha",
     "reset_done": "Senha trocada. Entre com a nova.",
-    "name_cost": "Custa {0} de Ouro, que só saem se o nome for aceito.",
+    "rename_note": "Trocar o nome é de graça, uma vez a cada 7 dias.",
     "reset_key": "Chave de recuperação (PALAVRA-PALAVRA-PALAVRA-PALAVRA)",
     "error_recovery_key": "Chave de recuperação inválida. Depois de 5 chaves erradas a recuperação trava: peça ao suporte para destravar.",
     "recovery_title": "Chave de recuperação",

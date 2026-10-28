@@ -36,17 +36,13 @@
           "image": "barril_de_polvora",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
-            {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.4, "turns": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "awakened": {"power": 2.2}},
+            {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.4, "turns": 2, "awakened": {"chance": 0.6}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Bomb", "chance": 0.6, "turns": 2}
           ]
         },
         {
@@ -93,18 +89,14 @@
           "image": "rum_da_tripulacao",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.12},
-            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 1}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.12, "awakened": {"power": 0.17}},
+            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 1, "awakened": {"turns": 2}},
+            {"kind": "Cleanse", "target": "AllAllies", "count": 1, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.17},
-            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
-            {"kind": "Cleanse", "target": "AllAllies", "count": 1}
           ]
         },
         {
@@ -112,10 +104,7 @@
           "image": "ancora",
           "passive": {"kind": "StatusOrEffectOnHit"},
           "effects": [
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.2, "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.3, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.2, "turns": 2, "awakened": {"chance": 0.3}}
           ]
         }
       ]
@@ -149,14 +138,11 @@
           "image": "vento_de_popa",
           "cooldown": 4,
           "effects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 25}
+            {"kind": "Impeto", "target": "AllAllies", "power": 25, "awakened": {"power": 35}},
+            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Impeto", "target": "AllAllies", "power": 35},
-            {"kind": "Status", "target": "AllAllies", "status": "SpeedUp", "turns": 2}
           ]
         },
         {
@@ -204,15 +190,11 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
-            {"kind": "Impeto", "target": "AllAllies", "power": 15}
+            {"kind": "Impeto", "target": "AllAllies", "power": 15},
+            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
-            {"kind": "Impeto", "target": "AllAllies", "power": 15},
-            {"kind": "Status", "target": "AllAllies", "status": "Foresight", "turns": 1}
           ]
         },
         {
@@ -220,11 +202,8 @@
           "image": "dobrao_da_sorte",
           "passive": {"kind": "StatusOrEffectOnWaveStart"},
           "effects": [
-            {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2}
-          ],
-          "awakenedEffects": [
             {"kind": "Status", "target": "AllAllies", "status": "CritUp", "turns": 2},
-            {"kind": "Impeto", "target": "AllAllies", "power": 15}
+            {"kind": "Impeto", "target": "AllAllies", "power": 15, "onlyAwakened": true}
           ]
         }
       ]
@@ -258,17 +237,13 @@
           "image": "andar_na_prancha",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.41},
+            {"kind": "Damage", "target": "Target", "power": 4.41, "awakened": {"power": 4.9}},
             {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 2}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 4.9},
-            {"kind": "ExtraTurnOnKill", "target": "Self", "turns": 2}
           ]
         },
         {

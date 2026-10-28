@@ -238,7 +238,7 @@ namespace Sigilos.Core.Battle
 
 			var crit = !strike.Fixed && (strike.Crit ?? Random.NextDouble() < attacker.Current(Stat.Crit) * target.CritTaken());
 			strike.Crit = crit;
-			var amount = EffectAmount.Of(strike.Effect, strike.Power, strike.Cast.Scale, attacker, target);
+			var amount = EffectAmount.Of(strike.Effect, strike.Power, strike.Cast.Scale, attacker, target, strike.Cast.Sacrificed);
 			strike.Amount = DamageFormula.Apply(attacker, target, amount, strike.IgnoreDefense, crit, strike.Fixed);
 			strike.Absorbed = Absorb(target, strike.Amount);
 			strike.Landed = true;
@@ -549,6 +549,12 @@ namespace Sigilos.Core.Battle
 		{
 			// Imunidade de chefe (BattleRules.BossImmunities): vale para toda fonte do efeito, porque todas passam por aqui.
 			if (target.IsBoss && BattleRules.BossImmunities.Contains(status))
+			{
+				Emit(new Immune(target));
+				return;
+			}
+
+			if (target.Any(behavior => behavior.BlocksStatus(status)))
 			{
 				Emit(new Immune(target));
 				return;

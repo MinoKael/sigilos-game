@@ -77,6 +77,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>Algum golpe desta habilidade derrubou o alvo: libera os efeitos "ao derrubar".</summary>
 		public bool Killed { get; set; }
 
+		/// <summary>A Vida que o Sacrifício desta habilidade tirou de quem lança: os efeitos seguintes escalam nela (<see cref="ScaleStat.Sacrificed"/>).</summary>
+		public double Sacrificed { get; set; }
+
 		/// <summary>O dano que cada alvo atingido levou nesta habilidade, na ordem em que foram atingidos.</summary>
 		public Dictionary<BattleUnit, double> Dealt { get; } = new();
 
@@ -106,7 +109,7 @@ namespace Sigilos.Core.Battle
 			if (Struck != null && effect.Target == TargetKind.Target)
 				return Struck.IsAlive ? new[] { Struck } : System.Array.Empty<BattleUnit>();
 
-			return Targets(Scope(effect), effect.By);
+			return Targets(Scope(effect), effect.By, effect.OthersOnly);
 		}
 
 		/// <summary>

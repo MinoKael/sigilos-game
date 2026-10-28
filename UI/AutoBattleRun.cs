@@ -112,7 +112,7 @@ namespace Sigilos.UI
 		/// A runa que caiu já saiu da conta: vendida pela janela da Batalha automática, pelo inventário ou
 		/// pelo resultado de uma luta. Vender é o único jeito de uma runa sair da conta.
 		/// </summary>
-		public static bool IsSold(PlayerState player, Rune rune) => !player.Runes.Contains(rune);
+		public static bool IsSold(PlayerState player, Rune rune) => !player.Runes.Any(r => r.Id == rune.Id);
 
 		/// <summary>Soma a luta que acabou de passar na tela à média do tempo.</summary>
 		public void Record(double seconds) => _durations.Add(seconds);

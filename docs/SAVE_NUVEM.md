@@ -8,6 +8,10 @@ ver [SERVIDOR_PROPRIO.md](SERVIDOR_PROPRIO.md). O desenho daqui (local primeiro,
 sincronização, conflito, trava de sessão) é o que o jogo segue. As partes sobre Firebase ficam como
 registro da alternativa.
 
+**Depois:** o aparelho não envia mais o save. A conta é do servidor e o aparelho só guarda uma cópia
+para mostrar (ver [ACOES_DO_SERVIDOR.md](ACOES_DO_SERVIDOR.md)). As partes daqui sobre envio, conflito
+entre aparelho e nuvem e jogo sem conta ficam só como registro.
+
 ## Ponto de partida
 
 - O save é um JSON de ~75 KB (`PlayerSave.ToJson`), gravado por `GameEntry/SaveStore.cs` em

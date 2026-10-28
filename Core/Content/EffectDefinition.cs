@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Sigilos.Core.Content
 {
@@ -91,6 +93,25 @@ namespace Sigilos.Core.Content
 		public double Max { get; init; }
 		/// <summary>HealTeam, JointAttack e Revive: quantos alvos (0 = todos).</summary>
 		public int Count { get; init; }
+
+		/// <summary>O efeito não atinge quem lança: nos alvos de aliados, ele fica de fora (o aliado com mais Ataque é outro, não o dono).</summary>
+		public bool OthersOnly { get; init; }
+
+		/// <summary>Sacrifice: a Vida sacrificada vem da Vida máxima destruída (como o Oblívio) em vez de só descontada.</summary>
+		public bool Destroy { get; init; }
+
+		/// <summary>
+		/// Os campos que mudam no Despertar (só o valor: "awakened": {"power": 2.94, "ignoreDefense": 0.3}); o resto do efeito fica
+		/// como na forma normal. Não troca o tipo do efeito. A forma desperta da habilidade sai daqui (<see cref="AwakenedForm"/>).
+		/// </summary>
+		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+		public IReadOnlyDictionary<string, JsonElement>? Awakened { get; init; }
+
+		/// <summary>O efeito some no Despertar (a forma desperta da habilidade não o tem). Raro: o Despertar só melhora.</summary>
+		public bool LostAfterAwaken { get; init; }
+
+		/// <summary>O efeito só existe desperto: a forma normal da habilidade não o tem.</summary>
+		public bool OnlyAwakened { get; init; }
 
 		/// <summary>LowestAlly e HighestAlly: o valor comparado (o padrão é a fração de Vida).</summary>
 		public TargetRank By { get; init; }

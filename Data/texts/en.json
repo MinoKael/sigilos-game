@@ -64,7 +64,8 @@
   "entry": {
     "Locked": "Still locked.",
     "NoMana": "Not enough Mana: a victory costs {0} (a defeat costs nothing). Collect the channeling at the Observatory or buy some at the Shop.",
-    "RunesFull": "Sigil inventory full ({1}): dismantle sigils or keep them on a homunculus in the Vault before fighting."
+    "RunesFull": "Sigil inventory full ({1}): dismantle sigils or keep them on a homunculus in the Vault before fighting.",
+    "NoInvites": "No Astral Invite, or this fight cannot start right now."
   },
 
   "term": {
@@ -393,12 +394,14 @@
       "attack": "attacks {0}{1}{2}",
       "based": "based on {0}",
       "speed_target": "the target's Speed",
-      "stat": {"Attack": "Attack", "Defense": "Defense", "MaxHealth": "Max HP", "Speed": "Speed", "TargetMaxHealth": "the target's Max HP", "Level": "level"},
+      "stat": {"Attack": "Attack", "Defense": "Defense", "MaxHealth": "Max HP", "Speed": "Speed", "TargetMaxHealth": "the target's Max HP", "Level": "level", "Sacrificed": "sacrificed HP"},
       "measure": {"HealthFraction": "current HP", "TargetHealthFraction": "the target's current HP", "LivingAllies": "living allies"},
       "more_allies": "the more allies alive, the stronger the effect",
       "less_allies": "the more allies alive, the weaker the effect",
       "attack_details": "the attack {0}",
       "is_based": "is based on {0}",
+      "is_formula": "deals {0}",
+      "formula": "damage of {0}",
       "is_fixed": "deals fixed damage, ignoring Defense, element and crit",
       "multiple": "{0}x {1}",
       "times": " {0} times",
@@ -437,10 +440,17 @@
       "prolong": "increases the duration {1}{2} by {0}",
       "shorten": "reduces the duration {1}{2} by {0}",
       "of": "of {0}",
+      "of_current_life": "{0} of the current HP",
+      "sacrifice": "sacrifices {0}",
+      "sacrifice_destroy": "destroys {0} (Max HP drops, up to {1} of it)",
       "equalize": "equalizes the HP {0} to the same share",
-      "joint_one": "calls {0} to attack along, with the basic skill",
-      "joint": "calls {0} allies to attack along, with the basic skill",
-      "joint_all": "calls all allies to attack along, with the basic skill",
+      "joint_many_HighestAlly": "calls the {0} allies with the highest {1} to attack along",
+      "joint_many_LowestAlly": "calls the {0} allies with the lowest {1} to attack along",
+      "joint_many_HighestAlly_health": "calls the {0} least hurt allies to attack along",
+      "joint_many_LowestAlly_health": "calls the {0} most hurt allies to attack along",
+      "joint_one": "calls {0} to attack along",
+      "joint": "calls {0} allies to attack along",
+      "joint_all": "calls all allies to attack along",
       "cooldown_up": "increases the cooldown of skills {1} by {0} (ready ones too)",
       "extra_turn_on_kill": "on a knockout, gains an extra turn and this cooldown drops by {0}",
       "revive": "revives fallen allies with {0}",
@@ -463,7 +473,8 @@
       "MaxHealth": "{0} Max HP",
       "Speed": "{0} Speed",
       "TargetMaxHealth": "{0} of the target's Max HP",
-      "Level": "{0} per level"
+      "Level": "{0} per level",
+      "Sacrificed": "{0} of the sacrificed HP"
     },
     "measure": {
       "HealthFraction": "current HP %",
@@ -510,6 +521,7 @@
     "Lifesteal": "Drains {0} of all the damage it deals as HP.",
     "SoulDrain": "Every hit drains {0} of the damage as HP, and each target hit loses {0} of {1} to it (once per skill).",
     "Dodge": "{0} chance to dodge each hit.",
+    "StatusImmunity": "Immune to {0}.",
     "CleanseAllyEachTurn": "{0} chance at the start of its turn to remove one harmful effect from an ally.",
     "BonusVsStatusOrEffect": "+{0} damage on targets with {1}.",
     "StatusOrEffectOnHit": "on each target hit, once per skill: {0}",
@@ -823,7 +835,6 @@
       "Mana": "{0} Mana",
       "Scrolls": "{0} Transmutations",
       "ReappraisalGems": "{0} Reappraisal Gem",
-      "RenameAccount": "New name",
       "CollectionExpander": "{0} collection slots"
     },
     "no_gold": "{0} Gold short.",
@@ -838,12 +849,9 @@
       "Mana": "Pays for victories: every fight won, in the Campaign or in a Dungeon, costs Mana (a defeat costs nothing). Channeling refills it over time; Mana bought here can go past the maximum.",
       "Scrolls": "Transmute homunculi: each Transmutation is one transmutation, and every transmutation counts toward the 5★ guarantee.",
       "ReappraisalGems": "Returns a sigil to the state it dropped in: removes upgrades, Grindstones and the enchantment. You have {0}.",
-      "RenameAccount": "Changes the account name shown in the Observatory. The name follows the usual rules and must be free; the Gold is only taken if the server accepts it.",
       "CollectionExpander": "More collection slots: the homunculi outside the Vault, the ones that fight. You have {1} now, and the collection grows up to {2}."
     },
-    "sold_out": "The collection is already at its maximum ({0} slots).",
-    "rename_no_account": "Needs an account with a name.",
-    "renamed": "Name changed: {0}."
+    "sold_out": "The collection is already at its maximum ({0} slots)."
   },
 
   "monsters": {
@@ -1189,7 +1197,7 @@
       "crit": { "title": "Critical hits", "text": "A critical hit multiplies damage by 1 + Crit Damage. Every homunculus starts with 15% Crit Rate and 50% Crit Damage." },
       "resistance": { "title": "Resistance and Accuracy", "text": "Every harmful effect can be blocked: the chance is the target's Resistance minus the caster's Accuracy, never below {0}." },
       "leader": { "title": "Leader", "text": "The first one in the team applies its Leadership to everyone. The percentage is on the base stat, never on what came from sigils." },
-      "auto": { "title": "Auto and Auto Battle", "text": "Auto uses the strongest ready skill on its own. Stages and floors already beaten get the Auto Battle: you choose how many fights in a row ({0} to start), each taking the time it would on Auto at 2×. It keeps going while you do other things (tending sigils, leveling homunculi); the notice at the top of the screen shows the progress and opens its window. It stops when you press Stop, when Mana runs out or when the sigil inventory fills up. Tap an enemy during a fight to mark it: Auto strikes it while it can (hold the enemy to see its summary). In a fight with a boss, the pause has \"Focus the boss on Auto\": on, the whole team strikes the boss whenever it can." },
+      "auto": { "title": "Auto and Auto Battle", "text": "Auto uses the strongest ready skill on its own. Stages and floors already beaten get the Auto Battle: you choose how many fights in a row ({0} to start), each taking the time it would on Auto at 3×. It keeps going while you do other things (tending sigils, leveling homunculi); the notice at the top of the screen shows the progress and opens its window. It stops when you press Stop, when Mana runs out or when the sigil inventory fills up. Tap an enemy during a fight to mark it: Auto strikes it while it can (hold the enemy to see its summary). In a fight with a boss, the pause has \"Focus the boss on Auto\": on, the whole team strikes the boss whenever it can." },
       "elements": "Elements",
       "elements_text": "With advantage, damage goes up {0}; with disadvantage, it goes down {1}. Auto targets whoever it beats first. Neutral, the element of 2★ homunculi, has neither advantage nor disadvantage.",
       "wins": "{0} beats {1}"
@@ -1449,12 +1457,16 @@
     "err_generic": "Could not talk to the server."
   },
 
+  "serverBattle": {
+    "title": "Server fight",
+    "offline": "The account's fights are decided on the server, and the game found no connection. Nothing was spent; try again when the connection is back.",
+    "conflict": "The account changed somewhere else. The game will sync; then start the fight again.",
+    "refused": "The server did not accept the fight. Nothing was spent.",
+    "ticket": "The fight no longer matches the server (it sat idle too long or another fight started). Nothing was paid; start again."
+  },
   "serverAction": {
     "title": "Server action",
-    "offline": "Upgrading sigils and transmuting monsters happens on the server, and the game found no connection. Nothing was spent; try again when the connection is back.",
-    "unsynced": "The game could not send the account to the server before the action. Nothing was spent; try again shortly.",
-    "resync": "The server refused what was only on this device and the account was brought from the cloud. Repeat the action.",
-    "corrected": "The server refused changes made only on this device (sigils upgraded or summons done outside the server). The account went back to what is in the cloud; the previous save was kept as a backup.",
+    "offline": "The account's actions happen on the server, and the game found no connection. Nothing was spent; try again when the connection is back.",
     "conflict": "The account changed somewhere else. The game will sync; then repeat the action.",
     "refused": "The server did not accept the request. Nothing was spent."
   },
@@ -1542,14 +1554,14 @@
     "sign_in": "Sign in or create an account",
     "offline": "Playing without an account: progress stays on this device only. Create an account and it comes along.",
     "synced": "Everything saved to the cloud (last time at {0}).",
-    "pending": "Some progress hasn't reached the cloud yet; it goes up on its own within a minute, or as soon as there's a connection.",
     "choose_name": "Choose a name",
     "no_name": "Unnamed account",
     "offline_account": "No connection: you're playing with this device's progress. It goes up on its own when the connection comes back.",
     "training": "Training",
     "training_text": "The training fight teaches skills, elements and effects, one at a time.",
     "training_button": "Redo the training fight",
-    "rename_in_shop": "To change the account name, look in the Shop.",
+    "rename": "Change name",
+    "rename_wait": "Changing the name is free, once every 7 days. The next one opens on {0}.",
     "sound": "Sound",
     "volume_master": "Master",
     "volume_music": "Music",
@@ -1574,6 +1586,7 @@
     "register": "Create account",
     "connecting": "Connecting…",
     "claiming": "Opening the account on this device…",
+    "update_required": "This version of the game is too old for the server. Update the game to open the account.",
     "syncing": "Fetching your progress from the cloud…",
     "leaving": "Saving to the cloud and signing out…",
     "wait_title": "One moment",
@@ -1594,26 +1607,7 @@
     "seen_now": "just now",
     "seen_minutes": "{0} min ago",
     "lost_taken": "Your account was opened on another device.",
-    "signout_offline_title": "No connection",
-    "signout_offline_text": "Your latest progress hasn't reached the cloud. It stays on this device and goes up when you sign in here again. Sign out anyway?",
     "conflict_title": "Which progress to keep?",
-    "conflict_text": "This device's progress and the cloud's both changed since they last met. Choose which one the account keeps.",
-    "conflict_adopt_text": "This account already has progress in the cloud, and this device has a game without an account. Choose which one the account keeps.",
-    "conflict_note": "Whatever isn't chosen isn't lost: it stays saved on this device.",
-    "conflict_local": "This device",
-    "conflict_offline": "Game without account",
-    "conflict_cloud": "Cloud",
-    "conflict_level": "Account level {0}",
-    "conflict_monsters": "{0} homunculi",
-    "conflict_stage": "Stage {0} cleared",
-    "conflict_no_stage": "No stage cleared",
-    "conflict_floors": "{0} Dungeon floors",
-    "conflict_saved": "Saved {0}",
-    "use_local": "Keep this device's",
-    "use_offline": "Keep the game without account",
-    "use_cloud": "Keep the cloud's",
-    "lost_taken_backup": "Your account was opened on another device. Progress from here that hadn't reached the cloud was kept as a backup on this device.",
-    "conflict_wealth": "{0} Essence · {1} Gold",
     "name": "Account name",
     "name_hint": "{0} to {1} letters or numbers, no spaces",
     "name_text": "It's the name shown in the Observatory. It's unique: no other account can have it, not even with different capitals or accents.",
@@ -1623,9 +1617,9 @@
     "saving": "Saving…",
     "error_name": "The name needs {0} to {1} characters, no spaces: letters, numbers, _ . or -, starting and ending with a letter or number.",
     "error_name_taken": "That name belongs to another account. Pick another one.",
-    "lost_away": "Your account is open on another device. What you played here without a connection stayed on this device: it goes to the account the next time you sign in here (if the account also changed there, the game asks which progress stays).",
+    "error_rename_cooldown": "The name changes once every 7 days, and the next change is not open yet. The name stays the same.",
     "blocked_title": "No connection",
-    "blocked_text": "You played {0} minutes without reaching the server. So your account's progress doesn't stay only on this device, the game waits for the connection to come back. Check your internet and tap Try again: nothing you played is lost.",
+    "blocked_text": "The account's game is decided on the server, and the device only shows the account. Without a connection, nothing opens. Check your internet and tap Try again: nothing you did is lost.",
     "blocked_retry": "Try again",
     "blocked_leave": "Back to sign-in",
     "blocked_leaving": "Signing out…",
@@ -1635,7 +1629,7 @@
     "reset_password": "New password (8 characters or more)",
     "reset_button": "Change password",
     "reset_done": "Password changed. Sign in with the new one.",
-    "name_cost": "Costs {0} Gold, taken only if the name is accepted.",
+    "rename_note": "Changing the name is free, once every 7 days.",
     "reset_key": "Recovery key (WORD-WORD-WORD-WORD)",
     "error_recovery_key": "Invalid recovery key. After 5 wrong keys recovery locks: ask support to unlock it.",
     "recovery_title": "Recovery key",
@@ -2828,9 +2822,6 @@
       },
       "collection_expansion": {
         "name": "Collection Expansion"
-      },
-      "rename": {
-        "name": "Name change"
       }
     },
     "stages": {
@@ -4287,13 +4278,13 @@
             "name": "Fire Knight",
             "skills": {
               "0": {
-                "name": "Burning Blade"
+                "name": "Cross Slash"
               },
               "1": {
-                "name": "Flaming Charge"
+                "name": "One for All"
               },
               "2": {
-                "name": "Blazing Oath"
+                "name": "Iron and Fire"
               }
             }
           },
@@ -4301,13 +4292,13 @@
             "name": "Water Knight",
             "skills": {
               "0": {
-                "name": "Shield Bash"
+                "name": "Cross Slash"
               },
               "1": {
-                "name": "Tide Wall"
+                "name": "Head High"
               },
               "2": {
-                "name": "Last Vow"
+                "name": "Honor of Chivalry"
               }
             }
           },
@@ -4315,13 +4306,13 @@
             "name": "Wind Knight",
             "skills": {
               "0": {
-                "name": "Swift Thrust"
+                "name": "Cross Slash"
               },
               "1": {
-                "name": "War Horn"
+                "name": "One for All"
               },
               "2": {
-                "name": "Gale Banner"
+                "name": "Path of the Sword"
               }
             }
           },
@@ -4329,13 +4320,13 @@
             "name": "Light Knight",
             "skills": {
               "0": {
-                "name": "Oath"
+                "name": "Cross Slash"
               },
               "1": {
-                "name": "Shield Vow"
+                "name": "Head High"
               },
               "2": {
-                "name": "Last Vow"
+                "name": "Noble Sacrifice"
               }
             }
           },
@@ -4343,13 +4334,13 @@
             "name": "Dark Knight",
             "skills": {
               "0": {
-                "name": "Hungry Blade"
+                "name": "Cross Slash"
               },
               "1": {
-                "name": "Dark Oath"
+                "name": "One for All"
               },
               "2": {
-                "name": "Last Vow"
+                "name": "All for One"
               }
             }
           }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Sigilos.Core.Content;
+using Sigilos.Core.Battle;
 using Sigilos.UI;
 using Sigilos.UI.Audio;
 

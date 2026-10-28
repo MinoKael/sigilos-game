@@ -32,6 +32,7 @@ namespace Sigilos.Core.Content
 			[EffectKind.Revive] = new[] { TargetKind.AllAllies },
 			[EffectKind.IncreaseCooldown] = new[] { TargetKind.Target, TargetKind.AllEnemies, TargetKind.RandomEnemy },
 			[EffectKind.InvertBuffs] = new[] { TargetKind.Target, TargetKind.AllEnemies, TargetKind.RandomEnemy },
+			[EffectKind.Sacrifice] = new[] { TargetKind.Self },
 			[EffectKind.BombTrigger] = new[] { TargetKind.Target, TargetKind.AllEnemies, TargetKind.RandomEnemy },
 		};
 

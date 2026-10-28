@@ -33,6 +33,9 @@ namespace Sigilos.Core.Battle
 		/// <summary>Nenhum efeito negativo pega no dono (Imunidade).</summary>
 		public virtual bool BlocksHarmful => false;
 
+		/// <summary>Este efeito de status não pega no dono, seja de quem for (a Passiva de imunidade).</summary>
+		public virtual bool BlocksStatus(StatusKind status) => false;
+
 		/// <summary>Os inimigos do dono só podem escolhê-lo como alvo único enquanto ele estiver de pé (Provocar).</summary>
 		public virtual bool DrawsAttacks => false;
 

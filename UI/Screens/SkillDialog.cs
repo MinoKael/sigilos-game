@@ -20,6 +20,8 @@ namespace Sigilos.UI.Screens
 		/// <param name="level">O nível de agora (1 é a habilidade sem aprimoramento).</param>
 		public static Dialog Open(Control anchor, SkillDefinition skill, int level, bool awakened, bool locked)
 		{
+			// Nível guardado acima do teto atual (a habilidade foi refeita): mostra o teto.
+			level = System.Math.Min(level, skill.MaxLevel);
 			var dialog = Dialog.Open(anchor, skill.IsPassive ? T("skill.passive_name", skill.Name) : skill.Name, Width, anchor, "SkillDialog");
 			var body = dialog.Body;
 

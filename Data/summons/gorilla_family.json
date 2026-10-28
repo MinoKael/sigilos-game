@@ -35,17 +35,13 @@
           "image": "martelada",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.41},
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35, "turns": 1}
+            {"kind": "Damage", "target": "Target", "power": 4.41, "awakened": {"power": 4.9}},
+            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.35, "turns": 1, "awakened": {"chance": 0.5}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 4.9},
-            {"kind": "Status", "target": "Target", "status": "Stun", "chance": 0.5, "turns": 1}
           ]
         },
         {
@@ -54,12 +50,8 @@
           "passive": {"kind": "StatusOrEffectWhenLowest"},
           "effects": [
             {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 2}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
             {"kind": "Status", "target": "Self", "status": "CritUp", "turns": 2},
-            {"kind": "Heal", "target": "Self", "power": 0.1}
+            {"kind": "Heal", "target": "Self", "power": 0.1, "onlyAwakened": true}
           ]
         }
       ]
@@ -93,20 +85,15 @@
           "image": "peito_de_ferro",
           "cooldown": 4,
           "effects": [
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1},
+            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.6, "turns": 1, "awakened": {"chance": 0.8}},
             {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2},
+            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "Taunt", "chance": 0.8, "turns": 1},
-            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "CritResist", "turns": 2},
-            {"kind": "Shield", "target": "Self", "power": 0.14, "turns": 2}
           ]
         },
         {
@@ -145,18 +132,14 @@
           "image": "rugido",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.71},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -25}
+            {"kind": "Damage", "target": "AllEnemies", "power": 1.71, "awakened": {"power": 2.2}},
+            {"kind": "Impeto", "target": "AllEnemies", "power": -25, "awakened": {"power": -35}},
+            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.3, "turns": 2, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 2.2},
-            {"kind": "Impeto", "target": "AllEnemies", "power": -35},
-            {"kind": "Status", "target": "AllEnemies", "status": "AttackDown", "chance": 0.3, "turns": 2}
           ]
         },
         {
@@ -205,15 +188,11 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2}
+            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2},
+            {"kind": "Heal", "target": "AllAllies", "power": 0.1, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2},
-            {"kind": "Status", "target": "AllAllies", "status": "CritResist", "turns": 2},
-            {"kind": "Heal", "target": "AllAllies", "power": 0.1}
           ]
         },
         {
@@ -221,11 +200,8 @@
           "image": "lider_do_bando",
           "passive": {"kind": "StatusOrEffectOnWaveStart"},
           "effects": [
-            {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2}
-          ],
-          "awakenedEffects": [
             {"kind": "Status", "target": "AllAllies", "status": "AttackUp", "turns": 2},
-            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2}
+            {"kind": "Status", "target": "AllAllies", "status": "DefenseUp", "turns": 2, "onlyAwakened": true}
           ]
         }
       ]
@@ -259,19 +235,14 @@
           "image": "esmagar_ossos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.43},
+            {"kind": "Damage", "target": "Target", "power": 3.43, "awakened": {"power": 3.92}},
             {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.6, "turns": 2}
+            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.6, "turns": 2, "awakened": {"chance": 0.8}}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "EffectRate", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 3.92},
-            {"kind": "Status", "target": "Target", "status": "DefenseBreak", "turns": 2},
-            {"kind": "Status", "target": "Target", "status": "SpeedDown", "chance": 0.8, "turns": 2}
           ]
         },
         {
@@ -280,12 +251,8 @@
           "passive": {"kind": "StatusOrEffectWhenLowest"},
           "effects": [
             {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
-            {"kind": "Status", "target": "Self", "status": "Counter", "turns": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "AttackUp", "turns": 2},
             {"kind": "Status", "target": "Self", "status": "Counter", "turns": 1},
-            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2}
+            {"kind": "Status", "target": "Self", "status": "DefenseUp", "turns": 2, "onlyAwakened": true}
           ]
         }
       ]

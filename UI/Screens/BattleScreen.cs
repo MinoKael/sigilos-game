@@ -107,7 +107,8 @@ namespace Sigilos.UI.Screens
 		private string _round = "";
 		private readonly Label _banner = new() { Name = "Banner" };
 		private readonly HBoxContainer _actions = Layout.Row(Space.Large).Named("Skills");
-		private readonly SigilButton _autoButton = new(null, 56, SigilShape.Square) { Name = "Auto" };
+		private readonly SigilButton _autoButton = new(Art.Icon("play"), 56, SigilShape.Square) { Name = "Auto" };
+		private readonly SigilButton _speedButton = new(null, 56, SigilShape.Square) { Name = "Speed" };
 		private readonly SigilButton _configButton = new(null, 56, SigilShape.Square) { Name = "Config" };
 		private readonly SigilButton _effectsButton = new(Art.Icon("effects"), 56, SigilShape.Square) { Name = "Effects", ToggleMode = true };
 		private readonly TurnOrderBar _order = new();
@@ -120,7 +121,9 @@ namespace Sigilos.UI.Screens
 
 		/// <summary>O inimigo que o jogador marcou: o automático ataca ele primeiro. Some quando ele cai ou a onda acaba.</summary>
 		private BattleUnit? _focus;
-		private int _speedIndex;
+
+		/// <summary>A velocidade da tela (o índice em <see cref="BattlePace.Speeds"/>): a do aparelho, no manual e no automático.</summary>
+		private int _speedIndex = Math.Clamp(UiSession.BattleSpeed, 0, BattlePace.Speeds.Count - 1);
 		private bool _closed;
 		private bool _finished;
 
@@ -278,7 +281,7 @@ namespace Sigilos.UI.Screens
 		/// motivo da derrota (tempo esgotado ou todos caídos) vem da própria luta.
 		/// </summary>
 		/// <param name="nextMana">A Mana da luta seguinte, quando dá para entrar nela agora: o Continuar vai para ela (<see cref="NextRequested"/>).</param>
-		public void ShowResult(BattleOutcome outcome, int? nextMana = null)
+		public void ShowResult(BattleOutcome outcome, int? nextMana = null, double? seconds = null)
 		{
 			(string Icon, string Text)? defeat = outcome.Victory ? null
 				: _session.Round > BattleRules.RoundLimit ? ("resolve", T("battle.timeout", BattleRules.RoundLimit))
@@ -288,7 +291,7 @@ namespace Sigilos.UI.Screens
 			_effectsButton.ButtonPressed = false;
 			_bossBar.Clear();
 			var next = nextMana is { } mana ? (mana, (Action)Next) : ((int, Action)?)null;
-			AddChild(new BattleResultPanel(outcome, Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune), rune => RuneLockRequested?.Invoke(rune), next));
+			AddChild(new BattleResultPanel(outcome, seconds ?? Elapsed, defeat, Close, Restart, rune => RuneSellRequested?.Invoke(rune), rune => RuneLockRequested?.Invoke(rune), next));
 		}
 
 		public override void _Process(double delta)
@@ -349,21 +352,27 @@ namespace Sigilos.UI.Screens
 		}
 
 		/// <summary>
-		/// O canto de baixo à esquerda: automático, velocidade (o número no sigilo), Efeitos e a ajuda, só com
-		/// o símbolo e sem texto (o botão ligado do automático fica aceso).
+		/// O canto de baixo à esquerda: pausa, automático (aceso quando ligado), velocidade (1×, 2×, 3×, no manual e no
+		/// automático), Efeitos e a ajuda, só com o símbolo ou o número e sem texto.
 		/// </summary>
 		private Control Controls()
 		{
-			var row = Layout.Grid(4, 10).Named("Controls");
+			var row = Layout.Grid(5, 10).Named("Controls");
 			row.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
 			_configButton.SetIcon(Art.Icon("gears"));
 			_configButton.Pressed += OpenPause;
 			row.AddChild(_configButton);
 
-			_autoButton.Pressed += CycleAuto;
+			_autoButton.Pressed += () => SetAuto(!_auto);
 			row.AddChild(_autoButton);
-			// Assistindo a Batalha automática, o automático e a velocidade são os dela; online, a pausa é a desistência.
-			_autoButton.Visible = _watch == null && _online == null;
+			_speedButton.Pressed += CycleSpeed;
+			row.AddChild(_speedButton);
+			RefreshSpeed();
+			// Assistindo a Batalha automática, o automático e a velocidade são os dela; online, a pausa é a desistência e o
+			// automático é o do prazo: o botão fica apagado no lugar dele, para a velocidade não mudar de lugar.
+			_autoButton.Visible = _watch == null;
+			_autoButton.Disabled = _online != null;
+			_speedButton.Visible = _watch == null;
 			_configButton.Visible = _watch == null;
 
 			_effectsButton.Toggled += on =>
@@ -618,6 +627,9 @@ namespace Sigilos.UI.Screens
 				view.SetFocused(view.Unit == unit);
 		}
 
+		/// <summary>As decisões do lado do jogador, na ordem: o servidor refaz a luta com elas para decidir o resultado.</summary>
+		public List<LoggedAction> Actions { get; } = new();
+
 		private async void Run()
 		{
 			await Play(_session.Start());
@@ -635,6 +647,8 @@ namespace Sigilos.UI.Screens
 					: AutoPilot.ForEnemy(_session, turn.Actor);
 				if (_closed)
 					return;
+				if (turn.Actor.Side == Side.Allies)
+					Actions.Add(BattleReplay.Log(_session, action));
 				await Play(_session.Act(action));
 			}
 
@@ -835,7 +849,7 @@ namespace Sigilos.UI.Screens
 			_quickAttack = target =>
 			{
 				var first = ally.Skill(0);
-				if (ally.IsReady(0) && first.NeedsTarget && !first.NeedsAlly && _coach?.CanUse(0) != false && _session.ChoosableTargets(ally).Contains(target) && (_coach == null || _coach.CanTarget(target)))
+				if (ally.IsReady(0) && !first.NeedsAlly && _coach?.CanUse(0) != false && _session.ChoosableTargets(ally).Contains(target) && (_coach == null || _coach.CanTarget(target)))
 					Decide(new UnitAction(0, target));
 			};
 
@@ -951,32 +965,20 @@ namespace Sigilos.UI.Screens
 				_decideAutomatically?.Invoke();
 		}
 
-		/// <summary>Manual, automático e automático em 2×, nessa ordem; o 2× volta ao manual.</summary>
-		private void CycleAuto()
+		/// <summary>1×, 2× e 3×, nessa ordem; o 3× volta ao 1×. Vale do próximo momento da luta em diante e fica guardada no aparelho.</summary>
+		private void CycleSpeed()
 		{
-			if (!_auto)
-			{
-				_speedIndex = 0;
-				SetAuto(true);
-			}
-			else if (_speedIndex == 0)
-			{
-				_speedIndex = BattlePace.Speeds.Count - 1;
-				RefreshAuto();
-			}
-			else
-			{
-				_speedIndex = 0;
-				SetAuto(false);
-			}
+			_speedIndex = (_speedIndex + 1) % BattlePace.Speeds.Count;
+			UiSession.ChooseBattleSpeed(_speedIndex);
+			RefreshSpeed();
 		}
 
-		/// <summary>Sem texto no botão, o automático ligado se mostra pela cor: dourado ligado, comum desligado.</summary>
+		private void RefreshSpeed() => _speedButton.Letters = $"{BattlePace.Speeds[_speedIndex].Label}×";
+
+		/// <summary>Sem texto no botão: no manual, o "play" liga o automático; ligado, ele pulsa aceso e o "pause" volta ao manual.</summary>
 		private void RefreshAuto()
 		{
-			var fast = _auto && _speedIndex > 0;
-			_autoButton.SetIcon(Art.Icon(!_auto ? "play" : fast ? "pause" : "fast_forward"));
-			_autoButton.Badge = fast ? $"{BattlePace.Speeds[_speedIndex].Label}×" : "";
+			_autoButton.SetIcon(Art.Icon(_auto ? "pause" : "play"));
 			_autoButton.Highlight = _auto;
 		}
 
@@ -1030,6 +1032,23 @@ namespace Sigilos.UI.Screens
 		{
 			switch (beat.Kind)
 			{
+				case BeatKind.Approach when beat.Group != null:
+					_striker = beat.Actor != null && _views.TryGetValue(beat.Actor, out var lead) ? lead : _striker;
+					foreach (var runner in beat.Group.Where(a => _views.ContainsKey(a.Actor)))
+						_arena.Approach(_views[runner.Actor], runner.Targets.Where(_views.ContainsKey).Select(unit => (Control)_views[unit]).ToList(), seconds);
+					break;
+				case BeatKind.Return when beat.Group != null:
+					foreach (var runner in beat.Group.Where(a => _views.ContainsKey(a.Actor)))
+						_arena.Return(_views[runner.Actor], seconds);
+					break;
+				case BeatKind.Volley when beat.Group != null:
+					foreach (var attacker in beat.Group)
+					{
+						if (_views.TryGetValue(attacker.Actor, out var from) && attacker.Targets.FirstOrDefault(_views.ContainsKey) is { } first)
+							_arena.Bump(from, _views[first], seconds);
+					}
+
+					break;
 				case BeatKind.Approach when beat.Actor != null && _views.TryGetValue(beat.Actor, out var actor):
 					_striker = actor;
 					_arena.Approach(actor, (beat.Targets ?? Array.Empty<BattleUnit>()).Where(_views.ContainsKey).Select(unit => (Control)_views[unit]).ToList(), seconds);

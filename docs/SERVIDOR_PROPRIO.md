@@ -139,46 +139,40 @@ Sigilos.Server (ASP.NET Core 8, minimal API) ──► sigilos.db (LiteDB, um ar
   em `user://sigilos.account.json`, e a senha nunca. Duas renovações ao mesmo tempo viram uma só,
   porque o token de renovação troca a cada uso.
 - `SessionLock`: tomar, bater a cada 20 s e soltar a sessão.
-- `CloudSave`: baixar e enviar o save em gzip e Base64 (JSON puro com servidor antigo), ou só o que mudou (`SaveDelta`).
-- `CloudSync`: quem ganha entre o aparelho e a nuvem, comparando o hash do save e a revisão com o último
-  ponto de sincronização. Gravar sem mudar nada não conta como mudança.
+- `CloudSave`: baixar a cópia do save (gzip e Base64) e pedir ações, lutas e a troca de nome. O aparelho nunca envia o
+  save: o servidor recusa (`save_readonly`). Ver [ACOES_DO_SERVIDOR.md](ACOES_DO_SERVIDOR.md).
+- `CloudSync`: o hash da cópia e a revisão do último ponto de sincronização.
 - `AccountStore`: o arquivo da conta no aparelho.
-- `AccountSession`: o nó que junta tudo, com o batimento e o envio a cada 60 s.
+- `AccountSession`: o nó que junta tudo, com o batimento; aplica à cópia o que cada resposta devolve.
+- `GameApi` (em `GameEntry/`): o único caminho do jogo até o servidor, um pedido por vez.
 - `ChatLink`: a conexão do Chat global, aberta com a conta conectada e reaberta no batimento se cair.
 - `CloudFriends`: a lista de amigos e os convites.
 
 O fluxo, no `GameRoot`:
 1. **Abrir o jogo.**
-   - Quem tem conta lembrada entra sozinho. Sem internet, ela abre com o save deste aparelho (se ele
-     tem um desta conta) e o Santuário mostra "Sem conexão".
-   - Os outros veem a tela de login: Entrar e Criar conta (com o nome da conta). Não há mais "Jogar sem
-     conta": o jogo é um serviço online.
+   - Quem tem conta lembrada entra sozinho. Os outros veem a tela de login: Entrar e Criar conta (com o
+     nome da conta). Não há "Jogar sem conta": o jogo é um serviço online.
 2. **Entrar.**
    - Toma a sessão. Se outro aparelho bateu há menos de 30 s, pergunta "Entrar aqui fecha a conta
      lá?".
-   - Depois baixa o save e decide:
-     - só um lado mudou: fica esse;
-     - os dois mudaram: pergunta, mostrando os dois resumos;
-     - a conta é nova: o save sem conta do aparelho sobe para ela.
-   - O que perde vira backup `.old-` no aparelho.
+   - Depois baixa a cópia do servidor (`GameApi.Sync`). Conta sem save, ou com save de versão antiga,
+     pede um jogo novo ao servidor (`/game/init`). Não há conflito a resolver: a conta é a do servidor.
 3. **Jogando.**
-   - O save local é a verdade. Ele sobe a cada 60 s se mudou, ao pausar no celular e ao fechar a janela;
-     fechar também solta a sessão, esperando no máximo uns segundos.
-   - Sem rede, nada muda para o jogador, a não ser o "Sem conexão" no Santuário. O batimento continua
-     tentando. Na volta, o jogo toma a sessão sem forçar e sincroniza: o que se jogou sem rede sobe, ou,
-     se a conta também mudou em outro aparelho, o jogo pergunta qual progresso fica.
+   - Cada toque que muda a conta é um pedido ao servidor; a cópia muda com a resposta.
+   - Sem rede, o jogo para na janela "Sem conexão" (Tentar de novo ou Sair) e nada abre até a conexão
+     voltar. Nada se perde: o que valeu já está no servidor.
    - Outro aparelho entrou com este conectado: no próximo batimento este volta para o login com o
-     aviso, e o progresso que não subiu vira backup.
-   - Outro aparelho está com a conta quando a rede volta: este volta para o login, mas o que se jogou
-     sem rede fica no aparelho e entra na conta na próxima entrada aqui.
-4. **Nome da conta:** aparece no Santuário, no lugar de "Conta" ao lado do nível, e troca nos Ajustes.
-   Numa conta sem nome (criada antes de ele existir), o jogo pede um logo depois de entrar.
-5. **Sair da conta** (Ajustes): envia, solta e volta para o login. Sem rede, pergunta antes, e o
-   progresso fica no aparelho até a próxima entrada.
+     aviso.
+   - A cópia ficou velha (outro aparelho jogou, o Véu mudou o save): o servidor responde 409, o jogo
+     baixa de novo e o jogador toca outra vez.
+4. **Nome da conta:** aparece no Santuário, no lugar de "Conta" ao lado do nível, e troca nos Ajustes
+   ou na Loja (o servidor cobra o Ouro da troca). Numa conta sem nome (criada antes de ele existir), o
+   jogo pede um logo depois de entrar.
+5. **Sair da conta** (Ajustes) e fechar a janela: soltam a sessão. Nada a enviar.
 
-Cada conta tem o seu save no aparelho (`sigilos.account-<id>.json`); o `sigilos.json` continua sendo o
-do jogo sem conta. Com `-- --save=nome`, cada nome é um aparelho à parte, com o seu id: dá para testar
-dois aparelhos na mesma máquina.
+Cada conta tem a sua cópia no aparelho (`sigilos.account-<id>.json`). Com `-- --save=nome`, cada nome é
+um aparelho à parte, com o seu id: dá para testar dois aparelhos na mesma máquina. Um `--save=` que já
+existe no aparelho (o `debugger`) é o save local de teste: abre sem conta e roda as regras no aparelho.
 
 **Android:** o preset de exportação precisa da permissão **Internet** (Permissions → Internet), que hoje
 está desligada. Sem ela, todo pedido falha como "sem conexão".

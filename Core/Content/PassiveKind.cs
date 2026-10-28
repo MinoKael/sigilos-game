@@ -92,6 +92,9 @@ namespace Sigilos.Core.Content
 		/// </summary>
 		Undying,
 
+		/// <summary>Os efeitos de <see cref="PassiveDefinition.Statuses"/> não pegam no dono (a Cabeça Erguida do Cavaleiro: Atordoamento e Sono).</summary>
+		StatusImmunity,
+
 		/// <summary>
 		/// Condicional: não dispara efeitos; só faz o que <see cref="PassiveDefinition.Actions"/> diz (obrigar a mirar,
 		/// revidar, não acordar quem dorme) quando a <see cref="PassiveDefinition.Condition"/> vale, e o que

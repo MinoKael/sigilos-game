@@ -37,6 +37,9 @@ namespace Sigilos.GameEntry.Account
 
 		public float EffectsVolume { get; set; } = 1f;
 
+		/// <summary>A velocidade da luta na tela (o índice em <c>BattlePace.Speeds</c>), no manual e no automático.</summary>
+		public int BattleSpeed { get; set; }
+
 		public string? Email { get; set; }
 
 		/// <summary>O nome da conta (único no servidor), como veio na última entrada ou renovação.</summary>

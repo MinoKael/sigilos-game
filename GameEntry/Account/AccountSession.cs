@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Godot;
 using Sigilos.Core.Player;
@@ -10,25 +11,12 @@ namespace Sigilos.GameEntry.Account
 {
 	public enum LossReason
 	{
-		/// <summary>Outro aparelho entrou na conta.</summary>
+		/// <summary>Outro aparelho entrou na conta. Nada se perde: a conta é do servidor e este aparelho só tinha a cópia.</summary>
 		Taken,
-
-		/// <summary>
-		/// Outro aparelho está com a conta quando a conexão voltou, depois de este jogar sem ela. O que se
-		/// jogou aqui não vira backup: fica no aparelho e entra na conta na próxima entrada (com a pergunta, se
-		/// a conta também mudou lá).
-		/// </summary>
-		TakenWhileAway,
 
 		/// <summary>O acesso venceu e não renova: entrar de novo com a senha.</summary>
 		Expired,
 	}
-
-	/// <summary>
-	/// Dois saves que mudaram desde a última sincronização, para o jogador escolher.
-	/// <paramref name="Adopting"/>: o local é o save sem conta deste aparelho, que subiria para a conta.
-	/// </summary>
-	public sealed record SaveConflict(PlayerState Local, DateTimeOffset? LocalSavedAt, PlayerState Cloud, DateTimeOffset CloudSavedAt, bool Adopting);
 
 	/// <summary>O fim da sincronização: o save que vale agora (<see cref="Downloaded"/> se veio da nuvem), ou o erro.</summary>
 	public sealed record SyncResult(PlayerState? Player, bool Downloaded, ApiResponse? Error)
@@ -38,45 +26,33 @@ namespace Sigilos.GameEntry.Account
 
 	/// <summary>
 	/// A conta deste aparelho, do login ao "Sair da conta": junta o <see cref="AuthClient"/>, a
-	/// <see cref="SessionLock"/>, o <see cref="CloudSave"/> e o <see cref="AccountStore"/>, e cuida do tempo
-	/// (o batimento e o envio periódico). Quem mostra as telas e troca o save aberto é o GameRoot.
+	/// <see cref="SessionLock"/>, o <see cref="CloudSave"/> e o <see cref="AccountStore"/>, e cuida do batimento. Quem
+	/// mostra as telas e troca o save aberto é o GameRoot; quem escolhe entre esta conta e o save local de teste é o
+	/// <see cref="GameApi"/>.
 	///
-	/// O fluxo (docs/SAVE_NUVEM.md, seção "Contas"):
+	/// A conta é do servidor. Ele decide tudo que gasta, rende ou sorteia, e o aparelho guarda só a cópia: ela muda
+	/// apenas pelo que o servidor devolve (<see cref="StatePatch"/>), e nada sobe do aparelho.
 	/// 1. Entrar: <see cref="Login"/> (ou <see cref="Register"/>, ou <see cref="Resume"/> com o token
-	///    guardado), <see cref="Claim"/> a sessão e <see cref="Sync"/>, que resolve o save desta conta.
-	///    Daí <see cref="Begin"/> liga o batimento e o envio.
-	/// 2. Jogando: o save local é a verdade e a nuvem é a cópia. Logo depois de cada ação que muda a
-	///    conta (<see cref="SaveSoon"/>), a cada <see cref="UploadSeconds"/>, ao pausar e ao sair,
-	///    <see cref="Flush"/> envia se mudou. Sem rede, nada muda para o jogador.
-	///    - Outro aparelho tomou a conta: <see cref="Lost"/>. O que não subiu vira backup, nada é enviado.
-	///    - A nuvem mudou por fora (o envio volta com conflito): <see cref="SyncNeeded"/>, e o GameRoot
-	///      sincroniza de novo.
-	/// 3. Sem internet: a conta lembrada abre com o save deste aparelho (<see cref="Begin"/> sem conexão), e
-	///    a rede caindo no meio dá no mesmo. A cada batimento o jogo tenta de novo; <see cref="Connected"/>
-	///    diz como está, e <see cref="ConnectionChanged"/> avisa a queda e a volta. Ao reconectar, toma a
-	///    sessão sem forçar e pede <see cref="SyncNeeded"/>: o que se jogou sem rede sobe, ou o jogo pergunta,
-	///    se a conta também mudou em outro aparelho. Se outro aparelho está com a conta nessa hora, este cai
-	///    (<see cref="LossReason.TakenWhileAway"/>) sem perder nada.
-	///    - Sem rede, o jogo na conta segue só por <see cref="OfflineLimitSeconds"/> de jogo; depois para
-	///      (<see cref="Blocked"/>) até uma sincronização dar certo. A conta do tempo fica no aparelho: a
-	///      conexão que volta e cai antes de sincronizar, fechar o jogo ou entrar de novo não a zeram.
-	/// 4. Sair: <see cref="Flush"/> e <see cref="Leave"/>.
+	///    guardado), <see cref="Claim"/> a sessão e <see cref="Sync"/>, que baixa a cópia (e pede ao servidor um
+	///    jogo novo, na conta sem save). Daí <see cref="Begin"/> liga o batimento.
+	/// 2. Jogando: <see cref="Act"/>, <see cref="Battle"/> e <see cref="Rename"/> pedem ao servidor, a partir da revisão da
+	///    cópia, e aplicam o que voltou.
+	///    - Outro aparelho tomou a conta: <see cref="Lost"/>.
+	///    - O servidor já tem outra revisão (409): <see cref="SyncNeeded"/>, e o GameRoot baixa de novo.
+	/// 3. Sem internet não há jogo na conta (<see cref="Blocked"/>): a cada batimento o jogo tenta de novo,
+	///    <see cref="ConnectionChanged"/> avisa a queda e a volta, e a volta pede <see cref="SyncNeeded"/>.
+	/// 4. Sair: <see cref="Leave"/>.
 	///
-	/// Cada conta tem o seu save no aparelho (<c>nome.account-id.json</c>); o do jogo sem conta
-	/// (<see cref="OfflineStore"/>) sobe para a primeira conta que entrar sem save na nuvem.
+	/// Cada conta tem a sua cópia no aparelho (<c>nome.account-id.json</c>). O <see cref="OfflineStore"/> é só o do
+	/// save local de teste.
 	/// </summary>
 	public partial class AccountSession : Node
 	{
 		/// <summary>O servidor de verdade; <c>-- --server=url</c> troca (um servidor local, para testar).</summary>
 		public const string DefaultServer = "https://sigilos.minopavel.duckdns.org/";
 
-		public const double UploadSeconds = 60;
-
-		/// <summary>Quanto esperar depois da última ação para enviar (<see cref="SaveSoon"/>): ações seguidas viram um envio só.</summary>
-		public const double SoonSeconds = 2;
-
 		/// <summary>Quanto se joga na conta sem o servidor, desde a última sincronização, antes de o jogo parar (<see cref="Blocked"/>).</summary>
-		public const double OfflineLimitSeconds = 120;
+		public const double OfflineLimitSeconds = 0;
 
 		/// <summary>Sem conexão, o batimento tenta de novo mais vezes: a volta da rede aparece logo.</summary>
 		private const double RetrySeconds = 10;
@@ -100,10 +76,7 @@ namespace Sigilos.GameEntry.Account
 		// Os relógios seguem com o jogo pausado (a pausa da luta, o jogo parado sem conexão): a sessão continua
 		// viva e a volta da rede aparece. A conta do tempo sem conexão (_Process) para com o jogo.
 		private readonly Timer _beat = new() { Name = "Heartbeat", WaitTime = SessionLock.BeatSeconds, ProcessMode = ProcessModeEnum.Always };
-		private readonly Timer _upload = new() { Name = "Upload", WaitTime = UploadSeconds, ProcessMode = ProcessModeEnum.Always };
-		private readonly Timer _soon = new() { Name = "Soon", WaitTime = SoonSeconds, OneShot = true, ProcessMode = ProcessModeEnum.Always };
 		private Func<PlayerState?> _player = () => null;
-		private Task<bool>? _flushing;
 		private Task<SyncResult>? _syncing;
 		private Task<BeatOutcome>? _checking;
 
@@ -138,12 +111,11 @@ namespace Sigilos.GameEntry.Account
 				RecoveryKeyIssued?.Invoke();
 			};
 			_lock = new SessionLock(_auth, _data.DeviceId, DeviceName());
-			_cloud = new CloudSave(_auth, () => _lock.SaveFormat);
+			_cloud = new CloudSave(_auth);
 			_mail = new CloudMail(_auth);
 			Chat = new ChatLink(_http.BaseAddress!, _auth.Token);
 			Rta = new RtaLink(_http.BaseAddress!, _auth.Token);
 			Friends = new CloudFriends(_auth);
-			Arena = new CloudArena(_auth);
 		}
 
 		/// <summary>Chegou a chave de recuperação da conta (<see cref="PendingRecoveryKey"/>): o GameRoot mostra.</summary>
@@ -159,19 +131,19 @@ namespace Sigilos.GameEntry.Account
 			_data.Save();
 		}
 
-		/// <summary>A conta caiu durante o jogo: o GameRoot volta para o login com o aviso. O segundo valor diz se o progresso que não subiu virou backup.</summary>
-		public event Action<LossReason, bool>? Lost;
+		/// <summary>A conta caiu durante o jogo: o GameRoot volta para o login com o aviso.</summary>
+		public event Action<LossReason>? Lost;
 
 		/// <summary>
-		/// É preciso sincronizar de novo durante o jogo (o GameRoot chama <see cref="Sync"/>): a nuvem mudou por
-		/// fora, ou a conexão voltou depois de um tempo sem ela.
+		/// É preciso baixar a cópia de novo durante o jogo (o GameRoot chama <see cref="Sync"/>): o servidor já tem outra
+		/// revisão, ou a conexão voltou depois de um tempo sem ela.
 		/// </summary>
 		public event Action? SyncNeeded;
 
 		/// <summary><see cref="Connected"/> ou <see cref="Blocked"/> mudou.</summary>
 		public event Action? ConnectionChanged;
 
-		/// <summary>O save do jogo sem conta.</summary>
+		/// <summary>O save local de teste (<c>--save=</c>), que nunca vai para a conta.</summary>
 		public SaveStore OfflineStore { get; }
 
 		/// <summary>O save da conta de agora neste aparelho; nulo sem conta.</summary>
@@ -180,24 +152,14 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>Entrou e está jogando na conta (entre <see cref="Begin"/> e sair ou cair).</summary>
 		public bool Playing { get; private set; }
 
-		/// <summary>Uma ação do servidor está em andamento: nenhum envio do save sai até ela voltar.</summary>
-		private bool _acting;
-
-		/// <summary>O servidor recusou o save do aparelho (fora das regras): a próxima sincronização fica com a nuvem.</summary>
-		private bool _forceCloud;
-
-		/// <summary>A última sincronização trocou o save do aparelho pelo da nuvem por causa disso; o jogo avisa e zera.</summary>
-		public bool Corrected { get; set; }
-
 		/// <summary>Jogando na conta e falando com o servidor; falso jogando sem internet.</summary>
 		public bool Connected => Playing && _lock.SessionId != null && !_away;
 
 		/// <summary>
-		/// O jogo na conta parou: <see cref="OfflineLimitSeconds"/> jogados sem o servidor desde a última
-		/// sincronização. Só uma sincronização que dá certo solta (<see cref="Reconnect"/>); a conexão que volta e
-		/// cai antes dela não.
+		/// O jogo na conta parou: sem o servidor não há jogo, porque cada regra e cada gasto são dele e o aparelho só mostra a
+		/// cópia. Só uma sincronização que dá certo solta (<see cref="Reconnect"/>).
 		/// </summary>
-		public bool Blocked => Playing && _data.OfflineSeconds >= OfflineLimitSeconds;
+		public bool Blocked => Playing && !Connected;
 
 		/// <summary>O jogador escolheu jogar sem conta: o jogo abre direto, sem a tela de login.</summary>
 		public bool Offline
@@ -256,6 +218,19 @@ namespace Sigilos.GameEntry.Account
 			}
 		}
 
+		/// <summary>A velocidade da luta deste aparelho: o índice em <see cref="Core.Battle.BattlePace.Speeds"/>, igual no manual e no automático.</summary>
+		public int BattleSpeed
+		{
+			get => _data.BattleSpeed;
+			set
+			{
+				if (_data.BattleSpeed == value)
+					return;
+				_data.BattleSpeed = value;
+				_data.Save();
+			}
+		}
+
 		/// <summary>O e-mail da última conta que entrou neste aparelho.</summary>
 		public string? Email => _data.Email;
 
@@ -271,26 +246,16 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>Os amigos da conta no servidor (só com <see cref="Connected"/> responde).</summary>
 		public CloudFriends Friends { get; }
 
-		/// <summary>A Arena no servidor: a defesa da conta e as defesas dos outros (só com <see cref="Connected"/> responde).</summary>
-		public CloudArena Arena { get; }
-
 		/// <summary>Há um token guardado: dá para entrar sem senha (<see cref="Resume"/>).</summary>
 		public bool Remembered => _auth.SignedIn;
 
-		/// <summary>A última sincronização que deu certo nesta execução.</summary>
+		/// <summary>A última resposta do servidor que mudou ou baixou a cópia, nesta execução.</summary>
 		public DateTimeOffset? LastSync { get; private set; }
-
-		/// <summary>O save mudou desde a última sincronização e ainda não subiu.</summary>
-		public bool Pending => Playing && _player() is { } player && CloudSync.Changed(PlayerSave.ToJson(player), _data.CurrentSync);
 
 		public override void _Ready()
 		{
 			AddChild(_beat);
-			AddChild(_upload);
-			AddChild(_soon);
 			_beat.Timeout += async () => Handle(await Check());
-			_upload.Timeout += () => _ = Flush();
-			_soon.Timeout += () => _ = Flush();
 		}
 
 		public override void _ExitTree() => _http.Dispose();
@@ -340,19 +305,35 @@ namespace Sigilos.GameEntry.Account
 		/// <summary>As cartas do correio desta conta que o servidor ainda não viu coletadas.</summary>
 		public Task<MailFetch> FetchMail() => _mail.Fetch();
 
-		/// <summary>Avisa o servidor que a carta foi coletada (a recompensa já está no save).</summary>
-		public Task<ApiResponse> ClaimMail(string id) => _mail.Claim(id);
-
-		/// <summary>Troca o nome da conta. O servidor recusa nome fora da regra (<c>invalid_name</c>) ou já usado (<c>name_taken</c>).</summary>
+		/// <summary>
+		/// Dá ou troca o nome da conta. O servidor recusa nome fora da regra (<c>invalid_name</c>), já usado
+		/// (<c>name_taken</c>) ou a troca antes da semana passar (<c>rename_cooldown</c>); aceito, a data da troca entra
+		/// na cópia daqui.
+		/// </summary>
 		public async Task<ApiResponse> Rename(string name)
 		{
-			var response = await _auth.Call(System.Net.Http.HttpMethod.Put, "account/name", new { name });
-			if (response.Ok)
+			if (!Connected || _player() is not { } player || Store is not { } store || _lock.SessionId is not { } session)
+				return new ApiResponse(0, "offline", default);
+
+			var response = await _cloud.Rename(session, Revision, name);
+			if (response.Unreached)
 			{
-				_data.Name = response.Text("name");
-				_data.Save();
+				Handle(BeatOutcome.Unknown);
+				return response;
 			}
 
+			if (response.Ok && response.Number("revision") is { } revision)
+			{
+				if (response.Text("patch") is { } text && JsonNode.Parse(text) is JsonObject { Count: > 0 } patch)
+					StatePatch.Apply(player, patch);
+				Mark(revision, store.Save(player));
+				_data.Name = response.Text("name");
+				_data.Save();
+				return response;
+			}
+
+			if (Stale(response))
+				SyncNeeded?.Invoke();
 			return response;
 		}
 
@@ -368,20 +349,19 @@ namespace Sigilos.GameEntry.Account
 		public Task<ClaimResult> Claim(bool force) => _lock.Claim(force);
 
 		/// <summary>
-		/// Baixa a nuvem e decide qual save vale (<see cref="CloudSync"/>), perguntando ao jogador quando os
-		/// dois mudaram (<paramref name="preferCloud"/>: verdadeiro fica o da nuvem). O que perde vira backup
-		/// no aparelho. Conta sem save em lugar nenhum começa um jogo novo (<paramref name="newGame"/>).
-		/// Pedidos enquanto uma sincronização corre esperam a mesma (uma pergunta só).
+		/// Baixa a conta do servidor: o que vale é sempre o dele, e o aparelho só guarda a cópia. Conta sem save (nova, ou de
+		/// antes de a versão nova zerar as contas) pede ao servidor que comece um jogo novo. Pedidos enquanto uma
+		/// sincronização corre esperam a mesma.
 		/// </summary>
-		public Task<SyncResult> Sync(Func<PlayerState> newGame, Func<SaveConflict, Task<bool>> preferCloud)
+		public Task<SyncResult> Sync()
 		{
 			if (_syncing is { IsCompleted: false })
 				return _syncing;
-			_syncing = SyncOnce(newGame, preferCloud);
+			_syncing = SyncOnce();
 			return _syncing;
 		}
 
-		private async Task<SyncResult> SyncOnce(Func<PlayerState> newGame, Func<SaveConflict, Task<bool>> preferCloud)
+		private async Task<SyncResult> SyncOnce()
 		{
 			if (Store is not { } store)
 				return new SyncResult(null, false, new ApiResponse(401, "signed_out", default));
@@ -395,94 +375,44 @@ namespace Sigilos.GameEntry.Account
 			}
 
 			var cloud = download.Copy;
-			var cloudRevision = cloud?.Revision ?? 0;
-			DateTime? inheritedStarted = null;
-
-			// O save da nuvem é de antes de a versão nova zerar as contas (PlayerSave.IsObsolete): vira backup no
-			// aparelho e conta como nuvem vazia; o jogo novo sobe por cima dele.
-			if (cloud != null && PlayerSave.IsObsolete(cloud.Json))
+			if (cloud == null || PlayerSave.IsObsolete(cloud.Json))
 			{
-				inheritedStarted = PlayerSave.StartedOf(cloud.Json);
-				store.Backup(cloud.Json, "cloud");
-				cloud = null;
+				if (cloud != null)
+					store.Backup(cloud.Json, "cloud");
+
+				var started = _lock.SessionId is { } opened ? await _cloud.Init(opened) : new ApiResponse(409, "session_taken", default);
+				if (!started.Ok)
+				{
+					if (started.Unreached)
+						Handle(BeatOutcome.Unknown);
+					return new SyncResult(null, false, started);
+				}
+
+				download = await _cloud.Download();
+				if (!download.Ok || download.Copy == null)
+					return new SyncResult(null, false, download.Response);
+				cloud = download.Copy;
 			}
 
-			var cloudPlayer = cloud != null ? Parse(cloud.Json) : null;
-			if (cloud != null && cloudPlayer == null)
+			var cloudPlayer = Parse(cloud.Json);
+			if (cloudPlayer == null)
 				return new SyncResult(null, false, new ApiResponse(422, "cloud_unreadable", default));
 
-			// O save desta conta neste aparelho. Sem ele, o save sem conta é candidato a subir para ela.
-			var synced = _data.CurrentSync;
-			var localPlayer = store.Load();
-			if (store.InheritedStarted is { } localStarted && (inheritedStarted == null || localStarted < inheritedStarted))
-				inheritedStarted = localStarted;
-			var local = localPlayer != null ? store.Read() : null;
-			var adopting = false;
-			if (local == null && OfflineStore.Load() is { } offline)
+			var local = store.Load() != null ? store.Read() : null;
+			if (local == cloud.Json)
 			{
-				localPlayer = offline;
-				local = OfflineStore.Read();
-				synced = null;
-				adopting = true;
+				Mark(cloud.Revision, local);
+				return new SyncResult(store.Load(), false, null);
 			}
 
-			if (OfflineStore.InheritedStarted is { } offlineStarted && (inheritedStarted == null || offlineStarted < inheritedStarted))
-				inheritedStarted = offlineStarted;
-
-			var action = CloudSync.Decide(local, synced, cloud);
-			// Sem save na nuvem (a conta recomeçou), não há para onde voltar: o envio segue pelo caminho de sempre.
-			if (_forceCloud && cloud == null)
-				_forceCloud = false;
-
-			if (_forceCloud && cloud != null)
-			{
-				_forceCloud = false;
-				Corrected = true;
-				action = SyncAction.Download;
-			}
-
-			var chose = action == SyncAction.Ask;
-			if (chose)
-			{
-				var conflict = new SaveConflict(localPlayer!, adopting ? OfflineStore.SavedAt : store.SavedAt, cloudPlayer!, cloud!.SavedAt, adopting);
-				action = await preferCloud(conflict) ? SyncAction.Download : SyncAction.Upload;
-			}
-
-			switch (action)
-			{
-				case SyncAction.InSync:
-					if (adopting)
-						store.Write(local!);
-					Mark(cloud!.Revision, local!);
-					return new SyncResult(localPlayer, false, null);
-
-				case SyncAction.Download:
-					// O que só o aparelho tinha não se perde: fica guardado (o save sem conta fica onde está).
-					if (local != null && !adopting && CloudSync.Changed(local, synced))
-						store.Backup();
-					store.Write(cloud!.Json);
-					Mark(cloud.Revision, cloud.Json);
-					return new SyncResult(cloudPlayer, true, null);
-
-				default:
-					var player = localPlayer ?? newGame();
-					if (localPlayer == null)
-						PlayerSave.InheritStarted(player, inheritedStarted);
-					var json = local ?? store.Save(player);
-					if (adopting)
-						OfflineStore.MoveTo(store);
-					if (chose)
-						store.Backup(cloud!.Json, "cloud");
-
-					// Sem rede agora, sobe no próximo envio: o save local já é o que vale.
-					await Push(json, cloudRevision);
-					return new SyncResult(player, false, null);
-			}
+			store.Write(cloud.Json);
+			Mark(cloud.Revision, cloud.Json);
+			return new SyncResult(cloudPlayer, true, null);
 		}
 
 		/// <summary>
-		/// Liga o batimento e o envio periódico; <paramref name="player"/> devolve o save aberto. Sem
-		/// <paramref name="connected"/> (a conta lembrada aberta sem internet), o batimento tenta reconectar.
+		/// Liga o batimento; <paramref name="player"/> devolve a cópia aberta. Sem <paramref name="connected"/>, o
+		/// batimento tenta reconectar.
 		/// </summary>
 		public void Begin(Func<PlayerState?> player, bool connected = true)
 		{
@@ -490,48 +420,20 @@ namespace Sigilos.GameEntry.Account
 			_away = !connected;
 			Playing = true;
 			_beat.Start(connected ? SessionLock.BeatSeconds : RetrySeconds);
-			_upload.Start();
 			if (connected)
 				Chat.Open();
 		}
 
 		/// <summary>
-		/// Grava e envia o save se ele mudou desde a última sincronização. Verdadeiro se a nuvem ficou igual
-		/// ao aparelho (sem mudança conta como sim).
-		/// </summary>
-		public Task<bool> Flush()
-		{
-			if (_flushing is { IsCompleted: false })
-				return _flushing;
-			_flushing = FlushOnce();
-			return _flushing;
-		}
-
-		/// <summary>
-		/// Pede ao servidor uma ação que sorteia ou gasta (melhorar runa, invocar...): manda antes o que está no
-		/// aparelho, o servidor faz a ação sobre o save dele e devolve o que mudou, que entra aqui no mesmo quadro e
-		/// já vale como enviado. Sem conexão, nada é feito.
+		/// Pede ao servidor uma ação (gastar, render, sortear, organizar): ele a faz sobre o save dele e devolve o que mudou,
+		/// que entra na cópia daqui no mesmo quadro. Sem conexão, nada é feito.
 		/// </summary>
 		public async Task<ActionOutcome> Act(ActionRequest request)
 		{
-			if (!Connected || _player() is not { } player || Store is not { } store)
+			if (!Connected || _player() is not { } player || Store is not { } store || _lock.SessionId is not { } session)
 				return new ActionOutcome(null, "offline");
 
-			if (!await Flush() || _lock.SessionId is not { } session)
-				return new ActionOutcome(null, _forceCloud ? "resync" : "unsynced");
-
-			var baseline = ServerActions.Snapshot(player);
-			_acting = true;
-			ApiResponse response;
-			try
-			{
-				response = await _cloud.Action(session, _data.CurrentSync?.Revision ?? 0, request);
-			}
-			finally
-			{
-				_acting = false;
-			}
-
+			var response = await _cloud.Action(session, Revision, request);
 			if (response.Unreached)
 			{
 				Handle(BeatOutcome.Unknown);
@@ -540,17 +442,13 @@ namespace Sigilos.GameEntry.Account
 
 			if (response.Ok && response.Text("delta") is { } text && ActionDelta.FromJson(text) is { } delta && response.Number("revision") is { } revision)
 			{
-				ServerActions.ApplyDelta(player, delta, baseline);
-				store.Save(player);
-
-				// A cópia do jogo pode ter ganhado coisas enquanto o pedido corria: a revisão passa a ser a do servidor, e o
-				// que o aparelho tem por cima sobe no próximo envio.
-				Mark(revision, "");
-				SaveSoon();
+				if (delta.Patch is { Count: > 0 } patch)
+					StatePatch.Apply(player, patch);
+				Mark(revision, store.Save(player));
 				return new ActionOutcome(delta, null);
 			}
 
-			if (response.Conflict("save_conflict") || response.Conflict("session_taken") || response.Conflict("save_unreadable"))
+			if (Stale(response))
 			{
 				SyncNeeded?.Invoke();
 				return new ActionOutcome(null, "conflict");
@@ -560,20 +458,50 @@ namespace Sigilos.GameEntry.Account
 		}
 
 		/// <summary>
-		/// Uma ação mudou a conta (subir nível, melhorar runa, fundir, invocar, vencer, bloquear...): envia
-		/// para a nuvem daqui a <see cref="SoonSeconds"/>, contando de novo a cada ação. O envio a cada
-		/// <see cref="UploadSeconds"/> continua por baixo, para o que muda sozinho (a canalização).
+		/// O começo (<paramref name="begin"/>) ou o fim de uma luta do servidor. O começo devolve a semente e o bilhete (e,
+		/// na Arena, já gasta o Convite); o fim leva o bilhete, e o servidor confere, paga e devolve o que mudou. Sem conexão,
+		/// nada é feito.
 		/// </summary>
-		public void SaveSoon()
+		public async Task<BattleCall> Battle(BattleRequest request, bool begin)
 		{
-			if (Playing)
-				_soon.Start();
+			if (!Connected || _player() is not { } player || Store is not { } store || _lock.SessionId is not { } session)
+				return new BattleCall(null, "offline");
+
+			var response = await _cloud.Battle(session, Revision, request, begin);
+			if (response.Unreached)
+			{
+				Handle(BeatOutcome.Unknown);
+				return new BattleCall(null, "offline");
+			}
+
+			if (response.Ok && response.Text("report") is { } text && BattleReport.FromJson(text) is { } report && response.Number("revision") is { } revision)
+			{
+				if (report.Patch.Count > 0)
+					StatePatch.Apply(player, report.Patch);
+				Mark(revision, store.Save(player));
+				return new BattleCall(report, null);
+			}
+
+			if (Stale(response))
+			{
+				SyncNeeded?.Invoke();
+				return new BattleCall(null, "conflict");
+			}
+
+			return new BattleCall(null, response.Error == "battle_ticket" ? "ticket" : "refused");
 		}
+
+		/// <summary>A revisão da cópia daqui: os pedidos partem dela.</summary>
+		private long Revision => _data.CurrentSync?.Revision ?? 0;
+
+		/// <summary>O servidor recusou porque a cópia daqui não é mais a dele, ou a sessão é de outro aparelho.</summary>
+		private static bool Stale(ApiResponse response) =>
+			response.Conflict("save_conflict") || response.Conflict("session_taken") || response.Conflict("save_unreadable");
 
 		/// <summary>
 		/// Sai da conta: para o batimento e solta a sessão (sem esperar mais que <see cref="LeaveTimeout"/>).
 		/// <paramref name="forget"/> esquece o token (Sair da conta); sem ele, a próxima abertura entra sozinha.
-		/// Envie antes com <see cref="Flush"/>.
+		/// Nada a enviar: o servidor já tem tudo.
 		/// </summary>
 		public async Task Leave(bool forget)
 		{
@@ -619,81 +547,30 @@ namespace Sigilos.GameEntry.Account
 			return _checking;
 		}
 
-		private sealed record Baseline(long Revision, string Json);
-
-		/// <summary>O JSON que a nuvem tem na revisão dada, se o aparelho o conhece; o delta parte dele.</summary>
-		private Baseline? _baseline;
-
-		private async Task<bool> FlushOnce()
-		{
-			// Sincronizando, ou sem conexão: quem envia é a sincronização (a de agora, ou a da volta da rede).
-			if (!Playing || _acting || _syncing is { IsCompleted: false } || _away || Store is not { } store || _player() is not { } player)
-				return false;
-
-			var json = store.Save(player);
-			var synced = _data.CurrentSync;
-			if (!CloudSync.Changed(json, synced))
-				return true;
-
-			// Sem sessão ainda (sem internet desde a abertura): o save fica no aparelho até reconectar.
-			if (_lock.SessionId == null)
-				return false;
-
-			var response = await Push(json, synced?.Revision ?? 0);
-			if (response.Ok)
-				return true;
-			if (response.Unreached)
-				Handle(BeatOutcome.Unknown);
-			else if (response.Error == "invalid_save_content" && response.Text("reason") is "rune_changed" or "rune_forged" or "pulls_changed" or "pulls_forged" or "ecos_forged" or "monster_structure" or "monster_growth" or "monster_stars" or "monster_skills" or "arena_points")
-			{
-				// O que o aparelho tem fora das regras não sobe nunca: vale a nuvem, e o do aparelho vira backup.
-				_forceCloud = true;
-				SyncNeeded?.Invoke();
-			}
-			else if (response.Error == "invalid_save_content")
-				Godot.GD.PushWarning("O servidor recusou o save na nuvem (conteúdo fora das regras do jogo); o do aparelho segue valendo.");
-			else if (Playing && (response.Conflict("save_conflict") || response.Conflict("revision_not_newer")))
-				SyncNeeded?.Invoke();
-			return false;
-		}
-
 		/// <summary>
-		/// Envia <paramref name="json"/> por cima da revisão <paramref name="baseRevision"/>. "Sessão tomada"
-		/// pode ser só o aparelho que dormiu: toma de novo sem forçar e tenta uma vez mais.
+		/// Traz da nuvem o que o servidor mudou por conta própria (o resultado de uma partida do Véu, o perfil): baixa a conta e leva a
+		/// diferença à cópia daqui. O servidor vence; o aparelho não tem o que perder, porque nada se escreve nele.
 		/// </summary>
-		private async Task<ApiResponse> Push(string json, long baseRevision)
+		public async Task<bool> Resync()
 		{
-			for (var attempt = 0; ; attempt++)
-			{
-				if (_lock.SessionId is not { } session)
-					return new ApiResponse(409, "session_taken", default);
+			if (!Connected || _player() is not { } player || Store is not { } store)
+				return false;
 
-				var response = await _cloud.Upload(session, baseRevision, baseRevision + 1, json);
-				if (response.Ok)
-				{
-					Mark(baseRevision + 1, json);
-					return response;
-				}
+			var download = await _cloud.Download();
+			if (download.Copy is not { } copy || PlayerSave.FromJson(copy.Json) is not { } cloud)
+				return false;
 
-				if (!response.Conflict("session_taken") || attempt > 0)
-					return response;
-
-				var outcome = await _lock.Recover();
-				if (outcome != BeatOutcome.Alive)
-				{
-					Handle(outcome);
-					return response;
-				}
-			}
+			StatePatch.Apply(player, StatePatch.Diff(StatePatch.Snapshot(player), cloud));
+			Mark(copy.Revision, store.Save(player));
+			return true;
 		}
 
-		/// <summary>A nuvem ficou igual ao aparelho: anota, e a conta do tempo sem conexão volta a zero.</summary>
-		private void Mark(long revision, string json)
+		/// <summary>A cópia daqui ficou igual à do servidor nesta revisão: anota, e a conta do tempo sem conexão volta a zero.</summary>
+		private void Mark(long revision, string? json)
 		{
-			_baseline = json.Length > 0 ? new Baseline(revision, json) : null;
 			var blocked = Blocked;
 			_data.OfflineSeconds = 0;
-			_data.MarkSynced(new SyncPoint(revision, CloudSync.Hash(json)));
+			_data.MarkSynced(new SyncPoint(revision, CloudSync.Hash(json ?? "")));
 			LastSync = DateTimeOffset.Now;
 			if (blocked)
 				ConnectionChanged?.Invoke();
@@ -721,9 +598,8 @@ namespace Sigilos.GameEntry.Account
 		}
 
 		/// <summary>
-		/// A conexão caiu ou voltou. Na volta, a nuvem pode ter mudado (outro aparelho jogou nesse meio tempo) e
-		/// o aparelho pode ter progresso que não subiu: pede para sincronizar de novo. Sem conexão, o batimento
-		/// tenta mais vezes.
+		/// A conexão caiu ou voltou. Na volta, o servidor pode ter mudado a conta (outro aparelho jogou nesse meio tempo):
+		/// pede para baixar de novo. Sem conexão, o batimento tenta mais vezes.
 		/// </summary>
 		private void SetAway(bool away)
 		{
@@ -742,27 +618,15 @@ namespace Sigilos.GameEntry.Account
 				SyncNeeded?.Invoke();
 		}
 
-		/// <summary>
-		/// A conta caiu.
-		/// - Tomada por outro aparelho com este conectado: o progresso que não subiu (no máximo um envio) vira
-		///   backup e não vai para a nuvem; ao entrar de novo aqui, vem o da nuvem, sem pergunta.
-		/// - Tomada enquanto este estava sem conexão: o que se jogou sem rede fica no save do aparelho, e a
-		///   próxima entrada aqui o leva para a conta (<see cref="LossReason.TakenWhileAway"/>).
-		/// </summary>
+		/// <summary>A conta caiu (tomada por outro aparelho, ou o acesso venceu). Nada a guardar: a cópia daqui já é a do servidor.</summary>
 		private void Lose(LossReason reason)
 		{
 			if (!Playing)
 				return;
 
-			var player = _player();
-			if (reason == LossReason.Taken && _away)
-				reason = LossReason.TakenWhileAway;
 			Stop();
 			_lock.Drop();
-			var store = Store;
-			var json = store != null && player != null ? store.Save(player) : null;
-			var backedUp = reason == LossReason.Taken && json != null && CloudSync.Changed(json, _data.CurrentSync) && store!.Backup() != null;
-			Lost?.Invoke(reason, backedUp);
+			Lost?.Invoke(reason);
 		}
 
 		private void Stop()
@@ -771,8 +635,6 @@ namespace Sigilos.GameEntry.Account
 			_away = false;
 			_player = () => null;
 			_beat.Stop();
-			_upload.Stop();
-			_soon.Stop();
 			Chat.Close();
 			Rta.Close();
 		}

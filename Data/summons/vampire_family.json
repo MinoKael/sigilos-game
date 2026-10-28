@@ -35,16 +35,13 @@
           "image": "sangue_fervente",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 4.41}
+            {"kind": "Damage", "target": "Target", "power": 4.41, "awakened": {"power": 4.9}},
+            {"kind": "Status", "target": "Target", "status": "Affliction", "turns": 2, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 4.9},
-            {"kind": "Status", "target": "Target", "status": "Affliction", "turns": 2}
           ]
         },
         {
@@ -84,17 +81,13 @@
           "cooldown": 4,
           "effects": [
             {"kind": "Status", "target": "Self", "status": "Hidden"},
-            {"kind": "Heal", "target": "Self", "power": 0.14}
+            {"kind": "Heal", "target": "Self", "power": 0.14, "awakened": {"power": 0.21}},
+            {"kind": "Status", "target": "Self", "status": "Aegis", "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Status", "target": "Self", "status": "Hidden"},
-            {"kind": "Heal", "target": "Self", "power": 0.21},
-            {"kind": "Status", "target": "Self", "status": "Aegis"}
           ]
         },
         {
@@ -133,16 +126,13 @@
           "image": "enxame_de_morcegos",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2}
+            {"kind": "Damage", "target": "AllEnemies", "power": 0.98, "hits": 2, "awakened": {"power": 1.22}},
+            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "AllEnemies", "power": 1.22, "hits": 2},
-            {"kind": "Status", "target": "AllEnemies", "status": "Blind", "chance": 0.4, "turns": 2}
           ]
         },
         {
@@ -189,16 +179,13 @@
           "image": "transfusao",
           "cooldown": 4,
           "effects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.14}
+            {"kind": "Heal", "target": "AllAllies", "power": 0.14, "awakened": {"power": 0.21}},
+            {"kind": "Cleanse", "target": "LowestAlly", "count": 1, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Recovery", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Heal", "target": "AllAllies", "power": 0.21},
-            {"kind": "Cleanse", "target": "LowestAlly", "count": 1}
           ]
         },
         {
@@ -244,16 +231,13 @@
           "image": "banquete",
           "cooldown": 4,
           "effects": [
-            {"kind": "Damage", "target": "Target", "power": 3.92, "drain": 0.5}
+            {"kind": "Damage", "target": "Target", "power": 3.92, "drain": 0.5, "awakened": {"power": 4.9}},
+            {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true, "onlyAwakened": true}
           ],
           "levels": [
             {"kind": "Damage", "value": 0.1},
             {"kind": "Damage", "value": 0.1},
             {"kind": "Cooldown", "value": 1}
-          ],
-          "awakenedEffects": [
-            {"kind": "Damage", "target": "Target", "power": 4.9, "drain": 0.5},
-            {"kind": "Impeto", "target": "Self", "power": 100, "onKill": true}
           ]
         },
         {

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Sigilos.Core.Battle;
 
-namespace Sigilos.UI
+namespace Sigilos.Core.Battle
 {
 	/// <summary>O que um momento da luta é na tela: evento comum, avanço até o alvo, golpe ou volta ao lugar.</summary>
 	public enum BeatKind
@@ -18,7 +17,10 @@ namespace Sigilos.UI
 	/// na velocidade 1×. <see cref="Actor"/> é quem avança ou volta; <see cref="Targets"/>, quem ele vai
 	/// atingir (o avanço corre até o primeiro, ou até o meio do grupo num golpe em área).
 	/// </summary>
-	public sealed record Beat(BeatKind Kind, IReadOnlyList<BattleEvent> Events, double Seconds, BattleUnit? Actor = null, IReadOnlyList<BattleUnit>? Targets = null);
+	public sealed record Beat(BeatKind Kind, IReadOnlyList<BattleEvent> Events, double Seconds, BattleUnit? Actor = null, IReadOnlyList<BattleUnit>? Targets = null, IReadOnlyList<Attacker>? Group = null);
+
+	/// <summary>Um dos que atacam juntos num ataque em conjunto: quem é e quem atinge neste momento.</summary>
+	public sealed record Attacker(BattleUnit Actor, IReadOnlyList<BattleUnit> Targets);
 
 	/// <summary>
 	/// O ritmo da luta na tela: quem ataca corre até o alvo, golpeia e volta. A
@@ -31,8 +33,12 @@ namespace Sigilos.UI
 	/// </summary>
 	public static class BattlePace
 	{
-		/// <summary>As velocidades da tela: o que o botão mostra e o quanto acelera. O "2×" acelera 3 vezes.</summary>
-		public static readonly IReadOnlyList<(int Label, float Factor)> Speeds = new[] { (1, 1f), (2, 3f) };
+		/// <summary>
+		/// As velocidades da tela, no manual e no automático: o que o botão mostra e o quanto acelera o tempo de base. O "1×" é
+		/// também o ritmo do recorde e o "3×", o da Batalha automática; mexer nelas muda os melhores tempos e a duração da Batalha
+		/// automática no servidor.
+		/// </summary>
+		public static readonly IReadOnlyList<(int Label, float Factor)> Speeds = new[] { (1, 2f), (2, 2.75f), (3, 3.5f) };
 
 		/// <summary>A corrida até o alvo e a volta ao lugar.</summary>
 		public const double Approach = 0.75;
@@ -53,16 +59,30 @@ namespace Sigilos.UI
 		{
 			var beats = new List<Beat>();
 			BattleUnit? striker = null;
+			var party = new List<BattleUnit>();
 			var i = 0;
 			while (i < events.Count)
 			{
 				var battleEvent = events[i];
+				if (battleEvent is JointAttack)
+				{
+					AddJoint(beats, Chunks(events, ref i), striker, party);
+					continue;
+				}
+
 				if (Strikes(battleEvent) is { } actor)
 				{
 					if (striker != null)
-						beats.Add(new Beat(BeatKind.Return, new BattleEvent[0], Return, striker));
+						beats.Add(ReturnBeat(striker, party));
 					striker = actor;
-					beats.Add(new Beat(BeatKind.Approach, new[] { battleEvent }, Approach, actor, TargetsOf(events, i + 1)));
+					party.Clear();
+					var targets = TargetsOf(events, i + 1);
+
+					// Os aliados que vão atacar junto saem com quem lançou a habilidade: todos correm juntos.
+					var joined = JoinedBy(events, i + 1, actor);
+					party.AddRange(joined.Select(a => a.Actor));
+					var group = joined.Count == 0 ? null : joined.Prepend(new Attacker(actor, targets)).ToList();
+					beats.Add(new Beat(BeatKind.Approach, new[] { battleEvent }, Approach, actor, targets, group));
 					i++;
 					continue;
 				}
@@ -77,8 +97,9 @@ namespace Sigilos.UI
 				// Um turno novo encerra a ação de quem estava fora do lugar.
 				if (striker != null && battleEvent is TurnStarted or ExtraTurn or TurnSkipped or WaveStarted or BattleEnded)
 				{
-					beats.Add(new Beat(BeatKind.Return, new BattleEvent[0], Return, striker));
+					beats.Add(ReturnBeat(striker, party));
 					striker = null;
+					party.Clear();
 				}
 
 				beats.Add(new Beat(BeatKind.Plain, new[] { battleEvent }, Seconds(battleEvent)));
@@ -86,8 +107,75 @@ namespace Sigilos.UI
 			}
 
 			if (striker != null)
-				beats.Add(new Beat(BeatKind.Return, new BattleEvent[0], Return, striker));
+				beats.Add(ReturnBeat(striker, party));
 			return beats;
+		}
+
+		/// <summary>A volta de quem saiu do lugar, com os aliados que atacaram junto.</summary>
+		private static Beat ReturnBeat(BattleUnit striker, IReadOnlyList<BattleUnit> party) => party.Count == 0
+			? new Beat(BeatKind.Return, new BattleEvent[0], Return, striker)
+			: new Beat(BeatKind.Return, new BattleEvent[0], Return, striker, Group: party.Prepend(striker).Select(unit => new Attacker(unit, new List<BattleUnit>())).ToList());
+
+		/// <summary>Os aliados chamados por ataque conjunto até o fim da ação que começa em <paramref name="start"/>, com o alvo de cada um.</summary>
+		private static List<Attacker> JoinedBy(IReadOnlyList<BattleEvent> events, int start, BattleUnit actor)
+		{
+			var joined = new List<Attacker>();
+			for (var i = start; i < events.Count && events[i] is not (TurnStarted or ExtraTurn or TurnSkipped or WaveStarted or BattleEnded or SkillUsed or Counterattack); i++)
+			{
+				if (events[i] is JointAttack joint && joint.Unit != actor && joined.All(a => a.Actor != joint.Unit))
+					joined.Add(new Attacker(joint.Unit, TargetsOf(events, i + 1)));
+			}
+
+			return joined;
+		}
+
+		/// <summary>O ataque de um aliado chamado: quem é, o aviso e os golpes dele (cada um é um grupo de acertos).</summary>
+		private sealed record Chunk(BattleUnit Actor, BattleEvent Label, IReadOnlyList<IReadOnlyList<BattleEvent>> Volleys);
+
+		/// <summary>Os ataques conjuntos seguidos que começam em <paramref name="i"/>: eles acontecem juntos.</summary>
+		private static List<Chunk> Chunks(IReadOnlyList<BattleEvent> events, ref int i)
+		{
+			var chunks = new List<Chunk>();
+			while (i < events.Count && events[i] is JointAttack joint)
+			{
+				var label = events[i++];
+				var volleys = new List<IReadOnlyList<BattleEvent>>();
+				while (i < events.Count && (TargetOf(events[i]) != null || FollowsHit(events[i])))
+					volleys.Add(Volley(events, ref i));
+				chunks.Add(new Chunk(joint.Unit, label, volleys));
+			}
+
+			return chunks;
+		}
+
+		private static IReadOnlyList<BattleUnit> Struck(IReadOnlyList<BattleEvent> volley) => volley.Select(TargetOf).OfType<BattleUnit>().Distinct().ToList();
+
+		/// <summary>
+		/// Os golpes do grupo caem juntos (o primeiro de cada um num momento, o segundo no seguinte...). Quem lançou a habilidade e os
+		/// chamados já saíram juntos (<see cref="JoinedBy"/>) e voltam juntos; um chamado sem lançador à frente (uma Passiva) corre aqui.
+		/// </summary>
+		private static void AddJoint(List<Beat> beats, List<Chunk> chunks, BattleUnit? striker, List<BattleUnit> party)
+		{
+			var runners = chunks.Where(c => c.Actor != striker && !party.Contains(c.Actor)).ToList();
+			var labels = chunks.Select(c => c.Label).ToList();
+			if (runners.Count > 0)
+			{
+				var attackers = runners.Select(c => new Attacker(c.Actor, c.Volleys.Count > 0 ? Struck(c.Volleys[0]) : new List<BattleUnit>())).ToList();
+				party.AddRange(runners.Select(c => c.Actor));
+				beats.Add(new Beat(BeatKind.Approach, labels, Approach, attackers[0].Actor, attackers[0].Targets, attackers));
+			}
+			else
+			{
+				beats.Add(new Beat(BeatKind.Plain, labels, 0));
+			}
+
+			for (var k = 0; k < chunks.Max(c => c.Volleys.Count); k++)
+			{
+				var volley = chunks.Where(c => k < c.Volleys.Count).ToList();
+				var events = volley.SelectMany(c => c.Volleys[k]).ToList();
+				var group = volley.Select(c => new Attacker(c.Actor, Struck(c.Volleys[k]))).ToList();
+				beats.Add(new Beat(BeatKind.Volley, events, Hit + (events.Any(e => e is Died) ? 0.25 : 0), Group: group));
+			}
 		}
 
 		/// <summary>Quanto um evento fora de golpe e de corrida fica à mostra.</summary>

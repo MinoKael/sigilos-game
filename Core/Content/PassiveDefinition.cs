@@ -16,7 +16,7 @@ namespace Sigilos.Core.Content
 
 		/// <summary>
 		/// Genéricas: os efeitos que a Passiva faz ao disparar. Vêm da habilidade passiva ("effects" e
-		/// "awakenedEffects" em Data/summons, com os bônus de nível): <see cref="SkillDefinition.At"/> põe aqui.
+		/// "awakened" dos efeitos em Data/summons, com os bônus de nível): <see cref="SkillDefinition.At"/> põe aqui.
 		/// </summary>
 		public IReadOnlyList<EffectDefinition> Effects { get; init; } = new List<EffectDefinition>();
 
